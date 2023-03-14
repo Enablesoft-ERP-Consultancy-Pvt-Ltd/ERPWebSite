@@ -8,6 +8,8 @@
             <xs:sequence>
               <xs:element name="BuyersCode" type="xs:string" minOccurs="0" />
               <xs:element name="BuyerOrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
               <xs:element name="DesignName" type="xs:string" minOccurs="0" />
               <xs:element name="Quality" type="xs:string" minOccurs="0" />
               <xs:element name="Color" type="xs:string" minOccurs="0" />
