@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CustomSettings>
+	<ConfigMessage>
+		<Key>IncorrectLogin</Key>
+		<Value>Incorrect username or password!</Value>
+		<Remarks>Incorrect username or password</Remarks>
+	</ConfigMessage>
+	<ConfigMessage>
+		<Key>errormessage</Key>
+		<Value>Sorry! This service currently unavailable. Kindly try after some time.</Value>
+		<Remarks>Custom Error Message for application failure</Remarks>
+	</ConfigMessage>
+	<ConfigMessage>
+		<Key>FPIncorrectInfo</Key>
+		<Value>Incorrect information. Please try again.</Value>
+		<Remarks>Incorrect information. Please try again.</Remarks>
+	</ConfigMessage>
+	<ConfigMessage>
+		<Key>FPMailSubject</Key>
+		<Value>Mocolife Corporate: Password</Value>
+		<Remarks>Mocolife Corporate : Password</Remarks>
+	</ConfigMessage>
+	<ConfigMessage>
+		<Key>FPMailFrom</Key>
+		<Value>mocolife@indiatimes.co.in</Value>
+		<Remarks>Mocolife corporate forget password message sent from</Remarks>
+	</ConfigMessage>
+	<ConfigMessage>
+		<Key>FPMailMessage</Key>
+		<Value>Hi %name% , Your  Password is : %password%</Value>
+		<Remarks>Mocolife corporate mail message.</Remarks>
+	</ConfigMessage>
+	<ConfigMessage>
+		<Key>SendPasswordMsg</Key>
+		<Value>Your password has been sent to your email id. Please Login!</Value>
+		<Remarks>Successful forget password sent  message</Remarks>
+	</ConfigMessage>
+</CustomSettings>

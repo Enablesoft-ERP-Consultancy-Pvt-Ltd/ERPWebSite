@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="EmpName" type="xs:string" minOccurs="0" />
+              <xs:element name="Address" type="xs:string" minOccurs="0" />
+              <xs:element name="PhoneNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Mobile" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyAddress" type="xs:string" minOccurs="0" />
+              <xs:element name="ComPanyPhoneNo" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyFaxNo" type="xs:string" minOccurs="0" />
+              <xs:element name="TinNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Category_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="Item_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="Designname" type="xs:string" minOccurs="0" />
+              <xs:element name="colorname" type="xs:string" minOccurs="0" />
+              <xs:element name="shapename" type="xs:string" minOccurs="0" />
+              <xs:element name="shadecolorname" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeMtr" type="xs:string" minOccurs="0" />
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Indentid" type="xs:int" minOccurs="0" />
+              <xs:element name="PRMid" type="xs:int" minOccurs="0" />
+              <xs:element name="IssueQuantity" type="xs:double" minOccurs="0" />
+              <xs:element name="LotNo" type="xs:string" minOccurs="0" />
+              <xs:element name="GodownNAme" type="xs:string" minOccurs="0" />
+              <xs:element name="ShortName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShadeColorName1" type="xs:string" minOccurs="0" />
+              <xs:element name="unitname" type="xs:string" minOccurs="0" />
+              <xs:element name="companyid" type="xs:int" minOccurs="0" />
+              <xs:element name="IndentNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="flagsize" type="xs:int" minOccurs="0" />
+              <xs:element name="CanQty" type="xs:double" minOccurs="0" />
+              <xs:element name="MastercompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="Process_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="Buyercode" type="xs:string" minOccurs="0" />
+              <xs:element name="localorder" type="xs:string" minOccurs="0" />
+              <xs:element name="customerorderno" type="xs:string" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTIN" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPGSTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="BinNo" type="xs:string" minOccurs="0" />
+              <xs:element name="UserName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IssQty" type="xs:double" minOccurs="0" />
+              <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="Quality_Id" type="xs:int" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="PRMid" type="xs:int" minOccurs="0" />
+              <xs:element name="unitname" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

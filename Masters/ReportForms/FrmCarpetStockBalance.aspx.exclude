@@ -1,0 +1,74 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ERPmaster.master" AutoEventWireup="true" CodeFile="FrmCarpetStockBalance.aspx.cs" Inherits="Masters_ReportForms_FrmCarpetStockBalance" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" Runat="Server">
+<style type="text/css">
+        .style1
+        {
+            width: 764px;
+        }
+        .style2
+        {
+            width: 656px;
+        }
+        .style3
+        {
+            padding-left:2px;
+        }
+    </style>
+<div CssClass="style3"><asp:Label ID="lblmsg" runat="server"  Text="asddf" ForeColor="Red" ></asp:Label></div>
+<div style="float:left; width: 560px; height: 500px; padding-left:200px;">
+ <table style="width:98%">
+                                     <tr id="TRddCmpName" runat="server">
+                                        <td>
+                                            <asp:Label ID="lblcmpname" runat="server" CssClass="labelnormalMM" Text="Company Name"></asp:Label>
+                                        </td>
+                                        <td colspan="3" class="style2">
+                                            <asp:DropDownList ID="ddCmpName" runat="server" CssClass="dropdown"
+                                                Width="300px">
+                                            </asp:DropDownList>
+                                             &nbsp;&nbsp;&nbsp;
+                                        <asp:Button ID="BtnStockView" runat="server" CssClass="labelnormalMM" 
+                                                Text="View At Stock" Height="22px" Width="84px" 
+                                                onclick="BtnStockView_Click" />
+                                        </td>
+                                    </tr>
+                                    <tr id="TRDDCustName" runat="server" visible="true">
+                                        <td>
+                                            <asp:Label ID="lblCustname" runat="server" CssClass="labelnormalMM" Text="Customer"></asp:Label>
+                                        </td>
+                                        <td colspan="3" class="style2">
+                                            <asp:DropDownList ID="DDcustomer" runat="server" AutoPostBack="True" CssClass="dropdown"
+                                                Width="300px" onselectedindexchanged="DDcustomer_SelectedIndexChanged">
+                                            </asp:DropDownList>
+                                           
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr id="TRDDOrder" runat="server" visible="true">
+                                        <td>
+                                            <asp:Label ID="lblOrder" runat="server" CssClass="labelnormalMM" Text="Order"></asp:Label>
+                                        </td>
+                                        <td colspan="3" class="style2">
+                                            <asp:DropDownList ID="DDOrder" runat="server" CssClass="dropdown"
+                                                Width="300px">
+                                            </asp:DropDownList>
+                                        </td>
+                                    </tr>
+                                     <tr>
+                                        <td align="center" colspan="4" >
+                                            &nbsp;<asp:Button ID="BtnPreview" runat="server" CssClass="buttonnorm" OnClick="BtnPreview_Click"
+                                                Text="Preview" />
+                                            &nbsp;<asp:Button ID="BtnClose" runat="server" CssClass="buttonnorm" 
+                                                Text="Close" onclick="BtnClose_Click" />
+                                        </td>
+                                    </tr>
+                           </table>
+                           </div>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="CPH_SideBar" Runat="Server">
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="CPH_Footer" Runat="Server">
+</asp:Content>
+

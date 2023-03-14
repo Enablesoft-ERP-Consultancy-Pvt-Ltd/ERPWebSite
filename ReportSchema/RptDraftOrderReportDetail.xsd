@@ -1,0 +1,117 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="WebSiteName" type="xs:string" minOccurs="0" />
+              <xs:element name="KindAtten" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="CompanyName1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
+              <xs:element name="CompFax" type="xs:string" minOccurs="0" />
+              <xs:element name="CompTel" type="xs:string" minOccurs="0" />
+              <xs:element name="TinNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Email" type="xs:string" minOccurs="0" />
+              <xs:element name="TermName" type="xs:string" minOccurs="0" />
+              <xs:element name="PaymentName" type="xs:string" minOccurs="0" />
+              <xs:element name="TransModeName" type="xs:string" minOccurs="0" />
+              <xs:element name="StationName" type="xs:string" minOccurs="0" />
+              <xs:element name="SeaPort" type="xs:string" minOccurs="0" />
+              <xs:element name="CustOrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="DeliveryDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="OrderDetailId" type="xs:int" minOccurs="0" />
+              <xs:element name="Remarks" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="designName" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeFt" type="xs:string" minOccurs="0" />
+              <xs:element name="Address" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitId" type="xs:int" minOccurs="0" />
+              <xs:element name="Email1" type="xs:string" minOccurs="0" />
+              <xs:element name="Length" type="xs:double" minOccurs="0" />
+              <xs:element name="Width" type="xs:double" minOccurs="0" />
+              <xs:element name="Height" type="xs:double" minOccurs="0" />
+              <xs:element name="PCS" type="xs:double" minOccurs="0" />
+              <xs:element name="UnitId1" type="xs:int" minOccurs="0" />
+              <xs:element name="SizeMtr" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeInch" type="xs:string" minOccurs="0" />
+              <xs:element name="BankName" type="xs:string" minOccurs="0" />
+              <xs:element name="Street" type="xs:string" minOccurs="0" />
+              <xs:element name="City" type="xs:string" minOccurs="0" />
+              <xs:element name="State" type="xs:string" minOccurs="0" />
+              <xs:element name="Country" type="xs:string" minOccurs="0" />
+              <xs:element name="ACNo" type="xs:string" minOccurs="0" />
+              <xs:element name="SwiftCode" type="xs:string" minOccurs="0" />
+              <xs:element name="PhoneNo" type="xs:string" minOccurs="0" />
+              <xs:element name="FaxNo" type="xs:string" minOccurs="0" />
+              <xs:element name="OurCode" type="xs:string" minOccurs="0" />
+              <xs:element name="BuyerCode" type="xs:string" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="CurrencyName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeId" type="xs:int" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="LWHMtr" type="xs:string" minOccurs="0" />
+              <xs:element name="LWHFt" type="xs:string" minOccurs="0" />
+              <xs:element name="LWHInch" type="xs:string" minOccurs="0" />
+              <xs:element name="DeliveryComments" type="xs:string" minOccurs="0" />
+              <xs:element name="PhoneNo1" type="xs:string" minOccurs="0" />
+              <xs:element name="Fax" type="xs:string" minOccurs="0" />
+              <xs:element name="CurrencyName1" type="xs:string" minOccurs="0" />
+              <xs:element name="PAYINSTRUCTION" type="xs:string" minOccurs="0" />
+              <xs:element name="BENEFICIARY_BANK" type="xs:string" minOccurs="0" />
+              <xs:element name="REMARKS1" type="xs:string" minOccurs="0" />
+              <xs:element name="localorder" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="Photo" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderCalType" type="xs:int" minOccurs="0" />
+              <xs:element name="CompanyLogo" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:int" minOccurs="0" />
+              <xs:element name="ReportRef" type="xs:string" minOccurs="0" />
+              <xs:element name="LocationType" type="xs:string" minOccurs="0" />
+              <xs:element name="Material" type="xs:string" minOccurs="0" />
+              <xs:element name="Texture" type="xs:string" minOccurs="0" />
+              <xs:element name="GST" type="xs:double" minOccurs="0" />
+              <xs:element name="CGST" type="xs:double" minOccurs="0" />
+              <xs:element name="SGST" type="xs:double" minOccurs="0" />
+              <xs:element name="IGST" type="xs:double" minOccurs="0" />
+              <xs:element name="PKGInstruction" type="xs:string" minOccurs="0" />
+              <xs:element name="FactoryAddress" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeWidth" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeLength" type="xs:string" minOccurs="0" />
+              <xs:element name="Area" type="xs:double" minOccurs="0" />
+              <xs:element name="AreaIncl" type="xs:double" minOccurs="0" />
+              <xs:element name="LessDiscount" type="xs:double" minOccurs="0" />
+              <xs:element name="ImageName" type="xs:base64Binary" minOccurs="0" />
+              <xs:element name="CompanyLogo2" type="xs:base64Binary" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="OrderDetailId" type="xs:int" minOccurs="0" />
+              <xs:element name="Photo" type="xs:string" minOccurs="0" />
+              <xs:element name="RefImageName" type="xs:base64Binary" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TCID" type="xs:int" minOccurs="0" />
+              <xs:element name="TermsConditions" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

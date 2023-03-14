@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="MONTH_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="YEAR_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="EMPID" type="xs:int" minOccurs="0" />
+              <xs:element name="EMPCODE" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNATION" type="xs:string" minOccurs="0" />
+              <xs:element name="DEPARTMENTNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="FATHERNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="PFNO" type="xs:string" minOccurs="0" />
+              <xs:element name="PFUANNO" type="xs:string" minOccurs="0" />
+              <xs:element name="ESINO" type="xs:string" minOccurs="0" />
+              <xs:element name="DOJ" type="xs:string" minOccurs="0" />
+              <xs:element name="GRADE" type="xs:string" minOccurs="0" />
+              <xs:element name="BANKACNO" type="xs:string" minOccurs="0" />
+              <xs:element name="BANKNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="EMP_PHOTO" type="xs:string" minOccurs="0" />
+              <xs:element name="MONTHID" type="xs:int" minOccurs="0" />
+              <xs:element name="YEARID" type="xs:int" minOccurs="0" />
+              <xs:element name="image" type="xs:base64Binary" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="EMPID" type="xs:int" minOccurs="0" />
+              <xs:element name="MONTHID" type="xs:int" minOccurs="0" />
+              <xs:element name="YEARID" type="xs:int" minOccurs="0" />
+              <xs:element name="TOTALDAYS_MONTH" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TOTALWORKINGDAYS" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BASICPAY" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BASICEARNAMT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="PARAMETERNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="PERCENT_AMOUNT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ACTUALAMT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="EARNAMT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GROSSSAL" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ADVANCEAMT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="LOANAMT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="NETSAL" type="xs:decimal" minOccurs="0" />
+              <xs:element name="PRODUCTIONAMT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="INCENTIVEAMT" type="xs:decimal" minOccurs="0" />
+              <xs:element name="OT_HRS" type="xs:int" minOccurs="0" />
+              <xs:element name="OT_AMT" type="xs:int" minOccurs="0" />
+              <xs:element name="LEAVE_VALUE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="PRESENT_VALUE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="WO_VALUE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="HD_VALUE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ABSENT_VALUE" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

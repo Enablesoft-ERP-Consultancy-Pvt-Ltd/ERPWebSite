@@ -1,0 +1,19 @@
+﻿jQuery(function ($) {
+    var focusedElementSelector = ""; var prm = Sys.WebForms.PageRequestManager.getInstance();
+    prm.add_beginRequest(function (source, args) {
+        var fe = document.activeElement;
+        focusedElementSelector = ""; if (fe != null) {
+            if (fe.id) {
+                focusedElementSelector
+    = "#" + fe.id;
+            } else { // Handle Chosen Js Plugin var $chzn = $(fe).closest('.chosen-container[id]');
+                if ($chzn.size() > 0) {
+                    focusedElementSelector = '#' + $chzn.attr('id') + ' input[type=text]';
+                } 
+            } 
+        } 
+    }); prm.add_endRequest(function (source, args) {
+        if (focusedElementSelector)
+        { $(focusedElementSelector).focus(); } 
+    });
+}); 

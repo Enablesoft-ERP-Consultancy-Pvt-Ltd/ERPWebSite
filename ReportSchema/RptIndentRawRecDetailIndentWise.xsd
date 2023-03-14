@@ -1,0 +1,40 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Process_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="Empname" type="xs:string" minOccurs="0" />
+              <xs:element name="IndentNo" type="xs:string" minOccurs="0" />
+              <xs:element name="IssueChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="RecChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="Finishedid" type="xs:int" minOccurs="0" />
+              <xs:element name="LotNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Description" type="xs:string" minOccurs="0" />
+              <xs:element name="RECQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="LossQty" type="xs:double" minOccurs="0" />
+              <xs:element name="RetQty" type="xs:double" minOccurs="0" />
+              <xs:element name="FromDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+              <xs:element name="dateflag" type="xs:int" minOccurs="0" />
+              <xs:element name="LocalOrder" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Lshort" type="xs:double" minOccurs="0" />
+              <xs:element name="Shrinkage" type="xs:double" minOccurs="0" />
+              <xs:element name="PRMid" type="xs:int" minOccurs="0" />
+              <xs:element name="Re_Process" type="xs:string" minOccurs="0" />
+              <xs:element name="UNDYEDQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="TagNo" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

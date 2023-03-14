@@ -1,0 +1,45 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPCODE" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="VILL_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="VILL_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="PO_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="PO_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DISTT_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DISTT_PRESENT1" type="xs:string" minOccurs="0" />
+              <xs:element name="DISTT_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DEPARTMENTNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="NAMEOFEMPLOYER" type="xs:string" minOccurs="0" />
+              <xs:element name="POSTHELD" type="xs:string" minOccurs="0" />
+              <xs:element name="DOJ" type="xs:string" minOccurs="0" />
+              <xs:element name="DOL" type="xs:string" minOccurs="0" />
+              <xs:element name="REASONFORLEAVING" type="xs:string" minOccurs="0" />
+              <xs:element name="NAME_COMPANYEMP" type="xs:string" minOccurs="0" />
+              <xs:element name="MOBILENO_COMPANYEMP" type="xs:string" minOccurs="0" />
+              <xs:element name="NAME1_REFERENCE" type="xs:string" minOccurs="0" />
+              <xs:element name="MOBILENO1_REFERENCE" type="xs:string" minOccurs="0" />
+              <xs:element name="NAME2_REFERENCE" type="xs:string" minOccurs="0" />
+              <xs:element name="MOBILENO2_REFERENCE" type="xs:string" minOccurs="0" />
+              <xs:element name="NEIGHBOURNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="MOBILENO_NEIGHBOUR" type="xs:string" minOccurs="0" />
+              <xs:element name="GRAAMPRADHANMEMBER" type="xs:string" minOccurs="0" />
+              <xs:element name="VERIFICATIONDONEBY" type="xs:string" minOccurs="0" />
+              <xs:element name="CRIMINALBACKGROUND" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNATION_VERIFICATIONDONEBY" type="xs:string" minOccurs="0" />
+              <xs:element name="DATE_VERIFICATION" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

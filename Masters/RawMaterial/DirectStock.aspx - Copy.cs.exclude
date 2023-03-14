@@ -1,0 +1,1116 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+
+public partial class Masters_process_itemRecieve : System.Web.UI.Page
+{
+    int ItemFinishedId = 0;
+    string remainstock = null;
+    static int MasterCompanyId;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
+        if (Session["varCompanyId"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
+
+        lblerror.Text = "";
+        Label2.Text = "";
+        lblMessageVal.Text = "";
+        lblsave.Text = "";
+        lblmessage.Text = "";
+        txtstockid.Text = "0";
+        if (!IsPostBack)
+        {
+
+            txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+            string str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname";
+            str = str + @"  select godownid,godownname from godownmaster Where MasterCompanyId=" + Session["varCompanyId"] + "      Select VarProdCode from MasterSetting";
+            DataSet ds = SqlHelper.ExecuteDataset(str);
+            UtilityModule.ConditionalComboFillWithDS(ref ddlcompany, ds, 0, true, "Select Comp Name");
+            if (ddlcompany.Items.FindByValue(Session["dcompanyid"].ToString()) != null)
+            {
+                ddlcompany.SelectedValue = Session["dcompanyid"].ToString();
+            }
+            else
+            {
+                ddlcompany.SelectedIndex = 1;
+            }
+            UtilityModule.ConditionalComboFillWithDS(ref ddlgodown, ds, 1, true, "Select Godown");
+            //ddlcompany.SelectedIndex = 1;
+            int VarProdCode = Convert.ToInt32(ds.Tables[2].Rows[0][0].ToString());
+            if (VarProdCode == 1)
+            {
+                code.Visible = true;
+            }
+            else
+            {
+                code.Visible = false;
+            }
+            lablechange();
+        }
+        switch (Session["varcompanyId"].ToString())
+        {
+            case "7":
+                tdlotno.Visible = false;
+                tdrate.Visible = false;
+                break;
+            case "8":
+                LblLotNo.Text = "Lot No./Batch No.";
+                break;
+            case "10":
+                tdlotno.Visible = false;
+                break;
+
+        }
+
+    }
+    public void lablechange()
+    {
+        String[] ParameterList = new String[8];
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        lblqualityname.Text = ParameterList[0];
+        lbldesignname.Text = ParameterList[1];
+        lblcolorname.Text = ParameterList[2];
+        lblshapename.Text = ParameterList[3];
+        lblsizename.Text = ParameterList[4];
+        lblcategoryname.Text = ParameterList[5];
+        lblitemname.Text = ParameterList[6];
+        lblshadecolor.Text = ParameterList[7];
+    }
+    protected void ddlcatagoryname_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ddlcategorycange();
+        TxtFinishedid.Text = "Category=" + ddlcatagoryname.SelectedValue;
+    }
+    private void ddlcategorycange()
+    {
+        ql.Visible = false;
+        clr.Visible = false;
+        dsn.Visible = false;
+        shp.Visible = false;
+        sz.Visible = false;
+        shd.Visible = false;
+        string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
+                      " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddlcatagoryname.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                switch (dr["PARAMETER_ID"].ToString())
+                {
+                    case "1":
+                        ql.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref dquality, "select Qualityid,Qualityname from Quality Where MasterCompanyId=" + Session["varCompanyId"], true, "--Select Quality--");
+                        break;
+                    case "2":
+                        dsn.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref dddesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName ", true, "Select Design");
+                        break;
+                    case "3":
+                        clr.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref ddcolor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"], true, "--Select Color--");
+                        break;
+                    case "4":
+                        shp.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by ShapeName", true, "--Select Shape--");
+                        break;
+                    case "5":
+                        sz.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid ", true, "Size in Ft");
+                        break;
+                    case "6":
+                        shd.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref ddlshade, "select shadecolorid,shadecolorname from shadecolor Where MasterCompanyId=" + Session["varCompanyId"], true, "Select Shadecolor");
+                        break;
+                }
+            }
+        }
+        UtilityModule.ConditionalComboFill(ref ddlitemname, "Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddlcatagoryname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Item--");
+    }
+    protected void btnsave_Click(object sender, EventArgs e)
+    {
+        CHECKVALIDCONTROL();
+        if (lblMessageVal.Text == "")
+        {
+            if (txtopeningstock.Text != "")
+            {
+                ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                if (ddlcatagorytype.SelectedValue == "1")
+                {
+                    saverawdetail();
+                }
+                else
+                {
+                    savecarpetdetail();
+                }
+                fill_grid();
+                Refresh();
+            }
+            else
+            {
+                lblsave.Visible = true;
+            }
+        }
+    }
+    private void saverawdetail()
+    {
+        int varfinishtype_Id = 0;
+        if (txtlotno.Text == "")
+        {
+            txtlotno.Text = "Without Lot No";
+        }
+        if (TdFINISHED_TYPE.Visible == false)
+        {
+            varfinishtype_Id = 0;
+        }
+        else
+        {
+            varfinishtype_Id = Convert.ToInt32(ddFINISHED_TYPE.SelectedValue);
+        }
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            string strstock = "select * from stock where ITEM_FINISHED_ID=" + ItemFinishedId + "and companyid=" + ddlcompany.SelectedValue + "and Godownid=" + ddlgodown.SelectedValue + "and lotno='" + txtlotno.Text + "' And Finished_Type_Id=" + varfinishtype_Id;
+            DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, strstock);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                //int openstock = Convert.ToInt32(ds.Tables[0].Rows[0]["openstock"].ToString());
+                int stockid = Convert.ToInt32(ds.Tables[0].Rows[0]["StockID"]);
+                string str = @"Select StockId,Quantity From StockTran where TableName='Opening stock' And StockID=" + stockid;
+                DataSet ds1 = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
+                if (ds1.Tables[0].Rows.Count > 0)
+                {
+                    Double Qty = Convert.ToDouble(ds1.Tables[0].Rows[0]["Quantity"]);
+                    string str1 = @"Update Stock set QtyinHand=QtyinHand-(" + Qty + "),OpenStock=OpenStock-(" + Qty + ") where stockId=" + stockid + "";
+                    str1 = str1 + @" Delete From Stocktran where StockId=" + stockid + " And TableName='Opening stock' ";
+                    SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str1);
+
+                }
+            }
+            UtilityModule.StockStockTranTableUpdateWithOpeningStock(ItemFinishedId, Convert.ToInt32(ddlgodown.SelectedValue), Convert.ToInt32(ddlcompany.SelectedValue), txtlotno.Text.ToString(), Convert.ToDouble(txtopeningstock.Text), txtdate.Text.ToString(), DateTime.Now.ToString("dd-MMM-yyyy"), "Opening stock", 0, Tran, 1, true, Convert.ToInt32(ddlcatagorytype.SelectedValue), varfinishtype_Id, Convert.ToDouble(TxtRate.Text));
+            Tran.Commit();
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/RawMaterial/DirectStock.aspx");
+            Tran.Rollback();
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+        lblmessage.Visible = true;
+    }
+    private void savecarpetdetail()
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+
+        try
+        {
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            int VarOpeningQty = Convert.ToInt32(txtopeningstock.Text);
+            int a = 0;
+            for (int i = 1; i <= VarOpeningQty; i++)
+            {
+                string VarTStockNoCheck = txtprefix.Text + Txtpostfix.Text;
+                DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "Select * from CarpetNumber Where TstockNo='" + VarTStockNoCheck + "'");
+                if (Ds.Tables[0].Rows.Count > 0)
+                {
+                    a = 1;
+                }
+            }
+            if (a == 0)
+            {
+                if (btnsave.Text == "Update")
+                {
+                    saverawdetail2();
+                }
+                else
+                {
+                    saverawdetail();
+                }
+                ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                string VarTStockNo = txtprefix.Text + Txtpostfix.Text;
+                int VarTStockNo1 = Convert.ToInt32(Txtpostfix.Text);
+                SqlParameter[] arr = new SqlParameter[7];
+                arr[0] = new SqlParameter("@finishedid", SqlDbType.Int);
+                arr[1] = new SqlParameter("@companyid", SqlDbType.Int);
+                arr[2] = new SqlParameter("@TStockNo", SqlDbType.NVarChar);
+                arr[3] = new SqlParameter("@TStockNo1", SqlDbType.Int);
+                arr[4] = new SqlParameter("@prefix", SqlDbType.NVarChar);
+                arr[5] = new SqlParameter("@recdate", SqlDbType.DateTime);
+                arr[6] = new SqlParameter("@stock", SqlDbType.Int);
+                arr[0].Value = ItemFinishedId;
+                arr[1].Value = ddlcompany.SelectedValue;
+                arr[2].Value = VarTStockNo;
+                arr[3].Value = VarTStockNo1;
+                arr[4].Value = txtprefix.Text;
+                arr[5].Value = DateTime.Now;
+                arr[6].Value = txtstockid.Text;
+
+                for (int i = 1; i <= VarOpeningQty; i++)
+                {
+                    SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "[PRO_directstock]", arr);
+                    Txtpostfix.Text = Convert.ToString(VarTStockNo1 + 1);
+                    VarTStockNo = txtprefix.Text + Txtpostfix.Text;
+                    VarTStockNo1 = Convert.ToInt32(Txtpostfix.Text);
+                    arr[2].Value = VarTStockNo;
+                    arr[3].Value = VarTStockNo1;
+                }
+                lblerror.Visible = false;
+            }
+            else
+            {
+                lblerror.Visible = true;
+                lblmessage.Visible = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/RawMaterial/DirectStock.aspx");
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+    }
+    protected void ddlcatagorytype_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref ddlcatagoryname, @"SELECT dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME  FROM  dbo.CategorySeparate INNER JOIN
+        dbo.ITEM_CATEGORY_MASTER ON dbo.CategorySeparate.Categoryid = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID inner join UserRights_Category UC on(UC.CategoryId=ITEM_CATEGORY_MASTER.Category_Id And UC.UserId=" + Session["varuserid"] + @")
+        WHERE dbo.CategorySeparate.id =" + ddlcatagorytype.SelectedValue + " And ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Catagory");
+        if (ddlcatagorytype.SelectedValue == "0")
+        {
+            Txtpostfix.Visible = true;
+            txtprefix.Visible = true;
+            txtprefix.Text = "";
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            con.Open();
+            string postfix = (SqlHelper.ExecuteScalar(con, CommandType.Text, "sELECT IsNull(Max(Postfix),0)+1 from CarpetNumber Where prefix Like '%'")).ToString();
+            Txtpostfix.Text = postfix;
+        }
+        else
+        {
+            Txtpostfix.Visible = false;
+            txtprefix.Visible = false;
+            if (ddlcatagoryname.Items.Count > 0)
+            {
+                ddlcatagoryname.SelectedIndex = 1;
+                ddlcatagoryname_SelectedIndexChanged(sender, e);
+            }
+        }
+
+    }
+    protected void txtprefix_TextChanged(object sender, EventArgs e)
+    {
+        Txtpostfix.Text = UtilityModule.CalculatePostFix(txtprefix.Text).ToString();
+    }
+    private void fill_grid()
+    {
+        gvcarpetdetail.DataSource = fill_Data_grid();
+        gvcarpetdetail.DataBind();
+    }
+    private DataSet fill_Data_grid()
+    {
+        DataSet ds = null;
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+            int category = Convert.ToInt32(ddlcatagoryname.SelectedIndex);
+            int item = ddlitemname.SelectedIndex > 0 ? Convert.ToInt32(ddlitemname.SelectedValue) : 0;
+            int quality = dquality.SelectedIndex > 0 ? Convert.ToInt32(dquality.SelectedValue) : 0;
+            int design = dddesign.SelectedIndex > 0 ? Convert.ToInt32(dddesign.SelectedValue) : 0;
+            int color = ddcolor.SelectedIndex > 0 ? Convert.ToInt32(ddcolor.SelectedValue) : 0;
+            int shape = ddshape.SelectedIndex > 0 ? Convert.ToInt32(ddshape.SelectedValue) : 0;
+            int size = ddsize.SelectedIndex > 0 ? Convert.ToInt32(ddsize.SelectedValue) : 0;
+            int ShadeColor = ddlshade.SelectedIndex > 0 ? Convert.ToInt32(ddlshade.SelectedValue) : 0;
+            int godownId = ddlgodown.SelectedIndex > 0 ? Convert.ToInt32(ddlgodown.SelectedValue) : 0;
+            string str1, str2, str3, str4, str5, str6, str7, str8;
+            if (item > 0)
+            {
+                str1 = "and VF.Item_Id=" + item;
+            }
+            else
+            {
+                str1 = "";
+            }
+            if (quality > 0)
+            {
+                str2 = " and VF.QualityId=" + quality;
+            }
+            else
+            {
+                str2 = "";
+            }
+            if (design > 0)
+            {
+                str3 = " and VF.DesignId=" + design;
+            }
+            else
+            {
+                str3 = "";
+            }
+            if (color > 0)
+            {
+                str4 = " and VF.ColorId=" + color;
+            }
+            else
+            {
+                str4 = "";
+            }
+            if (shape > 0)
+            {
+                str5 = " and VF.ShapeId=" + shape;
+            }
+            else
+            {
+                str5 = "";
+            }
+            if (size > 0)
+            {
+                str6 = "and VF.SizeId=" + size;
+            }
+            else
+            {
+                str6 = "";
+            }
+            if (ShadeColor > 0)
+            {
+                str7 = "and VF.ShadecolorId=" + ShadeColor;
+            }
+            else
+            {
+                str7 = "";
+            }
+            if (godownId > 0)
+            {
+                str8 = "and S.godownId=" + godownId;
+            }
+            else
+            {
+                str8 = "";
+            }
+            string strsql1 = @"SELECT StockId,CATEGORY_NAME,ITEM_NAME,QualityName+'  '+DesignName+'  '+ColorName+'  '+ShapeName+'  '+isnull(SizeMtr,'')+'  '+ShadeColorName DESCRIPTION,
+                             LotNo,Round(OpenStock,3) As OpenStock,Round(Qtyinhand,3) As Qtyinhand FROM Stock S,V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And S.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID And TypeId=" + ddlcatagorytype.SelectedValue + " " + str1 + " " + str2 + " " + str3 + " " + str4 + " " + str5 + " " + str6 + " " + str7 + " " + str8 + " Order By StockId";
+            con.Open();
+            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql1);
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/RawMaterial/DirectStock.aspx");
+            Logs.WriteErrorLog("Masters_process_DerictStock|Fill_Grid_Data|" + ex.Message);
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+        return ds;
+    }
+    protected void gvcarpetdetail_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
+            e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
+            e.Row.Attributes["onclick"] = ClientScript.GetPostBackClientHyperlink(this.gvcarpetdetail, "Select$" + e.Row.RowIndex);
+        }
+        if (Convert.ToInt32(Session["varcompanyNo"]) == 10)
+        {
+            e.Row.Cells[4].Visible = false;
+        }
+
+    }
+    protected void ddshape_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ddlunit.SelectedValue == "1")
+        {
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "select size");
+        }
+        else if (ddlunit.SelectedValue == "2")
+        {
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "select size");
+        }
+        // fill_grid();
+    }
+    protected void ddlitemname_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        itemchanged();
+        TxtFinishedid.Text = "Category=" + ddlcatagoryname.SelectedValue + "&Item=" + ddlitemname.SelectedValue;
+    }
+    private void itemchanged()
+    {
+        if (ddlcatagorytype.SelectedValue == "0")
+        {
+            if (ddlitemname.SelectedIndex > 0)
+            {
+                txtprefix.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Item_Code from Item_Master Where Item_Id=" + ddlitemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"]).ToString();
+                string get_year = DateTime.Now.ToString("dd-MMM-yyyy");
+                string lastTwoChars = get_year.Substring(get_year.Length - 2);
+                txtprefix.Text = (txtprefix.Text + "-" + lastTwoChars).Replace(" ", "");
+            }
+            else
+            {
+                txtprefix.Text = "";
+            }
+            Txtpostfix.Text = Convert.ToString(UtilityModule.CalculatePostFix((txtprefix.Text).ToUpper()));
+        }
+        string str = @"SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + ddlitemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"];
+        str = str + @" select qualityid,qualityname from quality where item_id=" + ddlitemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+        DataSet ds = SqlHelper.ExecuteDataset(str);
+        UtilityModule.ConditionalComboFillWithDS(ref ddlunit, ds, 0, true, "Select Unit");
+        UtilityModule.ConditionalComboFillWithDS(ref dquality, ds, 1, true, "Select Quallity");
+        if (ddlunit.Items.Count > 0)
+        {
+            ddlunit.SelectedIndex = 1;
+        }
+        //  fill_grid();
+    }
+    private void saverawdetail2()
+    {
+        int varfinishtype_Id = 0;
+        if (txtlotno.Text == "")
+        {
+            txtlotno.Text = "Without Lot No";
+        }
+        if (TdFINISHED_TYPE.Visible == false)
+        {
+            varfinishtype_Id = 0;
+        }
+        else
+        {
+            varfinishtype_Id = Convert.ToInt32(ddFINISHED_TYPE.SelectedValue);
+        }
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Open)
+        {
+            con.Open();
+        }
+        ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            string strstock = "select * from stock where ITEM_FINISHED_ID=" + ItemFinishedId + "and companyid=" + ddlcompany.SelectedValue + "and Godownid=" + ddlgodown.SelectedValue + "and lotno='" + txtlotno.Text + "'  And Finished_Type_Id=" + varfinishtype_Id;
+            DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, strstock);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                int stockid = Convert.ToInt32(ds.Tables[0].Rows[0]["StockID"]);
+                string str = @"Select StockId,Quantity From StockTran where TableName='Opening stock' And StockID=" + stockid;
+                DataSet ds1 = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
+                if (ds1.Tables[0].Rows.Count > 0)
+                {
+                    Double Qty = Convert.ToDouble(ds1.Tables[0].Rows[0]["Quantity"]);
+                    string str1 = @"Update Stock set QtyinHand=QtyinHand-" + Qty + ",OpenStock=OpenStock-" + Qty + " where stockId=" + stockid + "";
+                    str1 = str1 + @" Delete From Stocktran where StockId=" + stockid + " And TableName='Opening stock' ";
+                    SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str1);
+                }
+                string update_carpet = "delete from carpetnumber where item_finished_id=" + ItemFinishedId;
+                SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, update_carpet);
+                string postfix = (SqlHelper.ExecuteScalar(Tran, CommandType.Text, "sELECT IsNull(Max(Postfix),0)+1 from CarpetNumber Where prefix Like '" + txtprefix.Text + "%'")).ToString();
+                Txtpostfix.Text = postfix;
+            }
+            UtilityModule.StockStockTranTableUpdateWithOpeningStock(ItemFinishedId, Convert.ToInt32(ddlgodown.SelectedValue), Convert.ToInt32(ddlcompany.SelectedValue), txtlotno.Text.ToString(), Convert.ToDouble(txtopeningstock.Text), txtdate.Text.ToString(), DateTime.Now.ToString("dd-MMM-yyyy"), "Opening stock", 0, Tran, 1, true, Convert.ToInt32(ddlcatagorytype.SelectedValue), varfinishtype_Id, Convert.ToDouble(TxtRate.Text));
+            Tran.Commit();
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/RawMaterial/DirectStock.aspx");
+            Tran.Rollback();
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+        lblmessage.Visible = true;
+    }
+    protected void gvcarpetdetail_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (ddlcatagorytype.SelectedValue == "1")
+        {
+            DataSet ds = null;
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            try
+            {
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
+                ds = null;
+                string str = @"SELECT DISTINCT stock.StockID, stock.OpenStock, stock.Qtyinhand,stock.lotno,
+                             (SELECT TStockNos FROM  Get_StockNoRec_carpet_Wise(stock.ITEM_FINISHED_ID) AS Get_StockNoRec_carpet_Wise_1) AS StockNos, 
+                             ITEM_PARAMETER_MASTER.QUALITY_ID, ITEM_PARAMETER_MASTER.DESIGN_ID, ITEM_PARAMETER_MASTER.COLOR_ID,ITEM_PARAMETER_MASTER.shadecolor_id,
+                             ITEM_PARAMETER_MASTER.SHAPE_ID, ITEM_PARAMETER_MASTER.SIZE_ID, ITEM_MASTER.ITEM_ID, 
+                             ITEM_MASTER.CATEGORY_ID,stocktran.stocktranid, stock.Companyid, stock.Godownid, stock.TypeId, Unit.UnitId, stock.ITEM_FINISHED_ID,Stock.Price
+                             FROM ITEM_PARAMETER_MASTER INNER JOIN stock ON ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = stock.ITEM_FINISHED_ID INNER JOIN
+                             ITEM_MASTER ON ITEM_PARAMETER_MASTER.ITEM_ID = ITEM_MASTER.ITEM_ID INNER JOIN Unit ON ITEM_MASTER.UnitTypeID = Unit.UnitTypeID inner join stocktran on stocktran.stockid=stock.stockid  
+                             Where stock.StockID=" + gvcarpetdetail.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varCompanyId"];
+                ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
+                int stockid = Convert.ToInt32(ds.Tables[0].Rows[0]["stockid"]);
+                txtstockid.Text = ds.Tables[0].Rows[0]["stockid"].ToString();
+                ddlcompany.SelectedValue = ds.Tables[0].Rows[0]["companyid"].ToString();
+                ddlcatagorytype.SelectedValue = ds.Tables[0].Rows[0]["typeid"].ToString();
+                UtilityModule.ConditionalComboFill(ref ddlcatagoryname, @"SELECT dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME  FROM  dbo.CategorySeparate INNER JOIN
+                dbo.ITEM_CATEGORY_MASTER ON dbo.CategorySeparate.Categoryid = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID
+                WHERE dbo.CategorySeparate.id =" + ddlcatagorytype.SelectedValue + " And ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Catagory");
+                ddlcatagoryname.SelectedValue = ds.Tables[0].Rows[0]["category_id"].ToString();
+                UtilityModule.ConditionalComboFill(ref ddlitemname, "Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddlcatagoryname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--select Item--");
+                ddlitemname.SelectedValue = ds.Tables[0].Rows[0]["item_id"].ToString();
+                string Qry = @"SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + ddlitemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"];
+                Qry = Qry + @" select qualityid,qualityname from quality where item_id=" + ddlitemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                Qry = Qry + @" select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName  ";
+                Qry = Qry + "  SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"];
+                Qry = Qry + " select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Shapeid ";
+                Qry = Qry + " select shadecolorid,shadecolorname from shadecolor Where MasterCompanyId=" + Session["varCompanyId"];
+                DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
+
+                UtilityModule.ConditionalComboFillWithDS(ref ddlunit, DSQ, 0, true, "Select Unit");
+                UtilityModule.ConditionalComboFillWithDS(ref dquality, DSQ, 1, true, "Select Quallity");
+                dquality.SelectedValue = ds.Tables[0].Rows[0]["quality_id"].ToString();
+                ddlunit.SelectedValue = ds.Tables[0].Rows[0]["unitid"].ToString();
+                UtilityModule.ConditionalComboFillWithDS(ref dddesign, DSQ, 2, true, "--Select Design--");
+                UtilityModule.ConditionalComboFillWithDS(ref ddcolor, DSQ, 3, true, "--Select Color--");
+                UtilityModule.ConditionalComboFillWithDS(ref ddshape, DSQ, 4, true, "--Select Shape--");
+                UtilityModule.ConditionalComboFillWithDS(ref ddlshade, DSQ, 5, true, "Select Shadecolor");
+
+                dddesign.SelectedValue = ds.Tables[0].Rows[0]["design_id"].ToString();
+                ddcolor.SelectedValue = ds.Tables[0].Rows[0]["color_id"].ToString();
+                ddshape.SelectedValue = ds.Tables[0].Rows[0]["shape_id"].ToString();
+                ddlshade.SelectedValue = ds.Tables[0].Rows[0]["shadecolor_id"].ToString();
+                txtlotno.Text = ds.Tables[0].Rows[0]["lotno"].ToString();
+                int finishedid = Convert.ToInt32(ds.Tables[0].Rows[0]["item_finished_id"].ToString());
+                if (ddlunit.SelectedValue == "1")
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "select size");
+                }
+                else if (ddlunit.SelectedValue == "2")
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "select size");
+                }
+                ddsize.SelectedValue = ds.Tables[0].Rows[0]["size_id"].ToString();
+                ddlgodown.SelectedValue = ds.Tables[0].Rows[0]["godownid"].ToString();
+                txtopeningstock.Text = ds.Tables[0].Rows[0]["openstock"].ToString();
+                TxtRate.Text = ds.Tables[0].Rows[0]["Price"].ToString();
+                Session["qtyinhand"] = ds.Tables[0].Rows[0]["qtyinhand"].ToString();
+                Session["OpenStock"] = ds.Tables[0].Rows[0]["openstock"].ToString();
+                Session["stocktranid"] = ds.Tables[0].Rows[0]["stocktranid"].ToString();
+                Session["stockid"] = ds.Tables[0].Rows[0]["stockid"].ToString();
+                if (Convert.ToInt32(dquality.SelectedValue) > 0)
+                {
+                    ql.Visible = true;
+                }
+                else
+                {
+                    ql.Visible = false;
+                }
+                int d = (dddesign.SelectedIndex > 0 ? Convert.ToInt16(dddesign.SelectedValue) : 0);
+                if (d > 0)
+                {
+                    dsn.Visible = true;
+                }
+                else
+                {
+                    dsn.Visible = false;
+                }
+                int c = (ddcolor.SelectedIndex > 0 ? Convert.ToInt32(ddcolor.SelectedValue) : 0);
+                if (c > 0)
+                {
+                    clr.Visible = true;
+                }
+                else
+                {
+                    clr.Visible = false;
+                }
+                int s = (ddshape.SelectedIndex > 0 ? Convert.ToInt32(ddshape.SelectedValue) : 0);
+                if (s > 0)
+                {
+                    shp.Visible = true;
+                }
+                else
+                {
+                    shp.Visible = false;
+                }
+                int si = (ddsize.SelectedIndex > 0 ? Convert.ToInt32(ddsize.SelectedValue) : 0);
+                if (si > 0)
+                {
+                    sz.Visible = true;
+                }
+                else
+                {
+                    sz.Visible = false;
+                }
+                int sc = (ddlshade.SelectedIndex > 0 ? Convert.ToInt32(ddlshade.SelectedValue) : 0);
+                if (sc > 0)
+                {
+                    shd.Visible = true;
+                }
+                else
+                {
+                    shd.Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                UtilityModule.MessageAlert(ex.Message, "Master/RawMaterial/DirectStock.aspx");
+            }
+            finally
+            {
+                if (con.State == ConnectionState.Open)
+                {
+                    con.Close();
+                    con.Dispose();
+
+                }
+            }
+            btnsave.Text = "Update";
+            txtprefix.Text = "";
+            Txtpostfix.Text = "";
+            //pnl1.Enabled = false;
+            //Panel2.Enabled = false;
+            ddlgodown.Enabled = false;
+            txtopeningstock.Focus();
+        }
+    }
+    [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
+    public static string[] GetQuality(string prefixText, int count)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        string strQuery = "Select ProductCode from ITEM_PARAMETER_MASTER IPM inner join item_Master IM on IM.Item_Id=IPM.Item_Id inner join CategorySeparate CS on CS.CategoryId=IM.Category_Id  where ProductCode Like  '" + prefixText + "%' And IM.MasterCompanyId=" + MasterCompanyId;
+        //string strQuery = "Select ProductCode from ITEM_PARAMETER_MASTER  where ProductCode Like  '" + prefixText + "%'";
+        DataSet ds = new DataSet();
+        SqlDataAdapter da = new SqlDataAdapter(strQuery, con);
+        da.Fill(ds);
+        count = ds.Tables[0].Rows.Count;
+        con.Close();
+        List<string> ProductCode = new List<string>();
+        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+        {
+            ProductCode.Add(ds.Tables[0].Rows[i][0].ToString());
+        }
+        con.Close();
+        return ProductCode.ToArray();
+    }
+    protected void TxtProdCode_TextChanged(object sender, EventArgs e)
+    {
+        DataSet ds1;
+        string Str;
+        if (TxtProdCode.Text != "")
+        {
+            ddlcatagoryname.SelectedIndex = -1;
+            Str = @"select IPM.*,IM.CATEGORY_ID,cs.id from ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,CategorySeparate cs where IPM.ITEM_ID=IM.ITEM_ID and im.CATEGORY_ID=cs.Categoryid
+                  and ProductCode='" + TxtProdCode.Text + "' And IM.MasterCompanyId=" + Session["varCompanyId"];
+            ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            if (ds1.Tables[0].Rows.Count > 0)
+            {
+
+                string Qry = @"SELECT dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME  FROM  dbo.CategorySeparate INNER JOIN
+                dbo.ITEM_CATEGORY_MASTER ON dbo.CategorySeparate.Categoryid = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID And ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varCompanyId"];
+                Qry = Qry + "  Select Distinct Item_Id,Item_Name from Item_Master where MasterCompanyId=" + Session["varCompanyId"] + " And  Category_Id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["CATEGORY_ID"].ToString()) + " ";
+                Qry = Qry + "  select qualityid,qualityname from quality where MasterCompanyId=" + Session["varCompanyId"] + " And item_id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["ITEM_ID"].ToString());
+                Qry = Qry + @" select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName";
+                Qry = Qry + @" SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"];
+                Qry = Qry + @" select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by ShapeName";
+                Qry = Qry + @"  SELECT SIZEID,SIZEFT fROM SIZE WhERE MasterCompanyId=" + Session["varCompanyId"] + " And SHAPEID=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["SIZE_ID"].ToString());
+                DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
+
+                UtilityModule.ConditionalComboFillWithDS(ref ddlcatagoryname, DSQ, 0, true, "Select Catagory");
+                ddlcatagoryname.SelectedValue = ds1.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
+                UtilityModule.ConditionalComboFillWithDS(ref ddlitemname, DSQ, 1, true, "--Select Item--");
+                ddlitemname.SelectedValue = ds1.Tables[0].Rows[0]["ITEM_ID"].ToString();
+
+                UtilityModule.ConditionalComboFillWithDS(ref dquality, DSQ, 2, true, "Select Quallity");
+                dquality.SelectedValue = ds1.Tables[0].Rows[0]["QUALITY_ID"].ToString();
+                UtilityModule.ConditionalComboFillWithDS(ref dddesign, DSQ, 3, true, "Select Design");
+                dddesign.SelectedValue = ds1.Tables[0].Rows[0]["DESIGN_ID"].ToString();
+                UtilityModule.ConditionalComboFillWithDS(ref ddcolor, DSQ, 4, true, "--Select Color--");
+                ddcolor.SelectedValue = ds1.Tables[0].Rows[0]["COLOR_ID"].ToString();
+                UtilityModule.ConditionalComboFillWithDS(ref ddshape, DSQ, 5, true, "--Select Shape--");
+                ddshape.SelectedValue = ds1.Tables[0].Rows[0]["SHAPE_ID"].ToString();
+                UtilityModule.ConditionalComboFillWithDS(ref ddsize, DSQ, 6, true, "--SELECT SIZE--");
+                ddsize.SelectedValue = ds1.Tables[0].Rows[0]["SIZE_ID"].ToString();
+
+                Session["finishedid"] = ds1.Tables[0].Rows[0]["Item_Finished_id"].ToString();
+                if (Convert.ToInt32(dquality.SelectedValue) > 0)
+                {
+                    ql.Visible = true;
+                }
+                else
+                {
+                    ql.Visible = false;
+                }
+                int d = (dddesign.SelectedIndex > 0 ? Convert.ToInt32(dddesign.SelectedValue) : 0);
+                if (d > 0)
+                {
+                    dsn.Visible = true;
+                }
+                else
+                {
+                    dsn.Visible = false;
+                }
+                int c = (ddcolor.SelectedIndex > 0 ? Convert.ToInt32(ddcolor.SelectedValue) : 0);
+                if (c > 0)
+                {
+                    clr.Visible = true;
+                }
+                else
+                {
+                    clr.Visible = false;
+                }
+                int s = (ddshape.SelectedIndex > 0 ? Convert.ToInt32(ddshape.SelectedValue) : 0);
+                if (s > 0)
+                {
+                    shp.Visible = true;
+                }
+                else
+                {
+                    shp.Visible = false;
+                }
+                int si = (ddsize.SelectedIndex > 0 ? Convert.ToInt32(ddsize.SelectedValue) : 0);
+                if (si > 0)
+                {
+                    sz.Visible = true;
+                }
+                else
+                {
+                    sz.Visible = false;
+                }
+                UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + ddlitemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"], true, "Select Unit");
+                Label2.Visible = false;
+            }
+            else
+            {
+                Label2.Visible = true;
+                TxtProdCode.Text = "";
+                TxtProdCode.Focus();
+            }
+        }
+        else
+        {
+            ddlcatagoryname.SelectedIndex = 0;
+        }
+    }
+    private void raw_stock_update2()
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        try
+        {
+            ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            string strupdate = "update stock set Qtyinhand=" + remainstock + "where ITEM_FINISHED_ID=" + ItemFinishedId + "and companyid=" + ddlcompany.SelectedValue + "and Godownid=" + ddlgodown.SelectedValue;
+            SqlHelper.ExecuteNonQuery(con, CommandType.Text, strupdate);
+
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/RawMaterial/DirectStock.aspx");
+
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+    }
+    protected void btnclose_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("../../main.aspx");
+    }
+    protected void dquality_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    protected void dddesign_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    protected void ddcolor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    protected void ddsize_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    protected void ddlshade_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    private void CHECKVALIDCONTROL()
+    {
+        lblMessageVal.Text = "";
+        lblMessageVal.Visible = true;
+        if (UtilityModule.VALIDDROPDOWNLIST(ddlcompany) == false)
+        {
+            goto a;
+        }
+        if (UtilityModule.VALIDDROPDOWNLIST(ddlcatagorytype) == false)
+        {
+            goto a;
+        }
+        if (UtilityModule.VALIDDROPDOWNLIST(ddlcatagoryname) == false)
+        {
+            goto a;
+        }
+        if (UtilityModule.VALIDDROPDOWNLIST(ddlitemname) == false)
+        {
+            goto a;
+        }
+        if (ql.Visible == true)
+        {
+            if (UtilityModule.VALIDDROPDOWNLIST(dquality) == false)
+            {
+                goto a;
+            }
+        }
+        if (clr.Visible == true)
+        {
+            if (UtilityModule.VALIDDROPDOWNLIST(ddcolor) == false)
+            {
+                goto a;
+            }
+        }
+        if (shp.Visible == true)
+        {
+            if (UtilityModule.VALIDDROPDOWNLIST(ddshape) == false)
+            {
+                goto a;
+            }
+        }
+        if (sz.Visible == true)
+        {
+            if (UtilityModule.VALIDDROPDOWNLIST(ddsize) == false)
+            {
+                goto a;
+            }
+        }
+        if (shd.Visible == true)
+        {
+            if (UtilityModule.VALIDDROPDOWNLIST(ddlshade) == false)
+            {
+                goto a;
+            }
+        }
+        if (UtilityModule.VALIDDROPDOWNLIST(ddlgodown) == false)
+        {
+            goto a;
+        }
+        //if (UtilityModule.VALIDTEXTBOX(txtRate) == false)
+        //{
+        //    goto a;
+        //
+        else
+        {
+            goto B;
+        }
+    a:
+        UtilityModule.SHOWMSG(lblMessageVal);
+    B: ;
+    }
+    protected void Refresh()
+    {
+        lblsave.Visible = false;
+        txtopeningstock.Text = "";
+        TxtProdCode.Text = "";
+        txtlotno.Text = "";
+        lblerror.Visible = false;
+        txtprefix.Visible = false;
+        Txtpostfix.Visible = false;
+        btnsave.Text = "Save";
+        ddlgodown.Enabled = true;
+        ddlunit.SelectedValue = null;
+        TxtRate.Text = "0";
+        Txtminstock.Text = "0";
+        if (ql.Visible == true)
+        {
+            dquality.SelectedValue = null;
+        }
+        if (clr.Visible == true)
+        {
+            ddcolor.SelectedValue = null;
+        }
+        if (shp.Visible == true)
+        {
+            ddshape.SelectedValue = null;
+        }
+        if (sz.Visible == true)
+        {
+            ddsize.SelectedValue = null;
+        }
+        if (shd.Visible == true)
+        {
+            ddlshade.SelectedValue = null;
+        }
+    }
+    protected void btnpriview_Click(object sender, EventArgs e)
+    {
+        Session["ReportPath"] = "reports/openstock.rpt";
+        string qry = "";
+        qry = @" SELECT CATEGORY_NAME,ITEM_NAME,DESCRIPTION,OpenStock,Qtyinhand,LotNo,GodownName FROM  openstock
+                 Where OpenStock.CompanyID=" + ddlcompany.SelectedValue + " And CompanyId=" + ddlcompany.SelectedValue + " And (Round(OpenStock,3)<>0 or Round(QtyinHand,3)<>0)";
+        //Session["CommanFormula"] = "{OpenStock.CompanyID}=" + ddlcompany.SelectedValue + "";
+        if (ddlcatagorytype.SelectedIndex > 0)
+        {
+            qry = qry + "and OpenStock.TypeID=" + ddlcatagorytype.SelectedValue + "";
+            // Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.TypeID}=" + ddlcatagorytype.SelectedValue + "";
+        }
+        if (ddlcatagoryname.SelectedIndex > 0)
+        {
+            qry = qry + "and OpenStock.Category_id=" + ddlcatagoryname.SelectedValue + "";
+            //Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.Category_id}=" + ddlcatagoryname.SelectedValue + "";
+        }
+        if (ddlitemname.SelectedIndex > 0)
+        {
+            qry = qry + " and OpenStock.Item_id=" + ddlitemname.SelectedValue + "";
+            //Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.Item_id}=" + ddlitemname.SelectedValue + "";
+        }
+        if (dquality.SelectedIndex > 0 && ql.Visible == true)
+        {
+            qry = qry + "and OpenStock.Qualityid=" + dquality.SelectedValue + "";
+            //Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.Qualityid}=" + dquality.SelectedValue + "";
+        }
+        if (dddesign.SelectedIndex > 0 && dsn.Visible == true)
+        {
+            qry = qry + " and OpenStock.DesignID=" + dddesign.SelectedValue + "";
+            //Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.DesignID}=" + dddesign.SelectedValue + "";
+        }
+        if (ddcolor.SelectedIndex > 0 && clr.Visible == true)
+        {
+            qry = qry + " and OpenStock.Colorid=" + ddcolor.SelectedValue + "";
+            //Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.Colorid}=" + ddcolor.SelectedValue + "";
+        }
+        if (ddshape.SelectedIndex > 0 && shp.Visible == true)
+        {
+            qry = qry + " and OpenStock.Shapeid=" + ddshape.SelectedValue + " ";
+            //Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.Shapeid}=" + ddshape.SelectedValue + "";
+        }
+        if (ddsize.SelectedIndex > 0 && sz.Visible == true)
+        {
+            qry = qry + " and OpenStock.Sizeid=" + ddsize.SelectedValue + "";
+            //Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.Sizeid}=" + ddsize.SelectedValue + "";
+        }
+        if (ddlshade.SelectedIndex > 0 && shd.Visible == true)
+        {
+            qry = qry + " And  OpenStock.ShadeColorid=" + ddlshade.SelectedValue + "";
+            Session["CommanFormula"] = Session["CommanFormula"] + " And {OpenStock.ShadeColorid}=" + ddlshade.SelectedValue + "";
+        }
+        if (ddlgodown.SelectedIndex > 0)
+        {
+            qry = qry + " And OpenStock.GodownId=" + ddlgodown.SelectedValue + "";
+        }
+        qry = qry + " ORDER BY CATEGORY_NAME";
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
+        //Session["rptFileName"] = "~\\Reports\\PGenrateIndentNEW.rpt";
+        Session["rptFileName"] = Session["ReportPath"];
+        Session["GetDataset"] = ds;
+        Session["dsFileName"] = "~\\ReportSchema\\openstock.xsd";
+        StringBuilder stb = new StringBuilder();
+        stb.Append("<script>");
+        stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+        ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+    }
+    //protected void gvcarpetdetail_RowCreated(object sender, GridViewRowEventArgs e)
+    //{
+    //    //Add CSS class on header row.
+    //    if (e.Row.RowType == DataControlRowType.Header)
+    //        e.Row.CssClass = "header";
+    //    //Add CSS class on normal row.
+    //    if (e.Row.RowType == DataControlRowType.DataRow &&
+    //              e.Row.RowState == DataControlRowState.Normal)
+    //        e.Row.CssClass = "normal";
+    //    //Add CSS class on alternate row.
+    //    if (e.Row.RowType == DataControlRowType.DataRow &&
+    //              e.Row.RowState == DataControlRowState.Alternate)
+    //        e.Row.CssClass = "alternate";
+    //}
+    protected void refreshcategory_Click(object sender, EventArgs e)
+    {
+        ddlcategorycange();
+    }
+    protected void BtnLogout_Click(object sender, EventArgs e)
+    {
+        UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
+        Session["varuserid"] = null;
+        Session["varCompanyId"] = null;
+        string message = "you are successfully loggedout..";
+        Response.Redirect("~/Login.aspx?Message=" + message + "");
+    }
+
+    protected void BtnRefreshItem_Click(object sender, EventArgs e)
+    {
+        itemchanged();
+    }
+    protected void refreshquality_Click(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    protected void refreshdesign_Click(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    protected void refreshcolor_Click(object sender, EventArgs e)
+    {
+        //  fill_grid();
+    }
+    protected void refreshshape_Click(object sender, EventArgs e)
+    {
+        //  fill_grid();
+    }
+    protected void BtnRefreshSize_Click(object sender, EventArgs e)
+    {
+        //fill_grid();
+    }
+    protected void refreshshade_Click(object sender, EventArgs e)
+    {
+        // fill_grid();
+    }
+    protected void ChkMtr_CheckedChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "select size");
+    }
+    protected void btnshowDetail_Click(object sender, EventArgs e)
+    {
+        //System.Threading.Thread.Sleep(3000);
+        lblloading.Visible = true;
+        fill_grid();
+        lblloading.Visible = false;
+    }
+}
+
+

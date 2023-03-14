@@ -1,0 +1,2 @@
+k	BU-1	Receive	BINDING				113429	12,13	kamru	@50/Pc
+k	BU-1	Receive	BINDING				113556	14	kamru	

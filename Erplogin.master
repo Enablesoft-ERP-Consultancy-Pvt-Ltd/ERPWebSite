@@ -1,0 +1,60 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Erplogin.master.cs" Inherits="Erplogin" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <asp:ContentPlaceHolder id="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <link href="Styles/Site.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+        <div class="loginheader">
+        <table align="center">
+     <tr><td align="right">
+     <asp:Label ID="Label1" runat="server" Text="i" Font-Bold="True" 
+            Font-Italic="True" Font-Size="XX-Large" ForeColor="#FFFF66"></asp:Label>
+        <asp:Label ID="Label2" runat="server" Text="-EXPRO..." Font-Bold="True" 
+            Font-Italic="True" Font-Size="X-Large" ForeColor="#FF9900"></asp:Label>
+            <br />
+            <asp:Label ID="Label3" runat="server" Text="Integrated Export & Production System" Font-Bold="True" 
+            Font-Italic="True" Font-Size="Small" ForeColor="White"></asp:Label>
+       </td></tr>
+       </table>
+       </div>
+        
+        
+        <asp:ContentPlaceHolder id="ContentPlaceHolder1" runat="server">
+          <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                &nbsp;</p>
+            <p>
+                <br />
+            </p>
+        
+        </asp:ContentPlaceHolder>
+     <div align="right" style="padding-right:40%; color:Gray"><span class="labelcopyr">&copy; Enablesoft Erp Consultancy Pvt. Ltd.All rights reserved.</span></div>
+     </div>
+    </form>
+</body>
+</html>

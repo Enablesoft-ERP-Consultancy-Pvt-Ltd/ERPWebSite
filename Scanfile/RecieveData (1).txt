@@ -1,0 +1,17 @@
+farhan	BU-4	Receive	MOVE TO WAREHOUSE				88548				3/24/2018
+farhan	BU-4	Receive	BINDING				158332				3/24/2018
+farhan	BU-4	Receive	BINDING				158468	12			3/24/2018
+farhan	BU-4	Receive	BINDING				158501				3/24/2018
+farhan	BU-4	Receive	BINDING				156964	13			3/24/2018
+farhan	BU-4	Receive	BINDING				158390				3/24/2018
+farhan	BU-4	Receive	BINDING				158446				3/24/2018
+farhan	BU-4	Receive	BINDING				158143				3/24/2018
+farhan	BU-4	Receive	BINDING				158963				3/24/2018
+farhan	BU-4	Receive	BINDING				158066				3/24/2018
+farhan	BU-4	Receive	BINDING				157877				3/24/2018
+farhan	BU-4	Receive	BINDING				157909				3/24/2018
+farhan	BU-4	Receive	BINDING				157930				3/24/2018
+farhan	BU-4	Receive	BINDING				158071				3/24/2018
+farhan	BU-4	Receive	BINDING				158463				3/24/2018
+farhan	BU-4	Receive	BINDING				157858				3/24/2018
+farhan	BU-4	Receive	BINDING				158684				3/24/2018

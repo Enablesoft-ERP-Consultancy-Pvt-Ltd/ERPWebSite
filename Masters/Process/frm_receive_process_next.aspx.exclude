@@ -1,0 +1,318 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frm_receive_process_next.aspx.cs" Inherits="Masters_Process_frm_receive_process_next" EnableEventValidation="false"%>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<%@ Register Src="~/UserControls/ucmenu.ascx" TagName="ucmenu" TagPrefix="uc1" %>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head id="Head1" runat="server">
+    
+    <title></title>
+    <link rel="Stylesheet" type="text/css" href ="../../App_Themes/Default/Style.css" />
+
+    <script src="../../Scripts/jquery-1.4.1.min.js" type="text/javascript"></script>
+     <script type="text/javascript">
+              function CloseForm() {
+             window.location.href = "../../main.aspx";
+         }
+         function report() {
+             //var varReportName = "Reports/BankReport.rpt";
+             //window.open('../../ReportViewer.aspx?ReportName=' + varReportName + '& CommanFn='+""+'', '');
+             window.open('../../ReportViewer.aspx', '');
+         }
+         function YourFunctionName(msg) {
+             var txt = msg;
+             alert(txt);
+         }
+</script>
+    </head>
+<body>
+    <form id="form1" runat="server">
+    <asp:ScriptManager ID="ScriptManager1" runat="server">
+    </asp:ScriptManager>
+    <div>
+    <table width ="100%">
+    <tr>
+    <td width ="100%" colspan ="2">
+    <table  width ="100%">
+     <tr style="background-color:#edf3fe; width:100%" align="center">
+         <td height="66px" align="center"><asp:Image ID="imgLogo" align="left" runat="server" Height="66px" Width="111px"/><span style="color:Black; margin-left:30px; font-family:Arial; font-size:xx-large"><strong ><em ><i><font size="7" face="GEORGIA"><asp:Label  ID="LblCompanyName" runat="server" Text=""></asp:Label></font></i></em></strong></span></td>
+          <td width="100px" valign="bottom"><i><font size="4" face="GEORGIA"><asp:Label ID="LblUserName" runat="server" Text=""></asp:Label></font></i></td>
+         </tr>
+          <tr bgcolor="#999999">
+            <td  width="75%"><uc1:ucmenu ID="ucmenu1" runat="server" />
+    
+              </td>
+            <td width="25%">
+            <asp:UpdatePanel ID="up" runat="server">
+       <ContentTemplate>
+            <asp:Button Width="100%" BorderStyle="None" BackColor="#999999" ID="BtnLogout"
+                    runat="server" Text="Logout" onclick="BtnLogout_Click" />
+                    </ContentTemplate>
+                    </asp:UpdatePanel></td>
+          </tr>
+    </table>
+    </td>
+    </tr>
+    <tr>
+    <td>
+     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+       <ContentTemplate>
+ <table width="100%"  >    
+   
+     <tr id="Tr1" runat="server" >
+     <td >
+     Company Name <b style="color:Red">*</b><br />
+     <asp:DropDownList ID="ddCompName" runat="server" TabIndex="1"  
+             CssClass="dropdown" 
+             onselectedindexchanged="ddCompName_SelectedIndexChanged"></asp:DropDownList>
+     </td>
+     <td   >
+         Process <b style="color:Red">*</b><br />
+     <asp:DropDownList ID="ddprocess" runat="server"
+     CssClass="dropdown" onselectedindexchanged="ddprocess_SelectedIndexChanged" 
+             AutoPostBack="True">
+     </asp:DropDownList>
+     </td>
+     <td  >
+         Emp/Contractor<br />
+     <asp:DropDownList ID="ddemp" runat="server"
+     CssClass="dropdown" onselectedindexchanged="ddemp_SelectedIndexChanged" 
+             AutoPostBack="True" >
+     </asp:DropDownList>
+     </td>
+     <td>
+         PorderNo<br />
+     <asp:DropDownList ID="ddorderno" runat="server" CssClass="dropdown" 
+             AutoPostBack="True" onselectedindexchanged="ddorderno_SelectedIndexChanged">
+     </asp:DropDownList>
+     </td>
+     <td id="Td1"  runat="server" >
+         Rec.Date<br />
+     <asp:TextBox  CssClass="textb"  ID="TxtreceiveDate" runat="server"  
+                            AutoPostBack="true" ></asp:TextBox>
+                        <asp:CalendarExtender ID="CalendarExtender2" runat="server" Format="dd-MMM-yyyy" TargetControlID="TxtreceiveDate" ></asp:CalendarExtender>
+      </td>
+      <td>
+          <%--Receive No.<br />
+     <asp:DropDownList ID="DropDownList1" runat="server"
+      CssClass="dropdown" AutoPostBack="True" > 
+      </asp:DropDownList>--%>
+      </td>
+      </tr>
+     <tr id="Tr2" runat="server" >
+     <td colspan="4">
+     <table>
+     <tr><td>Category Type <b style="color:Red">*</b></td><td>Item</td><td>Quality</td><td>Design</td><td>Colour</td><td>Shape</td><td>Size <asp:CheckBox ID="ChkFt" runat="server" AutoPostBack="True" Text="Ft" 
+                        oncheckedchanged="ChkFt_CheckedChanged" /></td></tr>
+     <tr>
+     <td>
+         <asp:DropDownList ID="ddcattype" runat="server" TabIndex="1"  
+             CssClass="dropdown" AutoPostBack="True" 
+             onselectedindexchanged="ddcattype_SelectedIndexChanged"></asp:DropDownList>
+     </td>
+     <td   >
+      <asp:DropDownList ID="dditem" runat="server"
+     CssClass="dropdown" AutoPostBack="True" 
+             onselectedindexchanged="dditem_SelectedIndexChanged">
+     </asp:DropDownList>
+     </td>
+     <td runat=server id="tdquality" >
+        <asp:DropDownList ID="ddquality" runat="server"
+     CssClass="dropdown" AutoPostBack="True" >
+     </asp:DropDownList>
+     </td>
+     <td runat=server id="tddesign" >
+        
+     <asp:DropDownList ID="ddldesig" runat="server"
+     CssClass="dropdown" AutoPostBack="True" 
+             onselectedindexchanged="ddldesig_SelectedIndexChanged" >
+     </asp:DropDownList>
+     </td>
+     <td id="tdcolor" runat="server">
+        
+     <asp:DropDownList ID="ddcolour" runat="server" CssClass="dropdown" 
+             AutoPostBack="True" onselectedindexchanged="ddcolour_SelectedIndexChanged" >
+     </asp:DropDownList>
+     </td>
+     <td runat=server id="tdshape" >
+         
+    <asp:DropDownList ID="ddshape" runat="server"
+     CssClass="dropdown" onselectedindexchanged="ddshape_SelectedIndexChanged" 
+             AutoPostBack="True">
+     </asp:DropDownList>
+      </td>
+      <td runat=server id="tdsize" >
+         
+    <asp:DropDownList ID="ddsize" runat="server"
+     CssClass="dropdown" AutoPostBack="True" 
+              onselectedindexchanged="ddsize_SelectedIndexChanged">
+     </asp:DropDownList>
+      </td>
+      </tr>
+       <tr>
+                <td colspan="7">
+                    <asp:Label ID="LblErrorMessage" runat="server" Text="" Font-Bold="false" ForeColor="Red"></asp:Label>
+                </td>
+            </tr>
+       <tr>
+                                      <td colspan=7><table cellpadding="1" cellspacing="1" width="100%" align="center" border=0>
+                                          <tr>
+                                            <td align="center"><div style="OVERFLOW: auto; WIDTH: 705px; HEIGHT: 150px">
+                                               <asp:GridView ID="mygdv" runat="server" Width=98% AutoGenerateColumns=False 
+                                                    CellPadding="1" CellSpacing=1 ForeColor="#333333" BackColor="#666699" 
+                                                    GridLines="None"  
+                                                     onrowdeleting="mygdv_RowDeleting" onrowupdating="mygdv_RowUpdating" >
+                                            <Columns>
+                                              <asp:TemplateField HeaderText="SN">
+                                                    <ItemTemplate>                
+                                                                <asp:Label runat="server" ID="lblfinishedid" Visible="false" Text='<%#(DataBinder.Eval(Container,"DataItem.item_finished_id").ToString()) %>'></asp:Label>  
+                                                                 <asp:Label runat="server" ID="lblorderid" Visible="false" Text='<%#(DataBinder.Eval(Container,"DataItem.OrderId").ToString()) %>'></asp:Label>  
+                                                                <asp:Button ID="BtnStockFil" runat="server" CssClass="buttonnorm"
+                         CommandName="Delete" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" Text="Stock No"
+                           Width="100%" />
+                                                         </ItemTemplate>
+                                                     <ItemStyle ForeColor="Black" HorizontalAlign="Center" />
+                                                      <HeaderStyle HorizontalAlign="Center" />
+                                             </asp:TemplateField>
+                                               
+                                              <asp:TemplateField HeaderText="Category">
+                                                <ItemTemplate>
+                                                    <asp:Label runat="server" ID="lblcatname" Visible="true" Text='<%#(DataBinder.Eval(Container,"DataItem.category_name").ToString()) %>'></asp:Label>
+                                                    
+                                                </ItemTemplate>
+                                                <ItemStyle ForeColor="Black" HorizontalAlign="Center" />
+                                                <HeaderStyle HorizontalAlign="Center" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Item">
+                                                <ItemTemplate>
+                                                    <asp:Label runat="Server" ID="lblitem" Visible="true" Text='<%# DataBinder.Eval(Container.DataItem, "item_name") %>' />
+                                                    
+                                                </ItemTemplate>
+                                                <ItemStyle ForeColor="Black" HorizontalAlign="Left" />
+                                                <HeaderStyle HorizontalAlign="Left" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Description">
+                                                <ItemTemplate>
+                                                    <asp:Label runat="Server" ID="lbldescription" Visible="true" Text='<%# DataBinder.Eval(Container.DataItem, "Description") %>' />
+                                                    
+                                                </ItemTemplate>
+                                                <ItemStyle ForeColor="Black" HorizontalAlign="Left" />
+                                                <HeaderStyle HorizontalAlign="Left" />
+                                            </asp:TemplateField>
+                                                                                      
+                                            <asp:TemplateField HeaderText="Qty">
+                                                <ItemTemplate>
+                                                    <asp:Label runat="Server" ID="lblqty" Visible="true" Font-Bold=true ForeColor=DarkSlateBlue Text='<%# DataBinder.Eval(Container.DataItem, "qty") %>' />
+                                                </ItemTemplate>
+                                                <ItemStyle ForeColor="Black" HorizontalAlign="Left" />
+                                                <HeaderStyle HorizontalAlign="Left" />
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Area">
+                                                <ItemTemplate>
+                                                    <asp:Label runat="Server" ID="lblarea" Visible="true" Font-Bold=true ForeColor=DarkSlateBlue Text='<%# DataBinder.Eval(Container.DataItem, "area") %>' />
+                                                </ItemTemplate>
+                                                <ItemStyle ForeColor="Black" HorizontalAlign="Left" />
+                                                <HeaderStyle HorizontalAlign="Left" />
+                                            </asp:TemplateField>
+                                           <asp:TemplateField HeaderText="">
+                                                    <ItemTemplate>                
+                                                          <asp:Button ID="BtnStockF" runat="server" CssClass="buttonnorm"
+                                                          CommandName="update" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" Text="All" Width="100%" />
+                                                         </ItemTemplate>
+                                                     <ItemStyle ForeColor="Black" HorizontalAlign="Center" />
+                                                      <HeaderStyle HorizontalAlign="Center" />
+                                             </asp:TemplateField>
+                                            <%--<asp:CommandField ShowEditButton =True CancelText="&lt;img src=../images/undo.gif alt=Cancel border=0&gt;"
+                                             EditText="&lt;img src=../images/edit.gif alt=Edit border=0&gt;" HeaderText="Edit"  UpdateText="" HeaderStyle-HorizontalAlign=Center ItemStyle-HorizontalAlign=Center />
+                                            <asp:TemplateField HeaderText="Change Status" HeaderStyle-HorizontalAlign=Center ItemStyle-HorizontalAlign=Center>
+                                                     <ItemTemplate>
+                                                     <asp:ImageButton Height=22 ImageUrl="../images/cstatus.jpg" ID="t_code1" 
+                                                         CommandArgument='<%# Eval("t_code") %>' 
+                                                         CommandName="Delete" runat="server" />       
+                                                     </ItemTemplate>
+                                               </asp:TemplateField> --%>
+                                            </Columns>
+                                            <HeaderStyle Wrap="False" BackColor="#0072bb" CssClass="verdanawhite" Font-Bold="True" ForeColor="White" />
+                                                    <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                                                    <RowStyle BackColor="#EFF4FA" ForeColor="#333333" />
+                                                    <EditRowStyle BackColor="#9FBDE3"/>
+                                                    <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                                                    <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                                                    <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                                            </asp:GridView>   
+                                                &nbsp;</div></td>
+                                          </tr>
+                                      </table></td>
+                                    </tr>
+      </table>
+      </td>
+      <td colspan=2 valign=top><table><tr><td>&nbsp;Stock No &nbsp;<asp:TextBox 
+              ID="TxtCustOrderNo" runat="server" 
+              AutoPostBack="True" CssClass="textb" ontextchanged="TxtCustOrderNo_TextChanged" 
+              ></asp:TextBox></td></tr><tr><td> <div style="overflow:auto; width:auto; height:100px"> 
+                                 <asp:GridView ID="mygdstock" runat="server" AutoGenerateColumns="False" 
+                                                Width="97%" CellPadding="1" GridLines="Horizontal" BackColor="White" 
+                                                BorderColor="#E7E7FF" onrowdeleting="mygdstock_RowDeleting">
+                                    <Columns>
+                                                                             
+                                         <asp:TemplateField HeaderText="Stock No.">
+                                        <ItemTemplate >
+                                         <asp:Label ID="lblstockno" runat="server" Visible="true" ForeColor="#cc0066" Text=<%#DataBinder.Eval(Container, "DataItem.stockno") %>></asp:Label>
+                                        </ItemTemplate>
+                                         <ItemStyle HorizontalAlign="Left" />
+                                         <HeaderStyle HorizontalAlign=Center />
+                                        </asp:TemplateField>                                 
+                                     <asp:TemplateField HeaderText="Carpet No.">
+                                        <ItemTemplate>
+                                        <asp:Label ID="lblcarpetno" runat="server" Visible="true" ForeColor="#cc0066" Text=<%#DataBinder.Eval(Container, "DataItem.tstockNO") %>></asp:Label>
+                                        </ItemTemplate> 
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Rate">
+                                        <ItemTemplate >
+                                        <asp:TextBox ID="txtDist" Enabled=true runat="server" Width="30px"></asp:TextBox>
+                                      </ItemTemplate>
+                                         <ItemStyle HorizontalAlign=Center />
+                                    </asp:TemplateField>
+                                     <asp:TemplateField HeaderText="Save">
+                                                    <ItemTemplate>                
+                                                               <asp:Button ID="Btnsave" runat="server" CssClass="buttonnorm"
+                         CommandName="Delete" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" Text="Save"
+                           Width="100%" />
+                                                         </ItemTemplate>
+                                                     <ItemStyle ForeColor="Black" HorizontalAlign="Center" />
+                                                      <HeaderStyle HorizontalAlign="Center" />
+                                             </asp:TemplateField> 
+                                    </Columns>
+                                        <HeaderStyle Wrap="False" BackColor="#0072bb" CssClass="verdanawhite" Font-Bold="True" ForeColor="White" />
+                                        <FooterStyle BackColor="#5D7B9D" Font-Bold="True" ForeColor="White" />
+                                        <RowStyle BackColor="#EFF4FA" ForeColor="#333333" />
+                                        <EditRowStyle BackColor="#9FBDE3"/>
+                                        <SelectedRowStyle BackColor="#E2DED6" Font-Bold="True" ForeColor="#333333" />
+                                        <PagerStyle BackColor="#284775" ForeColor="White" HorizontalAlign="Center" />
+                                        <AlternatingRowStyle BackColor="White" ForeColor="#284775" />
+                                </asp:GridView>
+                              </div></td></tr></table>
+         </td>
+      </tr>
+      <tr>
+               <td colspan="6">
+                 <div style="height:200px; width:100%; background-color:Gray; overflow:scroll">
+                   <asp:GridView ID="DGDetail" runat="server">
+                    <HeaderStyle CssClass="gvheader" />
+                                    <AlternatingRowStyle CssClass="gvalt" />
+                                    <RowStyle CssClass="gvrow" />
+                                    <EmptyDataRowStyle CssClass="gvemptytext"/>
+                  
+                   </asp:GridView>
+                 </div>
+                </td>
+             </tr>
+      <tr><td colspan="6">
+      <asp:HiddenField ID="hn_finished" runat="server" /><asp:HiddenField ID="hnstockno" runat="server" /><asp:HiddenField ID="hnrate1" runat="server" /><asp:HiddenField ID="hnorderid" runat="server" /><asp:HiddenField ID="hn_flag" runat="server" /><asp:HiddenField ID="hn_recieve_id" runat="server" /></td></tr>
+    </table></ContentTemplate></asp:UpdatePanel></td></tr>
+    </table>
+    </div>
+    </form>
+</body>
+</html>

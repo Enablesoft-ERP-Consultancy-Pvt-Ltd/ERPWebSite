@@ -1,0 +1,530 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.IO;
+using System.Text;
+
+public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
+{
+    public int UnitId = 0;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["varcompanyId"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
+        if (!IsPostBack)
+        {
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varcompanyid"] + @" order by GodownName";
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
+
+            if (DDCompanyName.Items.Count > 0)
+            {
+                DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
+                DDCompanyName.Enabled = false;
+            }
+            BindDyerName();
+            UtilityModule.ConditionalComboFillWithDS(ref DDGodownName, ds, 1, true, "--Plz Select--");
+
+            TxtAssignDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+            txtRequiredDate.Text = System.DateTime.Now.AddDays(7).ToString("dd-MMM-yyyy");
+
+            if (Session["canedit"].ToString() == "1")
+            {
+                TREdit.Visible = true;
+                TDComplete.Visible = true;
+                txtChallanNo.Enabled = false;
+            }
+        }
+    }
+    private void BindDyerName()
+    {
+        UtilityModule.ConditionalComboFill(ref DDDyerName, "select EI.EmpId,EI.EmpName from EmpInfo EI INNER JOIN EmpProcess EP ON EI.EmpId=EP.EmpId Where EP.ProcessId=5 Order by EI.EmpName", true, "--Plz Select--");
+    }
+    private void BindItemName()
+    {
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER where CATEGORY_ID=2 and MasterCompanyid=" + Session["varCompanyId"] + @" Order by Item_Name", true, "--Plz Select--");
+    }
+    private void BindReceiveColor()
+    {
+        string str = "";
+        str = @"select ShadecolorId,ShadeColorName from ShadeColor order by ShadeColorName";
+
+        // str = @"select SC.ShadecolorId,SC.ShadeColorName from DyerColorRate DCR INNER JOIN ShadeColor SC ON DCR.DyerShadeColorId=SC.ShadecolorId 
+        //  where DyerId=" + DDDyerName.SelectedValue + " and DCR.EffectiveDate<='" + TxtAssignDate.Text + "' and (DCR.TODate>'" + TxtAssignDate.Text + "' or TODate is null)";
+
+        UtilityModule.ConditionalComboFill(ref DDReceiveColor, str, true, "--SELECT--");
+    }
+    protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDCompanyName.SelectedIndex > 0)
+        {
+            BindDyerName();
+        }
+    }
+    protected void DDDyerName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDDyerName.SelectedIndex > 0)
+        {
+            BindItemName();
+            BindReceiveColor();
+        }
+
+        if (chkedit.Checked == true)
+        {
+            string str = @"select ID,indentNo From DyerIssueMaster Where Companyid=" + DDCompanyName.SelectedValue + " and empid=" + DDDyerName.SelectedValue;
+            if (chkcomplete.Checked == true)
+            {
+                str = str + " and status='Complete'";
+            }
+            else
+            {
+                str = str + " and status='Pending'";
+            }
+            str = str + "  order by id desc";
+
+            UtilityModule.ConditionalComboFill(ref DDChallanNo, str, true, "--Plz Select--");
+        }
+    }
+    private void BindQuality()
+    {
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varCompanyId"] + @" Order by QualityName", true, "--Plz Select--");
+    }
+    protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDItemName.SelectedIndex > 0)
+        {
+            BindQuality();
+
+            string str = @"select Distinct U.UnitId,u.UnitName from Item_master IM inner join UNIT_TYPE_MASTER UT on IM.UnitTypeID=UT.UnitTypeID 
+                            inner join Unit u on U.UnitTypeID=UT.UnitTypeID and Im.ITEM_ID=" + DDItemName.SelectedValue;
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                lblUnitId.Text = ds.Tables[0].Rows[0]["UnitId"].ToString();
+            }
+        }
+    }
+    private void BindGivenColor()
+    {
+        string str = "";
+        str = @"select distinct SC.ShadecolorId,SC.ShadeColorName  from ITEM_PARAMETER_MASTER IPM 
+                INNER JOIN stock S ON IPM.ITEM_FINISHED_ID=S.ITEM_FINISHED_ID INNER JOIN ShadeColor SC ON IPM.SHADECOLOR_ID=SC.ShadecolorId 
+                Where IPM.ITEM_ID=" + DDItemName.SelectedValue + " and IPM.QUALITY_ID=" + DDQuality.SelectedValue + " and S.Qtyinhand>0  and S.Godownid=" + DDGodownName.SelectedValue + "";
+
+        UtilityModule.ConditionalComboFill(ref DDGivenColor, str, true, "--SELECT--");
+    }
+    protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDQuality.SelectedIndex > 0)
+        {
+            BindGivenColor();
+            UtilityModule.ConditionalComboFill(ref DDLotNo, "", true, "--Plz Select--");
+            txtQtyInHand.Text = "";
+        }
+    }
+    private void FillDyerColorRate()
+    {
+        string str = @"select DCR.Rate from DyerColorRate DCR Where DCR.DyerShadeColorId=" + DDReceiveColor.SelectedValue + " and DCR.DyerId=" + DDDyerName.SelectedValue + @" 
+                and DCR.EffectiveDate<='" + TxtAssignDate.Text + "' and (DCR.TODate>'" + TxtAssignDate.Text + "' or TODate is null)";
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            txtRate.Text = ds.Tables[0].Rows[0]["Rate"].ToString();
+        }
+        else
+        {
+            txtRate.Text = "0";
+        }
+    }
+    protected void DDReceiveColor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDReceiveColor.SelectedIndex > 0)
+        {
+            FillDyerColorRate();
+        }
+        else
+        {
+            txtRate.Text = "";
+        }
+    }
+    protected void DDGivenColor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDGivenColor.SelectedIndex > 0)
+        {
+            int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDGivenColor.SelectedValue), 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            FillLotno(Varfinishedid);
+        }
+        else
+        {
+            UtilityModule.ConditionalComboFill(ref DDLotNo, "", true, "--Plz Select--");
+            txtQtyInHand.Text = "";
+        }
+    }
+    protected void FillLotno(int varfinishedid)
+    {
+        string str = "";
+        if (MySession.Stockapply == "True")
+        {
+            str = "select Distinct LotNo,LotNo as LotNo1 From Stock Where ITEM_FINISHED_ID=" + varfinishedid + " and Companyid=" + DDCompanyName.SelectedValue + " and Godownid=" + DDGodownName.SelectedValue + " And Round(Qtyinhand,3)>0 order by LotNo1";
+        }
+        else
+        {
+            str = "select Distinct LotNo,LotNo as LotNo1 From Stock Where ITEM_FINISHED_ID=" + varfinishedid + " and Companyid=" + DDCompanyName.SelectedValue + " and Godownid=" + DDGodownName.SelectedValue + "  order by LotNo1";
+        }
+        UtilityModule.ConditionalComboFill(ref DDLotNo, str, true, "--Plz Select--");
+        if (DDLotNo.Items.Count > 0)
+        {
+            DDLotNo.SelectedIndex = 1;
+            DDLotNo_SelectedIndexChanged(DDLotNo, new EventArgs());
+        }
+    }
+
+    protected void DDLotNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDGivenColor.SelectedValue), 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        FillstockQty(Varfinishedid);
+    }
+    protected void FillstockQty(int varfinishedid)
+    {
+        string Lotno, TagNo = "";
+        Lotno = DDLotNo.SelectedItem.Text;
+        TagNo = "Without Tag No";
+
+        txtQtyInHand.Text = Convert.ToString(UtilityModule.getstockQty(DDCompanyName.SelectedValue, DDGodownName.SelectedValue, Lotno, varfinishedid, TagNo));
+    }
+    protected void btnsave_Click(object sender, EventArgs e)
+    {
+        LblErrorMessage.Text = "";
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            SqlParameter[] arr = new SqlParameter[27];
+            arr[0] = new SqlParameter("@ID", SqlDbType.Int);
+            arr[0].Direction = ParameterDirection.InputOutput;
+            arr[0].Value = hnid.Value;
+            arr[1] = new SqlParameter("@companyId", DDCompanyName.SelectedValue);
+            arr[2] = new SqlParameter("@Processid", 5);
+            arr[3] = new SqlParameter("@empid", DDDyerName.SelectedValue);
+            arr[4] = new SqlParameter("@IndentNo", SqlDbType.VarChar, 50);
+            arr[4].Direction = ParameterDirection.InputOutput;
+            arr[4].Value = txtChallanNo.Text;
+            arr[5] = new SqlParameter("@IssueDate", TxtAssignDate.Text);
+            arr[6] = new SqlParameter("@ReqDate", txtRequiredDate.Text);
+            arr[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            arr[8] = new SqlParameter("@DetailId", SqlDbType.Int);
+            arr[8].Value = 0;
+            int varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDGivenColor.SelectedValue), "", Convert.ToInt32(Session["varCompanyId"]));
+
+            arr[9] = new SqlParameter("@Ifinishedid", varfinishedid);
+            arr[10] = new SqlParameter("@Iflagsize", 0);
+            arr[11] = new SqlParameter("@unitid", lblUnitId.Text);
+            arr[12] = new SqlParameter("@godownid", DDGodownName.SelectedValue);
+            arr[13] = new SqlParameter("@LotNo", DDLotNo.SelectedItem.Text);
+            arr[14] = new SqlParameter("@TagNo", "Without Tag No");
+            int varRfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDReceiveColor.SelectedValue), "", Convert.ToInt32(Session["varCompanyId"]));
+            arr[15] = new SqlParameter("@Rfinishedid", varRfinishedid);
+            arr[16] = new SqlParameter("@Rflagsize", 0);
+            arr[17] = new SqlParameter("@Caltype", 0);
+            arr[18] = new SqlParameter("@RecLotNo", DDLotNo.SelectedItem.Text);
+            arr[19] = new SqlParameter("@RecTagNo", "Without Tag No");
+            arr[20] = new SqlParameter("@issueqty", txtIssueQty.Text == "" ? "0" : txtIssueQty.Text);
+            arr[21] = new SqlParameter("@Rate", txtRate.Text == "" ? "0" : txtRate.Text);
+            arr[22] = new SqlParameter("@userid", Session["varuserid"]);
+            arr[23] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            arr[23].Direction = ParameterDirection.Output;
+            arr[24] = new SqlParameter("@GatepassNo", SqlDbType.VarChar, 100);
+            arr[24].Direction = ParameterDirection.InputOutput;
+            arr[24].Value = txtGatePassNo.Text;
+            arr[25] = new SqlParameter("@DyeingMatch", DDDyeingMatchProcess.SelectedItem.Text);
+            arr[26] = new SqlParameter("@Remark", (txtRemarks.Text).Trim());
+            //**************************************************
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveDyerIssueMaster", arr);
+            hnid.Value = arr[0].Value.ToString();
+            txtChallanNo.Text = arr[4].Value.ToString();
+            txtGatePassNo.Text = arr[24].Value.ToString();
+            LblErrorMessage.Text = arr[23].Value.ToString();
+            Tran.Commit();
+
+            DDReceiveColor.SelectedIndex = -1;
+            txtIssueQty.Text = "";
+            txtRate.Text = "";
+            FillstockQty(varfinishedid);
+            Fillgrid();
+            // if (TDRShadecolor.Visible == true)
+            //{
+            DDReceiveColor.Focus();
+            //}
+        }
+        catch (Exception ex)
+        {
+            LblErrorMessage.Text = ex.Message;
+            Tran.Rollback();
+        }
+        finally
+        {
+            con.Dispose();
+            con.Close();
+        }
+    }
+    protected void Fillgrid()
+    {
+        string str = @"select Sm.ID,Sd.Detailid,dbo.F_getItemDescription(Sd.Ifinishedid,sd.iflagsize) as IItemdescription,
+                        dbo.F_getItemDescription(Sd.Rfinishedid,sd.Rflagsize) as RItemdescription,SD.RecLotNo,SD.RectagNo,FORMAT(SD.issueqty,'#0') as issueqty,FORMAT(SD.Rate,'#0.00')as Rate,SM.indentNo,Sm.gatepassNo,
+                        replace(convert(varchar(11),Sm.issueDate,106), ' ','-') as issueDate,replace(convert(varchar(11),Sm.Reqdate,106), ' ','-') as Reqdate,Sm.remark,
+                        GM.GodownName,SD.DyeingMatch,ISNULL(FORMAT(SD.issueqty*SD.Rate,'#0.00'),0) as TotalAmt
+                        From DyerIssueMaster Sm inner join DyerIssueDetail SD on Sm.ID=SD.masterid 
+                        INNER JOIN GodownMaster GM ON SD.godownId=GM.GoDownID Where Sm.id=" + hnid.Value;
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        DG.DataSource = ds.Tables[0];
+        DG.DataBind();
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (chkedit.Checked == true)
+            {
+                txtChallanNo.Text = ds.Tables[0].Rows[0]["IndentNo"].ToString();
+                txtGatePassNo.Text = ds.Tables[0].Rows[0]["GatepassNo"].ToString();
+                TxtAssignDate.Text = ds.Tables[0].Rows[0]["issuedate"].ToString();
+                txtRequiredDate.Text = ds.Tables[0].Rows[0]["reqdate"].ToString();
+                txtRemarks.Text = ds.Tables[0].Rows[0]["Remark"].ToString();
+            }
+        }
+    }
+    protected void btnpreview_Click(object sender, EventArgs e)
+    {
+        Report();
+    }
+    private void Report()
+    {
+        DataSet ds = new DataSet();
+        // string qry = "";
+        // string str = "";
+        SqlParameter[] array = new SqlParameter[4];
+        array[0] = new SqlParameter("@Id", hnid.Value);
+        array[1] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
+        array[2].Direction = ParameterDirection.Output;
+        array[3] = new SqlParameter("@ReportType", SqlDbType.Int);
+        array[3].Value = 0;
+
+        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetDyerIssueReportData", array);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\RptDyerIssueReport.rpt";
+
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptDyerIssueReport.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+    }
+    protected void chkedit_CheckedChanged(object sender, EventArgs e)
+    {
+        chkcomplete.Checked = false;
+        TDChallanNo.Visible = false;
+        TDChallanNoDD.Visible = false;
+        hnid.Value = "0";
+        txtChallanNo.Text = "";
+        txtGatePassNo.Text = "";
+        TxtAssignDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+        txtRequiredDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+        DDDyerName.SelectedIndex = -1;
+        if (chkedit.Checked == true)
+        {
+            DDChallanNo.Items.Clear();
+            TDChallanNo.Visible = true;
+            TDChallanNoDD.Visible = true;
+        }
+        DG.DataSource = null;
+        DG.DataBind();
+    }
+
+    protected void DDChallanNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        hnid.Value = DDChallanNo.SelectedValue;
+        Fillgrid();
+    }
+    decimal TotalQty = 0;
+    decimal TotalAmt = 0;
+    protected void DG_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            Label lblQty = (Label)e.Row.FindControl("lblqty");
+            TotalQty += Convert.ToDecimal(lblQty.Text);
+            Label lblTotalAmt = (Label)e.Row.FindControl("lblAmount");
+            TotalAmt += Convert.ToDecimal(lblTotalAmt.Text);
+
+            //e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
+            //e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
+            //e.Row.Attributes["onclick"] = ClientScript.GetPostBackClientHyperlink(this.DG, "Select$" + e.Row.RowIndex);
+        }
+        if (e.Row.RowType == DataControlRowType.Footer)
+        {
+            Label lblGrandTQty = (Label)e.Row.FindControl("lblGrandTQty");
+            lblGrandTQty.Text = TotalQty.ToString();
+            Label lblGrandGTotal = (Label)e.Row.FindControl("lblGrandGTotal");
+            lblGrandGTotal.Text = TotalAmt.ToString();
+        }
+    }
+    protected void DG_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        DG.EditIndex = e.NewEditIndex;
+        Fillgrid();
+    }
+    protected void DG_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        DG.EditIndex = -1;
+        Fillgrid();
+    }
+    protected void DG_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        LblErrorMessage.Text = "";
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            Label lblid = (Label)DG.Rows[e.RowIndex].FindControl("lblid");
+            Label lbldetailid = (Label)DG.Rows[e.RowIndex].FindControl("lbldetailid");
+            TextBox txtqty = (TextBox)DG.Rows[e.RowIndex].FindControl("txtqty");
+            TextBox txtRate = (TextBox)DG.Rows[e.RowIndex].FindControl("txtRate");
+            Label lblqty = (Label)DG.Rows[e.RowIndex].FindControl("lblqty");
+
+            if (txtqty.Text == "" || txtqty.Text == "0")
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn", "alert('Please Enter Qty');", true);
+                return;
+            }
+
+
+            //*************
+            SqlParameter[] arr = new SqlParameter[8];
+            arr[0] = new SqlParameter("@ID", lblid.Text);
+            arr[1] = new SqlParameter("@Detailid", lbldetailid.Text);
+            arr[2] = new SqlParameter("@qty", txtqty.Text == "" ? "0" : txtqty.Text);
+            arr[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            arr[3].Direction = ParameterDirection.Output;
+            arr[4] = new SqlParameter("@userid", Session["varuserid"]);
+            arr[5] = new SqlParameter("@Rate", txtRate.Text == "" ? "0" : txtRate.Text);
+            arr[6] = new SqlParameter("@hnQty", lblqty.Text == "" ? "0" : lblqty.Text);
+            arr[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+
+            //*******
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateDyerIssue", arr);
+            LblErrorMessage.Text = arr[3].Value.ToString();
+            Tran.Commit();
+            DG.EditIndex = -1;
+            Fillgrid();
+        }
+        catch (Exception ex)
+        {
+            Tran.Rollback();
+            LblErrorMessage.Text = ex.Message;
+        }
+        finally
+        {
+            con.Dispose();
+            con.Close();
+        }
+    }
+    protected void DG_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        LblErrorMessage.Text = "";
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            Label lblDetailid = (Label)DG.Rows[e.RowIndex].FindControl("lblDetailid");
+            Label lblid = (Label)DG.Rows[e.RowIndex].FindControl("lblid");
+            SqlParameter[] arr = new SqlParameter[3];
+            arr[0] = new SqlParameter("@Detailid", lblDetailid.Text);
+            arr[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            arr[1].Direction = ParameterDirection.Output;
+            arr[2] = new SqlParameter("@ID", lblid.Text);
+            //***********
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteDyerIssue", arr);
+            LblErrorMessage.Text = arr[1].Value.ToString();
+            Tran.Commit();
+            Fillgrid();
+        }
+        catch (Exception ex)
+        {
+            LblErrorMessage.Text = ex.Message;
+            Tran.Rollback();
+        }
+        finally
+        {
+            con.Dispose();
+            con.Close();
+        }
+    }
+
+    protected void btngatepass_Click(object sender, EventArgs e)
+    {
+        ReportGatePass();
+    }
+    private void ReportGatePass()
+    {
+        DataSet ds = new DataSet();
+        // string qry = "";
+        // string str = "";
+        SqlParameter[] array = new SqlParameter[4];
+        array[0] = new SqlParameter("@Id", hnid.Value);
+        array[1] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
+        array[2].Direction = ParameterDirection.Output;
+        array[3] = new SqlParameter("@ReportType", SqlDbType.Int);
+        array[3].Value = 1;
+
+        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetDyerIssueReportData", array);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\RptDyerIssueGatePass.rpt";
+
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptDyerIssueReport.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+    }
+    protected void refreshDyerColor_Click(object sender, EventArgs e)
+    {
+        BindReceiveColor();
+    }
+}

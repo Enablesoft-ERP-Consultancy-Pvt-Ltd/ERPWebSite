@@ -1,0 +1,43 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPCODE" type="xs:string" minOccurs="0" />
+              <xs:element name="DATEOFJOINING" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="FATHERNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="AGE" type="xs:int" minOccurs="0" />
+              <xs:element name="VILL_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="VILL_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="PO_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="PO_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DISTT_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DISTT_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNATION" type="xs:string" minOccurs="0" />
+              <xs:element name="CATEGORY" type="xs:string" minOccurs="0" />
+              <xs:element name="MINIMUMWAGESDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="MINIMUMWAGESBASIC" type="xs:decimal" minOccurs="0" />
+              <xs:element name="DA" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BASICPAY" type="xs:decimal" minOccurs="0" />
+              <xs:element name="NETSALARY" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GROSSSALARY" type="xs:decimal" minOccurs="0" />
+              <xs:element name="INTIME" type="xs:string" minOccurs="0" />
+              <xs:element name="OUTTIME" type="xs:string" minOccurs="0" />
+              <xs:element name="LUNCH" type="xs:decimal" minOccurs="0" />
+              <xs:element name="HRA" type="xs:decimal" minOccurs="0" />
+              <xs:element name="CONVEYANCE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="EDU_ALW" type="xs:decimal" minOccurs="0" />
+              <xs:element name="Wagescalculation" type="xs:unsignedByte" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

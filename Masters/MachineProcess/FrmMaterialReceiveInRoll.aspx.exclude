@@ -1,0 +1,291 @@
+﻿<%@ Page Title="Material Receive In Roll" Language="C#" MasterPageFile="~/ERPmaster.master" AutoEventWireup="true"
+     CodeFile="FrmMaterialReceiveInRoll.aspx.cs" Inherits="Masters_MachineProcess_FrmMaterialReceiveInRoll" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+<asp:Content ID="page" ContentPlaceHolderID="CPH_Form" runat="server">
+    <script src="../../Scripts/JScript.js" type="text/javascript"></script>
+    <script src="../../Scripts/jquery-1.4.1.js" type="text/javascript"></script>
+   <script type="text/javascript" src="../../Scripts/FixFocus2.js"></script>
+
+    <script type="text/javascript">
+        function CloseForm() {
+            window.location.href = "../../main.aspx";
+        }
+        function ClickNew() {
+            window.location.href = "FrmMaterialReceiveInRoll.aspx";
+        }
+
+        function isNumber(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                alert('numeric only');
+                return false;
+            }
+
+            else {
+                return true;
+            }
+        }
+
+    </script>
+    <asp:UpdatePanel ID="up1" runat="server">
+        <ContentTemplate>
+            <div>
+                <table>
+                    <tr id="Tr1" runat="server">
+                        <td id="Td1" colspan="2" class="tdstyle">
+                            <asp:Label ID="Label1" runat="server" Text="Company Name" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList ID="ddCompName" runat="server" Width="150px" CssClass="dropdown">
+                            </asp:DropDownList>
+                        </td>
+                        <td id="Td4" class="tdstyle">
+                            <asp:Label ID="Label2" runat="server" Text=" Process Name" CssClass="labelbold"></asp:Label>
+                            &nbsp;
+                            <asp:CheckBox ID="ChKForEdit" runat="server" Text=" For Edit" CssClass="checkboxbold"
+                                OnCheckedChanged="ChKForEdit_CheckedChanged" AutoPostBack="true" />
+                            <br />
+                            <asp:DropDownList ID="DDProcessName" runat="server" Width="150px" AutoPostBack="True"
+                                CssClass="dropdown">
+                            </asp:DropDownList>
+                        </td>
+                        <td id="Td7" class="tdstyle">
+                            <asp:Label ID="Label13" runat="server" Text=" Production Unit" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList ID="DDProductionUnit" runat="server" Width="150px" AutoPostBack="True"
+                                CssClass="dropdown">
+                            </asp:DropDownList>
+                        </td>
+                        <td id="Td8" class="tdstyle">
+                            <asp:Label ID="Label16" runat="server" Text=" Machine No" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList ID="DDMachineNo" runat="server" Width="150px" AutoPostBack="True"
+                                CssClass="dropdown" OnSelectedIndexChanged="DDMachineNo_SelectedIndexChanged">
+                            </asp:DropDownList>
+                        </td>
+                        <td id="Td3" runat="server" visible="true">
+                            <asp:Label ID="Label3" runat="server" Text="Issue No" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList ID="DDIssueNo" runat="server" Width="150px" CssClass="dropdown"
+                                AutoPostBack="True" OnSelectedIndexChanged="DDIssueNo_SelectedIndexChanged">
+                            </asp:DropDownList>
+                        </td>
+                        <td id="Td5" class="tdstyle">
+                            <asp:Label ID="Label4" runat="server" Text="Receive Date" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:TextBox ID="txtReceiveDate" runat="server" Width="100px" CssClass="textb"></asp:TextBox>
+                            <asp:CalendarExtender ID="CalendarExtender1" runat="server" Format="dd-MMM-yyyy"
+                                TargetControlID="txtReceiveDate">
+                            </asp:CalendarExtender>
+                        </td>
+                        <td id="Td6" class="tdstyle">
+                            <asp:Label ID="Label5" runat="server" Text=" Receive No." CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:TextBox ID="txtReceiveno" Width="100px" runat="server" CssClass="textb" ReadOnly="true"
+                                onkeydown="return (event.keyCode!=13);"></asp:TextBox>
+                        </td>
+                        <td id="procode" runat="server" visible="false" class="tdstyle">
+                            <asp:Label ID="Label6" runat="server" Text="Product Code" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:TextBox ID="TxtProdCode" runat="server" OnTextChanged="TxtProdCode_TextChanged"
+                                AutoPostBack="True" Width="100px" CssClass="textbox "></asp:TextBox>
+                            <cc1:AutoCompleteExtender ID="TxtProdCode_AutoCompleteExtender" runat="server" EnableCaching="true"
+                                Enabled="True" MinimumPrefixLength="1" ServiceMethod="GetQuality" TargetControlID="TxtProdCode"
+                                UseContextKey="True">
+                            </cc1:AutoCompleteExtender>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr id="Tr3" runat="server" class="tdstyle">
+                    <td>
+                            <asp:Label ID="Label12" runat="server" Text="Buyer" CssClass="labelbold"></asp:Label>
+                            <br />
+                             <asp:DropDownList CssClass="dropdown" ID="DDCustomerCode" Width="150px" runat="server"
+                                AutoPostBack="True" OnSelectedIndexChanged="DDCustomerCode_SelectedIndexChanged">
+                            </asp:DropDownList>
+                        </td>
+
+                         <td>
+                            <asp:Label ID="Label14" runat="server" Text="OrderNo" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList CssClass="dropdown" ID="DDCustomerOrderNumber" Width="150px" runat="server"
+                                AutoPostBack="True" OnSelectedIndexChanged="DDCustomerOrderNumber_SelectedIndexChanged">
+                            </asp:DropDownList>
+                        </td>
+                        <td>
+                            <asp:Label ID="lblcategoryname" runat="server" Text="Catagory Name" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList ID="ddCatagory" runat="server" Width="150px" OnSelectedIndexChanged="ddCatagory_SelectedIndexChanged"
+                                AutoPostBack="True" CssClass="dropdown">
+                            </asp:DropDownList>
+                        </td>
+                        <td class="tdstyle">
+                            <asp:Label ID="lblitemname" runat="server" Text="Item Name" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList ID="dditemname" runat="server" Width="150px" OnSelectedIndexChanged="dditemname_SelectedIndexChanged"
+                                AutoPostBack="True" CssClass="dropdown">
+                            </asp:DropDownList>
+                        </td>
+                        <td>
+                          <asp:Label ID="Label11" runat="server" Text="Description" CssClass="labelbold"></asp:Label>
+                            <br />
+                         <asp:DropDownList CssClass="dropdown" ID="DDDescription" runat="server" Width="500px"
+                                AutoPostBack="True" OnSelectedIndexChanged="DDDescription_SelectedIndexChanged">
+                            </asp:DropDownList>
+                        
+                        </td>
+
+                         <td class="tdstyle">
+                            <asp:Label ID="Label15" Text=" T.O.Qty" runat="server" CssClass="labelbold" />
+                            <br />
+                             <asp:TextBox ID="TxtTotalQty" runat="server" Width="90px" Enabled="false" CssClass="textb"></asp:TextBox>
+                        </td>
+                        <td class="tdstyle">
+                            <asp:Label ID="Label17" Text="PQty" runat="server" CssClass="labelbold" />
+                            <br />
+                            <asp:TextBox ID="TxtPreQuantity" runat="server" Width="90px" Enabled="false" CssClass="textb"></asp:TextBox>
+                        </td>                       
+                     
+                    </tr>
+                </table>
+                <table>
+                    <tr>                       
+                        <td class="tdstyle">
+                            <asp:Label ID="Label7" Text="Width" runat="server" CssClass="labelbold" />
+                            <br />
+                             <asp:TextBox ID="txtWidth" runat="server" Width="90px" Enabled="false" CssClass="textb"></asp:TextBox>
+                        </td>
+                        <td class="tdstyle">
+                            <asp:Label ID="Label8" Text="Length" runat="server" CssClass="labelbold" />
+                            <br />
+                            <asp:TextBox ID="txtLength" runat="server" Width="90px" Enabled="false" CssClass="textb"></asp:TextBox>
+                        </td>
+                       
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                       <td class="tdstyle">
+                            <asp:Label ID="Label9" Text="Roll Width" runat="server" CssClass="labelbold" />
+                            <br />
+                            <asp:TextBox ID="txtRollWidth" runat="server" Width="90px" CssClass="textb"></asp:TextBox>
+                        </td>
+                        <td class="tdstyle">
+                            <asp:Label ID="Label18" Text="Roll Length" runat="server" CssClass="labelbold" />
+                            <br />
+                            <asp:TextBox ID="txtRollLength" runat="server" Width="90px" CssClass="textb"></asp:TextBox>
+                        </td>
+                         <td class="tdstyle">
+                            <asp:Label ID="Label19" Text="No Of Rolls" runat="server" CssClass="labelbold" />
+                            <br />
+                            <asp:TextBox ID="txtNoOfRolls" runat="server" Width="90px" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
+                        </td>
+                        <%--<td class="tdstyle">
+                            <asp:Label ID="Label10" runat="server" Text="Iss Qty" CssClass="labelbold"></asp:Label>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtissqty"
+                                ErrorMessage="please Enter qty" ForeColor="Red" SetFocusOnError="true" ValidationGroup="f1">*</asp:RequiredFieldValidator>
+                            <br />
+                            <asp:TextBox ID="txtissqty" runat="server" CssClass="textb" onkeypress="return isNumber(event);"
+                                onchange="return checkqty();" BackColor="#7b96bb" Width="100px" AutoPostBack="True"></asp:TextBox>
+                        </td>--%>                       
+                    </tr>
+                </table>
+                <table style="width: 80%;">
+                    <tr>
+                        <td>
+                            <asp:Label ID="lblmessage" Text="" runat="server" CssClass="labelbold" ForeColor="Red" />
+                        </td>
+                        <td colspan="8" align="right">
+                            <asp:Label ID="LblErrorMessage" runat="server" Text="Label" ForeColor="Red" Visible="false"></asp:Label>
+                            <asp:Button ID="btnnew" runat="server" Text="New" OnClientClick="return ClickNew()"
+                                CssClass="buttonnorm" />
+                            <asp:Button ID="btnsave" runat="server" Text="Save" OnClick="btnsave_Click" OnClientClick="return Validation();"
+                                CssClass="buttonnorm" />
+                            <asp:Button ID="btnPreview" runat="server" Text="Preview" CssClass="buttonnorm preview_width"
+                                OnClick="btnPreview_Click"  Visible="false"/>
+                            <asp:Button ID="btnclose" runat="server" Text="Close" OnClientClick="return CloseForm(); "
+                                CssClass="buttonnorm" />
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td colspan="6" align="center" valign="top">
+                            <div style="width: auto; height: auto; overflow: scroll;">
+                                <%--<asp:GridView ID="gvdetail" runat="server" AutoGenerateColumns="False" EmptyDataText="No records found.."
+                                    OnRowDataBound="gvdetail_RowDataBound"  OnRowCancelingEdit="gvdetail_RowCancelingEdit"
+                                    OnRowEditing="gvdetail_RowEditing" OnRowUpdating="gvdetail_RowUpdating" OnRowDeleting="gvdetail_RowDeleting">
+                                    <RowStyle CssClass="gvrow" />
+                                    <AlternatingRowStyle CssClass="gvalts" />
+                                    <HeaderStyle CssClass="gvheaders" />
+                                    <Columns>
+                                        <asp:TemplateField HeaderText="Item Description">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblitemdescription" Text='<%#Bind("ItemDescription") %>' runat="server" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Godown Name">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblGodownName" Text='<%#Bind("GodownName") %>' runat="server" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="LotNo">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblLotNo" Text='<%#Bind("LotNo") %>' runat="server" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="TagNo">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblTagNo" Text='<%#Bind("TagNo") %>' runat="server" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="Qty">
+                                            <EditItemTemplate>
+                                                <asp:TextBox ID="txtqty" Text='<%#Bind("IssueQty") %>' Width="70px" runat="server" />
+                                            </EditItemTemplate>
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblissueqty" Text='<%#Bind("IssueQty") %>' runat="server" />
+                                            </ItemTemplate>
+                                        </asp:TemplateField>
+                                        <asp:TemplateField HeaderText="" Visible="false">
+                                            <ItemTemplate>
+                                                <asp:Label ID="lblhqty" Text='<%#Bind("IssueQty") %>' runat="server" />
+                                                <asp:Label ID="lblMaterialIssueId" Text='<%#Bind("MaterialIssueID") %>' runat="server" />
+                                                <asp:Label ID="lblMaterialIssueDetailId" Text='<%#Bind("MaterialIssueDetailId") %>'
+                                                    runat="server" />
+                                                <asp:Label ID="lblMachineNoId" Text='<%#Bind("MachineNoId") %>' runat="server" />
+                                                <asp:Label ID="lblprocessid" Text='<%#Bind("ProcessId") %>' runat="server" />
+                                                <asp:Label ID="lblIssueNo" Text='<%#Bind("IssueNo") %>' runat="server" />
+                                                <asp:Label ID="lblUnitId" Text='<%#Bind("UnitId") %>' runat="server" />
+                                                <asp:Label ID="lblFinishedId" Text='<%#Bind("FinishedId") %>' runat="server" />
+                                            </ItemTemplate>
+                                            <HeaderStyle HorizontalAlign="Center" Width="250px" />
+                                            <ItemStyle HorizontalAlign="Center" Width="250px" />
+                                        </asp:TemplateField>
+                                        <asp:TemplateField ShowHeader="False">
+                                            <ItemTemplate>
+                                                <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                                    Text="Del" OnClientClick="return confirm('Do You Want To Delete Row ?')"></asp:LinkButton>
+                                            </ItemTemplate>
+                                            <HeaderStyle HorizontalAlign="Center" Width="50px" />
+                                            <ItemStyle HorizontalAlign="Center" Width="50px" />
+                                        </asp:TemplateField>
+                                     <%--   <asp:CommandField EditText="Edit" ShowEditButton="True" CausesValidation="false">
+                                            <HeaderStyle HorizontalAlign="Center" />
+                                            <ItemStyle HorizontalAlign="Center" />
+                                        </asp:CommandField>--%>
+                                    </Columns>
+                                    <RowStyle CssClass="gvrow" />
+                                    <EmptyDataRowStyle CssClass="gvemptytext" />
+                                </asp:GridView>--%>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <asp:HiddenField ID="hnMaterialIssueId" runat="server" />
+        </ContentTemplate>
+    </asp:UpdatePanel>
+</asp:Content>
