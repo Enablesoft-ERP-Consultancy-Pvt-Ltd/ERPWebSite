@@ -340,7 +340,11 @@
                     <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ErrorMessage="Only .png,.jpeg or.jpg files are allowed!"
                         ValidationExpression="^.*\.(jpg|JPG|png|GIF|jpeg|JPEG|BMP|bmp)$" ControlToValidate="PhotoImage"></asp:RegularExpressionValidator>
                 </td>
+
+
             </tr>
+
+
             <tr id="trweight" runat="server" visible="false">
                 <td class="tdstyle">
                     <asp:Label ID="lblweight1" runat="server" Text=""></asp:Label>
@@ -362,6 +366,10 @@
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
             <ContentTemplate>
                 <table>
+
+
+                    
+
                     <tr>
                         <td align="left" colspan="4">
                             <asp:Button ID="btnnew" runat="server" Text="New" OnClick="btnnew_Click" TabIndex="9"
@@ -415,8 +423,47 @@
                         </td>
                         <asp:HiddenField ID="hncomp" runat="server" />
                         <asp:HiddenField ID="hnsst" runat="server" />
-                        <asp:HiddenField ID="hnItemFinishedId" runat="server" />
+                        <asp:HiddenField ID="hnItemFinishedId" runat="server"  Value="0"/>
                     </tr>
+
+                    <tr>
+                        <td align="left" colspan="4">
+                            <asp:Repeater ID="rptPhotoList" runat="server">
+                                <HeaderTemplate>
+                                    <table cellspacing="0" rules="all" border="1">
+                                        <tr>
+                                            <th scope="col" style="width: 80px">Photo Id
+                                            </th>
+                                            <th scope="col" style="width: 120px">Photo Name
+                                            </th>
+                                            <th style="width: 60px"></th>
+                                        </tr>
+                                </HeaderTemplate>
+                                <ItemTemplate>
+                                    <tr>
+                                        <td>
+                                            <asp:Label ID="lblPhotoId" runat="server" Text='<%# Eval("PhotoId") %>' />
+                                        </td>
+                                        <td>
+                                            <asp:Label ID="lblPhotoName" runat="server" Text='<%# Eval("PhotoName") %>' />
+                                        </td>
+
+                                        <td>
+                                            <asp:LinkButton ID="lnkDelete" Text="Delete" runat="server" OnClientClick="return confirm('Do you want to delete this Photo?');"
+                                                OnClick="DeletePhoto" />
+                                        </td>
+                                    </tr>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    </table>
+                                </FooterTemplate>
+                            </asp:Repeater>
+
+                        </td>
+
+
+                    </tr>
+
                     <tr id="TRDesignWithQuality" runat="server" visible="false">
                         <td>&nbsp;
                         <div style="width: 100%; height: 200px; overflow: auto;">
