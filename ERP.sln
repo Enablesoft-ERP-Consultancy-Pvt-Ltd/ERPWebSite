@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7"
+		ProjectReferences = "{ee2590f4-1938-44c4-a34f-20299d9b7d71}|IExpro.Core.dll;{321af2bb-c159-401f-9b02-80a2334c8c84}|IExpro.Infrastructure.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/ERP"
 		Debug.AspNetCompiler.PhysicalPath = "..\ERP\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\ERP\"

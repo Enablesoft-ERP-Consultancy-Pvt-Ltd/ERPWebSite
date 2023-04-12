@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Timers;
 using System.Configuration;
+using ASP;
 /// <summary>
 /// Summary description for Global
 /// </summary>
@@ -18,6 +19,8 @@ public class Global : System.Web.HttpApplication
     }
     void Application_Start(object sender, EventArgs e)
     {
+
+        UnityConfig.RegisterComponents();
         ////////// Code that runs on application startup 
         ////// int companyid = Convert.ToInt16(ConfigurationManager.AppSettings["xxpc36"]);
         ////// switch (companyid)
@@ -39,7 +42,7 @@ public class Global : System.Web.HttpApplication
         //////              Autotimer.Enabled = true;
         //////          }               
         //////         break;
-               
+
         ////// }
 
         // Code that runs on application startup        
