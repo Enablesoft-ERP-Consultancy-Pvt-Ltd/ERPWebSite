@@ -501,7 +501,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             var sht = xapp.Worksheets.Add("General Gate Pass Detail");
 
             sht.Range("A1:G1").Merge();
-            sht.Range("A1").Value = "General Gate Pass Detail";
+            sht.Range("A1").Value = ds.Tables[0].Rows[0]["CompanyName"] + " General Gate Pass Detail";
             sht.Range("A1:G1").Style.Font.Bold = true;
             sht.Range("A1:G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             sht.Range("A1:G1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
@@ -583,7 +583,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             var sht = xapp.Worksheets.Add("General Gate In Detail");
 
             sht.Range("A1:G1").Merge();
-            sht.Range("A1").Value = "General Gate In Detail";
+            sht.Range("A1").Value = ds.Tables[0].Rows[0]["CompanyName"] + " General Gate In Detail";
             sht.Range("A1:G1").Style.Font.Bold = true;
             sht.Range("A1:G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             sht.Range("A1:G1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
@@ -664,7 +664,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             var sht = xapp.Worksheets.Add("General Gate Pass_In Detail");
 
             sht.Range("A1:G1").Merge();
-            sht.Range("A1").Value = "General Gate Pass/In Detail";
+            sht.Range("A1").Value = ds.Tables[0].Rows[0]["CompanyName"] + " General Gate Pass/In Detail";
             sht.Range("A1:G1").Style.Font.Bold = true;
             sht.Range("A1:G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             sht.Range("A1:G1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);

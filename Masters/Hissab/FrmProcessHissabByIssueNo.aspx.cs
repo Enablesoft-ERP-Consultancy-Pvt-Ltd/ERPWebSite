@@ -29,7 +29,7 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
                 Where PNM.MasterCompanyID = " + Session["varCompanyId"];
             if (Session["varCompanyId"].ToString() == "16")
             {
-                Str = Str + " And PNM.Process_Name_ID In (145, 150)";
+                Str = Str + " And PNM.Process_Name_ID In (145, 150, 190)";
             }
             
             Str = Str + " Order By PNM.PROCESS_NAME";
@@ -68,7 +68,7 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
             }
             else
             {
-                if (DDProcessName.SelectedItem.Text == "WASHING BY WEIGHT")
+                if (DDProcessName.SelectedItem.Text == "WASHING BY WEIGHT" || DDProcessName.SelectedItem.Text == "TPR COATING")
                 {
                     Str = @"Select Distinct EI.EmpId, EI.EmpName + case when isnull(ei.empcode, '') <> '' then ' [' + ei.empcode + ']' else '' end EmpName 
                         From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" a(Nolock) 

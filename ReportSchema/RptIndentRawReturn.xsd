@@ -23,7 +23,7 @@
               <xs:element name="Email" type="xs:string" minOccurs="0" />
               <xs:element name="CompTel" type="xs:string" minOccurs="0" />
               <xs:element name="CompFax" type="xs:string" minOccurs="0" />
-              <xs:element name="GatePassNo" type="xs:int" minOccurs="0" />
+              <xs:element name="GatePassNo" type="xs:string" minOccurs="0" />
               <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="Date" type="xs:dateTime" minOccurs="0" />
               <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
@@ -32,6 +32,7 @@
               <xs:element name="IndentNo" type="xs:string" minOccurs="0" />
               <xs:element name="customercode" type="xs:string" minOccurs="0" />
               <xs:element name="TagNo" type="xs:string" minOccurs="0" />
+              <xs:element name="MasterCompanyID" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

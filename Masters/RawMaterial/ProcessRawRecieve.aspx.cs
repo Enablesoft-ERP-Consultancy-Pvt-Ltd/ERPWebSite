@@ -231,12 +231,21 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
         //                    on PM.LoomId=PL.UID and PM.Status='Pending'
         //                    And PL.companyid=" + DDcompany.SelectedValue + " and  PL.UnitId=" + DDProdunit.SelectedValue + @" order by Loom,LoomNo
         //                    select Top(1) Godownid from Productionunitgodown Where Produnitid=" + DDProdunit.SelectedValue + " order by id desc";
-        string str = @"select Distinct PL.UID,PL.LoomNo,case when ISNUMERIC(loomno)=1 Then CONVERT(int,loomno) Else 9999999 End as Loom from PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PM inner join ProductionLoomMaster PL
+        string str = @"select Distinct PL.UID,PL.LoomNo,case when ISNUMERIC(loomno)=1 Then CONVERT(int,replace(loomno, '.', '')) Else 9999999 End as Loom from PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PM inner join ProductionLoomMaster PL
                     on PM.LoomId=PL.UID   And PL.companyid=" + ddCompName.SelectedValue + " and  PL.UnitId=" + DDProdunit.SelectedValue + @"  Left Join Employee_ProcessorderNo EMP on PM.issueorderid=EMP.issueorderid and EMP.processid=" + ddProcessName.SelectedValue + @"
                     Left join empinfo ei on EMp.empid=Ei.empid  ";
+        if (ChKForEdit.Checked == false)
+        {
+            str = str + " Where PL.EnableDisableStatus=1";
+        }
+        else
+        {
+            str = str + " Where 1=1";
+        }
+
         if (txtWeaverIdNoscan.Text != "")
         {
-            str = str + " Where Ei.empcode='" + txtWeaverIdNoscan.Text + "'";
+            str = str + " and Ei.empcode='" + txtWeaverIdNoscan.Text + "'";
         }
         str = str + " order by Loom,LoomNo";
         str = str + "  select Top(1) Godownid from Productionunitgodown Where Produnitid=" + DDProdunit.SelectedValue + " order by id desc";

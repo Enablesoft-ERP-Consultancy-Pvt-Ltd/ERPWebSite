@@ -385,7 +385,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] param = new SqlParameter[29];
+            SqlParameter[] param = new SqlParameter[30];
             param[0] = new SqlParameter("@issueorderid", SqlDbType.Int);
             param[0].Direction = ParameterDirection.InputOutput;
             param[0].Value = hnissueorderid.Value;
@@ -423,6 +423,8 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
             param[26] = new SqlParameter("@Colorid", ddcolor.SelectedValue);
             param[27] = new SqlParameter("@varcarpetcompany", variable.Carpetcompany);
             param[28] = new SqlParameter("@Itemid", dditemname.SelectedValue);
+            param[29] = new SqlParameter("@ChallanNo", SqlDbType.VarChar, 100);
+            param[29].Direction = ParameterDirection.Output;
 
             //*********************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Savesampleorder", param);
@@ -430,7 +432,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
             lblmsg.Text = param[18].Value.ToString();
             hnissueorderid.Value = param[0].Value.ToString();
             hnorderid.Value = param[1].Value.ToString();
-            txtchallanNo.Text = hnissueorderid.Value;
+            txtchallanNo.Text = param[29].Value.ToString();
             ddsize.Focus();
             //**************
             Tran.Commit();

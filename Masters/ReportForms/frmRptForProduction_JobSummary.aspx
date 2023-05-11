@@ -30,6 +30,7 @@
     <script runat="server">
         protected void Checkexportchecked(object sender, System.EventArgs e)
         {
+            ChkForWithoutWeavingProcess.Visible = false;
             chkwithstockdetail.Visible = false;
             chkwithstockdetail.Checked = false;
             if (chkexport.Checked == true)
@@ -215,6 +216,12 @@
                                     <tr id="TRForFinishingDetail" runat="server" visible="false">
                                         <td colspan="2">
                                             <asp:CheckBox ID="ChkForFinishingDetail" Text="For Finishing Detail" CssClass="checkboxbold"
+                                                runat="server" />
+                                        </td>
+                                    </tr>
+                                     <tr id="TRForWithoutWeavingProcess" runat="server" visible="false">
+                                        <td colspan="2">
+                                            <asp:CheckBox ID="ChkForWithoutWeavingProcess" Text="For Without Weaving Process" CssClass="checkboxbold"
                                                 runat="server" />
                                         </td>
                                     </tr>

@@ -150,6 +150,19 @@
                 TrOrderCategory.Visible = false;
                 BindPPNo();
             }
+
+            if (RDGenerateIndentDetail.Checked == true)
+            {
+                TRItemName.Visible = false;
+                TRQuality.Visible = false;
+                TRShadeColor.Visible = false;
+                TRExportExcel.Visible = false;
+                chksample.Visible = false;
+                TRorderNo.Visible = false;
+                TRCustomerCode.Visible = true;
+                TrOrderCategory.Visible = false;
+                
+            }
         }
     </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -157,7 +170,7 @@
             <table width="75%">
                 <tr>
                     <td style="width: 300px" valign="top">
-                        <div style="width: 287px; padding-top: 5px; max-height: 250px; float: left; border-style: solid;
+                        <div style="width: 287px; padding-top: 5px; max-height: 290px; float: left; border-style: solid;
                             border-width: thin">
                             &nbsp;&nbsp;
                             <asp:RadioButton ID="RDProcessIssDetail" Text="INDENT ISSUE DETAIL" runat="server"
@@ -208,6 +221,10 @@
                                 Visible="false" /><br />
                                   &nbsp;&nbsp;
                             <asp:RadioButton ID="RDIndentIssueWithPPConsumption" Text="INDENT ISS WITH PPCONSUMPTION" runat="server"
+                                AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
+                                Visible="false" /><br />
+                                &nbsp;&nbsp;
+                            <asp:RadioButton ID="RDGenerateIndentDetail" Text="GENERATE INDENT DETAIL" runat="server"
                                 AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
                                 Visible="false" /><br />
                                
@@ -445,6 +462,13 @@
                         </div>
                     </td>
                 </tr>
+                 <tr>
+                        <td>
+                            
+                            <asp:HiddenField ID="hnCustomerCode" runat="server" Visible="false" />
+                            
+                        </td>
+                    </tr>
             </table>
         </ContentTemplate>
         <Triggers>

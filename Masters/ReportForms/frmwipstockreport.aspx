@@ -20,6 +20,25 @@
                             </asp:DropDownList>
                         </td>
                     </tr>
+                     <tr>
+                        <td>
+                            <asp:Label ID="Label2" runat="server" Text="CustomerCode" CssClass="labelbold"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:DropDownList ID="DDCustCode" runat="server" Width="200px" CssClass="dropdown"
+                                AutoPostBack="True" OnSelectedIndexChanged="DDCustCode_SelectedIndexChanged">
+                            </asp:DropDownList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <asp:Label ID="Label3" runat="server" Text="OrderNo" CssClass="labelbold"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:DropDownList ID="DDOrderNo" runat="server" Width="200px" CssClass="dropdown">
+                            </asp:DropDownList>
+                        </td>
+                    </tr>
                     <tr>
                         <td>
                             <asp:Label ID="lblcategoryname" runat="server" CssClass="labelbold" Text="Category Name"></asp:Label>

@@ -210,6 +210,12 @@
                                         </ItemTemplate>
                                         <ItemStyle HorizontalAlign="Center" />
                                     </asp:TemplateField>
+                                     <asp:TemplateField HeaderText="Extra Qty.">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblextraqty" Text='<%#Bind("extraqty") %>' runat="server" />
+                                        </ItemTemplate>
+                                        <ItemStyle HorizontalAlign="Center" />
+                                    </asp:TemplateField>
                                     <asp:TemplateField HeaderText="S Qty.">
                                         <ItemTemplate>
                                             <asp:Label ID="lblsqty" Text='<%#Bind("Avialable_stock") %>' runat="server" />

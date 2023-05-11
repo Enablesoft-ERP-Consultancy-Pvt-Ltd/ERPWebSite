@@ -1485,7 +1485,15 @@ public partial class GenrateInDent : System.Web.UI.Page
         }
         else
         {
-            FillTagNo();
+            if (variable.Carpetcompany == "1" && variable.VarDyeingIssueOthershade == "1" && DDProcessName.SelectedItem.Text.ToUpper() == "DYEING")
+            {
+                FillTagNoOtherIssueShadeWise();
+            }
+            else
+            {
+
+                FillTagNo();
+            }
         }        
     }
     private void FillTagNo()
@@ -1496,6 +1504,26 @@ public partial class GenrateInDent : System.Web.UI.Page
                         join ProcessProgram(Nolock) PR on OCD.ORDERID=pr.Order_ID 
                         where pr.PPID=" + DDProcessProgramNo.SelectedValue + " and ocd.OFINISHEDID=" + Session["FinishedId"] + @" and 
                         Companyid=" + DDCompanyName.SelectedValue;
+
+        if (ddllotno.SelectedIndex > 0)
+        {
+            str = str + " And s.LotNo = '" + ddllotno.SelectedItem.Text + "' ";
+        }
+        if (MySession.Stockapply == "True")
+        {
+            str = str + " and Round(S.Qtyinhand,3)>0";
+        }
+        if (chkredyeing.Checked == false)
+        {
+            str = str + " and Godownid in(" + variable.VarGENERATEINDENTGODOWNID + ")";
+        }
+        UtilityModule.ConditionalComboFill(ref DDTagNo, str, true, "--Select--");
+    }
+    private void FillTagNoOtherIssueShadeWise()
+    {
+        string str = @"select Distinct S.TagNo,S.TagNo From stock S inner Join V_FinishedItemDetail vf on s.ITEM_FINISHED_ID=vf.ITEM_FINISHED_ID
+                                Where S.Companyid=" + DDCompanyName.SelectedValue + " and  vf.ITEM_ID=" + DDItem.SelectedValue + @" And 
+                                Vf.QualityId=" + DDQuality.SelectedValue + " and vf.ShadecolorId=" + DDISSUESHADE.SelectedValue;
 
         if (ddllotno.SelectedIndex > 0)
         {

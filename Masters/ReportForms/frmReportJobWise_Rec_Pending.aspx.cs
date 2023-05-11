@@ -101,12 +101,14 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
             {
                 FilterBy = FilterBy + " ARTICLE-" + DDArticle.SelectedItem.Text;
             }
-            SqlParameter[] param = new SqlParameter[5];
+            SqlParameter[] param = new SqlParameter[6];
             param[0] = new SqlParameter("@processid", DDjob.SelectedValue);
             param[1] = new SqlParameter("@Unitid", DDUnitName.SelectedIndex > 0 ? DDUnitName.SelectedValue : "0");
             param[2] = new SqlParameter("@Loomid", DDLoomNo.SelectedIndex > 0 ? DDLoomNo.SelectedValue : "0");
             param[3] = new SqlParameter("@Articleid", DDArticle.SelectedIndex > 0 ? DDArticle.SelectedValue : "0");
             param[4] = new SqlParameter("@FromDate", txtFromdate.Text);
+            param[5] = new SqlParameter("@OrderId", DDOrderNo.SelectedIndex > 0 ? DDOrderNo.SelectedValue : "0");
+
             //*************
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_getLoomBalanceqty", param);
             if (ds.Tables[0].Rows.Count > 0)

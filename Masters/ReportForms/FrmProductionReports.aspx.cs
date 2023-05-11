@@ -70,7 +70,16 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         UtilityModule.ConditionalComboFill(ref DDCustCode, "select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
         if (variable.VarWEAVERORDERWITHOUTCUSTCODE == "1")
         {
-            string str = "Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster Order By CustomerOrderNo";
+            string str = "";
+            if (Session["VarCompanyNo"].ToString() == "43")
+            {
+                str = "Select OrderId,CustomerOrderNo+ ' / ' +LocalOrder From OrderMaster Order By CustomerOrderNo";
+            }
+            else
+            {
+                str = "Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster Order By CustomerOrderNo";
+            }
+            
 
             if (Session["varCompanyId"].ToString() == "16")
             {
@@ -88,7 +97,16 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
     }
     protected void fillorderno()
     {
-        string str = "Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster where CustomerId=" + DDCustCode.SelectedValue + " ";
+        string str = "";
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            str = "Select OrderId,CustomerOrderNo+ ' / ' +LocalOrder From OrderMaster where CustomerId=" + DDCustCode.SelectedValue + " ";
+        }
+        else
+        {
+            str = "Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster where CustomerId=" + DDCustCode.SelectedValue + " ";
+        }
+       
         if (DDorderstatus.SelectedValue != "-1")
         {
             str = str + " and Status=" + DDorderstatus.SelectedValue;

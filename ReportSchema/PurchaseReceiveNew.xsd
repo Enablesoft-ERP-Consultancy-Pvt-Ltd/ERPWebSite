@@ -58,6 +58,7 @@
               <xs:element name="TagNo" type="xs:string" minOccurs="0" />
               <xs:element name="ITEMDESCRIPTIONWithoutCategory" type="xs:string" minOccurs="0" />
               <xs:element name="QtyWeight" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BaleNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

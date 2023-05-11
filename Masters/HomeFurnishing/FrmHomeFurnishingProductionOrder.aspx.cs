@@ -178,12 +178,28 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
     }
     protected void DDcustcode_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = @"Select Distinct OM.OrderID, OM.CustomerOrderNo 
+        string str=string.Empty;
+        if (Session["varcompanyNo"].ToString() == "44")
+        {
+            str = @"Select Distinct OM.OrderID, OM.CustomerOrderNo 
+                    From OrderMaster OM(Nolock) 
+                    JOIN OrderDetail OD(Nolock) ON OD.OrderID = OM.OrderID 
+                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id 
+                    Where OM.Status = 0 And OM.CompanyID = " + DDcompany.SelectedValue + " AND OM.CustomerId = " + DDcustcode.SelectedValue + @" 
+                    Order By OM.CustomerOrderNo";
+        }
+        else
+        {
+            str = @"Select Distinct OM.OrderID, OM.CustomerOrderNo 
                     From OrderMaster OM(Nolock) 
                     JOIN OrderDetail OD(Nolock) ON OD.OrderID = OM.OrderID 
                     JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.PoufTypeCategory = 1 
                     Where OM.Status = 0 And OM.CompanyID = " + DDcompany.SelectedValue + " AND OM.CustomerId = " + DDcustcode.SelectedValue + @" 
                     Order By OM.CustomerOrderNo";
+        
+        
+        
+        }
         UtilityModule.ConditionalComboFill(ref DDorderNo, str, true, "--Plz Select--");
     }
     protected void FillissueDetails()

@@ -17,18 +17,31 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         {
             Response.Redirect("~/Login.aspx");
         }
-
+        string Qry=string.Empty;
         if (!IsPostBack)
         {
             if (Session["varCompanyId"].ToString() == "6")
             {
                 RDpurchasedetail.Visible = false;
             }
-            string Qry = @"Select Distinct EmpId,EmpName From Empinfo EI,PurchaseIndentIssue PII Where EI.EmpId=Partyid  And EI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By EmpName
+            if (Session["varCompanyId"].ToString() == "44")
+            {
+                Qry = @"Select Distinct EmpId,EmpName From Empinfo EI,PurchaseIndentIssue PII Where EI.EmpId=Partyid  And EI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By EmpName
+            select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname            
+            select distinct ci.customerid,ci.Customercode From customerinfo ci 
+            Inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @"
+            select GoDownID,GodownName from GodownMaster  order by GodownName";
+            }
+            else {
+
+                Qry = @"Select Distinct EmpId,EmpName From Empinfo EI,PurchaseIndentIssue PII Where EI.EmpId=Partyid  And EI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By EmpName
             select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname            
             select distinct ci.customerid,ci.Customercode+'/'+CompanyName From customerinfo ci 
             Inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @"
             select GoDownID,GodownName from GodownMaster  order by GodownName";
+            
+            
+            }
             //Inner join Jobassigns JA ON OM.Orderid=JA.Orderid";
             DataSet ds = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref dsuppl, ds, 0, true, "--Select--");
@@ -113,14 +126,27 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         else
         {
             TDExcelExport.Visible = false;
-            chkexcelexport.Checked = false;
+
+            if (Session["VarCompanyNo"].ToString() != "22")
+            {
+                chkexcelexport.Checked = false;
+            }
+            
         }
     }
     protected void ddcustomer_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (RDSupplyorder.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddOrderno, "select Distinct OM.OrderId,CustomerOrderNo+ ' / ' +LocalOrder from purchaseindentissue  PII inner join Ordermaster OM on PII.orderid=Om.orderid where OM.customerid=" + ddcustomer.SelectedValue + " and OM.CompanyId=" + ddCompName.SelectedValue + "", true, "Select OrderNo.");
+            if (Session["varcompanyid"].ToString() == "44")
+            {
+                UtilityModule.ConditionalComboFill(ref ddOrderno, "Select Distinct OM.OrderId,CustomerOrderNo+ ' / ' +LocalOrder from OrderMaster OM Where OM.Status=0 And CustomerId=" + ddcustomer.SelectedValue + " And om.CompanyId=" + ddCompName.SelectedValue, true, "Select OrderNo.");
+
+            }
+            else
+            {
+                UtilityModule.ConditionalComboFill(ref ddOrderno, "select Distinct OM.OrderId,CustomerOrderNo+ ' / ' +LocalOrder from purchaseindentissue  PII inner join Ordermaster OM on PII.orderid=Om.orderid where OM.customerid=" + ddcustomer.SelectedValue + " and OM.CompanyId=" + ddCompName.SelectedValue + "", true, "Select OrderNo.");
+            }
         }
         else
         {
@@ -284,7 +310,15 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         {
             if (chkpurchaseordervendorwiselotbillno.Checked == true)
             {
-                PurchaseordervendorwiseLotBillDetail();
+                if (Session["varcompanyid"].ToString() == "44")
+                {
+                    PurchaseordervendorwiseLotBillDetailagni();
+                }
+                else
+                {
+
+                    PurchaseordervendorwiseLotBillDetail();
+                }
                 return;
             }
             else if (chkpurchasesumm.Checked == true)
@@ -542,10 +576,23 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
                     return;
                 }
             }
+            else if (chkexcelexport.Checked == true)
+            {
+                PurchaseReceiveDetailWithGSTAmt();
+                return;
+            }
             else
             {
-                PurchaseReceiveDetail();
-                return;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    PurchaseReceiveDetailCI();
+                    return;
+                }
+                else
+                {
+                    PurchaseReceiveDetail();
+                    return;
+                }
 
             }
         }
@@ -581,6 +628,106 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         {
             CustomerOrderWisePODetail();
             return;
+        }
+        else if (RDPurchaseOrderRecPendingDetail.Checked == true)
+        {
+            string filterby = "";
+            qry = @"SELECT vo.empname,vo.pindentissueid,vo.finishedid,vo.item_description as description,qty as orderqty,vo.orderdate,vo.recdate,vo.recqty,
+                    '" + TxtFRDate.Text + "' FromDate,'" + TxtTODate.Text + @"' as ToDate,vo.CanQty OrdercanQty,vo.ReturnDate,vo.ReturnChallan,vo.qtyreturn,vo.PO,
+                    vo.Localorder,vo.customercode,vo.deliverydate,vo.rate,vo.LshortPercentage,vo.pindentissuetranid,vo.Category_name,vo.Status,Vo.colour,
+                    vo.Recqty_beforeRetnqty, IsNull(vo.GATEINNO, '') GateInNo, vo.OrderID, vo.CustomerOrderNo,DATEDIFF(DAY,getdate() ,vo.deliverydate ) as DayDifference,
+                    vo.requestby,vo.requestfor,vo.BranchName, vo.UserName 
+                    From v_purchase_emp_order_wise vo(Nolock) 
+                    inner join V_FinishedItemDetail vf(Nolock) on vo.finishedid=vf.ITEM_FINISHED_ID 
+                    Where 1 =1 ";
+
+            if (ChkForDate.Checked == true)
+            {
+                qry = qry + " And vo.orderdate >= '" + TxtFRDate.Text + "' and vo.orderdate <='" + TxtTODate.Text + "'";
+                filterby = filterby + " From : " + TxtFRDate.Text + "  TO : " + TxtTODate.Text;
+            }
+            if (ddCompName.SelectedIndex > 0)
+            {
+                qry = qry + " And vo.CompanyId=" + ddCompName.SelectedValue;
+                filterby = filterby + " Company : " + ddCompName.SelectedItem.Text;
+            }
+            if (ddcustomer.SelectedIndex > 0)
+            {
+                qry = qry + " And vo.Customerid=" + ddcustomer.SelectedValue;
+                filterby = filterby + " Customer : " + ddcustomer.SelectedItem.Text;
+            }
+            if (ddOrderno.SelectedIndex > 0)
+            {
+                qry = qry + " And vo.orderid=" + ddOrderno.SelectedValue;
+                filterby = filterby + " Order No : " + ddOrderno.SelectedItem.Text;
+            }
+            if (dsuppl.SelectedIndex > 0)
+            {
+                qry = qry + " And vo.Empid=" + dsuppl.SelectedValue;
+                filterby = filterby + " Supp Name : " + dsuppl.SelectedItem.Text;
+            }
+            if (DDPONo.SelectedIndex > 0)
+            {
+                qry = qry + " And vo.pindentissueid=" + DDPONo.SelectedValue;
+                filterby = filterby + " PO No : " + DDPONo.SelectedItem.Text;
+            }
+            if (ddCatagory.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.CATEGORY_ID=" + ddCatagory.SelectedValue;
+                filterby = filterby + " Category : " + ddCatagory.SelectedItem.Text;
+            }
+            if (dditemname.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.item_id=" + dditemname.SelectedValue;
+                filterby = filterby + " Item : " + dditemname.SelectedItem.Text;
+            }
+            if (dquality.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.qualityid=" + dquality.SelectedValue;
+                filterby = filterby + " Quality : " + dquality.SelectedItem.Text;
+            }
+            if (dddesign.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.designid=" + dddesign.SelectedValue;
+                filterby = filterby + " design : " + dddesign.SelectedItem.Text;
+            }
+            if (ddcolor.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.colorid=" + ddcolor.SelectedValue;
+                filterby = filterby + " Color : " + ddcolor.SelectedItem.Text;
+            }
+            if (ddshape.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.shapeid=" + ddshape.SelectedValue;
+                filterby = filterby + " shape : " + ddshape.SelectedItem.Text;
+            }
+            if (ddsize.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.sizeid=" + ddsize.SelectedValue;
+            }
+            if (ddlshade.SelectedIndex > 0)
+            {
+                qry = qry + " And vf.shadecolorid=" + ddlshade.SelectedValue;
+                filterby = filterby + " Shadecolor : " + ddlshade.SelectedItem.Text;
+            }
+            //if (DDStatus.SelectedIndex > 0)
+            //{
+            //    if (DDStatus.SelectedValue == "1")
+            //    {
+            //        qry = qry + " And vo.Status = 'COMPLETE'";
+            //    }
+            //    else if (DDStatus.SelectedValue == "2")
+            //    {
+            //        qry = qry + " And vo.Status = 'PENDING'";
+            //    }
+            //}
+            filterby = filterby + " Status : " + DDStatus.SelectedItem.Text;
+            qry = qry + "   order by vo.pindentissueid, vo.OrderID";
+
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
+            
+            Session["ReportPath"] = "Reports/RptPurchaseOrderRecPendingDetail.rpt";
+            Session["dsFileName"] = "~\\ReportSchema\\RptPurchaseOrderRecPendingDetail.xsd";
         }
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -1204,13 +1351,22 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         TRFinalAbbaReport.Visible = false;
         TRASOnDate.Visible = false;
 
-        UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode+'/'+CI.CompanyName as Customercode from Ordermaster OM
+        if (Session["varcompanyid"].ToString() == "44")
+        {
+            UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode as Customercode from Ordermaster OM
                                                           inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+        }
+        else
+        { 
+          UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode+'/'+CI.CompanyName as Customercode from Ordermaster OM
+                                                          inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+        
+        }
     }
     protected void dsuppl_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
-        if (RDSupplyorder.Checked == true)
+        if (RDSupplyorder.Checked == true || RDPurchaseOrderRecPendingDetail.Checked==true)
         {
             str = "select distinct pii.PIndentIssueId,pii.ChallanNo from PurchaseIndentIssue PII left Join OrderMaster OM on Pii.orderid=Om.orderid  Where pii.PartyId=" + dsuppl.SelectedValue + " And pii.CompanyId=" + ddCompName.SelectedValue + "";
             if (ddcustomer.SelectedIndex > 0)
@@ -1506,6 +1662,18 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         TRFinalAbbaReport.Visible = false;
         TRASOnDate.Visible = false;
 
+        if (Session["VarCompanyNo"].ToString() == "22")
+        {
+            if (RDPurchaseReceive.Checked == true)
+            {
+                TDExcelExport.Visible = true;
+            }
+            else
+            {
+                TDExcelExport.Visible = false;
+            }
+        }
+        
     }
     protected void RDPurchaseMaterialReceive_CheckedChanged(object sender, EventArgs e)
     {
@@ -2096,6 +2264,239 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         }
 
 
+    }
+    protected void PurchaseordervendorwiseLotBillDetailagni()
+    {
+
+        #region Where Condition
+        string Where = "";
+        string filterby = "From : " + TxtFRDate.Text + "  To : " + TxtTODate.Text;
+        Where = Where + " and vo.orderdate>='" + TxtFRDate.Text + "' and vo.orderdate<='" + TxtTODate.Text + "'";
+        if (ddCompName.SelectedIndex > 0)
+        {
+            Where = Where + " And vo.companyid=" + ddCompName.SelectedValue;
+            filterby = filterby + " Company : " + ddCompName.SelectedItem.Text;
+        }
+        if (ddcustomer.SelectedIndex > 0)
+        {
+            Where = Where + " And vo.Customerid=" + ddcustomer.SelectedValue;
+            filterby = filterby + " Customer : " + ddcustomer.SelectedItem.Text;
+        }
+        if (ddOrderno.SelectedIndex > 0)
+        {
+            Where = Where + " And vo.orderid=" + ddOrderno.SelectedValue;
+            filterby = filterby + " Order No : " + ddOrderno.SelectedItem.Text;
+        }
+        if (dsuppl.SelectedIndex > 0)
+        {
+            Where = Where + " And vo.Empid=" + dsuppl.SelectedValue;
+            filterby = filterby + " Supp Name : " + dsuppl.SelectedItem.Text;
+        }
+        if (DDPONo.SelectedIndex > 0)
+        {
+            Where = Where + " And vo.pindentissueid=" + DDPONo.SelectedValue;
+            filterby = filterby + " PO No : " + DDPONo.SelectedItem.Text;
+        }
+        if (ddCatagory.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.CATEGORY_ID=" + ddCatagory.SelectedValue;
+            filterby = filterby + " Category : " + ddCatagory.SelectedItem.Text;
+        }
+        if (dditemname.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.item_id=" + dditemname.SelectedValue;
+            filterby = filterby + " Item : " + dditemname.SelectedItem.Text;
+        }
+        if (dquality.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.qualityid=" + dquality.SelectedValue;
+            filterby = filterby + " Quality : " + dquality.SelectedItem.Text;
+        }
+        if (dddesign.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.designid=" + dddesign.SelectedValue;
+            filterby = filterby + " design : " + dddesign.SelectedItem.Text;
+        }
+        if (ddcolor.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.colorid=" + ddcolor.SelectedValue;
+            filterby = filterby + " Color : " + ddcolor.SelectedItem.Text;
+        }
+        if (ddshape.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.shapeid=" + ddshape.SelectedValue;
+            filterby = filterby + " shape : " + ddshape.SelectedItem.Text;
+        }
+        if (ddsize.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.sizeid=" + ddsize.SelectedValue;
+        }
+        if (ddlshade.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.shadecolorid=" + ddlshade.SelectedValue;
+            filterby = filterby + " Shadecolor : " + ddlshade.SelectedItem.Text;
+        }
+        #endregion
+        SqlParameter[] param = new SqlParameter[3];
+        param[0] = new SqlParameter("@FromDate", TxtFRDate.Text);
+        param[1] = new SqlParameter("@ToDate", TxtTODate.Text);
+        param[2] = new SqlParameter("@Where", Where);
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETPURCHASEORDERVENDORWISELOTBILLDETAIL", param);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+            }
+            string Path = "";
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("sheet1");
+            int row = 0;
+            //***********
+            sht.Range("A1:O1").Merge();
+            sht.Range("A1").Value = "PURCHASE VENDOR WISE BILL NO";
+            sht.Range("A2:O2").Merge();
+            sht.Range("A2").Value = "Filter By :  " + filterby;
+            sht.Range("A1:O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A2:O2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:O2").Style.Font.Bold = true;
+            //**********
+            sht.Range("A3").Value = "Category";
+            sht.Range("B3").Value = "Po No";
+            sht.Range("C3").Value = "Po Status";
+            sht.Range("D3").Value = "Po Date";
+            sht.Range("E3").Value = "Supp. Name";
+            sht.Range("F3").Value = "Item Name";
+            sht.Range("G3").Value = "Rate";
+            sht.Range("H3").Value = "PO Qty";
+            sht.Range("G3:H3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("I3").Value = "Delv Date";
+            sht.Range("J3").Value = "CanQty/Date";
+            sht.Range("K3").Value = "RecDate";
+
+            sht.Range("L3").Value = "ChallanNo";
+
+            sht.Range("M3").Value = "LotNo";
+            sht.Range("N3").Value = "Bill No";
+
+            sht.Range("O3").Value = "Rec Qty";
+            sht.Range("O3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("P3").Value = "Ret Date";
+            sht.Range("Q3").Value = "Ret Qty";
+            sht.Range("R3").Value = "Pending Qty";
+            sht.Range("S3").Value = "Receive Remark";
+            sht.Range("T3").Value = "Order Remark";
+            sht.Range("U3").Value = "Order No.";
+            sht.Range("V3").Value = "Customer Code";
+
+            //if (Session["VarCompanyNo"].ToString() == "21")
+            //{
+            //    sht.Range("U3").Value = "GateIn No";
+            //}
+            //else
+            //{
+            //    sht.Range("U3").Value = "";
+            //}
+
+            sht.Range("Q3:V3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("A3:V3").Style.Font.SetBold();
+            using (var a = sht.Range("A3:V3"))
+            {
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            }
+            //*******
+            row = 4;
+            DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "Pindentissueid", "finishedid");
+            foreach (DataRow dr in dtdistinct.Rows)
+            {
+                DataView dv = new DataView(ds.Tables[0]);
+                dv.RowFilter = "Pindentissueid=" + dr["Pindentissueid"] + " and Finishedid=" + dr["finishedid"];
+                DataSet ds1 = new DataSet();
+                ds1.Tables.Add(dv.ToTable());
+                for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                {
+
+                    using (var a = sht.Range("A" + row + ":V" + row))
+                    {
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Category_name"]);
+                    sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Po"]);
+                    sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["Status"]);
+                    sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["Orderdate"]);
+                    sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["Empname"]);
+                    sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["Description"].ToString() + ds1.Tables[0].Rows[i]["Colour"]);
+                    sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Rate"]);
+                    sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["Orderqty"]);
+                    sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Deliverydate"]);
+                    sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Ordercanqty"]);
+                    sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Recdate"]);
+
+                    sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["ChallanNo"]);
+
+                    sht.Range("M" + row).SetValue(ds1.Tables[0].Rows[i]["LotNo"]);
+                    sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["BillNo1"]);
+
+                    sht.Range("O" + row).SetValue(Convert.ToDecimal(ds1.Tables[0].Rows[i]["Recqty"]) + Convert.ToDecimal(ds1.Tables[0].Rows[i]["Qtyreturn"]));
+                    sht.Range("P" + row).SetValue(ds1.Tables[0].Rows[i]["Returnchallan"]);
+                    sht.Range("Q" + row).SetValue(ds1.Tables[0].Rows[i]["Qtyreturn"]);
+                    //sht.Range("O" + row).SetValue("");
+                    if (i == 0)
+                    {
+                        sht.Range("R" + row).FormulaA1 = "=H" + row + '+' + "$Q$" + row + '-' + "$O$" + row;
+                    }
+                    else
+                    {
+                        sht.Range("R" + row).FormulaA1 = "=R" + (row - 1) + '+' + "$Q$" + row + '-' + "$O$" + row;
+                    }
+                    sht.Range("S" + row).SetValue(ds1.Tables[0].Rows[i]["PurchaseReceiveItemRemark"]);
+                    sht.Range("T" + row).SetValue(ds1.Tables[0].Rows[i]["PurchaseOrderMasterRemark"]);
+                    sht.Range("U" + row).SetValue(ds1.Tables[0].Rows[i]["ORDERNO"]);
+                    sht.Range("V" + row).SetValue(ds1.Tables[0].Rows[i]["customercode"]);
+
+                    if (Session["VarCompanyNo"].ToString() == "21")
+                    {
+                        sht.Range("U" + row).Value = ds1.Tables[0].Rows[i]["GateInNo"];
+                    }
+                    else
+                    {
+                        sht.Range("U" + row).Value = "";
+                    }
+
+                    row = row + 1;
+                }
+                ds1.Dispose();
+            }
+            //*************
+            sht.Columns(1, 32).AdjustToContents();
+            //********************
+            string Fileextension = "xlsx";
+            string filename = UtilityModule.validateFilename("PurchaseOrderVendorwiseLotBillDetail_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "altP", "alert('No records found...')", true);
+        }
     }
     protected void PurchaseordervendorwiseLotBillDetail()
     {
@@ -2849,8 +3250,16 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         TRFinalAbbaReport.Visible = false;
         TRASOnDate.Visible = false;
 
-        UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode+'/'+CI.CompanyName as Customercode from Ordermaster OM
+        if (Session["varcompanyid"].ToString() == "44")
+        {
+            UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode as Customercode from Ordermaster OM
                                                           inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+        }
+        else { 
+          UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode+'/'+CI.CompanyName as Customercode from Ordermaster OM
+                                                          inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+        
+        }
 
     }
     protected void PurchaseOrderReceiveOrderWise()
@@ -3651,11 +4060,62 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         TRLotBillDetail.Visible = false;
         TRFinalAbbaReport.Visible = false;
         TRASOnDate.Visible = false;
-
-        UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode+'/'+CI.CompanyName as Customercode from Ordermaster OM
+        if (Session["varcompanyid"].ToString() == "44")
+        {
+            UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode as Customercode from Ordermaster OM
                                                           inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+        }
+        else
+        {
+            UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode+'/'+CI.CompanyName as Customercode from Ordermaster OM
+                                                          inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+        
+        }
     }
+    protected void RDPurchaseOrderRecPendingDetail_CheckedChanged(object sender, EventArgs e)
+    {
+        TrStatus.Visible = false;
+        Trgodown.Visible = false;
+        trChkForDate.Visible = true;
+        Tr3.Visible = true;
+        Fill_Category();
+        TrItemName.Visible = true;
+        ql.Visible = false;
+        clr.Visible = false;
+        dsn.Visible = false;
+        shp.Visible = false;
+        sz.Visible = false;
+        shd.Visible = false;
+        Trcomp.Visible = true;
+        trcustomer.Visible = false;
+        trorder.Visible = false;
+        trfr.Visible = true;
+        trto.Visible = true;
+        trsupply.Visible = true;
+        trPurchaseIndentChallanNo.Visible = true;
+        lblPoNo.Text = "PO.No.";
+        TRPurchaseSumm.Visible = false;
+        trcustomer.Visible = true;
+        trorder.Visible = true;
+        TRRecChallanNo.Visible = false;
+        txtRecChallanNo.Text = "";
+        TRPurchaseDetailByChallan.Visible = false;
+        TRLotBillDetail.Visible = false;
+        TRFinalAbbaReport.Visible = false;
+        TRASOnDate.Visible = false;
 
+        if (Session["varcompanyid"].ToString() == "44")
+        {
+            UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode as Customercode from Ordermaster OM
+                                                          inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+        }
+        else
+        {
+            UtilityModule.ConditionalComboFill(ref ddcustomer, @"select Distinct CI.CustomerId,CI.CustomerCode+'/'+CI.CompanyName as Customercode from Ordermaster OM
+                                                          inner join customerinfo CI on ci.CustomerId=OM.CustomerId order by Customercode", true, "Select CustomerCode");
+
+        }
+    }
     protected void CustomerOrderWisePODetail()
     {
         DataSet ds = new DataSet();
@@ -4085,5 +4545,542 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         {
             ScriptManager.RegisterStartupScript(Page, GetType(), "altP", "alert('No records found...')", true);
         }
+    }
+
+    protected void PurchaseReceiveDetailWithGSTAmt()
+    {
+        #region Where Condition
+        string Where = "";
+        string filterby = "From : " + TxtFRDate.Text + "  To : " + TxtTODate.Text;
+        Where = Where + " and Prm.Receivedate>='" + TxtFRDate.Text + "' and PRM.Receivedate<='" + TxtTODate.Text + "'";
+        if (ddcustomer.SelectedIndex > 0)
+        {
+            Where = Where + " And VP.Customerid=" + ddcustomer.SelectedValue;
+            filterby = filterby + " Customer : " + ddcustomer.SelectedItem.Text;
+        }
+        if (ddOrderno.SelectedIndex > 0)
+        {
+            Where = Where + " And VP.orderid=" + ddOrderno.SelectedValue;
+            filterby = filterby + " Order No : " + ddOrderno.SelectedItem.Text;
+        }
+        if (dsuppl.SelectedIndex > 0)
+        {
+            Where = Where + " And EI.Empid=" + dsuppl.SelectedValue;
+            filterby = filterby + " Supp Name : " + dsuppl.SelectedItem.Text;
+        }
+        if (DDPONo.SelectedIndex > 0)
+        {
+            Where = Where + " And PRD.pindentissueid=" + DDPONo.SelectedValue;
+            filterby = filterby + " PO No : " + DDPONo.SelectedItem.Text;
+        }
+        if (TRRecChallanNo.Visible == true)
+        {
+            if (txtRecChallanNo.Text != "0" && txtRecChallanNo.Text != "")
+            {
+                Where = Where + " And PRM.BillNo1='" + txtRecChallanNo.Text + "'";
+                filterby = filterby + " BillNo : '" + txtRecChallanNo.Text + "'";
+            }
+        }
+
+        if (ddCatagory.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.CATEGORY_ID=" + ddCatagory.SelectedValue;
+            filterby = filterby + " Category : " + ddCatagory.SelectedItem.Text;
+        }
+        if (dditemname.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.item_id=" + dditemname.SelectedValue;
+            filterby = filterby + " Item : " + dditemname.SelectedItem.Text;
+        }
+        if (dquality.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.qualityid=" + dquality.SelectedValue;
+            filterby = filterby + " Quality : " + dquality.SelectedItem.Text;
+        }
+        if (dddesign.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.designid=" + dddesign.SelectedValue;
+            filterby = filterby + " design : " + dddesign.SelectedItem.Text;
+        }
+        if (ddcolor.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.colorid=" + ddcolor.SelectedValue;
+            filterby = filterby + " Color : " + ddcolor.SelectedItem.Text;
+        }
+        if (ddshape.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.shapeid=" + ddshape.SelectedValue;
+            filterby = filterby + " shape : " + ddshape.SelectedItem.Text;
+        }
+        if (ddsize.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.sizeid=" + ddsize.SelectedValue;
+        }
+        if (ddlshade.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.shadecolorid=" + ddlshade.SelectedValue;
+            filterby = filterby + " Shadecolor : " + ddlshade.SelectedItem.Text;
+        }
+        if (DDgodown.SelectedIndex > 0)
+        {
+            Where = Where + " And gm.godownid=" + DDgodown.SelectedValue;
+            filterby = filterby + " Godown : " + DDgodown.SelectedItem.Text;
+        }
+
+        #endregion
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        try
+        {
+            SqlCommand cmd = new SqlCommand("PRO_GETPURCHASERECEIVEDETAILSWITHGSTAMTREPORT", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@CompanyId", ddCompName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Where", Where);
+
+            SqlDataAdapter sda = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+
+            sda.Fill(dt);
+            DataSet ds = new DataSet();
+            ds.Tables.Add(dt);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                Decimal TQty = 0, TAmount = 0;
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+                //***********
+                sht.Range("A1:T1").Merge();
+                sht.Range("A1").Value = "Purchase Received Details " + "For - " + ddCompName.SelectedItem.Text;
+                sht.Range("A2:T2").Merge();
+                sht.Range("A2").Value = "Filter By :  " + filterby;
+                sht.Row(2).Height = 30;
+                sht.Range("A1:T1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:T2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:T2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A1:T2").Style.Font.Bold = true;
+                //***********Filter By Item_Name
+                row = 3;
+
+                //******Headers 
+                sht.Range("A" + row).Value = "REC DATE";
+                sht.Range("B" + row).Value = "PO NO";
+                sht.Range("C" + row).Value = "VENDOR NAME";
+
+                sht.Range("D" + row).Value = "ITEM NAME";
+                sht.Range("E" + row).Value = "Quality";
+                sht.Range("F" + row).Value = "SHADE";
+
+                sht.Range("G" + row).Value = "REC QTY";
+                sht.Range("H" + row).Value = "BALE NO";
+                sht.Range("I" + row).Value = "REC LOT NO.";
+                sht.Range("J" + row).Value = "REC TAG NO.";
+                sht.Range("K" + row).Value = "GODOWN NAME";
+
+                sht.Range("L" + row).Value = "BILL NO.";
+                sht.Range("M" + row).Value = "BILL DATE";
+                sht.Range("N" + row).Value = "INWARD NO";
+                sht.Range("O" + row).Value = "RATE";
+                sht.Range("P" + row).Value = "GST%";
+                sht.Range("Q" + row).Value = "PUR. AMOUNT";
+                sht.Range("R" + row).Value = "GST AMOUNT";
+                sht.Range("S" + row).Value = "NET AMOUNT";
+                sht.Range("T" + row).Value = "NET RATE"; 
+
+                sht.Range("P" + row + ":T" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A" + row + ":T" + row).Style.Font.SetBold();
+
+                row = row + 1;
+                int Rowfrom = 0;
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    if (Rowfrom == 0)
+                    {
+                        Rowfrom = row;
+                    }
+                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["RECDATE"]);
+                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["PURCHASEORDER"]);
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
+                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["ITEM_NAME"]);
+                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
+                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["ShadeColorName"]);
+                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["RECQTY"]);
+
+                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["Baleno"]);
+                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["LotNo"]);
+                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["TagNo"]);
+                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["GodownName"]);
+                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["PartyChallanNo"]);
+                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["BillDate"]);
+                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["InwardsNo"]);
+                    sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["Rate"]);
+                    sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["GSTPercentage"]);
+                    sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["Amount"]);                   
+
+                    sht.Range("R" + row).FormulaA1 = ("=Round(Q" + row + '*' + ("$P$" + row + "") + '/' + 100+ ",2)");
+                    //sht.Range("R" + row).Style.NumberFormat.Format = "#,##0.00";
+                    sht.Range("S" + row).FormulaA1 = ("=Round(Q" + row + '+' + ("$R$" + row + "")+ ",2)");
+                    sht.Range("T" + row).FormulaA1 = ("=Round(S" + row + '/' + ("$G$" + row + "") + ",2)");
+
+                    //TQty = TQty + Convert.ToDecimal(ds.Tables[0].Rows[i]["ACTUALRECQTY"]);
+                    //sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["Rate"]);
+
+                    //sht.Range("I" + row).FormulaA1 = "=G" + row + '*' + ("$H$" + row + "");
+                    //TAmount = TAmount + (Convert.ToDecimal(ds1.Tables[0].Rows[i]["ACTUALRECQTY"]) * Convert.ToDecimal(ds1.Tables[0].Rows[i]["Rate"]));
+                   
+
+                    row = row + 1;
+                }
+                row = row + 1;
+                ////TOTAL
+
+                //sht.Range("F" + row).Value = "Total";
+                //sht.Range("G" + row).FormulaA1 = "=SUM(G" + Rowfrom + ":$G$" + (row - 1) + ")";
+                //sht.Range("I" + row).FormulaA1 = "=SUM(I" + Rowfrom + ":$I$" + (row - 1) + ")";
+                //sht.Range("G" + row + ":I" + row).Style.Font.SetBold();
+                //row = row + 2;
+                //ds.Dispose();
+
+                ////*************GRAND TOTAL
+                //sht.Range("G" + row + ":I" + row).Style.Font.SetBold();
+                //sht.Range("F" + row).Value = "Grand Total";
+                //sht.Range("G" + row).SetValue(TQty);
+                //sht.Range("I" + row).SetValue(TAmount);
+                ////*************
+                sht.Columns(1, 18).AdjustToContents();
+                //********************
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("PurchaseReceiveDetailsWithGSTAmt_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "purchaserec", "alert('No Record Found!');", true);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Label1.Text = ex.Message;
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+    }
+
+    protected void PurchaseReceiveDetailCI()
+    {
+        #region Where Condition
+        string Where = "";
+        string filterby = "From : " + TxtFRDate.Text + "  To : " + TxtTODate.Text;
+        Where = Where + " and Prm.Receivedate>='" + TxtFRDate.Text + "' and PRM.Receivedate<='" + TxtTODate.Text + "'";
+        if (ddcustomer.SelectedIndex > 0)
+        {
+            Where = Where + " And VP.Customerid=" + ddcustomer.SelectedValue;
+            filterby = filterby + " Customer : " + ddcustomer.SelectedItem.Text;
+        }
+        if (ddOrderno.SelectedIndex > 0)
+        {
+            Where = Where + " And VP.orderid=" + ddOrderno.SelectedValue;
+            filterby = filterby + " Order No : " + ddOrderno.SelectedItem.Text;
+        }
+        if (dsuppl.SelectedIndex > 0)
+        {
+            Where = Where + " And EI.Empid=" + dsuppl.SelectedValue;
+            filterby = filterby + " Supp Name : " + dsuppl.SelectedItem.Text;
+        }
+        if (DDPONo.SelectedIndex > 0)
+        {
+            Where = Where + " And PRD.pindentissueid=" + DDPONo.SelectedValue;
+            filterby = filterby + " PO No : " + DDPONo.SelectedItem.Text;
+        }
+        if (TRRecChallanNo.Visible == true)
+        {
+            if (txtRecChallanNo.Text != "0" && txtRecChallanNo.Text != "")
+            {
+                Where = Where + " And PRM.BillNo1='" + txtRecChallanNo.Text + "'";
+                filterby = filterby + " BillNo : '" + txtRecChallanNo.Text + "'";
+            }
+        }
+
+        if (ddCatagory.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.CATEGORY_ID=" + ddCatagory.SelectedValue;
+            filterby = filterby + " Category : " + ddCatagory.SelectedItem.Text;
+        }
+        if (dditemname.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.item_id=" + dditemname.SelectedValue;
+            filterby = filterby + " Item : " + dditemname.SelectedItem.Text;
+        }
+        if (dquality.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.qualityid=" + dquality.SelectedValue;
+            filterby = filterby + " Quality : " + dquality.SelectedItem.Text;
+        }
+        if (dddesign.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.designid=" + dddesign.SelectedValue;
+            filterby = filterby + " design : " + dddesign.SelectedItem.Text;
+        }
+        if (ddcolor.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.colorid=" + ddcolor.SelectedValue;
+            filterby = filterby + " Color : " + ddcolor.SelectedItem.Text;
+        }
+        if (ddshape.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.shapeid=" + ddshape.SelectedValue;
+            filterby = filterby + " shape : " + ddshape.SelectedItem.Text;
+        }
+        if (ddsize.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.sizeid=" + ddsize.SelectedValue;
+        }
+        if (ddlshade.SelectedIndex > 0)
+        {
+            Where = Where + " And vf.shadecolorid=" + ddlshade.SelectedValue;
+            filterby = filterby + " Shadecolor : " + ddlshade.SelectedItem.Text;
+        }
+        if (DDgodown.SelectedIndex > 0)
+        {
+            Where = Where + " And gm.godownid=" + DDgodown.SelectedValue;
+            filterby = filterby + " Godown : " + DDgodown.SelectedItem.Text;
+        }
+
+        #endregion
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        try
+        {
+            SqlCommand cmd = new SqlCommand("PRO_GETPURCHASERECEIVEDETAILS_CI", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@CompanyId", ddCompName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Where", Where);
+
+            SqlDataAdapter sda = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+
+            sda.Fill(dt);
+            DataSet ds = new DataSet();
+            ds.Tables.Add(dt);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                Decimal TQty = 0, TAmount = 0;
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+                //***********
+                sht.Range("A1:M1").Merge();
+                sht.Range("A1").Value = "Purchase Received Details " + "For - " + ddCompName.SelectedItem.Text;
+                sht.Range("A2:M2").Merge();
+                sht.Range("A2").Value = "Filter By :  " + filterby;
+                sht.Row(2).Height = 30;
+                sht.Range("A1:M1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:M2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:M2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A1:M2").Style.Font.Bold = true;
+                //***********Filter By Item_Name
+                row = 3;
+
+                sht.Range("A" + row).Value = "PO NO";
+                sht.Range("B" + row).Value = "Rec Date";
+                sht.Range("C" + row).Value = "Rec ChallanNo";
+
+                sht.Range("D" + row).Value = "Vendor Name";
+                sht.Range("E" + row).Value = "Quality";
+                sht.Range("F" + row).Value = "UCN No";
+
+                sht.Range("G" + row).Value = "Lot No";
+                sht.Range("H" + row).Value = "Rec Qty";
+                sht.Range("I" + row).Value = "Rate";
+                sht.Range("J" + row).Value = "Amount";
+                sht.Range("K" + row).Value = "GateIn No";
+                sht.Range("L" + row).Value = "Godown Name";
+                sht.Range("M" + row).Value = "Moisture(%)";
+
+                sht.Range("H" + row + ":J" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A" + row + ":M" + row).Style.Font.SetBold();
+
+                row = row+1;
+                int Rowfrom = 0;
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    if (Rowfrom == 0)
+                    {
+                        Rowfrom = row;
+                    }
+                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["PurchaseOrderChallanNo"]);
+                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["RECDATE"]);
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveBillChallanNo"]);
+                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["empname"]);
+                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
+                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["TagNo"]);
+                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["Lotno"]);
+                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["ACTUALRECQTY"]);
+                    TQty = TQty + Convert.ToDecimal(ds.Tables[0].Rows[i]["ACTUALRECQTY"]);
+                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Rate"]);
+                    sht.Range("J" + row).FormulaA1 = "=H" + row + '*' + ("$I$" + row + "");
+                    TAmount = TAmount + (Convert.ToDecimal(ds.Tables[0].Rows[i]["ACTUALRECQTY"]) * Convert.ToDecimal(ds.Tables[0].Rows[i]["Rate"]));
+                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["GateInNo"]);
+                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["godownName"]);
+                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveMoisture"]);
+
+                    //sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["empname"]);
+                    //sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
+                    //sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["RECDATE"]);
+                    //sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["VendorLotno"]);
+                    //sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["Lotno"]);
+                    //sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["godownName"]);
+                    //sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["ACTUALRECQTY"]);
+                    //TQty = TQty + Convert.ToDecimal(ds.Tables[0].Rows[i]["ACTUALRECQTY"]);
+                    //sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["Rate"]);
+                    //sht.Range("I" + row).FormulaA1 = "=G" + row + '*' + ("$H$" + row + "");
+                    //TAmount = TAmount + (Convert.ToDecimal(ds.Tables[0].Rows[i]["ACTUALRECQTY"]) * Convert.ToDecimal(ds1.Tables[0].Rows[i]["Rate"]));
+                    //sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["GateInNo"]);
+                    //sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveMoisture"]);
+
+                    row = row + 1;
+                }
+                //sht.Range("F" + row).Value = "Total";
+                //sht.Range("H" + row).FormulaA1 = "=SUM(H" + Rowfrom + ":$H$" + (row - 1) + ")";
+                //sht.Range("J" + row).FormulaA1 = "=SUM(J" + Rowfrom + ":$J$" + (row - 1) + ")";
+                //sht.Range("G" + row + ":J" + row).Style.Font.SetBold();
+                //row = row + 2;
+
+                //DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "Item_Name");
+                //foreach (DataRow dr in dtdistinct.Rows)
+                //{
+                //    DataView dv = new DataView(ds.Tables[0]);
+                //    dv.RowFilter = "Item_Name='" + dr["Item_Name"] + "'";
+                //    dv.Sort = "Receivedate";
+                //    DataSet ds1 = new DataSet();
+                //    ds1.Tables.Add(dv.ToTable());
+                //    //******Headers
+                //    sht.Range("A" + row).SetValue(dr["Item_Name"]);
+                //    sht.Range("A" + row).Style.Font.SetBold();
+                //    sht.Range("A" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                //    row = row + 1;
+                //    sht.Range("A" + row).Value = "Vendor Name";
+                //    sht.Range("B" + row).Value = "Quality";
+                //    sht.Range("C" + row).Value = "Rec.Date";
+
+                //    sht.Range("D" + row).Value = "Vendor Lot No.";
+                //    sht.Range("E" + row).Value = "Internal Lot No.";
+                //    sht.Range("F" + row).Value = "Godown Name";
+
+                //    sht.Range("G" + row).Value = "Rec.Qty";
+                //    sht.Range("H" + row).Value = "Rate";
+                //    sht.Range("I" + row).Value = "Amount";
+                //    sht.Range("J" + row).Value = "Gate In No";
+                //    sht.Range("K" + row).Value = "Moisture(%)";
+                //    sht.Range("G" + row + ":I" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                //    sht.Range("A" + row + ":K" + row).Style.Font.SetBold();
+                //    //******
+                //    row = row + 1;
+                //    int Rowfrom = 0;
+                //    for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+                //    {
+                //        if (Rowfrom == 0)
+                //        {
+                //            Rowfrom = row;
+                //        }
+                //        sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["empname"]);
+                //        sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["QUALITYNAME"]);
+                //        sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["RECDATE"]);
+                //        sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["VendorLotno"]);
+                //        sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["Lotno"]);
+                //        sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["godownName"]);
+                //        sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["ACTUALRECQTY"]);
+                //        TQty = TQty + Convert.ToDecimal(ds1.Tables[0].Rows[i]["ACTUALRECQTY"]);
+                //        sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["Rate"]);
+                //        sht.Range("I" + row).FormulaA1 = "=G" + row + '*' + ("$H$" + row + "");
+                //        TAmount = TAmount + (Convert.ToDecimal(ds1.Tables[0].Rows[i]["ACTUALRECQTY"]) * Convert.ToDecimal(ds1.Tables[0].Rows[i]["Rate"]));
+                //        sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["GateInNo"]);
+                //        sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["ReceiveMoisture"]);
+
+                //        row = row + 1;
+                //    }
+                //    //TOTAL
+
+                //    sht.Range("F" + row).Value = "Total";
+                //    sht.Range("G" + row).FormulaA1 = "=SUM(G" + Rowfrom + ":$G$" + (row - 1) + ")";
+                //    sht.Range("I" + row).FormulaA1 = "=SUM(I" + Rowfrom + ":$I$" + (row - 1) + ")";
+                //    sht.Range("G" + row + ":I" + row).Style.Font.SetBold();
+                //    row = row + 2;
+                //    ds1.Dispose();
+                //}
+                //*************GRAND TOTAL
+                sht.Range("G" + row + ":M" + row).Style.Font.SetBold();
+                sht.Range("F" + row).Value = "Grand Total";
+                sht.Range("H" + row).SetValue(TQty);
+                sht.Range("J" + row).SetValue(TAmount);
+                //*************
+                sht.Columns(1, 20).AdjustToContents();
+                //********************
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("PurchaseReceiveDetails_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "purchaserec", "alert('No Record Found!');", true);
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Label1.Text = ex.Message;
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+           
     }
 }

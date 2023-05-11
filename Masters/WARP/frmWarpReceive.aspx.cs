@@ -271,7 +271,7 @@ public partial class Masters_WARP_frmWarpReceive : System.Web.UI.Page
     protected void FillBeamNo()
     {
         string str = "";
-        if (Session["VarCompanyNo"].ToString() == "21")
+        if (Session["VarCompanyNo"].ToString() == "21" || Session["VarCompanyNo"].ToString() == "45")
         {
             str = @"select Distinct WLM.ID,WLM.LoomNo from WarpLoommaster WLM  inner join WarpLoomDetail WLD on WLM.ID=WLD.ID
                             inner join LoomStock LS on WLM.LoomNo=LS.LoomNo

@@ -119,6 +119,9 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     RDPerday.Visible = false;
                    
                     break;
+                case 247:
+                    RDWeaverRawMaterialIssueDetail.Visible = true;                   
+                    break;
 
             }
             if (RDProcessIssRecDetail.Visible == true)
@@ -6046,7 +6049,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         //Check Conditions
         if (ChkForDate.Checked == true)
         {
-            strCondition = strCondition + " And  ISD.Dateadded>='" + TxtFromDate.Text + "' And  ISD.Dateadded<='" + TxtToDate.Text + "'";
+            strCondition = strCondition + " And  IM.ASSIgndate>='" + TxtFromDate.Text + "' And  IM.ASSIgndate<='" + TxtToDate.Text + "'";
         }
         if (TRcustcode.Visible == true && DDcustcode.SelectedIndex > 0)
         {
@@ -6102,7 +6105,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         param[5] = new SqlParameter("@Issueorderid", txtissueno.Text);
         param[6] = new SqlParameter("@Where", strCondition);
 
-        ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "PRO_FINISHINGISSUERECEIVESUMMARYREPORT", param);
+        ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "PRO_FINISHINGISSUERECEIVESUMMARYREPORTAGNI", param);
 
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -7795,19 +7798,33 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                             sht.Range("E" + row).SetValue(dritem["ShapeName"]);
                             sht.Range("F" + row).SetValue(dritem["Width"].ToString() + 'X' + dritem["Length"].ToString());
 
-                            var qty = ds.Tables[0].Compute("sum(Qty)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
+                            var qty = ds.Tables[0].Compute("sum(Qty)", "EmpName='" + dr2["EmpName"] + "' and Item_Name='" + dritem["Item_Name"] + "' and QualityName='" + dritem["QualityName"] + "' and DesignName='" + dritem["DesignName"] + "' and ColorName='" + dritem["ColorName"] + "' and ShapeName='" + dritem["ShapeName"] + "' and Width='" + dritem["Width"] + "'  and Length='" + dritem["Length"] + "' and Rate='" + dritem["Rate"] + "'");
                             tqty = tqty + Convert.ToDecimal(qty);
                             sht.Range("G" + row).SetValue(qty);
 
-                            var Area = ds.Tables[0].Compute("sum(Area)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
+                            var Area = ds.Tables[0].Compute("sum(Area)", "EmpName='" + dr2["EmpName"] + "' and Item_Name='" + dritem["Item_Name"] + "' and QualityName='" + dritem["QualityName"] + "' and DesignName='" + dritem["DesignName"] + "' and ColorName='" + dritem["ColorName"] + "' and ShapeName='" + dritem["ShapeName"] + "' and Width='" + dritem["Width"] + "'  and Length='" + dritem["Length"] + "' and Rate='" + dritem["Rate"] + "'");
                             tArea = tArea + Convert.ToDecimal(Area);
                             sht.Range("H" + row).SetValue(Area);
-                           
+
                             sht.Range("I" + row).SetValue(dritem["Rate"]);
 
-                            var Amt = ds.Tables[0].Compute("sum(Amount)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
+                            var Amt = ds.Tables[0].Compute("sum(Amount)", "EmpName='" + dr2["EmpName"] + "' and Item_Name='" + dritem["Item_Name"] + "' and QualityName='" + dritem["QualityName"] + "' and DesignName='" + dritem["DesignName"] + "' and ColorName='" + dritem["ColorName"] + "' and ShapeName='" + dritem["ShapeName"] + "' and Width='" + dritem["Width"] + "'  and Length='" + dritem["Length"] + "' and Rate='" + dritem["Rate"] + "'");
                             tAmt = tAmt + Convert.ToDecimal(Amt);
                             sht.Range("J" + row).SetValue(Amt);
+
+                            //var qty = ds.Tables[0].Compute("sum(Qty)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
+                            //tqty = tqty + Convert.ToDecimal(qty);
+                            //sht.Range("G" + row).SetValue(qty);
+
+                            //var Area = ds.Tables[0].Compute("sum(Area)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
+                            //tArea = tArea + Convert.ToDecimal(Area);
+                            //sht.Range("H" + row).SetValue(Area);
+                           
+                            //sht.Range("I" + row).SetValue(dritem["Rate"]);
+
+                            //var Amt = ds.Tables[0].Compute("sum(Amount)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
+                            //tAmt = tAmt + Convert.ToDecimal(Amt);
+                            //sht.Range("J" + row).SetValue(Amt);
 
                             rowto = row;
                         }

@@ -135,6 +135,13 @@
                     TROrderType.Visible = false;
                 }
             }
+            if (RDPOSTATUSAGNI.Checked == true)
+            {
+                TRcategory.Visible = false;
+                TritemName.Visible = false;
+                TRMonthyear.Visible = false;
+                TRSRNo.Visible = false;
+            }
             if (RDPOSTATUS.Checked == true || RDPOSTATUSInHouse.Checked == true || RDPOSTATUSOutSide.Checked == true)
             {
                 TRcategory.Visible = true;
@@ -336,6 +343,12 @@
                                 <tr>
                                     <td>
                                         <asp:RadioButton ID="RDPOSTATUS" Text="PO Status" runat="server" Font-Bold="true"
+                                            GroupName="OrderType" AutoPostBack="true" OnCheckedChanged="RadioButton_CheckedChanged" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:RadioButton ID="RDPOSTATUSAGNI" Text="PO Status" runat="server" Font-Bold="true" Visible="false"
                                             GroupName="OrderType" AutoPostBack="true" OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>
                                 </tr>

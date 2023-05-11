@@ -45,7 +45,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                             From Companyinfo CI(nolock)
                             JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
                             Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
-                            Select unitid,unitname from unit where unitid in (1,2)
+                            Select unitid,unitname from unit where unitid in (1,2,6)
                             Select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId";
             str = str + " select PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From PROCESS_NAME_MASTER PNM inner join UserRightsProcess URP on PNM.PROCESS_NAME_ID=URP.ProcessId and URP.Userid=" + Session["varuserid"] + @"
                           WHere PNM.ProcessType=1 and PNM.PROCESS_NAME_ID<>1 order by PROCESS_NAME";
@@ -460,7 +460,11 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 if (LblErrorMessage.Text == "")
                 {
                     DDcaltype.SelectedValue = ds3.Tables[0].Rows[0]["CalType"].ToString();
-                    DDUnit.SelectedValue = ds3.Tables[0].Rows[0]["UnitId"].ToString();
+                    if (DDUnit.Items.FindByValue(ds3.Tables[0].Rows[0]["UnitId"].ToString()) != null)
+                    {
+                        DDUnit.SelectedValue = ds3.Tables[0].Rows[0]["UnitId"].ToString();
+                    }
+                   
                     int ISSUEID = Convert.ToInt32(ds3.Tables[0].Rows[0]["issueorderid"]);
                     int issuedetailid = Convert.ToInt32(ds3.Tables[0].Rows[0]["issue_detail_id"]);
                     string length = ds3.Tables[0].Rows[0]["length"].ToString();
@@ -1300,11 +1304,11 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     protected void txtWeaverIdNo_TextChanged(object sender, EventArgs e)
     {
         ViewState["recid"] = 0;
-        SqlConnection con = new SqlConnection(ErpGlobalNew.DBCONNECTIONSTRINGNEW);
-        if (con.State == ConnectionState.Closed)
-        {
-            con.Open();
-        }
+       // SqlConnection con = new SqlConnection(ErpGlobalNew.DBCONNECTIONSTRINGNEW);
+        //if (con.State == ConnectionState.Closed)
+        //{
+        //    con.Open();
+        //}
         try
         {
             if (txtWeaverIdNo.Text != "")
@@ -1338,8 +1342,8 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
         }
         finally
         {
-            con.Dispose();
-            con.Close();
+            //con.Dispose();
+            //con.Close();
         }
     }
     protected void btnDeleteName_Click(object sender, EventArgs e)

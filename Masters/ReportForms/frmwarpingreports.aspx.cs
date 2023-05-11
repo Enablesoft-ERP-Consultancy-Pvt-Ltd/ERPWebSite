@@ -210,40 +210,6 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
     }
     protected void LoomBeamIssueDetail()
     {
-        var xapp = new XLWorkbook();
-        var sht = xapp.Worksheets.Add("LoomBeamIssueDetail");
-
-        //*************
-        //***********
-        sht.Row(1).Height = 24;
-        sht.Range("A1:L1").Merge();
-        sht.Range("A1:L1").Style.Font.FontSize = 10;
-        sht.Range("A1:L1").Style.Font.Bold = true;
-        sht.Range("A1:L1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-        sht.Range("A1:L1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-        sht.Range("A1:L1").Style.Alignment.WrapText = true;
-        //************
-        sht.Range("A1").SetValue("Loom Beam IssueDetail From : " + txtfromdate.Text + " To : " + txttodate.Text + "");
-
-        sht.Range("A2:L2").Style.Font.FontSize = 10;
-        sht.Range("A2:L2").Style.Font.Bold = true;
-
-        sht.Range("A2").Value = "Issue Date";
-        sht.Range("B2").Value = "Beam Description";
-        sht.Range("C2").Value = "Lot No";
-        sht.Range("D2").Value = "Tag No";
-        sht.Range("E2").Value = "Unit Name";
-        sht.Range("F2").Value = "Loom No";
-        sht.Range("G2").Value = "Folio No";
-        sht.Range("H2").Value = "Beam No";
-        sht.Range("I2").Value = "Gross Weight";
-        sht.Range("J2").Value = "Tare Weight";
-        sht.Range("K2").Value = "Net Weight";
-        sht.Range("L2").Value = "Pcs";
-
-        int row = 3;
-
-
         string str = "";
         if (ddItemName.SelectedIndex > 0)
         {
@@ -283,6 +249,40 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetWarpingLoomBeamIssueDetail", param);
         if (ds.Tables[0].Rows.Count > 0)
         {
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("LoomBeamIssueDetail");
+
+            //*************
+            //***********
+            sht.Row(1).Height = 24;
+            sht.Range("A1:M1").Merge();
+            sht.Range("A1:M1").Style.Font.FontSize = 10;
+            sht.Range("A1:M1").Style.Font.Bold = true;
+            sht.Range("A1:M1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:M1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:M1").Style.Alignment.WrapText = true;
+            //************
+            sht.Range("A1").SetValue("Loom Beam IssueDetail From : " + txtfromdate.Text + " To : " + txttodate.Text + "");
+
+            sht.Range("A2:M2").Style.Font.FontSize = 10;
+            sht.Range("A2:M2").Style.Font.Bold = true;
+
+            sht.Range("A2").Value = "Issue Date";
+            sht.Range("B2").Value = "Beam Description";
+            sht.Range("C2").Value = "Lot No";
+            sht.Range("D2").Value = "Tag No";
+            sht.Range("E2").Value = "Unit Name";
+            sht.Range("F2").Value = "Loom No";
+            sht.Range("G2").Value = "Folio No";
+            sht.Range("H2").Value = "Beam No";
+            sht.Range("I2").Value = "Gross Weight";
+            sht.Range("J2").Value = "Tare Weight";
+            sht.Range("K2").Value = "Net Weight";
+            sht.Range("L2").Value = "Pcs";
+            sht.Range("M2").Value = "User Name";
+
+            int row = 3;
+
 
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
@@ -301,71 +301,38 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                 sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["TareWeight"]);
                 sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["NetWeight"]);
                 sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["Pcs"]);
+                sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["UserName"]);
 
                 row = row + 1;
             }
             ds.Dispose();
 
+            using (var a = sht.Range("A1" + ":M" + row))
+            {
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            }
 
-
-            ////ds.Tables[0].Columns.Remove("ID");
-            ////ds.Tables[0].Columns.Remove("DetailID");
-            ////Export to excel
-            //GridView GridView1 = new GridView();
-            //GridView1.AllowPaging = false;
-
-            //GridView1.DataSource = ds;
-            //GridView1.DataBind();
-            //Response.Clear();
-            //Response.Buffer = true;
-            //Response.AddHeader("content-disposition",
-            // "attachment;filename=LoomBeamIssueDetail" + DateTime.Now + ".xls");
-            //Response.Charset = "";
-            //Response.ContentType = "application/vnd.ms-excel";
-            //StringWriter sw = new StringWriter();
-            //HtmlTextWriter hw = new HtmlTextWriter(sw);
-
-            //for (int i = 0; i < GridView1.Rows.Count; i++)
-            //{
-            //    //Apply text style to each Row
-            //    GridView1.Rows[i].Attributes.Add("class", "textmode");
-            //}
-            //GridView1.RenderControl(hw);
-
-            ////style to format numbers to string
-            //string style = @"<style> .textmode { mso-number-format:\@; } </style>";
-            //Response.Write(style);
-            //Response.Output.Write(sw.ToString());
-            //Response.Flush();
-            //Response.End();
-            ////*************
+            //*************************************************
+            String Path;
+            sht.Columns(1, 26).AdjustToContents();
+            string Fileextension = "xlsx";
+            string filename = UtilityModule.validateFilename("LoomBeamIssueDetail_" + DateTime.Now + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
         }
-
-        using (var a = sht.Range("A1" + ":L" + row))
-        {
-            a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-            a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-            a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-            a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-        }
-
-        //*************************************************
-        String Path;
-        sht.Columns(1, 26).AdjustToContents();
-        string Fileextension = "xlsx";
-        string filename = UtilityModule.validateFilename("LoomBeamIssueDetail_" + DateTime.Now + "." + Fileextension);
-        Path = Server.MapPath("~/Tempexcel/" + filename);
-        xapp.SaveAs(Path);
-        xapp.Dispose();
-        //Download File
-        Response.ClearContent();
-        Response.ClearHeaders();
-        // Response.Clear();
-        Response.ContentType = "application/vnd.ms-excel";
-        Response.AddHeader("content-disposition", "attachment;filename=" + filename);
-        Response.WriteFile(Path);
-        // File.Delete(Path);
-        Response.End();
     }
     protected void WarpingBeamReceiveDetail()
     {
@@ -437,30 +404,18 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             sht.Range("K1").Value = "ReceiveQty";
             sht.Range("L1").Value = "BeamNo";
             sht.Range("M1").Value = "UserName";
+            sht.Range("N1").Value = "Production Unit";
+            sht.Range("O1").Value = "Company Name";
 
-            sht.Range("A1:M1").Style.Font.Bold = true;
-            sht.Range("G1:M1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-            sht.Range("I1:M1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("A1:O1").Style.Font.Bold = true;
+            sht.Range("G1:H1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("K1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-            //sht.Range("A1").Value = "ItemDescription";
-            //sht.Range("B1").Value = "UnitName";
-            //sht.Range("C1").Value = "LotNo";
-            //sht.Range("D1").Value = "TagNo";
-            //sht.Range("E1").Value = "PCSBEAM";
-            //sht.Range("F1").Value = "NOOFBEAMREQ";
-            //sht.Range("G1").Value = "GodownName";
-            //sht.Range("H1").Value = "IssueNo";
-            //sht.Range("I1").Value = "ReceiveQty";
-            //sht.Range("J1").Value = "BeamNo";
-            //sht.Range("A1:K1").Style.Font.Bold = true;
-            //sht.Range("E1:G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-            //sht.Range("I1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             //******************************
             row = 2;
             decimal Bal = 0;
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                //sht.Range("A" + row + ":J" + row).Style.Font.Bold = true;
                 sht.Range("A" + row + ":L" + row).Style.Alignment.SetWrapText();
 
                 sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveDate"]);
@@ -478,18 +433,8 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                 sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["BeamNo"]);
                 sht.Range("L" + row).Style.NumberFormat.Format = "@";
                 sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["UserName"]);
-
-                //sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["ItemDescription"]);
-                //sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["UnitName"]);
-                //sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["LotNo"]);
-                //sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["TagNo"]);
-                //sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["PCSBEAM"]);
-                //sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["NOOFBEAMREQ"]);
-                //sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["GodownName"]);
-                //sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["IssueNo"]);
-                //sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveQty"]);
-                //sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["BeamNo"]);
-                //sht.Range("J" + row).Style.NumberFormat.Format = "@";
+                sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["ProductionUnitName"]);
+                sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["CompanyName"]);
                 row = row + 1;
             }
             //**********Total
@@ -553,13 +498,16 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
         string Filterby = "Filter By-From:" + txtfromdate.Text + " To: " + txttodate.Text + "";
         int Row;
         string str = @"select WIM.IssueDate,D.DepartmentName,vf.QualityName,vf.ShadeColorName,WID.LotNo,WID.TagNo,Sum(WID.IssueQty) as Qty,WIM.ID as IssueNo,
-                    WOM.Issueno as WarpOrderNO,ROUND(ISNULL(WR.NETWT,0),3) AS RECWT
-                    From WarpRawIssueMaster  WIM  inner join WarpRawissueDetail WID on WIM.id=WID.Id
-                    inner join warpordermaster WOM on Wid.issuemasterid = WOM.ID
-                    inner join  V_FinishedItemDetail vf on WID.Ifinishedid=vf.ITEM_FINISHED_ID
-                    inner join Department D on WIM.Deptid=D.DepartmentId
-                    inner join CompanyInfo ci on WIM.companyid=Ci.companyid 
-                    LEFT JOIN V_WARPNETWTRECEIVE_ISSUENOWISE WR ON WOM.ID=WR.ISSUEMASTERID
+                    WOM.Issueno as WarpOrderNO,ROUND(ISNULL(WR.NETWT,0),3) AS RECWT, U.UnitName, NUD.UserName, CI.CompanyName 
+                    From WarpRawIssueMaster WIM(Nolock)
+                    inner join WarpRawissueDetail WID(Nolock) on WIM.id=WID.Id
+                    inner join warpordermaster WOM(Nolock) on Wid.issuemasterid = WOM.ID
+                    inner join  V_FinishedItemDetail vf(Nolock) on WID.Ifinishedid=vf.ITEM_FINISHED_ID
+                    inner join Department D(Nolock) on WIM.Deptid=D.DepartmentId
+                    inner join CompanyInfo ci(Nolock) on WIM.companyid=Ci.companyid 
+                    LEFT JOIN V_WARPNETWTRECEIVE_ISSUENOWISE WR(Nolock) ON WOM.ID=WR.ISSUEMASTERID 
+                    LEFT JOIN Units U(Nolock) ON U.UnitsId = WOM.Units 
+                    JOIN NewUserDetail NUD(Nolock) ON NUD.UserId = WOM.UserID 
                     WHere WIM.CompanyId=" + DDCompany.SelectedValue + " and WIM.issuedate>='" + txtfromdate.Text + "' and WIM.issuedate<='" + txttodate.Text + "'";
         if (DDProcess.SelectedIndex > 0)
         {
@@ -592,7 +540,9 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             Filterby = Filterby + "-" + "TagNo :" + txtTagno.Text;
         }
 
-        str = str + " group by WIM.IssueDate,D.DepartmentName,vf.QualityName,vf.ShadeColorName,WID.LotNo,WID.TagNo,WIM.ID,Wom.issueno,WR.NETWT order by WIM.issuedate";
+        str = str + @" group by WIM.IssueDate,D.DepartmentName,vf.QualityName,vf.ShadeColorName,WID.LotNo,WID.TagNo,WIM.ID,Wom.issueno,WR.NETWT, 
+        U.UnitName, NUD.UserName, CI.CompanyName order by WIM.issuedate";
+
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -601,25 +551,25 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             var sht = xapp.Worksheets.Add("WarpingIssueDetails");
             //****************
             //****************
-            sht.Range("A1:K1").Merge();
-            sht.Range("A1:K1").Style.Font.FontSize = 11;
-            sht.Range("A1:K1").Style.Font.Bold = true;
-            sht.Range("A1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A1:K1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-            sht.Range("A1").SetValue("WARPING ISSUE DETAIL");
+            sht.Range("A1:M1").Merge();
+            sht.Range("A1:M1").Style.Font.FontSize = 11;
+            sht.Range("A1:M1").Style.Font.Bold = true;
+            sht.Range("A1:M1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:M1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + " WARPING ISSUE DETAIL");
             sht.Row(1).Height = 21.75;
 
-            sht.Range("A2:K2").Merge();
-            sht.Range("A2:K2").Style.Font.FontSize = 11;
-            sht.Range("A2:K2").Style.Font.Bold = true;
-            sht.Range("A2:K2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A2:K2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A2:M2").Merge();
+            sht.Range("A2:M2").Style.Font.FontSize = 11;
+            sht.Range("A2:M2").Style.Font.Bold = true;
+            sht.Range("A2:M2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A2:M2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
             sht.Range("A2").SetValue(Filterby);
             sht.Row(2).Height = 21.75;
 
-            sht.Range("A3:K3").Style.Font.FontSize = 11;
-            sht.Range("A3:K3").Style.Font.Bold = true;
-            sht.Range("A3:K3").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A3:M3").Style.Font.FontSize = 11;
+            sht.Range("A3:M3").Style.Font.Bold = true;
+            sht.Range("A3:M3").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
             sht.Range("G3:I3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             sht.Row(3).Height = 18.00;
             //
@@ -634,6 +584,8 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             sht.Range("I3").SetValue("BalQty");
             sht.Range("J3").SetValue("Issue Challan No.");
             sht.Range("K3").SetValue("Warp Order No.");
+            sht.Range("L3").SetValue("Production Unit");
+            sht.Range("M3").SetValue("User Name");
             Row = 4;
             if (DDProcess.SelectedItem.Text != "WARPING COTTON")
             {
@@ -657,8 +609,9 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                 sht.Range("I" + Row).FormulaA1 = "=G" + Row + "-H" + Row;
                 sht.Range("J" + Row).SetValue(ds.Tables[0].Rows[i]["IssueNO"]);
                 sht.Range("K" + Row).SetValue(ds.Tables[0].Rows[i]["Warporderno"]);
+                sht.Range("L" + Row).SetValue(ds.Tables[0].Rows[i]["UnitName"]);
+                sht.Range("M" + Row).SetValue(ds.Tables[0].Rows[i]["UserName"]);
                 Row = Row + 1;
-
             }
             //**********Total
             //var issued = sht.Evaluate("SUM(G4:G" + (Row - 1) + ")");
@@ -684,7 +637,6 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             Response.WriteFile(Path);
             // File.Delete(Path);
             Response.End();
-
         }
         else
         {
@@ -694,7 +646,26 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
     protected void BeamStock()
     {
         int Row;
-        string str = @"select WLM.LoomNo as BeamNo,dbo.F_BeamNoDescription(WLM.LoomNo)as BeamDescription,GM.GodownName
+        string str = "";
+
+        if (Session["VarCompanyNo"].ToString() == "14")
+        {
+            str = @"select WLM.LoomNo as BeamNo,dbo.F_BeamNoDescription(WLM.LoomNo)as BeamDescription,GM.GodownName
+                    ,sum(WD.Pcs-isnull(WD.IssuePcs,0)) as Pcs,WLM.Grossweight,WLM.TareWeight,WLM.NetWeight
+                    From WarpLoommaster WLM inner Join LoomStock ls on WLM.LoomNo=Ls.LoomNo
+                    inner join WarpLoomDetail WD on WLM.ID=WD.ID
+                    inner join godownmaster GM on LS.GodownId=GM.GoDownID
+                    Where Round(LS.Qtyinhand,3)>0.09 and WLM.Receivedate>'2017-08-08 00:00:00.000'
+                    and WLM.LoomNo not in('4573','4574','4575','4576','4577','4578','4579','4580','4581','4582','4583','4584','4585','4586','4587','4588','4589','4590','17477',
+                    '17478','19159','19160','19161','19162','19163','19164','19165','41233')
+                    group by WLM.LoomNo,GM.GodownName,WLM.Grossweight,WLM.TareWeight,WLM.NetWeight
+                    having sum(WD.Pcs-isnull(WD.IssuePcs,0))>0
+                    order by case When ISNUMERIC(WLM.LoomNo)=1 then cast(WLM.LoomNo as int) else 999999 end";
+        }
+        else
+        {
+
+            str = @"select WLM.LoomNo as BeamNo,dbo.F_BeamNoDescription(WLM.LoomNo)as BeamDescription,GM.GodownName
                     ,sum(WD.Pcs-isnull(WD.IssuePcs,0)) as Pcs,WLM.Grossweight,WLM.TareWeight,WLM.NetWeight
                     From WarpLoommaster WLM inner Join LoomStock ls on WLM.LoomNo=Ls.LoomNo
                     inner join WarpLoomDetail WD on WLM.ID=WD.ID
@@ -702,6 +673,7 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                     Where Round(LS.Qtyinhand,3)>0.09
                     group by WLM.LoomNo,GM.GodownName,WLM.Grossweight,WLM.TareWeight,WLM.NetWeight
                     order by case When ISNUMERIC(WLM.LoomNo)=1 then cast(WLM.LoomNo as int) else 999999 end";
+        }
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -863,7 +835,10 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             sht.Range("I1").Value = "Req Qty.";
             sht.Range("J1").Value = "Rec Qty";
             sht.Range("K1").Value = "Bal Qty";
-            sht.Range("A1:K1").Style.Font.Bold = true;
+            sht.Range("L1").Value = "Production Unit";
+            sht.Range("M1").Value = "User Name";
+            sht.Range("N1").Value = "COMPANY NAME";
+            sht.Range("A1:N1").Style.Font.Bold = true;
             sht.Range("E1:G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             sht.Range("I1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             //******************************
@@ -883,6 +858,9 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                 sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["Receiveqty"]);
                 Bal = Convert.ToDecimal(ds.Tables[0].Rows[i]["Reqqty"]) - Convert.ToDecimal(ds.Tables[0].Rows[i]["Receiveqty"]);
                 sht.Range("K" + row).SetValue(Bal);
+                sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["UnitName"]);
+                sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["UserName"]);
+                sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["CompanyName"]);
                 row = row + 1;
             }
             //**********Total
@@ -907,7 +885,6 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
         {
             ScriptManager.RegisterStartupScript(Page, GetType(), "al3", "alert('No records found..')", true);
         }
-
     }
     protected void DDcustcode_SelectedIndexChanged(object sender, EventArgs e)
     {

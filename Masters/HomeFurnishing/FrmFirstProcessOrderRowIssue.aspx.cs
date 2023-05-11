@@ -186,7 +186,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
         param[0] = new SqlParameter("@ProcessID", ddProcessName.SelectedValue);
         param[1] = new SqlParameter("@ISSUEORDERID", ddOrderNo.SelectedValue);
         param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GetHomeFurnishingReceiveChallanNo", param);
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GetHomeFurnishingReceiveChallanNoagni", param);
         UtilityModule.ConditionalComboFillWithDS(ref DDRecChallanNo, ds, 0, true, "--Select--");
 
         //fill_Grid_ShowConsmption();
@@ -587,7 +587,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
             param[1] = new SqlParameter("@ISSUEORDERID", ddOrderNo.SelectedValue);
             param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
             param[3] = new SqlParameter("@RecChallanNo", DDRecChallanNo.SelectedValue);
-            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FILLFirstProcessOrderRowIssueConsumption", param);
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FILLFirstProcessOrderRowIssueConsumptionagni", param);
 
             DG.DataSource = ds;
             DG.DataBind();

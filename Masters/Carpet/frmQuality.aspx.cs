@@ -60,6 +60,11 @@ public partial class Masters_Campany_Quality : CustomPage
                     DGMonthName.DataBind();
                     TRRate.Visible = true;
                     break;
+                case 43:
+                    Trinstruction.Visible = false;
+                    TrQualityRemark.Visible = false;
+                    TRRate.Visible = true;
+                    break;
                 default:
                     Trinstruction.Visible = false;
                     TrQualityRemark.Visible = false;

@@ -7,7 +7,7 @@
     <br />
     <script src="../../Scripts/JScript.js" type="text/javascript"></script>
     <script src="../../Scripts/jquery-1.4.1.js" type="text/javascript"></script>
-    <%--<script type="text/javascript" src="../../Scripts/Fixfocus.js"></script>--%>
+    <%--<script type="text/javascript" src="../../Scripts/Fixfocus.js"></script>--%>  
     <script type="text/javascript">
         function CloseForm() {
             window.location.href = "../../main.aspx";
@@ -19,6 +19,9 @@
             window.location.href = "PurchaseReceive.aspx";
         }
         function validate() {
+
+            var varcompanyNo = document.getElementById('CPH_Form_hncomp').value
+
             if (document.getElementById("<%=DDCompanyName.ClientID %>").value <= "0") {
                 alert("Pls Select Company Name");
                 document.getElementById("<%=DDCompanyName.ClientID %>").focus();
@@ -39,6 +42,26 @@
                 document.getElementById("<%=TxtBillNo.ClientID %>").focus();
                 return false;
             }
+
+            if (varcompanyNo == "22") {
+
+                if (document.getElementById("<%=txtbillno1.ClientID %>").value == "") {
+                    alert("Bill No Cannot Be Blank");
+                    document.getElementById("<%=txtbillno1.ClientID %>").focus();
+                    return false;
+                }
+                if (document.getElementById("<%=txtBillDate.ClientID %>").value == "") {
+                    alert("Bill Date Cannot Be Blank");
+                    document.getElementById("<%=txtBillDate.ClientID %>").focus();
+                    return false;
+                }
+                if (document.getElementById("<%=txtbaleno.ClientID %>").value == "") {
+                    alert("Bale No Cannot Be Blank");
+                    document.getElementById("<%=txtbaleno.ClientID %>").focus();
+                    return false;
+                }
+            }
+
             if (document.getElementById('CPH_Form_DDCategory').value <= "0") {
                 alert("Please Select Category Name....!");
                 document.getElementById("CPH_Form_DDCategory").focus();
@@ -55,7 +78,7 @@
                     document.getElementById("CPH_Form_DDQuality").focus();
                     return false;
                 }
-            }
+            }            
             if (document.getElementById("<%=TdDesign.ClientID %>")) {
                 if (document.getElementById('CPH_Form_DDDesign').options[document.getElementById('CPH_Form_DDDesign').selectedIndex].value <= 0) {
                     alert("Please Select Design Name....!");
@@ -174,6 +197,7 @@
             }
         }
     </script>
+   
     <asp:UpdatePanel ID="up1" runat="server">
         <ContentTemplate>
             <div>
@@ -891,6 +915,9 @@
                                             <ItemTemplate>
                                                 <asp:Label ID="lblDGLOTNO" Text='<%#Bind("LOTNO") %>' runat="server" />
                                             </ItemTemplate>
+                                             <EditItemTemplate>
+                                                <asp:TextBox ID="txtLotNo" Text='<%#Bind("LOTNO") %>' Width="50px" runat="server" Enabled="false" />
+                                            </EditItemTemplate>
                                         </asp:TemplateField>
                                          <asp:TemplateField HeaderText="TAGNO">
                                             <ItemTemplate>

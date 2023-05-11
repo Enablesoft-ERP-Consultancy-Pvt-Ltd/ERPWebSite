@@ -161,6 +161,10 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                     break;
                 case "22":
                     customlotno.Visible = true;
+                    Label42.Text = "Inwards No";
+                    Label14.Text = "Bill No";
+                    Label19.Text = "Issue LotNo";
+                    Label31.Text = "Issue TagNo";
                     break;
                 case "28":
                     //TxtLoss.Enabled = false;
@@ -1799,7 +1803,26 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
 //            CROSS APPLY (Select * From dbo.F_GetPPNo_OrderNo(V.PPNo)) OD  
 //            Where V.PRMid = " + HPRMID.Value + ") SELECT * FROM summary WHERE RK=1";
 
-        string qry = @"Select V.CATEGORY_NAME, V.ITEM_NAME, V.QualityName, V.DESCRIPTION, V.GodownName, V.RecQuantity, IsNull(VR.RetQty, 0) As RetQty, V.lotno, V.EmpName, 
+        string qry = "";
+
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            qry = @"Select V.CATEGORY_NAME, V.ITEM_NAME, V.QualityName, V.DESCRIPTION, V.GodownName, V.RecQuantity, IsNull(VR.RetQty, 0) As RetQty, V.lotno, V.EmpName, 
+            V.CompanyName, V.gatepassno, V.indentno, V.EmpAddress, V.EmpPhoneNo, V.EmpMobile, V.CompanyAddress, V.CompanyPhoneNo, V.CompanyFaxNo, V.TinNo, 
+            V.PRMid, V.Date, V.CHALLANNO, MastercompanyId, DyingMatch, DyeingType, Dyeing,  V.CustomerOrderNo, V.Buyercode, PROCESS_NAME, Rec_Iss_ItemFlag, 
+            RRRemark, Lshort, Shrinkage, V.TagNo, V.GateInNo, GSTIN, EMPGSTIN, CheckedBy, ApprovedBy, od.customercode, od.OrderNo, od.Localorder, OD.Merchantname, V.LossQty,V.BILLNo
+            ,V.UserName,v.UnitName,isnull((Select isnull(sum(ID.Quantity),0) from IndentDetail ID Where ID.OFinishedId=V.FinishedId and Id.lotno=V.LotNo and ID.TagNo=V.TagNo and Id.IndentId=V.IndentId),0) as IndentQty
+            ,isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
+	            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+	            Where PPID=V.PPNo for xml path('')),'') as OrderQuality 
+            FROM V_IndentRawRec V(Nolock)  
+            LEFT JOIN V_IndentRawReturnQty VR(Nolock) ON VR.PRMid = V.PRMid AND VR.PRTid = V.PRTid 
+            CROSS APPLY (Select * From dbo.F_GetPPNo_OrderNo(V.PPNo)) OD  
+            Where V.PRMid = " + HPRMID.Value + " ";
+        }
+        else
+        {
+            qry = @"Select V.CATEGORY_NAME, V.ITEM_NAME, V.QualityName, V.DESCRIPTION, V.GodownName, V.RecQuantity, IsNull(VR.RetQty, 0) As RetQty, V.lotno, V.EmpName, 
             V.CompanyName, V.gatepassno, V.indentno, V.EmpAddress, V.EmpPhoneNo, V.EmpMobile, V.CompanyAddress, V.CompanyPhoneNo, V.CompanyFaxNo, V.TinNo, 
             V.PRMid, V.Date, V.CHALLANNO, MastercompanyId, DyingMatch, DyeingType, Dyeing,  V.CustomerOrderNo, V.Buyercode, PROCESS_NAME, Rec_Iss_ItemFlag, 
             RRRemark, Lshort, Shrinkage, V.TagNo, V.GateInNo, GSTIN, EMPGSTIN, CheckedBy, ApprovedBy, od.customercode, od.OrderNo, od.Localorder, OD.Merchantname, V.LossQty,V.BILLNo
@@ -1808,6 +1831,8 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
             LEFT JOIN V_IndentRawReturnQty VR(Nolock) ON VR.PRMid = V.PRMid AND VR.PRTid = V.PRTid 
             CROSS APPLY (Select * From dbo.F_GetPPNo_OrderNo(V.PPNo)) OD  
             Where V.PRMid = " + HPRMID.Value + " ";
+        }       
+
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
@@ -1829,6 +1854,12 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                     break;
                 case "44":
                     Session["rptFileName"] = "~\\Reports\\IndentRawRecagni.rpt";
+                    break;
+                case "22":
+                    Session["rptFileName"] = "~\\Reports\\IndentRawRecNewDiamond.rpt";
+                    break;
+                case "43":
+                    Session["rptFileName"] = "~\\Reports\\IndentRawRecNewCI.rpt";
                     break;
                 default:
                     Session["rptFileName"] = "~\\Reports\\IndentRawRecNew.rpt";

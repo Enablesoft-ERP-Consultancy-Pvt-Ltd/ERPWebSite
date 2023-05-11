@@ -24,13 +24,15 @@ public partial class Masters_ReportForms_frmwipstockreport : System.Web.UI.Page
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName                                                      
                            select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=0 and ICM.MasterCompanyid=" + Session["varcompanyid"] + @"
-                           select Val,Type from Sizetype";
+                           select Val,Type from Sizetype
+                           Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
             UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 1, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDsizetype, ds, 2, false, "--Plz Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDCustCode, ds, 3, true, "--Select--");
             if (DDcompany.Items.Count > 0)
             {
                 DDcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -1315,6 +1317,14 @@ public partial class Masters_ReportForms_frmwipstockreport : System.Web.UI.Page
         {
             where = where + " and vf.sizeid=" + DDSize.SelectedValue;
         }
+        if (DDCustCode.SelectedIndex > 0)
+        {
+            where = where + " and OM.CUSTOMERID=" + DDCustCode.SelectedValue;
+        }
+        if (DDOrderNo.SelectedIndex > 0)
+        {
+            where = where + " and OM.ORDERID=" + DDOrderNo.SelectedValue;
+        }
 
         //SqlParameter[] param = new SqlParameter[3];
         //param[0] = new SqlParameter("@companyId", DDcompany.SelectedValue);
@@ -1385,6 +1395,20 @@ public partial class Masters_ReportForms_frmwipstockreport : System.Web.UI.Page
             lblmsg.Text = "No records found for this combination.";
         }
 
+    }
+    protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string orderNo = "CustomerOrderNo";
+        if (Session["varcompanyId"].ToString() == "9")
+        {
+            orderNo = "Localorder + '#' + CustomerorderNo ";
+        }
+        string Str = @"Select OrderId," + orderNo + " as CustomerOrderNo From OrderMaster where CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDcompany.SelectedValue + " Order By CustomerOrderNo";
+        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        {
+            Str = @"Select OrderId," + orderNo + " as CustomerOrderNo From OrderMaster where Status = 0 And CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDcompany.SelectedValue + " Order By CustomerOrderNo";
+        }
+        UtilityModule.ConditionalComboFill(ref DDOrderNo, Str, true, "--Select--");
     }
   
 }

@@ -37,6 +37,7 @@
               <xs:element name="PENALITYAMT" type="xs:decimal" minOccurs="0" />
               <xs:element name="CompanyGstNo" type="xs:string" minOccurs="0" />
               <xs:element name="UserName" type="xs:string" minOccurs="0" />
+              <xs:element name="ReceiveChallanNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

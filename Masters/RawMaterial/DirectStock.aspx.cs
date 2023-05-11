@@ -23,7 +23,7 @@ public partial class Masters_process_itemRecieve : System.Web.UI.Page
         if (Session["varCompanyId"] == null)
         {
             Response.Redirect("~/Login.aspx");
-        }
+        }   
 
         lblerror.Text = "";
         Label2.Text = "";
@@ -91,6 +91,10 @@ public partial class Masters_process_itemRecieve : System.Web.UI.Page
                 case "42":
                     BtnStockNoToVCMSale.Visible = true;
                     TDUpdatePrice.Visible = true;                    
+                    break;
+                case "44":
+                    ChkForExcelExport.Visible = false;
+                    ChkForInchSize.Visible = true;
                     break;
                 default:
                     ChkForExcelExport.Visible = false;
@@ -1646,10 +1650,24 @@ public partial class Masters_process_itemRecieve : System.Web.UI.Page
         {
             view = "V_FinishedItemDetailNew";
         }
-        string str = @"select vf.item_name,Vf.QualityName,Vf.designname,vf.ColorName,vf.ShapeName,
-                case when CN.StockUnitid=1 then vf.SizeMtr else vf.SizeFt end as SizeFt,CN.TStockNo,CN.StockNo, IsNull(CN.Price, 0) Price 
+        string str =string.Empty;
+        if (Session["varCompanyId"].ToString() == "44")
+        {
+            str = @"select vf.item_name,Vf.QualityName,Vf.designname,vf.ColorName,vf.ShapeName,
+                case when CN.StockUnitid=1 then vf.SizeMtr when CN.StockUnitid=6 then vf.SizeInch else vf.SizeFt end as SizeFt,CN.TStockNo,CN.StockNo, IsNull(CN.Price, 0) Price 
                 From  CarpetNumber CN Inner Join " + view + @" Vf on CN.Item_Finished_Id=Vf.ITEM_FINISHED_ID
                 Where CN.TypeId=0 and CN.Pack=0 ";
+        }
+        else
+        {
+            str = @"select vf.item_name,Vf.QualityName,Vf.designname,vf.ColorName,vf.ShapeName,
+                case when CN.StockUnitid=1 then vf.SizeMtr  else vf.SizeFt end as SizeFt,CN.TStockNo,CN.StockNo, IsNull(CN.Price, 0) Price 
+                From  CarpetNumber CN Inner Join " + view + @" Vf on CN.Item_Finished_Id=Vf.ITEM_FINISHED_ID
+                Where CN.TypeId=0 and CN.Pack=0 ";
+        
+        
+        
+        }
         if (ddlitemname.SelectedIndex > 0)
         {
             str = str + " and Vf.Item_id=" + ddlitemname.SelectedValue;
@@ -2408,5 +2426,23 @@ public partial class Masters_process_itemRecieve : System.Web.UI.Page
     protected void BtnExcelPreview_Click(object sender, EventArgs e)
     {
         DirectFinishedStockExcelReport();
+    }
+    protected void ChkForInchSize_CheckedChanged(object sender, EventArgs e)
+    {
+        if (ChkForInchSize.Checked == true)
+        {
+            ChkMtr.Checked = false;
+        }
+        if (ChkForInchSize.Checked == true)
+        {
+            //if (variable.VarNewQualitySize == "1")
+            //{
+            //    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,MtrSize from QualitySizeNew where Shapeid=" + ddshape.SelectedValue, true, "select size");
+            //}
+            //else
+            //{
+                UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeInch from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "select size");
+            //}
+        }
     }
 }

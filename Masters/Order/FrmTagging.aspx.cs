@@ -98,11 +98,23 @@ public partial class Masters_Campany_FrmTagging : CustomPage
             }
             else
             {
-                Str = @"SELECT distinct C.CustomerId,(companyName+'     '+C.CustomerCode) CustomerCode  
+
+//                if (Convert.ToInt32(Session["varcompanyno"]) == 44)
+//                {
+//                    Str = @"SELECT distinct C.CustomerId,(companyName+'     '+C.CustomerCode) CustomerCode  
+//                    FROM OrderMaster OM(Nolock) 
+//                    INNER JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
+//                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @" 
+//                    Where  om.status=0 And OM.Companyid=" + DDLInCompanyName.SelectedValue + "";
+//                }
+//                else
+//                {
+                    Str = @"SELECT distinct C.CustomerId,(companyName+'     '+C.CustomerCode) CustomerCode  
                     FROM OrderMaster OM(Nolock) 
                     INNER JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
                     INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @" 
                     Where (OD.TAG_FLAG is null OR OD.TAG_FLAG=0) and om.status=0 And OM.Companyid=" + DDLInCompanyName.SelectedValue + "";
+               // }
             }
             Str = Str + "  order by  companyName+'     '+C.CustomerCode ";
         }
@@ -116,19 +128,16 @@ public partial class Masters_Campany_FrmTagging : CustomPage
     }
     protected void DDLOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         GetOrderDetail();
         Fill_Grid();
     }
     private void GetOrderDetail()
     {
         DataSet ds = null;
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            con.Open();
             string strsql = @"Select customerorderno,orderid,replace(convert(varchar(11),OrderDate,106), ' ','-') as OrderDate,IsNull(replace(convert(varchar(11),prodreqdate,106), ' ','-'),0)  as prodreqdate,replace(convert(varchar(11),duedate,106), ' ','-') as duedate,remarks,replace(convert(varchar(11),DispatchDate,106), ' ','-') as DispatchDate from ordermaster where orderid=" + DDLOrderNo.SelectedValue;
-            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 TxtOrderDate.Text = ds.Tables[0].Rows[0]["orderdate"].ToString();
@@ -140,11 +149,6 @@ public partial class Masters_Campany_FrmTagging : CustomPage
         catch (Exception ex)
         {
             UtilityModule.MessageAlert(ex.Message, "Master/Order/FrmTagging.aspx");
-        }
-        finally
-        {
-            con.Close();
-            con.Dispose();
         }
     }
     private void Fill_Grid()
@@ -162,10 +166,8 @@ public partial class Masters_Campany_FrmTagging : CustomPage
     private DataSet GetDetail()
     {
         DataSet ds = null;
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            con.Open();
             SqlParameter[] para = new SqlParameter[4];
             para[0] = new SqlParameter("@OrderId", SqlDbType.Int);
             para[1] = new SqlParameter("@EditFlag", SqlDbType.Int);
@@ -176,18 +178,13 @@ public partial class Masters_Campany_FrmTagging : CustomPage
             para[1].Value = ChkForEdit.Checked == true ? 1 : 0;
             para[2].Value = variable.Withbuyercode;
             para[3].Value = variable.VarNewQualitySize;
-            ds = SqlHelper.ExecuteDataset(con, CommandType.StoredProcedure, "Pro_Get_Tag_Stock", para);
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_Get_Tag_Stock", para);
         }
         catch (Exception ex)
         {
             UtilityModule.MessageAlert(ex.Message, "Master/Order/FrmTagging.aspx");
             lblErrorMessage.Visible = true;
             lblErrorMessage.Text = ex.Message;
-        }
-        finally
-        {
-            con.Close();
-            con.Dispose();
         }
         return ds;
     }
@@ -237,6 +234,7 @@ public partial class Masters_Campany_FrmTagging : CustomPage
                             Label lblpreprodassignedqty = (Label)DGOrderDetail.Rows[i].FindControl("lblpreprodassignedqty");
                             Label lblpreinternalprodassignedqty = (Label)DGOrderDetail.Rows[i].FindControl("lblpreinternalprodassignedqty");
                             Label lbloqty = (Label)DGOrderDetail.Rows[i].FindControl("lbloqty");
+                            Label lblextraqty = (Label)DGOrderDetail.Rows[i].FindControl("lblextraqty");
                             Label lblsqty = (Label)DGOrderDetail.Rows[i].FindControl("lblsqty");
                             TextBox txtProd_Weaving_Rate = (TextBox)DGOrderDetail.Rows[i].FindControl("txtProd_Weaving_Rate");
                             TextBox txtInt_Weaving_Rate = (TextBox)DGOrderDetail.Rows[i].FindControl("txtInt_Weaving_Rate");
@@ -266,6 +264,8 @@ public partial class Masters_Campany_FrmTagging : CustomPage
                                 cmd.Parameters.AddWithValue("Int_Weaving_Rate", Int_Weaving_Rate);
 
                                 int qtyReq = Convert.ToInt32(lbloqty.Text);
+                                int qtyextra = Convert.ToInt32(string.IsNullOrEmpty(lblextraqty.Text)?"0":lblextraqty.Text);
+                                qtyReq = qtyReq + qtyextra;
                                 int stock = Convert.ToInt32(lblsqty.Text);
                                 int preinternalprodassignedqty = Convert.ToInt32(lblpreinternalprodassignedqty.Text == "" ? "0" : lblpreinternalprodassignedqty.Text);
 
@@ -388,6 +388,7 @@ public partial class Masters_Campany_FrmTagging : CustomPage
                 Label lblpreprodassignedqty = (Label)DGOrderDetail.Rows[i].FindControl("lblpreprodassignedqty");
                 Label lblpreinternalprodassignedqty = (Label)DGOrderDetail.Rows[i].FindControl("lblpreinternalprodassignedqty");
                 Label lbloqty = (Label)DGOrderDetail.Rows[i].FindControl("lbloqty");
+                Label lblextraqty = (Label)DGOrderDetail.Rows[i].FindControl("lblextraqty");
                 Label lblsqty = (Label)DGOrderDetail.Rows[i].FindControl("lblsqty");
 
                 if (Convert.ToInt32(Session["varcompanyno"]) == 16)
@@ -436,6 +437,8 @@ public partial class Masters_Campany_FrmTagging : CustomPage
                 arrPara[5].Value = TxtSupplierQty.Text;
 
                 int qtyReq = Convert.ToInt32(lbloqty.Text);
+                int qtyextra = Convert.ToInt32(string.IsNullOrEmpty(lblextraqty.Text) ? "0" : lblextraqty.Text);
+                qtyReq = qtyReq + qtyextra;
                 int stock = Convert.ToInt32(lblsqty.Text);
                 int internalprodqty = Convert.ToInt32(txtInt_prod_qty_req.Text == "" ? "0" : txtInt_prod_qty_req.Text);
                 int preinternalprodassignedqty = Convert.ToInt32(lblpreinternalprodassignedqty.Text == "" ? "0" : lblpreinternalprodassignedqty.Text);

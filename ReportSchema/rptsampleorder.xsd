@@ -33,6 +33,7 @@
               <xs:element name="RoundMtrFlag" type="xs:int" minOccurs="0" />
               <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
               <xs:element name="Remarks" type="xs:string" minOccurs="0" />
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

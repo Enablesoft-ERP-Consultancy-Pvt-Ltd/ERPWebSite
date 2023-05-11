@@ -11,6 +11,7 @@ using System.Text;
 public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMaster : System.Web.UI.Page
 {
     static int hnEmpId = 0;
+    static int varrecDetailID = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["varCompanyId"] == null)
@@ -111,15 +112,52 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
     }
     protected void DDChallanNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        Fillstockno();
+
+        string str = string.Empty, size = string.Empty ;
+        if (Session["varCompanyId"].ToString() == "44")
+        {
+            str = @"select top(1) UnitId From HomeFurnishingReceiveMaster Where processrecid=" + DDChallanNo.SelectedValue;
+            DataSet dsORDER = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+            if (dsORDER.Tables[0].Rows.Count > 0)
+            {
+                //if (dsORDER.Tables[0].Rows[0]["orderunitid"].ToString() == "1")
+                //{
+                if (ddunit.Items.FindByValue(dsORDER.Tables[0].Rows[0]["unitid"].ToString()) != null)
+                {
+                    ddunit.SelectedValue = dsORDER.Tables[0].Rows[0]["unitid"].ToString();
+                }
+                // }
+            }
+            if (dsORDER.Tables[0].Rows[0]["unitid"].ToString() == "1")
+            {
+                size = "VF.SizeMtr";
+            }
+            else if (dsORDER.Tables[0].Rows[0]["unitid"].ToString() == "6")
+            {
+                size = "VF.SizeInch";
+
+
+            }
+            else
+            {
+                size = "VF.SizeFt";
+            }
+        }
+        else
+        {
+            size = "VF.SizeFt";
+        }
+        ViewState["size"] = size;
+        Fillstockno(size);
     }
-    protected void Fillstockno()
+    protected void Fillstockno(string size)
     {
         DGStockDetail.DataSource = null;
         DGStockDetail.DataBind();
 
         string str = @"Select PRM.ProcessRecId, PRD.ProcessRecDetailId, PRD.Order_FinishedID, PRD.OrderDetailDetail_FinishedID, 
-            VF.ITEM_NAME + ' ' + VF.QualityName + ' ' + VF.DesignName + ' ' + VF.ColorName + ' ' + VF.ShapeName + ' ' + VF.SizeFt ItemDescription, 
+            VF.ITEM_NAME + ' ' + VF.QualityName + ' ' + VF.DesignName + ' ' + VF.ColorName + ' ' + VF.ShapeName + ' ' + "+size+@" ItemDescription, 
             PRD.Qty orderedqty
             From HomeFurnishingReceiveMaster PRM(Nolock) 
             JOIN HomeFurnishingReceiveDetail PRD(Nolock) ON PRD.ProcessRecId = PRM.ProcessRecId 
@@ -256,7 +294,14 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
                 txtfoliono.Text = cmd.Parameters["@ISSUEORDERID"].Value.ToString(); //param[5].Value.ToString();
                 hnissueorderid.Value = cmd.Parameters["@issueorderid"].Value.ToString();// param[0].Value.ToString();
                 FillGrid();
-                Fillstockno();
+                string size = string.Empty;
+                if (!string.IsNullOrEmpty(ViewState["size"].ToString()))
+                {
+                    size = ViewState["size"].ToString();
+
+                }
+                else { size="vf.sizeft"; }
+                Fillstockno(size);
                 Refreshcontrol();
                 disablecontrols();
             }
@@ -1022,7 +1067,15 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
     protected void DGStockDetail_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         DGStockDetail.PageIndex = e.NewPageIndex;
-        Fillstockno();
+        string size = string.Empty;
+        if (!string.IsNullOrEmpty(ViewState["size"].ToString()))
+        {
+            size = ViewState["size"].ToString();
+
+        }
+        else { size = "vf.sizeft"; }
+        Fillstockno(size);
+        //Fillstockno();
     }
 
     protected void DG_SelectedIndexChanged(object sender, EventArgs e)
@@ -1030,6 +1083,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
         int rowindex = DG.SelectedRow.RowIndex;
 
         Label lblProcessRecDetailId = (Label)DG.Rows[rowindex].FindControl("lblProcessRecDetailId");
+        varrecDetailID = Convert.ToInt32(lblProcessRecDetailId.Text);
         Label lblOrder_FinishedID = (Label)DG.Rows[rowindex].FindControl("lblOrder_FinishedID");
         Label lblOrderDetailDetail_FinishedID = (Label)DG.Rows[rowindex].FindControl("lblOrderDetailDetail_FinishedID");
 
@@ -1055,6 +1109,40 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
         DGStockDetail.DataSource = ds.Tables[0];
         DGStockDetail.DataBind();
         txttotalpcsgrid.Text = "0";
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Trsave.Visible = true;
+            txttotalpcsgrid.Text = ds.Tables[0].Compute("count(Tstockno)", "").ToString();
+        }
+    }
+    protected void TxtIssueQty_TextChanged(object sender, EventArgs e)
+    {
+        DGStockDetail.DataSource = null;
+        DGStockDetail.DataBind();
+        if (TxtIssueQty.Text != "" && DDChallanNo.SelectedIndex > 0)
+        {
+            DGStockDetail.PageSize = Convert.ToInt32(TxtIssueQty.Text);
+            Fillstocknoqtywise(varrecDetailID);
+        }
+    }
+    protected void Fillstocknoqtywise(int recDetailID)
+    {
+        string str = @"SELECT Distinct HFSN.TStockNo, HFSN.stockNo 
+            FROM HomeFurnishingReceiveMaster PRM(Nolock) 
+            JOIN HomeFurnishingReceiveDetail PRD(Nolock) ON PRD.ProcessRecId = PRM.ProcessRecId 
+                And PRD.ProcessRecDetailId = " + recDetailID + @"
+            JOIN HomeFurnishing_Stock_Detail PSD(Nolock) ON PSD.Process_Rec_ID = PRM.ProcessRecId 
+	            And PSD.Process_Rec_Detail_ID = PRD.ProcessRecDetailId And PSD.ToProcessID = PRM.ProcessID 
+            JOIN HomeFurnishingStockNo HFSN(Nolock) ON HFSN.StockNo = PSD.StockNo And HFSN.IssRecStatus = 0 And HFSN.CurrentProStatus = " + DDFromProcessName.SelectedValue + @" 
+            Where PRM.CompanyId = " + DDcompany.SelectedValue + " And PRM.ProcessRecId = " + DDChallanNo.SelectedValue + @"
+            Order By HFSN.stockNo";
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        DGStockDetail.DataSource = ds.Tables[0];
+        DGStockDetail.DataBind();
+        txttotalpcsgrid.Text = "0";
+        Trsave.Visible = false;
 
         if (ds.Tables[0].Rows.Count > 0)
         {

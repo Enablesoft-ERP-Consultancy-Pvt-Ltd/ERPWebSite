@@ -130,6 +130,10 @@
                                         UseContextKey="True">
                                     </cc1:AutoCompleteExtender>
                                 </td>
+                                 <td id="TDGenerateIndentDate" class="tdstyle" runat="server" visible="false">
+                                    <asp:Label ID="lblGenerateIndentDate" Text="Indent Date" runat="server" CssClass="labelbold" />  
+                                    <asp:TextBox ID="txtGenerateIndentDate" Width="100px" runat="server" CssClass="textb" ReadOnly="true" Enabled="false"></asp:TextBox>                                 
+                                </td>
                             </tr>
                         </table>
                     </asp:Panel>

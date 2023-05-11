@@ -104,7 +104,7 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
                                         From ProcessRawMaster PRM(Nolock) 
                                         JOIN ProcessRawTran PRT(Nolock) ON PRT.PRMID = PRM.PRMID 
 								        Where PRM.BeamType = 1 And PRM.TypeFlag = 0) a ON a.BeamNo = V.BeamNo
-                            Where 1 = 1";
+                            Where 1 = 1 and V.pcs>0";
             if (DDGodown.SelectedIndex <= 0)
             {
                 str = str + " and V.godownid = 0";

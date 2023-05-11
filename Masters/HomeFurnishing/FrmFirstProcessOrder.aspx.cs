@@ -451,6 +451,10 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             string Qtyrequired = "VJ.INTERNALPRODASSIGNEDQTY";
             if (Session["varcompanyId"].ToString() == "44")
             {
+                if (hnEmployeeType.Value == "1")
+                {
+                    Qtyrequired = "vj.preprodassignedqty";
+                }
                 Function = "[F_GETPRODUCTIONORDERQTY_INTERNAL_NEW_AGNI]";
             }
             else { Function = "[F_GETPRODUCTIONORDERQTY_INTERNAL_NEW]"; }

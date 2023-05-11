@@ -25,7 +25,6 @@ public partial class DefineItemCode : System.Web.UI.Page
         }
         if (IsPostBack == false)
         {
-
             logo();
             if (Request.QueryString["ABC"] == "1")
             {
@@ -79,15 +78,15 @@ public partial class DefineItemCode : System.Web.UI.Page
                     }
                 }
                 Fill_Grid();
-
+               
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDsizetype, ds1, 1, false, "");
             if (DDsizetype.Items.FindByValue(variable.VarDefaultSizeId) != null)
             {
                 DDsizetype.SelectedValue = variable.VarDefaultSizeId;
-            }
+            }           
 
-
+           
             ds1.Dispose();
 
 
@@ -130,18 +129,14 @@ public partial class DefineItemCode : System.Web.UI.Page
                 case 40:
                     TrItemcode.Visible = false;
                     TRSKUNo.Visible = false;
-                    break;
+                    break;               
                 default:
                     TrItemcode.Visible = false;
                     TRSKUNo.Visible = true;
                     TDUPCNo.Visible = false;
                     break;
             }
-            this.BindPhotoList();
         }
-
-
-
     }
     private void Prod_Code_Text_Change()
     {
@@ -184,10 +179,10 @@ public partial class DefineItemCode : System.Web.UI.Page
                         Str = Str + " order by sizeft, SizeID";
                     }
                 }
-
+                
                 UtilityModule.ConditionalComboFill(ref ddsize, Str, true, "--ALL SIZE--");
                 ddsize.SelectedValue = ds.Tables[0].Rows[0]["SIZE_ID"].ToString();
-
+                
                 string str2 = "select sku_no from sku_no where finished_id=" + ds.Tables[0].Rows[0]["item_finished_id"].ToString() + " And MasterCompanyId=" + Session["varCompanyId"] + "";
                 DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
                 if (ds2.Tables[0].Rows.Count > 0)
@@ -299,16 +294,16 @@ public partial class DefineItemCode : System.Web.UI.Page
     {
         //UtilityModule.ConditionalComboFill(ref dquality, "select qualityid,qualityname from quality where item_id=" + dditemname.SelectedValue, true, "--Select--");
         QDCSDDFill(dquality, dddesign, ddcolor, ddshape, ddShade, Convert.ToInt32(dditemname.SelectedValue));
-
+        
         if (Session["varcompanyId"].ToString() == "20")
         {
             FillSize();
-            Fill_Grid();
-            // BtnRef_Click(sender, new EventArgs());
-
-
+           Fill_Grid();
+           // BtnRef_Click(sender, new EventArgs());
+         
+            
         }
-
+       
         dquality.Focus();
         btnsave.Text = "Save";
     }
@@ -334,7 +329,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             Gvdefineitem.DataSource = null;
             Gvdefineitem.DataBind();
         }
-
+        
     }
     private DataSet Fill_Grid_Data()
     {
@@ -351,8 +346,8 @@ public partial class DefineItemCode : System.Web.UI.Page
             string strsql;
             if (variable.VarNewQualitySize == "1")
             {
-
-                strsql = @"Select Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
+               
+                    strsql = @"Select Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
              IsNull(QualityName,'') as Quality, IsNull(DesignName,'') as Design,IsNull(ColorName,'') as Color,IsNull(ShapeName,'') as Shape, Case When " + A + @"=2 then IsNull(Export_Format,'') else IsNull(MtrSize,'')  end as Size,
              IsNull(QualityName,'')+IsNull(DesignName,'')+IsNull(ColorName,'')+IsNull(ShapeName,'')+IsNull(ShadeColorName,'')+
             Case When " + A + @"=2 then IsNull(Export_Format,'') else IsNull(MtrSize,'') End  DESCRIPTION,ProductCode ProdCode From Item_Parameter_Master IPM inner join Item_Master IM ON IPM.Item_Id=IM.Item_Id 
@@ -360,7 +355,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             IPM.Design_id=D.Designid Left Outer Join Color C ON IPM.Color_id=C.Colorid Left Outer Join Shape Sh ON IPM.Shape_id=Sh.Shapeid Left Outer Join QualitySizeNew QSN ON 
             IPM.Size_id=QSN.Sizeid Left Outer Join ShadeColor Sd ON IPM.SHADECOLOR_ID=Sd.ShadecolorId Left Outer Join  MAIN_ITEM_IMAGE MI on ipm.item_finished_id=MI.finishedid
             where IPM.ITEM_ID=" + dditemname.SelectedValue + "  And IPM.MasterCompanyId=" + Session["varCompanyId"];
-
+                
             }
             else
             {
@@ -375,8 +370,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             IPM.Size_id=S.Sizeid Left Outer Join ShadeColor Sd ON IPM.SHADECOLOR_ID=Sd.ShadecolorId Left Outer Join  MAIN_ITEM_IMAGE MI on ipm.item_finished_id=MI.finishedid
             where IPM.ITEM_ID=" + dditemname.SelectedValue + "  And IPM.MasterCompanyId=" + Session["varCompanyId"];
                 }
-                else
-                {
+                else {
 
                     strsql = @"Select Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
                 IsNull(QualityName,'') as Quality, IsNull(DesignName,'') as Design,IsNull(ColorName,'') as Color,IsNull(ShapeName,'') as Shape, Case When " + A + @"=2 then IsNull(SizeFt,'') else IsNull(SizeMtr,'')  end as Size,
@@ -386,8 +380,8 @@ public partial class DefineItemCode : System.Web.UI.Page
             IPM.Design_id=D.Designid Left Outer Join Color C ON IPM.Color_id=C.Colorid Left Outer Join Shape Sh ON IPM.Shape_id=Sh.Shapeid Left Outer Join Size S ON 
             IPM.Size_id=S.Sizeid Left Outer Join ShadeColor Sd ON IPM.SHADECOLOR_ID=Sd.ShadecolorId Left Outer Join  MAIN_ITEM_IMAGE MI on ipm.item_finished_id=MI.finishedid
             where IPM.ITEM_ID=" + dditemname.SelectedValue + "  And IPM.MasterCompanyId=" + Session["varCompanyId"];
-
-
+                
+                
                 }
             }
             if (dquality.Visible == true && dquality.SelectedIndex > 0)
@@ -397,7 +391,7 @@ public partial class DefineItemCode : System.Web.UI.Page
 
             if (Session["varcompanyId"].ToString() != "20")
             {
-
+                
                 if (dddesign.Visible == true && dddesign.SelectedIndex > 0)
                 {
                     strsql = strsql + @" And IPM.DESIGN_ID=" + dddesign.SelectedValue + "";
@@ -420,7 +414,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                     //
                 }
             }
-
+           
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -517,8 +511,6 @@ public partial class DefineItemCode : System.Web.UI.Page
             }
         }
         btnsave.Text = "Update";
-
-        this.BindPhotoList();
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
@@ -555,20 +547,9 @@ public partial class DefineItemCode : System.Web.UI.Page
                 _arrPara[15] = new SqlParameter("@VarUpdate", SqlDbType.Int);
 
                 _arrPara[0].Direction = ParameterDirection.InputOutput;
-
                 ///ddShadeColor
-                _arrPara[0].Value = string.IsNullOrEmpty(hnItemFinishedId.Value) ? "0" : hnItemFinishedId.Value;
-
-                itemfinishedid = Convert.ToInt32(_arrPara[0].Value);
-                this.UploadPhoto(itemfinishedid);
-
-
-
-
-
-
-
-
+                _arrPara[0].Value = hnItemFinishedId.Value == "" ? "0" : hnItemFinishedId.Value;
+              
                 _arrPara[1].Value = dquality.Visible == true ? Convert.ToInt32(dquality.SelectedValue) : 0;
                 _arrPara[2].Value = dddesign.Visible == true ? Convert.ToInt32(dddesign.SelectedValue) : 0;
                 _arrPara[3].Value = ddcolor.Visible == true ? Convert.ToInt32(ddcolor.SelectedValue) : 0;
@@ -580,13 +561,13 @@ public partial class DefineItemCode : System.Web.UI.Page
                 _arrPara[9].Value = ddShade.Visible == true ? Convert.ToInt32(ddShade.SelectedValue) : 0;
                 if (Session["VarCompanyNo"].ToString() == "4")
                 {
-                    _arrPara[10].Value = TDUPCNo.Visible == true ? txtUpcNo.Text : "";
+                    _arrPara[10].Value =TDUPCNo.Visible==true ? txtUpcNo.Text:"";
                 }
                 else
                 {
                     _arrPara[10].Value = "";
                 }
-
+                
                 _arrPara[11].Direction = ParameterDirection.Output;
                 _arrPara[12].Value = txtsuk_no.Text != "" ? txtsuk_no.Text : "";
                 _arrPara[13].Direction = ParameterDirection.Output;
@@ -645,7 +626,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                 }
                 if (itemfinishedid.ToString() != "0")
                 {
-                    // Save_Image(itemfinishedid);
+                    Save_Image(itemfinishedid);
                     savewight(itemfinishedid);
                 }
                 Fill_Grid();
@@ -669,34 +650,6 @@ public partial class DefineItemCode : System.Web.UI.Page
             }
         }
     }
-
-    public void UploadPhoto(int finishId)
-    {
-        if (finishId > 0)
-        {
-
-            string folderPath = ConfigurationManager.AppSettings["ImagePath"];
-            if (PhotoImage.HasFiles)
-            {
-                int index = 1;
-                foreach (HttpPostedFile uploadedFile in PhotoImage.PostedFiles)
-                {
-                    //Check whether Directory (Folder) exists.
-                    if (!Directory.Exists(folderPath))
-                    {
-                        //If Directory (Folder) does not exists. Create it.
-                        Directory.CreateDirectory(folderPath);
-                    }
-                    string fileName = "product-" + index.ToString() + "-" + finishId.ToString() + "-" + DateTime.Now.Ticks.ToString() + "-img" + Path.GetExtension(uploadedFile.FileName);
-                    string imgPath = Path.Combine(folderPath, fileName);
-                    uploadedFile.SaveAs(imgPath);
-                    SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId) values(" + finishId + ",'" + fileName + "'," + Session["varCompanyId"] + ")");
-                    index++;
-                }
-            }
-        }
-    }
-
     private void GenerateThumbnails(double scaleFactor, Stream sourcePath, string targetPath)
     {
         using (var image = System.Drawing.Image.FromStream(sourcePath))
@@ -713,7 +666,6 @@ public partial class DefineItemCode : System.Web.UI.Page
             thumbnailImg.Save(targetPath, image.RawFormat);
         }
     }
-
     public void Save_Image(int VarFinishedid)
     {
         //SqlConnection myConnection = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
@@ -883,7 +835,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                     goto a;
                 }
             }
-
+           
         }
         if (Shd.Visible == true)
         {
@@ -903,7 +855,7 @@ public partial class DefineItemCode : System.Web.UI.Page
         goto B;
     a:
         UtilityModule.SHOWMSG(lblerror);
-    B:;
+    B: ;
     }
     protected void Gvdefineitem_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
@@ -971,7 +923,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             if (Session["varcompanyId"].ToString() == "20")
             {
                 //Str = "select sizeid," + Size + " as sizeft from QualitySizeNew where shapeid=" + ddshape.SelectedValue + " and QualityId=" + dquality.SelectedValue + " and AddDate <= '" + String.Format("{0:yyyy/MM/dd HH:mm:ss}", Convert.ToDateTime(tbSizeDate.Text == "" ? DateTime.Now.ToString("dd-MMM-yyyy") : tbSizeDate.Text)) + "' AND (UpdateDate > '" + String.Format("{0:yyyy/MM/dd HH:mm:ss}", Convert.ToDateTime(tbSizeDate.Text == "" ? DateTime.Now.ToString("dd-MMM-yyyy") : tbSizeDate.Text)) + "' OR UpdateDate is null)  order by Export_Format";
-                Str = "select sizeid," + Size + " as sizeft from QualitySizeNew where QualityTypeId=" + dditemname.SelectedValue + " and QualityId=" + dquality.SelectedValue + "   order by Export_Format";
+                Str = "select sizeid," + Size + " as sizeft from QualitySizeNew where QualityTypeId="+dditemname.SelectedValue +" and QualityId=" + dquality.SelectedValue + "   order by Export_Format";
             }
             else
             {
@@ -1080,7 +1032,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             }
 
             UtilityModule.ConditionalComboFill(ref ddsize, Str, true, " Select Size");
-        }
+        }       
     }
     protected void Gvdefineitem_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -1091,10 +1043,10 @@ public partial class DefineItemCode : System.Web.UI.Page
             e.Row.Attributes["onclick"] = ClientScript.GetPostBackClientHyperlink(this.Gvdefineitem, "Select$" + e.Row.RowIndex);
 
             for (int i = 0; i < Gvdefineitem.Columns.Count; i++)
-            {
+            {                
                 if (Session["varcompanyId"].ToString() == "20")
                 {
-                    if (Gvdefineitem.Columns[i].HeaderText == "DESCRIPTION")
+                    if (Gvdefineitem.Columns[i].HeaderText == "DESCRIPTION" )
                     {
                         Gvdefineitem.Columns[i].Visible = false;
                     }
@@ -1152,7 +1104,7 @@ public partial class DefineItemCode : System.Web.UI.Page
         {
             Gvdefineitem.Visible = false;
         }
-
+        
         btnsave.Text = "Save";
         txtsuk_no.Text = "";
         txtitemcode.Text = "";
@@ -1174,7 +1126,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                     dditemname.SelectedIndex = 1;
                 }
             }
-
+           
         }
     }
     protected void refreshitem_Click(object sender, EventArgs e)
@@ -1228,7 +1180,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             if (Session["varcompanyNo"].ToString() == "4")
             {
                 Str = " select sizeid,sizeft+'  '+'['+ProdSizeft+']' as Sizeft from size where  MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid";
-            }
+            }           
             else
             {
                 Str = "select sizeid,sizeft from size where  MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid ";
@@ -1236,7 +1188,7 @@ public partial class DefineItemCode : System.Web.UI.Page
         }
 
         UtilityModule.ConditionalComboFill(ref ddsize, Str, true, "--Select--");
-
+                
     }
     protected void txtitemcode_TextChanged(object sender, EventArgs e)
     {
@@ -1258,7 +1210,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                 ddcolor.SelectedValue = ds.Tables[0].Rows[0]["COLOR_ID"].ToString();
                 ddshape.SelectedValue = ds.Tables[0].Rows[0]["SHAPE_ID"].ToString();
 
-
+              
                 if (variable.VarNewQualitySize == "1")
                 {
                     if (Session["varcompanyId"].ToString() == "20")
@@ -1278,7 +1230,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                 UtilityModule.ConditionalComboFill(ref ddsize, Str, true, "--ALL SIZE--");
                 ddsize.SelectedValue = ds.Tables[0].Rows[0]["SIZE_ID"].ToString();
 
-
+                
                 string str2 = "select sku_no from sku_no where finished_id=" + ds.Tables[0].Rows[0]["item_finished_id"].ToString() + " And MasterCompanyId=" + Session["varCompanyId"] + "";
                 DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
                 if (ds2.Tables[0].Rows.Count > 0)
@@ -1314,7 +1266,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                 ddlcategorycange();
 
             }
-
+           
         }
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, DropDownList Shade, int Itemid)
@@ -1370,12 +1322,12 @@ public partial class DefineItemCode : System.Web.UI.Page
                     if (dditemname.SelectedIndex > 0 && Shape.SelectedIndex > 0)
                     {
                         FillSize();
-                    }
+                    }                    
                 }
             }
-
-        }
-
+            
+        }      
+        
         UtilityModule.ConditionalComboFillWithDS(ref Shade, ds, 4, true, "--SELECT--");
 
 
@@ -1445,7 +1397,7 @@ public partial class DefineItemCode : System.Web.UI.Page
     private void logo()
     {
         if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
-        {
+        {           
             imgLogo.ImageUrl.DefaultIfEmpty();
             imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
@@ -1534,7 +1486,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             TRDesignWithQuality.Visible = false;
             GVDesignWithQuality.DataSource = null;
             GVDesignWithQuality.DataBind();
-        }
+        }               
     }
 
     private DataSet Fill_DesignQuality_Grid_Data()
@@ -1577,62 +1529,6 @@ public partial class DefineItemCode : System.Web.UI.Page
         {
             Fill_DesignGridWithQuality();
         }
-    }
-
-
-
-    private void BindPhotoList()
-    {
-        int finishId = Convert.ToInt32(hnItemFinishedId.Value);
-        if (finishId > 0)
-        {
-
-
-            using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
-            {
-                using (SqlCommand cmd = new SqlCommand("select PhotoId,FINISHEDID as FinishItemId,PHOTO as PhotoName from MAIN_ITEM_IMAGE", con))
-                {
-                    using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
-                    {
-                        using (DataTable dt = new DataTable())
-                        {
-                            sda.Fill(dt);
-                            rptPhotoList.DataSource = dt;
-                            rptPhotoList.DataBind();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    protected void DeletePhoto(object sender, EventArgs e)
-    {
-        string folderPath = ConfigurationManager.AppSettings["ImagePath"];
-        int photoId = int.Parse(((sender as LinkButton).NamingContainer.FindControl("lblPhotoId") as Label).Text);
-        string photoName = ((sender as LinkButton).NamingContainer.FindControl("lblPhotoName") as Label).Text;
-        if (photoId > 0)
-        {
-            using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
-            {
-                using (SqlCommand cmd = new SqlCommand("DELETE FROM MAIN_ITEM_IMAGE WHERE PhotoId = @PhotoId", con))
-                {
-                    cmd.Parameters.AddWithValue("@PhotoId", photoId);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-
-                    if (File.Exists(Path.Combine(folderPath, photoName)))
-                    {
-                        File.Delete(Path.Combine(folderPath, photoName));
-                    }
-                }
-                this.BindPhotoList();
-            }
-
-        }
-    }
-
-
-
+    }    
 
 }

@@ -28,10 +28,22 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
+            string str = string.Empty;
+            if (Session["varCompanyId"].ToString() == "44")
+            {
+                str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
+            Select customerid,customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by customercode            
+            SELECT DISTINCT  LOTNO AS TEXTLOTNO,LOTNO FROM STOCK ORDER BY LOTNO
+            select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by CATEGORY_NAME";
+            }
+            else
+            {
+                str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
             Select customerid,customercode+'/'+Companyname from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by customercode            
             SELECT DISTINCT  LOTNO AS TEXTLOTNO,LOTNO FROM STOCK ORDER BY LOTNO
             select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by CATEGORY_NAME";
+            
+            }
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);
             if (DDCompany.Items.Count > 0)
@@ -2402,7 +2414,7 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             }
             else
             {
-                if (Session["VarCompanyNo"].ToString() == "30")
+                if (Session["VarCompanyNo"].ToString() == "30" || Session["VarCompanyNo"].ToString() == "38")
                 {
                     RawMaterialOpeningWithLotNo();
                 }
@@ -3738,12 +3750,12 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             var xapp = new XLWorkbook();
             var sht = xapp.Worksheets.Add("TransactionDetail");
             //**********************
-            sht.Range("A1:K1").Merge();
+            sht.Range("A1:L1").Merge();
             sht.Range("A1").Value = rpttitle;
-            sht.Range("A1:K1").Style.Font.Bold = true;
-            sht.Range("A1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A1:K1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-            sht.Range("A1:K1").Style.Font.FontSize = 13;
+            sht.Range("A1:O1").Style.Font.Bold = true;
+            sht.Range("A1:O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:O1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:O1").Style.Font.FontSize = 13;
             sht.Row(1).Height = 30.00;
 
             sht.Range("A2").Value = "TRNS DATE";
@@ -3760,10 +3772,12 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
 
             sht.Range("L2").Value = "VOUCHER NO";
             sht.Range("M2").Value = "STOCK NO";
-            sht.Range("A2:M2").Style.Font.Bold = true;
-            sht.Range("A2:M2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A2:M2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-            sht.Range("A2:M2").Style.Font.FontSize = 13;
+            sht.Range("N2").Value = "CATEGORY NAME";
+            sht.Range("O2").Value = "GODOWN";
+            sht.Range("A2:O2").Style.Font.Bold = true;
+            sht.Range("A2:O2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A2:O2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A2:O2").Style.Font.FontSize = 13;
             sht.Row(1).Height = 25.50;
             //**********************
             // DS.Tables[0].DefaultView.Sort = "order by Trandate ASC,Item_Finished_id ASC";
@@ -3792,6 +3806,8 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
 
                 sht.Range("L" + ii).SetValue(ds1.Tables[0].Rows[i]["voucherno"]);
                 sht.Range("M" + ii).SetValue(ds1.Tables[0].Rows[i]["TStockNo"]);
+                sht.Range("N" + ii).SetValue(ds1.Tables[0].Rows[i]["CATEGORY_NAME"]);
+                sht.Range("O" + ii).SetValue(ds1.Tables[0].Rows[i]["godownname"]);
 
                 ii = ii + 1;
             }
@@ -4662,8 +4678,16 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
                 }
                 else
                 {
+                    if (Session["VarCompanyNo"].ToString() == "38")
+                    {
+                        Session["rptFileName"] = "reports/RptStockReportOpeningWithLotNoVCKM.rpt";
+                    }
+                    else
+                    {
+                        Session["rptFileName"] = "reports/RptStockReportOpeningWithLotNo.rpt";
+                    }
 
-                    Session["rptFileName"] = "reports/RptStockReportOpeningWithLotNo.rpt";
+                    
                     Session["GetDataset"] = DS;
                     Session["dsFileName"] = "~\\ReportSchema\\RptStockReportOpeningWithLotNo.xsd";
                     StringBuilder stb = new StringBuilder();

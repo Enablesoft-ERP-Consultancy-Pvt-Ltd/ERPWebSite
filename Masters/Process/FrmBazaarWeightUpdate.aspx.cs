@@ -42,9 +42,10 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
         DG.DataSource = null;
         DG.DataBind();
 
-        SqlParameter[] array = new SqlParameter[2];
+        SqlParameter[] array = new SqlParameter[3];
         array[0] = new SqlParameter("@ReceiveDate", txtBazaarDate.Text);
         array[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyNo"]);
+        array[2] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_PRODUCTIONRECEIVEDETAIL_FORWEIGHTUPDATE", array);
         if (ds.Tables[0].Rows.Count > 0)
@@ -284,5 +285,33 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
             con.Close();
             con.Dispose();
         }
+    }
+
+
+    protected void BtnPreview_Click(object sender, EventArgs e)
+    {  
+
+        SqlParameter[] array = new SqlParameter[3];
+        array[0] = new SqlParameter("@ReceiveDate", txtBazaarDate.Text);
+        array[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyNo"]);
+        array[2] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_PRODUCTIONRECEIVEDETAIL_FORWEIGHTUPDATEREPORT", array);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\RptBazaarWeightUpdateDetail.rpt";
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptBazaarWeightUpdateDetail.xsd";
+
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else 
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }      
+    
     }
 }

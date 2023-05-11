@@ -135,6 +135,7 @@
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblReceiveChallanNo" Text='<%#Bind("CHALLANNO")%>' runat="server" />
                                                 </ItemTemplate>
+                                                <ItemStyle HorizontalAlign="Center" Width="100px" />
                                             </asp:TemplateField>
                                              <asp:TemplateField HeaderText="EmpName">
                                                 <ItemTemplate>
@@ -250,9 +251,11 @@
                             </td>
                             <td align="right">
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
-                                <asp:Button ID="btnsave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="btnsave_Click" />                               
+                                <asp:Button ID="btnsave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="btnsave_Click" />     
+                                 <asp:Button ID="BtnPreview" runat="server" Text="Preview" CssClass="buttonnorm" OnClick="BtnPreview_Click" />                          
                                 <asp:Button ID="btnclose" runat="server" Text="Close" CssClass="buttonnorm" OnClientClick="return CloseForm();" />
                                 <asp:Button ID="btnFinalChallan" runat="server" Text="Update Final Consumption" CssClass="buttonnorm" OnClick="btnFinalChallan_Click" />
+                                
                             </td>
                         </tr>
                     </table>

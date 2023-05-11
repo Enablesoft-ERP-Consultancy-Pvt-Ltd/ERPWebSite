@@ -17,7 +17,7 @@
               <xs:element name="PhoneNo" type="xs:string" minOccurs="0" />
               <xs:element name="Mobile" type="xs:string" minOccurs="0" />
               <xs:element name="Fax" type="xs:string" minOccurs="0" />
-              <xs:element name="ISSUENO" type="xs:int" minOccurs="0" />
+              <xs:element name="ISSUENO" type="xs:string" minOccurs="0" />
               <xs:element name="ISSUEDATE" type="xs:dateTime" minOccurs="0" />
               <xs:element name="LotNo" type="xs:string" minOccurs="0" />
               <xs:element name="ISSUEQTY" type="xs:double" minOccurs="0" />

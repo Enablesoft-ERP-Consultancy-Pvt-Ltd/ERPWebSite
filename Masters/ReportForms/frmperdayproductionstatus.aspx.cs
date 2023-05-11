@@ -179,7 +179,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
     {
         UtilityModule.ConditionalComboFill(ref DDLoomNo, @"select  PM.UID,PM.loomno+'/'+IM.ITEM_NAME as LoomNo from ProductionLoomMaster PM 
                                             inner join ITEM_MASTER IM on PM.Itemid=IM.ITEM_ID                                            
-                                            Where  PM.CompanyId=" + DDcompany.SelectedValue + " and PM.UnitId=" + DDProdunit.SelectedValue + " order by case when ISNUMERIC(PM.loomno)=1 Then CONVERT(int,PM.loomno) Else 9999999 End,PM.loomno", true, "--Plz Select--");
+                                            Where  PM.CompanyId=" + DDcompany.SelectedValue + " and PM.UnitId=" + DDProdunit.SelectedValue + " order by case when ISNUMERIC(PM.loomno)=1 Then CONVERT(int,replace(loomno, '.', '')) Else 9999999 End,PM.loomno", true, "--Plz Select--");
     }
     protected void QCDefectReport()
     {
@@ -436,6 +436,11 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                         PerdayproductionwithdetailDiamond(ds, FilterBy);
                         return;                        
                     }
+                    else if (Session["varCompanyId"].ToString() == "44")
+                    {
+                        Perdayproductionwithdetailagni(ds, FilterBy);
+                        return;
+                    }
                     else
                     {
                         Perdayproductionwithdetail(ds, FilterBy);
@@ -459,6 +464,10 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                     else if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
                     {
                         Session["rptFileName"] = "~\\Reports\\rptperdayproductionstatussummaryChampo.rpt";
+                    }
+                    else if (Session["varCompanyId"].ToString() == "44")
+                    {
+                        Session["rptFileName"] = "~\\Reports\\rptperdayproductionstatussummaryagni.rpt";
                     }
                     else
                     {
@@ -499,7 +508,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
 
     }
 
-    private void Perdayproductionwithdetail(DataSet ds, String FilterBy)
+    private void Perdayproductionwithdetailagni(DataSet ds, String FilterBy)
     {
         var xapp = new XLWorkbook();
         var sht = xapp.Worksheets.Add("Perdayproductionstatus_");
@@ -523,6 +532,227 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         sht.Range("B2").Value = "Carpet No.";
         sht.Range("C2").Value = "Unit Name";
         sht.Range("D2").Value = "Loom No";
+        sht.Range("E2").Value = "Folio No";
+        sht.Range("F2").Value = "Quality";
+        sht.Range("G2").Value = "Design";
+        sht.Range("H2").Value = "Color";
+        sht.Range("I2").Value = "Size";
+        sht.Range("J2").Value = "Qty";
+        sht.Range("K2").Value = "Area";
+        sht.Column(4).Hide();
+        sht.Range("L2").Value = "Rate";
+        sht.Range("M2").Value = "Amount";
+        sht.Range("N2").Value = "Weight";
+        sht.Range("O2").Value = "Emp Name";
+        sht.Range("P2").Value = "Status";
+
+        sht.Range("Q2").Value = "Defects";
+        sht.Range("R2").Value = "User Name";
+        sht.Range("S2").Value = "Remove Defects";
+        sht.Range("T2").Value = "Inspected By";
+        sht.Range("U2").Value = "Inspection Date";
+        sht.Range("V2").Value = "Penality Amount";
+         sht.Range("W2").Value = "Commission Amount";
+         sht.Range("X2").Value = "Party ChallanNo";
+         sht.Range("Y2").Value = "CustomerOrderNo";
+
+        //if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+        //{
+        //    sht.Range("X2").Value = "Party ChallanNo";
+        //}
+        //else
+        //{
+        //    sht.Column(24).Hide();
+        //}
+        //if (Session["varCompanyId"].ToString() == "21")
+        //{
+            //sht.Range("Y2").Value = "QC Comment";
+        //}
+        //else
+        //{
+        //    sht.Column(25).Hide();
+        //}
+
+        //if (Session["varCompanyId"].ToString() == "14")
+        //{
+        //    sht.Range("Z2").Value = "Actual Width";
+        //    sht.Range("AA2").Value = "Actual Length";
+        //}
+        //else
+        //{
+        //    sht.Column(26).Hide();
+        //    sht.Column(27).Hide();
+        //}
+
+
+        int row = 3;
+
+        DataView dv = ds.Tables[0].DefaultView;
+        dv.Sort = "Receivedate,issueorderid";
+        DataSet ds1 = new DataSet();
+        ds1.Tables.Add(dv.ToTable());
+        for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+        {
+            sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Receivedate"]);
+            sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Tstockno"]);
+            sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["Unitname"]);
+            sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["LoomNo"]);
+            sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["FolioChallanNo"]);
+            sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["QualityName"]);
+            sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Designname"]);
+            sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["colorname"]);
+            sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Size"]);
+            sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Qty"]);
+            sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Area"]);
+            sht.Column(4).Hide();
+            sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["Rate"]);
+            sht.Range("M" + row).SetValue(ds1.Tables[0].Rows[i]["Amount"]);
+            sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["Weight"]);
+            sht.Range("O" + row).SetValue(ds1.Tables[0].Rows[i]["Empname"]);
+            sht.Range("P" + row).SetValue(ds1.Tables[0].Rows[i]["Stockstatus"]);
+            //if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            //{
+            //    sht.Column(12).Hide();
+            //    sht.Column(13).Hide();
+            //}
+            //else
+            //{
+           
+            //}
+         
+            //if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            //{
+            //    sht.Column(15).Hide();
+            //    sht.Range("O" + row).SetValue("");
+            //    sht.Column(16).Hide();
+            //    sht.Range("P" + row).SetValue("");
+            //}
+            //else
+            //{
+            //    sht.Range("O" + row).SetValue(ds1.Tables[0].Rows[i]["Empname"]);
+            //    sht.Range("P" + row).SetValue(ds1.Tables[0].Rows[i]["Stockstatus"]);
+            //}
+
+            sht.Range("Q" + row).SetValue(ds1.Tables[0].Rows[i]["Defect"]);
+            sht.Range("R" + row).SetValue(ds1.Tables[0].Rows[i]["username"]);
+            sht.Range("S" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemoveVALUE"]);
+            sht.Range("T" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_UserID"]);
+            sht.Range("U" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_Date"]);
+            sht.Range("V" + row).SetValue(ds1.Tables[0].Rows[i]["Penality"]);
+            sht.Range("W" + row).SetValue(ds1.Tables[0].Rows[i]["CommAmt"]);
+            sht.Range("X" + row).SetValue(ds1.Tables[0].Rows[i]["PartyChallanNo"]);
+            sht.Range("Y" + row).SetValue(ds1.Tables[0].Rows[i]["customerorderno"]);
+            //if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            //{
+            //    sht.Column(22).Hide();
+            //    sht.Column(23).Hide();
+            //    sht.Range("V" + row).SetValue("");
+            //    sht.Range("W" + row).SetValue("");
+            //}
+            //else
+            //{
+            //    sht.Range("V" + row).SetValue(ds1.Tables[0].Rows[i]["Penality"]);
+            //    sht.Range("W" + row).SetValue(ds1.Tables[0].Rows[i]["CommAmt"]);
+            //}
+
+            //if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+            //{
+            //    sht.Range("X" + row).SetValue(ds1.Tables[0].Rows[i]["PartyChallanNo"]);
+            //}
+            //else
+            //{
+            //    sht.Column(24).Hide();
+            //    sht.Range("X" + row).SetValue("");
+            //}
+
+            //if (Session["varCompanyId"].ToString() == "21")
+            //{
+            //    sht.Range("Y" + row).SetValue("");
+            //}
+            //else
+            //{
+            //    sht.Column(25).Hide();
+            //    sht.Range("Y" + row).SetValue("");
+            //}
+
+            //if (Session["varCompanyId"].ToString() == "14")
+            //{
+            //    sht.Range("Z" + row).SetValue(ds1.Tables[0].Rows[i]["ActualWidth"]);
+            //    sht.Range("AA" + row).SetValue(ds1.Tables[0].Rows[i]["ActualLength"]);
+            //}
+            //else
+            //{
+            //    sht.Column(26).Hide();
+            //    sht.Column(27).Hide();
+            //    sht.Range("Z" + row).SetValue("");
+            //    sht.Range("AA" + row).SetValue("");
+            //}
+
+
+            row = row + 1;
+        }
+        ds.Dispose();
+        ds1.Dispose();
+        //*************************************************
+        using (var a = sht.Range("A1" + ":AA" + row))
+        {
+            a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+            a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+        }
+
+        //*************************************************
+        String Path;
+        sht.Columns(1, 29).AdjustToContents();
+        string Fileextension = "xlsx";
+        string filename = UtilityModule.validateFilename("Perdayproductionstatus_" + DateTime.Now + "." + Fileextension);
+        Path = Server.MapPath("~/Tempexcel/" + filename);
+        xapp.SaveAs(Path);
+        xapp.Dispose();
+        //Download File
+        Response.ClearContent();
+        Response.ClearHeaders();
+        // Response.Clear();
+        Response.ContentType = "application/vnd.ms-excel";
+        Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+        Response.WriteFile(Path);
+        // File.Delete(Path);
+        Response.End();
+    }
+    private void Perdayproductionwithdetail(DataSet ds, String FilterBy)
+    {
+        var xapp = new XLWorkbook();
+        var sht = xapp.Worksheets.Add("Perdayproductionstatus_");
+
+        //*************
+        //***********
+        sht.Row(1).Height = 24;
+        sht.Range("A1:X1").Merge();
+        sht.Range("A1:X1").Style.Font.FontSize = 10;
+        sht.Range("A1:X1").Style.Font.Bold = true;
+        sht.Range("A1:X1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+        sht.Range("A1:X1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+        sht.Range("A1:X1").Style.Alignment.WrapText = true;
+        //************
+        sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + " Per Day Production From : " + txtfromdate.Text + " To : " + txttodate.Text + " " + FilterBy);
+
+        sht.Range("A2:AA2").Style.Font.FontSize = 10;
+        sht.Range("A2:AA2").Style.Font.Bold = true;
+
+        sht.Range("A2").Value = "Bazar Date";
+        sht.Range("B2").Value = "Carpet No.";
+        sht.Range("C2").Value = "Unit Name";
+
+        if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+        {
+            sht.Column(4).Hide();
+        }
+        else
+        {
+            sht.Range("D2").Value = "Loom No";
+        }
+
         sht.Range("E2").Value = "Folio No";
         sht.Range("F2").Value = "Quality";
         sht.Range("G2").Value = "Design";
@@ -607,7 +837,16 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Receivedate"]);
             sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Tstockno"]);
             sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["Unitname"]);
-            sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["LoomNo"]);
+
+            if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+            {
+                sht.Column(4).Hide();
+            }
+            else
+            {
+                sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["LoomNo"]);
+            }
+
             sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["FolioChallanNo"]);
             sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["QualityName"]);
             sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Designname"]);

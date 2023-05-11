@@ -1,11 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32901.215
-MinimumVisualStudioVersion = 10.0.40219.1
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/ERP"
 		Debug.AspNetCompiler.PhysicalPath = "..\ERP\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\ERP\"
@@ -21,7 +19,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP", ".", "{7B53B49A-A0FF-
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "49721"
-		SlnRelativePath = "..\ERP\"
 	EndProjectSection
 EndProject
 Global
@@ -34,8 +31,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4777CCD7-0D9A-4AB3-A8B7-CB0BB550A241}
 	EndGlobalSection
 EndGlobal

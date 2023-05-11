@@ -127,7 +127,7 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
 					And PM.prmid= " + DDChallanNo.SelectedValue + " And PM.Companyid=" + DDCompany.SelectedValue + " And EmpID=" + DDPartyName.SelectedValue + " AND ProcessID=" + ddProcessName.SelectedValue + @" 
                     UNION
                     Select Distinct  1 as ID,1 As DetailID, Item_Name,QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+SizeFt As ItemDescription,
-                    GodownName,PD.LotNo,PRD.RecQuantity,PRD.RecQuantity -[dbo].[Get_RawReceiveBalQty] (PD.PRTID,PD.Finishedid,0,0)  As BalQty, [dbo].[Get_IndentRawReturnQty] (PD.DetailID,PD.Finishedid,0," + DDGatePass.SelectedValue + @") As ReturnQty,Isnull(PD.Indentid,0) Indentid,
+                    GodownName,PD.LotNo,PRD.RecQuantity,PRD.RecQuantity -[dbo].[Get_RawReceiveBalQty] (PD.PRTID,PD.Finishedid,0,0)  As BalQty, [dbo].[Get_IndentRawReturnQty] (PD.DetailID,PD.Finishedid,0,'" + DDGatePass.SelectedValue + @"') As ReturnQty,Isnull(PD.Indentid,0) Indentid,
                     PD.PRMID,PD.PRTID,PD.Finishedid,GM.GodownId,PM.PartyId,PD.Remarks As Remark,PD.Unitid,PD.TagNo
                     from IndentRawReturnMaster PM,IndentRawReturnDetail PD,GodownMaster GM,V_FinishedItemDetail V ,PP_ProcessRECTran PRD
                     Where PM.ID=PD.ID and PRD.PRTID=PD.PRTID
@@ -241,16 +241,16 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
                 ViewState["DetailID"] = Convert.ToInt32(DGItemDetail.DataKeys[row.RowIndex].Values[0].ToString());
                 if (Convert.ToInt32(ViewState["DetailID"].ToString()) > 0)
                 {
-                    str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",1," + ViewState["GatePassNo"] + ")";
+                    str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",1,'" + ViewState["GatePassNo"] + "')";
                 }
                 else
                 {
-                    str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0," + ViewState["GatePassNo"] + ")";
+                    str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0,'" + ViewState["GatePassNo"] + "')";
                 }
             }
             else if (ViewState["IsEdit"].ToString() == "0")
             {
-                str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0," + ViewState["GatePassNo"] + ")";
+                str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0,'" + ViewState["GatePassNo"] + "')";
             }
             varbal = Convert.ToDouble(SqlHelper.ExecuteScalar(tran, CommandType.Text, str));
             Double varQty = Convert.ToDouble(Server.HtmlDecode(row.Cells[5].Text));
@@ -371,21 +371,21 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
                 GodownName,isnull(PD.LotNo,'') LotNo,PRD.RecQuantity,PRD.RecQuantity -  [dbo].[Get_RawReceiveBalQty] (PD.PRTID,PD.Finishedid,0,0) BalQty,
                 PD.QTY ReturnQty, PD.Remarks Remark, e.EmpName, BM.BranchName CompanyName, BM.BranchAddress CompAdd, '' TINNO, '' Email, 
                 BM.PhoneNo CompTel, '' CompFax, PM.GatePassNo, Pm.ChallanNo, PM.Date, PNM.PROCESS_NAME, om.LocalOrder, om.CustomerOrderNo, vi.IndentNo, 
-                CI.customercode, isnull(PD.TagNo,'') TagNo
-                From IndentRawReturnMAster PM 
-                JOIN IndentRawReturnDetail PD ON PM.ID=PD.ID 
-                JOIN GodownMaster GM ON PD.Godownid=GM.GodownId 
-                JOIN V_FinishedItemDetail V ON PD.FinishedId=V.ITEM_FINISHED_ID 					
-                JOIN PP_ProcessRectran PRD ON PRD.PRTID=PD.PRTID
-                JOIN PP_ProcessRecMaster PRM ON PRM.PRMid=PRD.PRMid
-                JOIN EmpInfo E ON E.EmpID=PM.PartyID
-                --JOIN CompanyInfo C ON C.MasterCompanyid=PM.MasterCompanyid and C.Companyid=PM.Companyid
-                JOIN PROCESS_NAME_MASTER PNM ON  PNM.PROCESS_NAME_ID=PRM.Processid
-                JOIN V_Indent_OredrId VI ON Vi.IndentId=Pd.INDENTID
-                JOIN OrderMaster OM ON OM.OrderId=VI.Orderid
-                JOIN customerinfo CI ON om.customerid=CI.customerid
-                JOIN BRANCHMASTER BM ON BM.ID = PM.BranchID 
-                Where PM.GatePassNo=" + ViewState["GatePassNo"];
+                CI.customercode, isnull(PD.TagNo,'') TagNo, PM.MasterCompanyID 
+                From IndentRawReturnMAster PM(Nolock) 
+                JOIN IndentRawReturnDetail PD(Nolock) ON PM.ID=PD.ID 
+                JOIN GodownMaster GM(Nolock) ON PD.Godownid=GM.GodownId 
+                JOIN V_FinishedItemDetail V(Nolock) ON PD.FinishedId=V.ITEM_FINISHED_ID 					
+                JOIN PP_ProcessRectran PRD(Nolock) ON PRD.PRTID=PD.PRTID
+                JOIN PP_ProcessRecMaster PRM(Nolock) ON PRM.PRMid=PRD.PRMid
+                JOIN EmpInfo E(Nolock) ON E.EmpID=PM.PartyID
+                --JOIN CompanyInfo C(Nolock) ON C.MasterCompanyid=PM.MasterCompanyid and C.Companyid=PM.Companyid
+                JOIN PROCESS_NAME_MASTER PNM(Nolock) ON  PNM.PROCESS_NAME_ID=PRM.Processid
+                JOIN V_Indent_OredrId VI(Nolock) ON Vi.IndentId=Pd.INDENTID
+                JOIN OrderMaster OM(Nolock) ON OM.OrderId=VI.Orderid
+                JOIN customerinfo CI(Nolock) ON om.customerid=CI.customerid
+                JOIN BRANCHMASTER BM(Nolock) ON BM.ID = PM.BranchID 
+                Where PM.GatePassNo='" + ViewState["GatePassNo"]+"'";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Qry);
             if (ds.Tables[0].Rows.Count > 0)
