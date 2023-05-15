@@ -133,6 +133,12 @@
                          if (TxtMoisture.value == "" || TxtMoisture.value == "0") {
                              Message = Message + "Moisture Cann't be blank or Zero..  !!\n";
                          }
+                     }
+                     if ($("#<%=TDIssueQtyOnMachine.ClientID %>").is(':visible')) {
+                         var txtIssueQtyOnMachine = document.getElementById('<%=txtIssueQtyOnMachine.ClientID %>');
+                         if (txtIssueQtyOnMachine.value == "" || txtIssueQtyOnMachine.value == "0") {
+                             Message = Message + "IssueQty OnMachine Cann't be blank or Zero..  !!\n";
+                         }
                      }                    
                      if (Message == "") {
                          return true;
@@ -536,6 +542,14 @@
                                 <asp:TextBox ID="txtrec" runat="server" Width="100px" CssClass="textb" OnTextChanged="txtrec_TextChanged"
                                     onkeypress="return isNumber(event);" AutoPostBack="True" BackColor="Beige"></asp:TextBox>
                             </td>
+
+                            <td runat="server" id="TDIssueQtyOnMachine" visible="false">
+                                <asp:Label ID="Label48" Text="IssQty OnMachine" runat="server" CssClass="labelbold" />
+                                <br />
+                                <asp:TextBox ID="txtIssueQtyOnMachine" runat="server" Width="70px" CssClass="textb" onkeypress="return isNumber(event);"
+                                    BackColor="Beige"></asp:TextBox>
+                            </td>
+
                             <td runat="server" id="TDLShort" visible="false">
                                 <asp:Label ID="lblLshort" Text=" L-Short(%)" runat="server" CssClass="labelbold" />
                                 <br />

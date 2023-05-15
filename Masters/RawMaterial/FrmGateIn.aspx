@@ -360,6 +360,21 @@
                             <asp:TextBox ID="txtRate" runat="server" CssClass="textb" onkeypress="return isNumber(event);"
                                 BackColor="Beige" Width="70px"></asp:TextBox>
                         </td>
+                        <td class="tdstyle" id="TDIssQtyFromMWS" runat="server" visible="false">
+                            <span class="labelbold">Iss Qty From MWS</span>
+                            <br />
+                            <asp:TextBox ID="TxtIssQtyFromMWS" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
+                        </td>
+                        <td class="tdstyle" id="TDShadeRMStatus" runat="server" visible="false">
+                            <span class="labelbold">Shade/RM Status</span>
+                            <br />
+                            <asp:TextBox ID="TxtShadeRMStatus" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
+                        </td>
+                        <td class="tdstyle" id="TDFolioNo" runat="server" visible="false" >
+                            <span class="labelbold">FolioNo</span>
+                            <br />
+                            <asp:TextBox ID="TxtFolioNo" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
+                        </td>
                         <td class="tdstyle" id="TDtxtremarks" runat="server" colspan="3">
                             <span class="labelbold">Remarks</span>
                             <br />

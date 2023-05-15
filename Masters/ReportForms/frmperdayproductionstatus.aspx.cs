@@ -785,16 +785,30 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         sht.Range("R2").Value = "User Name";
         sht.Range("S2").Value = "Remove Defects";
         sht.Range("T2").Value = "Inspected By";
-        sht.Range("U2").Value = "Inspection Date";
+
+        if (Session["varCompanyId"].ToString() == "45")
+        {
+            sht.Column(21).Hide();
+        }
+        else
+        {   
+            sht.Range("U2").Value = "Inspection Date";
+        }
+
         if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+        {
+            sht.Column(22).Hide();
+            sht.Column(23).Hide();
+        }
+        else if (Session["varCompanyId"].ToString() == "45")
         {
             sht.Column(22).Hide();
             sht.Column(23).Hide();
         }
         else
         {
-            sht.Range("V2").Value = "Penality Amount";
             sht.Range("W2").Value = "Commission Amount";
+            sht.Range("V2").Value = "Penality Amount";
         }
 
         if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
@@ -882,8 +896,25 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("R" + row).SetValue(ds1.Tables[0].Rows[i]["username"]);
             sht.Range("S" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemoveVALUE"]);
             sht.Range("T" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_UserID"]);
-            sht.Range("U" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_Date"]);
+
+            if (Session["varCompanyId"].ToString() == "45")
+            {
+                sht.Column(21).Hide();
+            }
+            else
+            {   
+                sht.Range("U" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_Date"]);
+            }
+
+            
             if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            {
+                sht.Column(22).Hide();
+                sht.Column(23).Hide();
+                sht.Range("V" + row).SetValue("");
+                sht.Range("W" + row).SetValue("");
+            }
+            else if (Session["varCompanyId"].ToString() == "45")
             {
                 sht.Column(22).Hide();
                 sht.Column(23).Hide();
@@ -928,7 +959,6 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                 sht.Range("Z" + row).SetValue("");
                 sht.Range("AA" + row).SetValue("");
             }
-            
 
             row = row + 1;
         }

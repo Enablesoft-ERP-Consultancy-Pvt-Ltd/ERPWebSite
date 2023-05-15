@@ -152,6 +152,10 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     }
                     break;
                 case "45":
+                    TxtReceiveQty.Enabled = true;
+                    TxtReceiveQty.Text = "500";
+                    DGStockDetail.PageSize = 500;
+                    TDstockno.Visible = true;
                     TDStockStatus.Visible = true;
                     Tractualwidthlength.Visible = true;
                     break;

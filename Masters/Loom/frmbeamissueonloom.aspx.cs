@@ -53,8 +53,17 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
     {
         AutoCompleteExtenderloomno.ContextKey = "0#0#" + DDProdunit.SelectedValue;
         string str = @"select Distinct PL.UID,PL.LoomNo,case when ISNUMERIC(PL.LoomNo)=1 then CONVERT(int,replace(PL.loomno, '.', '')) Else '9999999' End Loom1 from PROCESS_ISSUE_MASTER_1 PM inner join ProductionLoomMaster PL
-                    on PM.LoomId=PL.UID and PM.Status='Pending'
-                    And PL.companyid=" + DDcompany.SelectedValue + " and  PL.UnitId=" + DDProdunit.SelectedValue + " order by Loom1,Pl.Loomno";
+                    on PM.LoomId=PL.UID 
+                    And PL.companyid=" + DDcompany.SelectedValue + " and  PL.UnitId=" + DDProdunit.SelectedValue;
+        if (chkcomplete.Checked == true)
+        {
+            str = str + @" And PM.Status='Complete'";
+        }
+        else
+        {
+            str = str + @" And PM.Status='Pending'";
+        }
+        str = str + @" order by Loom1,Pl.Loomno";
         UtilityModule.ConditionalComboFill(ref DDLoomNo, str, true, "--Plz Selec--");
     }
     protected void DDLoomNo_SelectedIndexChanged(object sender, EventArgs e)

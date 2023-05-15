@@ -461,7 +461,6 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive_OnProduct
         param[2] = new SqlParameter("@MSG", SqlDbType.VarChar, 200);
         param[2].Direction = ParameterDirection.Output;
 
-
         //************
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_PunchCardIndentIssueOnFolioDetailForReceive", param);
         if (ds.Tables[0].Rows.Count > 0)
@@ -848,32 +847,30 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive_OnProduct
             con.Close();
         }
     }
-
     protected void btnPreview_Click(object sender, EventArgs e)
     {
-        //SqlParameter[] param = new SqlParameter[2];
-        //param[0] = new SqlParameter("@CompanyId", DDcompany.SelectedValue);
-        //param[1] = new SqlParameter("@PCIIssueID", hnReceiveid.Value);
-        ////************
-        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_PunchCardIndentIssueOnProductionOrderReport", param);
-        //if (ds.Tables[0].Rows.Count > 0)
-        //{
-        //    //Session["rptFileName"] = "~\\Reports\\RptWeaverMapIssue.rpt";
-        //    Session["rptFileName"] = "~\\Reports\\RptPunchCardIndentIssueOnProductionOrderReport.rpt";
-        //    Session["Getdataset"] = ds;
-        //    Session["dsFileName"] = "~\\ReportSchema\\RptPunchCardIndentIssueOnProductionOrderReport.xsd";
-        //    StringBuilder stb = new StringBuilder();
-        //    stb.Append("<script>");
-        //    stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-        //    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
-        //}
-        //else
-        //{
-        //    ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
-        //}
+        SqlParameter[] param = new SqlParameter[2];
+        param[0] = new SqlParameter("@CompanyId", DDcompany.SelectedValue);
+        param[1] = new SqlParameter("@PCIReceiveID", hnReceiveid.Value);
+        //************
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_PunchCardIndentReceiveProductionOrderReport", param);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+
+            Session["rptFileName"] = "~\\Reports\\RptPunchCardIndentReceiveProductionOrderReport.rpt";
+            Session["Getdataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptPunchCardIndentReceiveProductionOrderReport.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
+        }
 
     }
-
     protected void lnkPCStockNo_Click(object sender, EventArgs e)
     {
         Modalpopupext.Show();
@@ -1027,7 +1024,6 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive_OnProduct
             arr[4].Value = Session["varuserid"];
             arr[5].Value = Session["varCompanyId"];
             arr[6].Direction = ParameterDirection.Output;
-
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_SavePunchCardMissing_StockNo]", arr);
 

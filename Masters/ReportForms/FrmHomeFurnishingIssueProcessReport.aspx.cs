@@ -196,7 +196,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             SqlTransaction tran = con.BeginTransaction();
             try
             {
-                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "COMPUTER EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "DIGITAL PRINTING(PCS)")
+                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "COMPUTER EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "DIGITAL PRINTING(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING")
                 {
                     if (ChkForIssRecSummary.Checked == true)
                     {

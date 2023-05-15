@@ -384,35 +384,45 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             var xapp = new XLWorkbook();
             var sht = xapp.Worksheets.Add("sheet1");
             int row = 0;
-            //**************
+            sht.Range("A1:O1").Merge();
+            sht.Range("A1:O1").Style.Font.FontSize = 10;
+            sht.Range("A1:O1").Style.Font.Bold = true;
+            sht.Range("A1:O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:O1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:O1").Style.Alignment.WrapText = true;
+            //************
+            sht.Range("A1").SetValue("BEAM RECEIVE DETAIL From : " + txtfromdate.Text + " To : " + txttodate.Text + "");
+
+            sht.Range("A2:M2").Style.Font.FontSize = 10;
+            sht.Range("A2:M2").Style.Font.Bold = true;
             sht.Columns("A").Width = 15.78;
             sht.Columns("B").Width = 15.78;
             sht.Columns("C").Width = 35.78;
 
             //Headers
-            sht.Range("A1").Value = "Receive Date";
-            sht.Range("B1").Value = "EmpName";
+            sht.Range("A2").Value = "Receive Date";
+            sht.Range("B2").Value = "EmpName";
 
-            sht.Range("C1").Value = "ItemDescription";
-            sht.Range("D1").Value = "UnitName";
-            sht.Range("E1").Value = "LotNo";
-            sht.Range("F1").Value = "TagNo";
-            sht.Range("G1").Value = "PCSBEAM";
-            sht.Range("H1").Value = "NOOFBEAMREQ";
-            sht.Range("I1").Value = "GodownName";
-            sht.Range("J1").Value = "IssueNo";
-            sht.Range("K1").Value = "ReceiveQty";
-            sht.Range("L1").Value = "BeamNo";
-            sht.Range("M1").Value = "UserName";
-            sht.Range("N1").Value = "Production Unit";
-            sht.Range("O1").Value = "Company Name";
+            sht.Range("C2").Value = "ItemDescription";
+            sht.Range("D2").Value = "UnitName";
+            sht.Range("E2").Value = "LotNo";
+            sht.Range("F2").Value = "TagNo";
+            sht.Range("G2").Value = "PCSBEAM";
+            sht.Range("H2").Value = "NOOFBEAMREQ";
+            sht.Range("I2").Value = "GodownName";
+            sht.Range("J2").Value = "IssueNo";
+            sht.Range("K2").Value = "ReceiveQty";
+            sht.Range("L2").Value = "BeamNo";
+            sht.Range("M2").Value = "UserName";
+            sht.Range("N2").Value = "Production Unit";
+            sht.Range("O2").Value = "Company Name";
 
-            sht.Range("A1:O1").Style.Font.Bold = true;
-            sht.Range("G1:H1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-            sht.Range("K1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("A2:O2").Style.Font.Bold = true;
+            sht.Range("G2:H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("K2:K2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
             //******************************
-            row = 2;
+            row = 3;
             decimal Bal = 0;
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
@@ -438,8 +448,14 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                 row = row + 1;
             }
             //**********Total
-            sht.Columns(4, 30).AdjustToContents();
-            //********************
+            sht.Columns(4, 15).AdjustToContents(); row = row - 1;
+            using (var a = sht.Range("A1" + ":O" + row))
+            {
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            }
             string Fileextension = "xlsx";
             string filename = UtilityModule.validateFilename("BeamReceiveDetail_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
             Path = Server.MapPath("~/Tempexcel/" + filename);

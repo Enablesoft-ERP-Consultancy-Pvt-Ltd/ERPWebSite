@@ -14,7 +14,7 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
     {
         if (Session["varcompanyId"] == null)
         {
-            Response.Redirect("~/Login.aspx");
+            Response.Redirect("~/Login.aspx"); 
         }
         if (!IsPostBack)
         {
@@ -22,9 +22,10 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
                             CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
-                           select D.Departmentid,D.Departmentname from Department D Where D.DepartmentName='WARPING' order by Departmentname
-                           Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varcompanyid"] + @"
-                           select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + " order by customer";
+                            Select D.Departmentid,D.Departmentname from Department D Where D.DepartmentName='WARPING' order by Departmentname
+                            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varcompanyid"] + @"
+                            Select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + @" order by customer
+                            Select UnitsID, UnitName From Units(Nolock) Where MasterCompanyId = " + Session["varcompanyid"] + @" Order By UnitName ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
 
@@ -42,6 +43,7 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDProcess, ds, 2, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDcustcode, ds, 3, true, "--Plz Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDProductionUnit, ds, 4, true, "--Plz Select--");
             txtissuedate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             txttargetdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
 
@@ -101,9 +103,7 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-
-
-                SqlParameter[] param = new SqlParameter[12];
+                SqlParameter[] param = new SqlParameter[13];
                 param[0] = new SqlParameter("@ID", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.InputOutput;
                 param[0].Value = hnid.Value == "" ? "0" : hnid.Value;
@@ -121,6 +121,7 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
                 param[9] = new SqlParameter("@Processid", DDProcess.SelectedValue);
                 param[10] = new SqlParameter("@dtrecords", dtrecords);
                 param[11] = new SqlParameter("@orderdetailid", DDitemdescription.SelectedValue);
+                param[12] = new SqlParameter("@ProductionUnit", DDProductionUnit.SelectedValue);
                 //**********************
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveWarpOrder", param);
                 hnid.Value = param[0].Value.ToString();

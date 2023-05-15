@@ -381,9 +381,17 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     sht.Range("B3").Value = "EMP NAME";
                     sht.Range("C3").Value = "STOCK NO.";
                     sht.Range("D3").Value = "UNIT NAME";
-                    sht.Range("E3").Value = "LOOM NO";
-                    sht.Range("F3").Value = "FOLIO NO";
 
+                    if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+                    {
+                        sht.Column(5).Hide();
+                    }
+                    else
+                    {
+                        sht.Range("E3").Value = "LOOM NO";
+                    }
+
+                    sht.Range("F3").Value = "FOLIO NO";
                     sht.Range("G3").Value = "STYLE NAME";
                     sht.Range("H3").Value = "COLOUR NAME";
                     sht.Range("I3").Value = "SIZE";
@@ -407,7 +415,16 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                         sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["empname"]);
                         sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["Tstockno"]);
                         sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["Units"]);
-                        sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["LoomNo"]);
+                        
+                        if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+                        {
+                            sht.Column(5).Hide();
+                        }
+                        else
+                        {
+                            sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["LoomNo"]);
+                        }
+
                         sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["FolioNo"]);
                         sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["designname"]);
                         sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["colorname"]);

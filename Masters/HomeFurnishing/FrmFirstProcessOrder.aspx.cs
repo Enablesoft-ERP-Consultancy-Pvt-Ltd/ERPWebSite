@@ -70,6 +70,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                      txtWeaverIdNo.Visible = true;
                     txtWeaverIdNoscan.Visible = false;
                     ddunit.Enabled = false;
+                    btnupdateconsmp.Visible = true;
                     break;
                 default:
                     txtWeaverIdNo.Visible = true;
@@ -1071,8 +1072,44 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
         //}
         #endregion
     }
+    //protected void btnupdateconsmp_Click(object sender, EventArgs e)
+    //{
+    //    SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+    //    if (con.State == ConnectionState.Closed)
+    //    {
+    //        con.Open();
+    //    }
+    //    SqlTransaction Tran = con.BeginTransaction();
+    //    try
+    //    {
+    //        SqlParameter[] param = new SqlParameter[5];
+    //        param[0] = new SqlParameter("@issueorderid", DDFolioNo.SelectedValue);
+    //        param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+    //        param[1].Direction = ParameterDirection.Output;
+    //        //param[2] = new SqlParameter("@ChkForDyeingConsumption", ChkForDyeingConsumption.Checked == true ? "1" : "0");
+    //        param[3] = new SqlParameter("@IssueDate", txtissuedate.Text);
+    //        param[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyNo"]);
+
+    //        //******
+    //        SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_updatecurrentconsmpLoomWise", param);
+    //        //******
+    //        lblmessage.Text = param[1].Value.ToString();
+    //        Tran.Commit();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Tran.Rollback();
+    //        lblmessage.Text = ex.Message;
+    //    }
+    //    finally
+    //    {
+    //        con.Dispose();
+    //        con.Close();
+    //    }
+    //}
     protected void btnupdateconsmp_Click(object sender, EventArgs e)
     {
+        lblmessage.Text = "";
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         if (con.State == ConnectionState.Closed)
         {
@@ -1081,18 +1118,14 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] param = new SqlParameter[5];
+            SqlParameter[] param = new SqlParameter[3];
             param[0] = new SqlParameter("@issueorderid", DDFolioNo.SelectedValue);
-            param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-            param[1].Direction = ParameterDirection.Output;
-            //param[2] = new SqlParameter("@ChkForDyeingConsumption", ChkForDyeingConsumption.Checked == true ? "1" : "0");
-            param[3] = new SqlParameter("@IssueDate", txtissuedate.Text);
-            param[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyNo"]);
-
-            //******
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_updatecurrentconsmpLoomWise", param);
-            //******
-            lblmessage.Text = param[1].Value.ToString();
+            param[1] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
+            param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            param[2].Direction = ParameterDirection.Output;
+            //*********
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_NEXTISSUECONSUMPTIONUPDATE", param);
+            lblmessage.Text = param[2].Value.ToString();
             Tran.Commit();
         }
         catch (Exception ex)
@@ -1102,8 +1135,8 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
         }
         finally
         {
-            con.Dispose();
             con.Close();
+            con.Dispose();
         }
     }
     protected void DDemployee_SelectedIndexChanged(object sender, EventArgs e)

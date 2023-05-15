@@ -55,6 +55,7 @@
               <xs:element name="UnitName" type="xs:string" minOccurs="0" />
               <xs:element name="IndentQty" type="xs:double" minOccurs="0" />
               <xs:element name="OrderQuality" type="xs:string" minOccurs="0" />
+              <xs:element name="IssueQtyOnMachine" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
