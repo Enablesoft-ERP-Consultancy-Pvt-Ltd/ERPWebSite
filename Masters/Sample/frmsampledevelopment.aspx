@@ -755,11 +755,7 @@
                                                     <asp:Label ID="lblitemfinishedid" Text='<%#Bind("Item_Finished_id") %>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                             <asp:TemplateField HeaderText="O_Item_Finished_id" Visible="False">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblOitemfinishedid" Text='<%#Bind("OSHADEID") %>' runat="server" />
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
+                                             
                                             <asp:TemplateField HeaderText="ProcessID" Visible="False">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblProcessID" Text='<%#Bind("ProcessID") %>' runat="server" />
