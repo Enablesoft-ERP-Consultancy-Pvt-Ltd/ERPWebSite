@@ -19,7 +19,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
         {
             Response.Redirect("~/Login.aspx");
         }
-
+        Page.ClientScript.RegisterStartupScript(typeof(Page), System.DateTime.Now.Ticks.ToString(), "scrollTo('" + gride.ClientID + "');", true);     
         if (!IsPostBack)
         {
             hnEmployeeType.Value = "0";
@@ -238,6 +238,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     TDLastFolioNo.Visible = false;
                     ChkForSlipPrint.Visible = false;
                     ddunit.Enabled = false;
+                    tdprocess.Visible = true;
                     break;
                 default:
                     TDTanaCottonLotNo.Visible = false;
@@ -837,7 +838,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                             }
                             else
                             {
-                                str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
+                                str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id,od.OrderUnitId as OrderUnitId,OD.flagsize,
                             case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when " + ddunit.SelectedValue + @"=1 Then Vf.Sizemtr Else vf.sizeft end ELse
                             dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) END as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                             " + Qtyrequired + @" - IsNull(PIDD.Qty, 0) QtyRequired, dbo." + Function + @"(OM.OrderId,OD.Item_Finished_Id) OrderedQty,JOBRATE.RATE,
@@ -910,7 +911,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     }
                 }
             }
-            DG.DataSource = ds.Tables[0];
+            DG.DataSource = ds.Tables[0].DefaultView;
             DG.DataBind();
         }
     }
@@ -1264,7 +1265,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
 
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-            DG.DataSource = ds.Tables[0];
+            DG.DataSource = ds.Tables[0].DefaultView;
             DG.DataBind();
         }
     }
@@ -1290,9 +1291,11 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 //        //chkpurchasefolio.Checked = true;
                 //    }
                 //}
+                break;
+            case "44":
                 if (DGOrderdetail.Rows.Count == 0)
                 {
-                    str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
+                    str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue+";select  PROCESS_NAME_ID,case when PROCESS_NAME='CUTTING' THEN 'DHARI' WHEN PROCESS_NAME='STITCHING' THEN 'CUSHION' END AS PROCESS_NAME from PROCESS_NAME_MASTER WHERE PROCESS_NAME IN('CUTTING','STITCHING')";
                     ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                     if (ds.Tables[0].Rows.Count > 0)
                     {
@@ -1301,6 +1304,13 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                             ddunit.SelectedValue = ds.Tables[0].Rows[0]["orderunitid"].ToString();
                         }
                     }
+                    //if (ds.Tables[1].Rows.Count > 0)
+                    //{
+                    //    if (ddunit.Items.FindByValue(ds.Tables[1].Rows[0]["PROCESS_NAME_ID"].ToString()) != null)
+                    //    {
+                    //        ddunit.SelectedValue = ds.Tables[1].Rows[0]["orderunitid"].ToString();
+                    //    }
+                    //}
                 }
                 break;
             case "22":
@@ -1417,12 +1427,22 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                         StrEmpid = StrEmpid + "," + listWeaverName.Items[i].Value;
                     }
                 }
-                //Check Employee Entry
-                if (StrEmpid == "")
+                if (ddempname.SelectedValue.ToString() == "0")
                 {
                     lblmessage.Text = "Plz Enter Weaver ID No...";
                     return;
+
                 }
+                else
+                {
+                    StrEmpid = ddempname.SelectedValue;
+                }
+                //Check Employee Entry
+                //if (StrEmpid == "")
+                //{
+                //    lblmessage.Text = "Plz Enter Weaver ID No...";
+                //    return;
+                //}
                 //******
                 SqlCommand cmd = new SqlCommand("Pro_SaveProductionOrderonLoom_agni", con, Tran);
                 cmd.CommandType = CommandType.StoredProcedure;
@@ -1875,6 +1895,10 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@IssueOrderId", hnissueorderid.Value);
         cmd.Parameters.AddWithValue("@ProcessId", 1);
         cmd.Parameters.AddWithValue("@UserName", Session["UserName"]);
+        if (Session["varCompanyId"].ToString() == "44")
+        {
+            cmd.Parameters.AddWithValue("@TYPE", chksummary.Checked ? 2 : 0);
+        }
         cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
 
         DataSet ds = new DataSet();
@@ -2145,9 +2169,9 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             {
                 str = str + " and PIM.Status='Pending'";
             }
-            if (txteditempid.Text != "")
+            if (ddempname.SelectedIndex >0)
             {
-                str = str + " and EMP.EMPID=" + txteditempid.Text + "";
+                str = str + " and EMP.EMPID=" + ddempname.SelectedValue + "";
             }
             if (txtfolionoedit.Text != "")
             {
@@ -3661,7 +3685,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 }
                 else
                 {
-                    DG.DataSource = ds.Tables[0];
+                    DG.DataSource = ds.Tables[0].DefaultView;
                     DG.DataBind();
                     for (int i = 0; i < DG.Rows.Count; i++)
                     {
@@ -4426,7 +4450,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             {
                 strf = strf + " and PIM.Status='Pending'";
             }
-            if (txteditempid.Text != "")
+            if (ddempname.SelectedIndex >0)
             {
                 strf = strf + " and EMP.EMPID=" + ddempname.SelectedValue + "";
             }

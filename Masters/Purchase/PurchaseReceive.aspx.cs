@@ -118,6 +118,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                 case 22:
                     TDBillDate.Visible = true;
                     TDRectagNo.Visible = true;
+                    Label12.Text = "Inwards No";
                     break;
                 case 28:
                     BtnComplete.Visible = true;
@@ -1756,6 +1757,12 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                 }
                 //e.Row.Cells[6].Text = "UCNNo";
             }
+
+            if (e.Row.RowType == DataControlRowType.DataRow && e.Row.RowState == DataControlRowState.Edit)
+            {
+                TextBox txtLotNo = e.Row.FindControl("txtLotNo") as TextBox;
+                txtLotNo.Enabled = true;
+            }
             
         }
     }
@@ -2006,7 +2013,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                             Where prm.companyid = " + DDCompanyName.SelectedValue + " And prm.billno='" + txtchalan_no.Text + "' And prm.MasterCompanyId=" + Session["varCompanyId"];
                 if (DDPartyName.SelectedIndex > 0)
                 {
-                    str1 = str1 + @" And prm.PartyID = " + DDCompanyName.SelectedValue;
+                    str1 = str1 + @" And prm.PartyID = " + DDPartyName.SelectedValue;
                 }
                 ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str1);
                 if (ds2.Tables[0].Rows.Count > 0)
@@ -2533,6 +2540,17 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                 Session["ReportPath"] = "Reports/PurchaseReceive_WithoutRateNew.rpt";
             }
         }
+        else if (hncomp.Value == "22")
+        {
+            if (DDPreviewType.SelectedValue == "0")
+            {
+                Session["ReportPath"] = "Reports/PurchaseReceiveNEWDiamond.rpt";
+            }
+            else if (DDPreviewType.SelectedValue == "1")
+            {
+                Session["ReportPath"] = "Reports/PurchaseReceive_WithoutRateNew.rpt";
+            }
+        }
         else
         {
             if (DDPreviewType.SelectedValue == "0")
@@ -3050,7 +3068,10 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             TextBox txtDGQty = (TextBox)DGPurchaseReceiveDetail.Rows[e.RowIndex].FindControl("TxtDGQty");
             TextBox TxtDGRate = (TextBox)DGPurchaseReceiveDetail.Rows[e.RowIndex].FindControl("TxtDGRate");
 
-            SqlParameter[] _arrPara = new SqlParameter[11];
+            ////////********Lotno Update Option Only For CarpetInternational Not for Other Company Possible Because TagNo Unique For CI *********
+            TextBox txtLotNo = (TextBox)DGPurchaseReceiveDetail.Rows[e.RowIndex].FindControl("txtLotNo");
+
+            SqlParameter[] _arrPara = new SqlParameter[8];
             _arrPara[0] = new SqlParameter("@PurchaseReceiveId", ViewState["PurchaseReceiveId"]);
             _arrPara[1] = new SqlParameter("@PurchaseReceiveDetailId", VarPurchaseReceiveDetailId);
             _arrPara[2] = new SqlParameter("@Userid", Session["varuserid"]);
@@ -3059,6 +3080,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             _arrPara[5] = new SqlParameter("@Rate", TxtDGRate.Text == "" ? "0" : TxtDGRate.Text);
             _arrPara[6] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             _arrPara[6].Direction = ParameterDirection.Output;
+            _arrPara[7] = new SqlParameter("@LotNo", txtLotNo.Text == "" ? "Without Lot No" : txtLotNo.Text);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_PurchaseReceiveUpdateQty", _arrPara);
             Tran.Commit();

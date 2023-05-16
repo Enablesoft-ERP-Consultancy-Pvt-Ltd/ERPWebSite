@@ -72,6 +72,9 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
                 case "16":
                     lblindentno.Text = "Challan No.";
                     break;
+                case "22":
+                    lblcheckedby.Text = "Inwards No.";
+                    break;
                 default:
                     break;
             }
@@ -370,7 +373,15 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            Session["rptFileName"] = "~\\Reports\\rptsampledyeingreceive.rpt";
+            if (Session["VarCompanyId"].ToString() == "22")
+            {
+                Session["rptFileName"] = "~\\Reports\\rptsampledyeingreceiveDiamond.rpt";
+            }
+            else
+            {
+                Session["rptFileName"] = "~\\Reports\\rptsampledyeingreceive.rpt";
+            }
+           
             Session["Getdataset"] = ds;
             Session["dsFileName"] = "~\\ReportSchema\\rptsampledyeingreceive.xsd";
             StringBuilder stb = new StringBuilder();

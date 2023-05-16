@@ -161,6 +161,10 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                     break;
                 case "22":
                     customlotno.Visible = true;
+                    Label42.Text = "Inwards No";
+                    Label14.Text = "Bill No";
+                    Label19.Text = "Issue LotNo";
+                    Label31.Text = "Issue TagNo";
                     break;
                 case "28":
                     //TxtLoss.Enabled = false;
@@ -168,6 +172,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                     break;
                 case "43":
                     Label31.Text = "UCN No";
+                    TDIssueQtyOnMachine.Visible = true;
                     break;
                 case "45":
                     TDTagNo.Visible = true;
@@ -1174,7 +1179,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
             SqlTransaction tran = con.BeginTransaction();
             try
             {
-                SqlParameter[] arr = new SqlParameter[54];
+                SqlParameter[] arr = new SqlParameter[55];
                 arr[0] = new SqlParameter("@prmid", SqlDbType.Int);
                 arr[1] = new SqlParameter("@companyid", SqlDbType.Int);
                 arr[2] = new SqlParameter("@empid", SqlDbType.Int);
@@ -1229,6 +1234,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                 arr[51] = new SqlParameter("@BranchID", SqlDbType.Int);
                 arr[52] = new SqlParameter("@MANUALLOTENTRY", SqlDbType.Int);
                 arr[53] = new SqlParameter("@MANUALLOTNo", SqlDbType.VarChar, 50);
+                arr[54] = new SqlParameter("@IssueQtyOnMachine", SqlDbType.Float);
 
                 //***********************************************************
                 arr[0].Direction = ParameterDirection.InputOutput;
@@ -1314,6 +1320,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                 arr[51].Value = DDBranchName.SelectedValue;
                 arr[52].Value = chkchangeLotno.Checked == true ? 1 : 0;
                 arr[53].Value = txtlotno.Text == "" ? "Without Lot No" : txtlotno.Text.Trim();
+                arr[54].Value = TDIssueQtyOnMachine.Visible == true ? (txtIssueQtyOnMachine.Text == "" ? "0" : txtIssueQtyOnMachine.Text) : "0";
 
                 SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[PRO_PP_PRM_recieve]", arr);
                 //*******************************************************
@@ -1426,6 +1433,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                     // dquality.SelectedIndex = 0;
                     TxtBellWeight.Text = "";
                     TxtMoisture.Text = "";
+                    txtIssueQtyOnMachine.Text = "";
                     btnsave.Text = "Save";
                     txtidnt.Enabled = false;
                     Fill_Grid();
@@ -1799,15 +1807,36 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
 //            CROSS APPLY (Select * From dbo.F_GetPPNo_OrderNo(V.PPNo)) OD  
 //            Where V.PRMid = " + HPRMID.Value + ") SELECT * FROM summary WHERE RK=1";
 
-        string qry = @"Select V.CATEGORY_NAME, V.ITEM_NAME, V.QualityName, V.DESCRIPTION, V.GodownName, V.RecQuantity, IsNull(VR.RetQty, 0) As RetQty, V.lotno, V.EmpName, 
+        string qry = "";
+
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            qry = @"Select V.CATEGORY_NAME, V.ITEM_NAME, V.QualityName, V.DESCRIPTION, V.GodownName, V.RecQuantity, IsNull(VR.RetQty, 0) As RetQty, V.lotno, V.EmpName, 
             V.CompanyName, V.gatepassno, V.indentno, V.EmpAddress, V.EmpPhoneNo, V.EmpMobile, V.CompanyAddress, V.CompanyPhoneNo, V.CompanyFaxNo, V.TinNo, 
             V.PRMid, V.Date, V.CHALLANNO, MastercompanyId, DyingMatch, DyeingType, Dyeing,  V.CustomerOrderNo, V.Buyercode, PROCESS_NAME, Rec_Iss_ItemFlag, 
             RRRemark, Lshort, Shrinkage, V.TagNo, V.GateInNo, GSTIN, EMPGSTIN, CheckedBy, ApprovedBy, od.customercode, od.OrderNo, od.Localorder, OD.Merchantname, V.LossQty,V.BILLNo
-            ,V.UserName,v.UnitName
+            ,V.UserName,v.UnitName,isnull((Select isnull(sum(ID.Quantity),0) from IndentDetail ID Where ID.OFinishedId=V.FinishedId and Id.lotno=V.LotNo and ID.TagNo=V.TagNo and Id.IndentId=V.IndentId),0) as IndentQty
+            ,isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
+	            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+	            Where PPID=V.PPNo for xml path('')),'') as OrderQuality,isnull(IssueQtyOnMachine,0) as IssueQtyOnMachine 
             FROM V_IndentRawRec V(Nolock)  
             LEFT JOIN V_IndentRawReturnQty VR(Nolock) ON VR.PRMid = V.PRMid AND VR.PRTid = V.PRTid 
             CROSS APPLY (Select * From dbo.F_GetPPNo_OrderNo(V.PPNo)) OD  
             Where V.PRMid = " + HPRMID.Value + " ";
+        }
+        else
+        {
+            qry = @"Select V.CATEGORY_NAME, V.ITEM_NAME, V.QualityName, V.DESCRIPTION, V.GodownName, V.RecQuantity, IsNull(VR.RetQty, 0) As RetQty, V.lotno, 
+            V.EmpName, V.CompanyName, V.gatepassno, V.indentno, V.EmpAddress, V.EmpPhoneNo, V.EmpMobile, V.CompanyAddress, V.CompanyPhoneNo, V.CompanyFaxNo, 
+            V.TinNo, V.PRMid, V.Date, V.CHALLANNO, V.MastercompanyId, V.DyingMatch, V.DyeingType, V.Dyeing,  V.CustomerOrderNo, V.Buyercode, V.PROCESS_NAME, 
+            V.Rec_Iss_ItemFlag, V.RRRemark, V.Lshort, V.Shrinkage, V.TagNo, V.GateInNo, V.GSTIN, V.EMPGSTIN, V.CheckedBy, V.ApprovedBy, od.customercode, 
+            OD.OrderNo, OD.Localorder, OD.Merchantname, V.LossQty, V.BILLNo, V.UserName, V.UnitName, V.LossQty 
+            FROM V_IndentRawRec V(Nolock) 
+            LEFT JOIN V_IndentRawReturnQty VR(Nolock) ON VR.PRMid = V.PRMID AND VR.PRTid = V.PRTID 
+            CROSS APPLY (Select * From dbo.F_GetPPNo_OrderNo(V.PPNo)) OD 
+            Where V.PRMid = " + HPRMID.Value + " ";
+        }       
+
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
@@ -1829,6 +1858,12 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
                     break;
                 case "44":
                     Session["rptFileName"] = "~\\Reports\\IndentRawRecagni.rpt";
+                    break;
+                case "22":
+                    Session["rptFileName"] = "~\\Reports\\IndentRawRecNewDiamond.rpt";
+                    break;
+                case "43":
+                    Session["rptFileName"] = "~\\Reports\\IndentRawRecNewCI.rpt";
                     break;
                 default:
                     Session["rptFileName"] = "~\\Reports\\IndentRawRecNew.rpt";

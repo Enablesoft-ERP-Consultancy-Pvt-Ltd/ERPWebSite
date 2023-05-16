@@ -46,8 +46,12 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                     TRcategoty.Visible = false;
                     TRddItemName.Visible = false;
                     TDempwise.Visible = true;
-                    break;               
-                default:                   
+                    break;  
+                case "21":
+                    TRForWithoutWeavingProcess.Visible = true;
+                    break;
+                default:
+                    TRForWithoutWeavingProcess.Visible = false; 
                     break;
             }
             //**************
@@ -204,7 +208,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             }
             SqlCommand cmd = new SqlCommand("Pro_ForProduction_JobSummaryOther", con);
             cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandTimeout = 300;
+            cmd.CommandTimeout = 3000;
 
             cmd.Parameters.AddWithValue("@ProcessId", DDjob.SelectedIndex <= 0 ? "0" : DDjob.SelectedValue);
             cmd.Parameters.AddWithValue("@Fromdate", txtFromdate.Text);
@@ -218,6 +222,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             cmd.Parameters.AddWithValue("@WITHSTOCKDETAIL", chkwithstockdetail.Checked == true ? "1" : "0");
             cmd.Parameters.AddWithValue("@CustomerID", TrCustomerCode.Visible == true ? DDCustomerOrderNo.SelectedIndex <= 0 ? "0" : DDCustomerOrderNo.SelectedValue : "0");
             cmd.Parameters.AddWithValue("@OrderID", TrOrderNo.Visible == true ? DDOrderNo.SelectedIndex <= 0 ? "0" : DDOrderNo.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@WithoutWeavingProcess", TRForWithoutWeavingProcess.Visible == true ? ChkForWithoutWeavingProcess.Checked == true ? "1" : "0" : "0");
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -260,9 +265,16 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 else
                 {
                     Session["dsFileName"] = "~\\ReportSchema\\RptProduction_JobSummary.xsd";
-                    if (Session["VarCompanyId"].ToString() == "21" && Session["UserType"].ToString() != "1")
+                    if (Session["VarCompanyId"].ToString() == "21")
                     {
-                        Session["rptFileName"] = "Reports/RptProduction_JobSummaryNewWithoutAmt.rpt";
+                        if (Session["UserType"].ToString() != "1")
+                        {
+                            Session["rptFileName"] = "Reports/RptProduction_JobSummaryNewWithoutAmt.rpt";
+                        }
+                        else
+                        {
+                            Session["rptFileName"] = "~\\Reports\\RptProduction_JobSummaryNewKaysons.rpt";
+                        }
                     }
                     else
                     {
@@ -697,6 +709,17 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                     TRForSummaryDetail.Visible = false;
                     chkforday.Visible = false;
                     TRFORDAY.Visible = false;
+                    if (Session["VarCompanyNo"].ToString() == "21")
+                    {
+                        if (DDjob.SelectedIndex > 0)
+                        {
+                            TRForWithoutWeavingProcess.Visible = false;
+                        }
+                        else
+                        {
+                            TRForWithoutWeavingProcess.Visible = true;
+                        }
+                    }
                 break;
 
         }
@@ -1616,8 +1639,8 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             sht.Range("D2").Value = "JOB NAME";
             sht.Range("E2").Value = "QUALITY";
             sht.Range("F2").Value = "COLOR";
-            sht.Range("G2").Value = "WIDTH";
-            sht.Range("H2").Value = "LENGTH";
+            sht.Range("G2").Value = "";
+            sht.Range("H2").Value = "";
             sht.Range("I2").Value = "QTY";
            
             sht.Range("L2").Value = "EMPLOYEE";
@@ -1625,6 +1648,12 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             sht.Range("N2").Value = "DATE STAMP";
             sht.Range("O2").Value = "LOOM NO";
             sht.Range("P2").Value = "FOLIO NO";
+
+            sht.Column(7).Hide();
+            sht.Column(8).Hide();
+
+            //sht.Range("G2").Value = "WIDTH";
+            //sht.Range("H2").Value = "LENGTH";
 
             if (ChkForFinishingDetail.Checked == true)
             {
@@ -1676,8 +1705,11 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["Job"]);
                 sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["ItemName"]);
                 sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["Colorname"]);
-                sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["WIDTH"]);
-                sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["LENGTH"]);
+                sht.Range("G" + row).SetValue("");
+                sht.Range("H" + row).SetValue("");
+
+                //sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["WIDTH"]);
+                //sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["LENGTH"]);
                 sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Recqty"]);
 
                 if (ChkForFinishingDetail.Checked == true)

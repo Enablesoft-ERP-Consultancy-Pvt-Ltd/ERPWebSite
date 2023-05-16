@@ -44,10 +44,11 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 true);
 
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName                           
-                           select UnitsId,UnitName from Units order by UnitName
-                           select Ei.EmpId,EI.EmpName From Empinfo Ei inner join Department D on Ei.Departmentid=D.DepartmentId and D.DepartmentName='QC Department' order by Ei.EmpName 
-                           Select * From NewUserDetail Where canedit = 1 And UserType = 1 And UserId = " + Session["varuserId"]+@"
-                           Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    select UnitsId,UnitName from Units order by UnitName
+                    select Ei.EmpId,EI.EmpName From Empinfo Ei inner join Department D on Ei.Departmentid=D.DepartmentId And EI.Blacklist = 0 And 
+                    D.DepartmentName='QC Department' order by Ei.EmpName 
+                    Select * From NewUserDetail Where canedit = 1 And UserType = 1 And UserId = " + Session["varuserId"]+@"
+                    Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -149,6 +150,14 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         TxtReceiveQty.Text = "200";
                         DGStockDetail.PageSize = 200;
                     }
+                    break;
+                case "45":
+                    TxtReceiveQty.Enabled = true;
+                    TxtReceiveQty.Text = "500";
+                    DGStockDetail.PageSize = 500;
+                    TDstockno.Visible = true;
+                    TDStockStatus.Visible = true;
+                    Tractualwidthlength.Visible = true;
                     break;
                 default:
                     break;
@@ -1789,7 +1798,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
     protected void btnconfirm_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "42" || Session["varcompanyId"].ToString() == "43")
+        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "42" || Session["varcompanyId"].ToString() == "43" || Session["varcompanyId"].ToString() == "45")
         {
             if (txtactualwidth.Text == "")
             {

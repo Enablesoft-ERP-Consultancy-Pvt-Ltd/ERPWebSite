@@ -267,6 +267,8 @@
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         <asp:Button ID="btnAddSize" runat="server" CssClass="buttonsmalls" OnClientClick="return AddSize();"
                             TabIndex="17" Text="ADD" Width="40px" />
+                        <asp:CheckBox ID="ChkForInchSize" runat="server" Text="For Inch" Font-Bold="true"
+                                    Visible="false" AutoPostBack="true" OnCheckedChanged="ChkForInchSize_CheckedChanged" />
                         <br />
                         <asp:DropDownList ID="ddsize" runat="server" Width="150px" CssClass="dropdown" AutoPostBack="True"
                             OnSelectedIndexChanged="ddsize_SelectedIndexChanged" TabIndex="16">

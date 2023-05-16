@@ -129,7 +129,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
 
         string Str = @" Select VHD.ChallanNo,isnull(Round(sum(VHD.Total),0),0) Total,VHD.IndentId ,0 Flag,VHD.ProcessRec_PrmId
                         From V_GetRawmaterialPreparationHissabDetail VHD
-                        Left outer join V_RawmaterialHissabdone RMD on VHD.ProcessRec_Prmid=RMD.ProcessRec_PrmId and RMD.Hissabtype=0
+                        Left outer join V_RawmaterialHissabdone RMD on VHD.ProcessRec_Prmid=RMD.ProcessRec_PrmId And Rmd.IndentID = VHD.INDENTID and RMD.Hissabtype=0
                         Where Rmd.ProcessRec_PrmId is null  And VHD.CompanyId=" + DDCompanyName.SelectedValue + " And VHD.ProcessID=" + DDProcess.SelectedValue + " And VHD.EmpId=" + DDPartyName.SelectedValue;
         switch (Session["varcompanyId"].ToString())
         {
@@ -150,7 +150,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
 
             Str = Str + @" Union All Select VIRD.ChallanNo,isnull(Round(Sum(VIRD.Total),0),0) Total,VIRD.IndentId ,1 Flag,VIRD.ProcessRec_PrmId
                             From V_GetRawmaterialPreparationHissabDetail VIRD Left outer join RawMaterialPreprationHissabdetail RMD on VIRD.ProcessRec_Prmid=RMD.ProcessRec_PrmId
-                            inner join V_RawmaterialHissabdone VHD on VIRD.ProcessRec_Prmid=VHD.ProcessRec_PrmId And VHD.Hissabtype=0 and vhd.HissabId=" + DDBillNo.SelectedValue + @"
+                            inner join V_RawmaterialHissabdone VHD on VIRD.ProcessRec_Prmid=VHD.ProcessRec_PrmId And VHD.IndentID = VIRD.INDENTID And VHD.Hissabtype=0 and vhd.HissabId=" + DDBillNo.SelectedValue + @"
                             Where VIRD.CompanyId=" + DDCompanyName.SelectedValue + " And VIRD.ProcessID=" + DDProcess.SelectedValue + " And VIRD.EmpId=" + DDPartyName.SelectedValue + " Group By VIRD.IndentId,VIRD.ChallanNo,VIRD.ProcessRec_Prmid Order by IndentId,ProcessRec_Prmid";
         }
         //  And VIRD.IndentID=VHD.IndentID
@@ -544,8 +544,18 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 _arrPara[19].Value = txtDeductionAmt.Text != "" ? txtDeductionAmt.Text : "0";
                 _arrPara[20].Value = txtGst.Text != "" ? txtGst.Text : "0";
                 _arrPara[21].Direction = ParameterDirection.InputOutput;
+                string sp = string.Empty;
+                if (Session["VarCompanyNo"].ToString() == "44")
+                {
+                    sp = "PRO_RawMaterialPreprationHissab_AGNI";
+                }
+                else
+                {
 
-                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_RawMaterialPreprationHissab", _arrPara);
+                    sp = "PRO_RawMaterialPreprationHissab";
+                }
+               
+                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, sp, _arrPara);
                 ViewState["Hissabid"] = _arrPara[0].Value;
                 Tran.Commit();
                 if (_arrPara[21].Value.ToString() != "")
@@ -772,7 +782,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 str = @" Select VH.Companyname,Vh.CompAddr1,Vh.CompAddr2,Vh.CompAddr3,vh.CompTel,
                     VRH.BillNo,VH.ReceiveDate,VH.ChallanNo as RecchallanNo,VH.EmpName,vh.ITEM_NAME,vh.QualityName,vh.designName,vh.ColorName,vh.ShadeColorName,
                     vh.ShapeName,vh.Size,Vh.Recqty,Vh.Lossqty,vh.rate,vh.Total,Vh.Processrec_prmid,VH.Process_Name,VRH.AdditionAmt,VRH.DeductionAmt,VRH.GST,
-                    VRH.DebitAmt,VH.unitname
+                    VRH.DebitAmt,VH.unitname,VH.CustomerOrderNo,VH.CustomerCode,VRH.TDS 
                     From V_GetRawmaterialPreparationHissabDetail VH  inner join V_RawMaterialHissabDetail VRH
                     on VH.ProcessRec_Prmid=VRH.ProcessRec_PrmId and Vh.Indentid=Vrh.IndentID
                     Where VRH.Hissabtype=0 and VRH.Hissabid=" + ViewState["Hissabid"];

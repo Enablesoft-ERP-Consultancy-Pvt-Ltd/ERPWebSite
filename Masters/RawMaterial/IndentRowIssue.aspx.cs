@@ -114,7 +114,10 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                     break;
                 case "43":
                     Label17.Text = "UCN No";
-                    break;                    
+                    break;
+                case "22":
+                    TDGenerateIndentDate.Visible = true;
+                    break;
             }
             if (MySession.TagNowise == "1")
             {
@@ -285,6 +288,18 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 Where IndentId = " + ddindentno.SelectedValue + @" 
                 Order By GM.GodownName ", true, "Select Godown");
         }
+
+        if (Convert.ToInt32(Session["varcompanyNo"]) == 22)
+        {
+            string str2 = "";
+            str2 = "select IsNull(REPLACE(CONVERT(NVARCHAR(11),Date,106),' ','-'),'') As GenerateIndentDate  From IndentMaster where IndentId=" + ddindentno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+             if (ds2.Tables[0].Rows.Count > 0)
+             {
+                 txtGenerateIndentDate.Text = ds2.Tables[0].Rows[0]["GenerateIndentDate"].ToString();
+             }
+        }
+
         fillordergrid();
         trorder.Visible = true;
         //Input Description

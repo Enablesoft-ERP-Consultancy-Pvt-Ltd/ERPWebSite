@@ -17,6 +17,26 @@
             document.getElementById('<%=hnid.ClientID%>').value = eventArgs.get_value();
             document.getElementById('<%=btnSearch.ClientID%>').click();
         }
+        function CheckAll(objref) {
+            var gridview = objref.parentNode.parentNode.parentNode;
+            var inputlist = gridview.getElementsByTagName("input");
+            for (var i = 0; i < inputlist.length; i++) {
+                var row = inputlist[i].parentNode.parentNode;
+                if (inputlist[i].type == "checkbox" && objref != inputlist[i]) {
+                    if (objref.checked) {
+
+                        inputlist[i].checked = true;
+
+                    }
+                    else {
+                        inputlist[i].checked = false;
+
+
+                    }
+                }
+            }
+
+        }
     </script>
     <asp:UpdatePanel ID="upd1" runat="server">
         <ContentTemplate>
@@ -461,6 +481,14 @@
                                                 AutoPostBack="True" OnSelectedIndexChanged="DDRProcessName_SelectedIndexChanged">
                                             </asp:DropDownList>
                                         </td>
+                                         <td>
+                                            <asp:Label ID="lblpreviousprocessname" runat="server" Text="Previous Process Name" Visible="false" CssClass="labelbold"></asp:Label>
+                                        </td>
+                                        <td>
+                                            <asp:DropDownList ID="ddlpreviousprocessname" runat="server" Visible="false" Width="150px" CssClass="dropdown"
+                                                AutoPostBack="True" OnSelectedIndexChanged="ddlpreviousprocessname_SelectedIndexChanged">
+                                            </asp:DropDownList>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>
@@ -571,6 +599,24 @@
                                             </asp:DropDownList>
                                         </td>
                                     </tr>
+                                    <tr id="TDRINPUTSHADECOLOR" runat="server" visible="False">
+                                        <td id="Td34" runat="server">
+                                            <asp:Label ID="lblrinputshadecolor" runat="server" Text="Input ShadeColor" CssClass="labelbold"></asp:Label>
+                                        </td>
+                                        <td id="Td35" runat="server">
+                                            <asp:DropDownList ID="ddRlinputshadecolor" runat="server" Width="150px" CssClass="dropdown">
+                                            </asp:DropDownList>
+                                        </td>
+                                    </tr>
+                                     <tr id="TDROUTPUTSHADECOLOR" runat="server" visible="False">
+                                        <td id="Td36" runat="server">
+                                            <asp:Label ID="lblroutputshadecolor" runat="server" Text="Output ShadeColor" CssClass="labelbold"></asp:Label>
+                                        </td>
+                                        <td id="Td37" runat="server">
+                                            <asp:DropDownList ID="ddRloutputshadecolor" runat="server" Width="150px" CssClass="dropdown">
+                                            </asp:DropDownList>
+                                        </td>
+                                    </tr>
                                     <tr id="Tr2" runat="server">
                                         <td id="Td30" runat="server">
                                             <asp:Label ID="Label19" runat="server" Text="Dyeing Type" CssClass="labelbold"></asp:Label>
@@ -646,6 +692,24 @@
                                         <RowStyle CssClass="gvrow" />
                                         <EmptyDataRowStyle CssClass="gvemptytext" />
                                         <Columns>
+                                        <asp:TemplateField Visible="false"   HeaderText="">
+                                                <HeaderTemplate>
+                                                    <asp:CheckBox ID="ChkAllItem" runat="server" onclick="return CheckAll(this);" />
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:CheckBox ID="Chkboxitem" Checked="true" runat="server" />
+                                                </ItemTemplate>
+                                                <ItemStyle HorizontalAlign="Center" Width="10px" />
+                                            </asp:TemplateField>
+                                       <%-- <asp:TemplateField HeaderText="">
+                                                <HeaderTemplate>
+                                                    <asp:CheckBox ID="ChkAllItem" runat="server" onclick="return CheckAll(this);" />
+                                                </HeaderTemplate>
+                                                <ItemTemplate>
+                                                    <asp:CheckBox ID="Chkboxitem" runat="server" />
+                                                </ItemTemplate>
+                                                <ItemStyle HorizontalAlign="Center" Width="10px" />
+                                            </asp:TemplateField>--%>
                                             <asp:TemplateField HeaderText="Item Description">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblitemdesc" Text='<%#Bind("ItemDescription") %>' runat="server" />
@@ -691,6 +755,7 @@
                                                     <asp:Label ID="lblitemfinishedid" Text='<%#Bind("Item_Finished_id") %>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                             
                                             <asp:TemplateField HeaderText="ProcessID" Visible="False">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblProcessID" Text='<%#Bind("ProcessID") %>' runat="server" />

@@ -318,7 +318,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     row = 0;
 
                     sht.Range("A1:I1").Merge();
-                    sht.Range("A1").SetValue("QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
+                    sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + "QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
                     sht.Range("A1:I1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                     sht.Range("A2:I2").Merge();
                     sht.Range("A2").SetValue("From :" + txtfromdate.Text + "  To : " + txttodate.Text);
@@ -368,31 +368,45 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                 {
                     row = 0;
 
-                    sht.Range("A1:N1").Merge();
-                    sht.Range("A1").SetValue("QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
-                    sht.Range("A1:N1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    sht.Range("A2:N2").Merge();
+                    sht.Range("A1:S1").Merge();
+                    sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + " QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
+                    sht.Range("A1:S1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A2:S2").Merge();
                     sht.Range("A2").SetValue("From :" + txtfromdate.Text + "  To : " + txttodate.Text);
-                    sht.Range("A2:N2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    sht.Range("A1:N2").Style.Font.SetBold();
+                    sht.Range("A2:S2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A1:S2").Style.Font.SetBold();
 
                     //Headers
                     sht.Range("A3").Value = "DATE";
                     sht.Range("B3").Value = "EMP NAME";
                     sht.Range("C3").Value = "STOCK NO.";
-                    sht.Range("D3").Value = "STYLE NAME";
-                    sht.Range("E3").Value = "COLOUR NAME";
-                    sht.Range("F3").Value = "SIZE";
-                    sht.Range("G3").Value = "ACTUAL SIZE";
-                    sht.Range("H3").Value = "QTY";
-                    sht.Range("I3").Value = "DEFECTS";
-                    sht.Range("J3").Value = "RESULT";
-                    sht.Range("K3").Value = "REMARK";
-                    sht.Range("L3").Value = "SCAN BY";
-                    sht.Range("M3").Value = "CUSTOMER CODE";
-                    sht.Range("N3").Value = "ORDER NO";
+                    sht.Range("D3").Value = "UNIT NAME";
 
-                    sht.Range("A3:N3").Style.Font.Bold = true;
+                    if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+                    {
+                        sht.Column(5).Hide();
+                    }
+                    else
+                    {
+                        sht.Range("E3").Value = "LOOM NO";
+                    }
+
+                    sht.Range("F3").Value = "FOLIO NO";
+                    sht.Range("G3").Value = "STYLE NAME";
+                    sht.Range("H3").Value = "COLOUR NAME";
+                    sht.Range("I3").Value = "SIZE";
+                    sht.Range("J3").Value = "ACTUAL SIZE";
+                    sht.Range("K3").Value = "QTY";
+                    sht.Range("L3").Value = "WEIGHT";
+                    sht.Range("M3").Value = "DEFECTS";
+                    sht.Range("N3").Value = "RESULT";
+                    sht.Range("O3").Value = "REMARK";
+                    sht.Range("P3").Value = "ENTRY BY";
+                    sht.Range("Q3").Value = "INSPECTED BY";
+                    sht.Range("R3").Value = "CUSTOMER CODE";
+                    sht.Range("S3").Value = "ORDER NO";
+
+                    sht.Range("A3:S3").Style.Font.Bold = true;
 
                     row = 4;
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -400,21 +414,35 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                         sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["Receivedate"]);
                         sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["empname"]);
                         sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["Tstockno"]);
-                        sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["designname"]);
-                        sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["colorname"]);
-                        sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["Sizeft"]);
-                        sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["ActualSize"]);
-                        sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["qty"]);
-                        sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["defect"]);
-                        sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["defect"].ToString() == "" ? "PASS" : "FAIL");
-                        sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["remark"]);
-                        sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["scanby"]);
-                        sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["CustomerCode"]);
-                        sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"]);
+                        sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["Units"]);
+                        
+                        if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+                        {
+                            sht.Column(5).Hide();
+                        }
+                        else
+                        {
+                            sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["LoomNo"]);
+                        }
+
+                        sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["FolioNo"]);
+                        sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["designname"]);
+                        sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["colorname"]);
+                        sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Sizeft"]);
+                        sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["ActualSize"]);
+                        sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["qty"]);
+                        sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["Weight"]);
+                        sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["defect"]);
+                        sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["defect"].ToString() == "" ? "PASS" : "FAIL");
+                        sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["remark"]);
+                        sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["scanby"]);
+                        sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["QAPERSONNAME"]);
+                        sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["CustomerCode"]);
+                        sht.Range("S" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"]);
 
                         row = row + 1;
                     }
-                    using (var a = sht.Range("A3:N" + row))
+                    using (var a = sht.Range("A3:S" + row))
                     {
                         a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                         a.Style.Border.RightBorder = XLBorderStyleValues.Thin;

@@ -204,6 +204,50 @@ public class UtilityModule
             Logs.WriteErrorLog("UtilityModule|ConditionalComboFillWithDS|" + ex.Message);
         }
     }
+    public static void ConditionalComboFillWithDS(ref DropDownList comboname, DataTable dt, int i, bool isSelectText, string selecttext)
+    {
+        try
+        {
+            comboname.Items.Clear();
+            if (dt.Rows.Count > 0)
+            {
+                comboname.DataSource = dt;
+                comboname.DataTextField = dt.Columns[1].ToString();
+                comboname.DataValueField = dt.Columns[0].ToString();
+                comboname.DataBind();
+                if (isSelectText && selecttext != "")
+                {
+                    comboname.Items.Insert(0, new ListItem(selecttext, "0"));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logs.WriteErrorLog("UtilityModule|ConditionalComboFillWithDS|" + ex.Message);
+        }
+    }
+    public static void ConditionalComboFillWithDS(ref AjaxControlToolkit.ComboBox comboname, DataSet ds, int i, bool isSelectText, string selecttext)
+    {
+        try
+        {
+            comboname.Items.Clear();
+            if (ds.Tables[i].Rows.Count > 0)
+            {
+                comboname.DataSource = ds.Tables[i];
+                comboname.DataTextField = ds.Tables[i].Columns[1].ToString();
+                comboname.DataValueField = ds.Tables[i].Columns[0].ToString();
+                comboname.DataBind();
+                if (isSelectText && selecttext != "")
+                {
+                    comboname.Items.Insert(0, new ListItem(selecttext, "0"));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Logs.WriteErrorLog("UtilityModule|ConditionalComboFillWithDS|" + ex.Message);
+        }
+    }
 
     public static void ConditionalComboFill(ref DropDownList comboname, string strsql, bool isSelectText, string selecttext)
     {

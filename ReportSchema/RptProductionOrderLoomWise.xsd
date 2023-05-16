@@ -58,6 +58,7 @@
               <xs:element name="GrandTotalGirahArea" type="xs:decimal" minOccurs="0" />
               <xs:element name="MasterBuyerSize" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerOrderNew" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerQuality" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

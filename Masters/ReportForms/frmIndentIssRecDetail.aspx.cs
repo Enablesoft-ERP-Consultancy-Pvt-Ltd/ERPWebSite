@@ -14,6 +14,7 @@ using System.IO;
 
 public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.Page
 {
+    string TempCustomerCode = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["varcompanyId"] == null)
@@ -43,11 +44,22 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     From Process_Name_Master 
                     Where MasterCompanyId=" + Session["varCompanyId"] + @" and " + (variable.Carpetcompany == "1" ? " Process_Name='DYEING'" : "1=1") + @" Order By PROCESS_NAME ";
             }
+            if (Convert.ToInt32(Session["varcompanyId"]) == 44)
+            {
+                str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varCompanyId"] + @"  Order by EmpName                  
+                select distinct CI.CustomerId,CI.CustomerCode as customercode from OrderMaster OM inner join V_Indent_OredrId VO on Om.OrderId=VO.Orderid inner join customerinfo CI on CI.CustomerId=OM.CustomerId order by CustomerCode 
+                select IM.Item_Id,Im.Item_Name From Item_Master Im inner join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and cs.id=1 order by IM.ITEM_NAME 
+                select OrderCategoryId, OrderCategory from OrderCategory order by OrderCategory";
+            }
+            else
+            {
 
-            str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varCompanyId"] + @"  Order by EmpName                  
+                str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varCompanyId"] + @"  Order by EmpName                  
                 select distinct CI.CustomerId,CI.CustomerCode+'/'+CompanyName as customercode from OrderMaster OM inner join V_Indent_OredrId VO on Om.OrderId=VO.Orderid inner join customerinfo CI on CI.CustomerId=OM.CustomerId order by CustomerCode 
                 select IM.Item_Id,Im.Item_Name From Item_Master Im inner join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and cs.id=1 order by IM.ITEM_NAME 
                 select OrderCategoryId, OrderCategory from OrderCategory order by OrderCategory";
+            
+            }
             if (variable.JoborderNewModule == "1")
             {
                 str = str.Replace("V_Indent_OredrId", "V_Indent_OredrId_withoutBom");
@@ -117,6 +129,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 RDIndentPendingDetail.Visible = false;
                 RDIndentRecPending.Visible = false;
                 RDIndentIssueWithPPConsumption.Visible = false;
+            }
+
+            if (Session["VarCompanyNo"].ToString() == "43")
+            {
+                RDGenerateIndentDetail.Visible = true;
             }
         }
     }
@@ -370,6 +387,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
             From V_ORDERSHADEWISEINDENTDETAIL_VIKRAMMIRZAPUR Where Companyid=" + DDCompany.SelectedValue;
         }
+        else if (Session["varCompanyId"].ToString() == "43")
+        {
+            str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
+            From V_ORDERSHADEWISEINDENTDETAIL_CarpetInternational Where Companyid=" + DDCompany.SelectedValue;
+        }
         else
         {
             str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
@@ -458,8 +480,14 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             else
             {
                 Session["dsFilename"] = "~\\ReportSchema\\rptindentordershadewiseDetail.xsd";
-
-                Session["rptFilename"] = "Reports/rptindentordershadewiseDetail.rpt";
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Session["rptFilename"] = "Reports/rptindentordershadewiseDetailCI.rpt";
+                }
+                else
+                {
+                    Session["rptFilename"] = "Reports/rptindentordershadewiseDetail.rpt";
+                }                  
 
                 Session["GetDataset"] = ds;
                 StringBuilder stb = new StringBuilder();
@@ -719,6 +747,12 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             IndentIssueWithPPConsumptionExcelReport();
             return;
         }
+        if (RDGenerateIndentDetail.Checked == true)
+        {
+            GenerateIndentDetailReportData();
+            return;
+        }
+
         if (RDIndentPendingDetail.Checked == true)
         {
             if (Session["VarCompanyNo"].ToString() == "27")
@@ -931,9 +965,210 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             }
             if (RDProcessRecDetail.Checked == true)
             {
-                if (variable.JoborderNewModule == "1")
+
+                if (Session["VarCompanyNo"].ToString() == "22")
                 {
-                    str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End as CompanyName,Empname,IndentNo,
+                    if (variable.JoborderNewModule == "1")
+                    {
+                        str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End as CompanyName,Empname,IndentNo,
+                            '' as IssueChallanNo,PM.ChallanNo As RecChallanNo,
+                            Case When CI.MasterCompanyid=14 Then PM.Date Else Replace(convert(varchar(11),PM.Date,106),' ','-') End as Date,Finishedid,PT.LotNo,
+                            CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
+                            case When PT.flagsize=1 Then vf.Sizemtr When PT.flagsize=0 Then Sizeft When Pt.flagsize=2 Then vf.Sizeinch Else vf.Sizeft  End As Description,Sum(RecQuantity) As RecQty,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty,
+                            '" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + @"' As ToDate," + VarDateflag + @" As dateflag,OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid
+                            ,case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process ,PT.TagNo,'' as CustomerCode,isnull(sum(PT.Moisture),0) as Moisture,isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks
+                            ,'' as IssLotNo,'' as IssTagNo,IM.Date as IndentDate,isnull(PT.Rate,0) as IndentRate,PM.BillNo
+                            From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
+                            inner join IndentMaster Im on PT.IndentId=IM.IndentID
+                            inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
+                            inner join EmpInfo E on PM.Empid=E.EmpId
+                            inner join PROCESS_NAME_MASTER PNM on PM.processid=PNM.PROCESS_NAME_ID
+                            inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
+                            inner join V_FinishedItemDetail vf on PT.Finishedid=vf.ITEM_FINISHED_ID                           
+                            left join OrderDetail OD on PT.Orderdetailid=OD.OrderDetailId
+                            left join OrderMaster OM on OD.OrderId=OM.OrderId
+                            left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
+                            INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
+                            Where IM.MasterCompanyId=" + Session["varCompanyId"];
+
+                    }
+                    else
+                    {   
+
+                        str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
+                      PRM.ChallanNo as IssueChallanNo,PM.ChallanNo As RecChallanNo,
+                      Case When CI.MasterCompanyid=14 Then PM.Date Else Replace(convert(varchar(11),PM.Date,106),' ','-') End as Date,Finishedid,PT.LotNo,
+                      CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
+                      case When PT.unitId=1 Then Sizemtr Else Case When PT.UnitId=2 Then Sizeft Else case When PT.UnitId=6 Then Sizeinch 
+                      Else Sizemtr End End End As Description,SUM(CASE WHEN REC_ISS_ITEMFLAG=0 THEN RECQUANTITY ELSE 0 END) AS RECQTY,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty
+                      ,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,
+                       OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid,
+                       case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process,
+                        SUM(CASE WHEN REC_ISS_ITEMFLAG=1 THEN RECQUANTITY ELSE 0 END) AS UNDYEDQTY,pT.TagNo,isnull(CustInfo.CustomerCode,'') as CustomerCode,isnull(sum(PT.Moisture),0) as Moisture,
+                        isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks
+                        ,(Select distinct ID2.lotno+',' From IndentDetail ID2 Where ID2.IndentId=PT.IndentId and ID2.OFinishedId=PT.Finishedid FOR XML PATH('')) as IssLotNo 
+                        ,(Select distinct ID2.TagNo+',' From IndentDetail ID2 Where ID2.IndentId=PT.IndentId and ID2.OFinishedId=PT.Finishedid FOR XML PATH('')) as IssTagNo 
+                        ,IM.Date as IndentDate,isnull(PT.Rate,0) as IndentRate,PM.BillNo
+                        From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
+                        inner join IndentMaster Im on PT.IndentId=IM.IndentID
+                        inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
+                        inner join EmpInfo E on PM.Empid=E.EmpId
+                        inner join PROCESS_NAME_MASTER PNM on PM.processid=PNM.PROCESS_NAME_ID
+                        inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
+                        inner join V_FinishedItemDetail vf on PT.Finishedid=vf.ITEM_FINISHED_ID
+                        LEFT JOIN OrderMaster OM ON OM.OrderId in(Select ID.OrderID From IndentDetail ID JOIN OrderMaster OM3 ON ID.OrderID=OM3.OrderID  Where ID.IndentId=IM.IndentId)
+                        LEFT JOIN CustomerInfo CustInfo ON OM.CustomerID=CustInfo.CustomerID
+                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
+                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
+                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        switch (Session["varcompanyNo"].ToString())
+                        {
+                            case "16":
+                                str = str + " and PT.Rec_Iss_ItemFlag=0";
+                                break;
+                            default:
+                                break;
+                        }
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = @"select pnm.process_name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,ei.EmpName,case When CHARINDEX('s',sm.indentNo)=0 then 'S-'+sm.indentNo else Sm.indentNo End as Indentno
+                                ,Sm.indentno as Issuechallanno,srm.ChallanNo as RecChallanNo,
+                                Case When CI.MasterCompanyid=14 Then Srm.ReceiveDate Else Replace(convert(varchar(11),Srm.ReceiveDate,106),' ','-') End as Date,Srd.Rfinishedid as Finishedid,srd.LotNo,
+                                Vf.CATEGORY_NAME+' '+Vf.ITEM_NAME+' '+Vf.QualityName+' '+Vf.designName+' '+Vf.ColorName+' '+Vf.ShadeColorName+' '+Vf.ShapeName+' '+
+                                case When vf.SizeId>0 then vf.SizeFt else '' End As Description,Sum(Srd.recqty) as Recqty,sum(srd.lossqty) as Lossqty,0 as retqty,
+                                '" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,'' as Localorder,'' as Customerorderno,0 as Lshort,0 as shrinkage,sm.id as prmid,pnm.process_name as Re_process,
+                                SUM(SRD.UNDYEDQTY) AS UNDYEDQTY,Srd.TagNo,'' as CustomerCode,0 as Moisture,'' as CheckedBy,'' as IndentRecRemarks
+                                 ,'' as IssLotNo,'' as IssTagNo,'' as IndentDate,0 as IndentRate,'' BillNo
+                                From SampleDyeingReceivemaster Srm inner join SampleDyeingReceiveDetail srd on srm.ID=srd.Masterid
+                                inner join SampleDyeingmaster sm on srd.issueid=sm.ID
+                                inner join companyinfo ci on srm.companyid=ci.companyid
+                                inner join EmpInfo ei on srm.empid=ei.EmpId
+                                inner join PROCESS_NAME_MASTER pnm on sm.processid=pnm.PROCESS_NAME_ID
+                                inner join V_FinishedItemDetail vf on srd.Rfinishedid=vf.ITEM_FINISHED_ID Where 1=1 and (Recqty+lossqty+undyedqty)>0";
+                        }
+
+                    }
+                    if (DDCompany.SelectedIndex > 0)
+                    {
+                        if (variable.JoborderNewModule == "1")
+                        {
+                            str = str + " And IM.CompanyId=" + DDCompany.SelectedValue;
+                        }
+                        else
+                        {
+                            str = str + " And PRM.CompanyId=" + DDCompany.SelectedValue;
+                            if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                            {
+                                strsample = strsample + " And SRM.CompanyId=" + DDCompany.SelectedValue;
+                            }
+                        }
+                    }
+                    if (DDCustCode.SelectedIndex > 0)
+                    {
+                        str = str + " And OM.CustomerId=" + DDCustCode.SelectedValue;
+                    }
+                    if (DDOrderNo.SelectedIndex > 0)
+                    {
+                        str = str + " And OM.OrderId=" + DDOrderNo.SelectedValue;
+                    }
+                    if (DDProcessName.SelectedIndex > 0)
+                    {
+                        str = str + " And PM.Processid=" + DDProcessName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + " And Sm.Processid=" + DDProcessName.SelectedValue;
+                        }
+                    }
+                    if (DDEmpName.SelectedIndex > 0)
+                    {
+                        str = str + " And PM.EmpId=" + DDEmpName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + " And Srm.EmpId=" + DDEmpName.SelectedValue;
+                        }
+
+                    }
+                    if (DDIndentNo.SelectedIndex > 0)
+                    {
+                        if (chksample.Checked == true)
+                        {
+                            strsample = strsample + "  And sm.id=" + DDIndentNo.SelectedValue;
+                            str = str + "  And IM.IndentId=0";
+                        }
+                        else
+                        {
+                            str = str + "  And IM.IndentId=" + DDIndentNo.SelectedValue;
+                            if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                            {
+                                strsample = strsample + "  And sm.id=0";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (chksample.Checked == true)
+                        {
+                            str = str + "  And IM.IndentId=0";
+                        }
+                    }
+                    if (TRPartyChallanNo.Visible == true)
+                    {
+                        if (txtPartyChallanNo.Text != "")
+                        {
+                            str = str + "  And PM.ChallanNo='" + txtPartyChallanNo.Text + "'";
+                            strsample = strsample + "  And SRM.ChallanNo='" + txtPartyChallanNo.Text + "'";
+                        }
+                    }
+                    if (ddItemName.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.Item_id=" + ddItemName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.Item_id=" + ddItemName.SelectedValue;
+                        }
+                    }
+                    if (DDQuality.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.Qualityid=" + DDQuality.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.Qualityid=" + DDQuality.SelectedValue;
+                        }
+                    }
+                    if (DDShadeColor.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+                        }
+                    }
+                    if (ChkForDate.Checked == true)
+                    {
+                        str = str + "  And PM.Date>='" + TxtFromDate.Text + "' And PM.Date<='" + TxtToDate.Text + "'";
+                        strsample = strsample + "  And Srm.Receivedate>='" + TxtFromDate.Text + "' And srm.Receivedate<='" + TxtToDate.Text + "'";
+                    }
+                    if (variable.JoborderNewModule == "1")
+                    {
+                        str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,Pt.flagsize,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid,IM.Date,PT.Rate,PM.BillNo ";
+                    }
+                    else
+                    {
+                        str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PRM.ChallanNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,PT.unitId,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,CustInfo.CustomerCode,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid,PT.IndentId ,IM.Date,PT.Rate,PM.BillNo";
+                        strsample = strsample + "  group by pnm.process_name,CI.CompanyName,ei.EmpName,sm.indentNo,srm.ChallanNo,Srm.ReceiveDate,Srd.Rfinishedid,srd.LotNo,Srd.TagNo,Vf.CATEGORY_NAME,Vf.ITEM_NAME,Vf.QualityName,Vf.designName,Vf.ColorName,Vf.ShadeColorName,Vf.ShapeName,vf.SizeId,vf.SizeFt,sm.ID,CI.MasterCompanyid  ";
+
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            str = str + " UNION ALL " + strsample;
+                        }
+                    }
+                    str = str + " Order by  Indentno";
+                }
+                else
+                {
+                    if (variable.JoborderNewModule == "1")
+                    {
+                        str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End as CompanyName,Empname,IndentNo,
                             '' as IssueChallanNo,PM.ChallanNo As RecChallanNo,
                             Case When CI.MasterCompanyid=14 Then PM.Date Else Replace(convert(varchar(11),PM.Date,106),' ','-') End as Date,Finishedid,PT.LotNo,
                             CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
@@ -953,32 +1188,32 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
                             Where IM.MasterCompanyId=" + Session["varCompanyId"];
 
-                }
-                else
-                {
-                    ////                    str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
-                    ////                      PRM.ChallanNo as IssueChallanNo,PM.ChallanNo As RecChallanNo,PM.Date,Finishedid,PT.LotNo,
-                    ////                      CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
-                    ////                      case When PT.unitId=1 Then Sizemtr Else Case When PT.UnitId=2 Then Sizeft Else case When PT.UnitId=6 Then Sizeinch 
-                    ////                      Else Sizemtr End End End As Description,SUM(CASE WHEN REC_ISS_ITEMFLAG=0 THEN RECQUANTITY ELSE 0 END) AS RECQTY,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty
-                    ////                      ,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,
-                    ////                       OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid,
-                    ////                       case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process,SUM(CASE WHEN REC_ISS_ITEMFLAG=1 THEN RECQUANTITY ELSE 0 END) AS UNDYEDQTY,pT.TagNo
-                    ////                        From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
-                    ////                        inner join IndentMaster Im on PT.IndentId=IM.IndentID
-                    ////                        inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
-                    ////                        inner join EmpInfo E on PM.Empid=E.EmpId
-                    ////                        inner join PROCESS_NAME_MASTER PNM on PM.processid=PNM.PROCESS_NAME_ID
-                    ////                        inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
-                    ////                        inner join V_FinishedItemDetail vf on PT.Finishedid=vf.ITEM_FINISHED_ID
-                    ////                        left join OrderDetail OD on PT.Orderdetailid=OD.OrderDetailId
-                    ////                        left join OrderMaster OM on OD.OrderId=OM.OrderId
-                    ////                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
-                    ////                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                    ////                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                    }
+                    else
+                    {
+                        ////                    str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
+                        ////                      PRM.ChallanNo as IssueChallanNo,PM.ChallanNo As RecChallanNo,PM.Date,Finishedid,PT.LotNo,
+                        ////                      CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
+                        ////                      case When PT.unitId=1 Then Sizemtr Else Case When PT.UnitId=2 Then Sizeft Else case When PT.UnitId=6 Then Sizeinch 
+                        ////                      Else Sizemtr End End End As Description,SUM(CASE WHEN REC_ISS_ITEMFLAG=0 THEN RECQUANTITY ELSE 0 END) AS RECQTY,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty
+                        ////                      ,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,
+                        ////                       OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid,
+                        ////                       case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process,SUM(CASE WHEN REC_ISS_ITEMFLAG=1 THEN RECQUANTITY ELSE 0 END) AS UNDYEDQTY,pT.TagNo
+                        ////                        From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
+                        ////                        inner join IndentMaster Im on PT.IndentId=IM.IndentID
+                        ////                        inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
+                        ////                        inner join EmpInfo E on PM.Empid=E.EmpId
+                        ////                        inner join PROCESS_NAME_MASTER PNM on PM.processid=PNM.PROCESS_NAME_ID
+                        ////                        inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
+                        ////                        inner join V_FinishedItemDetail vf on PT.Finishedid=vf.ITEM_FINISHED_ID
+                        ////                        left join OrderDetail OD on PT.Orderdetailid=OD.OrderDetailId
+                        ////                        left join OrderMaster OM on OD.OrderId=OM.OrderId
+                        ////                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
+                        ////                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
+                        ////                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
 
 
-                    str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
+                        str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
                       PRM.ChallanNo as IssueChallanNo,PM.ChallanNo As RecChallanNo,
                       Case When CI.MasterCompanyid=14 Then PM.Date Else Replace(convert(varchar(11),PM.Date,106),' ','-') End as Date,Finishedid,PT.LotNo,
                       CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
@@ -1001,17 +1236,17 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                         INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
                         Where PRM.MasterCompanyId=" + Session["varCompanyId"];
-                    switch (Session["varcompanyNo"].ToString())
-                    {
-                        case "16":
-                            str = str + " and PT.Rec_Iss_ItemFlag=0";
-                            break;
-                        default:
-                            break;
-                    }
-                    if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                    {
-                        strsample = @"select pnm.process_name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,ei.EmpName,case When CHARINDEX('s',sm.indentNo)=0 then 'S-'+sm.indentNo else Sm.indentNo End as Indentno
+                        switch (Session["varcompanyNo"].ToString())
+                        {
+                            case "16":
+                                str = str + " and PT.Rec_Iss_ItemFlag=0";
+                                break;
+                            default:
+                                break;
+                        }
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = @"select pnm.process_name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,ei.EmpName,case When CHARINDEX('s',sm.indentNo)=0 then 'S-'+sm.indentNo else Sm.indentNo End as Indentno
                                 ,Sm.indentno as Issuechallanno,srm.ChallanNo as RecChallanNo,
                                 Case When CI.MasterCompanyid=14 Then Srm.ReceiveDate Else Replace(convert(varchar(11),Srm.ReceiveDate,106),' ','-') End as Date,Srd.Rfinishedid as Finishedid,srd.LotNo,
                                 Vf.CATEGORY_NAME+' '+Vf.ITEM_NAME+' '+Vf.QualityName+' '+Vf.designName+' '+Vf.ColorName+' '+Vf.ShadeColorName+' '+Vf.ShapeName+' '+
@@ -1024,124 +1259,127 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                                 inner join EmpInfo ei on srm.empid=ei.EmpId
                                 inner join PROCESS_NAME_MASTER pnm on sm.processid=pnm.PROCESS_NAME_ID
                                 inner join V_FinishedItemDetail vf on srd.Rfinishedid=vf.ITEM_FINISHED_ID Where 1=1 and (Recqty+lossqty+undyedqty)>0";
-                    }
+                        }
 
-                }
-                if (DDCompany.SelectedIndex > 0)
-                {
+                    }
+                    if (DDCompany.SelectedIndex > 0)
+                    {
+                        if (variable.JoborderNewModule == "1")
+                        {
+                            str = str + " And IM.CompanyId=" + DDCompany.SelectedValue;
+                        }
+                        else
+                        {
+                            str = str + " And PRM.CompanyId=" + DDCompany.SelectedValue;
+                            if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                            {
+                                strsample = strsample + " And SRM.CompanyId=" + DDCompany.SelectedValue;
+                            }
+                        }
+                    }
+                    if (DDCustCode.SelectedIndex > 0)
+                    {
+                        str = str + " And OM.CustomerId=" + DDCustCode.SelectedValue;
+                    }
+                    if (DDOrderNo.SelectedIndex > 0)
+                    {
+                        str = str + " And OM.OrderId=" + DDOrderNo.SelectedValue;
+                    }
+                    if (DDProcessName.SelectedIndex > 0)
+                    {
+                        str = str + " And PM.Processid=" + DDProcessName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + " And Sm.Processid=" + DDProcessName.SelectedValue;
+                        }
+                    }
+                    if (DDEmpName.SelectedIndex > 0)
+                    {
+                        str = str + " And PM.EmpId=" + DDEmpName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + " And Srm.EmpId=" + DDEmpName.SelectedValue;
+                        }
+
+                    }
+                    if (DDIndentNo.SelectedIndex > 0)
+                    {
+                        if (chksample.Checked == true)
+                        {
+                            strsample = strsample + "  And sm.id=" + DDIndentNo.SelectedValue;
+                            str = str + "  And IM.IndentId=0";
+                        }
+                        else
+                        {
+                            str = str + "  And IM.IndentId=" + DDIndentNo.SelectedValue;
+                            if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                            {
+                                strsample = strsample + "  And sm.id=0";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (chksample.Checked == true)
+                        {
+                            str = str + "  And IM.IndentId=0";
+                        }
+                    }
+                    if (TRPartyChallanNo.Visible == true)
+                    {
+                        if (txtPartyChallanNo.Text != "")
+                        {
+                            str = str + "  And PM.ChallanNo='" + txtPartyChallanNo.Text + "'";
+                            strsample = strsample + "  And SRM.ChallanNo='" + txtPartyChallanNo.Text + "'";
+                        }
+                    }
+                    if (ddItemName.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.Item_id=" + ddItemName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.Item_id=" + ddItemName.SelectedValue;
+                        }
+                    }
+                    if (DDQuality.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.Qualityid=" + DDQuality.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.Qualityid=" + DDQuality.SelectedValue;
+                        }
+                    }
+                    if (DDShadeColor.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+                        }
+                    }
+                    if (ChkForDate.Checked == true)
+                    {
+                        str = str + "  And PM.Date>='" + TxtFromDate.Text + "' And PM.Date<='" + TxtToDate.Text + "'";
+                        strsample = strsample + "  And Srm.Receivedate>='" + TxtFromDate.Text + "' And srm.Receivedate<='" + TxtToDate.Text + "'";
+                    }
                     if (variable.JoborderNewModule == "1")
                     {
-                        str = str + " And IM.CompanyId=" + DDCompany.SelectedValue;
+                        str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,Pt.flagsize,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid ";
                     }
                     else
                     {
-                        str = str + " And PRM.CompanyId=" + DDCompany.SelectedValue;
+                        str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PRM.ChallanNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,PT.unitId,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,CustInfo.CustomerCode,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid ";
+                        strsample = strsample + "  group by pnm.process_name,CI.CompanyName,ei.EmpName,sm.indentNo,srm.ChallanNo,Srm.ReceiveDate,Srd.Rfinishedid,srd.LotNo,Srd.TagNo,Vf.CATEGORY_NAME,Vf.ITEM_NAME,Vf.QualityName,Vf.designName,Vf.ColorName,Vf.ShadeColorName,Vf.ShapeName,vf.SizeId,vf.SizeFt,sm.ID,CI.MasterCompanyid  ";
+
                         if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
                         {
-                            strsample = strsample + " And SRM.CompanyId=" + DDCompany.SelectedValue;
+                            str = str + " UNION ALL " + strsample;
                         }
                     }
+                    str = str + " Order by  Indentno";
                 }
-                if (DDCustCode.SelectedIndex > 0)
-                {
-                    str = str + " And OM.CustomerId=" + DDCustCode.SelectedValue;
-                }
-                if (DDOrderNo.SelectedIndex > 0)
-                {
-                    str = str + " And OM.OrderId=" + DDOrderNo.SelectedValue;
-                }
-                if (DDProcessName.SelectedIndex > 0)
-                {
-                    str = str + " And PM.Processid=" + DDProcessName.SelectedValue;
-                    if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                    {
-                        strsample = strsample + " And Sm.Processid=" + DDProcessName.SelectedValue;
-                    }
-                }
-                if (DDEmpName.SelectedIndex > 0)
-                {
-                    str = str + " And PM.EmpId=" + DDEmpName.SelectedValue;
-                    if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                    {
-                        strsample = strsample + " And Srm.EmpId=" + DDEmpName.SelectedValue;
-                    }
 
-                }
-                if (DDIndentNo.SelectedIndex > 0)
-                {
-                    if (chksample.Checked == true)
-                    {
-                        strsample = strsample + "  And sm.id=" + DDIndentNo.SelectedValue;
-                        str = str + "  And IM.IndentId=0";
-                    }
-                    else
-                    {
-                        str = str + "  And IM.IndentId=" + DDIndentNo.SelectedValue;
-                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                        {
-                            strsample = strsample + "  And sm.id=0";
-                        }
-                    }
-                }
-                else
-                {
-                    if (chksample.Checked == true)
-                    {
-                        str = str + "  And IM.IndentId=0";
-                    }
-                }
-                if (TRPartyChallanNo.Visible == true)
-                {
-                    if (txtPartyChallanNo.Text != "")
-                    {
-                        str = str + "  And PM.ChallanNo='" + txtPartyChallanNo.Text + "'";
-                        strsample = strsample + "  And SRM.ChallanNo='" + txtPartyChallanNo.Text + "'";
-                    }
-                }
-                if (ddItemName.SelectedIndex > 0)
-                {
-                    str = str + "  and VF.Item_id=" + ddItemName.SelectedValue;
-                    if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                    {
-                        strsample = strsample + "  and VF.Item_id=" + ddItemName.SelectedValue;
-                    }
-                }
-                if (DDQuality.SelectedIndex > 0)
-                {
-                    str = str + "  and VF.Qualityid=" + DDQuality.SelectedValue;
-                    if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                    {
-                        strsample = strsample + "  and VF.Qualityid=" + DDQuality.SelectedValue;
-                    }
-                }
-                if (DDShadeColor.SelectedIndex > 0)
-                {
-                    str = str + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
-                    if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                    {
-                        strsample = strsample + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
-                    }
-                }
-                if (ChkForDate.Checked == true)
-                {
-                    str = str + "  And PM.Date>='" + TxtFromDate.Text + "' And PM.Date<='" + TxtToDate.Text + "'";
-                    strsample = strsample + "  And Srm.Receivedate>='" + TxtFromDate.Text + "' And srm.Receivedate<='" + TxtToDate.Text + "'";
-                }
-                if (variable.JoborderNewModule == "1")
-                {
-                    str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,Pt.flagsize,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid ";
-                }
-                else
-                {
-                    str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PRM.ChallanNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,PT.unitId,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,CustInfo.CustomerCode,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid ";
-                    strsample = strsample + "  group by pnm.process_name,CI.CompanyName,ei.EmpName,sm.indentNo,srm.ChallanNo,Srm.ReceiveDate,Srd.Rfinishedid,srd.LotNo,Srd.TagNo,Vf.CATEGORY_NAME,Vf.ITEM_NAME,Vf.QualityName,Vf.designName,Vf.ColorName,Vf.ShadeColorName,Vf.ShapeName,vf.SizeId,vf.SizeFt,sm.ID,CI.MasterCompanyid  ";
-
-                    if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
-                    {
-                        str = str + " UNION ALL " + strsample;
-                    }
-                }
-                str = str + " Order by  Indentno";
+                
                 if (Session["WithoutBOM"].ToString() == "1")
                 {
                     str = str.Replace("V_Indent_OredrId", "V_Indent_OredrId_withoutBom");
@@ -1149,8 +1387,17 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
 
                 if (ChkForExportExcel.Checked == true)
                 {
-                    ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
-                    IndentRecDetailExcelReport(ds);
+                    if (Session["VarCompanyNo"].ToString() == "22")
+                    {
+                        ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
+                        IndentRecDetailExcelReportDiamond(ds);
+                    }
+                    else
+                    {
+
+                        ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
+                        IndentRecDetailExcelReport(ds);
+                    }
                 }
                 else
                 {
@@ -2015,7 +2262,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = "", str1 = "";
+        string str = "", str1 = "", str2 = "";
         if (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28" || Session["varcompanyid"].ToString() == "44")
         {
             str = @"Select distinct OM.OrderId, CustomerOrderNo as CustomerOrderNo 
@@ -2053,6 +2300,16 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
         UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
         UtilityModule.ConditionalComboFill(ref DDProcessProgram, str1, true, "--Select--");
 
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            str2 = @"Select CustomerCode From CustomerInfo Where Customerid=" + DDCustCode.SelectedValue + "";
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                hnCustomerCode.Value = ds.Tables[0].Rows[0]["CustomerCode"].ToString();
+            }
+        }
     }
     protected void DDOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -3066,7 +3323,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
     {
         try
         {
-            SqlParameter[] param = new SqlParameter[8];
+            SqlParameter[] param = new SqlParameter[9];
             param[0] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
             param[1] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
             param[2] = new SqlParameter("@Empid", DDEmpName.SelectedValue);
@@ -3075,6 +3332,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             param[5] = new SqlParameter("@fromdate", TxtFromDate.Text);
             param[6] = new SqlParameter("@Todate", TxtToDate.Text);
             param[7] = new SqlParameter("@Forsample", chksample.Checked == true ? 1 : 0);
+            param[8] = new SqlParameter("@MasterCompanyId", Session["VarCompanyNo"].ToString());
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETDYERLEDGER", param);
             if (ds.Tables[0].Rows.Count > 0)
@@ -3088,28 +3346,28 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 var sht = xapp.Worksheets.Add("sheet1");
                 int row = 0;
 
-                sht.Range("A1:O1").Value = ds.Tables[0].Rows[0]["CompanyName"].ToString();
-                sht.Range("A1:O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A1:O1").Style.Font.FontSize = 13;
-                sht.Range("A1:O1").Style.Font.Bold = true;
-                sht.Range("A1:O1").Merge();
-                sht.Range("A2:O2").Value = ds.Tables[0].Rows[0]["COMPADDR1"].ToString() + "    " + "Print Date-" + DateTime.Now.ToShortDateString();
-                sht.Range("A2:O2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A2:O2").Style.Font.FontSize = 13;
-                sht.Range("A2:O2").Style.Font.Bold = true;
-                sht.Range("A2:O2").Merge();
-                sht.Range("A3:O3").Value = "GSTNo.-" + ds.Tables[0].Rows[0]["GSTNO"].ToString();
-                sht.Range("A3:O3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A3:O3").Style.Font.FontSize = 12;
-                sht.Range("A3:O3").Style.Font.Bold = true;
-                sht.Range("A3:O3").Merge();
+                sht.Range("A1:Q1").Value = ds.Tables[0].Rows[0]["CompanyName"].ToString();
+                sht.Range("A1:Q1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:Q1").Style.Font.FontSize = 13;
+                sht.Range("A1:Q1").Style.Font.Bold = true;
+                sht.Range("A1:Q1").Merge();
+                sht.Range("A2:Q2").Value = ds.Tables[0].Rows[0]["COMPADDR1"].ToString() + "    " + "Print Date-" + DateTime.Now.ToShortDateString();
+                sht.Range("A2:Q2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:Q2").Style.Font.FontSize = 13;
+                sht.Range("A2:Q2").Style.Font.Bold = true;
+                sht.Range("A2:Q2").Merge();
+                sht.Range("A3:Q3").Value = "GSTNo.-" + ds.Tables[0].Rows[0]["GSTNO"].ToString();
+                sht.Range("A3:Q3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A3:Q3").Style.Font.FontSize = 12;
+                sht.Range("A3:Q3").Style.Font.Bold = true;
+                sht.Range("A3:Q3").Merge();
 
-                sht.Range("A4:O4").Merge();
+                sht.Range("A4:Q4").Merge();
                 sht.Range("A4").SetValue("DYER LEDGER" + (ChkForDate.Checked == true ? "(" + TxtFromDate.Text + " TO : " + TxtToDate.Text + "" : ""));
-                sht.Range("A4:O4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A4:O4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                sht.Range("A4:O4").Style.Font.SetBold();
-                sht.Range("A4:O4").Style.Font.FontSize = 12;
+                sht.Range("A4:Q4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A4:Q4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                sht.Range("A4:Q4").Style.Font.SetBold();
+                sht.Range("A4:Q4").Style.Font.FontSize = 12;
 
                 //sht.Range("A1:O1").Merge();
                 //sht.Range("A1").SetValue(DDCompany.SelectedItem.Text);
@@ -3131,11 +3389,13 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 sht.Range("J5").Value = "Pend. Qty";
                 sht.Range("K5").Value = "Rate";
                 sht.Range("L5").Value = "Amount";
-                sht.Range("M55").Value = "Debit Amt";
-                sht.Range("N5").Value = "Total Amt";
-                sht.Range("O5").Value = "Bill No";
+                sht.Range("M5").Value = "Deduction Amt";
+                sht.Range("N5").Value = "Debit Amt";
+                sht.Range("O5").Value = "TDS";
+                sht.Range("P5").Value = "Total Amt";
+                sht.Range("Q5").Value = "Bill No";
 
-                sht.Range("A5:O5").Style.Font.Bold = true;
+                sht.Range("A5:Q5").Style.Font.Bold = true;
 
                 row = 6;
 
@@ -3185,8 +3445,14 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         }
                         sht.Range("K" + row).SetValue(dr1["RATE"]);
                         sht.Range("L" + row).SetValue(dr1["AMount"]);
-                        sht.Range("M" + row).SetValue(dr1["PenaltyDebitnote"]);
-                        sht.Range("N" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
+                        sht.Range("M" + row).SetValue(dr1["DeductionAmt"]);
+                        sht.Range("N" + row).SetValue(dr1["DebitAmt"]);
+
+                        float TDSAMOUNT = 0;
+                        TDSAMOUNT = (Convert.ToInt32(dr1["AMount"]) * Convert.ToInt16(dr1["tds"])) / 100;
+
+                        sht.Range("O" + row).SetValue(TDSAMOUNT);
+                        sht.Range("P" + row).FormulaA1 = "=L" + row + '-' + "M" + row + '-' + "N" + row + '-' + "O"+row;
                         sht.Range("O" + row).SetValue(dr1["BillNo"]);
 
                         QualityName = dr1["QualityName"].ToString();
@@ -3198,13 +3464,13 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     rowto = row - 1;
                     sht.Range("K" + row).SetValue("Total");
                     sht.Range("L" + row).FormulaA1 = "=SUM(L" + rowfrom + ":L" + rowto + ")";
-                    sht.Range("M" + row).FormulaA1 = "SUM(M" + rowfrom + ":M" + rowto + ")" + '+' + dr["debitnote"];
-                    sht.Range("N" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
-                    sht.Range("K" + row + ":N" + row).Style.Font.Bold = true;
+                   // sht.Range("O" + row).FormulaA1 = "SUM(O" + rowfrom + ":O" + rowto + ")" + '+' + dr["debitnote"];
+                    sht.Range("P" + row).FormulaA1 = "=L" + row + '-' + "M" + row + '-' + "N" + row + '-' + "O" + row;
+                    sht.Range("K" + row + ":P" + row).Style.Font.Bold = true;
 
                     Tamtrow = Tamtrow + "+" + "L" + row;
-                    TDebitrow = TDebitrow + "+" + "M" + row;
-                    TNetamtrow = TNetamtrow + "+" + "N" + row;
+                   // TDebitrow = TDebitrow + "+" + "M" + row;
+                    TNetamtrow = TNetamtrow + "+" + "P" + row;
 
                     row = row + 1;
                 }
@@ -3216,12 +3482,12 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
 
                 sht.Range("K" + row).SetValue("G. Total");
                 sht.Range("L" + row).FormulaA1 = "=SUM(" + Tamtrow + ")";
-                sht.Range("M" + row).FormulaA1 = "=SUM(" + TDebitrow + ")";
-                sht.Range("N" + row).FormulaA1 = "=SUM(" + TNetamtrow + ")";
+               // sht.Range("M" + row).FormulaA1 = "=SUM(" + TDebitrow + ")";
+                sht.Range("P" + row).FormulaA1 = "=SUM(" + TNetamtrow + ")";
 
-                sht.Range("K" + row + ":N" + row).Style.Font.Bold = true;
+                sht.Range("K" + row + ":P" + row).Style.Font.Bold = true;
 
-                using (var a = sht.Range("A3:O" + row))
+                using (var a = sht.Range("A3:Q" + row))
                 {
                     a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
                     a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
@@ -4960,6 +5226,293 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             throw;
         }
     }
+    protected void IndentRecDetailExcelReportDiamond(DataSet ds)
+    {
+
+        try
+        {
+
+            //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+
+                sht.Column("A").Width = 14.56;
+                sht.Column("B").Width = 23.33;
+                sht.Column("C").Width = 13.00;
+                sht.Column("D").Width = 20.22;
+                sht.Column("E").Width = 10.89;
+                sht.Column("F").Width = 14.45;
+                sht.Column("G").Width = 14.45;
+                sht.Column("H").Width = 13.56;
+                sht.Column("I").Width = 11.67;
+                sht.Column("J").Width = 33.89;
+                sht.Column("K").Width = 11.22;
+                sht.Column("L").Width = 10.22;
+                sht.Column("M").Width = 10.22;
+                sht.Column("N").Width = 10.22;
+                sht.Column("O").Width = 20.22;
+                sht.Column("P").Width = 15.11;
+                sht.Column("Q").Width = 12.22;
+                sht.Column("R").Width = 16.22;
+
+                //*******Header
+                sht.Range("A2").Value = "CustomerCode ";
+                sht.Range("B2").Value = "Order No";
+
+                sht.Range("C2").Value = "Indent No";
+                sht.Range("D2").Value = "Party Name";
+
+                sht.Range("E2").Value = "Rec No";
+                sht.Range("F2").Value = "Iss ChallanNo";
+                sht.Range("G2").Value = "Bill No";
+
+                sht.Range("H2").Value = "Inwards No";
+
+                sht.Range("I2").Value = "Rec Date";
+                sht.Range("J2").Value = "Item Description";
+                sht.Range("K2").Value = "Rec LotNo";
+                sht.Range("L2").Value = "Rec TagNo";
+                sht.Range("M2").Value = "Rec Qty";
+
+                sht.Range("N2").Value = "Remarks";
+                sht.Range("O2").Value = "Iss LotNo";
+                sht.Range("P2").Value = "Iss TagNo";
+                sht.Range("Q2").Value = "Indent Date";
+                sht.Range("R2").Value = "Indent Rate";
+                //sht.Range("R2").Value = "";
+
+                sht.Range("A2:R2").Style.Font.FontName = "Arial Unicode MS";
+                sht.Range("A2:R2").Style.Font.FontSize = 10;
+                sht.Range("A2:R2").Style.Font.Bold = true;
+
+                sht.Range("A2:R2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:R2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A2:R2").Style.Alignment.SetWrapText();
+
+                row = row + 3;
+
+                for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
+                {
+
+                    sht.Range("A" + row + ":R" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A" + row + ":R" + row).Style.Font.FontSize = 10;
+
+                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[j]["CustomerCode"]);
+                    sht.Range("A" + row).Style.Alignment.SetWrapText();
+                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[j]["CustomerOrderNo"]);
+                    sht.Range("B" + row).Style.Alignment.SetWrapText();
+
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[j]["IndentNo"]);
+                    sht.Range("C" + row).Style.Alignment.SetWrapText();
+                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[j]["Empname"]);
+                    sht.Range("D" + row).Style.Alignment.SetWrapText();
+                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[j]["PRMid"]);
+                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[j]["IssueChallanNo"]);
+                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[j]["RecChallanNo"]);
+
+                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[j]["BillNo"]);
+
+
+                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[j]["Date"]);
+                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[j]["Description"]);
+                    sht.Range("J" + row).Style.Alignment.SetWrapText();
+                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[j]["LotNo"]);
+                    sht.Range("K" + row).Style.Alignment.SetWrapText();
+                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[j]["TagNo"]);
+                    sht.Range("L" + row).Style.Alignment.SetWrapText();
+                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[j]["RECQTY"]);
+                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[j]["IndentRecRemarks"]);
+                    sht.Range("N" + row).Style.Alignment.SetWrapText();
+                    sht.Range("O" + row).SetValue(ds.Tables[0].Rows[j]["IssLotNo"]);
+                    sht.Range("P" + row).SetValue(ds.Tables[0].Rows[j]["IssTagNo"]);
+                    sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[j]["IndentDate"]);
+                    sht.Range("R" + row).SetValue(ds.Tables[0].Rows[j]["IndentRate"]); 
+
+                    row = row + 1;
+                }
+
+                //*************
+                using (var a = sht.Range("A1:R" + row))
+                {
+                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                }
+
+                //sht.Columns(1, 30).AdjustToContents();
+
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("IndentReceiveDetail_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altre", "alert('No data fetched.')", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    #region
+    protected void GenerateIndentDetailReportData()
+    {
+        try
+        {
+            // string str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + " as Dateflag From V_ORDERWISEINDENTDETAIL Where Companyid=" + DDCompany.SelectedValue;
+            string str = "", strsample = ""; ;
+            if (DDCompany.SelectedIndex > 0)
+            {
+                str = str + " And IM.CompanyId=" + DDCompany.SelectedValue;
+                //if (chksample.Checked == true)
+                //{
+                //    strsample = strsample + " and Companyid=" + DDCompany.SelectedValue;
+                //}
+            }
+            if (DDCustCode.SelectedIndex > 0)
+            {
+                //str = str + " And OD.CustomerCode=" + DDCustCode.SelectedItem.Text;
+                str = str + " and OD.CustomerCode='" + hnCustomerCode.Value + "'";
+            }
+            //if (DDOrderNo.SelectedIndex > 0)
+            //{
+            //    str = str + " And OrderId=" + DDOrderNo.SelectedValue;
+            //}
+            if (DDProcessName.SelectedIndex > 0)
+            {
+                str = str + " And IM.Processid=" + DDProcessName.SelectedValue;
+                //if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                //{
+                //    strsample = strsample + " and SM.Processid=" + DDProcessName.SelectedValue;
+                //}
+            }
+            if (DDEmpName.SelectedIndex > 0)
+            {
+                str = str + " And EI.EmpId=" + DDEmpName.SelectedValue;
+                //if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                //{
+                //    strsample = strsample + " and SM.empid=" + DDEmpName.SelectedValue;
+                //}
+            }
+            if (DDIndentNo.SelectedIndex > 0)
+            {
+                if (chksample.Checked == true)
+                {
+                    str = str + "  and Indentid=" + DDIndentNo.SelectedValue + " and IndentNo='Sample-" + DDIndentNo.SelectedItem.Text + "'";
+                }
+                else
+                {
+                    str = str + "  and IM.Indentid=" + DDIndentNo.SelectedValue + " and IM.IndentNo='" + DDIndentNo.SelectedItem.Text + "'";
+                }
+            }
+
+            //if (ddItemName.SelectedIndex > 0)
+            //{
+            //    str = str + "  and Item_id=" + ddItemName.SelectedValue;
+            //    //if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+            //    //{
+            //    //    strsample = strsample + "  and VF.Item_id=" + ddItemName.SelectedValue;
+            //    //}
+            //}
+            //if (DDQuality.SelectedIndex > 0)
+            //{
+            //    str = str + "  and Qualityid=" + DDQuality.SelectedValue;
+            //    //if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+            //    //{
+            //    //    strsample = strsample + "  and VF.Qualityid=" + DDQuality.SelectedValue;
+            //    //}
+            //}
+            //if (DDShadeColor.SelectedIndex > 0)
+            //{
+            //    str = str + "  and ShadecolorId=" + DDShadeColor.SelectedValue;
+            //    //if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+            //    //{
+            //    //    strsample = strsample + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+            //    //}
+            //}
+            if (ChkForDate.Checked == true)
+            {
+                str = str + "  And IM.Date>='" + TxtFromDate.Text + "' And IM.Date<='" + TxtToDate.Text + "'";
+                //str = str + "  And PM.Date>='" + TxtFromDate.Text + "' And PM.Date<='" + TxtToDate.Text + "'";
+                //if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                //{
+                //    strsample = strsample + " and SM.issueDate>='" + TxtFromDate.Text + "' And sm.issueDate<='" + TxtToDate.Text + "'";
+                //}
+            }
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_GETGENERATEINDENTDETAILREPORTDATA", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            //cmd.CommandTimeout = 300;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
+            cmd.Parameters.AddWithValue("@Where", str);
+            cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked == true ? "1" : "0");
+            cmd.Parameters.AddWithValue("@ChkForSample", chksample.Checked == true ? "1" : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+
+            //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptGenerateIndentDetail.rpt";
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptGenerateIndentDetail.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+                
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altre", "alert('No data fetched.')", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    #endregion
+
     //protected void IndentWiseDetailExportExcelNew()
     //{
     //    try

@@ -924,6 +924,9 @@
                                                             <asp:Label ID="Label19" runat="server" Text="  QUANTITY" CssClass="labelbold" /><b
                                                                 style="color: Red">*</b> &nbsp; &nbsp;
                                                         </td>
+                                                        <td class="tdstyle" id="tdextraqtylable" visible="false" runat="server">
+                                                            <asp:Label ID="Label34" runat="server" Text="EXTRA QUANTITY" CssClass="labelbold" />
+                                                        </td>
                                                         <td id="TDPrice" runat="server" class="tdstyle">
                                                             <asp:Label ID="Label23" runat="server" Text="PRICE" CssClass="labelbold" /><b style="color: Red">*</b>
                                                             &nbsp; &nbsp; &nbsp;
@@ -955,6 +958,10 @@
                                                         </td>
                                                         <td>
                                                             <asp:TextBox CssClass="textb" ID="TxtQuantity" runat="server" BackColor="#7B96BB"
+                                                                Width="80px" onkeypress="return isNumberKey(event);"></asp:TextBox>
+                                                        </td>
+                                                         <td id="TDextraqty" runat="server" Visible="false">
+                                                            <asp:TextBox CssClass="textb" ID="txtextraqty"  runat="server" BackColor="#7B96BB"
                                                                 Width="80px" onkeypress="return isNumberKey(event);"></asp:TextBox>
                                                         </td>
                                                         <td id="TDtxtPrice" runat="server">

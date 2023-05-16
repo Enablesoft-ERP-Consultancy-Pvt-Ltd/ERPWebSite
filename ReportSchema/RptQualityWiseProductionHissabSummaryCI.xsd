@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="FromDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Dateflag" type="xs:int" minOccurs="0" />
+              <xs:element name="Process_Rec_Id" type="xs:int" minOccurs="0" />
+              <xs:element name="CHALLANNO" type="xs:string" minOccurs="0" />
+              <xs:element name="HissabNo" type="xs:int" minOccurs="0" />
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyGSTNo" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpName" type="xs:string" minOccurs="0" />
+              <xs:element name="Address" type="xs:string" minOccurs="0" />
+              <xs:element name="Address2" type="xs:string" minOccurs="0" />
+              <xs:element name="Address3" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpGStNo" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpCode" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalQty" type="xs:int" minOccurs="0" />
+              <xs:element name="TotalArea" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GirahArea" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GrandTotalGirahAreaNew" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TotalAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalPenality" type="xs:double" minOccurs="0" />
+              <xs:element name="TDS" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalCommAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="Commrate" type="xs:double" minOccurs="0" />
+              <xs:element name="GrandTotalAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="TDSAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="WOOL" type="xs:decimal" minOccurs="0" />
+              <xs:element name="COTTONYARN" type="xs:decimal" minOccurs="0" />
+              <xs:element name="VISCOSE" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

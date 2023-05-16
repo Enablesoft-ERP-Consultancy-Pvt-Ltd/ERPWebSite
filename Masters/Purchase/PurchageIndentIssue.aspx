@@ -601,7 +601,24 @@
                                         <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ErrorMessage="Only .gif,.jpeg or.jpg files are allowed!"
                                             ValidationExpression="^.*\.(jpg|JPG|gif|GIF|jpeg|JPEG|BMP|bmp)$" ControlToValidate="PhotoImage"></asp:RegularExpressionValidator>
                                     </td>
+                                   
                                 </tr>
+                                  <tr runat="server" id="trrevisedremark" visible="false">
+                                            <td>
+                                                <asp:Label ID="Label52" runat="server" Text="Item Remarks" CssClass="labelbold"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="TxtItemRemark" runat="server" Width="250px" CssClass="textboxremark"
+                                                    TextMode="MultiLine"></asp:TextBox>
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td id="revisedremark" runat="server" class="tdstyle" visible="false">
+                                                <asp:Label ID="Label53" runat="server" CssClass="labelbold" Text="Revised Remarks"></asp:Label>
+                                                <asp:TextBox ID="TXTreviseRemark" runat="server" CssClass="textboxremark" TextMode="MultiLine"
+                                                    Width="250px"></asp:TextBox>
+                                            </td>
+                                    </tr>
                             </table>
                         </fieldset>
                         <fieldset>
@@ -942,29 +959,17 @@
                                                 <asp:TextBox ID="txtMill" runat="server" Width="250px" CssClass="textboxremark" TextMode="MultiLine"></asp:TextBox>
                                             </td>
                                         </tr>
-                                        <tr runat="server" id="trrevisedremark" visible="false">
-                                            <td>
-                                                <asp:Label ID="Label52" runat="server" Text="Item Remarks" CssClass="labelbold"></asp:Label>
-                                            </td>
-                                            <td>
-                                                <asp:TextBox ID="TxtItemRemark" runat="server" Width="250px" CssClass="textboxremark"
-                                                    TextMode="MultiLine"></asp:TextBox>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td id="revisedremark" runat="server" class="tdstyle" visible="false">
-                                                <asp:Label ID="Label53" runat="server" CssClass="labelbold" Text="Revised Remarks"></asp:Label>
-                                                <asp:TextBox ID="TXTreviseRemark" runat="server" CssClass="textboxremark" TextMode="MultiLine"
-                                                    Width="250px"></asp:TextBox>
-                                            </td>
-                                        </tr>
+                                       
                                         <tr>
                                             <td class="tdstyle">
                                                 <asp:Label ID="Label54" runat="server" Text="Delivery Address" CssClass="labelbold"></asp:Label>
                                             </td>
                                             <td>
+                                             <asp:DropDownList Width="100px" ID="ddlDeliveryAddress" runat="server" CssClass="dropdown" Visible="false">
+                                                  
+                                                </asp:DropDownList>
                                                 <asp:TextBox ID="txtDeliveryAddress" runat="server" Width="250px" CssClass="textboxremark"
-                                                    TextMode="MultiLine"></asp:TextBox>
+                                                    TextMode="MultiLine" Visible="false"></asp:TextBox>
                                             </td>
                                         </tr>
                                     </table>

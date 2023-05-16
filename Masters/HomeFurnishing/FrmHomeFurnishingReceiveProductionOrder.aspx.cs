@@ -96,6 +96,10 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingReceiveProductionOr
             {
                 str = str + " And EMP.EMPID = " + txteditempid.Text;
             }
+            if (Session["varCompanyNo"].ToString() == "44")
+            {
+                str += " where PRM.PROCESSID=" + DDProcessName.SelectedValue;
+            }
             str = str + @" Order By PRM.ProcessRecId ";
 
             UtilityModule.ConditionalComboFill(ref DDreceiveNo, str, true, "--Plz Select--");
@@ -211,21 +215,56 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingReceiveProductionOr
     }
     protected void FillRecDetails()
     {
-        SqlParameter[] array = new SqlParameter[2];
+        string sp = string.Empty;
+        SqlParameter[] array = new SqlParameter[3];
         array[0] = new SqlParameter("@Process_Rec_Id", hnprocessrecid.Value);
         array[1] = new SqlParameter("@FlagGridReport", 0);
+        array[2] = new SqlParameter("@process_id", DDProcessName.SelectedValue);
 
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_HOMEFURNISHINGRECEIVE_FILLGRID_REPORT", array);
+        if (Session["varCompanyNo"].ToString() == "44")
+        {
+            sp = "PRO_HOMEFURNISHINGRECEIVE_FILLGRID_REPORT_AGNI";
+        }
+        else
+        {
+
+            sp = "PRO_HOMEFURNISHINGRECEIVE_FILLGRID_REPORT";
+        }
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, sp, array);
+        DataTable DTFINAL = new DataTable();
+
         DGRecDetail.DataSource = ds.Tables[0];
         DGRecDetail.DataBind();
+        if (Session["varCompanyNo"].ToString() == "44")
+        {
+            listWeaverName.Items.Clear();
+            string empids = "";
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                empids = empids + "," + ds.Tables[0].Rows[0]["Empid"].ToString();
+                listWeaverName.Items.Add(new ListItem(ds.Tables[0].Rows[0]["Empname"].ToString(), ds.Tables[0].Rows[0]["Empid"].ToString()));
+
+            }
+        }
     }
     protected void btnPreview_Click(object sender, EventArgs e)
     {
-        SqlParameter[] array = new SqlParameter[2];
+        string sp = string.Empty;
+        SqlParameter[] array = new SqlParameter[3];
         array[0] = new SqlParameter("@Process_Rec_Id", hnprocessrecid.Value);
         array[1] = new SqlParameter("@FlagGridReport", 1);
+        array[2] = new SqlParameter("@process_id", DDProcessName.SelectedValue);
+        if (Session["varCompanyNo"].ToString() == "44")
+        {
+            sp = "PRO_HOMEFURNISHINGRECEIVE_FILLGRID_REPORT_AGNI";
+        }
+        else
+        {
 
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_HOMEFURNISHINGRECEIVE_FILLGRID_REPORT", array);
+            sp = "PRO_HOMEFURNISHINGRECEIVE_FILLGRID_REPORT";
+        }
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, sp, array);
 
         if (ds.Tables[0].Rows.Count > 0)
         {

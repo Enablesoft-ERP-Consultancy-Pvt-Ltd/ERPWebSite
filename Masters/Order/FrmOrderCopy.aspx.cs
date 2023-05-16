@@ -258,7 +258,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                 {
                     Session["order_id"] = DDCustOrderNo.SelectedValue;
                 }
-                SqlParameter[] _arrpara = new SqlParameter[19];
+                SqlParameter[] _arrpara = new SqlParameter[21];
                 _arrpara[0] = new SqlParameter("@OrderId", SqlDbType.Int);
                 _arrpara[1] = new SqlParameter("@CustomerId", SqlDbType.Int);
                 _arrpara[2] = new SqlParameter("@CompanyId", SqlDbType.Int);
@@ -279,6 +279,8 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                 _arrpara[16] = new SqlParameter("@VarCurrentFlag", SqlDbType.Int);
                 _arrpara[17] = new SqlParameter("@VarFinishedid", SqlDbType.Int);
                 _arrpara[18] = new SqlParameter("@VarNewOrderDetailId", SqlDbType.Int);
+                _arrpara[19] = new SqlParameter("@UserId", SqlDbType.Int);
+                _arrpara[20] = new SqlParameter("@RepeatOrderId", SqlDbType.Int);
 
                 _arrpara[1].Value = DDCustomerCode.SelectedValue;
                 _arrpara[2].Value = DDCompanyName.SelectedValue;
@@ -293,6 +295,8 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                 _arrpara[16].Value = CHKFORCURRENTCONSUMPTION.Checked == true ? 1 : 0;
                 _arrpara[17].Value = ParameterDirection.Output;
                 _arrpara[18].Value = ParameterDirection.Output;
+                _arrpara[19].Value = Session["VarUserId"];
+                _arrpara[20].Value = DDFromOrderNo.SelectedValue;
 
                 for (int i = 0; i < DGOrderDetail.Rows.Count; i++)
                 {
@@ -418,22 +422,48 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                 }
                 if (lblvalidMessage.Text == "")
                 {
-                    SqlParameter[] _arrpara = new SqlParameter[3];
-                    _arrpara[0] = new SqlParameter("@OrderId", SqlDbType.Int);
-                    _arrpara[1] = new SqlParameter("@OrderDetailId", SqlDbType.Int);
-                    _arrpara[2] = new SqlParameter("@VarRow", SqlDbType.Int);
-                    _arrpara[0].Value = Ds.Tables[0].Rows[0]["OrderId"];
-                    _arrpara[1].Value = Ds.Tables[0].Rows[0]["OrderDetailId"];
-                    _arrpara[2].Value = 1;
-                    if (GDOrderSummary.Rows.Count == 1)
+                    //SqlParameter[] _arrpara = new SqlParameter[3];
+                    //_arrpara[0] = new SqlParameter("@OrderId", SqlDbType.Int);
+                    //_arrpara[1] = new SqlParameter("@OrderDetailId", SqlDbType.Int);
+                    //_arrpara[2] = new SqlParameter("@VarRow", SqlDbType.Int);
+                    //_arrpara[0].Value = Ds.Tables[0].Rows[0]["OrderId"];
+                    //_arrpara[1].Value = Ds.Tables[0].Rows[0]["OrderDetailId"];
+                    //_arrpara[2].Value = 1;
+                    //if (GDOrderSummary.Rows.Count == 1)
+                    //{
+                    //    _arrpara[2].Value = 0;
+                    //}
+                    //SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "Pro_DeleteOrder_Row", _arrpara);
+                    //tran.Commit();
+                    //Fill_Grid();
+                    //lblvalidMessage.Visible = true;
+                    //lblvalidMessage.Text = "Successfully Deleted..";
+
+
+                    SqlParameter[] _arrpara = new SqlParameter[6];
+                    //_arrpara[0] = new SqlParameter("@OrderId", SqlDbType.Int);
+                    _arrpara[0] = new SqlParameter("@OrderDetailId", SqlDbType.Int);
+                    _arrpara[1] = new SqlParameter("@VarRow", SqlDbType.Int);
+                    _arrpara[2] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 300);
+                    _arrpara[3] = new SqlParameter("@Mastercompanyid", SqlDbType.Int);
+                    _arrpara[4] = new SqlParameter("@userid", SqlDbType.Int);
+
+                    // _arrpara[0].Value = Ds.Tables[0].Rows[0]["OrderId"];
+                    _arrpara[0].Value = VarDetailId;
+                    _arrpara[1].Value = 1;
+                    _arrpara[2].Direction = ParameterDirection.Output;
+                    _arrpara[3].Value = Session["varcompanyid"];
+                    _arrpara[4].Value = Session["varuserid"];
+                    if (DGOrderDetail.Rows.Count == 1)
                     {
-                        _arrpara[2].Value = 0;
+                        _arrpara[1].Value = 0;
                     }
-                    SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "Pro_DeleteOrder_Row", _arrpara);
+                    SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "Pro_DeleteOrder_Row", _arrpara);                   
                     tran.Commit();
                     Fill_Grid();
                     lblvalidMessage.Visible = true;
-                    lblvalidMessage.Text = "Successfully Deleted..";
+                    lblvalidMessage.Text = _arrpara[2].Value.ToString();
+
                 }
             }
         }

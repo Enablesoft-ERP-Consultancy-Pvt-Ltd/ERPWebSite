@@ -220,6 +220,10 @@ public partial class Masters_ProcessIssue_ProcessIssue : System.Web.UI.Page
             {
                 str = str + " and OM.CustomerId=" + DDCustomerCode.SelectedValue;
             }
+            if (Session["VarCompanyNo"].ToString() == "38")
+            {
+                str = str + " and OM.Status=0";
+            }
             str = str + " order by OM.OrderId";
         }
         UtilityModule.ConditionalComboFill(ref DDCustomerOrderNumber, str, true, "--Plz Select--");

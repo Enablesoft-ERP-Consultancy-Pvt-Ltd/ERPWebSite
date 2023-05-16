@@ -71,6 +71,10 @@ public partial class UserRigets : System.Web.UI.Page
                     tdunits.Visible = true;
                     UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
                     break;
+                case "37":
+                    tdunits.Visible = true;
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    break;
                 default:
                     if (variable.VarFinishingNewModuleWise == "1")
                     {
@@ -169,6 +173,10 @@ public partial class UserRigets : System.Web.UI.Page
         if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
         {
             Str = Str + " And MenuID <> 191";
+        }
+        if (Session["varcompanyNo"].ToString() == "44" )
+        {
+            Str = Str + " And MenuID not in (48,49) ";
         }
         ConditionalTreeViewWithChkbox(ref TVMenues, Str);
 
@@ -325,7 +333,14 @@ public partial class UserRigets : System.Web.UI.Page
     private void filltree()
     {
         DivMenu.Visible = true;
-        string str = "Select Distinct MenuId From UserRights  where userid=" + DDUserName.SelectedValue;
+        string str=string.Empty;
+        if (Session["varcompanyNo"].ToString() == "44" )
+        {
+            str = "Select Distinct MenuId From UserRights  where menuid not in (48,49) and userid=" + DDUserName.SelectedValue;
+        }
+        else {
+            str = "Select Distinct MenuId From UserRights  where userid=" + DDUserName.SelectedValue;
+        }
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
         {
@@ -384,11 +399,17 @@ public partial class UserRigets : System.Web.UI.Page
                         Sqlst = Sqlst + " And MenuID in(37,38,90,136,162)";
                         //Sqlst = Sqlst + " And MenuID = 92";
                     }
+                   
                     else
                     {
                         Sqlst = Sqlst + " And MenuID not in(37,38,90,136,162)";
                         //Sqlst = Sqlst + " And MenuID <> 92";
                     }
+                }
+                else if (Session["varCompanyId"].ToString() == "44")
+                {
+                    //Sqlst = Sqlst + " And MenuID not in(48,49)";
+                    //Sqlst = Sqlst + " And MenuID = 92";
                 }
 
                 DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Sqlst);

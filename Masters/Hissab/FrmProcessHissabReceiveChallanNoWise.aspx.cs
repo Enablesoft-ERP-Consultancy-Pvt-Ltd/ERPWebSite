@@ -127,6 +127,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     {
                         case "28":
                         case "22":
+                        case "43":
                             Str = @"SELECT EI.EMPID,EI.EMPNAME + CASE WHEN EI.EMPCODE<>'' THEN ' ['+ISNULL(EI.EMPCODE,'')+']' ELSE '' END EMPNAME FROM PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM(NoLock) INNER JOIN EMPINFO EI(NoLock) ON PIM.EMPID=EI.EMPID WHERE PIM.Companyid=" + DDCompanyName.SelectedValue + @" and  EI.Blacklist=0
                                 UNION
                                 SELECT EI.EMPID,EI.EMPNAME + CASE WHEN EI.EMPCODE<>'' THEN ' ['+ISNULL(EI.EMPCODE,'')+']' ELSE '' END EMPNAME FROM EMPLOYEE_PROCESSORDERNO EMP(NoLock) INNER JOIN PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM(NoLock)  ON EMP.ISSUEORDERID=PIM.ISSUEORDERID AND EMP.PROCESSID=" + DDProcessName.SelectedValue + @"

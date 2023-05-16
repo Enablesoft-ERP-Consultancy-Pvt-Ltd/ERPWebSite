@@ -142,7 +142,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDIssRecConsumpSummary.Visible = true;
                 Td1.Visible = true;
                 TDWeaverOrderStatus.Visible = true;
-               
+
             }
             else if (Session["varcompanyId"].ToString() == "39")
             {
@@ -172,6 +172,21 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDWeaverAdvancePaymentFolioWise.Visible = false;
 
             }
+            else if (Session["varcompanyId"].ToString() == "43")
+            {
+                TDChampoPNMAmtDifference.Visible = false;
+                TDChampoExternalWeaverConsumption.Visible = false;
+                TDRDWeavingOrderRecBalWithAmountDetail.Visible = false;
+                TDWeaverRawMaterialIssueReport.Visible = false;
+                TDWeavingReceiveWithTDS.Visible = false;
+                TDInternalBucket.Visible = true;
+                TDIssRecConsumpSummary.Visible = true;
+                Td1.Visible = true;
+                TDWeaverOrderStatus.Visible = true;
+                TDWeaverAdvancePaymentFolioWise.Visible = false;
+                TDQualityWiseProductionHissabSummary.Visible = true;
+                TDWeaverRawMaterialIssueSummary.Visible = true;
+            }
             else
             {
                 TDChampoPNMAmtDifference.Visible = false;
@@ -185,8 +200,8 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDWeaverOrderStatus.Visible = true;
                 TDWeaverAdvancePaymentFolioWise.Visible = false;
             }
-           
-           
+
+
         }
     }
     protected void DDReportType_SelectedIndexChanged(object sender, EventArgs e)
@@ -469,7 +484,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         }
         else if (RDBazaarReturnGatePassDetail.Checked == true)
         {
-            BazaarReturnGatePassDetail();           
+            BazaarReturnGatePassDetail();
         }
         else if (RDWeaverRawMaterialOnLoom.Checked == true)
         {
@@ -480,7 +495,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             else
             {
                 WeaverRawMaterialOnLoom();
-            } 
+            }
         }
         else if (RDWithTagNoTracking.Checked == true)
         {
@@ -523,7 +538,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             DesignWiseFolioMaterialIssueStatus();
             return;
         }
-        else if (RDWeavingReceiveWithTDS.Checked== true)
+        else if (RDWeavingReceiveWithTDS.Checked == true)
         {
             WeavingReceiveWithTDS();
             return;
@@ -549,6 +564,16 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         else if (RDWeaverAdvancePaymentFolioWise.Checked == true)
         {
             WeaverAdvancePaymentFolioWiseDetail();
+            return;
+        }
+        else if (RDQualityWiseProductionHissabSummary.Checked == true)
+        {
+            QualityWiseProductionHissabSummary();
+            return;
+        }
+        else if (RDWeaverRawMaterialIssueSummary.Checked == true)
+        {
+            WeaverRawMaterialIssQualityWiseSummaryReport();
             return;
         }
     }
@@ -903,7 +928,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             {
                 cmd.Parameters.AddWithValue("@CustomerID", 0);
             }
-            if (DDOrderNo.Items.Count >0 && DDOrderNo.SelectedIndex > 0)
+            if (DDOrderNo.Items.Count > 0 && DDOrderNo.SelectedIndex > 0)
             {
                 cmd.Parameters.AddWithValue("@OrderID", DDOrderNo.SelectedValue);
             }
@@ -1187,8 +1212,8 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         try
         {
             string str = "select *,'" + txtfromDate.Text + "' as FromDate,'" + txttodate.Text + "' as Todate," + (ChkselectDate.Checked == true ? "1" : "0") + " as Dateflag,FolioType From V_WeavingOrderStatus Where CompanyId=" + DDCompany.SelectedValue;
-                                  
-            
+
+
             if (DDUnitname.SelectedIndex > 0)
             {
                 str = str + " and Units=" + DDUnitname.SelectedValue;
@@ -1248,7 +1273,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             if (DDproductiontype.SelectedIndex > 0)
             {
                 str = str + " and PRODUCTIONTYPE=" + DDproductiontype.SelectedValue;
-            }          
+            }
 
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
             if (con.State == ConnectionState.Closed)
@@ -1282,12 +1307,12 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     else if (Session["VarCompanyNo"].ToString() == "42" && ChkForWeavingPendingQtyWithAreaSize.Checked == true)
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeaverSummaryPendingQtyWithSizeVikramMirzapur.rpt";
-                    }  
+                    }
                     else
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeaversummary.rpt";
                     }
-                    
+
                 }
                 else if (RDOrder.Checked == true)
                 {
@@ -1982,8 +2007,8 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             }
             //if (ChkselectDate.Checked == true)
             //{
-                str = str + " and PRM.RECEIVEDATE>='" + txtfromDate.Text + "' and PRM.RECEIVEDATE<='" + txttodate.Text + "'";
-                FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
+            str = str + " and PRM.RECEIVEDATE>='" + txtfromDate.Text + "' and PRM.RECEIVEDATE<='" + txttodate.Text + "'";
+            FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
             //}
             if (DDFoliotype.SelectedIndex > 0)
             {
@@ -2237,7 +2262,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         /////if(Session["varCompanyNo"].ToString()=="4" && (RDAll.Checked==true || RDOrder.Checked==true || RDReceive.Checked==true))
         /////{
 
-        if((RDAll.Checked==true || RDOrder.Checked==true || RDReceive.Checked==true))
+        if ((RDAll.Checked == true || RDOrder.Checked == true || RDReceive.Checked == true))
         {
             FillQuality();
             FillDesign();
@@ -2307,7 +2332,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         }
         UtilityModule.ConditionalComboFill(ref DDOrderNo, "Select OrderId, " + Str + @" CustomerOrderNo 
         From OrderMaster(Nolock) Where CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDCompany.SelectedValue + @" And 
-        Status=0 Order By CustomerOrderNo", true, "--Select--"); 
+        Status=0 Order By CustomerOrderNo", true, "--Select--");
     }
 
     protected void InternalBucketDetail()
@@ -2866,7 +2891,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Processid", 1);
             cmd.Parameters.AddWithValue("@Where", str);
             cmd.Parameters.AddWithValue("@empid", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
-           
+
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -3535,7 +3560,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
     {
         try
         {
-            string str = "select *,'" + txtfromDate.Text + "' as FromDate,'" + txttodate.Text + "' as Todate," + (ChkselectDate.Checked == true ? "1" : "0") + " as Dateflag,case when "+DDFoliotype.SelectedValue+"=1 then 'PURCHASE' Else 'PRODUCTION' End as FolioType From V_WeavercarpetreceiveDetail Where CompanyId=" + DDCompany.SelectedValue;
+            string str = "select *,'" + txtfromDate.Text + "' as FromDate,'" + txttodate.Text + "' as Todate," + (ChkselectDate.Checked == true ? "1" : "0") + " as Dateflag,case when " + DDFoliotype.SelectedValue + "=1 then 'PURCHASE' Else 'PRODUCTION' End as FolioType From V_WeavercarpetreceiveDetail Where CompanyId=" + DDCompany.SelectedValue;
 
 
             if (DDQtype.SelectedIndex > 0)
@@ -3587,7 +3612,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             str = @"select distinct PRRS.GatePassNo,PRRS.GatePassNo as GatePassNo1 from PRODUCTIONRECEIVEREJECTEDSTOCK PRRS 
                     INNER JOIN PROCESS_ISSUE_MASTER_1 PIM ON PRRS.IssueOrderID=PIM.IssueOrderId
                     Where PRRS.IssueOrderId=" + DDFolioNo.SelectedValue + "";
-        }        
+        }
         UtilityModule.ConditionalComboFill(ref DDReturnGatePassNo, str, true, "---Plz Select---");
     }
     protected void DDFolioNo_SelectedIndexChanged(object sender, EventArgs e)
@@ -3606,7 +3631,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
     {
         try
         {
-            string str = "";                      
+            string str = "";
 
             //str = str + " and PRRS.CompanyId=" + DDCompany.SelectedValue;           
             //if (DDFolioNo.SelectedIndex > 0)
@@ -3616,12 +3641,12 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             if (DDReturnGatePassNo.SelectedIndex > 0)
             {
                 str = str + " and PRRS.GatePassNo=" + DDReturnGatePassNo.SelectedValue;
-            }            
+            }
             //*****************
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
             param[1] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
-            param[2] = new SqlParameter("@IssueOrderID", DDFolioNo.SelectedValue);           
+            param[2] = new SqlParameter("@IssueOrderID", DDFolioNo.SelectedValue);
             param[3] = new SqlParameter("@where", str);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FORPRODUCTIONRECEIVE_RETURNLOOMGATEPASSREPORTDETAIL", param);
@@ -3657,239 +3682,239 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
     protected void WeaverRawMaterialOnLoom()
     {
-       
-            lblmsg.Text = "";
-            try
+
+        lblmsg.Text = "";
+        try
+        {
+            string str = "";
+
+            //str = str + " and PRRS.CompanyId=" + DDCompany.SelectedValue;  
+            if (DDWeaver.SelectedIndex > 0)
             {
-                string str = "";
-
-                //str = str + " and PRRS.CompanyId=" + DDCompany.SelectedValue;  
-                if (DDWeaver.SelectedIndex > 0)
-                {
-                    str = str + " and PIM.EMPID=" + DDWeaver.SelectedValue;
-                }  
-                if (DDFolioNo.SelectedIndex > 0)
-                {
-                    str = str + " and PIM.IssueOrderID=" + DDFolioNo.SelectedValue;
-                }                        
-
-                SqlParameter[] param = new SqlParameter[5];
-                param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
-                param[1] = new SqlParameter("@Processid", 1);
-                param[2] = new SqlParameter("@FromDate", txtfromDate.Text);
-                param[3] = new SqlParameter("@ToDate", txttodate.Text);
-                param[4] = new SqlParameter("@where", str);
-
-
-                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVERRAWMATERIALONLOOMREPORT", param);
-
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
-                    {
-                        Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
-                    }
-                    string Path = "";
-                    var xapp = new XLWorkbook();
-                    var sht = xapp.Worksheets.Add("sheet1");
-
-
-                    sht.Range("A1:U1").Merge();
-                    sht.Range("A1").Value = "Raw Material ONLOOM (WEAVER & SLIP WISE)";
-                    sht.Range("A2:U2").Merge();
-                    sht.Range("A2").Value = "Company Name :  " + DDCompany.SelectedItem.Text;
-                    sht.Row(2).Height = 30;
-                    sht.Range("A3:U3").Merge();
-                    sht.Range("A3").Value = "Date From :  " + txtfromDate.Text + " " + "To" + " " + txttodate.Text;
-                    sht.Range("A1:U1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    sht.Range("A2:U3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    sht.Range("A2:U3").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                    sht.Range("A2:U3").Style.Alignment.SetWrapText();
-                    sht.Range("A1:U3").Style.Font.FontName = "Arial Unicode MS";
-                    sht.Range("A1:U3").Style.Font.FontSize = 10;
-                    sht.Range("A1:U3").Style.Font.Bold = true;
-                    //*******Header
-                    sht.Range("A4").Value = "SR No";
-                    sht.Range("B4").Value = "Qlt & Description";
-                    sht.Range("C4").Value = "Size";
-                    sht.Range("D4").Value = "Slip No";                   
-                    sht.Range("E4").Value = "Order pcs";
-                    sht.Range("F4").Value = "Bal. Pcs";
-                    sht.Range("G4").Value = "Bal. Area Y2";
-                    sht.Range("H4").Value = "Tran Date";
-                    sht.Range("A4:H4").Style.Font.Bold = true;
-
-                    int row = 4;                   
-                    int noofrows = 0;
-                    int i = 0;
-                    int Dynamiccol = 8;
-                    int Dynamiccolstart = Dynamiccol + 1;
-                    int Dynamiccolend;
-                    int Totalcol;
-                    int rowfrom = 5;
-                                
-                    DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "RawMaterialItemName");
-                    noofrows = dtdistinct.Rows.Count;
-
-                    for (i = 0; i < noofrows; i++)
-                    {
-                        //columnname = UtilityModule.GetExcelCellColumnName(i+3);
-                        Dynamiccol = Dynamiccol + 1;
-                        sht.Cell(row, Dynamiccol).Value = dtdistinct.Rows[i]["RawMaterialItemName"].ToString();
-                        sht.Cell(row, Dynamiccol).Style.Font.Bold = true;
-
-                        //sht.Range(columnname + column).Value = dtdistinct.Rows[i]["Item_Name"].ToString();
-                    }
-                    Dynamiccolend = Dynamiccol;
-                    Totalcol = Dynamiccolend + 1;
-                    //sht.Cell(row, Totalcol).Value = "Total";
-                    //sht.Cell(row, Totalcol).Style.Font.Bold = true;
-
-                    row = row + 1;
-
-                    int srno = 0;
-                    DataTable dtdistinctEmpAddress = ds.Tables[0].DefaultView.ToTable(true, "EmpId","EMPNAME", "ADDRESS");
-                    DataView dv1 = new DataView(dtdistinctEmpAddress);
-                    dv1.Sort = "EMPNAME";
-                    DataTable dtdistinctEmpAddress1 = dv1.ToTable();
-                    foreach (DataRow dr in dtdistinctEmpAddress1.Rows)
-                    {
-                        srno = srno + 1;
-                        sht.Range("A" + row).SetValue(srno);
-                        sht.Range("B" + row).SetValue(dr["EMPNAME"]);
-                        sht.Range("C" + row + ':' + "G" + row).Merge();
-                        sht.Range("C" + row).SetValue(dr["ADDRESS"]);
-
-                        sht.Range("A" + row+":C" + row).Style.Font.Bold = true;
-                        
-                        row = row + 1;
-
-                        int TempIssueOrderId = 0;
-                        DataTable dtdistinctItemDetails = ds.Tables[0].DefaultView.ToTable(true, "EmpId","QualityName", "DesignName", "ColorName","Size","Area","SinglePcsArea","IssueOrderId","Qty","RecQty");
-                        DataView dv2 = new DataView(dtdistinctItemDetails);
-                        dv2.RowFilter = "EmpId='" + dr["EmpId"] + "'";
-                        DataTable dtdistinctItemDetails2 = dv2.ToTable();
-                        foreach (DataRow dr2 in dtdistinctItemDetails2.Rows)
-                         {
-                             int BalPcs = Convert.ToInt32(dr2["Qty"]) - Convert.ToInt32(dr2["RecQty"]);
-
-                             if (BalPcs > 0)
-                             {
-
-                                 sht.Range("B" + row).SetValue(dr2["QualityName"] + " " + dr2["DesignName"] + " " + dr2["ColorName"]);
-                                 sht.Range("C" + row).SetValue(dr2["Size"]);
-                                 sht.Range("D" + row).SetValue(dr2["IssueOrderId"]);
-                                 sht.Range("E" + row).SetValue(dr2["Qty"]);
-
-                                 sht.Range("F" + row).SetValue(BalPcs);
-                                 sht.Range("G" + row).SetValue(Convert.ToDouble(dr2["SinglePcsArea"]) * BalPcs);
-
-                                 if (Convert.ToInt32(dr2["IssueOrderId"]) != TempIssueOrderId)
-                                 {
-                                     TempIssueOrderId = Convert.ToInt32(dr2["IssueOrderId"]);
-
-                                     DataTable dtdistinctRawMaterialItemDetails = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty");
-                                     DataView dv3 = new DataView(dtdistinctRawMaterialItemDetails);
-                                     dv3.RowFilter = "IssueOrderID='" + dr2["Issueorderid"] + "'";
-                                     dv3.Sort = "RawMaterialIssueDate";
-                                     DataSet dsRawMaterialitemdesc = new DataSet();
-                                     dsRawMaterialitemdesc.Tables.Add(dv3.ToTable());
-                                     DataTable dtdistinctDateType1 = dsRawMaterialitemdesc.Tables[0];
-                                     sht.Range("H" + row).SetValue(dsRawMaterialitemdesc.Tables[0].Rows[0]["RawMaterialIssueDate"]);
-                                     foreach (DataRow dr3 in dtdistinctDateType1.Rows)
-                                     {
-                                         decimal TotalSumOneRow = 0;
-                                         for (int k = Dynamiccolstart; k <= Dynamiccolend; k++)
-                                         {
-                                             var itemname = sht.Cell(4, k).Value;
-                                             decimal IssQty = 0;
-                                             decimal IssRecConQty = 0;
-
-                                             DataRow[] foundRows;
-                                             foundRows = dsRawMaterialitemdesc.Tables[0].Select("RawMaterialIssueDate='" + dr3["RawMaterialIssueDate"] + "' and IssueOrderId='" + dr3["IssueOrderId"] + "' and RawMaterialItemName='" + itemname + "' ");
-                                             if (foundRows.Length > 0)
-                                             {
-                                                 IssQty = Convert.ToDecimal(dsRawMaterialitemdesc.Tables[0].Compute("sum(IssueQty)", "IssueOrderId='" + dr3["IssueOrderId"] + "' and RawMaterialItemName='" + itemname + "' "));
-
-                                             }
-                                             IssRecConQty = IssQty;
-                                             TotalSumOneRow = TotalSumOneRow + IssRecConQty;
-                                             sht.Cell(row, k).Value = IssRecConQty;
-                                         }
-                                         //Totalcol = Dynamiccolend + 1;
-                                         //sht.Cell(row, Totalcol).Value = TotalSumOneRow;
-                                         //row = row + 1;
-                                     }
-
-                                 }
-                                 row = row + 1;
-                             }
-                           
-                         }
-                        row = row + 1;
-                        
-                    }
-                    sht.Range("D" + row).SetValue("Grand Total");
-                    sht.Range("E" + row).FormulaA1 = "=SUM(E" + rowfrom + ":E" + (row - 1) + ")";
-                    sht.Range("F" + row).FormulaA1 = "=SUM(F" + rowfrom + ":F" + (row - 1) + ")";
-                    sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + (row - 1) + ")";
-
-                    sht.Range("D" + row + ":G" + row).Style.Font.Bold = true;
-
-                    for (int k = Dynamiccolstart; k <= Dynamiccolend; k++)
-                    {
-                        var itemname = sht.Cell(4, k).Value;
-
-                        DataTable dtdistinctRawMaterialItemDetails4 = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty");
-                        DataView dv4 = new DataView(dtdistinctRawMaterialItemDetails4);                                
-                        DataSet dsRawMaterialitemdesc4 = new DataSet();
-                        dsRawMaterialitemdesc4.Tables.Add(dv4.ToTable());                               
-                        
-                        sht.Cell(row, k).Value = dsRawMaterialitemdesc4.Tables[0].Compute("sum(IssueQty)", "RawMaterialItemName='" + itemname + "' ");
-
-                        sht.Cell(row, k).Style.Font.Bold = true;                       
-                        
-                    } 
-                   
-                    row = row + 1;
-
-                    ////*************
-                    sht.Columns(1, 20).AdjustToContents();
-                    //********************
-                    //***********BOrders
-                    using (var a = sht.Range("A1" + ":U" + row))
-                    {
-                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    }
-
-                    string Fileextension = "xlsx";
-                    string filename = UtilityModule.validateFilename("RawMaterialONLOOM_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
-                    Path = Server.MapPath("~/Tempexcel/" + filename);
-                    xapp.SaveAs(Path);
-                    xapp.Dispose();
-                    //Download File
-                    Response.ClearContent();
-                    Response.ClearHeaders();
-                    // Response.Clear();
-                    Response.ContentType = "application/vnd.ms-excel";
-                    Response.AddHeader("content-disposition", "attachment;filename=" + filename);
-                    Response.WriteFile(Path);
-                    // File.Delete(Path);
-                    Response.End();
-                }
-                else
-                {
-                    ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
-                }
-
+                str = str + " and PIM.EMPID=" + DDWeaver.SelectedValue;
             }
-            catch (Exception ex)
+            if (DDFolioNo.SelectedIndex > 0)
             {
-                lblmsg.Text = ex.Message;
-            }      
+                str = str + " and PIM.IssueOrderID=" + DDFolioNo.SelectedValue;
+            }
+
+            SqlParameter[] param = new SqlParameter[5];
+            param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+            param[1] = new SqlParameter("@Processid", 1);
+            param[2] = new SqlParameter("@FromDate", txtfromDate.Text);
+            param[3] = new SqlParameter("@ToDate", txttodate.Text);
+            param[4] = new SqlParameter("@where", str);
+
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVERRAWMATERIALONLOOMREPORT", param);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+
+
+                sht.Range("A1:U1").Merge();
+                sht.Range("A1").Value = "Raw Material ONLOOM (WEAVER & SLIP WISE)";
+                sht.Range("A2:U2").Merge();
+                sht.Range("A2").Value = "Company Name :  " + DDCompany.SelectedItem.Text;
+                sht.Row(2).Height = 30;
+                sht.Range("A3:U3").Merge();
+                sht.Range("A3").Value = "Date From :  " + txtfromDate.Text + " " + "To" + " " + txttodate.Text;
+                sht.Range("A1:U1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:U3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:U3").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A2:U3").Style.Alignment.SetWrapText();
+                sht.Range("A1:U3").Style.Font.FontName = "Arial Unicode MS";
+                sht.Range("A1:U3").Style.Font.FontSize = 10;
+                sht.Range("A1:U3").Style.Font.Bold = true;
+                //*******Header
+                sht.Range("A4").Value = "SR No";
+                sht.Range("B4").Value = "Qlt & Description";
+                sht.Range("C4").Value = "Size";
+                sht.Range("D4").Value = "Slip No";
+                sht.Range("E4").Value = "Order pcs";
+                sht.Range("F4").Value = "Bal. Pcs";
+                sht.Range("G4").Value = "Bal. Area Y2";
+                sht.Range("H4").Value = "Tran Date";
+                sht.Range("A4:H4").Style.Font.Bold = true;
+
+                int row = 4;
+                int noofrows = 0;
+                int i = 0;
+                int Dynamiccol = 8;
+                int Dynamiccolstart = Dynamiccol + 1;
+                int Dynamiccolend;
+                int Totalcol;
+                int rowfrom = 5;
+
+                DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "RawMaterialItemName");
+                noofrows = dtdistinct.Rows.Count;
+
+                for (i = 0; i < noofrows; i++)
+                {
+                    //columnname = UtilityModule.GetExcelCellColumnName(i+3);
+                    Dynamiccol = Dynamiccol + 1;
+                    sht.Cell(row, Dynamiccol).Value = dtdistinct.Rows[i]["RawMaterialItemName"].ToString();
+                    sht.Cell(row, Dynamiccol).Style.Font.Bold = true;
+
+                    //sht.Range(columnname + column).Value = dtdistinct.Rows[i]["Item_Name"].ToString();
+                }
+                Dynamiccolend = Dynamiccol;
+                Totalcol = Dynamiccolend + 1;
+                //sht.Cell(row, Totalcol).Value = "Total";
+                //sht.Cell(row, Totalcol).Style.Font.Bold = true;
+
+                row = row + 1;
+
+                int srno = 0;
+                DataTable dtdistinctEmpAddress = ds.Tables[0].DefaultView.ToTable(true, "EmpId", "EMPNAME", "ADDRESS");
+                DataView dv1 = new DataView(dtdistinctEmpAddress);
+                dv1.Sort = "EMPNAME";
+                DataTable dtdistinctEmpAddress1 = dv1.ToTable();
+                foreach (DataRow dr in dtdistinctEmpAddress1.Rows)
+                {
+                    srno = srno + 1;
+                    sht.Range("A" + row).SetValue(srno);
+                    sht.Range("B" + row).SetValue(dr["EMPNAME"]);
+                    sht.Range("C" + row + ':' + "G" + row).Merge();
+                    sht.Range("C" + row).SetValue(dr["ADDRESS"]);
+
+                    sht.Range("A" + row + ":C" + row).Style.Font.Bold = true;
+
+                    row = row + 1;
+
+                    int TempIssueOrderId = 0;
+                    DataTable dtdistinctItemDetails = ds.Tables[0].DefaultView.ToTable(true, "EmpId", "QualityName", "DesignName", "ColorName", "Size", "Area", "SinglePcsArea", "IssueOrderId", "Qty", "RecQty");
+                    DataView dv2 = new DataView(dtdistinctItemDetails);
+                    dv2.RowFilter = "EmpId='" + dr["EmpId"] + "'";
+                    DataTable dtdistinctItemDetails2 = dv2.ToTable();
+                    foreach (DataRow dr2 in dtdistinctItemDetails2.Rows)
+                    {
+                        int BalPcs = Convert.ToInt32(dr2["Qty"]) - Convert.ToInt32(dr2["RecQty"]);
+
+                        if (BalPcs > 0)
+                        {
+
+                            sht.Range("B" + row).SetValue(dr2["QualityName"] + " " + dr2["DesignName"] + " " + dr2["ColorName"]);
+                            sht.Range("C" + row).SetValue(dr2["Size"]);
+                            sht.Range("D" + row).SetValue(dr2["IssueOrderId"]);
+                            sht.Range("E" + row).SetValue(dr2["Qty"]);
+
+                            sht.Range("F" + row).SetValue(BalPcs);
+                            sht.Range("G" + row).SetValue(Convert.ToDouble(dr2["SinglePcsArea"]) * BalPcs);
+
+                            if (Convert.ToInt32(dr2["IssueOrderId"]) != TempIssueOrderId)
+                            {
+                                TempIssueOrderId = Convert.ToInt32(dr2["IssueOrderId"]);
+
+                                DataTable dtdistinctRawMaterialItemDetails = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty");
+                                DataView dv3 = new DataView(dtdistinctRawMaterialItemDetails);
+                                dv3.RowFilter = "IssueOrderID='" + dr2["Issueorderid"] + "'";
+                                dv3.Sort = "RawMaterialIssueDate";
+                                DataSet dsRawMaterialitemdesc = new DataSet();
+                                dsRawMaterialitemdesc.Tables.Add(dv3.ToTable());
+                                DataTable dtdistinctDateType1 = dsRawMaterialitemdesc.Tables[0];
+                                sht.Range("H" + row).SetValue(dsRawMaterialitemdesc.Tables[0].Rows[0]["RawMaterialIssueDate"]);
+                                foreach (DataRow dr3 in dtdistinctDateType1.Rows)
+                                {
+                                    decimal TotalSumOneRow = 0;
+                                    for (int k = Dynamiccolstart; k <= Dynamiccolend; k++)
+                                    {
+                                        var itemname = sht.Cell(4, k).Value;
+                                        decimal IssQty = 0;
+                                        decimal IssRecConQty = 0;
+
+                                        DataRow[] foundRows;
+                                        foundRows = dsRawMaterialitemdesc.Tables[0].Select("RawMaterialIssueDate='" + dr3["RawMaterialIssueDate"] + "' and IssueOrderId='" + dr3["IssueOrderId"] + "' and RawMaterialItemName='" + itemname + "' ");
+                                        if (foundRows.Length > 0)
+                                        {
+                                            IssQty = Convert.ToDecimal(dsRawMaterialitemdesc.Tables[0].Compute("sum(IssueQty)", "IssueOrderId='" + dr3["IssueOrderId"] + "' and RawMaterialItemName='" + itemname + "' "));
+
+                                        }
+                                        IssRecConQty = IssQty;
+                                        TotalSumOneRow = TotalSumOneRow + IssRecConQty;
+                                        sht.Cell(row, k).Value = IssRecConQty;
+                                    }
+                                    //Totalcol = Dynamiccolend + 1;
+                                    //sht.Cell(row, Totalcol).Value = TotalSumOneRow;
+                                    //row = row + 1;
+                                }
+
+                            }
+                            row = row + 1;
+                        }
+
+                    }
+                    row = row + 1;
+
+                }
+                sht.Range("D" + row).SetValue("Grand Total");
+                sht.Range("E" + row).FormulaA1 = "=SUM(E" + rowfrom + ":E" + (row - 1) + ")";
+                sht.Range("F" + row).FormulaA1 = "=SUM(F" + rowfrom + ":F" + (row - 1) + ")";
+                sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + (row - 1) + ")";
+
+                sht.Range("D" + row + ":G" + row).Style.Font.Bold = true;
+
+                for (int k = Dynamiccolstart; k <= Dynamiccolend; k++)
+                {
+                    var itemname = sht.Cell(4, k).Value;
+
+                    DataTable dtdistinctRawMaterialItemDetails4 = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty");
+                    DataView dv4 = new DataView(dtdistinctRawMaterialItemDetails4);
+                    DataSet dsRawMaterialitemdesc4 = new DataSet();
+                    dsRawMaterialitemdesc4.Tables.Add(dv4.ToTable());
+
+                    sht.Cell(row, k).Value = dsRawMaterialitemdesc4.Tables[0].Compute("sum(IssueQty)", "RawMaterialItemName='" + itemname + "' ");
+
+                    sht.Cell(row, k).Style.Font.Bold = true;
+
+                }
+
+                row = row + 1;
+
+                ////*************
+                sht.Columns(1, 20).AdjustToContents();
+                //********************
+                //***********BOrders
+                using (var a = sht.Range("A1" + ":U" + row))
+                {
+                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                }
+
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("RawMaterialONLOOM_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
 
     }
     protected void ChkBazaarReceiveOnLoom_CheckedChanged(object sender, EventArgs e)
@@ -4036,7 +4061,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                         {
                             TempIssueOrderId = Convert.ToInt32(dr2["IssueOrderId"]);
 
-                            DataTable dtdistinctRawMaterialItemDetails = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty","RawMaterialReceiveQty");
+                            DataTable dtdistinctRawMaterialItemDetails = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty", "RawMaterialReceiveQty");
                             DataView dv3 = new DataView(dtdistinctRawMaterialItemDetails);
                             dv3.RowFilter = "IssueOrderID='" + dr2["Issueorderid"] + "'";
                             dv3.Sort = "RawMaterialIssueDate";
@@ -4065,7 +4090,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                                         ReceiveQty = Convert.ToDecimal(dsRawMaterialitemdesc.Tables[0].Compute("sum(RawMaterialReceiveQty)", "IssueOrderId='" + dr3["IssueOrderId"] + "' and RawMaterialItemName='" + itemname + "' "));
                                     }
                                     IssRecConQty = IssQty - ReceiveQty;
-                                   // TotalSumOneRow = TotalSumOneRow + IssRecConQty;
+                                    // TotalSumOneRow = TotalSumOneRow + IssRecConQty;
                                     sht.Cell(row, k).Value = IssRecConQty;
                                 }
                                 //Totalcol = Dynamiccolend + 1;
@@ -4083,7 +4108,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("D" + row).SetValue("Grand Total");
                 sht.Range("E" + row).FormulaA1 = "=SUM(E" + rowfrom + ":E" + (row - 1) + ")";
                 sht.Range("F" + row).FormulaA1 = "=SUM(F" + rowfrom + ":F" + (row - 1) + ")";
-                sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + (row - 1) + ")";                
+                sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + (row - 1) + ")";
 
                 sht.Range("D" + row + ":G" + row).Style.Font.Bold = true;
 
@@ -4091,7 +4116,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 {
                     var itemname = sht.Cell(4, k).Value;
 
-                    DataTable dtdistinctRawMaterialItemDetails4 = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty","RawMaterialReceiveQty");
+                    DataTable dtdistinctRawMaterialItemDetails4 = ds.Tables[0].DefaultView.ToTable(true, "IssueOrderId", "RawMaterialIssueDate", "RawMaterialItemName", "IssueQty", "RawMaterialReceiveQty");
                     DataView dv4 = new DataView(dtdistinctRawMaterialItemDetails4);
                     DataSet dsRawMaterialitemdesc4 = new DataSet();
                     dsRawMaterialitemdesc4.Tables.Add(dv4.ToTable());
@@ -4100,7 +4125,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     decimal GrandTotalReciveQty = 0;
                     decimal GrandTotalBalanceQty = 0;
 
-                    GrandTotalIssueQty =Convert.ToDecimal(dsRawMaterialitemdesc4.Tables[0].Compute("sum(IssueQty)", "RawMaterialItemName='" + itemname + "' "));
+                    GrandTotalIssueQty = Convert.ToDecimal(dsRawMaterialitemdesc4.Tables[0].Compute("sum(IssueQty)", "RawMaterialItemName='" + itemname + "' "));
                     GrandTotalReciveQty = Convert.ToDecimal(dsRawMaterialitemdesc4.Tables[0].Compute("sum(RawMaterialReceiveQty)", "RawMaterialItemName='" + itemname + "' "));
 
                     GrandTotalBalanceQty = GrandTotalIssueQty - GrandTotalReciveQty;
@@ -4210,7 +4235,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
                 FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
             }
-    
+
             if (ChkselectDate.Checked == true)
             {
                 str = str + " and PRM.RECEIVEDATE>='" + txtfromDate.Text + "' and PRM.RECEIVEDATE<='" + txttodate.Text + "'";
@@ -4223,7 +4248,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 {
                     if (ChkForStockDetails.Checked == true)
                     {
-                        str = str + " and PRM.RECEIVEDATE>='01-Sep-2021' and PRM.RECEIVEDATE<='" + System.DateTime.Now.ToString("dd-MMM-yyyy") +"'";
+                        str = str + " and PRM.RECEIVEDATE>='01-Sep-2021' and PRM.RECEIVEDATE<='" + System.DateTime.Now.ToString("dd-MMM-yyyy") + "'";
                     }
                 }
             }
@@ -4239,9 +4264,9 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.CommandTimeout = 300;
 
             cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
-            cmd.Parameters.AddWithValue("@Processid", 1);           
+            cmd.Parameters.AddWithValue("@Processid", 1);
             cmd.Parameters.AddWithValue("@where", str);
-            cmd.Parameters.AddWithValue("@TagNo", txtTagNo.Text);            
+            cmd.Parameters.AddWithValue("@TagNo", txtTagNo.Text);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -4252,7 +4277,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             con.Close();
             con.Dispose();
 
-           
+
             //SqlParameter[] param = new SqlParameter[4];
             //param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
             //param[1] = new SqlParameter("@Processid", 1);
@@ -4292,7 +4317,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("K3").Value = "DATE STAMP";
                 sht.Range("L3").Value = "ULL NO";
                 sht.Range("M3").Value = "SUPPLIER";
-                sht.Range("N3").Value = "LOT NO";       
+                sht.Range("N3").Value = "LOT NO";
 
                 //sht.Range("I1:R1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 sht.Range("A3:N3").Style.Font.Bold = true;
@@ -4314,16 +4339,16 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["JobIssueULLNo"]);
                     sht.Range("L" + row).Style.NumberFormat.Format = "@";
                     sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["SupplierName"]);
-                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["TagNo"]); 
+                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["TagNo"]);
 
                     row = row + 1;
 
-                }                
+                }
                 sht.Range("I" + row + ":R" + row).Style.Font.Bold = true;
                 sht.Columns(1, 20).AdjustToContents();
                 //********************
                 string Fileextension = "xlsx";
-                string filename = UtilityModule.validateFilename("WithTagNoTracking:"+"_" + DateTime.Now.ToString("dd-MMM-yyyy hh:mm") + "." + Fileextension);
+                string filename = UtilityModule.validateFilename("WithTagNoTracking:" + "_" + DateTime.Now.ToString("dd-MMM-yyyy hh:mm") + "." + Fileextension);
                 Path = Server.MapPath("~/Tempexcel/" + filename);
                 xapp.SaveAs(Path);
                 xapp.Dispose();
@@ -4359,7 +4384,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 //}
                 //GridView1.RenderControl(hw);
 
-               
+
 
                 ////style to format numbers to string
                 //string style = @"<style> .textmode { mso-number-format:\@; } </style>";
@@ -4400,14 +4425,14 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             //if (ChkselectDate.Checked == true)
             //{
             //    str = str + " and PIM.AssignDate>='" + txtfromDate.Text + "' and PIM.AssignDate<='" + txttodate.Text + "'";
-                
+
             //}
             //*****************
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@companyid", DDCompany.SelectedValue);
             param[1] = new SqlParameter("@empid", DDWeaver.SelectedValue);
             param[2] = new SqlParameter("@FromDate", txtfromDate.Text);
-            param[3] = new SqlParameter("@ToDate", txttodate.Text);  
+            param[3] = new SqlParameter("@ToDate", txttodate.Text);
             param[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETCHAMPOPNMWEAVINGAMTDIFF", param);
@@ -4436,7 +4461,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("F3").Value = "CHAMPO AMT";
                 sht.Range("G3").Value = "PNM QTY";
                 sht.Range("H3").Value = "PNM AMT";
-                sht.Range("I3").Value = "DIFFERENCE AMT";              
+                sht.Range("I3").Value = "DIFFERENCE AMT";
 
                 //sht.Range("I1:R1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
                 sht.Range("A3:I3").Style.Font.Bold = true;
@@ -4453,7 +4478,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["PNMQty"]);
                     sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["PNMAmt"]);
                     sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["DifferenceAmt"]);
-                   
+
                     //sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["JobIssueULLNo"]);
                     //sht.Range("L" + row).Style.NumberFormat.Format = "@";                    
                     row = row + 1;
@@ -4653,7 +4678,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             if (DDOrderNo.SelectedIndex > 0)
             {
                 str = str + " and OM.orderid=" + DDOrderNo.SelectedValue;
-            }  
+            }
             //if (DDproductiontype.SelectedIndex > 0)
             //{
             //    if (DDproductiontype.SelectedValue == "0")
@@ -4677,7 +4702,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
             cmd.Parameters.AddWithValue("@Where", str);
             cmd.Parameters.AddWithValue("@empid", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
-            cmd.Parameters.AddWithValue("@ChkSelectDate", ChkselectDate.Checked==true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@ChkSelectDate", ChkselectDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
             cmd.Parameters.AddWithValue("@ProductionType", DDproductiontype.SelectedValue);
@@ -4710,14 +4735,14 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("E1").Value = "DELIVERY DATE";
 
                 sht.Range("F1").Value = "FOLIO NO";
-                sht.Range("G1").Value = "CONTRACTOR NAME";               
+                sht.Range("G1").Value = "CONTRACTOR NAME";
                 sht.Range("H1").Value = "RAWMATERIAL QUALITY";
                 sht.Range("I1").Value = "SHADE COLOR";
                 sht.Range("J1").Value = "CONSUMPTION QTY";
                 sht.Range("K1").Value = "ISSUED QTY";
                 sht.Range("L1").Value = "RECEIVE QTY";
                 sht.Range("M1").Value = "ISSUE/RECEIVE BALANCE";
-                sht.Range("N1").Value = "PENDING QTY";               
+                sht.Range("N1").Value = "PENDING QTY";
 
 
                 sht.Range("A1:N1").Style.Font.FontName = "Arial Unicode MS";
@@ -4737,20 +4762,20 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
 
                     sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["IssueOrderId"]);
-                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);                   
+                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
                     sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["RawQuality"]);
                     sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["ShadeColorName"]);
                     sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["ConsmpQty"]);
                     sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["WeaverIssueQty"]);
                     sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["ReceivedQty"]);
                     sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["IssuedQty"]);
-                    sht.Range("N" + row).SetValue(Convert.ToDouble(ds.Tables[0].Rows[i]["ConsmpQty"]) -Convert.ToDouble( ds.Tables[0].Rows[i]["IssuedQty"]));
+                    sht.Range("N" + row).SetValue(Convert.ToDouble(ds.Tables[0].Rows[i]["ConsmpQty"]) - Convert.ToDouble(ds.Tables[0].Rows[i]["IssuedQty"]));
 
                     row = row + 1;
-                   
-                }            
-                
-                
+
+                }
+
+
                 //*************
                 sht.Columns(1, 30).AdjustToContents();
 
@@ -5073,7 +5098,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("A1:P1").Merge();
 
                 string RawTwo = "";
-                if (DDWeaver .SelectedIndex > 0)
+                if (DDWeaver.SelectedIndex > 0)
                 {
                     RawTwo = RawTwo + DDWeaver.SelectedItem.Text;
                 }
@@ -5327,8 +5352,8 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
                     row = row + 1;
 
-                }  
-              
+                }
+
                 //*************
                 sht.Columns(1, 30).AdjustToContents();
 
@@ -5364,7 +5389,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         lblmsg.Text = "";
         try
         {
-            string str = "", FilterBy = "", str2 = "";            
+            string str = "", FilterBy = "", str2 = "";
             if (DDFolioNo.SelectedIndex > 0)
             {
                 str = str + " and PIM.Issueorderid=" + DDFolioNo.SelectedValue;
@@ -5383,24 +5408,24 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
             if (DDQtype.SelectedIndex > 0)
             {
-                str2 = str2 + " and Vf.Item_id=" + DDQtype.SelectedValue;                
+                str2 = str2 + " and Vf.Item_id=" + DDQtype.SelectedValue;
             }
             if (DDQuality.SelectedIndex > 0)
             {
-                str2 = str2 + " and Vf.Qualityid=" + DDQuality.SelectedValue;                
+                str2 = str2 + " and Vf.Qualityid=" + DDQuality.SelectedValue;
             }
             if (DDshade.SelectedIndex > 0)
             {
                 str2 = str2 + " and vf.Shadecolorid=" + DDshade.SelectedValue;
-            }         
+            }
             //if (ChkselectDate.Checked == true)
             //{
             str2 = str2 + " and PM.Date>='" + txtfromDate.Text + "' and PM.Date<='" + txttodate.Text + "'";
             FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
             //}
-          
-          
-           
+
+
+
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
             if (con.State == ConnectionState.Closed)
             {
@@ -5448,7 +5473,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("J1").Value = "Figure as Weight Machine";
                 sht.Range("K1").Value = "No of cone/Bobin";
                 sht.Range("L1").Value = "Bell Wt";
-                sht.Range("M1").Value = "Issued Qty";              
+                sht.Range("M1").Value = "Issued Qty";
 
 
                 sht.Range("A1:M1").Style.Font.FontName = "Arial Unicode MS";
@@ -5472,10 +5497,10 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
                     sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["ShadeColorName"]);
                     sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["CONETYPE"]);
-                    sht.Range("J" + row).SetValue(Convert.ToDouble(ds.Tables[0].Rows[i]["ISSUEQTY"])+Convert.ToDouble(ds.Tables[0].Rows[i]["BellWt"]));
+                    sht.Range("J" + row).SetValue(Convert.ToDouble(ds.Tables[0].Rows[i]["ISSUEQTY"]) + Convert.ToDouble(ds.Tables[0].Rows[i]["BellWt"]));
                     sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["NOOFCONE"]);
                     sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["BellWt"].ToString());
-                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["ISSUEQTY"]);                  
+                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["ISSUEQTY"]);
 
                     row = row + 1;
 
@@ -5557,7 +5582,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@CustomerID", CustomerID);
             cmd.Parameters.AddWithValue("@OrderID", OrderID);
             cmd.Parameters.AddWithValue("@EmpID", EmpID);
-            cmd.Parameters.AddWithValue("@IssueOrderID",IssueOrderID );
+            cmd.Parameters.AddWithValue("@IssueOrderID", IssueOrderID);
             cmd.Parameters.AddWithValue("@DateFlag", DateFlag);
             cmd.Parameters.AddWithValue("@FromDate", FromDate);
             cmd.Parameters.AddWithValue("@ToDate", ToDate);
@@ -5586,7 +5611,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("B1").Value = "Buyer Code";
                 sht.Range("C1").Value = "Order No";
                 sht.Range("D1").Value = "Shipment Date";
-                sht.Range("E1").Value = "FolioNo";                
+                sht.Range("E1").Value = "FolioNo";
                 sht.Range("F1").Value = "Design Name";
                 sht.Range("G1").Value = "Status";
 
@@ -5642,8 +5667,8 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         try
         {
             string str = "", FilterBy = "";
-                       
-           
+
+
             //if (DDQtype.SelectedIndex > 0)
             //{
             //    str = str + " and Vf.Item_id=" + DDQtype.SelectedValue;
@@ -5679,7 +5704,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 str = str + " and PRM.RECEIVEDATE>='" + txtfromDate.Text + "' and PRM.RECEIVEDATE<='" + txttodate.Text + "'";
                 FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
             }
-           
+
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
             param[1] = new SqlParameter("@Processid", 1);
@@ -5787,7 +5812,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         lblmsg.Text = "";
         try
         {
-            string str = "", FilterBy = "";  
+            string str = "", FilterBy = "";
 
             if (DDUnitname.SelectedIndex > 0)
             {
@@ -5823,9 +5848,9 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             }
             if (ChkselectDate.Checked == true)
             {
-                str = str + " and PRM.RECEIVEDATE>='" + txtfromDate.Text + "' and PRM.RECEIVEDATE<='" + txttodate.Text + "'";               
+                str = str + " and PRM.RECEIVEDATE>='" + txtfromDate.Text + "' and PRM.RECEIVEDATE<='" + txttodate.Text + "'";
                 FilterBy = FilterBy + ",Date From -" + txtfromDate.Text + " To - " + txttodate.Text;
-               
+
             }
             if (DDFoliotype.SelectedIndex > 0)
             {
@@ -5989,7 +6014,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("B5").Value = "NAME & ADDRESS OF BUNKAR";
                 sht.Range("C5").Value = "PAN NO";
                 sht.Range("D5").Value = "RECEIVE DATE";
-                
+
                 sht.Range("E5").Value = "QUALITY";
                 sht.Range("F5").Value = "DESIGN";
                 sht.Range("G5").Value = "COLOR";
@@ -6042,7 +6067,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 row = 6;
                 int Srno = 0;
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {                    
+                {
 
                     sht.Range("A" + row + ":O" + row).Style.Font.FontName = "Arial Unicode MS";
                     sht.Range("A" + row + ":O" + row).Style.Font.FontSize = 9;
@@ -6069,7 +6094,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["RATE"]);
                     sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["AMOUNT"]);
                     decimal TDSAmt = 0;
-                    TDSAmt = Math.Round((Convert.ToDecimal(ds.Tables[0].Rows[i]["AMOUNT"]) * 1 / 100),2);
+                    TDSAmt = Math.Round((Convert.ToDecimal(ds.Tables[0].Rows[i]["AMOUNT"]) * 1 / 100), 2);
                     sht.Range("M" + row).SetValue(TDSAmt);
                     decimal NewWeavingAmt = 0;
                     NewWeavingAmt = (Convert.ToDecimal(ds.Tables[0].Rows[i]["AMOUNT"]) - TDSAmt);
@@ -6154,12 +6179,12 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             //    str = str + " and OM.orderid=" + DDOrderNo.SelectedValue;
             //    FilterBy = FilterBy + ", Order No. -" + DDOrderNo.SelectedItem.Text;
             //}
-            
+
             if (DDFolioNo.SelectedIndex > 0)
             {
                 str = str + " and PIM.Issueorderid=" + DDFolioNo.SelectedValue;
                 FilterBy = FilterBy + ", Folio No. -" + DDFolioNo.SelectedItem.Text;
-            }           
+            }
 
             if (DDQtype.SelectedIndex > 0)
             {
@@ -6260,13 +6285,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 string POrderId = "";
                 //string OrderColor = "";
 
-                DataTable DtDistinctEmpNameFolioNo = ds.Tables[0].DefaultView.ToTable(true, "EmpName", "EmpId", "ProrderId","FolioChallanNo");
+                DataTable DtDistinctEmpNameFolioNo = ds.Tables[0].DefaultView.ToTable(true, "EmpName", "EmpId", "ProrderId", "FolioChallanNo");
                 noofrows2 = DtDistinctEmpNameFolioNo.Rows.Count;
 
                 for (i2 = 0; i2 < noofrows2; i2++)
                 {
                     EmpName = DtDistinctEmpNameFolioNo.Rows[i2]["EmpName"].ToString();
-                    POrderId = DtDistinctEmpNameFolioNo.Rows[i2]["ProrderId"].ToString();                    
+                    POrderId = DtDistinctEmpNameFolioNo.Rows[i2]["ProrderId"].ToString();
 
                     sht.Range("A" + row).Value = "EMP NAME:";
                     sht.Range("A" + row).Style.Font.FontName = "Calibri";
@@ -6303,14 +6328,14 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("E" + row + ":F" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
                     sht.Range("E" + row + ":F" + row).Style.Alignment.WrapText = true;
                     //sht.Range("B" + row + ":D" + row).Style.Fill.BackgroundColor = XLColor.Black;
-                    sht.Range("E" + row + ":F" + row).Merge();                   
+                    sht.Range("E" + row + ":F" + row).Merge();
 
-                    row = row + 1;  
+                    row = row + 1;
 
                     string ItemName = "";
                     string QualityName = "";
                     string ShadeColorName = "";
-                    decimal ConsumptionQty = 0;                   
+                    decimal ConsumptionQty = 0;
                     decimal WeaverIssueQty = 0;
                     decimal WeaverRecQty = 0;
 
@@ -6343,14 +6368,14 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                             decimal ExtraQty = (ConsumptionQty - WeaverIssueQty);
                             if (ExtraQty < 0)
                             {
-                                sht.Range("H" + row).FormulaA1 = "=ABS(" + (ExtraQty)+")";
-                                
+                                sht.Range("H" + row).FormulaA1 = "=ABS(" + (ExtraQty) + ")";
+
                             }
                             else
                             {
-                                sht.Range("H" + row).SetValue("0");  
+                                sht.Range("H" + row).SetValue("0");
                             }
-                                                     
+
 
                             sht.Range("A" + row + ":H" + row).Style.Font.Bold = true;
                             sht.Range("A" + row + ":H" + row).Style.Font.FontName = "Calibri";
@@ -6549,7 +6574,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("A2:O2").Style.Font.Bold = true;
                 sht.Range("A2:O2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 sht.Range("A2:O2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                sht.Range("A2:O2").Merge();  
+                sht.Range("A2:O2").Merge();
 
                 //sht.Cell("L1").Value = "PRINT DATE:" + " " + DateTime.Now.ToString();
                 //sht.Range("L1:O4").Style.Font.FontName = "Calibri";
@@ -6587,7 +6612,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 //*******Header
                 sht.Range("A3").Value = "RECEIVE DATE";
                 sht.Range("B3").Value = "NAME OF WEAVER";
-                sht.Range("C3").Value = "FOLIO NO";              
+                sht.Range("C3").Value = "FOLIO NO";
 
                 sht.Range("D3").Value = "QUALITY";
                 sht.Range("E3").Value = "DESIGN";
@@ -6601,7 +6626,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("L3").Value = "WOOL YARN KGS";
                 sht.Range("M3").Value = "SILK YARN KGS";
                 sht.Range("N3").Value = "JUTE YARN KGS";
-                sht.Range("O3").Value = "COTTON YARN KGS";                
+                sht.Range("O3").Value = "COTTON YARN KGS";
 
 
                 sht.Range("A3:O3").Style.Font.FontName = "Arial Unicode MS";
@@ -6644,7 +6669,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveDate"]);
                     sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
                     sht.Range("B" + row).Style.Alignment.SetWrapText();
-                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["FolioChallanNo"]);                    
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["FolioChallanNo"]);
 
                     sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
                     sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["DESIGNNAME"]);
@@ -6806,7 +6831,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-               if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
                 {
                     Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
                 }
@@ -6865,7 +6890,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 int noofrows2 = 0;
                 int i2 = 0;
                 string EmpName = "";
-                string EmpFather = "";                
+                string EmpFather = "";
                 string POrderId = "";
                 //string OrderColor = "";
 
@@ -6875,7 +6900,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 for (i2 = 0; i2 < noofrows2; i2++)
                 {
                     EmpName = DtDistinctEmpNameAddress.Rows[i2]["EmpName"].ToString();
-                    EmpFather = DtDistinctEmpNameAddress.Rows[i2]["FatherName"].ToString();                    
+                    EmpFather = DtDistinctEmpNameAddress.Rows[i2]["FatherName"].ToString();
                     //POrderId = DtDistinctEmpNameAddress.Rows[i2]["ProrderId"].ToString();
 
                     sht.Range("A" + row).Value = "EMP NAME:";
@@ -6957,7 +6982,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                             Shape = row3["ShapeName"].ToString();
                             Size = row3["Size"].ToString();
 
-                            Area =Convert.ToDecimal(row3["Area"].ToString());
+                            Area = Convert.ToDecimal(row3["Area"].ToString());
                             IssQty = Convert.ToInt32(row3["Qty"].ToString());
                             PQty = Convert.ToInt32(row3["PQty"].ToString());
                             RecQty = IssQty - PQty;
@@ -6972,7 +6997,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
 
                             sht.Range("A" + row).SetValue(CustomerCode + " " + CustomerOrderNo);
-                            sht.Range("B" + row).SetValue(FolioChallanNo + "(" + FolioType+")");
+                            sht.Range("B" + row).SetValue(FolioChallanNo + "(" + FolioType + ")");
                             sht.Range("C" + row).SetValue(QualityName);
                             sht.Range("D" + row).SetValue(DesignName);
                             //sht.Range("C" + row).SetValue(IShadeColor);
@@ -6983,7 +7008,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                             sht.Range("H" + row).SetValue(IssQty);
                             sht.Range("I" + row).SetValue(RecQty);
                             sht.Range("J" + row).SetValue(PQty);
-                            sht.Range("K" + row).SetValue(Convert.ToDateTime(OrderDate).ToString("dd/MM/yyyy")); 
+                            sht.Range("K" + row).SetValue(Convert.ToDateTime(OrderDate).ToString("dd/MM/yyyy"));
                             sht.Range("L" + row).SetValue(Convert.ToDateTime(LastDate).ToString("dd/MM/yyyy"));
 
                             //decimal BalToIssQty = (Convert.ToDecimal(ConsumptionQty) - WeaverIssueQty);
@@ -7017,13 +7042,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                         sht.Range("F" + row).SetValue("Total");
                         sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + rowto + ")";
                         sht.Range("H" + row).FormulaA1 = "SUM(H" + rowfrom + ":H" + rowto + ")";
-                        sht.Range("I" + row).FormulaA1 = "SUM(I" + rowfrom + ":I" + rowto + ")"; 
+                        sht.Range("I" + row).FormulaA1 = "SUM(I" + rowfrom + ":I" + rowto + ")";
                         sht.Range("J" + row).FormulaA1 = "SUM(J" + rowfrom + ":J" + rowto + ")";
                         //sht.Range("I" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
                         sht.Range("F" + row + ":J" + row).Style.Font.Bold = true;
                         sht.Range("F" + row + ":J" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                         sht.Range("F" + row + ":J" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                      
+
 
                     }
 
@@ -7062,13 +7087,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
             }
-           
+
         }
         catch (Exception ex)
         {
             lblmsg.Text = ex.Message;
         }
-       
+
     }
 
     protected void WeaverAdvancePaymentFolioWiseDetail()
@@ -7098,7 +7123,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             }
             ////str = str + " and " + Column2 + "";
             //*****************
-            SqlParameter[] param = new SqlParameter[4];           
+            SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
             param[1] = new SqlParameter("@FromDate", txtfromDate.Text);
             param[2] = new SqlParameter("@ToDate", txttodate.Text);
@@ -7251,7 +7276,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("B4").Value = "ITEM NAME";
                 sht.Range("C4").Value = "QUALITY NAME";
                 sht.Range("D4").Value = "ISS QTY";
-                sht.Range("E4").Value = "REC QTY";  
+                sht.Range("E4").Value = "REC QTY";
 
                 sht.Range("A4:E4").Style.Font.FontName = "Calibri";
                 sht.Range("A4:E4").Style.Font.FontSize = 11;
@@ -7266,7 +7291,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
                 int noofrows2 = 0;
                 int i2 = 0;
-               
+
                 string POrderId = "";
                 //string OrderColor = "";
 
@@ -7302,8 +7327,8 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                             sht.Range("A" + row).SetValue(EmpName);
                             sht.Range("B" + row).SetValue(ItemName);
                             sht.Range("C" + row).SetValue(QualityName);
-                            sht.Range("D" + row).SetValue(WeaverIssueQty);                        
-                            sht.Range("E" + row).SetValue(WeaverRecQty); 
+                            sht.Range("D" + row).SetValue(WeaverIssueQty);
+                            sht.Range("E" + row).SetValue(WeaverRecQty);
 
                             sht.Range("A" + row + ":E" + row).Style.Font.Bold = true;
                             sht.Range("A" + row + ":E" + row).Style.Font.FontName = "Calibri";
@@ -7357,6 +7382,227 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 Response.WriteFile(Path);
                 // File.Delete(Path);
                 Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+    }
+
+    protected void QualityWiseProductionHissabSummary()
+    {
+        lblmsg.Text = "";
+        try
+        {
+            string str = "", FilterBy = "";
+            //if (DDProductionstatus.SelectedIndex > 0)
+            //{
+            //    str = str + " and PIM.Status='" + DDProductionstatus.SelectedItem.Text + "'";
+            //    FilterBy = FilterBy + ", Production Status -" + DDProductionstatus.SelectedItem.Text;
+            //    if (DDProductionstatus.SelectedIndex == 1)
+            //    {
+            //        str = str + " and PID.Pqty>0";
+            //    }
+            //}
+            if (DDFolioNo.SelectedIndex > 0)
+            {
+                str = str + " and PH.ProcessOrderNo=" + DDFolioNo.SelectedValue;
+                FilterBy = FilterBy + ", Folio No. -" + DDFolioNo.SelectedItem.Text;
+            }
+            if (DDQtype.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Item_id=" + DDQtype.SelectedValue;
+                FilterBy = FilterBy + ", Item Name -" + DDQtype.SelectedItem.Text;
+            }
+            if (DDQuality.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+                FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
+            }
+            if (DDDesign.SelectedIndex > 0)
+            {
+                str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+                FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            }
+            if (DDColor.SelectedIndex > 0)
+            {
+                str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+                FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            }
+            if (DDSize.SelectedIndex > 0)
+            {
+                str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+                FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            }
+            if (ChkselectDate.Checked == true)
+            {
+                str = str + " and PH.Date>='" + txtfromDate.Text + "' and PH.Date<='" + txttodate.Text + "'";
+                FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
+            }
+            //if (DDUnitname.SelectedIndex > 0)
+            //{
+            //    str = str + " and PIM.Units=" + DDUnitname.SelectedValue;
+            //    FilterBy = FilterBy + ", Unitname -" + DDUnitname.SelectedItem.Text;
+            //}
+
+            ////if (DDFoliotype.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and PIM.Purchasefolio=" + DDFoliotype.SelectedValue;
+            ////    FilterBy = FilterBy + ", Folio Type -" + DDFoliotype.SelectedItem.Text;
+            ////}
+            ////if (DDCustCode.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and OM.Customerid=" + DDCustCode.SelectedValue;
+            ////    FilterBy = FilterBy + ", Customer code -" + DDCustCode.SelectedItem.Text;
+            ////}
+            ////if (DDOrderNo.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and OM.orderid=" + DDOrderNo.SelectedValue;
+            ////    FilterBy = FilterBy + ", Order No. -" + DDOrderNo.SelectedItem.Text;
+            ////}
+            //SqlParameter[] param = new SqlParameter[4];
+            //param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+            //param[1] = new SqlParameter("@Processid", 1);
+            //param[2] = new SqlParameter("@where", str);
+            //param[3] = new SqlParameter("@EMpid", (DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0"));
+
+            //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVINGFOLIODETAILSWITHBAZAARDETAILS", param);
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_QualityWiseProductionHissabSummaryReport", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 500;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Processid", 1);
+            cmd.Parameters.AddWithValue("@Where", str);
+            cmd.Parameters.AddWithValue("@Empid", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@ChkselectDate", ChkselectDate.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptQualityWiseProductionHissabSummaryCI.rpt";
+
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptQualityWiseProductionHissabSummaryCI.xsd";
+
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+
+    }
+
+    protected void WeaverRawMaterialIssQualityWiseSummaryReport()
+    {
+        lblmsg.Text = "";
+        try
+        {
+            string str = "", FilterBy = "", str2 = "";
+
+            //if (DDCustCode.SelectedIndex > 0)
+            //{
+            //    str = str + " and OM.Customerid=" + DDCustCode.SelectedValue;
+            //    FilterBy = FilterBy + ", Customer code -" + DDCustCode.SelectedItem.Text;
+            //}
+            //if (DDOrderNo.SelectedIndex > 0)
+            //{
+            //    str = str + " and OM.orderid=" + DDOrderNo.SelectedValue;
+            //    FilterBy = FilterBy + ", Order No. -" + DDOrderNo.SelectedItem.Text;
+            //}
+
+            if (DDFolioNo.SelectedIndex > 0)
+            {
+                str = str + " and TD.Prorderid=" + DDFolioNo.SelectedValue;
+                //FilterBy = FilterBy + ", Folio No. -" + DDFolioNo.SelectedItem.Text;
+            }
+
+            if (DDQtype.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Item_id=" + DDQtype.SelectedValue;
+            }
+            if (DDQuality.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+            }
+            if (DDshade.SelectedIndex > 0)
+            {
+                str = str + " and vf.Shadecolorid=" + DDshade.SelectedValue;
+            }
+            if (ChkselectDate.Checked == true)
+            {
+                str = str + " and TD.Date>='" + txtfromDate.Text + "' and TD.Date<='" + txttodate.Text + "'";
+                FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
+            }
+
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_GetWeaverRawMaterialIssQualityWiseSummaryReport", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Where", str);
+            //cmd.Parameters.AddWithValue("@Where2", str2);
+            cmd.Parameters.AddWithValue("@empid", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            //***********
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptWeaverRawMaterialIssQualityWiseSummaryCI.rpt";
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptWeaverRawMaterialIssQualityWiseSummaryCI.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+                
             }
             else
             {

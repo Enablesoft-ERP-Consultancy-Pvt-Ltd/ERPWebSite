@@ -29,6 +29,9 @@
               <xs:element name="UnitName" type="xs:string" minOccurs="0" />
               <xs:element name="GSTNo" type="xs:string" minOccurs="0" />
               <xs:element name="Empgstin" type="xs:string" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+              <xs:element name="MasterCompanyID" type="xs:int" minOccurs="0" />
+              <xs:element name="FolioChallanNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

@@ -87,7 +87,7 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
             arr[0] = new SqlParameter("@GateInOutRegisterID", SqlDbType.Int);
             arr[1] = new SqlParameter("@GateInOutDate", SqlDbType.DateTime);
             arr[2] = new SqlParameter("@CompanyID", SqlDbType.Int);
-            arr[3] = new SqlParameter("@PartyName", SqlDbType.VarChar, 50);
+            arr[3] = new SqlParameter("@PartyName", SqlDbType.VarChar, 200);
             arr[4] = new SqlParameter("@Qty", SqlDbType.Float);
             arr[5] = new SqlParameter("@Unit", SqlDbType.VarChar, 10);
             arr[6] = new SqlParameter("@MaterialDescription", SqlDbType.VarChar, 250);
@@ -356,6 +356,7 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
         param[1] = new SqlParameter("@GateInOutNo", name);
         param[2] = new SqlParameter("@mastercompanyid",Convert.ToInt32(Session["varCompanyId"]));
         param[3] = new SqlParameter("@GateInOutRegisterid", id);
+        
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetGateInOutRegisterDetailForPreview", param);
         if (ds.Tables[0].Rows.Count > 0)
         {

@@ -177,6 +177,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
     }
     private void OrderNoSelectedIndexChange()
     {
+        string sp = string.Empty;
         if (ChKForEdit.Checked == true)
         {
             EditCheckedChanged();
@@ -186,7 +187,16 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
         param[0] = new SqlParameter("@ProcessID", ddProcessName.SelectedValue);
         param[1] = new SqlParameter("@ISSUEORDERID", ddOrderNo.SelectedValue);
         param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GetHomeFurnishingReceiveChallanNo", param);
+        if (Session["varcompanyId"].ToString() == "44")
+        {
+            sp = "PRO_GetHomeFurnishingReceiveChallanNoagni";
+        }
+        else
+        {
+            sp = "PRO_GetHomeFurnishingReceiveChallanNonew";
+
+        }
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, sp, param);
         UtilityModule.ConditionalComboFillWithDS(ref DDRecChallanNo, ds, 0, true, "--Select--");
 
         //fill_Grid_ShowConsmption();
@@ -580,6 +590,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
     private void fill_Grid_ShowConsmption()
     {
         DataSet ds = null;
+        string sp = string.Empty;
         try
         {
             SqlParameter[] param = new SqlParameter[4];
@@ -587,7 +598,17 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
             param[1] = new SqlParameter("@ISSUEORDERID", ddOrderNo.SelectedValue);
             param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
             param[3] = new SqlParameter("@RecChallanNo", DDRecChallanNo.SelectedValue);
-            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FILLFirstProcessOrderRowIssueConsumption", param);
+            if (Session["varcompanyId"].ToString() == "44")
+            {
+                sp = "PRO_FILLFirstProcessOrderRowIssueConsumptionagni";
+            }
+            else
+            {
+                sp = "PRO_FILLFirstProcessOrderRowIssueConsumptionnew";
+            
+            }
+            
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FILLFirstProcessOrderRowIssueConsumptionagni", param);
 
             DG.DataSource = ds;
             DG.DataBind();

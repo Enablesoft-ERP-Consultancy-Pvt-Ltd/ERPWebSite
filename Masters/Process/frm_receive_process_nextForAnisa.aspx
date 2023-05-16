@@ -58,6 +58,15 @@
             }
 
         }
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
 
     </script>
     <div>
@@ -151,17 +160,18 @@
                                                             <td id="TDCottonMoisture" runat="server" visible="false">
                                                                 <asp:Label ID="Label12" runat="server" Text="Cotton Moisture(%)" CssClass="labelbold"></asp:Label>
                                                                 <br />
-                                                                <asp:TextBox ID="txtReceiveCottonMoisture" CssClass="textb" Width="120px" runat="server" />
+                                                                <asp:TextBox ID="txtReceiveCottonMoisture" CssClass="textb" Width="120px" runat="server" AutoPostBack="true" OnTextChanged="txtReceiveCottonMoisture_TextChanged" />
                                                             </td>
                                                             <td id="TDWoolMoisture" runat="server" visible="false">
                                                                 <asp:Label ID="Label13" runat="server" Text="Wool Moisture(%)" CssClass="labelbold"></asp:Label>
                                                                 <br />
-                                                                <asp:TextBox ID="txtReceiveWoolMoisture" CssClass="textb" Width="120px" runat="server" />
+                                                                <asp:TextBox ID="txtReceiveWoolMoisture" CssClass="textb" Width="120px" runat="server" AutoPostBack="true" OnTextChanged="txtReceiveWoolMoisture_TextChanged" />
                                                             </td>
                                                             <td id="TDFinishingDateStamp" runat="server" visible="false">
                                                                 <asp:Label ID="Label9" runat="server" Text="Date Stamp" CssClass="labelbold"></asp:Label>
                                                                 <br />
-                                                                <asp:TextBox ID="txtFinishingReceiveDateStamp" CssClass="textb" Width="100px" runat="server" />
+                                                                <asp:TextBox ID="txtFinishingReceiveDateStamp" CssClass="textb" Width="100px" runat="server" 
+                                                                onkeypress="return isNumberKey(this);" AutoPostBack="true" OnTextChanged="txtFinishingReceiveDateStamp_TextChanged" />
                                                             </td>
                                                         </tr>
                                                         <tr id="TRStockNoRemark" runat="server" visible="false">

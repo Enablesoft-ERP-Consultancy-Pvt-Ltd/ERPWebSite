@@ -1765,4 +1765,43 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
             Fill_StockNoNew();
         }
     }
+    protected void txtReceiveCottonMoisture_TextChanged(object sender, EventArgs e)
+    {
+        if (Session["VarCompanyId"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
+        {
+            if (Convert.ToInt32(txtReceiveCottonMoisture.Text.Trim()) < 0 || Convert.ToInt32(txtReceiveCottonMoisture.Text.Trim()) > 10)
+            {
+                txtReceiveCottonMoisture.Text = "";
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Plz Enter Value Between 0 To 10...');", true);
+                return;
+            }           
+        }
+    }
+    protected void txtReceiveWoolMoisture_TextChanged(object sender, EventArgs e)
+    {
+        if (Session["VarCompanyId"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
+        {
+            if (Convert.ToInt32(txtReceiveWoolMoisture.Text.Trim()) < 0 || Convert.ToInt32(txtReceiveWoolMoisture.Text.Trim()) > 10)
+            {
+                txtReceiveWoolMoisture.Text = "";
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Plz Enter Value Between 0 To 10...');", true);
+                return;
+            }
+        }
+    }
+    protected void txtFinishingReceiveDateStamp_TextChanged(object sender, EventArgs e)
+    {
+        if (Session["VarCompanyId"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
+        {
+            int DateStampLength = 0;
+            DateStampLength = txtFinishingReceiveDateStamp.Text.Length;
+
+            if (DateStampLength <4 || DateStampLength > 4)
+            {
+                txtFinishingReceiveDateStamp.Text = "";
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Plz Enter Numeric 4 Digit Value...');", true);
+                return;
+            }
+        }
+    }
 }

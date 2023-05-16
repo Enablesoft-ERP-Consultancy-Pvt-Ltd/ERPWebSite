@@ -500,24 +500,27 @@
                                   <td id="tdweaverpedningstock" runat="server" visible="false">
                                     <asp:Label ID="Label18" Text="Weaver Pending Stock." runat="server" CssClass="labelbold" />
                                     <div style="height:100px; overflow: scroll; width:278px">
-                                        <asp:GridView ID="grdpendingstock" AutoGenerateColumns="false" CssClass="grid-views"
-                                            runat="server" EmptyDataText="No Pending Stocks.">
-                                            <HeaderStyle CssClass="gvheaders" />
-                                            <AlternatingRowStyle CssClass="gvalts" />
-                                            <RowStyle CssClass="gvrow" />
-                                            <Columns>
-                                                <asp:TemplateField HeaderText="Design">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="lblweaverdesign" Text='<%#Bind("DESIGNNAME") %>' runat="server" Width="200px" />
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                                <asp:TemplateField HeaderText="Count">
-                                                    <ItemTemplate>
-                                                        <asp:Label ID="lblweaverpendingcount" Text='<%#Bind("PQTY") %>' runat="server" />
-                                                    </ItemTemplate>
-                                                </asp:TemplateField>
-                                            </Columns>
-                                        </asp:GridView>
+                                     <asp:GridView ID="grdpendingstock" runat="server" AutoGenerateColumns="false" 
+                        CssClass="grid-views" EmptyDataText="No Pending Stocks.">
+                        <HeaderStyle CssClass="gvheaders" />
+                        <AlternatingRowStyle CssClass="gvalts" />
+                        <RowStyle CssClass="gvrow" />
+                        <Columns>
+                            <asp:TemplateField HeaderText="Design">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblweaverdesign" runat="server" Text='<%#Bind("DESIGNNAME") %>' 
+                                        Width="200px" />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Count">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblweaverpendingcount" runat="server" 
+                                        Text='<%#Bind("PQTY") %>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+
                                     </div>
                                 </td>
 
@@ -684,6 +687,22 @@
                                     Visible="false" OnClick="BtnOrderProcessToChampoPanipatPNM2_Click" />
                                 <asp:Button ID="BtnChampoHome" runat="server" Text="Champo Home" CssClass="buttonnorm"
                                     Visible="false" OnClick="BtnOrderProcessToChampoPanipatPNM3_Click" />
+
+                                    <asp:Button ID="btnaurai" runat="server" Text="AURAI" CssClass="buttonnorm"
+                                    Visible="false" OnClick="btnaurai_Click"  />
+                                <asp:Button ID="btnbehadmadhav" runat="server" Text="BEHAD MADHAV" CssClass="buttonnorm"
+                                    Visible="false" OnClick="btnbehadmadhav_Click"/>
+                                <asp:Button ID="btngopalapur" runat="server" Text="GOPALAPUR" CssClass="buttonnorm"
+                                    Visible="false" OnClick="btngopalapur_Click" />
+                                <asp:Button ID="btnshahkulipur" runat="server" Text="SHAHKULIPUR" CssClass="buttonnorm"
+                                    Visible="false" OnClick="btnshahkulipur_Click"  />
+                                <asp:Button ID="btnlaharpurunit1" runat="server" Text="LAHARPUR UNIT 1" CssClass="buttonnorm"
+                                    Visible="false" OnClick="btnlaharpurunit1_Click"   />
+                                     <asp:Button ID="btnlaharpurunit2" runat="server" Text="LAHARPUR UNIT 2" CssClass="buttonnorm"
+                                    Visible="false" OnClick="btnlaharpurunit2_Click"  />
+
+
+
                                 <asp:Button ID="BtnStockNoStatus" runat="server" Text="StockNo Status" CssClass="buttonnorm"
                                     Visible="false" OnClick="StockNoStatus_Click" />
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
@@ -702,6 +721,7 @@
                     </table>
                     <asp:HiddenField ID="hnissueorderid" runat="server" />
                 </div>
+
                 <div>
                     <div style="width: 60%; max-height: 250px; overflow: auto; float: left">
                         <asp:GridView ID="DGOrderdetail" runat="server" AutoGenerateColumns="False" CssClass="grid-views"
@@ -822,6 +842,7 @@
                             </Columns>
                         </asp:GridView>
                     </div>
+                   
                 </div>
                 <div>
                     <div style="width: 60%; max-height: 250px; overflow: auto; float: left">

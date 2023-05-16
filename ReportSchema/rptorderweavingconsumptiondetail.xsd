@@ -39,7 +39,7 @@
               <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
               <xs:element name="QTY" type="xs:double" minOccurs="0" />
               <xs:element name="ORDERNO" type="xs:string" minOccurs="0" />
-              <xs:element name="LOSSQTY" type="xs:int" minOccurs="0" />
+              <xs:element name="LOSSQTY" type="xs:double" minOccurs="0" />
               <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
               <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
               <xs:element name="COMPADDR2" type="xs:string" minOccurs="0" />

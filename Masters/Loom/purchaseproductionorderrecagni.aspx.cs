@@ -38,7 +38,8 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             }
 
             hnEmpWagescalculation.Value = "";
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = string.Empty;
+             str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
                 Select CI.CustomerId, CI.CustomerCode 
                 From Customerinfo CI(Nolock)";
                 if (Convert.ToInt32(Session["varcompanyNo"]) == 42)
@@ -59,7 +60,11 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
                 Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
-                Order By D.DepartmentName";
+                Order By D.DepartmentName;select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
+			union all
+			select 2 as id,isnull(CompAddr2,'') as compaddr from CompanyInfo
+			union all
+			select 3 as id,isnull(CompAddr3,'') as compaddr from CompanyInfo";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -76,7 +81,11 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             UtilityModule.ConditionalComboFillWithDS(ref ddunit, ds, 3, true, "--Plz Select--");
 
             UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 4, false, "");
-            UtilityModule.ConditionalComboFillWithDS(ref ddlshipto, ds, 4, false, "");
+            if (Convert.ToInt32(Session["varcompanyNo"]) == 44)
+            {
+                UtilityModule.ConditionalComboFillWithDS(ref ddlshipto, ds, 6, false, "");
+            }
+            else { UtilityModule.ConditionalComboFillWithDS(ref ddlshipto, ds, 4, false, ""); }
             DDBranchName.Enabled = false;
             if (DDBranchName.Items.Count == 0)
             {
@@ -1060,7 +1069,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
 
             
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-            DG.DataSource = ds.Tables[0];
+            DG.DataSource = ds.Tables[0].DefaultView;
             DG.DataBind();
         }
     }
@@ -1641,6 +1650,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     break;
                 case "44":
                     Session["rptFileName"] = "~\\Reports\\rptPurchaseproductionrec_agni.rpt";
+                    //Session["rptFileName"] = "~\\Reports\\PurchaseReceivenewagni.rpt";
                     break;
                 default:
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetail.rpt";

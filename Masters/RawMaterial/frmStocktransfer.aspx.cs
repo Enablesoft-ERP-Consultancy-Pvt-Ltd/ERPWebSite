@@ -637,6 +637,9 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
                 case "21":
                     Session["rptFileName"] = "~\\Reports\\RptstockTransferKaysons.rpt";
                     break;
+                case "43":
+                    Session["rptFileName"] = "~\\Reports\\RptstockTransferCarpetInternational.rpt";
+                    break;
                 default:
                     Session["rptFileName"] = "~\\Reports\\RptstockTransfer.rpt";
                     break;

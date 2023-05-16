@@ -1,0 +1,46 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR2" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR3" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPTEL" type="xs:string" minOccurs="0" />
+              <xs:element name="TINNO" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpName" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpCode" type="xs:string" minOccurs="0" />
+              <xs:element name="PCIReceiveid" type="xs:int" minOccurs="0" />
+              <xs:element name="Item_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="DesignName" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="PCIIssueDetailId" type="xs:int" minOccurs="0" />
+              <xs:element name="FolioIssueOrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="ItemFinishedID" type="xs:int" minOccurs="0" />
+              <xs:element name="CompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="RecChallanNo" type="xs:int" minOccurs="0" />
+              <xs:element name="IssueDate" type="xs:string" minOccurs="0" />
+              <xs:element name="RecNoOfSet" type="xs:int" minOccurs="0" />
+              <xs:element name="RecPerSetQty" type="xs:int" minOccurs="0" />
+              <xs:element name="TotalReceiveQty" type="xs:int" minOccurs="0" />
+              <xs:element name="StockNoSeries" type="xs:string" minOccurs="0" />
+              <xs:element name="SNSID" type="xs:int" minOccurs="0" />
+              <xs:element name="NoOfMissingQty" type="xs:int" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="Amount" type="xs:double" minOccurs="0" />
+              <xs:element name="FolioChallanNo" type="xs:int" minOccurs="0" />
+              <xs:element name="Process_Name" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -46,7 +46,11 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             Select ID, BranchName 
             From BRANCHMASTER BM(nolock) 
             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @";select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
+			union all
+			select 2 as id,isnull(CompAddr2,'') as compaddr from CompanyInfo
+			union all
+			select 3 as id,isnull(CompAddr3,'') as compaddr from CompanyInfo";
 
             DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, DSQ, 0, true, "Select Comp Name");
@@ -61,6 +65,10 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             UtilityModule.ConditionalComboFillWithDS(ref dddelivery, DSQ, 2, true, "--Select--");
             UtilityModule.ConditionalComboFillWithDS(ref ddtransprt, DSQ, 3, true, "Select Mode");
             UtilityModule.ConditionalComboFill(ref DDCurrency, "select CurrencyId,CurrencyName from currencyinfo order by CurrencyName", true, "--Plz Select Currency--");
+            if (Session["varcompanyid"].ToString() == "44")
+            {
+                UtilityModule.ConditionalComboFillWithDS(ref ddlDeliveryAddress, DSQ, 6, true, "Select Address");
+            }
             //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.Currencyinfo, DDCurrency, pWhere: "MasterCompanyId=" + Session["varcompanyId"] + "", pID: "CurrencyId", pName: "CurrencyName", pFillBlank: true, Selecttext: "--Plz Select Currency--");
             ViewState["purchasecode"] = DSQ.Tables[4].Rows[0]["purchasecode"].ToString();
 
@@ -108,7 +116,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             //Size Type
             UtilityModule.ConditionalComboFill(ref DDsizetype, "select val,Type from SizeType Order by val", false, "");
             //
-
+            txtDeliveryAddress.Visible = true;
             switch (Convert.ToInt32(hncompid.Value))
             {
                 case 1:
@@ -263,6 +271,9 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                     break;
                 case 44:
                     DivOtherInformation.Visible = true;
+                    trrevisedremark.Visible = true;
+                    ddlDeliveryAddress.Visible = true;
+                    txtDeliveryAddress.Visible = false;
                     break;
             }
             OnCheckedChange();
@@ -348,8 +359,10 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
     {
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select BranchAddress CompanyAddress 
             From BRANCHMASTER(Nolock) Where CompanyId = " + ddCompName.SelectedValue + " ANd ID = " + DDBranchName.SelectedValue);
-
-        txtDeliveryAddress.Text = ds.Tables[0].Rows[0]["CompanyAddress"].ToString();
+        if (Session["varcompanyid"].ToString() != "44")
+        {
+            txtDeliveryAddress.Text = ds.Tables[0].Rows[0]["CompanyAddress"].ToString();
+        }
     }
     private void ddcustomercodechanged()
     {
@@ -652,11 +665,22 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                 }
                 else
                 {
-                    UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid, ci.Customercode + SPACE(5) + CI.CompanyName Code
+                    if (Session["varCompanyId"].ToString() == "44")
+                    {
+                        UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid, ci.Customercode as Code
+                            From customerinfo ci 
+                            join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" And OM.CompanyID = " + ddCompName.SelectedValue + @" 
+                            join Jobassigns JA ON OM.Orderid=JA.Orderid 
+                            Order By ci.Customercode  ", true, "Select CustomerCode");
+                    }
+                    else {
+                        UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid, ci.Customercode + SPACE(5) + CI.CompanyName Code
                             From customerinfo ci 
                             join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" And OM.CompanyID = " + ddCompName.SelectedValue + @" 
                             join Jobassigns JA ON OM.Orderid=JA.Orderid 
                             Order By ci.Customercode + SPACE(5) + CI.CompanyName  ", true, "Select CustomerCode");
+                    
+                    }
                 }
 
             }
@@ -1409,7 +1433,11 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         TxtTotalAmount.Text = "";
         txtremarks.Text = "";
         TxtLotNo.Text = "";
-        txtDeliveryAddress.Text = "";
+        if (Session["varcompanyid"].ToString() != "44")
+        {
+            txtDeliveryAddress.Text = "";
+        }
+        dddelivery.SelectedIndex = 0;
         txtSGST.Text = "";
         txtIGST.Text = "";
         txtCGST.Text = "";
@@ -1707,7 +1735,15 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                     arr[41].Value = txtVendorRefDate.Text == "" ? System.DateTime.Now.ToString("dd-MMM-yyyy") : txtVendorRefDate.Text;
                     arr[42].Value = txtTypeofForm.Text;
                     arr[43].Value = txtMill.Text;
-                    arr[44].Value = txtDeliveryAddress.Text;
+                    if (Session["varcompanyid"].ToString() == "44")
+                    {
+                        arr[44].Value = ddlDeliveryAddress.SelectedItem.Text;
+                    }
+                    else
+                    {
+                        arr[44].Value = txtDeliveryAddress.Text;
+                    
+                    }
                     arr[45].Direction = ParameterDirection.Output;
                     //arr[46].Value = hfImgURL.Value;
                     double GST = Convert.ToDouble(txtCGST.Text == "" ? "0" : txtCGST.Text) + Convert.ToDouble(txtSGST.Text == "" ? "0" : txtSGST.Text);
@@ -2999,7 +3035,10 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             ddtransprt.SelectedValue = dt8.Tables[0].Rows[0]["TranportModeId"].ToString();
             dddelivery.SelectedValue = dt8.Tables[0].Rows[0]["DeliveryTermId"].ToString();
             txtManualChallanNo.Text = dt8.Tables[0].Rows[0]["ManualChallanNo"].ToString();
-            txtDeliveryAddress.Text = dt8.Tables[0].Rows[0]["DeliveryAddress"].ToString();
+            if (Session["varcompanyid"].ToString() != "44")
+            {
+                txtDeliveryAddress.Text = dt8.Tables[0].Rows[0]["DeliveryAddress"].ToString();
+            }
             txtReqBy.Text = dt8.Tables[0].Rows[0]["requestby"].ToString();
             txtreqfor.Text = dt8.Tables[0].Rows[0]["requestfor"].ToString();
             report();

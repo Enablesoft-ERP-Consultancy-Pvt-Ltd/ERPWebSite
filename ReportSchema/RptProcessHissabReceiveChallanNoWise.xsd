@@ -42,6 +42,7 @@
           <xs:complexType>
             <xs:sequence>
               <xs:element name="CHALLANNO" type="xs:string" minOccurs="0" />
+              <xs:element name="ReceiveDate" type="xs:dateTime" minOccurs="0" />
               <xs:element name="HissabNo" type="xs:int" minOccurs="0" />
               <xs:element name="TotalWeight" type="xs:decimal" minOccurs="0" />
               <xs:element name="CheckPcs" type="xs:int" minOccurs="0" />

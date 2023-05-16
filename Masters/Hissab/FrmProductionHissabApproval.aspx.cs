@@ -61,6 +61,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                 ViewState["processtype"] = "999";
                 break;
             case "YARN OPENING":
+            case "TASSEL MAKING":
                 ViewState["processtype"] = "999";
                 break;
             case "FILLAR MOUTH CLOSING":

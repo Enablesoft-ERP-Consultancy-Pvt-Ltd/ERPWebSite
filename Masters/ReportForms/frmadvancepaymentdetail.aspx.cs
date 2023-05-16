@@ -311,7 +311,6 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
             param[3] = new SqlParameter("@FromDate", txtfromdate.Text);
             param[4] = new SqlParameter("@Todate", txttodate.Text);
 
-
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVERMONTHLYTRANSACTION", param);
 
             if (ds.Tables[0].Rows.Count > 0)
@@ -329,34 +328,32 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
                 sht.PageSetup.AdjustTo(49);
                 sht.PageSetup.PaperSize = XLPaperSize.LetterPaper;
 
-
-
-
                 sht.Columns("A").Width = 8.00;
                 sht.Columns("B").Width = 20.22;
                 sht.Columns("C").Width = 22.22;
                 sht.Columns("D").Width = 20.33;
                 sht.Columns("E").Width = 20.44;
                 sht.Columns("F").Width = 20.33;
+                sht.Columns("G").Width = 20.33;
 
 
-                sht.Range("A1:F1").Merge();
+                sht.Range("A1:G1").Merge();
                 sht.Range("A1").Value = "Diamond Export";
-                sht.Range("A2:F2").Merge();
+                sht.Range("A2:G2").Merge();
                 sht.Range("A2").Value = "Weaver Transaction Detail";
-                sht.Range("A3:F3").Merge();
+                sht.Range("A3:G3").Merge();
                 sht.Range("A3").Value = "From:" + ds.Tables[0].Rows[0]["FROMDATE"] + " " + "To:" + ds.Tables[0].Rows[0]["ToDATE"];
-                sht.Range("A4:F4").Merge();
+                sht.Range("A4:G4").Merge();
                 sht.Range("A4").Value = "Job(Weaving)";
                 //sht.Range("A2").Value = "Filter By :  " + FilterBy;
                 //sht.Row(2).Height = 30;
-                sht.Range("A1:F1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A2:F4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A2:F4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                sht.Range("A2:F4").Style.Alignment.SetWrapText();
-                sht.Range("A1:F4").Style.Font.FontName = "Arial Unicode MS";
-                sht.Range("A1:F4").Style.Font.FontSize = 10;
-                sht.Range("A1:F4").Style.Font.Bold = true;
+                sht.Range("A1:G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:G4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:G4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A2:G4").Style.Alignment.SetWrapText();
+                sht.Range("A1:G4").Style.Font.FontName = "Arial Unicode MS";
+                sht.Range("A1:G4").Style.Font.FontSize = 10;
+                sht.Range("A1:G4").Style.Font.Bold = true;
                 //*******Header
                 sht.Range("A5").Value = "S.No";
                 sht.Range("B5").Value = "Employee Code";
@@ -364,11 +361,12 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
                 sht.Range("D5").Value = "Bazaar Date";
                 sht.Range("E5").Value = "Material IssueDate";
                 sht.Range("F5").Value = "Advance PaymentDate";
+                sht.Range("G5").Value = "Order SheetDate";
 
-                sht.Range("A5:F5").Style.Font.FontName = "Arial Unicode MS";
-                sht.Range("A5:F5").Style.Font.FontSize = 9;
-                sht.Range("A5:F5").Style.Font.Bold = true;
-                sht.Range("D5:F5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A5:G5").Style.Font.FontName = "Arial Unicode MS";
+                sht.Range("A5:G5").Style.Font.FontSize = 9;
+                sht.Range("A5:G5").Style.Font.Bold = true;
+                sht.Range("D5:G5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                 row = 6;
                 int rowfrom = 6;
@@ -408,7 +406,11 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
                     {
                         sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["receivedate"]);
                     }
-
+                    foundRows = ds.Tables[0].Select("empcode = '" + ds1.Tables[0].Rows[i]["EMPCODE"] + "' and receivedate='" + ds1.Tables[0].Rows[i]["receivedate"] + "' and reporttype=3");
+                    if (foundRows.Length > 0)
+                    {
+                        sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["receivedate"]);
+                    }
 
                     row = row + 1;
                 }
@@ -417,7 +419,7 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
                 //sht.Columns(1, 20).AdjustToContents();
                 //********************
                 //***********BOrders
-                using (var a = sht.Range("A1" + ":F" + row))
+                using (var a = sht.Range("A1" + ":G" + row))
                 {
                     a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     a.Style.Border.TopBorder = XLBorderStyleValues.Thin;

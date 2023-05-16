@@ -107,15 +107,17 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 tdfiller.Visible = true;
                 tdmer.Visible = true;
                 tdincharge.Visible = true;
-               
-                
+                TDextraqty.Visible = true;
+                tdextraqtylable.Visible = true;
+
+
                 if (ddfiller.Items.Count > 0)
                 {
                     ddfiller.SelectedValue = "2";
                 }
 
-              //  tdbuyerrefno.Visible = true;
-              //  tdupcno.Visible = true;
+                //  tdbuyerrefno.Visible = true;
+                //  tdupcno.Visible = true;
             }
             string str = @"select OrderCategoryId,OrderCategory from OrderCategory order by OrderCategory
                            select CI.CompanyId,CompanyName From CompanyInfo CI inner Join Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
@@ -188,6 +190,10 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             TxtDispatchDate.Text = TxtDeliveryDate.Text;
             DDCustomerCode.Focus();
             ddordertype.SelectedValue = "1";
+            if (Session["varCompanyId"].ToString() == "44")
+            {
+                TDSampleCode.Visible = true;
+            }
             lablechange();
             Chkbx.Checked = false;
             ch.Visible = false;
@@ -492,7 +498,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             From customerinfo CI(nolock)
             JOIN CustomerUser CU ON CU.CustomerID = CI.CustomerID And CU.UserID = " + Session["varuserId"] + @" 
             Where CI.MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName";
-        
+
         if (Session["varcompanyId"].ToString() == "42")
         {
             Str = @"Select CI.CustomerID, " + CustomerCode + @" CompanyName 
@@ -656,7 +662,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 CHKFORCURRENTCONSUMPTION.Visible = false;
                 btnupdateallconsmp.Visible = false;
             }
-            
+
             UtilityModule.ConditionalComboFill(ref DDOrderUnit, "", true, "");
 
             BindCustomerCode();
@@ -1441,6 +1447,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
     //*************************Function to Enter the Order Detail In the Database************************************
     protected void EnterOrder()
     {
+        string sp = string.Empty;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
@@ -1448,7 +1455,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             LblErrorMessage.Text = "";
             LblErrorMessage.Visible = false;
             int VARUPDATE_FLAG = 0;
-            SqlParameter[] _arrpara = new SqlParameter[66];
+            SqlParameter[] _arrpara = new SqlParameter[67];
             _arrpara[0] = new SqlParameter("@ItemFinishedId", SqlDbType.Int);
             _arrpara[1] = new SqlParameter("@OrderId", SqlDbType.Int);
             _arrpara[2] = new SqlParameter("@ItemId", SqlDbType.Int);
@@ -1521,6 +1528,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             _arrpara[63] = new SqlParameter("@Filler", SqlDbType.VarChar, 10);
             _arrpara[64] = new SqlParameter("@Merchandise", SqlDbType.VarChar, 100);
             _arrpara[65] = new SqlParameter("@Incharge", SqlDbType.VarChar, 100);
+            _arrpara[66] = new SqlParameter("@extraqty", SqlDbType.Int);
 
             //************Buyercode
             if (variable.Withbuyercode == "1")
@@ -1717,10 +1725,21 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             _arrpara[63].Value = tdfiller.Visible == true ? (ddfiller.SelectedItem.Text != "" ? ddfiller.SelectedItem.Text : "") : "";
             _arrpara[64].Value = tdmer.Visible == true ? (txtmer.Text == "" ? "" : txtmer.Text) : "";
             _arrpara[65].Value = tdincharge.Visible == true ? (txtincharge.Text == "" ? "0" : txtincharge.Text) : "0";
+            _arrpara[66].Value = TDextraqty.Visible == true ? (txtextraqty.Text == "" ? "0" : txtextraqty.Text) : "0";
             //
             SqlTransaction tran = con.BeginTransaction();
+            if (Session["varcompanyno"].ToString() == "44")
+            {
+                sp = "Pro_EnterOrderAGNI1";
 
-            SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "Pro_EnterOrder1", _arrpara);
+            }
+            else
+            {
+
+                sp = "Pro_EnterOrder1";
+
+            }
+            SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, sp, _arrpara);
 
             ViewState["OrderDetailId"] = _arrpara[16].Value.ToString() == "" ? "0" : _arrpara[16].Value;
             ViewState["order_id"] = _arrpara[1].Value;
@@ -1819,7 +1838,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
 
         if (Session["VarCompanyNo"].ToString() == "43")
         {
-            TxtOrderArea.Text = Math.Round(varTotalArea,2).ToString();
+            TxtOrderArea.Text = Math.Round(varTotalArea, 2).ToString();
         }
         else
         {
@@ -1961,8 +1980,8 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                         }
                         else
                         {
-                            TxtArea.Text = Convert.ToString (SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT AreaINCH from Size where sizeid=" + DDSize.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
-                            
+                            TxtArea.Text = Convert.ToString(SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT AreaINCH from Size where sizeid=" + DDSize.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
+
                             if (Session["VarCompanyNo"].ToString() == "43")
                             {
                                 TxtArea.Text = Math.Round(Convert.ToDouble(TxtArea.Text), 2).ToString();
@@ -1987,7 +2006,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
 
                         if (Session["VarCompanyNo"].ToString() == "43")
                         {
-                            TxtArea.Text = Math.Round(Convert.ToDouble(TxtArea.Text),2).ToString();
+                            TxtArea.Text = Math.Round(Convert.ToDouble(TxtArea.Text), 2).ToString();
                         }
                     }
                 }
@@ -2207,7 +2226,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 ScriptManager.RegisterStartupScript(Page, GetType(), "alt", "alert('Merchandiser & Production Incharge fields are mandatory!!!')", true);
                 return;
             }
-        
+
         }
         valdate_ArticalNo();
         if (LblErrorMessage.Text == "")
@@ -2484,14 +2503,14 @@ public partial class Masters_Order_Order : System.Web.UI.Page
 
             if (Session["VarCompanyNo"].ToString() == "43")
             {
-                TxtOrderArea.Text =Math.Round(Convert.ToDouble(ds.Tables[0].Compute("sum(Area)", "")),2).ToString();
+                TxtOrderArea.Text = Math.Round(Convert.ToDouble(ds.Tables[0].Compute("sum(Area)", "")), 2).ToString();
             }
             else
             {
                 TxtOrderArea.Text = ds.Tables[0].Compute("sum(Area)", "").ToString();
             }
 
-           
+
             TxtTotalAmount.Text = ds.Tables[0].Compute("sum(Amount)", "").ToString();
             TxtTotalQtyRequired.Text = ds.Tables[0].Compute("sum(Qty)", "").ToString();
         }
@@ -2702,7 +2721,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
 
                     str = "Select Distinct S.Sizeid,S." + size + " As  " + size + " From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId And CustomerId=" + DDCustomerCode.SelectedValue + @"
                  Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
-                }   
+                }
             }
         }
         //
@@ -2752,16 +2771,18 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                             Od.FinishingInstructions,Od.DyeingInstructions,replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,
                             IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,IPM.COLOR_ID,IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,
                             Isnull(Transmodeid,0) As Transmodeid,od.OURCODE,od.BUYERCODE,od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark ,
-                             OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId, OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId
+                            OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId, OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId, 
+                            ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty
                             From OrderDetail Od,ordermaster om,ITEM_MASTER IM,ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID and 
                             Od.OrderDetailId=" + DGOrderDetail2.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
                     break;
                 case "3":
                     sql = @"SELECT Od.OrderDetailId,Od.Item_Finished_id,Od.QualityCodeId,Od.Item_Id,IPM.ProductCode,Od.QtyRequired,Od.CurrencyId,Od.UnitRate,round(Od.Amount,2)Amount,
-                             Od.TotalArea,Od.Warehouseid,Od.ArticalNo,Od.WeavingInstruction,Od.FinishingInstructions,Od.DyeingInstructions,
-                             replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,IPM.COLOR_ID,IPM.SHAPE_ID,IPM.SIZE_ID,
+                            Od.TotalArea,Od.Warehouseid,Od.ArticalNo,Od.WeavingInstruction,Od.FinishingInstructions,Od.DyeingInstructions,
+                            replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,IPM.COLOR_ID,IPM.SHAPE_ID,IPM.SIZE_ID,
                             IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE,od.BUYERCODE,od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,
-                            isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId, OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId
+                            isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId, OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId, 
+                            ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty                            
                             From OrderDetail Od,ordermaster om,ITEM_MASTER IM,ITEM_PARAMETER_MASTER IPM Where  om.orderid=od.orderid and 
                             IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID and Od.OrderDetailId=" + DGOrderDetail2.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
                     break;
@@ -2771,7 +2792,8 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                             replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,IPM.COLOR_ID,
                             IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE,od.BUYERCODE,
                             od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark , OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId,
-                            OD.RecipeNameID,isnull(OD.WareHouseNameId,0) as WareHouseNameId
+                            OD.RecipeNameID,isnull(OD.WareHouseNameId,0) as WareHouseNameId, 
+                            ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty
                             From OrderDetail Od,ordermaster om,ITEM_MASTER IM,
                             ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID 
                             and Od.OrderDetailId=" + DGOrderDetail2.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
@@ -2782,7 +2804,8 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                             replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,IPM.COLOR_ID,
                             IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE,od.BUYERCODE,
                             od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId,
-                            OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId
+                            OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId, 
+                            ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty                            
                             From OrderDetail Od,ordermaster om,ITEM_MASTER IM,
                             ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and  IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID 
                             and Od.OrderDetailId=" + DGOrderDetail.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
@@ -2793,7 +2816,8 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                                 Od.DyeingInstructions,replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,IPM.COLOR_ID,
                                 IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE,od.BUYERCODE,
                                 od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId,
-                                OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId,ISNULL(OD.filler,2) AS filler
+                                OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId,ISNULL(OD.filler,2) AS filler,
+                                ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty 
                                 From OrderDetail Od,ordermaster om,ITEM_MASTER IM,
                                 ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID and Od.OrderDetailId=" + DGOrderDetail.SelectedValue + @" 
                                 And IM.MasterCompanyId=" + Session["varCompanyId"];
@@ -2808,21 +2832,23 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                                     Od.DyeingInstructions,replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,
                                     IPM.COLOR_ID,IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE,
                                     od.BUYERCODE,od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId,
-                                    OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId
+                                    OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId, 
+                                    ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty 
                                     From OrderDetail Od,ordermaster om,ITEM_MASTER IM,ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID 
                                     and Od.OrderDetailId=" + DGOrderDetail2.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
                         }
                         else
                         {
                             sql = @"SELECT Od.OrderDetailId,Od.Item_Finished_id,Od.QualityCodeId,Od.Item_Id,IPM.ProductCode,Od.QtyRequired,Od.CurrencyId,
-                                   Od.UnitRate,round(Od.Amount,2)Amount,Od.TotalArea,Od.Warehouseid,Od.ArticalNo,Od.WeavingInstruction,Od.FinishingInstructions,
-                                   Od.DyeingInstructions,replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,
-                                   IPM.COLOR_ID,IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE
-                                   ,od.BUYERCODE,od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId,
-                                    OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId
-                                   From OrderDetail Od,ordermaster om,
-                                   ITEM_MASTER IM,ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID 
-                                   and Od.OrderDetailId=" + DGOrderDetail.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
+                                    Od.UnitRate,round(Od.Amount,2)Amount,Od.TotalArea,Od.Warehouseid,Od.ArticalNo,Od.WeavingInstruction,Od.FinishingInstructions,
+                                    Od.DyeingInstructions,replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,
+                                    IPM.COLOR_ID,IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE, 
+                                    od.BUYERCODE,od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId,
+                                    OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId, 
+                                    ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty 
+                                    From OrderDetail Od,ordermaster om,
+                                    ITEM_MASTER IM,ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID 
+                                    and Od.OrderDetailId=" + DGOrderDetail.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
                         }
                     }
                     else
@@ -2832,14 +2858,13 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                                 Od.DyeingInstructions,replace(convert(varchar(11),Od.DispatchDate,106), ' ','-') as DispatchDate,IM.CATEGORY_ID,IPM.QUALITY_ID,IPM.DESIGN_ID,IPM.COLOR_ID,
                                 IPM.SHAPE_ID,IPM.SIZE_ID,IPM.SHADECOLOR_ID,Tag_Flag,OrderCalType,OrderUnitId,Isnull(Transmodeid,0) As Transmodeid,od.OURCODE,od.BUYERCODE,
                                 od.flagsize,OD.CQID,OD.DSRNO,OD.CSRNO,isnull(od.photo,'') as Photo,ISNULL(od.remark,'') as remark, OM.DEMOORDERWITHLOCALQDCS,OM.OrderCategoryId,
-                                OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId
+                                OD.RecipeNameID ,isnull(OD.WareHouseNameId,0) as WareHouseNameId, 
+                                ISNULL(OD.Merchandise,'') Merchandise,ISNULL(OD.Incharge,'') Incharge,isnull(od.extraqty,0) extraqty 
                                 From OrderDetail Od,ordermaster om,ITEM_MASTER IM,
                                 ITEM_PARAMETER_MASTER IPM Where om.orderid=od.orderid and IPM.Item_Finished_Id=Od.Item_Finished_Id and IM.ITEM_ID=Od.ITEM_ID and Od.OrderDetailId=" + DGOrderDetail.SelectedValue + @" 
                                 And IM.MasterCompanyId=" + Session["varCompanyId"];
                     }
-
                     break;
-
             }
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -2983,6 +3008,9 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 LblErrorMessage.Visible = false;
                 txtremark.Text = ds.Tables[0].Rows[0]["remark"].ToString();
                 DDRecipeName.SelectedValue = ds.Tables[0].Rows[0]["RecipeNameID"].ToString();
+                txtmer.Text = ds.Tables[0].Rows[0]["Merchandise"].ToString();
+                txtincharge.Text = ds.Tables[0].Rows[0]["Incharge"].ToString();
+                txtextraqty.Text = ds.Tables[0].Rows[0]["extraqty"].ToString();
                 if (TDWareHouseNameByCodeDDL.Visible == true)
                 {
                     UtilityModule.ConditionalComboFill(ref DDWareHouseNameByCode, "SELECT WareHouseNameId,WareHouseNameByCode from WareHouseNameByWareHouseCode Where CustomerId=" + DDCustomerCode.SelectedValue + " and WareHouseId=" + DDWareHouseName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by WareHouseNameByCode", true, "--SELECT--");
@@ -3893,7 +3921,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                         if (variable.Carpetcompany == "1")
                         {
                             Session["ReportPath"] = "Reports/OrderReportNew.rpt";
-                            
+
                         }
                         else
                         {
@@ -3974,7 +4002,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                             GeneratePerformainvoiceNo();
                             Performainvoice();
                         }
-                        break;                    
+                        break;
                     case "16":
                         GeneratePerformainvoiceNo();
                         PerformainvoiceChampoType2();
@@ -5645,9 +5673,10 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 {
                     Session["rptFileName"] = "~\\Reports\\RptOrderCostingmws.rpt";
                 }
-                else {
+                else
+                {
                     Session["rptFileName"] = "~\\Reports\\RptOrderCosting.rpt";
-                
+
                 }
                 Session["GetDataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\RptOrderCosting.xsd";
@@ -7844,7 +7873,16 @@ public partial class Masters_Order_Order : System.Web.UI.Page
     }
     protected void ddordertype_SelectedIndexChanged(object sender, EventArgs e)
     {
-        TDSampleCode.Visible = false;
+        if (Session["VarCompanyNo"].ToString() == "44")
+        {
+            TDSampleCode.Visible = true;
+        }
+        else
+        {
+            TDSampleCode.Visible = false;
+            TDRugIdNo.Visible = false;
+        
+        }
         TDRugIdNo.Visible = false;
 
         if (Session["VarCompanyNo"].ToString() == "4")
@@ -7862,6 +7900,10 @@ public partial class Masters_Order_Order : System.Web.UI.Page
         }
         else
         {
+            if (Session["VarCompanyNo"].ToString() == "44")
+            {
+                TDSampleCode.Visible = true;
+            }
             if (ddordertype.SelectedValue == "2")
             {
                 TDSampleCode.Visible = true;
@@ -7878,7 +7920,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 TxtCustOrderNo.Text = "";
                 TxtLocalOrderNo.Text = "";
             }
-        }       
+        }
     }
     protected void TxtSampleCode_TextChanged(object sender, EventArgs e)
     {
@@ -7936,13 +7978,13 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             Str = @"Select distinct IPM.ITEM_FINISHED_ID,IM.CATEGORY_ID as CategoryId,IPM.ITEM_ID as ItemId,CQ.SrNo as QualityId,CD.SrNo as DesignId,CC.SrNo as ColorId,
                     IPM.SHADECOLOR_ID as ShadeColorId,IPM.SHAPE_ID as ShapeId,IPM.SIZE_ID as SizeId,IPM.DESCRIPTION,IPM.ProductCode,IPM.OurCode,IPM.Status,IPM.MasterCompanyId
                     FROM ITEM_PARAMETER_MASTER IPM(NoLock) 
-					JOIN CustomerQuality CQ ON CQ.CustomerID = " + DDCustomerCode.SelectedValue+@" And CQ.QualityId = IPM.QUALITY_ID
-					JOIN CustomerDesign CD ON CD.CustomerId="+DDCustomerCode.SelectedValue+@" and CD.DesignId=IPM.DESIGN_ID and CD.CQSRNO=CQ.SrNo
-					JOIN CustomerColor CC ON CC.CustomerId="+DDCustomerCode.SelectedValue+@" and CC.ColorId=IPM.COLOR_ID --and CC.CDSRNO=CD.SrNo
-					JOIN CustomerSize CCS ON CCS.CustomerId="+DDCustomerCode.SelectedValue+@" and CCS.Sizeid=IPM.SIZE_ID
+					JOIN CustomerQuality CQ ON CQ.CustomerID = " + DDCustomerCode.SelectedValue + @" And CQ.QualityId = IPM.QUALITY_ID
+					JOIN CustomerDesign CD ON CD.CustomerId=" + DDCustomerCode.SelectedValue + @" and CD.DesignId=IPM.DESIGN_ID and CD.CQSRNO=CQ.SrNo
+					JOIN CustomerColor CC ON CC.CustomerId=" + DDCustomerCode.SelectedValue + @" and CC.ColorId=IPM.COLOR_ID --and CC.CDSRNO=CD.SrNo
+					JOIN CustomerSize CCS ON CCS.CustomerId=" + DDCustomerCode.SelectedValue + @" and CCS.Sizeid=IPM.SIZE_ID
                     JOIN ITEM_MASTER IM(NoLock) ON IPM.ITEM_ID=IM.ITEM_ID
                     JOIN CategorySeparate CS(NoLock) ON IM.Category_Id=CS.CategoryId and Id=0
-                    WHERE IPM.ProductCode = '" + txtRugIdNo.Text + "' And IPM.MasterCompanyId=" + Session["varCompanyId"];          
+                    WHERE IPM.ProductCode = '" + txtRugIdNo.Text + "' And IPM.MasterCompanyId=" + Session["varCompanyId"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             if (ds.Tables[0].Rows.Count > 0)
@@ -8141,7 +8183,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 {
                     TxtArea.Text = Convert.ToString(Math.Round((Convert.ToDouble(Length) * Convert.ToDouble(Width)) / 10000, 4));
                 }
-                
+
 
             }
             if (Convert.ToInt32(DDOrderUnit.SelectedValue) == 2 || Convert.ToInt16(DDOrderUnit.SelectedValue) == 6)
@@ -8169,7 +8211,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                     TxtArea.Text = Convert.ToString(Math.Round((Convert.ToDouble(InchLength) * Convert.ToDouble(InchWidth)) / (144 * VarFactor), 4));
                 }
 
-                
+
                 //}
                 ////TxtArea.Text = Convert.ToString(UtilityModule.Calculate_Area_Ft(Convert.ToDouble(Length), Convert.ToDouble(Width), 0, Shape, UnitId: Convert.ToInt16(DDOrderUnit.SelectedValue)));
             }
@@ -9755,7 +9797,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             sht.Range("A16:A26").Style.Border.RightBorder = XLBorderStyleValues.Thin;
             sht.Range("B22:B26").Style.Border.RightBorder = XLBorderStyleValues.Thin;
             sht.Range("A26:O26").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-           
+
             using (var a = sht.Range("A24:A26"))
             {
                 a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;

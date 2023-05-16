@@ -11,6 +11,7 @@ using System.Text;
 public partial class Masters_process_PRI : System.Web.UI.Page
 {
     static int MasterCompanyId;
+    static string TempLotNo = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
@@ -91,6 +92,7 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                     break;
                 case "43":
                     Label15.Text = "UCN No";
+                    TDVehicleNo.Visible = true;
                     break;
             }
             //*************
@@ -607,6 +609,7 @@ public partial class Masters_process_PRI : System.Web.UI.Page
     }
     protected void ddlshade_SelectedIndexChanged(object sender, EventArgs e)
     {
+        TempLotNo = "";
         fill_qty(sender);
     }
     protected void ddgodown_SelectedIndexChanged(object sender, EventArgs e)
@@ -779,13 +782,29 @@ public partial class Masters_process_PRI : System.Web.UI.Page
             ddlotno.SelectedIndex = -1;
             if (ddlotno.Items.Count > 0)
             {
-                ddlotno.SelectedIndex = 1;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    if (TempLotNo != "")
+                    {
+                        ddlotno.SelectedValue = TempLotNo;
+                    }
+                    else
+                    {
+                        ddlotno.SelectedIndex = 1;
+                    }
+                }
+                else
+                {
+                    ddlotno.SelectedIndex = 1;
+                }              
+                                  
 
                 if (sender != null && ddlotno.SelectedIndex > 0)
                 {
                     ddlotno_SelectedIndexChanged(sender, new EventArgs());
                 }
             }
+
         }
     }
     protected void ddlotno_SelectedIndexChanged(object sender, EventArgs e)
@@ -996,7 +1015,7 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 arr[37] = new SqlParameter("@EWayBillNo", SqlDbType.VarChar, 50);
 
                 int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
-
+                
                 arr[0].Value = ViewState["Prmid"];
                 arr[1].Value = ddCompName.SelectedValue;
                 arr[2].Value = ddempname.SelectedValue;
@@ -1039,6 +1058,8 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 arr[33].Value = TxtBellWt.Text == "" ? "0" : TxtBellWt.Text;
                 arr[34].Value = txtCGSTSGST.Text == "" ? "0" : txtCGSTSGST.Text;
 
+                TempLotNo = ddlotno.SelectedValue;
+
                 if (TdDDItemDesignName.Visible == true)
                 {
                     arr[35].Value = DDItemDesignName.SelectedValue;
@@ -1060,6 +1081,14 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 Fill_Grid();
                 fill_Grid_ShowConsmption();
                 SaveReferece();
+
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    fill_qty();
+                    Fill_GodownSelectedChange();
+                    Fill_LotNoSelectedChange();
+                }
+
                 btnsave.Text = "Save";
             }
             catch (Exception ex)
@@ -1077,18 +1106,22 @@ public partial class Masters_process_PRI : System.Web.UI.Page
     }
     private void SaveReferece()
     {
-        if (ddlshade.Items.Count > 0 && shd.Visible == true)
+        if (Session["VarCompanyNo"].ToString() != "43")
         {
-            ddlshade.SelectedIndex = 0;
+            if (ddlshade.Items.Count > 0 && shd.Visible == true)
+            {
+                ddlshade.SelectedIndex = 0;
+            }
+            txtstock.Text = "";
+            txtconqty.Text = "";
+            TxtPendQty.Text = "";
+            txtissue.Text = "";
+            txtTanaBana.Text = "";
+            txtEstimatedRate.Text = "";
+            txtnoofcone.Text = "";
+            txtCGSTSGST.Text = "";
         }
-        txtstock.Text = "";
-        txtconqty.Text = "";
-        TxtPendQty.Text = "";
         txtissue.Text = "";
-        txtTanaBana.Text = "";
-        txtEstimatedRate.Text = "";
-        txtnoofcone.Text = "";
-        txtCGSTSGST.Text = "";
 
 
     }
@@ -1939,6 +1972,35 @@ public partial class Masters_process_PRI : System.Web.UI.Page
         }
         else { ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true); }
     }
+    private void CarpetInternationalFormatReport()
+    {
+        SqlParameter[] _array = new SqlParameter[3];
+        _array[0] = new SqlParameter("@prmId", SqlDbType.Int);
+        _array[1] = new SqlParameter("@ProcessId", SqlDbType.Int);
+        _array[2] = new SqlParameter("@Trantype", SqlDbType.Int);
+
+        _array[0].Value = ViewState["Prmid"];
+        _array[1].Value = ddProcessName.SelectedValue;
+        _array[2].Value = 0; //For Issue
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_WeaverRawMaterialIssuedDetail_CarpetInternational", _array);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\RptRawMaterialIssueDetailCarpetInternational.rpt";
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptRawMaterialIssueDetailCarpetInternational.xsd";
+
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else 
+        { 
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true); 
+        }
+    }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
         if (Session["varCompanyId"].ToString() == "9" && ChkWayChallanFormat.Checked == true)
@@ -1952,6 +2014,10 @@ public partial class Masters_process_PRI : System.Web.UI.Page
         else if (Session["varCompanyId"].ToString() == "41")
         {
             ModRaziFormatReport();
+        }
+        else if (Session["varCompanyId"].ToString() == "43")
+        {
+            CarpetInternationalFormatReport();
         }
         else if (Session["varCompanyId"].ToString() == "8")
         {

@@ -416,6 +416,10 @@
                                 <asp:Label ID="lblmessage" Text="" runat="server" CssClass="labelbold" ForeColor="Red" />
                             </td>
                             <td align="right">
+                            
+                                          <asp:Button Text="Update all consumption" ID="btnupdateconsmp" CssClass="buttonnorm"
+                            UseSubmitBehavior="false" runat="server" Visible="false" OnClick="btnupdateconsmp_Click" OnClientClick="if (!confirm('Do you want update all item consumption?')) return ;this.disabled=true;this.value = 'wait ...';" />
+                                               
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
                                 <asp:Button ID="btnsave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="btnsave_Click"
                                     UseSubmitBehavior="false" OnClientClick="if (!validatesave())return; this.disabled=true;this.value = 'wait ...';" />

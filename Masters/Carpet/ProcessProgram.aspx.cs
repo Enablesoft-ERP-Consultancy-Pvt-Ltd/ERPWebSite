@@ -101,6 +101,12 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                     JOIN JobAssigns JA(nolock) ON JA.OrderId = OD.OrderId And JA.Item_Finished_Id = OD.Item_Finished_Id 
                     Where (JA.PreProdAssignedQty + JA.INTERNALPRODASSIGNEDQTY) > 0 And OM.Companyid = " + ddcompany.SelectedValue + " Order By Custcode ", true, "--Select--");
                     break;
+                case 44:
+                    if (Tdcustcode.Visible == true)
+                    {
+                        UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode  as Custcode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by Custcode", true, "--Select--");
+                    }
+                    break;
                 default:
                     if (Tdcustcode.Visible == true)
                     {
@@ -117,12 +123,27 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
     }
     protected void FillProcessprogramNOEdit()
     {
-        string str1 = @"select Distinct P.PPID,cast(P.ChallanNo as varchar) + ' # ' + Orderno.OrderNo 
+        string str1 = "";
+        if (Session["VarCompanyNo"].ToString() == "46")
+        {
+            str1 = @"select Distinct P.PPID, Orderno.OrderNo + ' # ' +  cast(P.ChallanNo as varchar) 
                     From ProcessProgram P(Nolock) 
                     JOIN OrderMaster om(Nolock) on p.Order_ID=OM.OrderId 
                     JOIN customerinfo CI(Nolock) ON OM.CustomerId=CI.CustomerId
                     cross apply (select OrderNo From F_GetPPNo_OrderNo(P.PPID)) Orderno
                     Where P.Process_id=" + ddprocess.SelectedValue + " and OM.CompanyiD=" + ddcompany.SelectedValue;
+        }
+        else
+        {
+             str1 = @"select Distinct P.PPID,cast(P.ChallanNo as varchar) + ' # ' + Orderno.OrderNo 
+                    From ProcessProgram P(Nolock) 
+                    JOIN OrderMaster om(Nolock) on p.Order_ID=OM.OrderId 
+                    JOIN customerinfo CI(Nolock) ON OM.CustomerId=CI.CustomerId
+                    cross apply (select OrderNo From F_GetPPNo_OrderNo(P.PPID)) Orderno
+                    Where P.Process_id=" + ddprocess.SelectedValue + " and OM.CompanyiD=" + ddcompany.SelectedValue;
+        }
+
+        
 
         if (Tdcustcode.Visible == true)
         {

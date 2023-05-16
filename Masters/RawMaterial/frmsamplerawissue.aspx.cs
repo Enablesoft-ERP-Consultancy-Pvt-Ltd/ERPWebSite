@@ -236,8 +236,8 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
         switch (DDprocess.SelectedValue.ToString())
         {
             case "1": //WEAVING
-               
-                    str = "select Distinct IssueOrderId,IssueOrderId as Issueorderid1 From Process_Issue_master_" + DDprocess.SelectedValue + @" PIM 
+
+                str = "select Distinct IssueOrderId,isnull(PIM.ChallanNo,PIM.IssueOrderID) as Issueorderid1 From Process_Issue_master_" + DDprocess.SelectedValue + @" PIM 
                                        Where PIM.Companyid=" + DDcompany.SelectedValue + " and PIM.Empid=" + DDvendor.SelectedValue + @" 
                                        and PIM.SampleNumber<>'' and isnull(pim.FOLIOSTATUS,0)=0";
                     if (chkforcomplete.Checked == true)
@@ -249,7 +249,7 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
                         str = str + " and PIM.Status='Pending'";
                     }
                     str = str + " UNION ";
-                    str = str + @"select Distinct pim.issueorderid,pim.IssueOrderId as IssueOrderId1 From PROCESS_ISSUE_MASTER_" + DDprocess.SelectedValue + " PIM inner join PROCESS_ISSUE_DETAIL_" + DDprocess.SelectedValue + @" PID on PIM.IssueOrderId=PID.IssueOrderId and pim.Status<>'canceled'
+                    str = str + @"select Distinct pim.issueorderid,isnull(PIM.ChallanNo,PIM.IssueOrderID) as IssueOrderId1 From PROCESS_ISSUE_MASTER_" + DDprocess.SelectedValue + " PIM inner join PROCESS_ISSUE_DETAIL_" + DDprocess.SelectedValue + @" PID on PIM.IssueOrderId=PID.IssueOrderId and pim.Status<>'canceled'
                      inner join OrderMaster om on pid.orderid=om.OrderId and om.OrderCategoryId=2 Where PIm.companyid=" + DDcompany.SelectedValue + " and PIM.EMPID=" + DDvendor.SelectedValue + @" and isnull(pim.FOLIOSTATUS,0)=0 ";
                     if (chkforcomplete.Checked == true)
                     {
@@ -260,7 +260,7 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
                         str = str + " and PIM.Status='Pending'";
                     }
                     str = str + " UNION ";
-                    str = str + " select Distinct pim.issueorderid,pim.IssueOrderId as IssueOrderId1 From PROCESS_ISSUE_MASTER_" + DDprocess.SelectedValue + " PIM inner join PROCESS_ISSUE_DETAIL_" + DDprocess.SelectedValue + @" PID on PIM.IssueOrderId=PID.IssueOrderId and pim.Status<>'canceled'
+                    str = str + " select Distinct pim.issueorderid,isnull(PIM.ChallanNo,PIM.IssueOrderID) as IssueOrderId1 From PROCESS_ISSUE_MASTER_" + DDprocess.SelectedValue + " PIM inner join PROCESS_ISSUE_DETAIL_" + DDprocess.SelectedValue + @" PID on PIM.IssueOrderId=PID.IssueOrderId and pim.Status<>'canceled'
                      inner join OrderMaster om on pid.orderid=om.OrderId and om.OrderCategoryId=2 inner join Employee_processorderno emp on pim.issueorderid=emp.issueorderid and emp.processid=" + DDprocess.SelectedValue + " Where PIm.companyid=" + DDcompany.SelectedValue + " and EMP.EMPID=" + DDvendor.SelectedValue + @" and isnull(pim.FOLIOSTATUS,0)=0 ";
                     if (chkforcomplete.Checked == true)
                     {
@@ -275,12 +275,12 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
             default:
                 if (variable.VarFinishingNewModuleWise == "1")
                 {
-                    str = @"select Distinct PIM.IssueOrderId,PIM.IssueOrderId as Issueorderid1 From Process_issue_Master_" + DDprocess.SelectedValue + " PIM inner join Employee_ProcessOrderNo EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMP.ProcessId=" + DDprocess.SelectedValue + " Where PIM.CompanyId=" + DDcompany.SelectedValue + @"
+                    str = @"select Distinct PIM.IssueOrderId,isnull(PIM.ChallanNo,PIM.IssueOrderID) as Issueorderid1 From Process_issue_Master_" + DDprocess.SelectedValue + " PIM inner join Employee_ProcessOrderNo EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMP.ProcessId=" + DDprocess.SelectedValue + " Where PIM.CompanyId=" + DDcompany.SelectedValue + @"
                             and EMP.EMPID=" + DDvendor.SelectedValue + @" and isnull(pim.FOLIOSTATUS,0)=0 ";
                 }
                 else
                 {
-                    str = "select Distinct PIM.IssueOrderId,PIM.IssueOrderId as Issueorderid1 From Process_Issue_master_" + DDprocess.SelectedValue + @" PIM Where PIM.Companyid=" + DDcompany.SelectedValue + " and PIM.Empid=" + DDvendor.SelectedValue + @" and isnull(pim.FOLIOSTATUS,0)=0 ";
+                    str = "select Distinct PIM.IssueOrderId,isnull(PIM.ChallanNo,PIM.IssueOrderID) as Issueorderid1 From Process_Issue_master_" + DDprocess.SelectedValue + @" PIM Where PIM.Companyid=" + DDcompany.SelectedValue + " and PIM.Empid=" + DDvendor.SelectedValue + @" and isnull(pim.FOLIOSTATUS,0)=0 ";
                 }
                 if (chkforcomplete.Checked == true)
                 {

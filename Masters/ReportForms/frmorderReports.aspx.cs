@@ -102,6 +102,7 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
                 RDDesignWiseConsmpDetail.Visible = false;
                 RDProductionReport.Visible = false;
                 RDPOSTATUS.Visible = true;
+                RDPOSTATUSAGNI.Visible = true;
                 RDPOSTATUSInHouse.Visible = false;
                 RDPOSTATUSOutSide.Visible = false;
                 TDinternalfoliodetail.Visible = false;
@@ -113,6 +114,8 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
 
 
                 RDOrderConsumption.Text = "PO CONSUMPTION";
+                RDPOSTATUS.Text = "ORDER DETAIL";
+                RDPOSTATUSAGNI.Text = "PO STATUS";
             }
             else
             {
@@ -299,6 +302,11 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
                 }
             }
         }
+        else if (RDPOSTATUSAGNI.Checked == true)
+        {
+            PoStatusAGNI();
+        
+        }
         else if (RDinternalfoliodetail.Checked == true)
         {
             Interfoliodetail();
@@ -445,7 +453,7 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
         {
             OrderShippedWithInvoiceDetail();
         }
-        else if(RDProcessDetails.Checked == true)
+        else if (RDProcessDetails.Checked == true)
         {
             OrderProcesswise();
         }
@@ -1111,7 +1119,7 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
     { 
         
     }
-        protected void Orderstatus()
+    protected void Orderstatus()
     {
         SqlParameter[] param = new SqlParameter[6];
         param[0] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
@@ -1630,6 +1638,837 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
         }
 
     }
+    protected void PoStatusAGNI()
+    {
+       
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        //SqlCommand cmd = new SqlCommand("PRO_POSTATUSREPORT", con);
+        //cmd.CommandType = CommandType.StoredProcedure;
+        //cmd.CommandTimeout = 300;
+
+        //cmd.Parameters.AddWithValue("@CUSTORDER", DDOrderNo.SelectedValue);
+        //cmd.Parameters.AddWithValue("@CUSTOMERID", DDCustCode.SelectedValue);
+       
+        //DataTable dt = new DataTable();
+        //dt.Load(cmd.ExecuteReader());
+        ////*************
+        //DataSet ds = new DataSet();
+        //ds.Tables.Add(dt);
+        //con.Close();
+        //con.Dispose();
+        SqlParameter[] param = new SqlParameter[3];
+        param[0] = new SqlParameter("@CUSTORDER", DDOrderNo.SelectedValue);
+        param[1] = new SqlParameter("@CUSTOMERID", DDCustCode.SelectedValue);
+
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_POSTATUSREPORT", param);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+            }
+            string Path = "";
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("sheet1");
+            int row = 0;
+            //**************
+            //*******************BUYER ORDER DETAIL
+            //Headers
+
+            sht.Range("G1").Value = "CUSTOMER ORDER STATUS";
+            sht.Range("G1:K1").Style.Font.FontName = "Arial Unicode MS";
+            sht.Range("G1:K1").Style.Font.FontSize = 11;
+            sht.Range("G1:K1").Style.Font.Bold = true;
+            sht.Range("G1:K1").Merge();
+
+            sht.Range("A2").Value = "Customer Code";
+            sht.Range("A2:B2").Style.Font.FontName = "Arial Unicode MS";
+            sht.Range("A2:B2").Style.Font.FontSize = 11;
+            sht.Range("A2:B2").Style.Font.Bold = true;
+            sht.Range("A2:B2").Merge();
+
+            sht.Range("C2").Value = DDCustCode.SelectedItem.Text;
+            sht.Range("C2:C2").Style.Font.FontName = "Arial Unicode MS";
+            sht.Range("C2:C2").Style.Font.FontSize = 11;
+            sht.Range("C2:D2").Style.Font.Bold = true;
+            sht.Range("C2:C2").Merge();
+
+
+            sht.Range("A3").Value = "Order No";
+            sht.Range("A3:B3").Style.Font.FontName = "Arial Unicode MS";
+            sht.Range("A3:B3").Style.Font.FontSize = 11;
+            sht.Range("A3:B3").Style.Font.Bold = true;
+            sht.Range("A3:B3").Merge();
+
+            sht.Range("C3").Value = DDOrderNo.SelectedItem.Text;
+            sht.Range("C3:C3").Style.Font.FontName = "Arial Unicode MS";
+            sht.Range("C3:C3").Style.Font.FontSize = 11;
+            sht.Range("C3:C3").Style.Font.Bold = true;
+            sht.Range("C3:C3").Merge();
+
+
+            if (ds != null)
+            {
+               
+                    //sht.Range("G1").Value = "CUSTOMER ORDER STATUS";
+                    //sht.Range("G1:H1").Style.Font.FontName = "Arial Unicode MS";
+                    //sht.Range("G1:H1").Style.Font.FontSize = 12;
+                    sht.Range("G1:H1").Style.Font.Bold = true;
+                    //sht.Range("G1:H1").Merge();
+                    sht.Range("A5:J5").Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A5:J5").Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A5:J5").Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A5:J5").Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A5").Value = "Category";
+                    sht.Range("B5").Value = "Technique";
+                    sht.Range("C5").Value = "Quality";
+                    sht.Range("D5").Value = "Design";
+                    sht.Range("E5").Value = "Color";
+                    sht.Range("F5").Value = "Shape";
+                    sht.Range("G5").Value = "Size";
+                    sht.Range("H5").Value = "Unit";
+                    sht.Range("I5").Value = "Order Qty.";
+                    sht.Range("J5").Value = "Filler";
+                    sht.Range("A5:J5").Style.Font.Bold = true;
+                    row = 6;
+                    if (ds.Tables[0].Rows.Count > 0)
+                    {
+                        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                        {
+                            sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["CATEGORY_NAME"]); //"BUYER CODE";
+                            sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["ITEM_NAME"]); // = "PO TYPE";
+                            sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"].ToString());  //"LPO";
+                            sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["DESIGNNAME"].ToString());  //"BPO";
+                            sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["COLORNAME"]);  //"ORD DT";
+                            sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["SHAPENAME"]);
+                            sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["SIZE"]);
+                            sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["UNIT"]);
+                            sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["QTYREQUIRED"]);
+                            sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["FILLER"]);
+                            sht.Range("A" + row + ":J" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":J" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":J" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                            row = row + 1;
+                        }
+                    }
+
+                /////////////////////////////////Purchase////////////////////////////////////////////////////////////////////
+                    row += 1;
+                    sht.Range("A" + row).Value = "Purchase";
+                    sht.Range("A" + row + ":B" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A" + row + ":B" + row).Style.Font.FontSize = 11;
+                    sht.Range("A" + row + ":B" + row).Style.Font.Bold = true;
+                    sht.Range("A" + row + ":B" + row).Merge();
+                    row += 3;
+                    sht.Range("A" + row + ":J" + row).Style.Font.Bold = true;
+                    //sht.Range("G1:H1").Merge();
+                    sht.Range("A" + row + ":T" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":T" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":T" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":T" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A"+row).Value = "Category";
+                    sht.Range("B" + row).Value = "Po No";
+                    sht.Range("C" + row).Value = "Po Status";
+                    sht.Range("D" + row).Value = "Po Date";
+                    sht.Range("E" + row).Value = "Supp. Name";
+                    sht.Range("F" + row).Value = "Item Name";
+                    sht.Range("G" + row).Value = "Rate";
+                    sht.Range("H" + row).Value = "PO Qty";
+                    sht.Range("I" + row).Value = "Delv Date";
+                    sht.Range("J" + row).Value = "CanQty/Date";
+                    sht.Range("K" + row).Value = "RecDate";
+                    sht.Range("L" + row).Value = "ChallanNo";
+                    sht.Range("M" + row).Value = "LotNo";
+                    sht.Range("N" + row).Value = "Bill No";
+
+                    sht.Range("O" + row).Value = "Rec Qty";
+                    sht.Range("P" + row).Value = "Ret Date";
+                    sht.Range("Q" + row).Value = "Ret Qty";
+                    sht.Range("R" + row).Value = "Pending Qty";
+                    sht.Range("S" + row).Value = "Receive Remark";
+                    sht.Range("T" + row).Value = "Order Remark";
+                    sht.Range("A" + row + ":T" + row).Style.Font.Bold = true;
+                    row +=1;
+                    if (ds.Tables[1].Rows.Count > 0)
+                    {
+                        for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                        {
+                            sht.Range("A" + row).SetValue(ds.Tables[1].Rows[i]["CATEGORY_NAME"]); //"BUYER CODE";
+                            sht.Range("B" + row).SetValue(ds.Tables[1].Rows[i]["PO"]); // = "PO TYPE";
+                            sht.Range("C" + row).SetValue(ds.Tables[1].Rows[i]["STATUS"].ToString());  //"LPO";
+                            sht.Range("D" + row).SetValue(ds.Tables[1].Rows[i]["ORDERDATE"].ToString());  //"BPO";
+                            sht.Range("E" + row).SetValue(ds.Tables[1].Rows[i]["EMPNAME"]);  //"ORD DT";
+                            sht.Range("F" + row).SetValue(ds.Tables[1].Rows[i]["DESCRIPTION"]);
+                            sht.Range("G" + row).SetValue(ds.Tables[1].Rows[i]["RATE"]);
+                            sht.Range("H" + row).SetValue(ds.Tables[1].Rows[i]["ORDERQTY"]);
+                            sht.Range("I" + row).SetValue(ds.Tables[1].Rows[i]["DELIVERYDATE"]);
+                            sht.Range("J" + row).SetValue(ds.Tables[1].Rows[i]["ORDERCANQTY"]);
+                            sht.Range("K" + row).SetValue(ds.Tables[1].Rows[i]["RECDATE"]);
+                            sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
+                            sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                            sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                            sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                            sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                            sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                            sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                            sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                            sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+
+                          
+                            sht.Range("A" + row + ":T" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":T" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":T" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":T" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                            row = row + 1;
+                        }
+                    }
+
+                   
+                    row += 1;
+                    //sht.Range("A" + row).Value = "Process Program";
+                    //sht.Range("A" + row + ":B" + row).Style.Font.FontName = "Arial Unicode MS";
+                    //sht.Range("A" + row + ":B" + row).Style.Font.FontSize = 11;
+                    //sht.Range("A" + row + ":B" + row).Style.Font.Bold = true;
+                    //sht.Range("A" + row + ":B" + row).Merge();
+                    //row += 1;
+                 List<int> pidpp = new List<int>();
+                 pidpp = ds.Tables[2].AsEnumerable().Select(a => a.Field<Int32>("PROCESS_ID")).Distinct().ToList();
+
+                 foreach (var item in pidpp)
+                 {
+
+                     DataTable dtpp = new DataTable();
+
+                     var query = (from gift in ds.Tables[2].AsEnumerable()
+                                  where gift.Field<int>("PROCESS_ID") == item
+                                  //  fr.price,vf.ITEM_NAME,vf.QualityName,vf.ShapeName,vf.ColorName
+                                  select new
+
+                                  {
+
+
+
+
+                                      processname = gift.Field<string>("PROCESS_NAME"),
+                                      shadecolor = gift.Field<string>("SHADECOLORNAME"),
+                                      dyername = gift.Field<string>("DYERNAME"),
+                                      // shapename = gift.Field<string>("shapename"),
+                                      qualityname = gift.Field<string>("QUALITYNAME"),
+                                      consmpqty = gift.Field<double>("CONSMPQTY"),
+                                      indentqty = gift.Field<double>("INDENTQTY"),
+
+                                      lossqty = gift.Field<double>("LOSSQTY"),
+                                      
+                                      UNIT = gift.Field<string>("UNITNAME"),
+                                      reqQTY = gift.Field<double>("REQQTY"),
+                                      RECQTY = gift.Field<double>("recQty"),
+                                      pendingqty = gift.Field<double>("PENDINGQTY"),
+                                      balqty = gift.Field<double>("BALQTY"),
+
+
+                                  });
+
+                     row += 1;
+                     sht.Range("A" + row).Value = query.FirstOrDefault().processname.ToUpper(); ;
+                     sht.Range("A" + row + ":B" + row).Style.Font.FontName = "Arial Unicode MS";
+                     sht.Range("A" + row + ":B" + row).Style.Font.FontSize = 11;
+                     sht.Range("A" + row + ":B" + row).Style.Font.Bold = true;
+                     sht.Range("A" + row + ":B" + row).Merge();
+                     row += 1;
+                     sht.Range("A" + row + ":L" + row).Style.Font.Bold = true;
+                     //sht.Range("G1:H1").Merge();
+                     sht.Range("A" + row + ":L" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                     sht.Range("A" + row + ":L" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                     sht.Range("A" + row + ":L" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                     sht.Range("A" + row + ":L" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                     sht.Range("A" + row).Value = "Quality";
+                     sht.Range("B" + row).Value = "Shade No";
+                     sht.Range("C" + row).Value = "Consumption (per pc.)";
+                     sht.Range("D" + row).Value = "Unit";
+                     sht.Range("E" + row).Value = "Reqd. Qty.";
+                     sht.Range("F" + row).Value = "Issued Qty.";
+                     sht.Range("G" + row).Value = "Rcvd";
+                     sht.Range("H" + row).Value = "Loss Qty.";
+                     sht.Range("I" + row).Value = "Pending Qty";
+                     sht.Range("J" + row).Value = "Reqd Bal Qty";
+                     sht.Range("K" + row).Value = "JobWorker Name";
+                   //  sht.Range("L" + row).Value = "Process Name";
+                     //sht.Range("M" + row).Value = "LotNo";
+                     //sht.Range("N" + row).Value = "Bill No";
+
+                     //sht.Range("O" + row).Value = "Rec Qty";
+                     //sht.Range("P" + row).Value = "Ret Date";
+                     //sht.Range("Q" + row).Value = "Ret Qty";
+                     //sht.Range("R" + row).Value = "Pending Qty";
+                     //sht.Range("S" + row).Value = "Receive Remark";
+                     //sht.Range("T" + row).Value = "Order Remark";
+                     sht.Range("A" + row + ":K" + row).Style.Font.Bold = true;
+                     row += 1;
+                     if (query.Count() > 0)
+                     {
+                         int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0, sumissueqty = 0, sumrecqty = 0, sumpendinqty = 0;
+
+                         foreach (var data in query)
+                         {
+                             sht.Range("A" + row).SetValue(data.qualityname); //"BUYER CODE";
+                             sht.Range("B" + row).SetValue(data.shadecolor); // = "PO TYPE";
+                             sht.Range("C" + row).SetValue(data.consmpqty);  //"LPO";
+                             sht.Range("D" + row).SetValue(data.UNIT);  //"BPO";
+                             sht.Range("E" + row).SetValue(data.reqQTY);  //"ORD DT";
+                             sht.Range("F" + row).SetValue(data.indentqty);
+                             sht.Range("G" + row).SetValue(data.RECQTY);
+                             sht.Range("H" + row).SetValue(data.lossqty);
+                             sht.Range("I" + row).SetValue(data.pendingqty);
+                             sht.Range("J" + row).SetValue(data.balqty);
+                             sht.Range("K" + row).SetValue(data.dyername);
+                            // sht.Range("L" + row).SetValue(ds.Tables[2].Rows[i]["PROCESS_NAME"]);
+                             //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                             //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                             //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                             //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                             //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                             //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                             //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                             //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+
+
+                             sht.Range("A" + row + ":K" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                             sht.Range("A" + row + ":K" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                             sht.Range("A" + row + ":K" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                             sht.Range("A" + row + ":K" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                             row = row + 1;
+                         }
+                     }
+                 }
+                    row += 1;
+
+                 List<int> pidcutting = new List<int>();
+                 pidcutting = ds.Tables[3].AsEnumerable().Select(a => a.Field<Int32>("PROCESS_NAME_ID")).Distinct().ToList();
+
+                 foreach (var item in pidcutting)
+                  {
+                      DataTable dtcutting = new DataTable();
+
+                      var query = (from gift in ds.Tables[3].AsEnumerable()
+                                   where gift.Field<int>("PROCESS_NAME_ID") == item
+                                   //  fr.price,vf.ITEM_NAME,vf.QualityName,vf.ShapeName,vf.ColorName
+                                   select new
+
+                                   {
+
+
+
+
+                                       processname = gift.Field<string>("process_name"),
+                                       itemname = gift.Field<string>("item_name"),
+                                       colorname = gift.Field<string>("colorname"),
+                                      // shapename = gift.Field<string>("shapename"),
+                                       qualityname = gift.Field<string>("qualityname"),
+                                       cateogoryname = gift.Field<string>("category_name"),
+                                       designname = gift.Field<string>("designname"),
+
+                                       size = gift.Field<string>("size"),
+                                      // width = gift.Field<string>("WIDTH"),
+                                       //height = gift.Field<Double?>("heightinch"),
+                                       UNIT = gift.Field<string>("UNITNAME"),
+                                       QTY = gift.Field<int>("qty"),
+                                       RECQTY = gift.Field<int>("recQty"),
+                                       ISSUEQTY = gift.Field<int>("QtyOrder"),
+
+
+                                   });
+
+
+
+                      row += 1;
+                      sht.Range("A" + row).Value = query.FirstOrDefault().processname.ToUpper();
+                      sht.Range("A" + row + ":C" + row).Style.Font.FontName = "Arial Unicode MS";
+                      sht.Range("A" + row + ":C" + row).Style.Font.FontSize = 11;
+                      sht.Range("A" + row + ":C" + row).Style.Font.Bold = true;
+                      sht.Range("A" + row + ":C" + row).Merge();
+                      row += 1;
+                      sht.Range("A" + row + ":J" + row).Style.Font.Bold = true;
+                      //sht.Range("G1:H1").Merge();
+                      sht.Range("A" + row + ":J" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":J" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":J" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row).Value = "Components";
+                      sht.Range("B" + row).Value = "Design";
+                      sht.Range("C" + row).Value = "Color";
+                      sht.Range("D" + row).Value = "Size";
+                      sht.Range("E" + row).Value = "Unit";
+                      sht.Range("F" + row).Value = "Order Qty.";
+                      sht.Range("G" + row).Value = "Issued";
+                      sht.Range("H" + row).Value = "Rcvd";
+                      sht.Range("I" + row).Value = "Pending Qty";
+                      sht.Range("J" + row).Value = "Reqd Bal Qty";
+                      // sht.Range("K" + row).Value = "JOBWORKER NAME";
+                      //sht.Range("L" + row).Value = "ChallanNo";
+                      //sht.Range("M" + row).Value = "LotNo";
+                      //sht.Range("N" + row).Value = "Bill No";
+
+                      //sht.Range("O" + row).Value = "Rec Qty";
+                      //sht.Range("P" + row).Value = "Ret Date";
+                      //sht.Range("Q" + row).Value = "Ret Qty";
+                      //sht.Range("R" + row).Value = "Pending Qty";
+                      //sht.Range("S" + row).Value = "Receive Remark";
+                      //sht.Range("T" + row).Value = "Order Remark";
+                      sht.Range("A" + row + ":J" + row).Style.Font.Bold = true;
+                      row += 1;
+                      if (query.Count() > 0)
+                      {
+                          int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0, sumissueqty = 0, sumrecqty = 0, sumpendinqty = 0;
+
+                          foreach (var data in query)
+                          {
+                              qty = Convert.ToInt16(data.QTY);
+                              recqty = Convert.ToInt16(data.RECQTY);
+                              orderqty = Convert.ToInt16(data.ISSUEQTY);
+                              pendingqty = qty - recqty;
+                              balqty = orderqty - qty;
+
+                              sht.Range("A" + row).SetValue(data.qualityname); //"BUYER CODE";
+                              sht.Range("B" + row).SetValue(data.designname); // = "PO TYPE";
+                              sht.Range("C" + row).SetValue(data.colorname);  //"LPO";
+                              sht.Range("D" + row).SetValue(data.size);  //"BPO";
+                              sht.Range("E" + row).SetValue(data.UNIT);  //"ORD DT";
+                              sht.Range("F" + row).SetValue(data.ISSUEQTY);
+                              sht.Range("G" + row).SetValue(data.QTY);
+                              sht.Range("H" + row).SetValue(data.RECQTY);
+                              sht.Range("I" + row).SetValue(pendingqty);
+                              sht.Range("J" + row).SetValue(balqty);
+                              //sht.Range("K" + row).SetValue(ds.Tables[3].Rows[i]["DYERNAME"]);
+                              //sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
+                              //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                              //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                              //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                              //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                              //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                              //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                              //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                              //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+
+
+                              sht.Range("A" + row + ":J" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":J" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":J" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":J" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                              row = row + 1;
+                          }
+                      }
+                  }
+                    row += 1;
+                    sht.Range("A" + row).Value = "Raw Material Issue for Cutting";
+                    sht.Range("A" + row + ":D" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A" + row + ":D" + row).Style.Font.FontSize = 11;
+                    sht.Range("A" + row + ":D" + row).Style.Font.Bold = true;
+                    sht.Range("A" + row + ":D" + row).Merge();
+                    row += 1;
+                    sht.Range("A" + row + ":H" + row).Style.Font.Bold = true;
+                    //sht.Range("G1:H1").Merge();
+                    sht.Range("A" + row + ":H" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row).Value = "Quality";
+                    sht.Range("B" + row).Value = "Shade Color";
+                    sht.Range("C" + row).Value = "Consumption (per pc.)";
+                    sht.Range("D" + row).Value = "Unit";
+                    sht.Range("E" + row).Value = "Reqd. Qty.";
+                    sht.Range("F" + row).Value = "Issue Qty";
+                    sht.Range("G" + row).Value = "Bal to Issue";
+                    sht.Range("H" + row).Value = "Jobworker Name";
+                    //sht.Range("I" + row).Value = "Pending Qty";
+                    //sht.Range("J" + row).Value = "Reqd Bal Qty";
+                    // sht.Range("K" + row).Value = "JOBWORKER NAME";
+                    //sht.Range("L" + row).Value = "ChallanNo";
+                    //sht.Range("M" + row).Value = "LotNo";
+                    //sht.Range("N" + row).Value = "Bill No";
+
+                    //sht.Range("O" + row).Value = "Rec Qty";
+                    //sht.Range("P" + row).Value = "Ret Date";
+                    //sht.Range("Q" + row).Value = "Ret Qty";
+                    //sht.Range("R" + row).Value = "Pending Qty";
+                    //sht.Range("S" + row).Value = "Receive Remark";
+                    //sht.Range("T" + row).Value = "Order Remark";
+                    sht.Range("A" + row + ":H" + row).Style.Font.Bold = true;
+                    row += 1;
+                    if (ds.Tables[4].Rows.Count > 0)
+                    {
+                        int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0;
+
+                        for (int i = 0; i < ds.Tables[4].Rows.Count; i++)
+                        {
+                            qty = Convert.ToInt16(ds.Tables[4].Rows[i]["REQQTY"]);
+                            recqty = Convert.ToInt16(ds.Tables[4].Rows[i]["ISSQTY"]);
+                           // orderqty = Convert.ToInt16(ds.Tables[3].Rows[i]["qtyorder"]);
+                            pendingqty = qty - recqty;
+                          //  balqty = orderqty - qty;
+
+                            sht.Range("A" + row).SetValue(ds.Tables[4].Rows[i]["QUALITYNAME"]); //"BUYER CODE";
+                            sht.Range("B" + row).SetValue(ds.Tables[4].Rows[i]["SHADECOLORNAME"]); // = "PO TYPE";
+                            sht.Range("C" + row).SetValue(ds.Tables[4].Rows[i]["CONSMPQTY"].ToString());  //"LPO";
+                            sht.Range("D" + row).SetValue(ds.Tables[4].Rows[i]["UNIT"].ToString());  //"BPO";
+                            sht.Range("E" + row).SetValue(ds.Tables[4].Rows[i]["REQQTY"]);  //"ORD DT";
+                            sht.Range("F" + row).SetValue(ds.Tables[4].Rows[i]["ISSQTY"]);
+                            sht.Range("G" + row).SetValue(pendingqty);
+                            sht.Range("H" + row).SetValue("");
+                            //sht.Range("I" + row).SetValue(pendingqty);
+                            //sht.Range("J" + row).SetValue(balqty);
+                            //sht.Range("K" + row).SetValue(ds.Tables[3].Rows[i]["DYERNAME"]);
+                            //sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
+                            //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                            //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                            //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                            //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                            //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                            //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                            //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                            //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+
+
+                            sht.Range("A" + row + ":H" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                            row = row + 1;
+                        }
+                    }
+
+                    row += 1;
+                    sht.Range("A" + row).Value = "Raw Material Issue for Stitching";
+                    sht.Range("A" + row + ":D" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A" + row + ":D" + row).Style.Font.FontSize = 11;
+                    sht.Range("A" + row + ":D" + row).Style.Font.Bold = true;
+                    sht.Range("A" + row + ":D" + row).Merge();
+                    row += 1;
+                    sht.Range("A" + row + ":H" + row).Style.Font.Bold = true;
+                    //sht.Range("G1:H1").Merge();
+                    sht.Range("A" + row + ":H" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row).Value = "Quality";
+                    sht.Range("B" + row).Value = "Shade Color";
+                    sht.Range("C" + row).Value = "Consumption (per pc.)";
+                    sht.Range("D" + row).Value = "Unit";
+                    sht.Range("E" + row).Value = "Reqd. Qty.";
+                    sht.Range("F" + row).Value = "Issue Qty";
+                    sht.Range("G" + row).Value = "Bal to Issue";
+                    sht.Range("H" + row).Value = "Jobworker Name";
+                    //sht.Range("I" + row).Value = "Pending Qty";
+                    //sht.Range("J" + row).Value = "Reqd Bal Qty";
+                    // sht.Range("K" + row).Value = "JOBWORKER NAME";
+                    //sht.Range("L" + row).Value = "ChallanNo";
+                    //sht.Range("M" + row).Value = "LotNo";
+                    //sht.Range("N" + row).Value = "Bill No";
+
+                    //sht.Range("O" + row).Value = "Rec Qty";
+                    //sht.Range("P" + row).Value = "Ret Date";
+                    //sht.Range("Q" + row).Value = "Ret Qty";
+                    //sht.Range("R" + row).Value = "Pending Qty";
+                    //sht.Range("S" + row).Value = "Receive Remark";
+                    //sht.Range("T" + row).Value = "Order Remark";
+                    sht.Range("A" + row + ":H" + row).Style.Font.Bold = true;
+                    row += 1;
+                    if (ds.Tables[6].Rows.Count > 0)
+                    {
+                        int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0;
+
+                        for (int i = 0; i < ds.Tables[6].Rows.Count; i++)
+                        {
+                            qty = Convert.ToInt16(ds.Tables[6].Rows[i]["REQQTY"]);
+                            recqty = Convert.ToInt16(ds.Tables[6].Rows[i]["ISSQTY"]);
+                            // orderqty = Convert.ToInt16(ds.Tables[3].Rows[i]["qtyorder"]);
+                            pendingqty = qty - recqty;
+                            //  balqty = orderqty - qty;
+
+                            sht.Range("A" + row).SetValue(ds.Tables[6].Rows[i]["QUALITYNAME"]); //"BUYER CODE";
+                            sht.Range("B" + row).SetValue(ds.Tables[6].Rows[i]["SHADECOLORNAME"]); // = "PO TYPE";
+                            sht.Range("C" + row).SetValue(ds.Tables[6].Rows[i]["CONSMPQTY"].ToString());  //"LPO";
+                            sht.Range("D" + row).SetValue(ds.Tables[6].Rows[i]["UNIT"].ToString());  //"BPO";
+                            sht.Range("E" + row).SetValue(ds.Tables[6].Rows[i]["REQQTY"]);  //"ORD DT";
+                            sht.Range("F" + row).SetValue(ds.Tables[6].Rows[i]["ISSQTY"]);
+                            sht.Range("G" + row).SetValue(pendingqty);
+                            sht.Range("H" + row).SetValue("");
+                            //sht.Range("I" + row).SetValue(pendingqty);
+                            //sht.Range("J" + row).SetValue(balqty);
+                            //sht.Range("K" + row).SetValue(ds.Tables[3].Rows[i]["DYERNAME"]);
+                            //sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
+                            //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                            //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                            //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                            //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                            //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                            //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                            //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                            //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+
+
+                            sht.Range("A" + row + ":H" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                            row = row + 1;
+                        }
+                    }
+
+                    row += 1;
+                    sht.Range("A" + row).Value = "Raw Material Issue for Packing";
+                    sht.Range("A" + row + ":D" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A" + row + ":D" + row).Style.Font.FontSize = 11;
+                    sht.Range("A" + row + ":D" + row).Style.Font.Bold = true;
+                    sht.Range("A" + row + ":D" + row).Merge();
+                    row += 1;
+                    sht.Range("A" + row + ":H" + row).Style.Font.Bold = true;
+                    //sht.Range("G1:H1").Merge();
+                    sht.Range("A" + row + ":H" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row + ":H" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    sht.Range("A" + row).Value = "Quality";
+                    sht.Range("B" + row).Value = "Shade Color";
+                    sht.Range("C" + row).Value = "Consumption (per pc.)";
+                    sht.Range("D" + row).Value = "Unit";
+                    sht.Range("E" + row).Value = "Reqd. Qty.";
+                    sht.Range("F" + row).Value = "Issue Qty";
+                    sht.Range("G" + row).Value = "Bal to Issue";
+                    sht.Range("H" + row).Value = "Jobworker Name";
+                    //sht.Range("I" + row).Value = "Pending Qty";
+                    //sht.Range("J" + row).Value = "Reqd Bal Qty";
+                    // sht.Range("K" + row).Value = "JOBWORKER NAME";
+                    //sht.Range("L" + row).Value = "ChallanNo";
+                    //sht.Range("M" + row).Value = "LotNo";
+                    //sht.Range("N" + row).Value = "Bill No";
+
+                    //sht.Range("O" + row).Value = "Rec Qty";
+                    //sht.Range("P" + row).Value = "Ret Date";
+                    //sht.Range("Q" + row).Value = "Ret Qty";
+                    //sht.Range("R" + row).Value = "Pending Qty";
+                    //sht.Range("S" + row).Value = "Receive Remark";
+                    //sht.Range("T" + row).Value = "Order Remark";
+                    sht.Range("A" + row + ":H" + row).Style.Font.Bold = true;
+                    row += 1;
+                    if (ds.Tables[7].Rows.Count > 0)
+                    {
+                        int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0;
+
+                        for (int i = 0; i < ds.Tables[7].Rows.Count; i++)
+                        {
+                            qty = Convert.ToInt16(ds.Tables[7].Rows[i]["REQQTY"]);
+                            recqty = Convert.ToInt16(ds.Tables[7].Rows[i]["ISSQTY"]);
+                            // orderqty = Convert.ToInt16(ds.Tables[3].Rows[i]["qtyorder"]);
+                            pendingqty = qty - recqty;
+                            //  balqty = orderqty - qty;
+
+                            sht.Range("A" + row).SetValue(ds.Tables[7].Rows[i]["QUALITYNAME"]); //"BUYER CODE";
+                            sht.Range("B" + row).SetValue(ds.Tables[7].Rows[i]["SHADECOLORNAME"]); // = "PO TYPE";
+                            sht.Range("C" + row).SetValue(ds.Tables[7].Rows[i]["CONSMPQTY"].ToString());  //"LPO";
+                            sht.Range("D" + row).SetValue(ds.Tables[7].Rows[i]["UNIT"].ToString());  //"BPO";
+                            sht.Range("E" + row).SetValue(ds.Tables[7].Rows[i]["REQQTY"]);  //"ORD DT";
+                            sht.Range("F" + row).SetValue(ds.Tables[7].Rows[i]["ISSQTY"]);
+                            sht.Range("G" + row).SetValue(pendingqty);
+                            sht.Range("H" + row).SetValue("");
+                            //sht.Range("I" + row).SetValue(pendingqty);
+                            //sht.Range("J" + row).SetValue(balqty);
+                            //sht.Range("K" + row).SetValue(ds.Tables[3].Rows[i]["DYERNAME"]);
+                            //sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
+                            //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                            //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                            //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                            //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                            //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                            //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                            //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                            //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+
+
+                            sht.Range("A" + row + ":H" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":H" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                            row = row + 1;
+                        }
+                    }
+
+
+
+
+                    List<int> pid = new List<int>();
+                  pid=  ds.Tables[5].AsEnumerable().Select(a => a.Field<Int32>("processid")).Distinct().ToList();
+                    
+                  foreach (var item in pid)
+                  {
+
+                      DataTable dtfinal = new DataTable();
+
+                      var query = (from gift in ds.Tables[5].AsEnumerable()
+                                   where gift.Field<int>("processid") == item 
+                                   //  fr.price,vf.ITEM_NAME,vf.QualityName,vf.ShapeName,vf.ColorName
+                                   select new
+                                   {
+                                       processname=gift.Field<string>("process_name"),
+                                       itemname = gift.Field<string>("item_name"),
+                                       colorname = gift.Field<string>("colorname"),
+                                       shapename = gift.Field<string>("shapename"),
+                                       qualityname = gift.Field<string>("qualityname"),
+                                       cateogoryname = gift.Field<string>("category_name"),
+                                       designname = gift.Field<string>("designname"),
+
+                                       length = gift.Field<string>("LENGTH"),
+                                       width = gift.Field<string>("WIDTH"),
+                                       //height = gift.Field<Double?>("heightinch"),
+                                       UNIT = gift.Field<string>("UNITNAME"),
+                                       RECQTY = gift.Field<int>("RECEIVEQTY"),
+                                       ISSUEQTY = gift.Field<int>("ISSUEQTY"),
+
+
+                                   });
+
+
+                      row += 1;
+                      sht.Range("A" + row).Value = (query.FirstOrDefault().processname.ToUpper() == "CUTTING") ? "Purchase" : query.FirstOrDefault().processname;
+                      sht.Range("A" + row + ":D" + row).Style.Font.FontName = "Arial Unicode MS";
+                      sht.Range("A" + row + ":D" + row).Style.Font.FontSize = 11;
+                      sht.Range("A" + row + ":D" + row).Style.Font.Bold = true;
+                      sht.Range("A" + row + ":D" + row).Merge();
+                      row += 3;
+                      sht.Range("A" + row + ":K" + row).Style.Font.Bold = true;
+                      //sht.Range("G1:H1").Merge();
+                      sht.Range("A" + row + ":K" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":K" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":K" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":K" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row).Value = "Category";
+                      sht.Range("B" + row).Value = "Technique";
+                      sht.Range("C" + row).Value = "Quality";
+                      sht.Range("D" + row).Value = "Design";
+                      sht.Range("E" + row).Value = "Color";
+                      sht.Range("F" + row).Value = "Shape";
+                      sht.Range("G" + row).Value = "Size";
+                      sht.Range("H" + row).Value = "Unit";
+                      sht.Range("I" + row).Value = "Issue Qty";
+                      sht.Range("J" + row).Value = "Recv  Qty";
+                       sht.Range("K" + row).Value = "Pending Qty";
+                      //sht.Range("L" + row).Value = "ChallanNo";
+                      //sht.Range("M" + row).Value = "LotNo";
+                      //sht.Range("N" + row).Value = "Bill No";
+
+                      //sht.Range("O" + row).Value = "Rec Qty";
+                      //sht.Range("P" + row).Value = "Ret Date";
+                      //sht.Range("Q" + row).Value = "Ret Qty";
+                      //sht.Range("R" + row).Value = "Pending Qty";
+                      //sht.Range("S" + row).Value = "Receive Remark";
+                      //sht.Range("T" + row).Value = "Order Remark";
+                      sht.Range("A" + row + ":K" + row).Style.Font.Bold = true;
+                      row += 1;
+                      if (query.Count() > 0)
+                      {
+                          int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0, sumissueqty = 0, sumrecqty = 0, sumpendinqty = 0;
+
+                          foreach (var data in query)
+                          {
+                              //qty = Convert.ToInt16(ds.Tables[3].Rows[i]["QTY"]);
+                              //recqty = Convert.ToInt16(ds.Tables[3].Rows[i]["RECQTY"]);
+                              //orderqty = Convert.ToInt16(ds.Tables[3].Rows[i]["qtyorder"]);
+                              //pendingqty = qty - recqty;
+                              //balqty = orderqty - qty;
+                              sumissueqty += Convert.ToInt16(data.ISSUEQTY);
+                              sumrecqty += Convert.ToInt16(data.RECQTY);
+                              sumpendinqty += Convert.ToInt16(data.ISSUEQTY) - Convert.ToInt16(data.RECQTY);
+                              sht.Range("A" + row).SetValue(data.cateogoryname); //"BUYER CODE";
+                              sht.Range("B" + row).SetValue(data.itemname); // = "PO TYPE";
+                              sht.Range("C" + row).SetValue(data.qualityname);  //"LPO";
+                              sht.Range("D" + row).SetValue(data.designname);  //"BPO";
+                              sht.Range("E" + row).SetValue(data.colorname);  //"ORD DT";
+                              sht.Range("F" + row).SetValue(data.shapename);
+                              sht.Range("G" + row).SetValue(data.length + "x" + data.width);
+                              sht.Range("H" + row).SetValue(data.UNIT);
+                              sht.Range("I" + row).SetValue(data.ISSUEQTY);
+                              sht.Range("J" + row).SetValue(data.RECQTY);
+                              sht.Range("K" + row).SetValue(Convert.ToInt16(data.ISSUEQTY) - Convert.ToInt16(data.RECQTY));
+                              //sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
+                              //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                              //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                              //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                              //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                              //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                              //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                              //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                              //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+
+
+                              sht.Range("A" + row + ":K" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":K" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":K" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":K" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+
+                              row = row + 1;
+                          }
+
+                        //  row += 1;
+                          sht.Range("H" + row).Value = "Total";
+                          sht.Range("I" + row).Value = sumissueqty;
+                          sht.Range("J" + row).Value = sumrecqty;
+                          sht.Range("k" + row).Value = sumpendinqty;
+                          sht.Range("H" + row + ":K" + row).Style.Font.FontName = "Arial Unicode MS";
+                          sht.Range("H" + row + ":K" + row).Style.Font.FontSize = 11;
+                          sht.Range("H" + row + ":K" + row).Style.Font.Bold = true;
+                         // sht.Range("H" + row + ":J" + row).Merge();
+                          sht.Range("H" + row + ":K" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                          sht.Range("H" + row + ":K" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                          sht.Range("H" + row + ":K" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                          sht.Range("H" + row + ":K" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                      }
+                  
+                  }
+                    
+
+
+
+
+
+            }
+
+            string Fileextension = "xlsx";
+            string filename = "";
+           
+           filename = UtilityModule.validateFilename("POSTATUS_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+          
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
+        }
+
+    }
     protected void Interfoliodetail()
     {
         String str = "", FilterBy = "";
@@ -1940,7 +2779,7 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
             sht.Range("A3:E3").Style.Font.Bold = true;
             sht.Range("A3:E3").Merge();
                    
-            sht.Range("A4").Value = "BUYER NAME";
+            sht.Range("A4").Value = "BUYER CODER";
             sht.Range("B4").Value = "ORDER#";
             sht.Range("C4").Value = "ITEM";
             sht.Range("D4").Value = "QTY";
@@ -1959,7 +2798,7 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
                 sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["Item"]);
                 sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["Qty"]);
                 sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["DispatchDate"]);
-             //   sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["SqYrdArea"]);
+             // sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["SqYrdArea"]);
                 row = row + 1;
             }
             row = row - 1;

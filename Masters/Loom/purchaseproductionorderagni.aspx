@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="PRODUCTION ORDER" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="purchaseproductionorderagni.aspx.cs" Inherits="Masters_Loom_frmproductionorderonLoom" %>
+    AutoEventWireup="true" MaintainScrollPositionOnPostback="true" CodeFile="purchaseproductionorderagni.aspx.cs" Inherits="Masters_Loom_frmproductionorderonLoom" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
@@ -176,6 +176,23 @@
             });
         }
     </script>
+    <script language="javascript" type="text/javascript">
+
+        function setScroll(val) {
+
+            document.getElementById('<%=scrollPos.ClientID%>').value = val.scrollTop;
+
+        }
+
+        function scrollTo(what) {
+
+            if (what != "0")
+
+                document.getElementById(what).scrollTop = document.getElementById("scrollPos").value;
+
+        }
+
+</script>
     <div>
         <asp:UpdatePanel ID="upd1" runat="server">
             <ContentTemplate>
@@ -478,6 +495,9 @@
                                     <asp:Label ID="Label13" runat="server" Text="Customer OrderNo" CssClass="labelbold"></asp:Label><br />
                                     <asp:Label ID="lblCustomerOrderNo" runat="server" CssClass="labelbold"></asp:Label>
                                 </td>
+                                <td id="tdprocess" runat="server" visible="false">
+                                    <asp:CheckBox ID="chkprocessitem" Text="Cushion" runat="server" />
+                                </td>
                             </tr>
                         </table>
                     </div>
@@ -559,8 +579,10 @@
                         </tr>
                         <tr>
                             <td>
-                                <div id="gride" runat="server" style="max-height: 300px; overflow: auto">
-                                    <asp:GridView ID="DG" AutoGenerateColumns="False" runat="server" CssClass="grid-views"
+                          
+            <input id="scrollPos" runat="server" type="hidden" value="0"  />
+                                <div id="gride" runat="server" style="max-height: 300px; overflow: auto" onscroll='javascript:setScroll(this);'>
+                                    <asp:GridView ID="DG"  AutoGenerateColumns="False" runat="server" CssClass="grid-views"
                                         EmptyDataText="No. Records found." OnRowDataBound="DG_RowDataBound">
                                         <HeaderStyle CssClass="gvheaders" />
                                         <AlternatingRowStyle CssClass="gvalts" />
@@ -709,6 +731,7 @@
                                         </Columns>
                                     </asp:GridView>
                                 </div>
+                               
                             </td>
                         </tr>
                     </table>
@@ -738,6 +761,7 @@
                                     Visible="false" OnClick="BtnOrderProcessToChampoPanipatPNM3_Click" />
                                 <asp:Button ID="BtnStockNoStatus" runat="server" Text="StockNo Status" CssClass="buttonnorm"
                                     Visible="false" OnClick="StockNoStatus_Click" />
+                                     <asp:CheckBox ID="chksummary" runat="server"  Text="Summary" />
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
                                 <asp:Button ID="btnupdateconsmp" runat="server" Text="Update consumption" CssClass="buttonnorm"
                                     Visible="false" OnClientClick="return cancelvalidation();" OnClick="btnupdateconsmp_Click" />
@@ -1028,6 +1052,11 @@
                 <asp:HiddenField ID="hnEmpWagescalculation" Value="" runat="server" />
                 <asp:HiddenField ID="hnEmployeeType" Value="" runat="server" />
             </ContentTemplate>
+           <Triggers>
+           <%-- <asp:PostBackTrigger ControlID="DG"  />--%>
+          
+
+            </Triggers>
         </asp:UpdatePanel>
     </div>
     <style type="text/css">

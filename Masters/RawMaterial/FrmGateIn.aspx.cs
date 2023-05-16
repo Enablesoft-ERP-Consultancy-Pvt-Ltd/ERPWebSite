@@ -19,7 +19,14 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
         {
             string str = "";
             str = @"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname";
-            if (Convert.ToInt16(Session["varcompanyid"]) == 8)
+            if (Convert.ToInt16(Session["varcompanyid"]) == 45)
+            {
+                str = str + @" Select EI.EmpID, EI.EmpName + ' (' + EI.EmpCode + ')' EmpName1 
+                    From Empinfo EI(Nolock) 
+                    JOIN EmpinfoPageName EP(Nolock) ON EI.EmpID = EP.EmpID And EP.PageName = 'FrmGateIn'
+                    Where EI.MastercompanyID = " + Session["varCompanyId"] + @" Order By EmpName1 ";
+            }
+            else if (Convert.ToInt16(Session["varcompanyid"]) == 8)
             {
                 str = str + " Select Empid,empname from empinfo where mastercompanyid=" + Session["varCompanyId"] + @" And PartyType=0 order by empname";
             }
@@ -84,6 +91,12 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
             if (variable.VarBINNOWISE == "1")
             {
                 TDBinNo.Visible = true;
+            }
+            if (Session["varCompanyId"].ToString() == "45")
+            {
+                TDIssQtyFromMWS.Visible = true;
+                TDShadeRMStatus.Visible = true;
+                TDFolioNo.Visible = true;
             }
         }
     }
@@ -299,7 +312,7 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
         SqlTransaction tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] arr = new SqlParameter[28];
+            SqlParameter[] arr = new SqlParameter[31];
             arr[0] = new SqlParameter("@GateInID", SqlDbType.Int);
             arr[1] = new SqlParameter("@CompanyID", SqlDbType.Int);
             arr[2] = new SqlParameter("@PartyID", SqlDbType.Int);
@@ -328,6 +341,9 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
             arr[25] = new SqlParameter("@BellWeight", SqlDbType.Float);
             arr[26] = new SqlParameter("@GateInType", SqlDbType.Int);
             arr[27] = new SqlParameter("@OrderId", SqlDbType.Int);
+            arr[28] = new SqlParameter("@IssQtyFromMWS", SqlDbType.Float);
+            arr[29] = new SqlParameter("@ShadeStatus", SqlDbType.VarChar, 100);
+            arr[30] = new SqlParameter("@FolioNo", SqlDbType.VarChar, 100);
 
             arr[0].Direction = ParameterDirection.InputOutput;
             arr[0].Value = ViewState["GateInMasterID"];
@@ -367,6 +383,30 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
             arr[25].Value = TxtBellWeight.Text == "" ? "0" : TxtBellWeight.Text;
             arr[26].Value = 0; ////1 for OrderWise 0 for Gatein form wise
             arr[27].Value = 0;
+            if (TDIssQtyFromMWS.Visible == true)
+            {
+                arr[28].Value = 0;
+            }
+            else
+            {
+                arr[28].Value = TxtIssQtyFromMWS.Text;
+            }
+            if (TDShadeRMStatus .Visible == true)
+            {
+                arr[29].Value = TxtShadeRMStatus.Text;
+            }
+            else
+            {
+                arr[29].Value = TxtShadeRMStatus.Text;
+            }
+            if (TDFolioNo.Visible == true)
+            {
+                arr[30].Value = 0;
+            }
+            else
+            {
+                arr[30].Value = TxtFolioNo.Text;
+            }
 
             if (DDGatePassNo.Items.Count > 0)
             {
@@ -587,7 +627,14 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
     {
         if (MySession.TagNowise == "1")
         {
-            Session["ReportPath"] = "Reports/RptGateInTagNoWise.rpt";
+            if (Convert.ToInt16(Session["varcompanyid"]) == 45)
+            {
+                Session["ReportPath"] = "Reports/RptGateInTagNoWiseMWS.rpt";
+            }
+            else
+            {
+                Session["ReportPath"] = "Reports/RptGateInTagNoWise.rpt";
+            }
         }
         else
         {
@@ -596,7 +643,8 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT c.CompanyName,BM.BranchAddress CompAddr1,'' CompAddr2,'' CompAddr3,
         c.CompFax,BM.PhoneNo CompTel,e.EmpName,e.Address,e.PhoneNo,e.Mobile,e.Fax,GIM.GateInNo,GIM.GateInDate,LotNo,Qty,GID.Remark,GM.GodownName,
         CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+SizeFt as Description,
-        ITEM_FINISHED_ID,gm.GoDownID,GIM.ChallanNo,GID.TagNo,DP.DepartmentName,BM.GSTNo GSTNO,e.GSTNO as EmpGstno,GID.Rate,isnull(NU.UserName,'') as UserName 
+        ITEM_FINISHED_ID,gm.GoDownID,GIM.ChallanNo,GID.TagNo,DP.DepartmentName,BM.GSTNo GSTNO,e.GSTNO as EmpGstno,GID.Rate,isnull(NU.UserName,'') UserName, 
+        GIM.MasterCompanyID, GID.IssQtyFromOther, GID.ShadeStatus, GID.FolioNo 
         FROM GateInMaster GIM(NoLock) 
         JOIN BranchMaster BM(NoLock) ON BM.ID = GIM.BranchID 
         INNER JOIN COMPANYINFO C(NoLock) ON C.CompanyId=GIM.COMPANYID 
@@ -606,7 +654,8 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
         inner join V_finisheditemdetail vd(NoLock) On vd.item_finished_id=GID.finishedid 
         left join Department DP(NoLock) on GIM.DeptId=DP.DepartmentId 
         JOIN NewUserDetail NU(NoLock) ON GIM.UserID=NU.UserID
-        Where GIM.GateInID=" + ViewState["GateInMasterID"] + " ");
+        Where GIM.GateInID=" + ViewState["GateInMasterID"]);
+
         Session["dsFileName"] = "~\\ReportSchema\\RptGateIn.xsd";
         if (ds.Tables[0].Rows.Count > 0)
         {

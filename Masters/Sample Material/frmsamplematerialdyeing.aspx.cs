@@ -630,6 +630,10 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingissueCarpetInternational.rpt";
             }
+            else if (Session["VarCompanyId"].ToString() == "22")
+            {
+                Session["rptFileName"] = "~\\Reports\\rptsampledyeingissueDiamond.rpt";
+            }
             else
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingissue.rpt";

@@ -52,7 +52,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                         WHere PNM.ProcessType=1 and PNM.PROCESS_NAME_ID<>1 order by PROCESS_NAME";
 
             }
-            str = str + @" Select UnitId,unitName from Unit where UnitId in(1,2) order by UnitId
+            str = str + @" Select UnitId,unitName from Unit where UnitId in(1,2,6) order by UnitId
                         Select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId
                         Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
                         Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
@@ -622,7 +622,33 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
     {
         string StrSize = "vf.SizeMtr + ' ' + vf.shapename";
         string str = "";
+        if (Session["varcompanyId"].ToString() == "44")
+        {
+            str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "1")
+                {
+                    StrSize = "vf.SizeMtr + ' ' + vf.shapename";
+                }
+                else if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "2")
+                {
+                    StrSize = "vf.Sizeft + ' ' + vf.shapename";
+                }
+                else if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "6")
+                {
+
+                    StrSize = "vf.SizeInch + ' ' + vf.shapename";
+                }
+                else
+                {
+                    StrSize = "vf.Sizeft + ' ' + vf.shapename";
+                }
+
+            }
+        }
         if (Session["varcompanyId"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
         {
             StrSize = "vf.Sizeft + ' ' + vf.shapename";
@@ -770,7 +796,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                             Where PIM.IssueOrderID=PID1.IssueOrderId and PID.ITEM_FINISHED_ID=PID1.Item_Finished_Id For XML PATH('')) as CustomerOrderNo,
                         (Select Distinct CustIn.CustomerCode+',' from PROCESS_ISSUE_DETAIL_" + DDTOProcess.SelectedValue + @" PID2(NoLock) JOIN  OrderMaster OM2(NoLock) ON OM2.OrderID = PID2.OrderID 
                             JOIN CustomerInfo CustIn(NoLock) ON OM2.CustomerId=CustIn.CustomerId  Where PID2.IssueOrderId=PIM.IssueOrderID For XML PATH('')) as CustomerCode
-                        ,isnull(NU.UserName,'') as UserName,isnull(PID.Bonus,0) as Bonus,isnull(PID.BonusAmt,0) as BonusAmt 
+                        ,isnull(NU.UserName,'') as UserName,isnull(PID.Bonus,0) as Bonus,isnull(PID.BonusAmt,0) as BonusAmt, VF.MasterCompanyID  
                         From PROCESS_ISSUE_MASTER_" + DDTOProcess.SelectedValue + @" PIM(NoLock) 
                         Join PROCESS_ISSUE_DETAIL_" + DDTOProcess.SelectedValue + @" PID(NoLock) on PIM.IssueOrderId=PID.IssueOrderId
                         JOIN BranchMaster BM(NoLock) ON BM.ID = PIM.BranchID 
@@ -2123,8 +2149,22 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 0, true, "--Plz Select--");
-        }
 
+            str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
+            DataSet dsORDER = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+            if (dsORDER.Tables[0].Rows.Count > 0)
+            {
+                //if (dsORDER.Tables[0].Rows[0]["orderunitid"].ToString() == "1")
+                //{
+                if (DDUnit.Items.FindByValue(dsORDER.Tables[0].Rows[0]["orderunitid"].ToString()) != null)
+                    {
+                        DDUnit.SelectedValue = dsORDER.Tables[0].Rows[0]["orderunitid"].ToString();
+                    }
+               // }
+            }
+
+        }
     
     }
     protected void TxtIssueQty_TextChanged(object sender, EventArgs e)

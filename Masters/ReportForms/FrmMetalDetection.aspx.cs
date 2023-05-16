@@ -65,15 +65,15 @@ public partial class Masters_ReportForms_frmroaminginspection : System.Web.UI.Pa
                 var sht = xapp.Worksheets.Add("sheet1");
                 int row = 0;
 
-                sht.Range("A1:J1").Merge();
+                sht.Range("A1:L1").Merge();
                 sht.Range("A1").SetValue(DDCompany.SelectedItem.Text);
-                sht.Range("A1:J1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:L1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 sht.Range("A2:J2").Merge();
                 sht.Range("A2").SetValue("Metal Detection Record for Unpacked Product");
-                sht.Range("A3:J3").Merge();
+                sht.Range("A3:L3").Merge();
                 sht.Range("A3").SetValue("From :" + txtfromdate.Text + "  To : " + txttodate.Text);
-                sht.Range("A2:J3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A1:J3").Style.Font.SetBold();
+                sht.Range("A2:L3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:L3").Style.Font.SetBold();
 
                 //Headers
                 sht.Range("A4").Value = "Date";
@@ -86,8 +86,10 @@ public partial class Masters_ReportForms_frmroaminginspection : System.Web.UI.Pa
                 sht.Range("H4").Value = "Defects";
                 sht.Range("I4").Value = "Scan By";
                 sht.Range("J4").Value = "Remark";
+                sht.Range("K4").Value = "Customer Code";
+                sht.Range("L4").Value = "Customer Order No";
 
-                sht.Range("A4:J4").Style.Font.Bold = true;
+                sht.Range("A4:L4").Style.Font.Bold = true;
 
                 row = 5;
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -102,6 +104,8 @@ public partial class Masters_ReportForms_frmroaminginspection : System.Web.UI.Pa
                     sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["Defects"]);
                     sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Username"]);
                     sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["Remark"]);
+                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["CustomerCode"]);
+                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"]);
 
                     row = row + 1;
 
@@ -109,7 +113,7 @@ public partial class Masters_ReportForms_frmroaminginspection : System.Web.UI.Pa
                 sht.Range("E" + row).SetValue("TOTAL");
                 sht.Range("F" + row).FormulaA1 = "=SUM(F5:F" + (row - 1) + ")";
                 sht.Range("E" + row + ":F" + row + "").Style.Font.Bold = true;
-                using (var a = sht.Range("A4:J" + row))
+                using (var a = sht.Range("A4:L" + row))
                 {
                     a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                     a.Style.Border.RightBorder = XLBorderStyleValues.Thin;

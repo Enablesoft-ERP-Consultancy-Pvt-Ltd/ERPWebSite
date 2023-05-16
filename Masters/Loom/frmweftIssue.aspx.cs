@@ -63,7 +63,7 @@ public partial class Masters_Loom_frmweftIssue : System.Web.UI.Page
             {
                 TDForCompleteStatus.Visible = true;
             }
-            if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14")
+            if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14" || Session["VarCompanyNo"].ToString() == "45")
             {
                 TDTxtTotalPcs.Visible = true;
                 btnPreviewStockNo.Visible = true;
@@ -555,7 +555,7 @@ public partial class Masters_Loom_frmweftIssue : System.Web.UI.Page
     protected void btnsave_Click(object sender, EventArgs e)
     {
 
-        if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14")
+        if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14" || Session["VarCompanyNo"].ToString() == "45")
         {
             string status = "";
             if (TxtTotalPcs.Text == "")
@@ -711,7 +711,7 @@ public partial class Masters_Loom_frmweftIssue : System.Web.UI.Page
             {
                 SqlParameter[] param = new SqlParameter[14];
                 param[0] = new SqlParameter("@PrmId", SqlDbType.Int);
-                if (chkEdit.Checked == true && (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14"))
+                if (chkEdit.Checked == true && (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14" || Session["VarCompanyNo"].ToString() == "45"))
                 {
                     param[0].Value = DDissueno.SelectedValue;
                 }
@@ -864,7 +864,7 @@ public partial class Masters_Loom_frmweftIssue : System.Web.UI.Page
                 }
             }
 
-            if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14")
+            if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14" || Session["VarCompanyNo"].ToString() == "45")
             {
                 BtnUpdateStockNoQty.Visible = true;
             }
@@ -1031,7 +1031,7 @@ public partial class Masters_Loom_frmweftIssue : System.Web.UI.Page
     }
     protected void UpdateStockNoQty()
     {
-        if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14")
+        if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "14" || Session["VarCompanyNo"].ToString() == "45")
         {
             if (DDFoliono.SelectedIndex <= 0)
             {

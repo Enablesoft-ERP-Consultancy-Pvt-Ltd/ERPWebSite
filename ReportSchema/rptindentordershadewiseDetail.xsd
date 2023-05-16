@@ -46,6 +46,11 @@
               <xs:element name="CUSTOMERORDERNO" type="xs:string" minOccurs="0" />
               <xs:element name="ORDERDESIGNNAME" type="xs:string" minOccurs="0" />
               <xs:element name="ORDERSTATUS" type="xs:int" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="OrderSampleFlag" type="xs:int" minOccurs="0" />
+              <xs:element name="OrderCategoryId" type="xs:int" minOccurs="0" />
+              <xs:element name="PPNO" type="xs:string" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
               <xs:element name="FromDate" type="xs:string" minOccurs="0" />
               <xs:element name="ToDate" type="xs:string" minOccurs="0" />
               <xs:element name="Dateflag" type="xs:int" minOccurs="0" />

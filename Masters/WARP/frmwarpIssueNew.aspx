@@ -103,6 +103,11 @@
                                 </asp:DropDownList>
                             </td>
                             <td>
+                                <asp:Label ID="Label5" runat="server" Text="Production Unit" CssClass="labelbold"></asp:Label><br />
+                                <asp:DropDownList ID="DDProductionUnit" runat="server" CssClass="dropdown" Width="150px">
+                                </asp:DropDownList>
+                            </td>
+                            <td>
                                 <asp:Label ID="Label11" runat="server" Text="Process" CssClass="labelbold"></asp:Label><br />
                                 <asp:DropDownList ID="DDProcess" runat="server" CssClass="dropdown" AutoPostBack="true"
                                     Width="150px" OnSelectedIndexChanged="DDProcess_SelectedIndexChanged">
@@ -126,16 +131,16 @@
                                     Width="150px" OnSelectedIndexChanged="DDorderNo_SelectedIndexChanged">
                                 </asp:DropDownList>
                             </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
                             <td id="TDItemDescription" runat="server">
                                 <asp:Label ID="Label13" runat="server" Text="Order Description" CssClass="labelbold"></asp:Label><br />
                                 <asp:DropDownList ID="DDitemdescription" runat="server" CssClass="dropdown" AutoPostBack="true"
                                     Width="370px" OnSelectedIndexChanged="DDitemdescription_SelectedIndexChanged">
                                 </asp:DropDownList>
                             </td>
-                        </tr>
-                    </table>
-                    <table>
-                        <tr>
                             <td>
                                 <asp:Label ID="lbltotalpcs" Text="Order Pcs" CssClass="labelbold" runat="server" />
                                 <br />

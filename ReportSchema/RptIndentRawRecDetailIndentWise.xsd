@@ -12,7 +12,7 @@
               <xs:element name="IndentNo" type="xs:string" minOccurs="0" />
               <xs:element name="IssueChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="RecChallanNo" type="xs:string" minOccurs="0" />
-              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:dateTime" minOccurs="0" />
               <xs:element name="Finishedid" type="xs:int" minOccurs="0" />
               <xs:element name="LotNo" type="xs:string" minOccurs="0" />
               <xs:element name="Description" type="xs:string" minOccurs="0" />
@@ -31,6 +31,9 @@
               <xs:element name="UNDYEDQTY" type="xs:double" minOccurs="0" />
               <xs:element name="TagNo" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
+              <xs:element name="Moisture" type="xs:decimal" minOccurs="0" />
+              <xs:element name="CheckedBy" type="xs:string" minOccurs="0" />
+              <xs:element name="IndentRecRemarks" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

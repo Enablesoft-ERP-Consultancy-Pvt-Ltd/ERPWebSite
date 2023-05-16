@@ -260,6 +260,12 @@
                                         <asp:ListItem Value="0">Area Wise</asp:ListItem>
                                     </asp:DropDownList>
                                 </td>
+                                  <td style="width: 10%">
+                                            <asp:Label ID="Label17" Text="Issue Qty" CssClass="labelbold" runat="server" />
+                                            <br />
+                                            <asp:TextBox ID="TxtIssueQty" CssClass="textb" Width="90%" runat="server" AutoPostBack="true"
+                                                OnTextChanged="TxtIssueQty_TextChanged" />
+                                        </td>
                             </tr>
                         </table>
                     </div>
@@ -353,6 +359,29 @@
                                                 </ItemTemplate>
                                                 <ItemStyle Width="400px" />
                                             </asp:TemplateField>
+                                            <%--<asp:TemplateField HeaderText="Unit">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblunit" Text='' runat="server" />
+                                                            </ItemTemplate>
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="To be Issued Qty">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblorderedqty" Text='' runat="server" />
+                                                            </ItemTemplate>
+                                                            <ItemStyle HorizontalAlign="Center" />
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Issued Qty.">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblreceivedqty" Text='' runat="server" />
+                                                            </ItemTemplate>
+                                                            <ItemStyle HorizontalAlign="Center" />
+                                                        </asp:TemplateField>
+                                                        <asp:TemplateField HeaderText="Pending Qty.">
+                                                            <ItemTemplate>
+                                                                <asp:Label ID="lblPendingQty" runat="server" Text=''></asp:Label>
+                                                            </ItemTemplate>
+                                                            <ItemStyle HorizontalAlign="Center" />
+                                                        </asp:TemplateField>--%>
 <%--                                            <asp:TemplateField HeaderText="Ordered Qty">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblorderedqty" Text='<%#Bind("orderedqty") %>' runat="server" />

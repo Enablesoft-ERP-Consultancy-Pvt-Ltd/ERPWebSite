@@ -39,7 +39,7 @@
           <xs:complexType>
             <xs:sequence>
               <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
-              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpName" type="xs:string" minOccurs="0" />
               <xs:element name="ITEM_FINISHED_ID" type="xs:int" minOccurs="0" />
               <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
               <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
