@@ -39,6 +39,7 @@
     <script runat="server">
         protected void RadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
+            TRIndentRecMachineIssQtyWise.Visible = false;
             Trorderstatus.Visible = false;
             TRItemName.Visible = false;
             TRQuality.Visible = false;
@@ -53,6 +54,7 @@
             TRLocalOrderNo.Visible = false;
             if (RDShadewiseDetail.Checked == true || RDSubitemwiseBalance.Checked == true || RDorderwiseshadedetail.Checked == true)
             {
+                TRIndentRecMachineIssQtyWise.Visible = false;
                 TRItemName.Visible = true;
                 TRQuality.Visible = true;
                 TRShadeColor.Visible = true;
@@ -67,6 +69,7 @@
             }
             if (RDProcessProgramWiseShadeDetail.Checked == true)
             {
+                TRIndentRecMachineIssQtyWise.Visible = false;
                 TRCustomerCode.Visible = true;
                 TRItemName.Visible = true;
                 TRQuality.Visible = true;
@@ -77,6 +80,7 @@
             }
             if (RDorderwiseindentdetail.Checked == true)
             {
+                TRIndentRecMachineIssQtyWise.Visible = false;
                 TRemployee.Visible = false;
                 TRRecChallan.Visible = false;
                 Trorderstatus.Visible = true;
@@ -84,6 +88,7 @@
             }
             if (RDProcessIssDetail.Checked == true)
             {
+                TRIndentRecMachineIssQtyWise.Visible = false;
                 TRItemName.Visible = true;
                 TRQuality.Visible = true;
                 TRShadeColor.Visible = true;
@@ -96,12 +101,22 @@
                 TRQuality.Visible = true;
                 TRShadeColor.Visible = true;
                 TRExportExcel.Visible = true;
+
+                if (Session["VarCompanyId"].ToString() == "43")
+                {
+                    TRIndentRecMachineIssQtyWise.Visible = true;
+                }
+                else
+                {
+                    TRIndentRecMachineIssQtyWise.Visible = false;
+                }
             }
             if (RDProcessIss_REcDetail.Checked == true)
             {
                 TRItemName.Visible = true;
                 TRQuality.Visible = true;
                 TRShadeColor.Visible = true;
+                TRIndentRecMachineIssQtyWise.Visible = false;
             }
             if (RDdyerledger.Checked == true)
             {
@@ -110,6 +125,7 @@
                 TRItemName.Visible = false;
                 TRQuality.Visible = false;
                 TRShadeColor.Visible = false;
+                TRIndentRecMachineIssQtyWise.Visible = false;
 
             }
             if (RDIndentRecPending.Checked == true)
@@ -128,6 +144,7 @@
                 TRExportExcel.Visible = false;
                 TRProcessProgram.Visible = false;
                 TRProcessName.Visible = false;
+                TRIndentRecMachineIssQtyWise.Visible = false;
             }
             if (RDIndentIssueWithPPConsumption.Checked == true)
             {
@@ -148,6 +165,7 @@
                 TRProcessName.Visible = false;
                 TRLocalOrderNo.Visible = false;
                 TrOrderCategory.Visible = false;
+                TRIndentRecMachineIssQtyWise.Visible = false;
                 BindPPNo();
             }
 
@@ -161,6 +179,7 @@
                 TRorderNo.Visible = false;
                 TRCustomerCode.Visible = true;
                 TrOrderCategory.Visible = false;
+                TRIndentRecMachineIssQtyWise.Visible = false;
                 
             }
         }
@@ -442,6 +461,12 @@
                                 <tr id="TRExportExcel" runat="server" visible="false">
                                     <td colspan="2" align="left">
                                         <asp:CheckBox ID="ChkForExportExcel" runat="server" Text="Check For Export Excel"
+                                            CssClass="checkboxbold" />
+                                    </td>
+                                </tr>
+                                <tr id="TRIndentRecMachineIssQtyWise" runat="server" visible="false">
+                                    <td colspan="2" align="left">
+                                        <asp:CheckBox ID="ChkForIndentRecMachineIssQtyWise" runat="server" Text="IndentRec MachineIss Qty Wise"
                                             CssClass="checkboxbold" />
                                     </td>
                                 </tr>
