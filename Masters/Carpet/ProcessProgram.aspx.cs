@@ -1545,7 +1545,14 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                         {
                             Session["rptFileName"] = "~\\Reports\\rptdyeingprogramagni.rpt";
                         }
-                        else { Session["rptFileName"] = "~\\Reports\\rptdyeingprogramnew.rpt"; }
+                        else if (Convert.ToInt32(Session["varCompanyId"]) == 45)
+                        {
+                            Session["rptFileName"] = "~\\Reports\\rptdyeingprogramnewMWS.rpt";
+                        }
+                        else 
+                        { 
+                            Session["rptFileName"] = "~\\Reports\\rptdyeingprogramnew.rpt"; 
+                        }
                     }
 
                     //Session["rptFileName"] = Session["ReportPath"];
