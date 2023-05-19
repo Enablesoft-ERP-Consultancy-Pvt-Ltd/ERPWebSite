@@ -279,12 +279,13 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             {
                 str = @"select GateInNo As GateNo,case When " + DDCompany.SelectedIndex + ">0 then CI.CompanyName Else 'ALL COMPANY' End CompanyName,EmpName+' '+'/'+Address As Employee,ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName As Description,Lotno,GateInDate Date,Sum(Qty) As Qty,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @" Dateflag,
                         case when " + DDCompany.SelectedIndex + ">0 then CI.compaddr1 else '' END as Address,case when " + DDCompany.SelectedIndex + @">0 then CI.GstNo else '' END as Gstno,GM.MasterCompanyId, 
-                        GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo 
+                        GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo ,isnull(NUD.UserName,'') as UserName 
                         from GateInMaster GM(nolock)
                         JOIN GateInDetail GD(nolock) ON GD.GateInId = GM.GateInId 
                         JOIN Companyinfo CI(nolock) ON CI.CompanyId = GM.CompanyId 
                         JOIN Empinfo EI(nolock) ON EI.EmpId = GM.PartyId 
                         JOIN V_FinishedItemDetail VF(nolock) ON VF.Item_Finished_id = GD.FINISHEDID
+                        JOIN NewUserDetail NUD(NoLock) ON GM.UserID=NUD.UserId
                         Where GM.MasterCompanyID = " + Session["varCompanyId"];
                 if (DDCompany.SelectedIndex > 0)
                 {
@@ -333,7 +334,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                     str = str + " AND vf.COLORID = " + DDColor.SelectedValue;
                 }
                 str = str + @" group by GateInNo,CompanyName,CI.compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,
-                    Lotno,GateInDate,GM.MasterCompanyId, GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo ";
+                    Lotno,GateInDate,GM.MasterCompanyId, GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo,NUD.UserName ";
 
                 ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                 if (chkexcelexport.Checked == true)
@@ -1172,21 +1173,21 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             var xapp = new XLWorkbook();
             var sht = xapp.Worksheets.Add("General Gate In Detail");
 
-            sht.Range("A1:K1").Merge();
+            sht.Range("A1:L1").Merge();
             sht.Range("A1").Value = ds.Tables[0].Rows[0]["CompanyName"] + " General Gate In Detail";
-            sht.Range("A1:K1").Style.Font.Bold = true;
-            sht.Range("A1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A1:K1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-            sht.Range("A1:K1").Style.Font.FontSize = 13;
+            sht.Range("A1:L1").Style.Font.Bold = true;
+            sht.Range("A1:L1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:L1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:L1").Style.Font.FontSize = 13;
             sht.Row(1).Height = 20.00;
             //
-            sht.Range("A2:K2").Merge();
+            sht.Range("A2:L2").Merge();
             sht.Range("A2").Value = "Filter By - " + filterby;
-            sht.Range("A2:K2").Style.Font.Bold = true;
-            sht.Range("A2:K2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A2:K2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-            sht.Range("A2:K2").Style.Alignment.SetWrapText();
-            sht.Range("A2:K2").Style.Font.FontSize = 10;
+            sht.Range("A2:L2").Style.Font.Bold = true;
+            sht.Range("A2:L2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A2:L2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A2:L2").Style.Alignment.SetWrapText();
+            sht.Range("A2:L2").Style.Font.FontSize = 10;
             sht.Row(1).Height = 20.00;
 
             sht.Range("A3").Value = "EMP NAME";
@@ -1200,9 +1201,10 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             sht.Range("I3").Value = "CHALLAN NO";
             sht.Range("J3").Value = "SHADE / RM STATUS";
             sht.Range("K3").Value = "REMARK";
+            sht.Range("L3").Value = "USER NAME";
 
-            sht.Range("A3:K3").Style.Font.Bold = true;
-            sht.Range("A3:K3").Style.Font.FontSize = 10;
+            sht.Range("A3:L3").Style.Font.Bold = true;
+            sht.Range("A3:L3").Style.Font.FontSize = 10;
             sht.Range("H3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             sht.Range("I3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             sht.Row(1).Height = 25.50;
@@ -1225,6 +1227,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                 sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["ChallanNo"]);
                 sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["ShadeStatus"]);
                 sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Remark"]);
+                sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["UserName"]);
 
                 row = row + 1;
             }
@@ -1232,8 +1235,8 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             sht.Range("H" + row).FormulaA1 = "SUM(H4:H" + (row - 1) + ")";
             sht.Range("G" + row).FormulaA1 = "SUM(G4:G" + (row - 1) + ")";
             //********************************
-            sht.Columns(1, 11).AdjustToContents();
-            using (var a = sht.Range("A1" + ":K" + row))
+            sht.Columns(1, 13).AdjustToContents();
+            using (var a = sht.Range("A1" + ":L" + row))
             {
                 a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
