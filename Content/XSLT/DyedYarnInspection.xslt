@@ -47,7 +47,7 @@
                 </td>
                 <td colspan="5" align="left" valign="middle">
 
-                  <xsl:value-of select="Dateadded" />
+                  <xsl:value-of select="ADDEDDATE" />
 
 
                 </td>
@@ -192,7 +192,7 @@
               <inspection>
                 <tr>
                   <td  valign="top">
-                    <xsl:value-of select="./ReportDate" />
+                    <xsl:value-of select="./REPORTEDDATE" />
                   </td>
                   <td  valign="top">
                     <xsl:value-of select="./SupplierName" />
