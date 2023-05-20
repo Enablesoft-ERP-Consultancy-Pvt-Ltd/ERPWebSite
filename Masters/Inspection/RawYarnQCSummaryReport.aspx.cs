@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -20,7 +21,7 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
     protected string getXmlString(string from, string to)
     {
         string xmlString = string.Empty;
-     
+
         SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
 
         SqlParameter[] param = new SqlParameter[3];
@@ -64,10 +65,11 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
         string _to = txtTo.Text.Trim();
         // this is being read from the same folder as this page is in.(only for demo purpose)
         // In real applications this xml might be coming from some external source or database.
-        string xmlString = this.getXmlString(_from,_to);
+        string xmlString = this.getXmlString(_from, _to);
 
         if (!string.IsNullOrEmpty(xmlString))
         {
+            lblMessage.Text = "Data for Date Range from " + _from + "to " + _to;
             // Define the contents of the XML control
             Xml1.DocumentContent = xmlString;
             XsltArgumentList arguments = new XsltArgumentList();
@@ -85,8 +87,6 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
 
     protected void tblDownload_Click(object sender, EventArgs e)
     {
-
-
         try
         {
 
@@ -96,27 +96,47 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
             // this is being read from the same folder as this page is in.(only for demo purpose)
             // In real applications this xml might be coming from some external source or database.
             string xmlText = this.getXmlString(_from, _to);
-            
 
-            if(!string.IsNullOrEmpty(xmlText))
+
+            if (!string.IsNullOrEmpty(xmlText))
             {
+
+                string filename = "YarnQcSummary.xls";
+                HttpResponse response = HttpContext.Current.Response;
+                response.Clear();
+                response.Charset = "";
+                response.ContentType = "application/vnd.ms-excel";
+                response.AddHeader("Content-Disposition", "attachment;filename=\"" + filename + "\"");
+
+                lblMessage.Text = "Data for Date Range from " + _from + "to " + _to + "have been downloaded";
                 string xsltText = Server.MapPath("~/Content/XSLT/YarnInspection.xslt");
                 XsltArgumentList arguments = new XsltArgumentList();
-                var htmlOutput = XmlHelper.XmlWriterFunction(xmlText.ToString(), arguments, xsltText);
-                HttpContext.Current.Response.Clear();
-                HttpContext.Current.Response.Buffer = true;
-                HttpContext.Current.Response.Charset = "UTF-8";
+                
+                // Creating XSLCompiled object
+                XslCompiledTransform transform = new XslCompiledTransform();
+                transform.Load(xsltText.ToString());
+                using (StringWriter results = new StringWriter())
+                {
+                    
+                    using (XmlReader reader = XmlReader.Create(new StringReader(xmlText.ToString())))
+                    {
+                        transform.Transform(reader, arguments, results);
+                    }             
+
+                    response.Write(results.ToString());
+                    response.Flush(); // Sends all currently buffered output to the client.
+                    response.SuppressContent = true;  // Gets or sets a value indicating whether to send HTTP content to the client.
+                    HttpContext.Current.ApplicationInstance.CompleteRequest();
+                }
+          
 
 
-                // HttpContext.Current.Response.AddHeader("content-disposition", string.Format("attachment; filename={0}.doc", HttpUtility.UrlEncode("Invoice-" + DateTime.Now.ToShortDateString(), System.Text.Encoding.UTF8)));
-                HttpContext.Current.Response.AddHeader("content-disposition", string.Format("attachment; filename={0}.xls", HttpUtility.UrlEncode("RawYarnInspection-" + DateTime.Now.ToShortDateString(), System.Text.Encoding.UTF8)));
-                HttpContext.Current.Response.ContentEncoding = System.Text.Encoding.UTF8;
-                //HttpContext.Current.Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-                HttpContext.Current.Response.ContentType = "application/vnd.ms-excel";
 
-                HttpContext.Current.Response.Write(htmlOutput.ToString());
-                HttpContext.Current.Response.End();
-                HttpContext.Current.Response.Close();
+
+
+
+
+
 
             }
             else
@@ -124,7 +144,7 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
 
                 lblMessage.Text = "There is no data available in the selected date range !";
             }
-            
+
         }
         catch (Exception ex)
         {
