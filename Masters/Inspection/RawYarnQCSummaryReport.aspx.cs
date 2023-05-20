@@ -127,6 +127,25 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
             {
                 lblMessage.Text = "Data for Date Range from " + _from + "to " + _to + "have been downloaded";
                 string filename = "YarnQcSummary.xls";
+
+
+
+                switch (Convert.ToInt32(ddlYarnType.SelectedValue))
+                {
+                    case 1:
+                        filename = "YarnInspection.xls";
+                        break;
+                    case 2:
+                        filename = "DyedYarnInspection.xls";
+                        break;
+                }
+
+
+
+
+
+
+
                 string xsltText = Server.MapPath("~/Content/XSLT/" + xsltName);
                 HttpResponse response = HttpContext.Current.Response;
                 response.Clear();
