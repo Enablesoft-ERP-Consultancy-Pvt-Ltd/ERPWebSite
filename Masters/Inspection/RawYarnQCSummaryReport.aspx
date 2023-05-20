@@ -29,7 +29,15 @@
             <div class="col-lg-12">
                 <div class="panel panel-violet">
                     <div class="panel-heading">
-                        <div class="caption"></div>
+                        <div class="caption">
+                            <div class="form-group">
+                                <asp:DropDownList ID="ddlYarnType" CssClass="form-control" runat="server">
+                                    <asp:ListItem Text="Raw Yarn" Value="1" Selected="True"></asp:ListItem>
+                                    <asp:ListItem Text="Dyed Yarn" Value="2"></asp:ListItem>
+                                </asp:DropDownList>
+
+                            </div>
+                        </div>
                         <div class="actions">
                             <asp:Button ID="tblDownload" ValidationGroup="Report" CssClass="btn btn-primary" runat="server" Text="Download" OnClick="tblDownload_Click" />
 
@@ -50,7 +58,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <div class="input-icon right">
-                                      <%--          <i class="fa fa-calendar"></i>--%>
+                                                <%--          <i class="fa fa-calendar"></i>--%>
 
                                                 <asp:TextBox placeholder="From Date" class="form-control input-sm" ID="txtFrom" runat="server" CssClass="form-control input-sm"></asp:TextBox>
                                                 <asp:CalendarExtender ID="CalendarExtender1" runat="server" TargetControlID="txtFrom" Format="dd/MM/yyyy"></asp:CalendarExtender>
@@ -61,7 +69,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group">
                                             <div class="input-icon right">
-                                 <%--               <i class="fa fa-calendar"></i>--%>
+                                                <%--               <i class="fa fa-calendar"></i>--%>
 
                                                 <asp:TextBox placeholder="To Date" class="form-control input-sm" ID="txtTo" runat="server"></asp:TextBox>
                                                 <asp:CalendarExtender ID="calTo" runat="server" TargetControlID="txtTo" Format="dd/MM/yyyy"></asp:CalendarExtender>
