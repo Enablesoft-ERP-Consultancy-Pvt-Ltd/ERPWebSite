@@ -603,11 +603,16 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             sht.Range("L3").SetValue("Production Unit");
             sht.Range("M3").SetValue("User Name");
             Row = 4;
-            if (DDProcess.SelectedItem.Text != "WARPING COTTON")
+
+            if (Session["VarCompanyNo"].ToString() != "45")
             {
-                sht.Column("H").Hide();
-                sht.Column("I").Hide();
+                if (DDProcess.SelectedItem.Text != "WARPING COTTON")
+                {
+                    sht.Column("H").Hide();
+                    sht.Column("I").Hide();
+                }
             }
+           
             int rowcount = ds.Tables[0].Rows.Count;
             for (int i = 0; i < rowcount; i++)
             {
