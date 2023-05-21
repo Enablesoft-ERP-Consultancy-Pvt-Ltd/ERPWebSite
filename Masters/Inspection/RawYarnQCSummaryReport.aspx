@@ -29,7 +29,11 @@
             <div class="col-lg-12">
                 <div class="panel panel-violet">
                     <div class="panel-heading">
-                        <div class="caption">
+
+                               <div class="row">
+
+            <div class="col-lg-4">
+                 <div class="caption">
                             <div class="form-group">
                                 <asp:DropDownList ID="ddlYarnType" CssClass="form-control" runat="server">
                                     <asp:ListItem Text="Raw Yarn" Value="1" Selected="True"></asp:ListItem>
@@ -38,6 +42,10 @@
 
                             </div>
                         </div>
+                </div>
+
+ <div class="col-lg-8">
+     
                         <div class="actions">
                             <asp:Button ID="tblDownload" ValidationGroup="Report" CssClass="btn btn-primary" runat="server" Text="Download" OnClick="tblDownload_Click" />
 
@@ -46,6 +54,9 @@
                             <div class="btn-group">
                             </div>
                         </div>
+                </div>
+
+                       
                     </div>
                     <div class="panel-body pan">
 
