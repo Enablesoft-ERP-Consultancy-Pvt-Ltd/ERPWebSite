@@ -404,6 +404,7 @@
                                                 CommandName="Add" OnClientClick="return doConfirm();"></asp:LinkButton>
                                         </ItemTemplate>
                                     </asp:TemplateField>
+
                                     <%--<asp:TemplateField>
                                 <ItemTemplate>
                                     <asp:LinkButton ID="btnaddrate" runat="server" Text="Add Rate" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>"
