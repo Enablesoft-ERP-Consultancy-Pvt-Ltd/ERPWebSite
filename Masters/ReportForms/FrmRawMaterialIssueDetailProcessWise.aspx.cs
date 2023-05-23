@@ -555,7 +555,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
                 sht.Range("A1:K1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
                 sht.Range("A1:K1").Style.Alignment.WrapText = true;
                 //************
-                sht.Range("A1").SetValue("MATERIAL RAW ISSUE DETAIL"+" FROM"+" "+TxtFromDate.Text+" "+"TO"+ " "+TxtToDate.Text);
+                sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + "MATERIAL RAW ISSUE DETAIL" + " FROM" + " " + TxtFromDate.Text + " " + "TO" + " " + TxtToDate.Text);
                 //Detail headers                
                 sht.Range("A2:K2").Style.Font.FontSize = 10;
                 sht.Range("A2:K2").Style.Font.Bold = true;

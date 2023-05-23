@@ -798,6 +798,11 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
         enablecontrols();
         if (chkEdit.Checked == true)
         {
+            if (Session["varcompanyNo"].ToString() == "44")
+            {
+                TDupdateemp.Visible = true;
+                TDactiveemployee.Visible = true;
+            }
             TDEMPEDIT.Visible = true;
             TDFolioNo.Visible = true;
             TDFolioNotext.Visible = true;
@@ -1396,8 +1401,18 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Processid", 1);
             param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            string sp = string.Empty;
+            if (Session["varcompanyNo"].ToString() == "44")
+            {
+                sp = "Pro_UpdateFolioActiveStatusHome";
+            }
+            else {
+                sp = "Pro_UpdateFolioActiveStatus";
+            
+            }
+
             //*************
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioActiveStatus", param);
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, sp, param);
             Tran.Commit();
             lblpopupmsg.Text = param[3].Value.ToString();
             FillEmployeeForDeactive();
@@ -2071,5 +2086,105 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 con.Dispose();
             }
         }
+    }
+
+    protected void btnupdateemp_Click(object sender, EventArgs e)
+    {
+        lblmessage.Text = "";
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            //Employeedetail
+            DataTable dtrecord = new DataTable();
+            dtrecord.Columns.Add("processid", typeof(int));
+            dtrecord.Columns.Add("issueorderid", typeof(int));
+            dtrecord.Columns.Add("issuedetailid", typeof(int));
+            dtrecord.Columns.Add("empid", typeof(int));
+            for (int i = 0; i < listWeaverName.Items.Count; i++)
+            {
+                for (int j = 0; j < DGOrderdetail.Rows.Count; j++)
+                {
+                    Label lblissueorderid = ((Label)DGOrderdetail.Rows[j].FindControl("lblissueorderid"));
+                    Label lblissuedetailid = ((Label)DGOrderdetail.Rows[j].FindControl("lblissuedetailid"));
+
+                    DataRow dr = dtrecord.NewRow();
+                    dr["processid"] = 1;
+                    dr["issueorderid"] = lblissueorderid.Text;
+                    dr["issuedetailid"] = lblissuedetailid.Text;
+                    dr["empid"] = listWeaverName.Items[i].Value;
+                    dtrecord.Rows.Add(dr);
+                }
+            }
+            //
+            SqlParameter[] param = new SqlParameter[6];
+            param[0] = new SqlParameter("@issueorderid", hnissueorderid.Value);
+            param[1] = new SqlParameter("@processid", 1);
+            param[2] = new SqlParameter("@userid", Session["varuserid"]);
+            param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            param[3].Direction = ParameterDirection.Output;
+            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@dtrecord", dtrecord);
+            //*************
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioEmployeehome", param);
+            Tran.Commit();
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + param[3].Value.ToString() + "')", true);
+
+        }
+        catch (Exception ex)
+        {
+            Tran.Rollback();
+            lblmessage.Text = ex.Message;
+        }
+
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+        //********************
+        #region
+        //try
+        //{
+        //    if (DGOrderdetail.Rows.Count == 0)
+        //    {
+        //        Tran.Commit();
+        //        return;
+        //    }
+        //    string str = "";
+        //    //Delete And Update Existing record
+        //    str = @"Delete from Employee_ProcessOrderNo Where IssueOrderId=" + hnissueorderid.Value + @" And ProcessId=1";
+
+        //    SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
+        //    //
+
+        //    for (int i = 0; i < listWeaverName.Items.Count; i++)
+        //    {
+        //        for (int j = 0; j < DGOrderdetail.Rows.Count; j++)
+        //        {
+        //            str = "Insert into Employee_ProcessOrderNo (ProcessId,IssueOrderId,IssueDetailId,Empid)values(1," + ((Label)DGOrderdetail.Rows[j].FindControl("lblissueorderid")).Text + "," + ((Label)DGOrderdetail.Rows[j].FindControl("lblissuedetailid")).Text + "," + listWeaverName.Items[i].Value + ")";
+        //            SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
+
+        //        }
+        //    }
+        //    Tran.Commit();
+        //    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('Employee updated successfully...')", true);
+
+        //}
+        //catch (Exception ex)
+        //{
+        //    lblmessage.Text = ex.Message;
+        //    Tran.Rollback();
+        //}
+        //finally
+        //{
+        //    con.Dispose();
+        //    con.Close();
+        //}
+        #endregion
     }
 }

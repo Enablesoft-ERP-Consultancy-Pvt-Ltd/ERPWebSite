@@ -520,7 +520,6 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 foreach (DataRow dr in ds.Tables[0].Rows)
                 {
                     dt.Columns.Add(dr["Paraname"].ToString(), typeof(bool));
-
                 }
                 for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
                 {
@@ -529,7 +528,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                     dr["StockNo"] = ds.Tables[1].Rows[i]["TstockNo"].ToString();
                     dr["Processrecid"] = ds.Tables[1].Rows[i]["Process_Rec_id"].ToString();
                     dr["Processrecdetailid"] = ds.Tables[1].Rows[i]["Process_Rec_Detail_Id"].ToString();
-                    //**********                   
+                    //**********
                     dt.Rows.Add(dr);
                 }
                 dt.Columns["Processrecid"].ColumnMapping = MappingType.Hidden;
