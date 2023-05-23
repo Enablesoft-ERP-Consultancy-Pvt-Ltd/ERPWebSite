@@ -2,235 +2,427 @@
     CodeFile="DefineItemCodeOther.aspx.cs" Inherits="Masters_Carpet_DefineItemCodeOther" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-    <script src="../../Scripts/JScript.js" type="text/javascript"></script>
-    <script src="../../Scripts/jquery-1.4.1.min.js" type="text/javascript"></script>
+    <script src="<%= ResolveUrl("~/") %>Content/jquery/dist/jquery.min.js"></script>
+    <script src="<%= ResolveUrl("~/") %>Content/jquery-validation/dist/jquery.validate.min.js"></script>
 
-    <link href="../../Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../../Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <script src="../../Content/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-
-
-    <link href="../../App_Themes/Default/Style.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" language="javascript">
-        function CloseForm() {
-            self.close();
-        }
-        function isNumber(evt) {
-            var charCode = (evt.which) ? evt.which : event.keyCode
-            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-                alert('numeric only');
-                return false;
-            }
-            else {
-                return true;
-            }
-        }
-    </script>
+    <script src="<%= ResolveUrl("~/") %>Content/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="<%= ResolveUrl("~/") %>Content/font-awesome/css/font-awesome.min.css"
+        rel="stylesheet" />
+    <link href="<%= ResolveUrl("~/") %>Content/bootstrap/dist/css/bootstrap.min.css"
+        rel="stylesheet" />
+    <script src="<%= ResolveUrl("~/") %>Content/JavaScript/Product.js" type="text/javascript"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
     <asp:UpdatePanel ID="up1" runat="server">
         <ContentTemplate>
-            <table border="0" cellpadding="2" cellspacing="2" width="90%">
-                <tr class="RowStyle">
-                    <td>HS CODE:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtHsCode" runat="server" CssClass="textb"></asp:TextBox>
-                    </td>
-                    <td>COMPOSITION:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtDesc" runat="server" Width="220px" CssClass="textb"></asp:TextBox>
-                    </td>
-                    <td>MINIMUM ORDER QTY:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtMinOrderQty" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr class="RowStyle">
-                    <td>PRICE/MTR2:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtPrice" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                    <td>INNER PACKING:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtInnerPkg" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                    <td>MASTER PACKING:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtMasterPkg" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr class="RowStyle">
-                    <td>GROSS WEIGHT(KGS/PCS):
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtIronWt" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                    <td>WOOD/OTHER WEIGHT(KGMS):
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtWoodWt" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                    <td>NET WEIGHT(KGS/PCS):
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtNetWt" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr class="RowStyle">
-                    <td>MASTER PACKING SIZE:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtMasterPkgSize" runat="server" Width="30px" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                        <asp:TextBox ID="TxtMasterPkgSize1" runat="server" Width="30px" CssClass="textb"
-                            onkeypress="return isNumber(event);"></asp:TextBox>
-                        <asp:TextBox ID="TxtMasterPkgSize2" runat="server" Width="30px" CssClass="textb"
-                            onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                    <td>VOLUME (CBM):
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtVolume" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                    <td>DRAWBACK RATE:
-                    </td>
-                    <td>
-                        <asp:TextBox ID="TxtDrawBackRate" runat="server" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                </tr>
-            </table>
-            <table border="0" cellpadding="2" cellspacing="2" width="90%">
-                <tr class="RowStyle">
-                    <td style="width: 380PX">LOADABILITY:20' &nbsp;
-                        <asp:TextBox ID="TxtLoad20" runat="server" Width="50px" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                        &nbsp; 40' &nbsp;
-                        <asp:TextBox ID="TxtLoad40" runat="server" Width="50px" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                        &nbsp; 40'HQ
-                        <asp:TextBox ID="Txtload40HQ" runat="server" Width="50px" CssClass="textb" onkeypress="return isNumber(event);"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr class="RowStyle">
-                    <td>MATERIAL REMARKS
-                        <br />
-                        <asp:TextBox ID="txtMaterialremarks" runat="server" Width="350px" CssClass="textb"
-                            TextMode="MultiLine" TabIndex="26"></asp:TextBox>
-                    </td>
-                    <td>FINISH REMARKS
-                        <br />
-                        <asp:TextBox ID="TxtFinishRemarks" runat="server" Width="280px" CssClass="textb"
-                            TextMode="MultiLine" TabIndex="26"></asp:TextBox>
-                    </td>
-                    <td>PACKING REMARKS
-                        <br />
-                        <asp:TextBox ID="TxtPkgRemarks" runat="server" Width="280px" CssClass="textb" TextMode="MultiLine"
-                            TabIndex="26"></asp:TextBox>
-                    </td>
-                </tr>
-                <tr class="RowStyle">
-                    <td>
-                        <asp:Label ID="LblMsg" runat="server" ForeColor="Red" CssClass="labelbold"></asp:Label>
-                    </td>
-                    <td></td>
-                    <td>
-                        <asp:Button ID="BTNSave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="BTNSave_Click" />
-                        <asp:Button ID="BtnCancel" runat="server" Text="Close" CssClass="buttonnorm" OnClientClick="return CloseForm();" />
-                    </td>
-                </tr>
-            </table>
-
-
-
-
-
-
-
-
-
             <div class="page-content">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-violet">
-                            <div class="panel-heading">Order services</div>
-                            <div class="panel-body pan">
-                                <form action="#">
-                                    <div class="form-body pal">
+
+                <div class="card">
+                    <div class="card-header ptx pbn pls normal-font-txt">
+                        <strong>Additional Parameter</strong>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-xl-6">
+
+                                <div class="card">
+                                    <div class="card-header ptx pbn pls normal-font-txt"></div>
+                                    <div class="card-body">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="input-icon right"><i class="fa fa-user"></i><input id="inputName" type="text" placeholder="Name" class="form-control"></div>
+                                            <div class="col-xl-12">
+
+                                                <div class="row">
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            HS CODE:
+                                   <asp:TextBox ID="TxtHsCode" runat="server" CssClass="form-control"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            COMPOSITION:
+                                 <asp:TextBox ID="TxtDesc" runat="server" CssClass="form-control"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            MINIMUM ORDER QTY:
+                                 <asp:TextBox ID="TxtMinOrderQty" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+
+
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="input-icon right"><i class="fa fa-briefcase"></i><input id="inputCompany" type="text" placeholder="Company" class="form-control"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="input-icon right"><i class="fa fa-envelope"></i><input id="inputEmail" type="text" placeholder="E-mail" class="form-control"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="input-icon right"><i class="fa fa-phone"></i><input id="inputPhone" type="text" placeholder="Phone" class="form-control"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group"><select class="form-control">
-                                                    <option>Interested in</option>
-                                                    <option value="design">Design</option>
-                                                    <option value="development">Development</option>
-                                                    <option value="illustration">Illustration</option>
-                                                    <option value="brading">Branding</option>
-                                                    <option value="video">Video</option>
-                                                </select></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group"><select class="form-control">
-                                                    <option>Budget</option>
-                                                    <option value="0">Less than 5000$</option>
-                                                    <option value="1">5000$ - 10000$</option>
-                                                    <option value="2">10000$ - 20000$</option>
-                                                    <option value="3">More than 20000$</option>
-                                                </select></div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="input-icon right"><i class="fa fa-calendar"></i><input id="inputStartDate" type="text" placeholder="Expected start date" class="form-control">
+                                                <div class="row">
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            PRICE/MTR2:
+              
+         
+                           <asp:TextBox ID="TxtPrice" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            INNER PACKING:
+               
+                           <asp:TextBox ID="TxtInnerPkg" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            MASTER PACKING:
+               
+                             <asp:TextBox ID="TxtMasterPkg" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <div class="input-icon right"><i class="fa fa-calendar"></i><input id="inputFinishDate" type="text" placeholder="Expected finish date" class="form-control">
+                                                <div class="row">
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            GROSS WEIGHT(KGS/PCS):
+              
+                           <asp:TextBox ID="TxtIronWt" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            WOOD/OTHER WEIGHT(KGMS):
+        
+                             <asp:TextBox ID="TxtWoodWt" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            NET WEIGHT(KGS/PCS):
+          
+                             <asp:TextBox ID="TxtNetWt" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            MASTER PACKING SIZE:
+                                             <div class="row">
+                                                 <div class="col-xl-4">
+                                                     <asp:TextBox ID="TxtMasterPkgSize" runat="server" CssClass="form-control"
+                                                         onkeypress="return isNumber(event);"></asp:TextBox>
+                                                 </div>
+                                                 <div class="col-xl-4">
+                                                     <asp:TextBox ID="TxtMasterPkgSize1" runat="server" CssClass="form-control"
+                                                         onkeypress="return isNumber(event);"></asp:TextBox>
+                                                 </div>
+                                                 <div class="col-xl-4">
+                                                     <asp:TextBox ID="TxtMasterPkgSize2" runat="server" CssClass="form-control"
+                                                         onkeypress="return isNumber(event);"></asp:TextBox>
+                                                 </div>
+                                             </div>
+
+
+
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            VOLUME (CBM):
+              
+                             <asp:TextBox ID="TxtVolume" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            DRAWBACK RATE:
+             
+                             <asp:TextBox ID="TxtDrawBackRate" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xl-12">
+
+                                                        <div class="col-xl-4">
+                                                            <div class="mb-3">
+                                                                LOADABILITY:20
+                                                <asp:TextBox ID="TxtLoad20" runat="server" CssClass="form-control"
+                                                    onkeypress="return isNumber(event);"></asp:TextBox>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-4">
+
+
+                                                            <div class="mb-3">
+                                                                40' 
+                        <asp:TextBox ID="TxtLoad40" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-xl-4">
+                                                            <div class="mb-3">
+                                                                40'HQ
+                        <asp:TextBox ID="Txtload40HQ" runat="server" CssClass="form-control" onkeypress="return isNumber(event);"></asp:TextBox>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            MATERIAL REMARKS
+             
+                                <asp:TextBox ID="txtMaterialremarks" runat="server" CssClass="form-control"
+                                    TextMode="MultiLine" TabIndex="26"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            FINISH REMARKS
+                
+                             <asp:TextBox ID="TxtFinishRemarks" runat="server" CssClass="form-control"
+                                 TextMode="MultiLine" TabIndex="26"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-4">
+                                                        <div class="mb-3">
+                                                            PACKING REMARKS
+                 
+                             <asp:TextBox ID="TxtPkgRemarks" runat="server" CssClass="form-control"
+                                 TextMode="MultiLine"
+                                 TabIndex="26"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xl-6">
+                                                        <div class="mb-3">
+                                                            <asp:Label ID="LblMsg" runat="server" ForeColor="Red" CssClass="labelbold"></asp:Label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xl-6">
+                                                        <div class="mb-3">
+                                                            <asp:Button ID="BTNSave" runat="server" Text="Save" CssClass="btn btn-primary"
+                                                                OnClick="BTNSave_Click" />
+                                                            <asp:Button ID="BtnCancel" runat="server" Text="Close" CssClass="btn btn-primary"
+                                                                OnClientClick="return CloseForm();" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
                                         </div>
-                                        <div class="form-group"><input id="inputIncludeFile" type="file" placeholder="Inlcude some file"></div>
-                                        <div class="form-group mbn"><textarea rows="5" placeholder="Tell us about your project" class="form-control"></textarea></div>
+
+
                                     </div>
-                                    <div class="form-actions text-right pal">
-                                        <button type="submit" class="btn btn-primary">Send request</button>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-6">
+
+                                <div class="card bg-default border-none mbn">
+                                    <div class="card-header ptx pbn pls normal-font-txt">
+                                        <strong>Sales App Parameter</strong>
                                     </div>
-                                </form>
+                                    <div class="card-body pdn">
+                                        <div class="row">
+
+
+                                            <div class="col-xl-12">
+                                                <div class="table-responsive">
+                                                    <table id="tblProperty" class="table table-bordered mbn small-inputbox">
+                                                        <thead class="bg-table-header">
+                                                            <tr>
+                                                                <th width="40%">
+                                                                    <select id="ddlAttributeId" class="form-control">
+                                                                        <option>Budget</option>
+                                                                        <option value="0">Less than 5000$</option>
+                                                                        <option value="1">5000$ - 10000$</option>
+                                                                        <option value="2">10000$ - 20000$</option>
+                                                                        <option value="3">More than 20000$</option>
+                                                                    </select>.</th>
+                                                                <th width="50%">
+                                                                    <textarea rows="2" id="txtAttributeValue" class="form-control"></textarea>
+                                                                </th>
+                                                                <th width="10%">
+
+                                                                    <a title="Add" href="javascript:;" class="btn btn-primary mrx btnAdd">
+                                                                        <i class="fa fa-plus text-green mediumtxt"></i>
+                                                                    </a>
+
+                                                                </th>
+
+                                                            </tr>
+
+
+
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                        </tbody>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="card bg-default border-none mbn">
+                                    <div class="card-header ptx pbn pls normal-font-txt">
+                                        <strong>Uplaod Image</strong>
+                                    </div>
+                                    <div class="card-body pdn">
+                                        <div class="row">
+
+
+
+
+
+
+
+
+
+                                            <div class="col-xl-12">
+                                                <div class="table-responsive">
+                                                    <table id="tblProperty" class="table table-bordered mbn small-inputbox">
+                                                        <thead class="bg-table-header">
+                                                            <tr>
+
+                                                                <th width="70%">
+                                                                    <asp:FileUpload ID="PhotoImage" AllowMultiple="true" runat="server" />
+                                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ControlToValidate="PhotoImage"
+                                                                        ValidationGroup="upload" runat="server" ErrorMessage="Choose Image"></asp:RequiredFieldValidator>
+
+                                                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ValidationGroup="upload"
+                                                                        runat="server" ErrorMessage="Only .png,.jpeg or.jpg files are allowed!"
+                                                                        ValidationExpression="^.*\.(jpg|JPG|png|GIF|jpeg|JPEG|BMP|bmp)$" ControlToValidate="PhotoImage"></asp:RegularExpressionValidator>
+                                                                </th>
+                                                                <th width="30%">
+                                                                    <asp:Button OnClick="btnUpload_Click" ID="btnUpload" runat="server" Text="Uplaod Image"
+                                                                        ValidationGroup="upload" CssClass="btn btn-primary" />
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <asp:Repeater ID="rptPhotoList" runat="server">
+                                                                <ItemTemplate>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <asp:HiddenField ID="lblPhotoId" runat="server" Value='<%# Eval("PhotoId") %>' />
+                                                                            <asp:Label ID="lblPhotoName" runat="server" Text='<%# Eval("PhotoName") %>' />
+                                                                        </td>
+
+                                                                        <td>
+                                                                            <asp:LinkButton ID="lnkDelete" Text="Delete" runat="server" OnClientClick="return confirm('Do you want to delete this Photo?');"
+                                                                                OnClick="DeletePhoto" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </ItemTemplate>
+                                                            </asp:Repeater>
+                                                        </tbody>
+                                                        </tbody>
+
+                                                    </table>
+                                                </div>
+                                            </div>
+
+
+
+
+
+
+
+
+
+
+
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>
+
+    <textarea style="display: none" id="propertyTemplate">
+        <tr>
+                                                <td class='text-center'>
+                                                    <input type="hidden" id="hdnPropertyList_{0}_AttributeId" name="PropertyList[{0}].AttributeId"
+                                                        value="{1}">
+
+                                                    <label>{2}</label>
+                                                </td>
+                                                <td>
+                                                    <input type="hidden" id="hdnPropertyList_{0}_AttributeValue" name="PropertyList[{0}].AttributeValue"
+                                                        value="{3}">
+
+                                                    <label>{3}</label>
+                                                    
+                                                    
+                                                 
+                                                </td>
+
+                                                <td class="text-left">
+
+                                                    <a title="Delete" href="javascript:;" class="btn btn-primary  mrx btnDel">
+                                                        <i class="fa fa-times text-red mediumtxt"></i>
+                                                    </a>
+
+
+                                                </td>
+                                            </tr>
+        </textarea>
 </asp:Content>

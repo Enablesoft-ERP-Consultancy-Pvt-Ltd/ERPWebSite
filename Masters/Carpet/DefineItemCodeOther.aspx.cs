@@ -6,17 +6,30 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
+using System.Web.Script.Services;
+using IExpro.Web.Models;
+using System.Web.Services;
+using System.Text.Json;
+using System.Configuration;
+using System.Drawing;
+using System.IO;
 
 public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 {
+
+    public int ItemFinishedId { get; set; }
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["varCompanyId"] == null)
         {
             Response.Redirect("~/Login.aspx");
-        }   
+        }
         if (!IsPostBack)
         {
+            this.ItemFinishedId = Request.QueryString["SrNo"] != null ? Convert.ToInt32(Request.QueryString["SrNo"]) : 0;
+
+            this.BindPhotoList();
+
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
             con.Open();
             try
@@ -68,6 +81,8 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
         con.Open();
         try
         {
+
+
             SqlParameter[] _param = new SqlParameter[22];
             _param[0] = new SqlParameter("@ItemFinishedID", Request.QueryString["SrNo"]);
             _param[1] = new SqlParameter("@HSCODE", TxtHsCode.Text);
@@ -106,5 +121,185 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
             con.Dispose();
         }
 
+    }
+
+
+
+
+
+
+
+
+
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetAttributeMaster()
+    {
+        var result = new List<SelectedList>();
+        SqlConnection dbcon = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+
+            string query = @"SELECT AttributeId,CompanyId,AttributeName,Description,IsPublished,CreatedBy,CreatedOn
+    FROM tblItemAttributeMaster Where CompanyId=@CompanyId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@CompanyId", 42));
+            DataSet ds = SqlHelper.ExecuteDataset(dbcon, CommandType.Text, query, parameters.ToArray());
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                result = ds.Tables[0].AsEnumerable().Select(x => new
+                SelectedList
+                {
+                    ItemId = x.Field<int>("AttributeId"),
+                    ItemName = x.Field<string>("AttributeName")
+                }).ToList();
+            }
+            var json = JsonSerializer.Serialize(result);
+
+            return json;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        finally
+        {
+            dbcon.Close();
+            dbcon.Dispose();
+        }
+
+
+
+
+
+
+    }
+
+
+
+    public void UploadPhoto()
+    {
+        if (this.ItemFinishedId > 0)
+        {
+
+            string folderPath = ConfigurationManager.AppSettings["ImagePath"];
+            if (PhotoImage.HasFiles)
+            {
+                int index = 1;
+                foreach (HttpPostedFile uploadedFile in PhotoImage.PostedFiles)
+                {
+                    //Check whether Directory (Folder) exists.
+                    if (!Directory.Exists(folderPath))
+                    {
+                        //If Directory (Folder) does not exists. Create it.
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    string fileName = "product-" + index.ToString() + "-" + this.ItemFinishedId.ToString() + "-" + DateTime.Now.Ticks.ToString() + "-img" + Path.GetExtension(uploadedFile.FileName);
+                    string imgPath = Path.Combine(folderPath, fileName);
+                    uploadedFile.SaveAs(imgPath);
+                    SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId) values(" + this.ItemFinishedId + ",'" + fileName + "'," + Session["varCompanyId"] + ")");
+                    index++;
+                }
+            }
+
+            this.BindPhotoList();
+        }
+    }
+
+
+
+
+
+
+    private void BindPhotoList()
+    {
+
+        if (this.ItemFinishedId > 0)
+        {
+            string query = @"Select PhotoId,FINISHEDID as FinishItemId,PHOTO as PhotoName 
+  from MAIN_ITEM_IMAGE Where FINISHEDID=@FinishItemId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@FinishItemId", this.ItemFinishedId));
+
+            using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                using (DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, query, parameters.ToArray()))
+                {
+                    rptPhotoList.DataSource = ds.Tables[0];
+                    rptPhotoList.DataBind();
+                }
+
+
+            }
+        }
+    }
+    protected void DeletePhoto(object sender, EventArgs e)
+    {
+        string folderPath = ConfigurationManager.AppSettings["ImagePath"];
+        int photoId = int.Parse(((sender as LinkButton).NamingContainer.FindControl("lblPhotoId") as HiddenField).Value);
+        string photoName = ((sender as LinkButton).NamingContainer.FindControl("lblPhotoName") as Label).Text;
+        if (photoId > 0)
+        {
+            using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM MAIN_ITEM_IMAGE WHERE PhotoId = @PhotoId", con))
+                {
+                    cmd.Parameters.AddWithValue("@PhotoId", photoId);
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+
+                    //if (File.Exists(Path.Combine(folderPath, photoName)))
+                    //{
+                    //    File.Delete(Path.Combine(folderPath, photoName));
+                    //}
+                }
+                this.BindPhotoList();
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    protected void btnUpload_Click(object sender, EventArgs e)
+    {
+        this.UploadPhoto();
     }
 }
