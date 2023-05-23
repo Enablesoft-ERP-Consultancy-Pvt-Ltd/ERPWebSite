@@ -13,11 +13,15 @@ using System.Text.Json;
 using System.Configuration;
 using System.Drawing;
 using System.IO;
+using System.Xml.Linq;
+using System.Runtime.CompilerServices;
 
 public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 {
 
-    public int ItemFinishedId { get; set; }
+    public static int ItemFinishedId { get; set; }
+    public static int CompanyId { get; set; }
+    public static int UserId { get; set; }
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["varCompanyId"] == null)
@@ -26,7 +30,9 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
-            this.ItemFinishedId = Request.QueryString["SrNo"] != null ? Convert.ToInt32(Request.QueryString["SrNo"]) : 0;
+            ItemFinishedId = Request.QueryString["SrNo"] != null ? Convert.ToInt32(Request.QueryString["SrNo"]) : 0;
+            CompanyId = Session["varCompanyId"] != null ? Convert.ToInt32(Session["varCompanyId"]) : 0;
+            UserId = Session["varuserid"] != null ? Convert.ToInt32(Session["varuserid"]) : 0;
 
             this.BindPhotoList();
 
@@ -124,65 +130,6 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
     }
 
 
-
-
-
-
-
-
-
-    /// <summary>
-    /// Logs in the user
-    /// </summary>
-    /// <param name="Username">The username</param>
-    /// <param name="Password">The password</param>
-    /// <returns>true if login successful</returns>
-    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public static string GetAttributeMaster()
-    {
-        var result = new List<SelectedList>();
-        SqlConnection dbcon = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        try
-        {
-
-            string query = @"SELECT AttributeId,CompanyId,AttributeName,Description,IsPublished,CreatedBy,CreatedOn
-    FROM tblItemAttributeMaster Where CompanyId=@CompanyId";
-
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@CompanyId", 42));
-            DataSet ds = SqlHelper.ExecuteDataset(dbcon, CommandType.Text, query, parameters.ToArray());
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                result = ds.Tables[0].AsEnumerable().Select(x => new
-                SelectedList
-                {
-                    ItemId = x.Field<int>("AttributeId"),
-                    ItemName = x.Field<string>("AttributeName")
-                }).ToList();
-            }
-            var json = JsonSerializer.Serialize(result);
-
-            return json;
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-        finally
-        {
-            dbcon.Close();
-            dbcon.Dispose();
-        }
-
-
-
-
-
-
-    }
-
-
-
     public void UploadPhoto()
     {
         if (this.ItemFinishedId > 0)
@@ -211,11 +158,6 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
             this.BindPhotoList();
         }
     }
-
-
-
-
-
 
     private void BindPhotoList()
     {
@@ -267,39 +209,162 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     protected void btnUpload_Click(object sender, EventArgs e)
     {
         this.UploadPhoto();
     }
+
+
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetAttributeMaster()
+    {
+        var result = new List<SelectedList>();
+        SqlConnection dbcon = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+
+            string query = @"SELECT AttributeId,CompanyId,AttributeName,Description,IsPublished,CreatedBy,CreatedOn
+    FROM tblItemAttributeMaster Where CompanyId=@CompanyId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@CompanyId", CompanyId));
+            DataSet ds = SqlHelper.ExecuteDataset(dbcon, CommandType.Text, query, parameters.ToArray());
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                result = ds.Tables[0].AsEnumerable().Select(x => new
+                SelectedList
+                {
+                    ItemId = x.Field<int>("AttributeId"),
+                    ItemName = x.Field<string>("AttributeName")
+                }).ToList();
+            }
+            var json = JsonSerializer.Serialize(result);
+
+            return json;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+        finally
+        {
+            dbcon.Close();
+            dbcon.Dispose();
+        }
+
+
+
+
+
+
+    }
+
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static bool SaveData(int attributeId, string attribute)
+    {
+
+        string query = @"INSERT INTO tblItemAttributes
+(ItemFinishId,AttributeId,AttributeValue,AttributeDetail,IsPublished,CreatedBy,CreatedOn)
+VALUES(@ItemFinishId,@AttributeId,@AttributeValue,@AttributeDetail,@IsPublished,@CreatedBy,@CreatedOn)";
+
+        if (string.IsNullOrEmpty(attribute))
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@ItemFinishId", ItemFinishedId));
+            parameters.Add(new SqlParameter("@AttributeId", attributeId));
+            parameters.Add(new SqlParameter("@AttributeValue", attribute));
+            parameters.Add(new SqlParameter("@IsPublished", true));
+            parameters.Add(new SqlParameter("@CreatedBy", UserId));
+            parameters.Add(new SqlParameter("@CreatedOn", DateTime.Now));
+
+            var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
+
+            if (result > 0)
+            {
+                return true;
+            }
+            else
+            { return false; }
+        }
+        else { return false; }
+
+    }
+
+
+
+
+
+
+
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetItemsPropertyList()
+    {
+        string resultString = "";
+        SqlConnection dbcon = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+
+            string query = @"Select * from tblItemAttributeMaster x inner join tblItemAttributes y 
+on x.AttributeId=y.AttributeId Where y.ItemFinishId=@ItemFinishId 
+and x.CompanyId=@CompanyId";
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@ItemFinishId", ItemFinishedId));
+            parameters.Add(new SqlParameter("@CompanyId", CompanyId));
+            DataSet ds = SqlHelper.ExecuteDataset(dbcon, CommandType.Text, query, parameters.ToArray());
+            var result = ds.Tables[0].AsEnumerable().Select(x => new
+            {
+                AttributeId = x.Field<int>("AttributeId"),
+                AttributeName = x.Field<string>("AttributeName"),
+                AttributeValue = x.Field<string>("AttributeValue"),
+            }).ToList();
+            resultString = JsonSerializer.Serialize(result);
+            dbcon.Close();
+            dbcon.Dispose();
+
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+
+
+
+        return resultString;
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+

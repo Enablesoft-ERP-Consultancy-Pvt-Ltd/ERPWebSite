@@ -231,15 +231,12 @@
                             </div>
 
                             <div class="col-xl-6">
-
                                 <div class="card bg-default border-none mbn">
                                     <div class="card-header ptx pbn pls normal-font-txt">
                                         <strong>Sales App Parameter</strong>
                                     </div>
                                     <div class="card-body pdn">
                                         <div class="row">
-
-
                                             <div class="col-xl-12">
                                                 <div class="table-responsive">
                                                     <table id="tblProperty" class="table table-bordered mbn small-inputbox">
@@ -247,38 +244,42 @@
                                                             <tr>
                                                                 <th width="40%">
                                                                     <select id="ddlAttributeId" class="form-control">
-                                                                        <option>Budget</option>
-                                                                        <option value="0">Less than 5000$</option>
-                                                                        <option value="1">5000$ - 10000$</option>
-                                                                        <option value="2">10000$ - 20000$</option>
-                                                                        <option value="3">More than 20000$</option>
                                                                     </select>.</th>
                                                                 <th width="50%">
                                                                     <textarea rows="2" id="txtAttributeValue" class="form-control"></textarea>
                                                                 </th>
                                                                 <th width="10%">
-
                                                                     <a title="Add" href="javascript:;" class="btn btn-primary mrx btnAdd">
                                                                         <i class="fa fa-plus text-green mediumtxt"></i>
                                                                     </a>
-
                                                                 </th>
-
                                                             </tr>
-
-
-
                                                         </thead>
                                                         <tbody>
-                                                        </tbody>
-                                                        </tbody>
+                                                            <asp:Repeater ID="rptAttribute" runat="server">
+                                                                <ItemTemplate>
+                                                                    <tr>
+                                                                         <td>
+                                                                            <asp:HiddenField ID="hdnAttributeId" runat="server" Value='<%# Eval("PhotoId") %>' />
+                                                                            <asp:Label ID="Label1" runat="server" Text='<%# Eval("PhotoName") %>' />
+                                                                        </td>
+                                                                        <td>
+                                                                            <asp:HiddenField ID="lblAttribute" runat="server" Value='<%# Eval("PhotoId") %>' />
+                                                                            <asp:Label ID="lblAttribute" runat="server" Text='<%# Eval("PhotoName") %>' />
+                                                                        </td>
 
+                                                                        <td>
+                                                                            <asp:LinkButton ID="lnkDelete" Text="Delete" runat="server" OnClientClick="return confirm('Do you want to delete this Photo?');"
+                                                                                OnClick="DeletePhoto" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </ItemTemplate>
+                                                            </asp:Repeater>
+                                                        </tbody>
+                                                        </tbody>
                                                     </table>
                                                 </div>
                                             </div>
-
-
-
                                         </div>
                                     </div>
                                 </div>
