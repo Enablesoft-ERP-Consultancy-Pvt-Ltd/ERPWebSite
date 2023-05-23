@@ -256,10 +256,10 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
                     cmd.ExecuteNonQuery();
                     con.Close();
 
-                    //if (File.Exists(Path.Combine(folderPath, photoName)))
-                    //{
-                    //    File.Delete(Path.Combine(folderPath, photoName));
-                    //}
+                    if (File.Exists(Path.Combine(folderPath, photoName)))
+                    {
+                        File.Delete(Path.Combine(folderPath, photoName));
+                    }
                 }
                 this.BindPhotoList();
             }
