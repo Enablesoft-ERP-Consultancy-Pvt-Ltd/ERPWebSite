@@ -136,7 +136,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                     TDUPCNo.Visible = false;
                     break;
             }
-            this.BindPhotoList();
+         
         }
 
 
@@ -517,7 +517,6 @@ public partial class DefineItemCode : System.Web.UI.Page
         }
         btnsave.Text = "Update";
 
-        this.BindPhotoList();
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
@@ -1580,56 +1579,7 @@ public partial class DefineItemCode : System.Web.UI.Page
 
 
 
-    private void BindPhotoList()
-    {
-        int finishId = Convert.ToInt32(hnItemFinishedId.Value);
-        if (finishId > 0)
-        {
 
-
-            using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
-            {
-                using (SqlCommand cmd = new SqlCommand("select PhotoId,FINISHEDID as FinishItemId,PHOTO as PhotoName from MAIN_ITEM_IMAGE", con))
-                {
-                    using (SqlDataAdapter sda = new SqlDataAdapter(cmd))
-                    {
-                        using (DataTable dt = new DataTable())
-                        {
-                            sda.Fill(dt);
-                            rptPhotoList.DataSource = dt;
-                            rptPhotoList.DataBind();
-                        }
-                    }
-                }
-            }
-        }
-    }
-    protected void DeletePhoto(object sender, EventArgs e)
-    {
-        string folderPath = ConfigurationManager.AppSettings["ImagePath"];
-        int photoId = int.Parse(((sender as LinkButton).NamingContainer.FindControl("lblPhotoId") as Label).Text);
-        string photoName = ((sender as LinkButton).NamingContainer.FindControl("lblPhotoName") as Label).Text;
-        if (photoId > 0)
-        {
-            using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
-            {
-                using (SqlCommand cmd = new SqlCommand("DELETE FROM MAIN_ITEM_IMAGE WHERE PhotoId = @PhotoId", con))
-                {
-                    cmd.Parameters.AddWithValue("@PhotoId", photoId);
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-
-                    if (File.Exists(Path.Combine(folderPath, photoName)))
-                    {
-                        File.Delete(Path.Combine(folderPath, photoName));
-                    }
-                }
-                this.BindPhotoList();
-            }
-
-        }
-    }
 
 
 

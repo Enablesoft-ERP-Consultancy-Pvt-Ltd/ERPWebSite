@@ -1,12 +1,12 @@
-﻿
+﻿var cstIndex = 0;
 $(function () {
 
 
-
-
-
-    var cstIndex = 0;
     var attributeList = null;
+
+
+    BindAllProtery();
+
     $.ajax({
         type: "POST",
         url: "DefineItemCodeOther.aspx/GetAttributeMaster",
@@ -28,7 +28,7 @@ $(function () {
         var _attribute = $("#ddlAttributeId option:selected").text();
         var _attributeVal = $('#txtAttributeValue').val();
         var $table = $(this).closest("table").find('tbody');
-        this.SaveData(_attributeId, _attributeVal, $table);
+        SaveData(_attributeId, _attribute, _attributeVal, $table);
 
 
 
@@ -39,7 +39,7 @@ $(function () {
 
     $('#tblProperty').on("click", ".btnDel", function () {
         var $row = $(this).closest("tr");
-        $row.remove();
+        deleteData($row)
     });
 
 
@@ -72,10 +72,10 @@ function SelectList(item, ListData, InitialText) {
     $(item).html(itemList);
 }
 
-function SaveData(_attributeId, _attributeVal, _attribute, $table) {
+function SaveData(_attributeId, _attribute, _attributeVal, $table) {
 
 
-    const obj = { attributeId: attributeId, attribute: _attributeVal };
+    const obj = { attributeId: _attributeId, attribute: _attributeVal };
     $.ajax({
         type: "POST",
         url: "DefineItemCodeOther.aspx/SaveData",
@@ -85,12 +85,10 @@ function SaveData(_attributeId, _attributeVal, _attribute, $table) {
         success: function (result) {
 
             if (result.d) {
-
-                cstIndex++;
                 var csthtml = $.validator.format($("#propertyTemplate").val());
                 csthtml = csthtml(cstIndex, _attributeId, _attribute, _attributeVal);
                 $table.append(csthtml);
-
+                cstIndex++;
             }
             else {
 
@@ -106,38 +104,68 @@ function SaveData(_attributeId, _attributeVal, _attribute, $table) {
 
 }
 
-function BindAllProtery() {
-    const obj = { attributeId: attributeId, attribute: _attributeVal };
+
+
+
+
+
+function deleteData($row) {
+
+    
+    const obj = { attributeId: $row.find("input.AttributeId").val(), attribute: $row.find("input.AttributeValue").val() };
     $.ajax({
         type: "POST",
-        url: "DefineItemCodeOther.aspx/SaveData",
+        url: "DefineItemCodeOther.aspx/DeleteProperty",
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         data: JSON.stringify(obj),
         success: function (result) {
-            var dataList = jQuery.parseJSON(result.d);
-
-            $.each(dataList, function (key, item) {
-                alert(key + ": " + value);
-
-                cstIndex++;
-                var csthtml = $.validator.format($("#propertyTemplate").val());
-                csthtml = csthtml(cstIndex, item., _attribute, _attributeVal);
-                $table.append(csthtml);
-
-
-            });
-            
 
             if (result.d) {
-
-              
-
+                $row.remove();
             }
             else {
 
                 alert('There is some technical issue !Please contact to admin');
             }
+        },
+        error: function (xhr) {
+            alert('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
+        }
+    });
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+function BindAllProtery() {
+
+    $.ajax({
+        type: "POST",
+        url: "DefineItemCodeOther.aspx/GetItemsPropertyList",
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (result) {
+
+            var dataList = jQuery.parseJSON(result.d);
+            $.each(dataList, function (key, item) {
+
+                var $table = $("#tblProperty").find("tbody");
+                var csthtml = $.validator.format($("#propertyTemplate").val());
+                csthtml = csthtml(cstIndex, item.AttributeId, item.AttributeName, item.AttributeValue);
+                $table.append(csthtml);
+                cstIndex++;
+            });
 
         },
         error: function (xhr) {

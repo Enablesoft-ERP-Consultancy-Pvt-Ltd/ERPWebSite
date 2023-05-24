@@ -426,43 +426,7 @@
                         <asp:HiddenField ID="hnItemFinishedId" runat="server"  Value="0"/>
                     </tr>
 
-                    <tr>
-                        <td align="left" colspan="4">
-                            <asp:Repeater ID="rptPhotoList" runat="server">
-                                <HeaderTemplate>
-                                    <table cellspacing="0" rules="all" border="1">
-                                        <tr>
-                                            <th scope="col" style="width: 80px">Photo Id
-                                            </th>
-                                            <th scope="col" style="width: 120px">Photo Name
-                                            </th>
-                                            <th style="width: 60px"></th>
-                                        </tr>
-                                </HeaderTemplate>
-                                <ItemTemplate>
-                                    <tr>
-                                        <td>
-                                            <asp:Label ID="lblPhotoId" runat="server" Text='<%# Eval("PhotoId") %>' />
-                                        </td>
-                                        <td>
-                                            <asp:Label ID="lblPhotoName" runat="server" Text='<%# Eval("PhotoName") %>' />
-                                        </td>
-
-                                        <td>
-                                            <asp:LinkButton ID="lnkDelete" Text="Delete" runat="server" OnClientClick="return confirm('Do you want to delete this Photo?');"
-                                                OnClick="DeletePhoto" />
-                                        </td>
-                                    </tr>
-                                </ItemTemplate>
-                                <FooterTemplate>
-                                    </table>
-                                </FooterTemplate>
-                            </asp:Repeater>
-
-                        </td>
-
-
-                    </tr>
+              
 
                     <tr id="TRDesignWithQuality" runat="server" visible="false">
                         <td>&nbsp;

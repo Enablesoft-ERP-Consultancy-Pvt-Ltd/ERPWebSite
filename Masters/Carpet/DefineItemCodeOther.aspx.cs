@@ -30,9 +30,9 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
-            ItemFinishedId = Request.QueryString["SrNo"] != null ? Convert.ToInt32(Request.QueryString["SrNo"]) : 0;
-            CompanyId = Session["varCompanyId"] != null ? Convert.ToInt32(Session["varCompanyId"]) : 0;
-            UserId = Session["varuserid"] != null ? Convert.ToInt32(Session["varuserid"]) : 0;
+            Masters_Carpet_DefineItemCodeOther.ItemFinishedId = Request.QueryString["SrNo"] != null ? Convert.ToInt32(Request.QueryString["SrNo"]) : 0;
+            Masters_Carpet_DefineItemCodeOther.CompanyId = Session["varCompanyId"] != null ? Convert.ToInt32(Session["varCompanyId"]) : 0;
+            Masters_Carpet_DefineItemCodeOther.UserId = Session["varuserid"] != null ? Convert.ToInt32(Session["varuserid"]) : 0;
 
             this.BindPhotoList();
 
@@ -130,45 +130,17 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
     }
 
 
-    public void UploadPhoto()
-    {
-        if (this.ItemFinishedId > 0)
-        {
-
-            string folderPath = ConfigurationManager.AppSettings["ImagePath"];
-            if (PhotoImage.HasFiles)
-            {
-                int index = 1;
-                foreach (HttpPostedFile uploadedFile in PhotoImage.PostedFiles)
-                {
-                    //Check whether Directory (Folder) exists.
-                    if (!Directory.Exists(folderPath))
-                    {
-                        //If Directory (Folder) does not exists. Create it.
-                        Directory.CreateDirectory(folderPath);
-                    }
-                    string fileName = "product-" + index.ToString() + "-" + this.ItemFinishedId.ToString() + "-" + DateTime.Now.Ticks.ToString() + "-img" + Path.GetExtension(uploadedFile.FileName);
-                    string imgPath = Path.Combine(folderPath, fileName);
-                    uploadedFile.SaveAs(imgPath);
-                    SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId) values(" + this.ItemFinishedId + ",'" + fileName + "'," + Session["varCompanyId"] + ")");
-                    index++;
-                }
-            }
-
-            this.BindPhotoList();
-        }
-    }
 
     private void BindPhotoList()
     {
 
-        if (this.ItemFinishedId > 0)
+        if (Masters_Carpet_DefineItemCodeOther.ItemFinishedId > 0)
         {
             string query = @"Select PhotoId,FINISHEDID as FinishItemId,PHOTO as PhotoName 
   from MAIN_ITEM_IMAGE Where FINISHEDID=@FinishItemId";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@FinishItemId", this.ItemFinishedId));
+            parameters.Add(new SqlParameter("@FinishItemId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
 
             using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
@@ -186,7 +158,7 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
     {
         string folderPath = ConfigurationManager.AppSettings["ImagePath"];
         int photoId = int.Parse(((sender as LinkButton).NamingContainer.FindControl("lblPhotoId") as HiddenField).Value);
-        string photoName = ((sender as LinkButton).NamingContainer.FindControl("lblPhotoName") as Label).Text;
+        string photoName = ((sender as LinkButton).NamingContainer.FindControl("hdnPhoto") as HiddenField).Value;
         if (photoId > 0)
         {
             using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
@@ -211,7 +183,42 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 
     protected void btnUpload_Click(object sender, EventArgs e)
     {
-        this.UploadPhoto();
+        if (Masters_Carpet_DefineItemCodeOther.ItemFinishedId > 0)
+        {
+
+            string folderPath = ConfigurationManager.AppSettings["ImagePath"];
+            if (PhotoImage.HasFiles)
+            {
+                int index = 1;
+                foreach (HttpPostedFile uploadedFile in PhotoImage.PostedFiles)
+                {
+                    //Check whether Directory (Folder) exists.
+                    if (!Directory.Exists(folderPath))
+                    {
+                        //If Directory (Folder) does not exists. Create it.
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    string fileName = "product-" + index.ToString() + "-F" + Masters_Carpet_DefineItemCodeOther.ItemFinishedId.ToString() + "-" + DateTime.Now.Ticks.ToString() + "-img" + Path.GetExtension(uploadedFile.FileName);
+                    string imgPath = Path.Combine(folderPath, fileName);
+                    uploadedFile.SaveAs(imgPath);
+
+                    string query = @"Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId)
+VALUES(@ItemFinishId,@PhotoId,@CompanyId)";
+
+
+                    List<SqlParameter> parameters = new List<SqlParameter>();
+                    parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+                    parameters.Add(new SqlParameter("@PhotoId", fileName));
+                    parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
+
+                    var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
+
+
+                }
+            }
+
+            this.BindPhotoList();
+        }
     }
 
 
@@ -233,7 +240,7 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
     FROM tblItemAttributeMaster Where CompanyId=@CompanyId";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@CompanyId", CompanyId));
+            parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
             DataSet ds = SqlHelper.ExecuteDataset(dbcon, CommandType.Text, query, parameters.ToArray());
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -276,17 +283,17 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
     {
 
         string query = @"INSERT INTO tblItemAttributes
-(ItemFinishId,AttributeId,AttributeValue,AttributeDetail,IsPublished,CreatedBy,CreatedOn)
-VALUES(@ItemFinishId,@AttributeId,@AttributeValue,@AttributeDetail,@IsPublished,@CreatedBy,@CreatedOn)";
+(ItemFinishId,AttributeId,AttributeValue,IsPublished,CreatedBy,CreatedOn)
+VALUES(@ItemFinishId,@AttributeId,@AttributeValue,@IsPublished,@CreatedBy,@CreatedOn)";
 
-        if (string.IsNullOrEmpty(attribute))
+        if (!string.IsNullOrEmpty(attribute))
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@ItemFinishId", ItemFinishedId));
+            parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
             parameters.Add(new SqlParameter("@AttributeId", attributeId));
             parameters.Add(new SqlParameter("@AttributeValue", attribute));
             parameters.Add(new SqlParameter("@IsPublished", true));
-            parameters.Add(new SqlParameter("@CreatedBy", UserId));
+            parameters.Add(new SqlParameter("@CreatedBy", Masters_Carpet_DefineItemCodeOther.UserId));
             parameters.Add(new SqlParameter("@CreatedOn", DateTime.Now));
 
             var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
@@ -307,6 +314,46 @@ VALUES(@ItemFinishId,@AttributeId,@AttributeValue,@AttributeDetail,@IsPublished,
 
 
 
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static bool DeleteProperty(int attributeId, string attribute)
+    {
+
+        string query = @"Delete From  tblItemAttributes Where ItemFinishId=@ItemFinishId and AttributeId=@AttributeId
+and AttributeValue=@AttributeValue";
+
+        if (!string.IsNullOrEmpty(attribute))
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+            parameters.Add(new SqlParameter("@AttributeId", attributeId));
+            parameters.Add(new SqlParameter("@AttributeValue", attribute));
+            var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
+
+            if (result > 0)
+            {
+                return true;
+            }
+            else
+            { return false; }
+        }
+        else { return false; }
+
+    }
+
+
+
+
+
+
+
+
+
 
     /// <summary>
     /// Logs in the user
@@ -317,6 +364,10 @@ VALUES(@ItemFinishId,@AttributeId,@AttributeValue,@AttributeDetail,@IsPublished,
     [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
     public static string GetItemsPropertyList()
     {
+
+
+
+
         string resultString = "";
         SqlConnection dbcon = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
@@ -327,8 +378,8 @@ on x.AttributeId=y.AttributeId Where y.ItemFinishId=@ItemFinishId
 and x.CompanyId=@CompanyId";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@ItemFinishId", ItemFinishedId));
-            parameters.Add(new SqlParameter("@CompanyId", CompanyId));
+            parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+            parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
             DataSet ds = SqlHelper.ExecuteDataset(dbcon, CommandType.Text, query, parameters.ToArray());
             var result = ds.Tables[0].AsEnumerable().Select(x => new
             {
@@ -352,6 +403,18 @@ and x.CompanyId=@CompanyId";
         return resultString;
 
 
+    }
+
+
+    public string GetImage(string fileName)
+    {
+        string folderPath = ConfigurationManager.AppSettings["ImagePath"];
+        string imgPath = Path.Combine(folderPath, fileName);
+        byte[] byteData = System.IO.File.ReadAllBytes(imgPath);
+        string imreBase64Data = Convert.ToBase64String(byteData);
+        string imgDataURL = string.Format("data:image/jpg;base64,{0}", imreBase64Data);
+
+        return imgDataURL;
     }
 
 

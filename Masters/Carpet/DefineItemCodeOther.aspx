@@ -13,19 +13,19 @@
     <script src="<%= ResolveUrl("~/") %>Content/JavaScript/Product.js" type="text/javascript"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
-    <asp:UpdatePanel ID="up1" runat="server">
-        <ContentTemplate>
-            <div class="page-content">
 
-                <div class="card">
-                    <div class="card-header ptx pbn pls normal-font-txt">
-                        <strong>Additional Parameter</strong>
-                    </div>
-                    <div class="card-body">
+    <div class="page-content">
 
-                        <div class="row">
-                            <div class="col-xl-6">
+        <div class="card">
+            <div class="card-header ptx pbn pls normal-font-txt">
+                <strong>Additional Parameter</strong>
+            </div>
+            <div class="card-body">
 
+                <div class="row">
+                    <div class="col-xl-6">
+                        <asp:UpdatePanel ID="up1" runat="server">
+                            <ContentTemplate>
                                 <div class="card">
                                     <div class="card-header ptx pbn pls normal-font-txt"></div>
                                     <div class="card-body">
@@ -228,186 +228,180 @@
 
                                     </div>
                                 </div>
+
+
+                            </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+
+                    <div class="col-xl-6">
+                        <div class="card bg-default border-none mbn">
+                            <div class="card-header ptx pbn pls normal-font-txt">
+                                <strong>Sales App Parameter</strong>
                             </div>
-
-                            <div class="col-xl-6">
-                                <div class="card bg-default border-none mbn">
-                                    <div class="card-header ptx pbn pls normal-font-txt">
-                                        <strong>Sales App Parameter</strong>
-                                    </div>
-                                    <div class="card-body pdn">
-                                        <div class="row">
-                                            <div class="col-xl-12">
-                                                <div class="table-responsive">
-                                                    <table id="tblProperty" class="table table-bordered mbn small-inputbox">
-                                                        <thead class="bg-table-header">
-                                                            <tr>
-                                                                <th width="40%">
-                                                                    <select id="ddlAttributeId" class="form-control">
-                                                                    </select>.</th>
-                                                                <th width="50%">
-                                                                    <textarea rows="2" id="txtAttributeValue" class="form-control"></textarea>
-                                                                </th>
-                                                                <th width="10%">
-                                                                    <a title="Add" href="javascript:;" class="btn btn-primary mrx btnAdd">
-                                                                        <i class="fa fa-plus text-green mediumtxt"></i>
-                                                                    </a>
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <asp:Repeater ID="rptAttribute" runat="server">
-                                                                <ItemTemplate>
-                                                                    <tr>
-                                                                         <td>
-                                                                            <asp:HiddenField ID="hdnAttributeId" runat="server" Value='<%# Eval("PhotoId") %>' />
-                                                                            <asp:Label ID="Label1" runat="server" Text='<%# Eval("PhotoName") %>' />
-                                                                        </td>
-                                                                        <td>
-                                                                            <asp:HiddenField ID="lblAttribute" runat="server" Value='<%# Eval("PhotoId") %>' />
-                                                                            <asp:Label ID="lblAttribute" runat="server" Text='<%# Eval("PhotoName") %>' />
-                                                                        </td>
-
-                                                                        <td>
-                                                                            <asp:LinkButton ID="lnkDelete" Text="Delete" runat="server" OnClientClick="return confirm('Do you want to delete this Photo?');"
-                                                                                OnClick="DeletePhoto" />
-                                                                        </td>
-                                                                    </tr>
-                                                                </ItemTemplate>
-                                                            </asp:Repeater>
-                                                        </tbody>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
+                            <div class="card-body pdn">
+                                <div class="row">
+                                    <div class="col-xl-12">
+                                        <div class="table-responsive">
+                                            <table id="tblProperty" class="table table-bordered mbn small-inputbox">
+                                                <thead class="bg-table-header">
+                                                    <tr>
+                                                        <th width="40%">
+                                                            <select id="ddlAttributeId" class="form-control">
+                                                            </select></th>
+                                                        <th width="50%">
+                                                            <textarea rows="2" id="txtAttributeValue" class="form-control"></textarea>
+                                                        </th>
+                                                        <th width="10%">
+                                                            <a title="Add" href="javascript:;" class="btn btn-primary mrx btnAdd">
+                                                                <i class="fa fa-plus text-green mediumtxt"></i>
+                                                            </a>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
 
 
-                                <div class="card bg-default border-none mbn">
-                                    <div class="card-header ptx pbn pls normal-font-txt">
-                                        <strong>Uplaod Image</strong>
-                                    </div>
-                                    <div class="card-body pdn">
-                                        <div class="row">
-
-
-
-
-
+                        <div class="card bg-default border-none mbn">
+                            <div class="card-header ptx pbn pls normal-font-txt">
+                                <strong>Uplaod Image</strong>
+                            </div>
+                            <div class="card-body pdn">
+                                <div class="row">
 
 
 
 
-                                            <div class="col-xl-12">
-                                                <div class="table-responsive">
-                                                    <table id="tblProperty" class="table table-bordered mbn small-inputbox">
-                                                        <thead class="bg-table-header">
-                                                            <tr>
 
-                                                                <th width="70%">
-                                                                    <asp:FileUpload ID="PhotoImage" AllowMultiple="true" runat="server" />
-                                                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ControlToValidate="PhotoImage"
-                                                                        ValidationGroup="upload" runat="server" ErrorMessage="Choose Image"></asp:RequiredFieldValidator>
 
-                                                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ValidationGroup="upload"
-                                                                        runat="server" ErrorMessage="Only .png,.jpeg or.jpg files are allowed!"
-                                                                        ValidationExpression="^.*\.(jpg|JPG|png|GIF|jpeg|JPEG|BMP|bmp)$" ControlToValidate="PhotoImage"></asp:RegularExpressionValidator>
-                                                                </th>
-                                                                <th width="30%">
-                                                                    <asp:Button OnClick="btnUpload_Click" ID="btnUpload" runat="server" Text="Uplaod Image"
-                                                                        ValidationGroup="upload" CssClass="btn btn-primary" />
-                                                                </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
+
+
+
+                                    <div class="col-xl-12">
+                                        <div class="table-responsive">
+                                            <table id="tblPhoto" class="table table-bordered mbn small-inputbox">
+                                                <thead class="bg-table-header">
+                                                    <tr>
+
+                                                        <th width="70%">
+                                                            <asp:FileUpload ID="PhotoImage" AllowMultiple="true" runat="server" />
+                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ControlToValidate="PhotoImage"
+                                                                ValidationGroup="upload" runat="server" ErrorMessage="Choose Image"></asp:RequiredFieldValidator>
+
+                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ValidationGroup="upload"
+                                                                runat="server" ErrorMessage="Only .png,.jpeg or.jpg files are allowed!"
+                                                                ValidationExpression="^.*\.(jpg|JPG|png|GIF|jpeg|JPEG|BMP|bmp)$" ControlToValidate="PhotoImage"></asp:RegularExpressionValidator>
+                                                        </th>
+                                                        <th width="30%">
+                                                            <asp:Button OnClick="btnUpload_Click" ID="btnUpload" runat="server" Text="Save Image"
+                                                                ValidationGroup="upload" CssClass="btn btn-primary" />
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+
+                                                    <asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                                                        <ContentTemplate>
                                                             <asp:Repeater ID="rptPhotoList" runat="server">
                                                                 <ItemTemplate>
                                                                     <tr>
                                                                         <td>
+
+                                                                            <asp:Image Height="60px" Width="60px" ID="ImgPhoto" runat="server" ImageUrl='<%# this.GetImage(Eval("PhotoName").ToString())  %>' />
                                                                             <asp:HiddenField ID="lblPhotoId" runat="server" Value='<%# Eval("PhotoId") %>' />
-                                                                            <asp:Label ID="lblPhotoName" runat="server" Text='<%# Eval("PhotoName") %>' />
+                                                                            <asp:HiddenField ID="hdnPhoto" runat="server" Value='<%# Eval("PhotoName") %>' />
                                                                         </td>
 
                                                                         <td>
-                                                                            <asp:LinkButton ID="lnkDelete" Text="Delete" runat="server" OnClientClick="return confirm('Do you want to delete this Photo?');"
+                                                                            <asp:LinkButton ID="lnkDelete" CssClass="btn btn-primary" Text="Delete" runat="server"
+                                                                                OnClientClick="return confirm('Do you want to delete this Photo?');"
                                                                                 OnClick="DeletePhoto" />
                                                                         </td>
                                                                     </tr>
                                                                 </ItemTemplate>
                                                             </asp:Repeater>
-                                                        </tbody>
-                                                        </tbody>
 
-                                                    </table>
-                                                </div>
-                                            </div>
+                                                        </ContentTemplate>
 
+                                                    </asp:UpdatePanel>
 
+                                                </tbody>
 
-
-
-
-
-
-
-
-
+                                            </table>
                                         </div>
                                     </div>
-                                </div>
 
+
+
+
+
+
+
+
+
+
+
+                                </div>
                             </div>
                         </div>
 
                     </div>
                 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
-        </ContentTemplate>
-    </asp:UpdatePanel>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div>
+
 
     <textarea style="display: none" id="propertyTemplate">
         <tr>
                                                 <td class='text-center'>
-                                                    <input type="hidden" id="hdnPropertyList_{0}_AttributeId" name="PropertyList[{0}].AttributeId"
+                                                    <input class="AttributeId" type="hidden" id="hdnPropertyList_{0}_AttributeId" name="PropertyList[{0}].AttributeId"
                                                         value="{1}">
 
                                                     <label>{2}</label>
                                                 </td>
                                                 <td>
-                                                    <input type="hidden" id="hdnPropertyList_{0}_AttributeValue" name="PropertyList[{0}].AttributeValue"
+                                                    <input class="AttributeValue" type="hidden" id="hdnPropertyList_{0}_AttributeValue" name="PropertyList[{0}].AttributeValue"
                                                         value="{3}">
 
                                                     <label>{3}</label>
