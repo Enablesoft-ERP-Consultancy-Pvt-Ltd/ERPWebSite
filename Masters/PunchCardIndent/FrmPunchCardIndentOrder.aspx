@@ -52,7 +52,7 @@
             }
 
         }
-    </script>
+    </script>    
     <div>
         <asp:UpdatePanel ID="upd2" runat="server">
             <ContentTemplate>
@@ -80,7 +80,7 @@
                                 <asp:TextBox ID="txtEditIssueNo" CssClass="textb" Width="61px" runat="server" Enabled="true"
                                     AutoPostBack="true" OnTextChanged="txtEditIssueNo_TextChanged" />
                             </td>
-                            <td id="TDCustomerCode" runat="server" visible="true">
+                            <td id="TDCustomerCode" runat="server" visible="false">
                                 <asp:Label ID="Label5" runat="server" Text="Customer Code" CssClass="labelbold"></asp:Label>
                                 <br />
                                 <asp:DropDownList ID="DDCustomerCode" runat="server" CssClass="dropdown" AutoPostBack="true"
@@ -204,7 +204,7 @@
                                                     <asp:Label ID="lblShapeName" Text='<%#Bind("ShapeName")%>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="SizeMtr">
+                                            <asp:TemplateField HeaderText="SizeMtr" Visible="false">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblSizeMtr" Text='<%#Bind("SizeMtr")%>' runat="server" />
                                                 </ItemTemplate>

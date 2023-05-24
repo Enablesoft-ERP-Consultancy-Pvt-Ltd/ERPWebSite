@@ -19,7 +19,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
         if (!IsPostBack)
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                            Select UnitID, UnitName From Unit(Nolock) Where UnitID in (1, 2)
+                            Select UnitID, UnitName From Unit(Nolock) Where UnitID in (1, 2,6)
                             Select Id,Name From PunchCardIndentType(Nolock) order by Id ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, false, "");
@@ -38,28 +38,29 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
                 DDPunchCardIndentType.SelectedIndex = 0;
             }
            
-            DDunit.SelectedValue = "2";
+            DDunit.SelectedValue = "1";
             txtAssignDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             txtRequiredDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             if (Session["canedit"].ToString() == "1")
             {
                 TDEdit.Visible = true;
             }
+            FillCustomerOrderNo();
 
             //switch (Session["varcompanyId"].ToString())
             //{
             //    case "2":
 
-            switch(Session["VarCompanyId"].ToString())
-            {
-                case "30":
-                    TDCustomerCode.Visible = false;
-                    FillCustomerOrderNo();
-                    break;
-                default:
-                    TDCustomerCode.Visible = true;
-                    break;
-            }
+            //switch(Session["VarCompanyId"].ToString())
+            //{
+            //    case "30":
+            //        TDCustomerCode.Visible = false;
+            //        FillCustomerOrderNo();
+            //        break;
+            //    default:
+            //        TDCustomerCode.Visible = true;
+            //        break;
+            //}
 
             
         }
@@ -179,13 +180,13 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
 
 
         string str = @"select OM.OrderId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,VF.SIZEMtr,
-                        CASE WHEN " + DDunit.SelectedValue + @" = 2 THEN VF.SIZEFT ELSE VF.SIZEMtr END As Size,
+                        CASE WHEN OD.OrderUnitId = 6 THEN VF.SizeInch else Case When OD.OrderUnitId = 1 THEN VF.SizeMtr ELSE VF.SizeFt END End As Size,
                         sum(OD.QtyRequired) as OrderQty,OD.Item_Finished_Id,0 as PreIssueQty,                       
-                        CASE WHEN " + DDunit.SelectedValue + @" = 2 THEN VF.ProdAreaFt ELSE VF.AreaMtr END As Area
+                        CASE WHEN OD.OrderUnitId = 6 THEN VF.AreaFt else case when OD.OrderUnitId= 1 THEN VF.AreaMtr ELSE VF.AreaFt END End As Area
                         from OrderMaster OM INNER JOIN OrderDetail OD ON OM.OrderId=OD.OrderId
                         INNER JOIN V_FinishedItemDetail VF ON OD.Item_Finished_Id=VF.Item_Finished_Id
                         Where OM.Orderid=" + DDCustomerOrderNo.SelectedValue + @"
-                        Group By OM.OrderId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,OD.OrderUnitId,VF.SIZEFT,VF.SIZEMTR,VF.SIZEINCH,OD.Item_Finished_Id,VF.ProdAreaFt,VF.AreaMtr";
+                        Group By OM.OrderId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,OD.OrderUnitId,VF.SIZEFT,VF.SIZEMTR,VF.SIZEINCH,OD.Item_Finished_Id,VF.ProdAreaFt,VF.AreaMtr,VF.AreaFt";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DG.DataSource = ds.Tables[0];
@@ -196,7 +197,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-
+            
             ////for (int i = 0; i < DG.Columns.Count; i++)
             ////{
             ////    if (variable.VarBINNOWISE == "1")
@@ -228,10 +229,10 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
         //{
         //    goto a;
         //} 
-        if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerCode) == false)
-        {
-            goto a;
-        }
+        //if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerCode) == false)
+        //{
+        //    goto a;
+        //}
         if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerOrderNo) == false)
         {
             goto a;
@@ -383,7 +384,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
     {
         TxtRemarks.Text = "";
         string str = @"select MIM.Id,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
-                        CASE WHEN MIM.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMtr END As Size,
+                        CASE WHEN OD.OrderUnitId = 6 THEN VF.SizeInch else Case When OD.OrderUnitId = 1 THEN VF.SizeMtr ELSE VF.SizeFt END End As Size,
                         MID.DetailId,MID.OrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.CustomerId,MIM.EmpId,MIM.ChallanNo,
                         Replace(CONVERT(nvarchar(11),MIM.AssignDate,106),' ','-') as AssignDate,Replace(CONVERT(nvarchar(11),MIM.RequiredDate,106),' ','-') as RequiredDate,
                         MID.PerSetQty,MID.NoOfSet, MIM.UnitID ,MIM.Remarks,MID.TotalSetQty,MIM.PunchCardIndentType                       

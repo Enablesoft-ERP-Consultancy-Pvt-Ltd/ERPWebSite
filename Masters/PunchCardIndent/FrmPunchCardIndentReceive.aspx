@@ -85,7 +85,7 @@
                                 <asp:TextBox ID="txtIssueNo" CssClass="textb" Width="61px" runat="server" Enabled="true"
                                     AutoPostBack="true" OnTextChanged="txtIssueNo_TextChanged" />
                             </td>
-                            <td id="TDCustomerCode" runat="server" visible="true">
+                            <td id="TDCustomerCode" runat="server" visible="false">
                                 <asp:Label ID="Label5" runat="server" Text="Customer Code" CssClass="labelbold"></asp:Label>
                                 <br />
                                 <asp:DropDownList ID="DDCustomerCode" runat="server" CssClass="dropdown" AutoPostBack="true"
