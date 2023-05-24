@@ -297,6 +297,12 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td colspan="2" align="right" id="TDupdateemp" runat="server" visible="false">
+                                    <asp:LinkButton ID="btnupdateemp" Text="Update Folio Employee" runat="server" CssClass="linkbuttonnew"
+                                        OnClick="btnupdateemp_Click" />
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="2" align="right" id="TDactiveemployee" runat="server" visible="false">
                                     <asp:LinkButton ID="btnactiveemployee" Text="De-Active Employee" runat="server" CssClass="linkbuttonnew"
                                         OnClick="btnactiveemployee_Click" />

@@ -113,13 +113,20 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
         //                    Where prm.partyid=" + DDPartyName.SelectedValue + " and prm.companyid=" + DDCompanyName.SelectedValue + @" And 
         //                    Challan_status=0 And Prm.MasterCompanyId=" + Session["varCompanyId"] + @" And prm.PurchaseReceiveId not in (Select purchasereceiveid From Bill_ChallanDetail) 
         //                    Group By prm.purchasereceiveid,billno";
-        string Str = "select PurchaseReceiveId,Challanno,isnull(Round(Sum(total),0),0) As total,0 flag,dbo.F_DebitAmtForPurchase(CompanyId,PartyId,PurchaseReceiveId,MasterCompanyId) As DebitAmt From V_PurchaseHissabDetail Where partyId=" + DDPartyName.SelectedValue + " And CompanyId=" + DDCompanyName.SelectedValue + @" And
-                    Challan_Status=0 And MasterCompanyId=" + Session["varCompanyId"] + " And PurchaseReceiveId not in(select PurchaseReceiveId From Bill_ChallanDetail) group by PurchaseReceiveId,ChallanNo,CompanyId,MasterCompanyId,PartyId";
+        string Str = @"select PurchaseReceiveId,Challanno,isnull(Round(Sum(total),0),0) + Freight Total, 0 flag,
+                dbo.F_DebitAmtForPurchase(CompanyId,PartyId,PurchaseReceiveId,MasterCompanyId) DebitAmt 
+                From V_PurchaseHissabDetail(nolock) Where partyId=" + DDPartyName.SelectedValue + " And CompanyId=" + DDCompanyName.SelectedValue + @" And
+                Challan_Status=0 And MasterCompanyId=" + Session["varCompanyId"] + @" And 
+                PurchaseReceiveId not in (select PurchaseReceiveId From Bill_ChallanDetail(nolock)) 
+                group by PurchaseReceiveId,ChallanNo,CompanyId,MasterCompanyId,PartyId, Freight";
         if (ChkEditOrder.Checked == true && DDBillNo.SelectedIndex > 0)
         {
-            Str = Str + @" Union Select purchasereceiveid,challanno,isnull(Round(sum(total),0),0) total,1 Flag,dbo.F_DebitAmtForPurchase(CompanyId,PartyId,PurchaseReceiveId,MasterCompanyId) As DebitAmt
-                    From V_PurchaseHissabDetail
-                    Where purchasereceiveid in (Select purchasereceiveid From Bill_ChallanDetail Where billid=" + DDBillNo.SelectedValue + ") And MasterCompanyId=" + Session["varCompanyId"] + "  Group By purchasereceiveid,Challanno,CompanyId,MasterCompanyId,Partyid";
+            Str = Str + @" Union Select purchasereceiveid,challanno,isnull(Round(sum(total),0),0) + Freight total,1 Flag,
+                    dbo.F_DebitAmtForPurchase(CompanyId,PartyId,PurchaseReceiveId,MasterCompanyId) DebitAmt
+                    From V_PurchaseHissabDetail(nolock)
+                    Where purchasereceiveid in (Select purchasereceiveid From Bill_ChallanDetail(nolock) Where billid=" + DDBillNo.SelectedValue + @") And 
+                    MasterCompanyId=" + Session["varCompanyId"] + @" 
+                    Group By purchasereceiveid,Challanno,CompanyId,MasterCompanyId,Partyid, Freight";
         }
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         DGChallanDetail.DataSource = ds;

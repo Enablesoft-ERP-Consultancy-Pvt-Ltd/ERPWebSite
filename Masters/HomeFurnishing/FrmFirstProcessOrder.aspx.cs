@@ -781,6 +781,11 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
         enablecontrols();
         if (chkEdit.Checked == true)
         {
+            if (Session["varcompanyNo"].ToString() == "44")
+            {
+                TDupdateemp.Visible = true;
+                TDactiveemployee.Visible = true;
+            }
             TDEMPEDIT.Visible = true;
             TDFolioNo.Visible = true;
             TDFolioNotext.Visible = true;
@@ -1270,7 +1275,14 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                 DataRow dr = dtrecord.NewRow();
                 dr["empid"] = lblempid.Text;
                 dr["activestatus"] = Chkboxitem.Checked == true ? 0 : 1;
-                dr["Processid"] = 1;
+                if (Session["varcompanyId"].ToString() == "44")
+                {
+                    dr["Processid"] = 13;
+                }
+                else {
+
+                    dr["Processid"] = 1;
+                }
                 dr["issueorderid"] = DDFolioNo.SelectedValue;
                 dtrecord.Rows.Add(dr);
             }
@@ -1280,7 +1292,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             param[2] = new SqlParameter("@dtrecord", dtrecord);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@Processid", 1);
+            param[4] = new SqlParameter("@Processid", 13);
             param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioActiveStatus", param);
@@ -1309,7 +1321,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
     protected void FillEmployeeForDeactive()
     {
         string str = @"select Distinct EI.EmpName+'('+EI.EmpCode+')' as Employee,EMP.IssueOrderId,Emp.ActiveStatus,Ei.Empid From Employee_ProcessOrderNo EMP inner Join EmpInfo EI on Emp.Empid=Ei.EmpId
-                   and EMP.ProcessId=1 and EMP.IssueOrderId=" + DDFolioNo.SelectedValue;
+                   and EMP.ProcessId=13 and EMP.IssueOrderId=" + DDFolioNo.SelectedValue;
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
         GVDetail.DataSource = ds.Tables[0];
