@@ -753,7 +753,8 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     protected void FillissueGrid()
     {
         string str = @"select MIM.PCIIssueId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
-                        CASE WHEN PCIGSNS.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
+                         CASE WHEN OD.OrderUnitId = 6 THEN VF.SizeInch else Case When OD.OrderUnitId = 1 THEN VF.SizeMtr ELSE VF.SizeFt END End As Size,
+                        --CASE WHEN PCIGSNS.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
                         MID.PCIIssueDetailId,MIM.FolioIssueOrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.ChallanNo,
                         Replace(CONVERT(nvarchar(11),MIM.IssueDate,106),' ','-') as IssueDate,MID.NoOfSet,MID.PerSetQty,MId.TotalIssueQty,PCIGSNS.StockNoSeries,MID.SNSID
                         from PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER MIM(NoLock) 
