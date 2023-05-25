@@ -291,7 +291,7 @@
                                                 <thead class="bg-table-header">
                                                     <tr>
 
-                                                        <th width="70%">
+                                                        <th width="60%">
                                                             <asp:FileUpload ID="PhotoImage" AllowMultiple="true" runat="server" />
                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ControlToValidate="PhotoImage"
                                                                 ValidationGroup="upload" runat="server" ErrorMessage="Choose Image"></asp:RequiredFieldValidator>
@@ -300,6 +300,12 @@
                                                                 runat="server" ErrorMessage="Only .png,.jpeg or.jpg files are allowed!"
                                                                 ValidationExpression="^.*\.(jpg|JPG|png|GIF|jpeg|JPEG|BMP|bmp)$" ControlToValidate="PhotoImage"></asp:RegularExpressionValidator>
                                                         </th>
+                                                        <th width="10%">
+                                                            <asp:RadioButtonList ID="rdPrime" runat="server">
+                                                                <asp:ListItem Value="true">Prime</asp:ListItem>
+                                                                <asp:ListItem Value="false">Non Prime</asp:ListItem>
+                                                            </asp:RadioButtonList>
+                                                                 </th>
                                                         <th width="30%">
                                                             <asp:Button OnClick="btnUpload_Click" ID="btnUpload" runat="server" Text="Save Image"
                                                                 ValidationGroup="upload" CssClass="btn btn-primary" />
@@ -318,6 +324,11 @@
                                                                             <asp:Image Height="60px" Width="60px" ID="ImgPhoto" runat="server" ImageUrl='<%# this.GetImage(Eval("PhotoName").ToString())  %>' />
                                                                             <asp:HiddenField ID="lblPhotoId" runat="server" Value='<%# Eval("PhotoId") %>' />
                                                                             <asp:HiddenField ID="hdnPhoto" runat="server" Value='<%# Eval("PhotoName") %>' />
+                                                                        </td>
+                                                                        <td>
+                                                                         <%# ((bool)Eval("IsPrime") == true) ? "Prime":" Non Prime" %>
+                                                                          
+
                                                                         </td>
 
                                                                         <td>

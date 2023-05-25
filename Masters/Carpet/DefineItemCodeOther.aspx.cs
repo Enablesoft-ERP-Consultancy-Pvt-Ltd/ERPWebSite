@@ -15,6 +15,7 @@ using System.Drawing;
 using System.IO;
 using System.Xml.Linq;
 using System.Runtime.CompilerServices;
+using DocumentFormat.OpenXml.Office.Word;
 
 public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 {
@@ -136,11 +137,11 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 
         if (Masters_Carpet_DefineItemCodeOther.ItemFinishedId > 0)
         {
-            string query = @"Select PhotoId,FINISHEDID as FinishItemId,PHOTO as PhotoName 
-  from MAIN_ITEM_IMAGE Where FINISHEDID=@FinishItemId";
+            string query = @"Select PhotoId,ItemFinishId,PhotoName,IsPrime 
+  from tblItemPhoto Where ItemFinishId=@ItemFinishId";
 
             List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@FinishItemId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+            parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
 
             using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
@@ -163,7 +164,7 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
         {
             using (SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                using (SqlCommand cmd = new SqlCommand("DELETE FROM MAIN_ITEM_IMAGE WHERE PhotoId = @PhotoId", con))
+                using (SqlCommand cmd = new SqlCommand("DELETE FROM tblItemPhoto WHERE PhotoId = @PhotoId", con))
                 {
                     cmd.Parameters.AddWithValue("@PhotoId", photoId);
                     con.Open();
@@ -198,18 +199,25 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
                         //If Directory (Folder) does not exists. Create it.
                         Directory.CreateDirectory(folderPath);
                     }
-                    string fileName = "product-" + index.ToString() + "-F" + Masters_Carpet_DefineItemCodeOther.ItemFinishedId.ToString() + "-" + DateTime.Now.Ticks.ToString() + "-img" + Path.GetExtension(uploadedFile.FileName);
-                    string imgPath = Path.Combine(folderPath, fileName);
+                    string imageName = "product-" + index.ToString() + "-F" + Masters_Carpet_DefineItemCodeOther.ItemFinishedId.ToString() + "-" + DateTime.Now.Ticks.ToString() + "-img" + Path.GetExtension(uploadedFile.FileName);
+                    string imgPath = Path.Combine(folderPath, imageName);
                     uploadedFile.SaveAs(imgPath);
 
-                    string query = @"Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId)
-VALUES(@ItemFinishId,@PhotoId,@CompanyId)";
+                    //                    string query = @"Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId)
+                    //VALUES(@ItemFinishId,@PhotoId,@CompanyId)";
+
+                    string query = @"INSERT INTO tblItemPhoto
+(PhotoName,ItemFinishId,IsPrime,IsPublished,CreatedBy,CreatedOn)
+VALUES(@PhotoName,@ItemFinishId,@IsPrime,@IsPublished,@CreatedBy,@CreatedOn)";
 
 
                     List<SqlParameter> parameters = new List<SqlParameter>();
                     parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
-                    parameters.Add(new SqlParameter("@PhotoId", fileName));
-                    parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
+                    parameters.Add(new SqlParameter("@PhotoName", imageName));
+                    parameters.Add(new SqlParameter("@IsPrime", rdPrime.SelectedItem.Value));
+                    parameters.Add(new SqlParameter("@IsPublished", true));
+                    parameters.Add(new SqlParameter("@CreatedBy", Masters_Carpet_DefineItemCodeOther.UserId));
+                    parameters.Add(new SqlParameter("@CreatedOn", DateTime.Now));
 
                     var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
 
