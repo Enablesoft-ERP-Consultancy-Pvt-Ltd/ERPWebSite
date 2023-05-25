@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ERPmaster.master" AutoEventWireup="true"
     CodeFile="frmreadbarcodefile.aspx.cs" Inherits="Masters_Barcode_File_frmreadbarcodefile" %>
 
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
     <table border="0" cellpadding="0" cellspacing="0">
         <tr>

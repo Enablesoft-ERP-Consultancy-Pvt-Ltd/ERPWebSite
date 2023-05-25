@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="Online Loom Inspection" Language="C#" MasterPageFile="~/ERPmaster.master"
     AutoEventWireup="true" CodeFile="frmonlineloominspection.aspx.cs" Inherits="Masters_Barcode_File_frmonlineloominspection" %>
 
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
     <table border="0" cellpadding="0" cellspacing="0">
         <tr>

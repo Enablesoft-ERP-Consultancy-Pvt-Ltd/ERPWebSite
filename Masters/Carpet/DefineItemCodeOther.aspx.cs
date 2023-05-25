@@ -416,11 +416,19 @@ and x.CompanyId=@CompanyId";
 
     public string GetImage(string fileName)
     {
+        string imgDataURL = string.Empty;
         string folderPath = ConfigurationManager.AppSettings["ImagePath"];
         string imgPath = Path.Combine(folderPath, fileName);
-        byte[] byteData = System.IO.File.ReadAllBytes(imgPath);
-        string imreBase64Data = Convert.ToBase64String(byteData);
-        string imgDataURL = string.Format("data:image/jpg;base64,{0}", imreBase64Data);
+
+        if (File.Exists(imgPath))
+        {
+            byte[] byteData = System.IO.File.ReadAllBytes(imgPath);
+            string imreBase64Data = Convert.ToBase64String(byteData);
+            imgDataURL = string.Format("data:image/jpg;base64,{0}", imreBase64Data);
+
+        }
+
+
 
         return imgDataURL;
     }
