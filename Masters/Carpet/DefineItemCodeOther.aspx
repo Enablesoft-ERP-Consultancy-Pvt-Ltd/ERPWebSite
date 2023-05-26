@@ -42,7 +42,7 @@
 
                                                     <div class="col-xl-4">
                                                         <div class="mb-3">
-                                                            COMPOSITION:
+                                                            COMPOSITION/Detail:
                                  <asp:TextBox ID="TxtDesc" runat="server" CssClass="form-control"></asp:TextBox>
                                                         </div>
                                                     </div>

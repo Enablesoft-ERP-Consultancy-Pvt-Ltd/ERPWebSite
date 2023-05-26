@@ -351,7 +351,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             if (variable.VarNewQualitySize == "1")
             {
 
-                strsql = @"Select Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
+                strsql = @"Select distinct Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
              IsNull(QualityName,'') as Quality, IsNull(DesignName,'') as Design,IsNull(ColorName,'') as Color,IsNull(ShapeName,'') as Shape, Case When " + A + @"=2 then IsNull(Export_Format,'') else IsNull(MtrSize,'')  end as Size,
              IsNull(QualityName,'')+IsNull(DesignName,'')+IsNull(ColorName,'')+IsNull(ShapeName,'')+IsNull(ShadeColorName,'')+
             Case When " + A + @"=2 then IsNull(Export_Format,'') else IsNull(MtrSize,'') End  DESCRIPTION,ProductCode ProdCode From Item_Parameter_Master IPM inner join Item_Master IM ON IPM.Item_Id=IM.Item_Id 
@@ -365,7 +365,7 @@ public partial class DefineItemCode : System.Web.UI.Page
             {
                 if (Session["VarCompanyNo"].ToString() == "44")
                 {
-                    strsql = @"Select Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
+                    strsql = @"Select distinct Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
                 IsNull(QualityName,'') as Quality, IsNull(DesignName,'') as Design,IsNull(ColorName,'') as Color,IsNull(ShapeName,'') as Shape, Case When " + A + @"=2 then cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end  else cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else '' end  end as Size,
                 IsNull(QualityName,'')+IsNull(DesignName,'')+IsNull(ColorName,'')+IsNull(ShapeName,'')+IsNull(ShadeColorName,'')+
             Case When " + A + @"=2 then cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end else cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else '' end End  DESCRIPTION,ProductCode ProdCode From Item_Parameter_Master IPM inner join Item_Master IM ON IPM.Item_Id=IM.Item_Id 
@@ -377,7 +377,7 @@ public partial class DefineItemCode : System.Web.UI.Page
                 else
                 {
 
-                    strsql = @"Select Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
+                    strsql = @"Select distinct Item_Finished_id as Sr_No,ICM.Category_Name CATEGORY,Im.Item_Name ITEMNAME,
                 IsNull(QualityName,'') as Quality, IsNull(DesignName,'') as Design,IsNull(ColorName,'') as Color,IsNull(ShapeName,'') as Shape, Case When " + A + @"=2 then IsNull(SizeFt,'') else IsNull(SizeMtr,'')  end as Size,
                 IsNull(QualityName,'')+IsNull(DesignName,'')+IsNull(ColorName,'')+IsNull(ShapeName,'')+IsNull(ShadeColorName,'')+
             Case When " + A + @"=2 then IsNull(SizeFt,'') else IsNull(SizeMtr,'') End  DESCRIPTION,ProductCode ProdCode From Item_Parameter_Master IPM inner join Item_Master IM ON IPM.Item_Id=IM.Item_Id 
