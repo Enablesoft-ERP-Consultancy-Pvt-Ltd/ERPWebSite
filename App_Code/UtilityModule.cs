@@ -2168,7 +2168,15 @@ public class UtilityModule
             case 2:
                 if (shapeName == "ROUND")                                    //For Round Shape
                 {
-                    VarArea = Math.Round((3.14 * Convert.ToDouble(Length)) / 100, 4);
+                    if (VarCompanyNo == 39)
+                    {
+                        VarArea = Math.Round((3.14 * Convert.ToDouble(Length)) / 100, 4);
+                    }
+                    else
+                    {
+                        VarArea = Math.Round((2 * Convert.ToDouble(Length) + 2 * Convert.ToDouble(Width)) / 100, 4);
+                    }
+                    
                 }
                 else
                 {
@@ -2184,7 +2192,14 @@ public class UtilityModule
             default:
                 if (shapeName == "ROUND")
                 {
-                    VarArea = Math.Round(((Convert.ToDouble(Length) * Convert.ToDouble(Width)) / 10000) * VarFactor, 5);
+                    if (VarCompanyNo == 39)
+                    {
+                        VarArea = Math.Round((Convert.ToDouble(Length) * Convert.ToDouble(Width)) / 10000, 5);
+                    }
+                    else
+                    {
+                        VarArea = Math.Round(((Convert.ToDouble(Length) * Convert.ToDouble(Width)) / 10000) * VarFactor, 5);
+                    }                   
 
                 }
                 else

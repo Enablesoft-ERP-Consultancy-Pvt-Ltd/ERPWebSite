@@ -74,7 +74,7 @@
               <xs:element name="EmpTiNo" type="xs:string" minOccurs="0" />
               <xs:element name="GSTIN" type="xs:string" minOccurs="0" />
               <xs:element name="EMPGSTIN" type="xs:string" minOccurs="0" />
-              <xs:element name="ImageName" type="xs:base64Binary" minOccurs="0" />
+              <xs:element name="TCS" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -93,6 +93,28 @@
               <xs:element name="CGSTPerAmt" type="xs:double" minOccurs="0" />
               <xs:element name="SGSTPerAmt" type="xs:double" minOccurs="0" />
               <xs:element name="IGSTPerAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="TCS" type="xs:double" minOccurs="0" />
+              <xs:element name="TCSPerAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="frightgst" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="PIndentIssueID" type="xs:int" minOccurs="0" />
+              <xs:element name="TCID" type="xs:int" minOccurs="0" />
+              <xs:element name="TermsConditions" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="PIndentIssueID" type="xs:int" minOccurs="0" />
+              <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderNoNew" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
