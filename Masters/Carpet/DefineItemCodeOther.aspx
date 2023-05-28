@@ -235,6 +235,90 @@
                     </div>
 
                     <div class="col-xl-6">
+
+
+                        <div class="card bg-default border-none mbn">
+                            <div class="card-header ptx pbn pls normal-font-txt">
+                                <strong>Costing </strong>
+                            </div>
+                            <div class="card-body pdn">
+                                <div class="row">
+
+
+
+
+                                    
+                                  <div class="col-lg-3">
+                                                        <div class="mb-3">
+                                                           Price:
+                                   <asp:TextBox ID="txtItemPrice" runat="server" CssClass="form-control"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+
+                                    
+                                  <div class="col-lg-3">
+                                                        <div class="mb-3">
+                                                           Discount:
+                                   <asp:TextBox ID="txtDiscount" runat="server" CssClass="form-control"></asp:TextBox>
+                                                        </div>
+                                                    </div>
+                                    
+                                  <div class="col-lg-3">
+                                                        <div class="mb-3">
+                                                            New Arrival:
+                                                            <asp:CheckBox ID="chkArrival" runat="server" />
+                                                          
+                                   
+                                                        </div>
+                                                    </div>
+
+                                  <div class="col-lg-3">
+                                                        <div class="mb-3">
+                                                            On Call:
+                                                                 <asp:CheckBox ID="chkCall" runat="server" />
+                                                          
+                                   
+                                                                                              
+                                                        </div>
+                                                    </div>
+
+
+
+
+
+
+
+
+
+
+                                </div>
+                          
+                                
+                            <div class="col-xl-6">
+                                                        <div class="mb-3">
+                                                            <asp:Button  OnClick="btnCosting_Click" ID="btnCosting" runat="server" Text="Save Image"
+                                                                ValidationGroup="upload" CssClass="btn btn-primary" />
+                                                   </div>  </div>
+                            
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <div class="card bg-default border-none mbn">
                             <div class="card-header ptx pbn pls normal-font-txt">
                                 <strong>Sales App Parameter</strong>

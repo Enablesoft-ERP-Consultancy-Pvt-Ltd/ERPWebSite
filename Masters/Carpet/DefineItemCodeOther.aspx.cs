@@ -443,7 +443,95 @@ and x.CompanyId=@CompanyId";
 
 
 
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static bool SaveCosting(decimal OldPrice, decimal Price, decimal Cost, decimal Discount, decimal IsArrival, decimal IsCall)
+    {
+
+        string query = @"INSERT INTO tblItemCosting
+(ItemFinishId,CompanyId,OldPrice,Price,Cost,Discount,IsArrival,IsCall,IsPublished,CreatedBy,CreatedOn)
+VALUES
+(@ItemFinishId,@CompanyId,@OldPrice,@Price,@Cost,@Discount,@IsArrival,@IsCall,@IsPublished,@CreatedBy,@CreatedOn)
+";
+
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+            parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
+            parameters.Add(new SqlParameter("@OldPrice", OldPrice));
+            parameters.Add(new SqlParameter("@Price", Price));
+            parameters.Add(new SqlParameter("@Cost", Cost));
+            parameters.Add(new SqlParameter("@Discount", Discount));
+            parameters.Add(new SqlParameter("@IsArrival", IsArrival));
+            parameters.Add(new SqlParameter("@IsCall", IsCall));
+            parameters.Add(new SqlParameter("@IsPublished", true));
+            parameters.Add(new SqlParameter("@CreatedBy", Masters_Carpet_DefineItemCodeOther.UserId));
+            parameters.Add(new SqlParameter("@CreatedOn", DateTime.Now));
+
+            var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
+
+            if (result > 0)
+            {
+                return true;
+            }
+            else
+            { return false; }
+    
+
+    }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    protected void btnCosting_Click(object sender, EventArgs e)
+    {
+        string query = @"INSERT INTO tblItemCosting
+(ItemFinishId,CompanyId,OldPrice,Price,Cost,Discount,IsArrival,IsCall,IsPublished,CreatedBy,CreatedOn)
+VALUES
+(@ItemFinishId,@CompanyId,@OldPrice,@Price,@Cost,@Discount,@IsArrival,@IsCall,@IsPublished,@CreatedBy,@CreatedOn)
+";
+
+        List<SqlParameter> parameters = new List<SqlParameter>();
+        parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+        parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
+        parameters.Add(new SqlParameter("@OldPrice", 0.0));
+        parameters.Add(new SqlParameter("@Price", Convert.ToDecimal(txtItemPrice.Text)));
+        parameters.Add(new SqlParameter("@Cost", 0.0));
+        parameters.Add(new SqlParameter("@Discount", Convert.ToDecimal(txtDiscount.Text)));
+        parameters.Add(new SqlParameter("@IsArrival", chkArrival.Checked));
+        parameters.Add(new SqlParameter("@IsCall", chkCall.Checked));
+        parameters.Add(new SqlParameter("@IsPublished", true));
+        parameters.Add(new SqlParameter("@CreatedBy", Masters_Carpet_DefineItemCodeOther.UserId));
+        parameters.Add(new SqlParameter("@CreatedOn", DateTime.Now));
+
+        var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
+
+       
+    }
 }
 
