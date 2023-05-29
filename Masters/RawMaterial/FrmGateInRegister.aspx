@@ -166,8 +166,9 @@
                         <td id="Td4" class="tdstyle">
                             <span class="labelbold">Party Name</span>
                             <br />
-                            <asp:TextBox ID="txtPartyName" runat="server" Width="250px" CssClass="textb"
-                                TextMode="MultiLine"></asp:TextBox>
+                               <asp:TextBox ID="txtPartyName" Height="50px" runat="server" Width="250px" CssClass="textb"></asp:TextBox>
+                           <%-- <asp:TextBox ID="txtPartyName" runat="server" Width="250px" CssClass="textb"
+                                TextMode="MultiLine"></asp:TextBox>--%>
                         </td>
                         <td class="tdstyle">
                             <span class="labelbold">Qty</span>

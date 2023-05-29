@@ -242,6 +242,8 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     btnbehadmadhav.Visible = true;
                     btnshahkulipur.Visible = true;
                     btnlaharpurunit1.Visible = true;
+                    TDChkForStockNoAttachWithoutMaterialIssue.Visible = true;
+                    ChkForStockNoAttachWithoutMaterialIssue.Checked = true;
                     break;
                 default:
                     TDTanaCottonLotNo.Visible = false;
@@ -1184,56 +1186,6 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                         chkforRateUpdate.Checked = false;
                     }
                 }
-                //******
-                #region Comment on 07-Sep-2018
-                //SqlParameter[] param = new SqlParameter[20];
-                //param[0] = new SqlParameter("@issueorderid", SqlDbType.Int);
-                //param[0].Value = hnissueorderid.Value;
-                //param[0].Direction = ParameterDirection.InputOutput;
-                //param[1] = new SqlParameter("@Companyid", DDcompany.SelectedValue);
-                //param[2] = new SqlParameter("@ProductionUnit", DDProdunit.SelectedValue);
-                //param[3] = new SqlParameter("@LoomId", txtloomid.Text);
-                //param[4] = new SqlParameter("@Empid", StrEmpid);
-                //param[5] = new SqlParameter("@FolioNo", SqlDbType.Int);
-                //param[5].Direction = ParameterDirection.Output;
-                //param[6] = new SqlParameter("@Issuedate", txtissuedate.Text);
-                //param[7] = new SqlParameter("@Targetdate", txttargetdate.Text);
-                //param[8] = new SqlParameter("@Userid", Session["varuserid"]);
-                //param[9] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
-                //param[10] = new SqlParameter("@dtrecords", dtrecords);
-                //param[11] = new SqlParameter("@Ordercaltype", (hnordercaltype.Value == "" ? "1" : hnordercaltype.Value));  //Pcs Wise
-                //param[12] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
-                //param[12].Direction = ParameterDirection.Output;
-                //param[13] = new SqlParameter("@Prefix", TxtPrefix.Text);
-                //param[14] = new SqlParameter("@Postfix", TxtPostfix.Text);
-                //param[15] = new SqlParameter("@Purchaseflag", chkpurchasefolio.Checked == true ? "1" : "0");
-                //param[16] = new SqlParameter("@Exportsizeflag", chkexportsize.Checked == true ? "1" : "0");
-                //param[17] = new SqlParameter("@Remarks", TxtRemarks.Text.Trim());
-                //param[18] = new SqlParameter("@Instruction", TxtInstructions.Text.Trim());
-                //param[19] = new SqlParameter("@Tstockno", Tdstockno.Visible == true ? txtstockno.Text : "");
-                ////*************
-                //SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveProductionOrderonLoom", param);
-                //if (param[12].Value.ToString() != "")  ///IF DATA NOT SAVED
-                //{
-                //    lblmessage.Text = param[12].Value.ToString();
-                //    Tran.Rollback();
-                //}
-                //else
-                //{
-                //    lblmessage.Text = "Data Saved Successfully.";
-                //    Tran.Commit();
-                //    txtfoliono.Text = param[5].Value.ToString();
-                //    hnissueorderid.Value = param[0].Value.ToString();
-                //    FillGrid();
-                //    FillConsumptionQty();
-                //    Refreshcontrol();
-                //    disablecontrols();
-                //    if (Session["varcompanyid"].ToString() == "21")
-                //    {
-                //        chkforRateUpdate.Checked = false;
-                //    }
-                //}
-                #endregion
             }
             catch (Exception ex)
             {
@@ -1253,13 +1205,8 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
     }
     protected void Refreshcontrol()
     {
-        //DDProdunit.SelectedIndex = -1;
-        //DDLoomNo.SelectedIndex = -1;
-        //txtloomid.Text = "0";
-        //txtloomno.Text = "";
         DDcustcode.SelectedIndex = -1;
         DDorderNo.SelectedIndex = -1;
-        // listWeaverName.Items.Clear();
         DG.DataSource = null;
         DG.DataBind();
     }
@@ -2497,7 +2444,13 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 DDorderNo.Enabled = false;
                 Tdstockno.Visible = true;
             }
-
+        }
+        if (Session["varcompanyNo"].ToString() == "45" && chkEdit.Checked == true)
+        {
+            if (Session["varSubCompanyId"].ToString() != "451")
+            {
+                Tdstockno.Visible = true;
+            }
         }
         //********
     }
@@ -3092,6 +3045,13 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
         {
             StockNoTextChanged();
         }
+        else if (Session["varcompanyid"].ToString() == "45" && chkEdit.Checked == true)
+        {
+            if (Session["varSubCompanyId"].ToString() != "451")
+            {
+                StockNoTextChanged();
+            }
+        }    
         else
         {
             lblmessage.Text = "";
@@ -3744,5 +3704,4 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             }
         }
     }
-
 }
