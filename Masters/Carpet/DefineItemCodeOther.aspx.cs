@@ -19,6 +19,7 @@ using DocumentFormat.OpenXml.Office.Word;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Security.Cryptography.X509Certificates;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 {
@@ -490,6 +491,7 @@ VALUES
     }
     protected void BindCosting()
     {
+    
         string query = @"select * from tblItemCosting where ItemFinishId=@ItemFinishId";
 
         List<SqlParameter> parameters = new List<SqlParameter>();
@@ -497,14 +499,15 @@ VALUES
 
         var reader = SqlHelper.ExecuteReader(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
 
-
         while (reader.Read())
         {
+            hdnCostingId.Value = reader["CostingId"].ToString();
             txtItemPrice.Text = string.Format("{0:C}", reader["Price"].ToString());
             txtDiscount.Text = string.Format("{0:.##}", reader["Discount"].ToString());
             chkArrival.Checked =(bool) reader["IsArrival"];
             chkCall.Checked = (bool)reader["IsCall"];
         }
+        
 
 
     }
@@ -521,13 +524,34 @@ VALUES
 
     protected void btnCosting_Click(object sender, EventArgs e)
     {
-        string query = @"INSERT INTO tblItemCosting
+        string query = string.Empty;
+
+        if (string.IsNullOrEmpty(hdnCostingId.Value))
+        {
+        query = @"INSERT INTO tblItemCosting
 (ItemFinishId,CompanyId,OldPrice,Price,Cost,Discount,IsArrival,IsCall,IsPublished,CreatedBy,CreatedOn)
 VALUES
 (@ItemFinishId,@CompanyId,@OldPrice,@Price,@Cost,@Discount,@IsArrival,@IsCall,@IsPublished,@CreatedBy,@CreatedOn)
 ";
 
+
+        }
+        else
+        {
+            query = @"Update tblItemCosting Set Price=@Price,Discount=@Discount,IsArrival=@IsArrival,IsCall=@IsCall Where CostingId=@CostingId";
+
+        }
+
+
         List<SqlParameter> parameters = new List<SqlParameter>();
+
+        if (!string.IsNullOrEmpty(hdnCostingId.Value))
+        {
+            parameters.Add(new SqlParameter("@CostingId", Convert.ToInt32(hdnCostingId.Value)));
+        }
+
+
+       
         parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
         parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
         parameters.Add(new SqlParameter("@OldPrice", 0.0));

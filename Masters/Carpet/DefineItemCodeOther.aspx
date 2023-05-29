@@ -246,7 +246,7 @@
 
 
 
-
+                                         <asp:HiddenField ID="hdnCostingId" runat="server"  />
 
                                     <div class="col-lg-3">
                                         <div class="mb-3">
