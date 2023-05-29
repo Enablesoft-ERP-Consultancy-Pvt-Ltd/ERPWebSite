@@ -247,40 +247,44 @@
 
 
 
-                                    
-                                  <div class="col-lg-3">
-                                                        <div class="mb-3">
-                                                           Price:
+
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            Price:
                                    <asp:TextBox ID="txtItemPrice" runat="server" CssClass="form-control"></asp:TextBox>
-                                                        </div>
-                                                    </div>
 
-                                    
-                                  <div class="col-lg-3">
-                                                        <div class="mb-3">
-                                                           Discount:
+                                            <asp:RequiredFieldValidator
+                                                ID="RequiredFieldValidator2" ValidationGroup="Costing" ControlToValidate="txtItemPrice"
+                                                runat="server" ErrorMessage="*"></asp:RequiredFieldValidator>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            Discount(in %):
                                    <asp:TextBox ID="txtDiscount" runat="server" CssClass="form-control"></asp:TextBox>
-                                                        </div>
-                                                    </div>
-                                    
-                                  <div class="col-lg-3">
-                                                        <div class="mb-3">
-                                                            New Arrival:
-                                                            <asp:CheckBox ID="chkArrival" runat="server" />
-                                                          
-                                   
-                                                        </div>
-                                                    </div>
+                                        </div>
+                                    </div>
 
-                                  <div class="col-lg-3">
-                                                        <div class="mb-3">
-                                                            On Call:
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            New Arrival:
+                                                            <asp:CheckBox ID="chkArrival" runat="server" />
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <div class="mb-3">
+                                            On Call:
                                                                  <asp:CheckBox ID="chkCall" runat="server" />
-                                                          
-                                   
-                                                                                              
-                                                        </div>
-                                                    </div>
+
+
+
+                                        </div>
+                                    </div>
 
 
 
@@ -292,14 +296,16 @@
 
 
                                 </div>
-                          
-                                
-                            <div class="col-xl-6">
-                                                        <div class="mb-3">
-                                                            <asp:Button  OnClick="btnCosting_Click" ID="btnCosting" runat="server" Text="Save Image"
-                                                                ValidationGroup="upload" CssClass="btn btn-primary" />
-                                                   </div>  </div>
-                            
+
+
+                                <div class="col-xl-6">
+                                    <div class="mb-3">
+                                        <asp:Button OnClick="btnCosting_Click" ValidationGroup="Costing" ID="btnCosting"
+                                            runat="server" Text="Save "
+                                            CssClass="btn btn-primary" />
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
 
@@ -389,7 +395,7 @@
                                                                 <asp:ListItem Value="true">Prime</asp:ListItem>
                                                                 <asp:ListItem Value="false">Non Prime</asp:ListItem>
                                                             </asp:RadioButtonList>
-                                                                 </th>
+                                                        </th>
                                                         <th width="30%">
                                                             <asp:Button OnClick="btnUpload_Click" ID="btnUpload" runat="server" Text="Save Image"
                                                                 ValidationGroup="upload" CssClass="btn btn-primary" />
@@ -410,7 +416,7 @@
                                                                             <asp:HiddenField ID="hdnPhoto" runat="server" Value='<%# Eval("PhotoName") %>' />
                                                                         </td>
                                                                         <td>
-                                                                         <%# ((bool)Eval("IsPrime") == true) ? "Prime":" Non Prime" %>
+                                                                            <%# ((bool)Eval("IsPrime") == true) ? "Prime":" Non Prime" %>
                                                                           
 
                                                                         </td>

@@ -16,6 +16,9 @@ using System.IO;
 using System.Xml.Linq;
 using System.Runtime.CompilerServices;
 using DocumentFormat.OpenXml.Office.Word;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Security.Cryptography.X509Certificates;
 
 public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 {
@@ -36,6 +39,8 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
             Masters_Carpet_DefineItemCodeOther.UserId = Session["varuserid"] != null ? Convert.ToInt32(Session["varuserid"]) : 0;
 
             this.BindPhotoList();
+
+            this.BindCosting();
 
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
             con.Open();
@@ -459,44 +464,50 @@ VALUES
 (@ItemFinishId,@CompanyId,@OldPrice,@Price,@Cost,@Discount,@IsArrival,@IsCall,@IsPublished,@CreatedBy,@CreatedOn)
 ";
 
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
-            parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
-            parameters.Add(new SqlParameter("@OldPrice", OldPrice));
-            parameters.Add(new SqlParameter("@Price", Price));
-            parameters.Add(new SqlParameter("@Cost", Cost));
-            parameters.Add(new SqlParameter("@Discount", Discount));
-            parameters.Add(new SqlParameter("@IsArrival", IsArrival));
-            parameters.Add(new SqlParameter("@IsCall", IsCall));
-            parameters.Add(new SqlParameter("@IsPublished", true));
-            parameters.Add(new SqlParameter("@CreatedBy", Masters_Carpet_DefineItemCodeOther.UserId));
-            parameters.Add(new SqlParameter("@CreatedOn", DateTime.Now));
+        List<SqlParameter> parameters = new List<SqlParameter>();
+        parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+        parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
+        parameters.Add(new SqlParameter("@OldPrice", OldPrice));
+        parameters.Add(new SqlParameter("@Price", Price));
+        parameters.Add(new SqlParameter("@Cost", Cost));
+        parameters.Add(new SqlParameter("@Discount", Discount));
+        parameters.Add(new SqlParameter("@IsArrival", IsArrival));
+        parameters.Add(new SqlParameter("@IsCall", IsCall));
+        parameters.Add(new SqlParameter("@IsPublished", true));
+        parameters.Add(new SqlParameter("@CreatedBy", Masters_Carpet_DefineItemCodeOther.UserId));
+        parameters.Add(new SqlParameter("@CreatedOn", DateTime.Now));
 
-            var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
+        var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
 
-            if (result > 0)
-            {
-                return true;
-            }
-            else
-            { return false; }
-    
+        if (result > 0)
+        {
+            return true;
+        }
+        else
+        { return false; }
+
 
     }
+    protected void BindCosting()
+    {
+        string query = @"select * from tblItemCosting where ItemFinishId=@ItemFinishId";
+
+        List<SqlParameter> parameters = new List<SqlParameter>();
+        parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
+
+        var reader = SqlHelper.ExecuteReader(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
 
 
+        while (reader.Read())
+        {
+            txtItemPrice.Text = string.Format("{0:C}", reader["Price"].ToString());
+            txtDiscount.Text = string.Format("{0:.##}", reader["Discount"].ToString());
+            chkArrival.Checked =(bool) reader["IsArrival"];
+            chkCall.Checked = (bool)reader["IsCall"];
+        }
 
 
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 
@@ -531,7 +542,7 @@ VALUES
 
         var result = SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, query, parameters.ToArray());
 
-       
+
     }
 }
 
