@@ -1774,9 +1774,13 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
                 if (Convert.ToInt32(hnlastfoliono.Value) != Convert.ToInt32(DDFolioNo.SelectedValue))
                 {
-                    hnprocessrecid.Value = "0";
-                    hn100_ISSUEORDERID.Value = "0";
-                    hn100_PROCESS_REC_ID.Value = "0";
+                    if (Session["VarCompanyNo"].ToString() != "43")
+                    {
+                        hnprocessrecid.Value = "0";
+                    }
+                        hn100_ISSUEORDERID.Value = "0";
+                        hn100_PROCESS_REC_ID.Value = "0";
+                    
                 }
                 DGEmployee.DataSource = ds.Tables[1];
                 DGEmployee.DataBind();
