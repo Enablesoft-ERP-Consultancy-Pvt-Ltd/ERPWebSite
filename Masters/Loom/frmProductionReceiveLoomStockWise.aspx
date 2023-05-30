@@ -584,7 +584,7 @@
                             </td>
                         </tr>
                     </table>
-                    <table width="100%">
+                    <table id="TableIssueDetail" runat="server" visible="true" width="100%">
                         <tr>
                             <td style="width: 80%" valign="top">
                                 <table style="width: 100%">
@@ -1018,7 +1018,7 @@
                 <asp:HiddenField ID="hnlastfoliono" runat="server" Value="0" />
                 <asp:HiddenField ID="HiddenField1" runat="server" Value="0" />
                 <asp:HiddenField ID="hnRejectedGatePassNo" runat="server" Value="0" />
-                <asp:HiddenField ID="hnlastempids" runat="server" Value="" />
+                <asp:HiddenField ID="hnlastempids" runat="server" Value="" />                
                 <div>
                     <asp:Button runat="server" ID="btnModalPopUp" Style="display: none" />
                     <asp:ModalPopupExtender ID="Modalpopupext" runat="server" PopupControlID="pnModelPopup"
