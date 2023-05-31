@@ -1,24 +1,27 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERPWebSite", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.8"
 		Debug.AspNetCompiler.VirtualPath = "/ERP"
-		Debug.AspNetCompiler.PhysicalPath = "..\ERP\"
+		Debug.AspNetCompiler.PhysicalPath = "..\ERPWebSite\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\ERP\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.VirtualPath = "/ERP"
-		Release.AspNetCompiler.PhysicalPath = "..\ERP\"
+		Release.AspNetCompiler.PhysicalPath = "..\ERPWebSite\"
 		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\ERP\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "49721"
+		SlnRelativePath = "..\ERPWebSite\"
 	EndProjectSection
 EndProject
 Global
@@ -31,5 +34,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41AE7C92-A737-4EEA-9A73-01CF2EA0D237}
 	EndGlobalSection
 EndGlobal
