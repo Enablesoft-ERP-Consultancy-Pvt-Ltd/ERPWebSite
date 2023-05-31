@@ -227,10 +227,25 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
         }
         try
         {
-            string str = @"select CI.CompanyName,CI.CompAddr1,CI.CompTel,EI.EmpName,EI.Address,PNM.Process_Name,Date,
+            string str = "";
+            if (Session["VarCompanyNo"].ToString() == "42")
+            {
+                str = @"select CI.CompanyName,CI.CompAddr1,CI.CompTel,EI.EmpName,EI.Address,PNM.Process_Name,Date,
+                        PM.Remarks,Amount,PM.OrderNo,ID As DebitNo,isnull(CI.GSTNo,'') as GSTIN,Isnull(EI.GSTNo,'') as EMPGSTIN,isnull(PM.GSTPercentage,0) as GSTPercentage,
+                        PM.MasterCompanyId,Case When PM.ProcessId=9 Then (Select isnull(PRM.BillNo,'') From PurchaseReceiveMaster PRM(NoLock) Where PRM.PurchaseReceiveId=PM.BillId and PM.ProcessId=9 ) Else '' End As PurchaseBillNo 
+                        From ProcessDebitNote PM(NoLock) JOIN CompanyInfo CI(NoLock) ON PM.Companyid=CI.CompanyId
+                        JOIN Empinfo EI(NoLock) ON Pm.EmpId=EI.Empid
+                        JOIN Process_Name_Master PNM(NoLock) ON PM.ProcessId=PNM.Process_Name_Id 
+                        Where PM.id=" + hnDebitNo.Value;
+            }
+            else
+            {
+                str = @"select CI.CompanyName,CI.CompAddr1,CI.CompTel,EI.EmpName,EI.Address,PNM.Process_Name,Date,
                         PM.Remarks,Amount,OrderNo,ID As DebitNo,isnull(CI.GSTNo,'') as GSTIN,Isnull(EI.GSTNo,'') as EMPGSTIN,isnull(PM.GSTPercentage,0) as GSTPercentage 
                         from ProcessDebitNote PM,CompanyInfo CI,Empinfo EI,
                         Process_Name_Master PNM  Where PM.Companyid=CI.CompanyId And Pm.EmpId=EI.Empid And PM.ProcessId=PNM.Process_Name_Id And PM.id=" + hnDebitNo.Value;
+            }
+            
 
             DataSet DS = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
 
