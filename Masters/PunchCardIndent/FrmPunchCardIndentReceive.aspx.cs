@@ -47,23 +47,25 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
             }
 
             hnReceiveid.Value = "0";
+            FillCustomerOrderNo();
 
-            switch (Session["VarCompanyId"].ToString())
-            {
-                case "30":
-                    TDCustomerCode.Visible = false;
-                    FillCustomerOrderNo();
-                    break;
-                default:
-                    TDCustomerCode.Visible = true;
-                    break;
-            }
+            //switch (Session["VarCompanyId"].ToString())
+            //{
+            //    case "30":
+            //        TDCustomerCode.Visible = false;
+            //        FillCustomerOrderNo();
+            //        break;
+            //    default:
+            //        TDCustomerCode.Visible = true;
+            //        break;
+            //}
         }
     }
     protected void FillissueGrid()
     {
         string str = @"select MIM.Id,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
-                CASE WHEN MIM.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMtr END As Size, 
+                 CASE WHEN OD.OrderUnitId = 6 THEN VF.SizeInch else Case When OD.OrderUnitId = 1 THEN VF.SizeMtr ELSE VF.SizeFt END End As Size,
+                --CASE WHEN MIM.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMtr END As Size, 
                 MID.DetailId,MID.OrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.CustomerId,MIM.EmpId,MIM.PunchCardIndentType,MIM.ChallanNo,
                 Replace(CONVERT(nvarchar(11),MIM.AssignDate,106),' ','-') as AssignDate,Replace(CONVERT(nvarchar(11),MIM.RequiredDate,106),' ','-') as RequiredDate,
                 MID.PerSetQty,MId.NoOfSet,MId.TotalSetQty,
@@ -252,10 +254,10 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
         //    goto a;
         //}   
        
-        if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerCode) == false)
-        {
-            goto a;
-        }
+        //if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerCode) == false)
+        //{
+        //    goto a;
+        //}
         if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerOrderNo) == false)
         {
             goto a;
@@ -333,7 +335,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
                 Label lblId = ((Label)DG.Rows[i].FindControl("lblId"));
                 Label lblDetailId = ((Label)DG.Rows[i].FindControl("lblDetailId"));
 
-                if (Chkboxitem.Checked == true && (txtReceiveNoOfSet.Text != "") && DDCompany.SelectedIndex > 0 && DDCustomerOrderNo.SelectedIndex > 0)
+                if (Chkboxitem.Checked == true && (txtReceiveNoOfSet.Text != "") && DDCompany.SelectedIndex > 0)
                 {
                     Strdetail = Strdetail + txtReceiveNoOfSet.Text + '|' + lblItemFinishedId.Text + '|' + lblOrderId.Text + '|' + lblId.Text + '|' + lblDetailId.Text + '~';
                 }
@@ -404,7 +406,8 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
     protected void FillReceiveGrid()
     {
         string str = @"select MRM.RId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
-                        CASE WHEN MRD.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMtr END As Size, 
+                        CASE WHEN OD.OrderUnitId = 6 THEN VF.SizeInch else Case When OD.OrderUnitId = 1 THEN VF.SizeMtr ELSE VF.SizeFt END End As Size,
+                        --CASE WHEN MRD.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMtr END As Size, 
                         MRD.RDetailId,MRD.OrderId,MRD.ItemFinishedID,MRM.CompanyId,MRM.CustomerId,MRM.EmpId,MRM.PunchCardIndentType,MRM.ChallanNo,
                         Replace(CONVERT(nvarchar(11),MRM.ReceiveDate,106),' ','-') as ReceiveDate,
                         MRD.ReceivePerSetQty,MRD.ReceiveNoOfSet,MRD.TotalReceiveQty,MRD.IssueID,MRD.IssueDetailID, MRM.Remarks                       

@@ -596,21 +596,23 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             sht.Range("E3").SetValue("LotNo.");
             sht.Range("F3").SetValue("TagNo.");
             sht.Range("G3").SetValue("Qty");
-            sht.Range("H3").SetValue("RecQty");
-            sht.Range("I3").SetValue("BalQty");
+            //sht.Range("H3").SetValue("RecQty");
+            //sht.Range("I3").SetValue("BalQty");
             sht.Range("J3").SetValue("Issue Challan No.");
             sht.Range("K3").SetValue("Warp Order No.");
             sht.Range("L3").SetValue("Production Unit");
             sht.Range("M3").SetValue("User Name");
             Row = 4;
-            if (Session["VarCompanyNo"].ToString() != "45")
-            {
-                if (DDProcess.SelectedItem.Text != "WARPING COTTON")
-                {
-                    sht.Column("H").Hide();
-                    sht.Column("I").Hide();
-                }
-            }
+            //if (Session["VarCompanyNo"].ToString() != "45")
+            //{
+            //    if (DDProcess.SelectedItem.Text != "WARPING COTTON")
+            //    {
+            //        sht.Column("H").Hide();
+            //        sht.Column("I").Hide();
+            //    }
+            //}
+            sht.Column("H").Hide();
+            sht.Column("I").Hide();
             int rowcount = ds.Tables[0].Rows.Count;
             for (int i = 0; i < rowcount; i++)
             {
@@ -624,8 +626,8 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                 sht.Range("E" + Row).SetValue(ds.Tables[0].Rows[i]["Lotno"]);
                 sht.Range("F" + Row).SetValue(ds.Tables[0].Rows[i]["Tagno"]);
                 sht.Range("G" + Row).SetValue(ds.Tables[0].Rows[i]["Qty"]);
-                sht.Range("H" + Row).SetValue(ds.Tables[0].Rows[i]["RecWt"]);
-                sht.Range("I" + Row).FormulaA1 = "=G" + Row + "-H" + Row;
+                //sht.Range("H" + Row).SetValue(ds.Tables[0].Rows[i]["RecWt"]);
+                //sht.Range("I" + Row).FormulaA1 = "=G" + Row + "-H" + Row;
                 sht.Range("J" + Row).SetValue(ds.Tables[0].Rows[i]["IssueNO"]);
                 sht.Range("K" + Row).SetValue(ds.Tables[0].Rows[i]["Warporderno"]);
                 sht.Range("L" + Row).SetValue(ds.Tables[0].Rows[i]["UnitName"]);

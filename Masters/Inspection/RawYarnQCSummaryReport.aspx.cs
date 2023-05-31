@@ -15,7 +15,10 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        if (Session["varcompanyid"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
     }
 
     protected string getXmlString(string from, string to)
@@ -24,7 +27,7 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
 
         SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
 
-        SqlParameter[] param = new SqlParameter[3];
+        SqlParameter[] param = new SqlParameter[4];
 
         param[0] = new SqlParameter("@from", SqlDbType.VarChar);
         param[0].Direction = ParameterDirection.Input;
@@ -38,6 +41,11 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
         param[2] = new SqlParameter("@flag", SqlDbType.Int);
         param[2].Direction = ParameterDirection.Input;
         param[2].Value = Convert.ToInt32(ddlYarnType.SelectedValue);
+
+
+        param[3] = new SqlParameter("@CompanyId", SqlDbType.VarChar);
+        param[3].Direction = ParameterDirection.Input;
+        param[3].Value = Convert.ToInt32(Session["varcompanyid"]);
 
 
 
