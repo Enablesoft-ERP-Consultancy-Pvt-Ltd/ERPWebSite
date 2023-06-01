@@ -6,7 +6,7 @@
         <xs:element name="Table">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="GateNo" type="xs:int" minOccurs="0" />
+              <xs:element name="GateNo" type="xs:string" minOccurs="0" />
               <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
               <xs:element name="Employee" type="xs:string" minOccurs="0" />
               <xs:element name="Description" type="xs:string" minOccurs="0" />
@@ -19,6 +19,11 @@
               <xs:element name="Address" type="xs:string" minOccurs="0" />
               <xs:element name="Gstno" type="xs:string" minOccurs="0" />
               <xs:element name="MasterCompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+              <xs:element name="IssQtyFromOther" type="xs:double" minOccurs="0" />
+              <xs:element name="ShadeStatus" type="xs:string" minOccurs="0" />
+              <xs:element name="FolioNo" type="xs:string" minOccurs="0" />
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

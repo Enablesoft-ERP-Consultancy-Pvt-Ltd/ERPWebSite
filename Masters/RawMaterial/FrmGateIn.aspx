@@ -349,7 +349,7 @@
                     </tr>
                     <tr>
                         <td class="tdstyle">
-                            <span class="labelbold">Qty</span>
+                            <span class="labelbold">RecQty</span>
                             <br />
                             <asp:TextBox ID="TxtQty" runat="server" CssClass="textb" onkeypress="return isNumber(event);"
                                 onchange="return checkqty();" BackColor="Beige" Width="70px"></asp:TextBox>

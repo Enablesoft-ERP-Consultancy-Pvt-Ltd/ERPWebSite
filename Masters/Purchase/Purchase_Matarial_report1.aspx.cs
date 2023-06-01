@@ -1391,7 +1391,7 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         }
         else if (RDPurchaseReceive.Checked == true)
         {
-            if (Session["VarCompanyNo"].ToString() == "14")
+            if (Session["VarCompanyNo"].ToString() == "14" || Session["VarCompanyNo"].ToString() == "43")
             {
                 str = "select distinct pii.PIndentIssueId,pii.ChallanNo from PurchaseIndentIssue PII left Join OrderMaster OM on Pii.orderid=Om.orderid  Where pii.PartyId=" + dsuppl.SelectedValue + " And pii.CompanyId=" + ddCompName.SelectedValue + "";
                 if (ddcustomer.SelectedIndex > 0)

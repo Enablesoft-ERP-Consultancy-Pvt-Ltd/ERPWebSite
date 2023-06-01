@@ -385,11 +385,11 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
             arr[27].Value = 0;
             if (TDIssQtyFromMWS.Visible == true)
             {
-                arr[28].Value = 0;
+                arr[28].Value = TxtIssQtyFromMWS.Text;
             }
             else
             {
-                arr[28].Value = TxtIssQtyFromMWS.Text;
+                arr[28].Value = 0;
             }
             if (TDShadeRMStatus .Visible == true)
             {
@@ -401,11 +401,11 @@ public partial class Masters_RawMaterial_FrmGateIn : System.Web.UI.Page
             }
             if (TDFolioNo.Visible == true)
             {
-                arr[30].Value = 0;
+                arr[30].Value = TxtFolioNo.Text;
             }
             else
             {
-                arr[30].Value = TxtFolioNo.Text;
+                arr[30].Value = 0;
             }
 
             if (DDGatePassNo.Items.Count > 0)

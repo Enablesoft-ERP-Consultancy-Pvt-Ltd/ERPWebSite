@@ -847,7 +847,7 @@ public partial class Masters_Loom_frmweftIssue : System.Web.UI.Page
         {
             TDIssueNo.Visible = true;
             DDissueno.SelectedIndex = -1;
-            if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28" || Session["varcompanyid"].ToString() == "14")
+            if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28" || Session["varcompanyid"].ToString() == "14" || Session["VarCompanyNo"].ToString() == "45")
             {
                 if (variable.VarWeaverRawMaterialIssueToCompleteStatus == "1" && Session["usertype"].ToString() == "1")
                 {

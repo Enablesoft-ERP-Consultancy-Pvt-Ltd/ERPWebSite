@@ -279,12 +279,13 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             {
                 str = @"select GateInNo As GateNo,case When " + DDCompany.SelectedIndex + ">0 then CI.CompanyName Else 'ALL COMPANY' End CompanyName,EmpName+' '+'/'+Address As Employee,ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName As Description,Lotno,GateInDate Date,Sum(Qty) As Qty,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @" Dateflag,
                         case when " + DDCompany.SelectedIndex + ">0 then CI.compaddr1 else '' END as Address,case when " + DDCompany.SelectedIndex + @">0 then CI.GstNo else '' END as Gstno,GM.MasterCompanyId, 
-                        GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo 
+                        GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo ,isnull(NUD.UserName,'') as UserName 
                         from GateInMaster GM(nolock)
                         JOIN GateInDetail GD(nolock) ON GD.GateInId = GM.GateInId 
                         JOIN Companyinfo CI(nolock) ON CI.CompanyId = GM.CompanyId 
                         JOIN Empinfo EI(nolock) ON EI.EmpId = GM.PartyId 
                         JOIN V_FinishedItemDetail VF(nolock) ON VF.Item_Finished_id = GD.FINISHEDID
+                        JOIN NewUserDetail NUD(NoLock) ON GM.UserID=NUD.UserId
                         Where GM.MasterCompanyID = " + Session["varCompanyId"];
                 if (DDCompany.SelectedIndex > 0)
                 {
@@ -333,13 +334,22 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                     str = str + " AND vf.COLORID = " + DDColor.SelectedValue;
                 }
                 str = str + @" group by GateInNo,CompanyName,CI.compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,
-                    Lotno,GateInDate,GM.MasterCompanyId, GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo ";
+                    Lotno,GateInDate,GM.MasterCompanyId, GD.Remark, GD.IssQtyFromOther, GD.ShadeStatus, GD.FolioNo, GM.ChallanNo,NUD.UserName ";
 
                 ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                 if (chkexcelexport.Checked == true)
                 {
-                    GateINDetailExcelexport(ds, Filterby);
-                    return;
+                    if (Session["VarCompanyNo"].ToString() == "45")
+                    {
+                        GateINDetailExcelexportMWS(ds, Filterby);
+                        return;
+                    }
+                    else
+                    {
+                        GateINDetailExcelexport(ds, Filterby);
+                        return;
+                    }
+                    
                 }
                 Session["dsFilename"] = "~\\ReportSchema\\RptGeneralGateInDetail.xsd";
                 Session["rptFilename"] = "Reports/RptGeneralGateInDetail.rpt";
@@ -588,38 +598,35 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             var xapp = new XLWorkbook();
             var sht = xapp.Worksheets.Add("General Gate In Detail");
 
-            sht.Range("A1:K1").Merge();
+            sht.Range("A1:H1").Merge();
             sht.Range("A1").Value = ds.Tables[0].Rows[0]["CompanyName"] + " General Gate In Detail";
-            sht.Range("A1:K1").Style.Font.Bold = true;
-            sht.Range("A1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A1:K1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-            sht.Range("A1:K1").Style.Font.FontSize = 13;
+            sht.Range("A1:H1").Style.Font.Bold = true;
+            sht.Range("A1:H1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:H1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:H1").Style.Font.FontSize = 13;
             sht.Row(1).Height = 20.00;
             //
-            sht.Range("A2:K2").Merge();
+            sht.Range("A2:H2").Merge();
             sht.Range("A2").Value = "Filter By - " + filterby;
-            sht.Range("A2:K2").Style.Font.Bold = true;
-            sht.Range("A2:K2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A2:K2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-            sht.Range("A2:K2").Style.Alignment.SetWrapText();
-            sht.Range("A2:K2").Style.Font.FontSize = 10;
+            sht.Range("A2:H2").Style.Font.Bold = true;
+            sht.Range("A2:H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A2:H2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A2:H2").Style.Alignment.SetWrapText();
+            sht.Range("A2:H2").Style.Font.FontSize = 10;
             sht.Row(1).Height = 20.00;
 
-            sht.Range("A3").Value = "EMP NAME";
-            sht.Range("B3").Value = "FOLIO NO.";
-            sht.Range("C3").Value = "GATE IN NO.";
-            sht.Range("D3").Value = "DATE";
-            sht.Range("E3").Value = "ITEM DESCRIPTION";
-            sht.Range("F3").Value = "LOT NO.";
-            sht.Range("G3").Value = "REMARK";
-            sht.Range("H3").Value = "ISS QTY FROM MWS";
-            sht.Range("I3").Value = "QTY";
-            sht.Range("J3").Value = "CHALLAN NO";
-            sht.Range("K3").Value = "SHADE / RM STATUS";
+            sht.Range("A3").Value = "EMP NAME";           
+            sht.Range("B3").Value = "GATE IN NO.";
+            sht.Range("C3").Value = "DATE";
+            sht.Range("D3").Value = "ITEM DESCRIPTION";
+            sht.Range("E3").Value = "LOT NO.";              
+            sht.Range("F3").Value = "QTY";
+            sht.Range("G3").Value = "CHALLAN NO";
+            sht.Range("H3").Value = "REMARK";        
 
-            sht.Range("A3:K3").Style.Font.Bold = true;
-            sht.Range("A3:K3").Style.Font.FontSize = 10;
-            sht.Range("H3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("A3:H3").Style.Font.Bold = true;
+            sht.Range("A3:H3").Style.Font.FontSize = 10;
+            sht.Range("F3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             sht.Range("I3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             sht.Row(1).Height = 25.50;
             //*****************************
@@ -630,26 +637,23 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             ds1.Tables.Add(dv.ToTable());
             for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
             {
-                sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Employee"]);
-                sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["FOLIONO"]);
-                sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["GateNo"]);
-                sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["Date"]);
-                sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["Description"]);
-                sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["Lotno"]);
-                sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Remark"]);
-                sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["IssQtyFromOther"]);
-                sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Qty"]);
-                sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["ChallanNo"]);
-                sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["ShadeStatus"]);
+                sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Employee"]);               
+                sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["GateNo"]);
+                sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["Date"]);
+                sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["Description"]);
+                sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["Lotno"]);  
+                sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["Qty"]);
+                sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["ChallanNo"]);
+                sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["Remark"]);
 
                 row = row + 1;
             }
             //************
-            sht.Range("H" + row).FormulaA1 = "SUM(H4:H" + (row - 1) + ")"; 
-            sht.Range("I" + row).FormulaA1 = "SUM(I4:I" + (row - 1) + ")";
+           // sht.Range("H" + row).FormulaA1 = "SUM(H4:H" + (row - 1) + ")"; 
+            sht.Range("I" + row).FormulaA1 = "SUM(F4:F" + (row - 1) + ")";
             //********************************
             sht.Columns(1, 11).AdjustToContents();
-            using (var a = sht.Range("A1" + ":K" + row))
+            using (var a = sht.Range("A1" + ":H" + row))
             {
                 a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
@@ -1138,6 +1142,109 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             sht.Columns(1, 15).AdjustToContents();
             string Fileextension = "xlsx";
             string filename = UtilityModule.validateFilename("GeneralGatePassDetailNew" + DateTime.Now + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            // Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opnexcel1", "alert('No Record Found!');", true);
+        }
+    }
+
+    protected void GateINDetailExcelexportMWS(DataSet ds, string filterby)
+    {
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+            }
+            string Path = "";
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("General Gate In Detail");
+
+            sht.Range("A1:L1").Merge();
+            sht.Range("A1").Value = ds.Tables[0].Rows[0]["CompanyName"] + " General Gate In Detail";
+            sht.Range("A1:L1").Style.Font.Bold = true;
+            sht.Range("A1:L1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:L1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:L1").Style.Font.FontSize = 13;
+            sht.Row(1).Height = 20.00;
+            //
+            sht.Range("A2:L2").Merge();
+            sht.Range("A2").Value = "Filter By - " + filterby;
+            sht.Range("A2:L2").Style.Font.Bold = true;
+            sht.Range("A2:L2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A2:L2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A2:L2").Style.Alignment.SetWrapText();
+            sht.Range("A2:L2").Style.Font.FontSize = 10;
+            sht.Row(1).Height = 20.00;
+
+            sht.Range("A3").Value = "EMP NAME";
+            sht.Range("B3").Value = "FOLIO NO.";
+            sht.Range("C3").Value = "GATE IN NO.";
+            sht.Range("D3").Value = "DATE";
+            sht.Range("E3").Value = "ITEM DESCRIPTION";
+            sht.Range("F3").Value = "LOT NO.";           
+            sht.Range("G3").Value = "ISS QTY FROM MWS";
+            sht.Range("H3").Value = "RECQTY";
+            sht.Range("I3").Value = "CHALLAN NO";
+            sht.Range("J3").Value = "SHADE / RM STATUS";
+            sht.Range("K3").Value = "REMARK";
+            sht.Range("L3").Value = "USER NAME";
+
+            sht.Range("A3:L3").Style.Font.Bold = true;
+            sht.Range("A3:L3").Style.Font.FontSize = 10;
+            sht.Range("H3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("I3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Row(1).Height = 25.50;
+            //*****************************
+            int row = 4;
+            DataView dv = ds.Tables[0].DefaultView;
+            dv.Sort = "Employee,Date";
+            DataSet ds1 = new DataSet();
+            ds1.Tables.Add(dv.ToTable());
+            for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+            {
+                sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Employee"]);
+                sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["FOLIONO"]);
+                sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["GateNo"]);
+                sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["Date"]);
+                sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["Description"]);
+                sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["Lotno"]);                
+                sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["IssQtyFromOther"]);
+                sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["Qty"]);
+                sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["ChallanNo"]);
+                sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["ShadeStatus"]);
+                sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Remark"]);
+                sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["UserName"]);
+
+                row = row + 1;
+            }
+            //************
+            sht.Range("H" + row).FormulaA1 = "SUM(H4:H" + (row - 1) + ")";
+            sht.Range("G" + row).FormulaA1 = "SUM(G4:G" + (row - 1) + ")";
+            //********************************
+            sht.Columns(1, 13).AdjustToContents();
+            using (var a = sht.Range("A1" + ":L" + row))
+            {
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            }
+            string Fileextension = "xlsx";
+            string filename = UtilityModule.validateFilename("GeneralGateInDetail" + DateTime.Now + "." + Fileextension);
             Path = Server.MapPath("~/Tempexcel/" + filename);
             xapp.SaveAs(Path);
             xapp.Dispose();

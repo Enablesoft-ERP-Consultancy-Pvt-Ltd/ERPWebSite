@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web.UI.Page
 {
+    static int VarConfirmButtonStatus = 1;
     static int VarProcess_Rec_Detail_Id = 0;
     static int VarProcess_Rec_Id = 0;
     static string btnclickflag = "";
@@ -275,9 +276,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     {
         string str = "";
         ItemFinishedId = 0;
-        hnprocessrecid.Value = "0";
-        hn100_ISSUEORDERID.Value = "0";
-        hn100_PROCESS_REC_ID.Value = "0";
+        if (Session["VarCompanyNo"].ToString() != "43")
+        {
+            hnprocessrecid.Value = "0";
+            hn100_ISSUEORDERID.Value = "0";
+            hn100_PROCESS_REC_ID.Value = "0";
+        }
         if (chkedit.Checked == true)
         {
             str = @"select Distinct PRM.Process_Rec_Id,PRM.ChallanNo+' /'+REPLACE(CONVERT(nvarchar(11),receivedate,106),' ','-') As ChallanNo from Process_receive_master_1 PRM inner join 
@@ -861,7 +865,15 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             #endregion
 
             FillRecDetails();
-            fillGrid();
+            if (Session["VarCompanyNo"].ToString() == "43")
+            {
+                TableIssueDetail.Visible = false;                
+            }
+            else
+            {
+                TableIssueDetail.Visible = true;
+                fillGrid();
+            }
         }
         catch (Exception ex)
         {
@@ -1225,6 +1237,16 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 break;
             case "22":
                 txtwidth.Focus();
+                break;
+            case "43":
+                if (VarConfirmButtonStatus == 0)
+                {
+                    btnconfirm.Visible = false;
+                }
+                else
+                {
+                    btnconfirm_Click(sender, new EventArgs());
+                }
                 break;
             default:
                 btnconfirm.Focus();
@@ -1709,13 +1731,25 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         lblmessage.Text = "";
         try
         {
-            SqlParameter[] param = new SqlParameter[1];
+            SqlParameter[] param = new SqlParameter[2];
             param[0] = new SqlParameter("@TstockNo", txtstockno.Text);
+            param[1] = new SqlParameter("@Process_Rec_Id", hnprocessrecid.Value == "" ? "0" : hnprocessrecid.Value);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETLOOMSTOCKDETAIL", param);
             Refreshcontrol();
             if (ds.Tables[0].Rows.Count > 0)
             {
+                //btnconfirm.Visible = true;
+                VarConfirmButtonStatus = 1;
+                if (ds.Tables[0].Rows[0]["PcsType"].ToString() == "999")
+                {
+                    VarConfirmButtonStatus = 0;
+                    btnconfirm.Visible = false;
+                    //lblmessage.Text = "Stock No. Quality does match with last scan carpet quality. Please scan same quality carpet!.";
+                    ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('" + ds.Tables[0].Rows[0]["Msg"] + "');", true);
+                    return;                   
+                }
+
                 LblPcsType.Text = ds.Tables[0].Rows[0]["PcsType"].ToString();
                 TRItemdetail.Visible = true;
                 txtwidth.Text = ds.Tables[0].Rows[0]["width"].ToString();
@@ -1755,7 +1789,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 {
                     txtactualwidth.Text = "";
                     txtactuallength.Text = "";
-                }
+                }                
 
                 if (DDFolioNo.Items.FindByValue(ds.Tables[0].Rows[0]["issueorderid"].ToString()) != null)
                 {
@@ -1771,12 +1805,16 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     lblmessage.Text = "Please select Folio No.";
                     return;
                 }
-
+               
                 if (Convert.ToInt32(hnlastfoliono.Value) != Convert.ToInt32(DDFolioNo.SelectedValue))
-                {
-                    hnprocessrecid.Value = "0";
-                    hn100_ISSUEORDERID.Value = "0";
-                    hn100_PROCESS_REC_ID.Value = "0";
+                {                   
+                   if (Session["VarCompanyNo"].ToString()!= "43")
+                   {
+                        hnprocessrecid.Value = "0";                   
+                        hn100_ISSUEORDERID.Value = "0";
+                        hn100_PROCESS_REC_ID.Value = "0";
+                   }                        
+                    
                 }
                 DGEmployee.DataSource = ds.Tables[1];
                 DGEmployee.DataBind();
@@ -1823,6 +1861,13 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             }           
         }
         Savedetail(sender);
+        if (Session["varCompanyNo"].ToString() == "43")
+        {
+            TableIssueDetail.Visible = false;
+            DG.DataSource = "";
+            DG.DataBind();
+            FillRecDetails();
+        }
         //fillGrid();
         //FillRecDetails();
 

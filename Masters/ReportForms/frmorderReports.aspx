@@ -141,6 +141,7 @@
                 TritemName.Visible = false;
                 TRMonthyear.Visible = false;
                 TRSRNo.Visible = false;
+                TRPODETAIL.Visible = true;
             }
             if (RDPOSTATUS.Checked == true || RDPOSTATUSInHouse.Checked == true || RDPOSTATUSOutSide.Checked == true)
             {
@@ -348,7 +349,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <asp:RadioButton ID="RDPOSTATUSAGNI" Text="PO Status" runat="server" Font-Bold="true" Visible="false"
+                                        <asp:RadioButton ID="RDPOSTATUSAGNI" Text="PO Status" runat="server" Font-Bold="true"
                                             GroupName="OrderType" AutoPostBack="true" OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>
                                 </tr>
@@ -642,6 +643,12 @@
                                  <tr id="TRFolioWiseConsumptionSummary" runat="server" visible="false">
                                     <td colspan="2" align="left">
                                         <asp:CheckBox ID="ChkForFolioWiseConReportType2Summary" runat="server" Text="Check For Report Summary" CssClass="checkboxbold"/>
+                                       
+                                    </td>
+                                </tr>
+                                 <tr id="TRPODETAIL" runat="server" visible="false">
+                                    <td colspan="2" align="left">
+                                        <asp:CheckBox ID="chkforpodetail" runat="server" Text="For Details" CssClass="checkboxbold"/>
                                        
                                     </td>
                                 </tr>

@@ -14,7 +14,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrderRowI
     {
         if (Session["varCompanyId"] == null)
         {
-            Response.Redirect("~/Login.aspx"); 
+            Response.Redirect("~/Login.aspx");
         }
         DataSet DSQ = null; string Qry = "";
         if (!IsPostBack)
@@ -1584,12 +1584,12 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrderRowI
                                 Else EI.EmpName End EmpName, EI.Address, CI.CompanyName, CI.CompAddr1, CI.CompAddr2, 
                                 CI.CompAddr3, CI.CompTel,vf.CATEGORY_NAME, vf.ITEM_NAME, vf.QualityName, vf.designName, 
                                 vf.ColorName, vf.ShadeColorName, vf.ShapeName, vf.SizeMtr, PNM.PROCESS_NAME, 
-                                PM.Prorderid, EI.GSTNo as empgstin, CI.GSTNo,PT.TAGNO,PT.BINNO, 
+                                hfom.CHALLANNO as Prorderid, EI.GSTNo as empgstin, CI.GSTNo,PT.TAGNO,PT.BINNO, 
                                 (Select Distinct CII.CustomerCode + ', '
 		                                From HomeFurnishingOrderDetail PID(Nolock) 
 		                                JOIN OrderMaster OM(Nolock) ON OM.OrderiD = PID.OrderiD 
                                         JOIN CustomerInfo CII(Nolock) ON CII.CustomerID = OM.CustomerID 
-                                        Where PID.IssueOrderId = PM.Prorderid For XML Path('')) CustomerCode,(Select Distinct cast(om.OrderId as varchar) + ', '
+                                        Where PID.IssueOrderId = PM.Prorderid For XML Path('')) CustomerCode,(Select Distinct cast(om.CustomerOrderNo as varchar) + ', '
 		                                From HomeFurnishingOrderDetail PID(Nolock) 
 		                                JOIN OrderMaster OM(Nolock) ON OM.OrderiD = PID.OrderiD 
                                         JOIN CustomerInfo CII(Nolock) ON CII.CustomerID = OM.CustomerID 
@@ -1597,6 +1597,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrderRowI
                                 1 ReportType,pm.REMARK 
                                 From ProcessRawMaster PM(Nolock) 
                                 join ProcessRawTran PT(Nolock) on PM.PRMid=PT.PRMid 
+                                join HomeFurnishingOrderMaster hfom on pm.Prorderid=hfom.ISSUEORDERID
                                 join CompanyInfo ci(Nolock) on PM.Companyid=ci.CompanyId 
                                 join V_FinishedItemDetail vf(Nolock) on PT.Finishedid=vf.ITEM_FINISHED_ID 
                                 join GodownMaster GM(Nolock) on PT.Godownid=GM.GoDownID 

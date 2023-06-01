@@ -6,8 +6,11 @@
         <xs:element name="Table">
           <xs:complexType>
             <xs:sequence>
+              <xs:element name="companyname" type="xs:string" minOccurs="0" />
+              <xs:element name="compaddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNO" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerName" type="xs:string" minOccurs="0" />
-              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyName1" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
               <xs:element name="OrderId" type="xs:int" minOccurs="0" />
               <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
@@ -26,12 +29,16 @@
               <xs:element name="QtyRequired" type="xs:int" minOccurs="0" />
               <xs:element name="TArea" type="xs:double" minOccurs="0" />
               <xs:element name="OrderUnitId" type="xs:int" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
         <xs:element name="Table1">
           <xs:complexType>
             <xs:sequence>
+              <xs:element name="companyname" type="xs:string" minOccurs="0" />
+              <xs:element name="compaddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNO" type="xs:string" minOccurs="0" />
               <xs:element name="IFinishedid" type="xs:int" minOccurs="0" />
               <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
               <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
@@ -40,6 +47,8 @@
               <xs:element name="IRATE" type="xs:double" minOccurs="0" />
               <xs:element name="Process_Name" type="xs:string" minOccurs="0" />
               <xs:element name="OrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -58,6 +67,9 @@
               <xs:element name="Process_Name" type="xs:string" minOccurs="0" />
               <xs:element name="OrderId" type="xs:int" minOccurs="0" />
               <xs:element name="CALTYPE" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="totalarea" type="xs:double" minOccurs="0" />
+              <xs:element name="qtyrequired" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

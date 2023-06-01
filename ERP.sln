@@ -1,45 +1,41 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32901.215
+VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERPWebsite", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7"
-		ProjectReferences = "{ee2590f4-1938-44c4-a34f-20299d9b7d71}|IExpro.Core.dll;{321af2bb-c159-401f-9b02-80a2334c8c84}|IExpro.Infrastructure.dll;"
 		Debug.AspNetCompiler.VirtualPath = "/ERP"
-		Debug.AspNetCompiler.PhysicalPath = "..\ERPWebsite\"
+		Debug.AspNetCompiler.PhysicalPath = "..\ERPWebSite\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\ERP\"
 		Debug.AspNetCompiler.Updateable = "true"
 		Debug.AspNetCompiler.ForceOverwrite = "true"
 		Debug.AspNetCompiler.FixedNames = "false"
 		Debug.AspNetCompiler.Debug = "True"
 		Release.AspNetCompiler.VirtualPath = "/ERP"
-		Release.AspNetCompiler.PhysicalPath = "..\ERPWebsite\"
+		Release.AspNetCompiler.PhysicalPath = "..\ERPWebSite\"
 		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\ERP\"
 		Release.AspNetCompiler.Updateable = "true"
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "49721"
-		SlnRelativePath = "..\ERPWebsite\"
+		SlnRelativePath = "..\ERPWebSite\"
 	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {4777CCD7-0D9A-4AB3-A8B7-CB0BB550A241}
+		SolutionGuid = {41AE7C92-A737-4EEA-9A73-01CF2EA0D237}
 	EndGlobalSection
 EndGlobal

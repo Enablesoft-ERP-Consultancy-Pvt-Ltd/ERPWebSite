@@ -974,6 +974,19 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                     TxtLocalOrderNo.Text = "LF " + Str;
                 }
             }
+            else if (Session["varcompanyId"].ToString() == "37")
+            {
+                if (DDCompanyName.SelectedValue == "1")
+                {
+                    string Str = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'SUN/L ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'SUN/L %'").ToString();
+                    TxtLocalOrderNo.Text = "SUN/L " + Str;
+                }
+                else if (DDCompanyName.SelectedValue == "2")
+                {
+                    string Str = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'VI/L ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'VI/L %'").ToString();
+                    TxtLocalOrderNo.Text = "VI/L " + Str;
+                }
+            }
             else
             {
                 string Str = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'L ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'L %'").ToString();
