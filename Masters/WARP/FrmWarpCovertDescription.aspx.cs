@@ -159,7 +159,7 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
         ODD.LocalOrder + ' ' + ODD.CustomerOrderNo OrderNo, 
         VF1.ITEM_NAME + ' ' + VF1.QualityName + ' ' + VF1.DesignName + ' ' + VF1.ColorName + ' ' + VF1.ShapeName + ' ' + VF1.SizeMtr + ' ' + VF1.ShadeColorName OrderDescription, 
         VF.ITEM_NAME + ' ' + VF.QualityName + ' ' + VF.DesignName + ' ' + VF.ColorName + ' ' + VF.ShapeName + ' ' + VF.SizeMtr + ' ' + VF.ShadeColorName BeamDescription, 
-        b.Pcs - IsNull(IssuePcs, 0) Pcs 
+        b.Pcs - IsNull(IssuePcs, 0) Pcs,isnull(a.LoomNo,0) as BeamNo 
         From WARPLOOMMASTER a
         JOIN WARPLOOMDETAIL b ON b.ID = a.ID 
         JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = b.ofinishedid 
@@ -208,6 +208,30 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         GvBeamDesc.DataSource = ds.Tables[0];
         GvBeamDesc.DataBind();
+    }
+    protected void GvBeamDesc_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            for (int i = 0; i < GvBeamDesc.Columns.Count; i++)
+            {
+                if (Session["VarCompanyNo"].ToString()=="21")
+                {
+                    if (GvBeamDesc.Columns[i].HeaderText == "Beam No")
+                    {
+                        GvBeamDesc.Columns[i].Visible = true;
+                    }
+                }
+                else
+                {
+                    if (GvBeamDesc.Columns[i].HeaderText == "Beam No")
+                    {
+                        GvBeamDesc.Columns[i].Visible = false;
+                    }
+                }
+            }
+           
+        }
     }
     protected void Chkboxitem_CheckChanged(object sender, EventArgs e)
     {
