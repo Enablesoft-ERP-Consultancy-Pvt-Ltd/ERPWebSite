@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERPWebsite", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.7"
 		ProjectReferences = "{ee2590f4-1938-44c4-a34f-20299d9b7d71}|IExpro.Core.dll;{321af2bb-c159-401f-9b02-80a2334c8c84}|IExpro.Infrastructure.dll;"
@@ -25,10 +25,6 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP", ".", "{7B53B49A-A0FF-
 		SlnRelativePath = "..\ERP\"
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IExpro.Infrastructure", "..\IExpro.Infrastructure\IExpro.Infrastructure.csproj", "{321AF2BB-C159-401F-9B02-80A2334C8C84}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IExpro.Core", "..\IExpro.Core\IExpro.Core.csproj", "{EE2590F4-1938-44C4-A34F-20299D9B7D71}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,14 +35,6 @@ Global
 		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Release|Any CPU.Build.0 = Debug|Any CPU
-		{321AF2BB-C159-401F-9B02-80A2334C8C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{321AF2BB-C159-401F-9B02-80A2334C8C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{321AF2BB-C159-401F-9B02-80A2334C8C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{321AF2BB-C159-401F-9B02-80A2334C8C84}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE2590F4-1938-44C4-A34F-20299D9B7D71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE2590F4-1938-44C4-A34F-20299D9B7D71}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE2590F4-1938-44C4-A34F-20299D9B7D71}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE2590F4-1938-44C4-A34F-20299D9B7D71}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
