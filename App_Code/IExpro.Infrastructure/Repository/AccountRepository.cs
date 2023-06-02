@@ -34,26 +34,26 @@ namespace IExpro.Infrastructure.Repository
             try
             {
 
-                SqlParameter category = new SqlParameter("@CategoryName", "Test");
-                var dd = Context.Database.ExecuteSqlCommand("NewCategory @CategoryName", category);
+                //SqlParameter category = new SqlParameter("@CategoryName", "Test");
+                //var dd = Context.Database.ExecuteSqlCommand("NewCategory @CategoryName", category);
 
 
 
-                var salesPeople = Context.Database.SqlQuery<AccountUser>("AllSalesPeople").ToListAsync();
+                //var salesPeople = Context.Database.SqlQuery<AccountUser>("AllSalesPeople").ToListAsync();
 
 
 
-                var totalOrders = Context.Database.SqlQuery<int>("CountOfOrders @ProductID", category).SingleAsync();
+                //var totalOrders = Context.Database.SqlQuery<int>("CountOfOrders @ProductID", category).SingleAsync();
 
 
 
-                SqlParameter Id = new SqlParameter("@EmployeeId", 1);
+                //SqlParameter Id = new SqlParameter("@EmployeeId", 1);
 
-                SqlParameter fname = new SqlParameter("@FirstName", 23);
+                //SqlParameter fname = new SqlParameter("@FirstName", 23);
 
-                SqlParameter lname = new SqlParameter("@LastName", 22);
+                //SqlParameter lname = new SqlParameter("@LastName", 22);
 
-                int result = Context.Database.ExecuteSqlCommand("UpdateEmployee @EmployeeId, @FirstName, @LastName", Id, fname, lname);
+                //int result = Context.Database.ExecuteSqlCommand("UpdateEmployee @EmployeeId, @FirstName, @LastName", Id, fname, lname);
 
 
 
