@@ -2403,7 +2403,7 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
                               sht.Range("D" + row).SetValue(data.designname);  //"BPO";
                               sht.Range("E" + row).SetValue(data.colorname);  //"ORD DT";
                               sht.Range("F" + row).SetValue(data.shapename);
-                              sht.Range("G" + row).SetValue(data.length + "x" + data.width);
+                              sht.Range("G" + row).SetValue(data.width + "x" + data.length);
                               sht.Range("H" + row).SetValue(data.UNIT);
                               sht.Range("I" + row).SetValue(data.ISSUEQTY);
                               sht.Range("J" + row).SetValue(data.RECQTY);

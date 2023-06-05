@@ -683,6 +683,20 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
                     having sum(WD.Pcs-isnull(WD.IssuePcs,0))>0
                     order by case When ISNUMERIC(WLM.LoomNo)=1 then cast(WLM.LoomNo as int) else 999999 end";
         }
+        else if (Session["VarCompanyNo"].ToString() == "21")
+        {
+            str = @"select WLM.LoomNo as BeamNo,dbo.F_BeamNoDescription(WLM.LoomNo)as BeamDescription,GM.GodownName,
+                    sum(WD.Pcs-isnull(WD.IssuePcs,0)) as Pcs,WLM.Grossweight,WLM.TareWeight,WLM.NetWeight, CI.CompanyName 
+                    From WarpLoommaster WLM(Nolock) 
+                    JOIN LoomStock ls(Nolock) on WLM.LoomNo=Ls.LoomNo
+                    JOIN WarpLoomDetail WD(Nolock) on WLM.ID=WD.ID
+                    JOIN Godownmaster GM(Nolock) on LS.GodownId=GM.GoDownID
+                    JOIN CompanyInfo CI(Nolock) ON CI.CompanyId = WLM.CompanyId 
+                    Where Round(LS.Qtyinhand,3) > 0.09 
+                    group by WLM.LoomNo,GM.GodownName,WLM.Grossweight,WLM.TareWeight,WLM.NetWeight, CI.CompanyName
+                    having sum(WD.Pcs-isnull(WD.IssuePcs,0))>0
+                    order by case When ISNUMERIC(WLM.LoomNo)=1 then cast(WLM.LoomNo as int) else 999999 end";
+        }
         else
         {
             str = @"select WLM.LoomNo as BeamNo,dbo.F_BeamNoDescription(WLM.LoomNo)as BeamDescription,GM.GodownName,

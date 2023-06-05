@@ -509,7 +509,16 @@ public partial class Masters_Inspection_FrmYarnInspectionNew : System.Web.UI.Pag
                 {
                     row["ImagePhoto"] = Server.MapPath(row["ImagePhoto"].ToString());
                 }
-                Session["rptFileName"] = "~\\Reports\\RptRawYarnInspectionNew.rpt";
+
+                if (Session["VarCompanyNo"].ToString() == "21")
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptRawYarnInspectionNewKaysons.rpt";
+                }
+                else
+                {
+
+                    Session["rptFileName"] = "~\\Reports\\RptRawYarnInspectionNew.rpt";
+                }
                 Session["Getdataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\RptRawYarnInspectionNew.xsd";
                 StringBuilder stb = new StringBuilder();
