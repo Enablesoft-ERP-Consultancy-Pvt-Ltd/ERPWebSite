@@ -34,6 +34,9 @@
               <xs:element name="Rate" type="xs:double" minOccurs="0" />
               <xs:element name="UserName" type="xs:string" minOccurs="0" />
               <xs:element name="MasterCompanyID" type="xs:int" minOccurs="0" />
+              <xs:element name="IssQtyFromOther" type="xs:double" minOccurs="0" />
+              <xs:element name="ShadeStatus" type="xs:string" minOccurs="0" />
+              <xs:element name="FolioNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
