@@ -45,7 +45,7 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
 
         param[3] = new SqlParameter("@CompanyId", SqlDbType.VarChar);
         param[3].Direction = ParameterDirection.Input;
-        param[3].Value = Convert.ToInt32(Session["varcompanyid"]);
+        param[3].Value = Convert.ToInt32(Session["CurrentWorkingCompanyID"]);
 
 
 
