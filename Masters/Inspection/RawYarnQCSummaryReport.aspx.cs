@@ -78,6 +78,19 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
             case 2:
                 xsltName = "DyedYarnInspection.xslt";
                 break;
+            case 3:
+                xsltName = "FabricInspection.xslt";
+                break;
+            case 4:
+                xsltName = "CartonInspection.xslt";
+                break;
+
+            case 5:
+                xsltName = "PapertubeInspection.xslt";
+                break;
+            case 6:
+                xsltName = "PolybagInspection.xslt";
+                break;
         }
 
 
@@ -96,7 +109,7 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
 
             Xml1.TransformArgumentList = arguments;
             // Specify the XSL file to be used for transformation.
-            Xml1.TransformSource = Server.MapPath("~/Content/XSLT/"+ xsltName);
+            Xml1.TransformSource = Server.MapPath("~/Content/XSLT/" + xsltName);
         }
         else
         {
@@ -116,13 +129,33 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
 
 
             string xsltName = string.Empty;
+            string filename = string.Empty;
             switch (Convert.ToInt32(ddlYarnType.SelectedValue))
             {
                 case 1:
                     xsltName = "YarnInspection.xslt";
+                    filename = "YarnInspection.xls";
                     break;
                 case 2:
                     xsltName = "DyedYarnInspection.xslt";
+                    filename = "DyedYarnInspection.xls";
+                    break;
+                case 3:
+                    xsltName = "FabricInspection.xslt";
+                    filename = "FabricInspection.xls";
+                    break;
+                case 4:
+                    xsltName = "CartonInspection.xslt";
+                    filename = "CartonInspection.xls";
+                    break;
+
+                case 5:
+                    xsltName = "PapertubeInspection.xslt";
+                    filename = "PapertubeInspection.xls";
+                    break;
+                case 6:
+                    xsltName = "PolybagInspection.xslt";
+                    filename = "PolybagInspection.xls";
                     break;
             }
 
@@ -130,37 +163,16 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
             // In real applications this xml might be coming from some external source or database.
             string xmlString = this.getXmlString(_from, _to);
 
-
             if (!string.IsNullOrEmpty(xmlString))
             {
                 lblMessage.Text = "Data for Date Range from " + _from + "to " + _to + "have been downloaded";
-                string filename = "YarnQcSummary.xls";
-
-
-
-                switch (Convert.ToInt32(ddlYarnType.SelectedValue))
-                {
-                    case 1:
-                        filename = "YarnInspection.xls";
-                        break;
-                    case 2:
-                        filename = "DyedYarnInspection.xls";
-                        break;
-                }
-
-
-
-
-
-
-
                 string xsltText = Server.MapPath("~/Content/XSLT/" + xsltName);
                 HttpResponse response = HttpContext.Current.Response;
                 response.Clear();
                 response.Charset = "";
                 response.ContentType = "application/vnd.ms-excel";
-                response.AddHeader("Content-Disposition", "attachment;filename=\"" + filename + "\"");             
-             
+                response.AddHeader("Content-Disposition", "attachment;filename=\"" + filename + "\"");
+
                 XsltArgumentList arguments = new XsltArgumentList();
                 // Creating XSLCompiled object
                 XslCompiledTransform transform = new XslCompiledTransform();
