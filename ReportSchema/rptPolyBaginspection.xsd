@@ -22,20 +22,23 @@
               <xs:element name="USERID" type="xs:int" minOccurs="0" />
               <xs:element name="DATEADDED" type="xs:dateTime" minOccurs="0" />
               <xs:element name="COMMENTS" type="xs:string" minOccurs="0" />
-              <xs:element name="Docid1" type="xs:int" minOccurs="0" />
-              <xs:element name="Srno" type="xs:short" minOccurs="0" />
-              <xs:element name="Description" type="xs:string" minOccurs="0" />
-              <xs:element name="totalqty" type="xs:string" minOccurs="0" />
-              <xs:element name="samplesize" type="xs:string" minOccurs="0" />
-              <xs:element name="Gauge" type="xs:string" minOccurs="0" />
-              <xs:element name="Sealing" type="xs:string" minOccurs="0" />
-              <xs:element name="Printing" type="xs:string" minOccurs="0" />
-              <xs:element name="Tearing" type="xs:string" minOccurs="0" />
-              <xs:element name="Clearity" type="xs:string" minOccurs="0" />
-              <xs:element name="Color" type="xs:string" minOccurs="0" />
-              <xs:element name="Found" type="xs:string" minOccurs="0" />
-              <xs:element name="Acceptance" type="xs:string" minOccurs="0" />
-              <xs:element name="Lotresult" type="xs:string" minOccurs="0" />
+              <xs:element name="APPROVAL_USERID" type="xs:int" minOccurs="0" />
+              <xs:element name="BranchID" type="xs:int" minOccurs="0" />
+              <xs:element name="DOCID1" type="xs:int" minOccurs="0" />
+              <xs:element name="SRNO" type="xs:short" minOccurs="0" />
+              <xs:element name="DESCRIPTION" type="xs:string" minOccurs="0" />
+              <xs:element name="TOTALQTY" type="xs:string" minOccurs="0" />
+              <xs:element name="SAMPLESIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="GAUGE" type="xs:string" minOccurs="0" />
+              <xs:element name="SEALING" type="xs:string" minOccurs="0" />
+              <xs:element name="PRINTING" type="xs:string" minOccurs="0" />
+              <xs:element name="TEARING" type="xs:string" minOccurs="0" />
+              <xs:element name="CLEARITY" type="xs:string" minOccurs="0" />
+              <xs:element name="COLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="FOUND" type="xs:string" minOccurs="0" />
+              <xs:element name="ACCEPTANCE" type="xs:string" minOccurs="0" />
+              <xs:element name="LOTRESULT" type="xs:string" minOccurs="0" />
+              <xs:element name="APPROVALUSERNAME" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
