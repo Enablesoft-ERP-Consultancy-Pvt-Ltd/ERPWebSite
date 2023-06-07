@@ -232,6 +232,7 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
             {
                 str = @"select CI.CompanyName,CI.CompAddr1,CI.CompTel,EI.EmpName,EI.Address,PNM.Process_Name,Date,
                         PM.Remarks,Amount,PM.OrderNo,ID As DebitNo,isnull(CI.GSTNo,'') as GSTIN,Isnull(EI.GSTNo,'') as EMPGSTIN,isnull(PM.GSTPercentage,0) as GSTPercentage,
+                        isnull(cast(PM.GSTPercentage as float)/2,0) as CGSTPercentage,isnull(cast(PM.GSTPercentage as float)/2,0) as SGSTPercentage,
                         PM.MasterCompanyId,Case When PM.ProcessId=9 Then (Select isnull(PRM.BillNo,'') From PurchaseReceiveMaster PRM(NoLock) Where PRM.PurchaseReceiveId=PM.BillId and PM.ProcessId=9 ) Else '' End As PurchaseBillNo 
                         From ProcessDebitNote PM(NoLock) JOIN CompanyInfo CI(NoLock) ON PM.Companyid=CI.CompanyId
                         JOIN Empinfo EI(NoLock) ON Pm.EmpId=EI.Empid
