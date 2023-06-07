@@ -25,6 +25,8 @@
               <xs:element name="DATEFLAG" type="xs:int" minOccurs="0" />
               <xs:element name="FROMDATE" type="xs:string" minOccurs="0" />
               <xs:element name="TODATE" type="xs:string" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="Amount" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
