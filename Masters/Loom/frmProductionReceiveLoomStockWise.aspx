@@ -901,6 +901,11 @@
                                                                     <asp:Button ID="btncheckallpcsqc" runat="server" CssClass="buttonnorm" OnClick="btncheckallpcsqc_Click"
                                                                         Text="QC Check All Pcs" />
                                                                 </td>
+                                                                <td>
+                                                                    <asp:Label ID="Label24" runat="server" CssClass="labelbold" Text="Remarks" />
+                                                                    <br />
+                                                                    <asp:TextBox ID="TxtRemarks" runat="server" CssClass="textb" Width="500px" />
+                                                                </td>
                                                             </tr>
                                                         </table>
                                                     </td>

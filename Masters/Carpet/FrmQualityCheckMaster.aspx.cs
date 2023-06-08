@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 
 public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
 {
-    protected void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e)  
     {
         if (Session["varCompanyId"] == null)
         {
@@ -66,7 +66,14 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
             arr[1].Value = ddItemName.SelectedValue;
             arr[3].Value = Session["varuserid"].ToString();
             arr[4].Value = Session["varCompanyId"].ToString();
-            arr[5].Value = dquality.SelectedValue;
+            if (dquality.Items.Count == 0)
+            {
+                arr[5].Value = 0;
+            }
+            else
+            {
+                arr[5].Value = dquality.SelectedValue;
+            }
             for (int i = 0; i < DGShowData.Rows.Count; i++)
             {
                 if (((CheckBox)DGShowData.Rows[i].FindControl("Chkbox")).Checked == true)
@@ -93,27 +100,31 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
     }
     private void Fill_grid()
     {
-//        string Str = @"Select QCM.ID Sr_No,ITEM_NAME ItemName,SrNo,ParaName ParameterName,SName ShortName,Specification Specification,Method Method From QCParameter QCP,QCMaster QCM,
-//                       Item_Master IM Where QCP.ParaID=QCM.ParaID And IM.Item_Id=QCM.ItemId And CategoryID=" + ddCategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
-
-        string Str = @"Select QCM.ID Sr_No,ITEM_NAME ItemName,QCP.SrNo,ParaName ParameterName,SName ShortName,Specification Specification,Method Method, 
-                        case when QCM.Enable_Disable=1 Then 'Disable' Else 'Enable' ENd as Status,QCM.Enable_Disable
-                       From QCParameter QCP JOIN QCMaster QCM ON QCP.ParaID=QCM.ParaID
-                       JOIN Item_Master IM ON IM.Item_Id=QCM.ItemId
-                       Where CategoryID=" + ddCategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
+        string Str = @"Select QCM.ID Sr_No, ITEM_NAME ItemName, QCP.SrNo, ParaName ParameterName, SName ShortName, Specification Specification, Method Method, 
+            case when QCM.Enable_Disable = 1 Then 'Disable' Else 'Enable' End Status, QCM.Enable_Disable, PT.ParameterName ParameterType 
+            From QCParameter QCP(Nolock) 
+            JOIN QCMaster QCM(Nolock) ON QCM.ParaID = QCP.ParaID 
+            JOIN Item_Master IM(Nolock) ON IM.Item_Id = QCM.ItemId 
+            JOIN ParameterType PT(Nolock) ON PT.ID = QCP.ParameterTypeID 
+            Where QCP.CategoryID = " + ddCategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
+        
         if (ddProcessName.SelectedIndex > 0)
         {
-            Str = Str + " And ProcessId=" + ddProcessName.SelectedValue;
+            Str = Str + " And QCP.ProcessId = " + ddProcessName.SelectedValue;
         }
         if (ddItemName.SelectedIndex > 0)
         {
-            Str = Str + " And QCM.ItemID=" + ddItemName.SelectedValue;
+            Str = Str + " And QCM.ItemID = " + ddItemName.SelectedValue;
         }
         if (dquality.SelectedIndex > 0)
         {
-            Str = Str + " And QCM.Qualityid=" + dquality.SelectedValue;
+            Str = Str + " And QCM.Qualityid = " + dquality.SelectedValue;
         }
-        Str = Str + " Order By SrNo";
+        if (Convert.ToInt16(Session["varCompanyId"]) == 16)
+        {
+            Str = Str + " And QCM.QUALITYID is null";
+        }
+        Str = Str + " Order By QCP.SrNo";
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         DG.DataSource = Ds;
         DG.DataBind();
@@ -134,21 +145,16 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
     }
     private void FillGrid()
     {
-        //string Str= "Select QC.ParaID Sr_No,SrNo,ParaName ParameterName,SName ShortName,Specification Specification,Method Method,QC.ParaID From QCParameter QC inner join QCMaster QM on QC.paraid =QM.paraid Where CategoryID=" + ddCategoryName.SelectedValue;
-        string Str = "Select ParaID Sr_No,SrNo,ParaName ParameterName,SName ShortName,Specification Specification,Method Method,ParaID From QCParameter  Where CategoryID=" + ddCategoryName.SelectedValue;
+        string Str = @"Select a.ParaID Sr_No, a.SrNo, a.ParaName ParameterName, a.SName ShortName, a.Specification Specification, 
+            a.Method Method, a.ParaID, PT.ParameterName ParameterType 
+            From QCParameter a(nolock) 
+            JOIN ParameterType PT (nolock) ON PT.ID = a.ParameterTypeID 
+            Where a.CategoryID=" + ddCategoryName.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
-            Str = Str + " And ProcessId=" + ddProcessName.SelectedValue;
+            Str = Str + " And a.ProcessId=" + ddProcessName.SelectedValue;
         }
-        //if (ddItemName.SelectedIndex > 0)
-        //{
-        //    Str = Str + " And QM.ItemId=" + ddItemName.SelectedValue;
-        //}
-        //if (dquality.SelectedIndex > 0)
-        //{
-        //    Str = Str + " And QM.Qualityid=" + dquality.SelectedValue;
-        //}
-        Str = Str + " Order By SrNo";
+        Str = Str + " Order By a.SrNo";
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         DGShowData.DataSource = Ds;
         DGShowData.DataBind();

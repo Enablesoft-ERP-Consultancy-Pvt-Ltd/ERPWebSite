@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 
 public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
 {
-    protected void Page_Load(object sender, EventArgs e)
+    protected void Page_Load(object sender, EventArgs e) 
     {
         if (Session["varCompanyId"] == null)
         {
@@ -20,12 +20,20 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
             txtid.Text = "0";
             ViewState["ParaId"] = "0";
             TxtSerialNumber.Attributes.Add("onkeypress", "return isNumberKey(event)");
+            string str = @"Select ID, ParameterName From ParameterType(Nolock) Where MasterCompanyID = " + Session["varCompanyId"];
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+            UtilityModule.ConditionalComboFillWithDS(ref DDParameterType, ds, 0, false, "");
             Fill_grid();
         }
     }
     private void Fill_grid()
     {
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ParaID,ParaName ParameterName,SName ShortName,SrNo SerialNumber,Specification Specified,Method Method From QCParameter Where CategoryID=" + Request.QueryString["Category"] + " And ProcessId=" + Request.QueryString["Proc"] + " Order by SrNo");
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,
+            @"Select ParaID, ParaName ParameterName, SName ShortName, SrNo SerialNumber, Specification Specified, Method Method, PT.ParameterName ParameterType 
+            From QCParameter QM(nolock)
+            JOIN ParameterType PT(nolock) ON PT.ID = QM.ParameterTypeID 
+            Where CategoryID = " + Request.QueryString["Category"] + " And ProcessId = " + Request.QueryString["Proc"] + " Order By SrNo");
         DG.DataSource = Ds;
         DG.DataBind();
     }
@@ -38,7 +46,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] arr = new SqlParameter[11];
+            SqlParameter[] arr = new SqlParameter[12];
 
             arr[0] = new SqlParameter("@ParaID", SqlDbType.Int);
             arr[1] = new SqlParameter("@ParaName", SqlDbType.NVarChar, 100);
@@ -51,7 +59,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
             arr[8] = new SqlParameter("@varuserid", SqlDbType.Int);
             arr[9] = new SqlParameter("@varcompanyid", SqlDbType.Int);
             arr[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-           
+            arr[11] = new SqlParameter("@ParameterTypeID", SqlDbType.Int);
 
             arr[0].Direction = ParameterDirection.InputOutput;
             arr[0].Value = Convert.ToInt32(txtid.Text);
@@ -65,6 +73,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
             arr[8].Value = Session["varuserid"].ToString();
             arr[9].Value = Session["varCompanyId"].ToString();
             arr[10].Direction = ParameterDirection.Output;
+            arr[11].Value = DDParameterType.SelectedValue;
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[PRO_QCPARAMETER]", arr);
             Tran.Commit();
@@ -86,6 +95,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
     }
     private void AfterSaveClear()
     {
+        DDParameterType.SelectedIndex = 0;
         txtParameterName.Text = "";
         TxtSerialNumber.Text = "";
         TxtShortName.Text = "";
@@ -148,14 +158,15 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
     protected void DG_SelectedIndexChanged(object sender, EventArgs e)
     {
         string id = DG.SelectedDataKey.Value.ToString();
-        // Session["id"] = id;
         ViewState["ParaId"] = id;
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select ParaID,ParaName,SName,SrNo,Specification,Method from QCPARAMETER where ParaId=" + id);
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select ParaID, ParaName, SName, SrNo, Specification, Method, ParameterTypeID 
+        From QCPARAMETER(Nolock) where ParaId=" + id);
         try
         {
             if (ds.Tables[0].Rows.Count == 1)
             {
+                DDParameterType.SelectedValue = ds.Tables[0].Rows[0]["ParameterTypeID"].ToString();
                 txtid.Text = ds.Tables[0].Rows[0]["ParaID"].ToString();
                 txtParameterName.Text = ds.Tables[0].Rows[0]["ParaName"].ToString();
                 TxtSerialNumber.Text = ds.Tables[0].Rows[0]["SrNo"].ToString();
@@ -167,18 +178,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
         catch (Exception ex)
         {
             UtilityModule.MessageAlert(ex.Message, "Master/Carpet/FrmQCParaMeterName.aspx");
-            //Logs.WriteErrorLog("Masters_Campany_frmpenality|Fill_Grid_Data|" + ex.Message);
-        }
-        finally
-        {
-            if (con.State == ConnectionState.Open)
-            {
-                con.Close();
-                con.Dispose();
-            }
         }
         btnsave.Text = "Update";
-        //btndelete.Visible = true;
     }
-   
 }

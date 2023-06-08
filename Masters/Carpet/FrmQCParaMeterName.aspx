@@ -10,7 +10,7 @@
     <script src="../../Scripts/jquery-1.4.1.js" type="text/javascript"></script>
     <%--<script type="text/javascript" src="../../Scripts/Fixfocus.js"></script>--%>
     <script type="text/javascript">
-        function CloseForm() {
+        function CloseForm() { 
             window.opener.document.getElementById('CPH_Form_BtnAddParameterReferce').click();
             self.close();
         }
@@ -63,6 +63,16 @@
                 <table>
                     <tr>
                         <td class="tdstyle">
+                            <asp:Label ID="Label6" runat="server" Text="Parameter Type" CssClass="labelbold"></asp:Label>
+                            <b style="color: Red">&nbsp;&nbsp; *&nbsp;&nbsp; </b>&nbsp;&nbsp;
+                        </td>
+                        <td>
+                            <asp:DropDownList CssClass="dropdown" ID="DDParameterType" Width="300" runat="server">
+                            </asp:DropDownList>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="tdstyle">
                             <asp:Label ID="Label1" runat="server" Text="Parameter Name" CssClass="labelbold"></asp:Label>
                             <b style="color: Red">&nbsp;&nbsp; *&nbsp;&nbsp; </b>&nbsp;&nbsp;
                         </td>
@@ -108,7 +118,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="right">
-                        <asp:TextBox ID="txtid" runat="server" Visible="false"></asp:TextBox>
+                            <asp:TextBox ID="txtid" runat="server" Visible="false"></asp:TextBox>
                             <asp:Label ID="LblErrorMessage" runat="server" Text="" ForeColor="Red"></asp:Label>
                             <asp:Button ID="btnsave" runat="server" Text="Save" OnClick="btnsave_Click" OnClientClick="return validate()"
                                 CssClass="buttonnorm" />
@@ -118,15 +128,18 @@
                     </tr>
                     <tr>
                         <td colspan="2">
-                            <div style="width: 200%; height: 200px; overflow: scroll;">
+                            <div style="width: 100%; height: 200px; overflow: scroll;">
                                 <asp:GridView ID="DG" runat="server" DataKeyNames="ParaID" AutoGenerateColumns="False"
-                                    OnRowDataBound="DG_RowDataBound" OnRowDeleting="DG_RowDeleting" CssClass="grid-views" 
+                                    OnRowDataBound="DG_RowDataBound" OnRowDeleting="DG_RowDeleting" CssClass="grid-views"
                                     OnSelectedIndexChanged="DG_SelectedIndexChanged">
                                     <HeaderStyle CssClass="gvheaders" />
                                     <AlternatingRowStyle CssClass="gvalts" />
                                     <RowStyle CssClass="gvrow" />
                                     <EmptyDataRowStyle CssClass="gvemptytext" />
                                     <Columns>
+                                        <asp:BoundField DataField="ParameterType" HeaderText="Parameter Type">
+                                            <HeaderStyle HorizontalAlign="Left" Width="100px" />
+                                        </asp:BoundField>
                                         <asp:BoundField DataField="ParameterName" HeaderText="Parameter Name">
                                             <HeaderStyle HorizontalAlign="Left" Width="200px" />
                                         </asp:BoundField>

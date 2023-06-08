@@ -18,7 +18,12 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
         }
         if (!IsPostBack)
         {
-            string str = @"select GoDownID,GodownName From Godownmaster order by GodownName
+            string str = string.Empty;
+            if (Session["VarCompanyNo"].ToString() == "16")
+            {
+
+                str = @"select GM.GODOWNID,GM.GODOWNNAME from GODOWNMASTER GM(NoLock) JOIN  Godown_Authentication GA(NoLock) ON GM.GoDownID=GA.GodownID 
+                             Where GM.MasterCompanyId=" + Session["varCompanyId"] + @" and GA.UserId=" + Session["VarUserId"] + @" ORDER BY GM.GODOWNNAME
                             select ShadecolorId,ShadeColorName From ShadeColor order by ShadeColorName
                             Select Distinct CI.CompanyId, CI.CompanyName 
                             From Companyinfo CI(nolock)
@@ -27,6 +32,21 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
                             select distinct Q.QualityId,Q.QualityName from Quality Q JOIN ITEM_MASTER IM ON Q.Item_id=IM.Item_id JOIN ITEM_CATEGORY_MASTER IC ON IC.CATEGORY_ID=IM.CATEGORY_ID
                             JOIN CategorySeparate CS ON IC.CATEGORY_ID=CS.Categoryid 
                             where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL'";
+
+            }
+            else
+            {
+                str = @"select GoDownID,GodownName From Godownmaster order by GodownName
+                            select ShadecolorId,ShadeColorName From ShadeColor order by ShadeColorName
+                            Select Distinct CI.CompanyId, CI.CompanyName 
+                            From Companyinfo CI(nolock)
+                            JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
+                            Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                            select distinct Q.QualityId,Q.QualityName from Quality Q JOIN ITEM_MASTER IM ON Q.Item_id=IM.Item_id JOIN ITEM_CATEGORY_MASTER IC ON IC.CATEGORY_ID=IM.CATEGORY_ID
+                            JOIN CategorySeparate CS ON IC.CATEGORY_ID=CS.Categoryid 
+                            where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL'";
+
+            }
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDgodown, ds, 0, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDshadeno, ds, 1, true, "--Plz Select--");

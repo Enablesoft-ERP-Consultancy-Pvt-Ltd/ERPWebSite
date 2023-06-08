@@ -1407,6 +1407,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     cmd.Parameters.AddWithValue("@BranchId", DDBranchName.SelectedValue);
                     cmd.Parameters.AddWithValue("@PartyChallanNo", txtPartyChallanNo.Text);
                     cmd.Parameters.AddWithValue("@StockStatus", TDStockStatus.Visible == true ? DDStockStatus.SelectedValue : "0");
+                    cmd.Parameters.AddWithValue("@STOCKNOREMARKS", TxtRemarks.Text);
 
                     cmd.ExecuteNonQuery();
                     if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED

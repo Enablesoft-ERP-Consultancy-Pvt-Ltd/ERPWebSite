@@ -147,6 +147,12 @@
                                             <asp:BoundField DataField="SrNo" HeaderText="Sr No">
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:BoundField>
+                                            <asp:BoundField DataField="ParameterType" HeaderText="Parameter Type">
+                                                <HeaderStyle HorizontalAlign="Left" Width="100px" />
+                                            </asp:BoundField>
+                                            <asp:BoundField DataField="ParameterName" HeaderText="Parameter Name">
+                                                <HeaderStyle HorizontalAlign="Left" Width="200px" />
+                                            </asp:BoundField>
                                             <asp:BoundField DataField="ParameterName" HeaderText="ParameterName">
                                                 <ItemStyle HorizontalAlign="Center" />
                                             </asp:BoundField>
@@ -200,6 +206,9 @@
                                         <HeaderStyle HorizontalAlign="Left" />
                                         <ItemStyle HorizontalAlign="Left" Width="150px" />
                                     </asp:BoundField>
+                                    <asp:BoundField DataField="ParameterType" HeaderText="Parameter Type">
+                                        <HeaderStyle HorizontalAlign="Left" Width="100px" />
+                                    </asp:BoundField>
                                     <asp:BoundField DataField="ParameterName" HeaderText="ParameterName">
                                         <HeaderStyle HorizontalAlign="Left" />
                                         <ItemStyle HorizontalAlign="Left" Width="200px" />
@@ -224,14 +233,15 @@
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Enable/Disable">
                                         <ItemTemplate>
-                                            <asp:LinkButton ID="lnkQcParameter_ED" Text='<%#Bind("Status") %>' runat="server" OnClick="lnkQcParameter_ED"
-                                                OnClientClick="return confirm('Do you want to Enable_Disable QC Parameter')" />
+                                            <asp:LinkButton ID="lnkQcParameter_ED" Text='<%#Bind("Status") %>' runat="server"
+                                                OnClick="lnkQcParameter_ED" OnClientClick="return confirm('Do you want to Enable_Disable QC Parameter')" />
                                         </ItemTemplate>
                                         <ItemStyle HorizontalAlign="Center" />
                                     </asp:TemplateField>
                                     <asp:TemplateField Visible="false">
                                         <ItemTemplate>
-                                            <asp:Label ID="lblQcParameterenable_disable" Text='<%#Bind("Enable_Disable") %>' runat="server" />
+                                            <asp:Label ID="lblQcParameterenable_disable" Text='<%#Bind("Enable_Disable") %>'
+                                                runat="server" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
