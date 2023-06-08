@@ -47,6 +47,14 @@
               <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
               <xs:element name="ConsmpQty" type="xs:double" minOccurs="0" />
               <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME1" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHAPENAME" type="xs:string" minOccurs="0" />
+              <xs:element name="WIDTH" type="xs:string" minOccurs="0" />
+              <xs:element name="LENGTH" type="xs:string" minOccurs="0" />
+              <xs:element name="UNITNAME" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
