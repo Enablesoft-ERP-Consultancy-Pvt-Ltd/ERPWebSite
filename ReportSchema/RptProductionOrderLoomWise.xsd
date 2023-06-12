@@ -60,6 +60,11 @@
               <xs:element name="CustomerOrderNew" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerQuality" type="xs:string" minOccurs="0" />
               <xs:element name="VarSubCompanyNo" type="xs:int" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHAPENAME" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
