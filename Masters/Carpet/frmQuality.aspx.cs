@@ -59,6 +59,7 @@ public partial class Masters_Campany_Quality : CustomPage
                     DGMonthName.DataSource = ds.Tables[0];
                     DGMonthName.DataBind();
                     TRRate.Visible = true;
+                    Trinstruction.Visible = true;
                     break;
                 case 43:
                     Trinstruction.Visible = false;
