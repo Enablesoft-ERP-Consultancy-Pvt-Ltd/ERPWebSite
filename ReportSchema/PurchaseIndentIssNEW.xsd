@@ -106,6 +106,7 @@
               <xs:element name="IGSTPerAmt" type="xs:double" minOccurs="0" />
               <xs:element name="TCS" type="xs:double" minOccurs="0" />
               <xs:element name="TCSPerAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="frightgst" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
