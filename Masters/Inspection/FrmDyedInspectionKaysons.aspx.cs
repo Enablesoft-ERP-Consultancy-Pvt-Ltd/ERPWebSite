@@ -73,7 +73,7 @@ public partial class Masters_Inspection_FrmDyedInspectionKaysons : System.Web.UI
         string str = @"SELECT RIM.DOCNO,RID.SUPPLIERNAME,REPLACE(CONVERT(NVARCHAR(11),RIM.REPORTDATE,106),' ','-') AS REPORTDATE,RID.CHALLANNO_DATE,RID.YARNTYPE,RID.COUNT,RID.LOTNO,
                         RID.totalQty,TotalOkQyt, TotalNotOkQty, RID.SAMPLESIZE,RID.NOOFHANK,
                         RIM.COMMENTS,RIM.STATUS,RIM.Approvestatus,RID.TagNo,RIM.AcceptedAreaStatus,isnull(RID.InwardsNo,'') as InwardsNo
-                        ,isnull(RID.ImagePhoto,'') as ImagePhoto, Cone, RejectedAreaStatus
+                        ,isnull(RID.ImagePhoto,'') as ImagePhoto, Cone, RejectedAreaStatus,isnull(RID.ReceivedQty,0) as ReceivedQty
                         FROM DYEDYARNINSPECTIONMASTERKaysons RIM 
                         INNER JOIN DYEDYARNINSPECTIONDETAILKaysons RID ON RIM.DOCID=RID.DOCID 
                         Where RIM.DOCID=" + hndocid.Value;
@@ -95,6 +95,7 @@ public partial class Masters_Inspection_FrmDyedInspectionKaysons : System.Web.UI
             txtTagNo.Text = ds.Tables[0].Rows[0]["TagNo"].ToString();
             txtTotalOkQty.Text = ds.Tables[0].Rows[0]["TotalOkQyt"].ToString();
             txtTotalNotOkQty.Text = ds.Tables[0].Rows[0]["TotalNotOkQty"].ToString();
+            txtReceiveQty.Text = ds.Tables[0].Rows[0]["ReceivedQty"].ToString();
 
             bindCheckPointControls();
            
@@ -207,6 +208,7 @@ public partial class Masters_Inspection_FrmDyedInspectionKaysons : System.Web.UI
         txtdocno.Text = string.Empty;
         txtTotalOkQty.Text = string.Empty;
         txtTotalNotOkQty.Text = string.Empty;
+        txtReceiveQty.Text = "";
         
     }
     private void refreshCheckPOintControls()
@@ -446,12 +448,12 @@ public partial class Masters_Inspection_FrmDyedInspectionKaysons : System.Web.UI
     {
         string str = string.Empty;
         str = @"Insert into DYEDYARNINSPECTIONDETAILKaysons (DOCID, SUPPLIERNAME, CHALLANNO_DATE, Color, TotalOkQyt, TotalNotOkQty, YARNTYPE, COUNT, LOTNO, 
-                     TagNO, totalQty, SAMPLESIZE, NOOFHANK, InwardsNo, Cone )
+                     TagNO, totalQty, SAMPLESIZE, NOOFHANK, InwardsNo, Cone,ReceivedQty )
                      values(" + hndocid.Value + ",'" + txtsuppliername.Text.Replace("'", "''") + "','" + txtchallannodate.Text.Replace("'", "''")
                        + "','" + txtColor.Text.Replace("'", "''") + "','" + txtTotalOkQty.Text.Replace("'", "''")
                        + "','" + txtTotalNotOkQty.Text.Replace("'", "''") + "','" + txtyarntype.Text.Replace("'", "''") + "','" + txtcount.Text.Replace("'", "''") + "','" + txtlotno.Text.Replace("'", "''")
                        + "','" + txtTagNo.Text.Replace("'", "''") + @"'," + (txttotalQty.Text == "" ? "0" : txttotalQty.Text) + ", " + (txtsamplesize.Text == "" ? "0" : txtsamplesize.Text) + "," + (txtnoofhank.Text == "" ? "0" : txtnoofhank.Text)
-                      + ",'" + txtInwardsNo.Text.Replace("'", "''") + "','" + txtCone.Text.Replace("'", "''") + "')";
+                       + ",'" + txtInwardsNo.Text.Replace("'", "''") + "','" + txtCone.Text.Replace("'", "''") + "'," + (txtReceiveQty.Text=="" ? "0" : txtReceiveQty.Text)+" )";
 
 
         str =  str + @"Insert Into DyedYarnInspectionCheckpointsDetails (DOCID, ChechPointId, Specification, Val_1, Val_2, Val_3, Val_4, Val_5, Remark)  Values("

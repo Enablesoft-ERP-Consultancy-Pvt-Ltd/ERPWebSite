@@ -491,7 +491,7 @@ VALUES
     }
     protected void BindCosting()
     {
-    
+
         string query = @"select * from tblItemCosting where ItemFinishId=@ItemFinishId";
 
         List<SqlParameter> parameters = new List<SqlParameter>();
@@ -504,10 +504,10 @@ VALUES
             hdnCostingId.Value = reader["CostingId"].ToString();
             txtItemPrice.Text = string.Format("{0:C}", reader["Price"].ToString());
             txtDiscount.Text = string.Format("{0:.##}", reader["Discount"].ToString());
-            chkArrival.Checked =(bool) reader["IsArrival"];
+            chkArrival.Checked = (bool)reader["IsArrival"];
             chkCall.Checked = (bool)reader["IsCall"];
         }
-        
+
 
 
     }
@@ -528,7 +528,7 @@ VALUES
 
         if (string.IsNullOrEmpty(hdnCostingId.Value))
         {
-        query = @"INSERT INTO tblItemCosting
+            query = @"INSERT INTO tblItemCosting
 (ItemFinishId,CompanyId,OldPrice,Price,Cost,Discount,IsArrival,IsCall,IsPublished,CreatedBy,CreatedOn)
 VALUES
 (@ItemFinishId,@CompanyId,@OldPrice,@Price,@Cost,@Discount,@IsArrival,@IsCall,@IsPublished,@CreatedBy,@CreatedOn)
@@ -551,7 +551,7 @@ VALUES
         }
 
 
-       
+
         parameters.Add(new SqlParameter("@ItemFinishId", Masters_Carpet_DefineItemCodeOther.ItemFinishedId));
         parameters.Add(new SqlParameter("@CompanyId", Masters_Carpet_DefineItemCodeOther.CompanyId));
         parameters.Add(new SqlParameter("@OldPrice", 0.0));
@@ -569,4 +569,3 @@ VALUES
 
     }
 }
-

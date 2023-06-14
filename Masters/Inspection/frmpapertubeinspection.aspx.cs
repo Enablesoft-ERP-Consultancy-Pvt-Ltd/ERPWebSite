@@ -345,8 +345,15 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-
-                Session["rptFileName"] = "~\\Reports\\rptPapertubeinspection.rpt";
+                if (Session["VarCompanyNo"].ToString() == "21")
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptPapertubeinspectionKaysons.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptPapertubeinspection.rpt";
+                }
+               
                 Session["Getdataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\rptPapertubeinspection.xsd";
                 StringBuilder stb = new StringBuilder();

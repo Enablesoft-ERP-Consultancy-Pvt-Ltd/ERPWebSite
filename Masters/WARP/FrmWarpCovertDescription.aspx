@@ -166,7 +166,7 @@
                             <td>
                                 <div id="Div3" runat="server" style="max-height: 250px; overflow: auto">
                                     <asp:GridView ID="GvBeamDesc" runat="server" CssClass="grid-views" AutoGenerateColumns="false"
-                                        EmptyDataText="No Records Found...">
+                                        EmptyDataText="No Records Found..." OnRowDataBound="GvBeamDesc_RowDataBound">
                                         <HeaderStyle CssClass="gvheaders" />
                                         <AlternatingRowStyle CssClass="gvalts" />
                                         <RowStyle CssClass="gvrow" />
@@ -186,6 +186,11 @@
                                             <asp:TemplateField HeaderText="Order Description">
                                                 <ItemTemplate>
                                                     <asp:Label ID="LblOrderDescription" Text='<%#Bind("OrderDescription") %>' runat="server" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Beam No" Visible="false">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblBeamNo" Text='<%#Bind("BeamNo") %>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Beam Description">

@@ -129,7 +129,8 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
         {
             str = @"select Distinct BeamDescription,unitid,UnitName,LotNo,TagNo,GodownId,BeamNo,Grossweight,
                         TareWeight,NetWeight,ofinishedid,V.Srno,oSizeflag,V.pcs from V_BeamStock V inner join PROCESS_ISSUE_DETAIL_1 PD
-                        on V.Item_Finished_id=PD.Item_Finished_Id ";
+                        on V.Item_Finished_id=PD.Item_Finished_Id 
+                        Where 1 = 1 and V.pcs>0";
 
             if (DDFoliono.SelectedIndex <= 0)
             {

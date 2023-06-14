@@ -81,10 +81,19 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             {
                 TDchkedit.Visible = true;
             }
-            if (Session["usertype"].ToString() == "1")
+
+            if (Session["VarCompanyNo"].ToString() == "21")
             {
                 TDstockno.Visible = true;
             }
+            else
+            {
+                if (Session["usertype"].ToString() == "1")
+                {
+                    TDstockno.Visible = true;
+                }
+            }
+            
             TxtUserType.Text = "0";
             if (Convert.ToInt16(Request.QueryString["UserType"]) == 1)
             {

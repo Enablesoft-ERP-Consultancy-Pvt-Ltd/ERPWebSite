@@ -109,7 +109,7 @@
                     <td style="width: 10%; border-style: dotted">
                         <asp:Label Text="Supplier Name" runat="server" CssClass="labelbold" />
                     </td>
-                    <td style="width: 50%; border-style: dotted">
+                    <td style="width: 40%; border-style: dotted">
                         <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
                         <asp:TextBox ID="txtsuppliername" CssClass="textb" Width="95%" runat="server" />
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Please Enter SupplierName"
@@ -121,6 +121,12 @@
                             DelimiterCharacters="">
                         </asp:AutoCompleteExtender>
                     </td>
+                     <td style="width: 8%;">
+                                    <asp:Label ID="Label12" Text="Receive Qty" runat="server" CssClass="labelbold" />
+                                </td>
+                                <td style="width: 19%;">
+                                    <asp:TextBox ID="txtReceiveQty" CssClass="textb" Width="95%" runat="server" />
+                                </td>
                     <td style="width: 5%; border-style: dotted">
                         <asp:Label ID="Label1" Text="Date :" runat="server" CssClass="labelbold" />
                     </td>

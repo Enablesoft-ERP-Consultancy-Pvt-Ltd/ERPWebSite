@@ -196,18 +196,21 @@ public partial class Masters_ReportForms_frmJobcard : System.Web.UI.Page
     }
     protected void FillSlipno()
     {
-        string str = @"Select Distinct PH.HissabNo,PH.HissabNo as HissabNo1 from PROCESS_HISSAB PH inner join empinfo ei on PH.empid=ei.empid
-                      Where CommPaymentFlag=0  And ProcessID=" + DDjob.SelectedValue + " And EI.EMpcode='" + txtIdNo.Text +"'";
-        if (txtfromDate.Text!="")
+        if (TDslipno.Visible == true)
         {
-            str = str + " and PH.FromDate>='" + txtfromDate.Text + "'";
+            string str = @"Select Distinct PH.HissabNo,PH.HissabNo as HissabNo1 from PROCESS_HISSAB PH inner join empinfo ei on PH.empid=ei.empid
+                      Where CommPaymentFlag=0  And ProcessID=" + DDjob.SelectedValue + " And EI.EMpcode='" + txtIdNo.Text + "'";
+            if (txtfromDate.Text != "")
+            {
+                str = str + " and PH.FromDate>='" + txtfromDate.Text + "'";
+            }
+            if (txttodate.Text != "")
+            {
+                str = str + " and PH.Todate<='" + txttodate.Text + "'";
+            }
+            str = str + " order by HissabNo1";
+            UtilityModule.ConditionalComboFill(ref DDslipNo, str, true, "--SELECT--");
         }
-        if (txttodate.Text != "")
-        {
-            str = str + " and PH.Todate<='" + txttodate.Text + "'";
-        }
-        str=str  + " order by HissabNo1";
-        UtilityModule.ConditionalComboFill(ref DDslipNo,str, true, "--SELECT--");
     }
     protected void txttodate_TextChanged(object sender, EventArgs e)
     {

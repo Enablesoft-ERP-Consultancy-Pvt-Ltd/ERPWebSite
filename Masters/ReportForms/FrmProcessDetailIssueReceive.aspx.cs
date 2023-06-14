@@ -325,11 +325,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
     protected void BtnPreview_Click(object sender, EventArgs e)
     {
         lblMessage.Text = "";
-        if (RDProcessIssRecDetail.Checked == true && chkexcelexport.Checked == true && Session["varcompanyId"].ToString() != "16")
-        {
-            Processreceiveexcelexport();
-            return;
-        }
+        
         if (RDProcessIssRecDetail.Checked == true && chkexcelexport.Checked == true && Session["varcompanyId"].ToString() != "16")
         {
             Processreceiveexcelexport();

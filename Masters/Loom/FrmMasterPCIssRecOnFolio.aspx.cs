@@ -106,7 +106,8 @@ public partial class Masters_Loom_FrmMasterPCIssRecOnFolio : System.Web.UI.Page
             param[8] = new SqlParameter("@UserID", Session["varuserid"]);
             param[9] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[9].Direction = ParameterDirection.Output;
-            param[10] = new SqlParameter("@IssRecNo", TxtIssRecNo.Text == "" ? "0" : TxtIssRecNo.Text);
+            param[10] = new SqlParameter("@IssRecNo", SqlDbType.VarChar, 100);
+            param[10].Value = TxtIssRecNo.Text == "" ? "0" : TxtIssRecNo.Text;
             param[10].Direction = ParameterDirection.InputOutput;
             param[11] = new SqlParameter("@IssRecDate", TxtIssRecDate.Text);
 

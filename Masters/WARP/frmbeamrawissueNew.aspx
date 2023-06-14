@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="WARPING MATERIAL ISSUE" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="frmbeamrawissueNew.aspx.cs" Inherits="Masters_WARP_frmbeamrawissue" %>
+    AutoEventWireup="true" CodeFile="frmbeamrawissueNew.aspx.cs" Inherits="Masters_WARP_frmbeamrawissueNew" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">

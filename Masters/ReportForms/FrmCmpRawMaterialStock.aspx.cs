@@ -730,6 +730,7 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             switch (Session["varcompanyNo"].ToString())
             {
                 case "14":
+                case "21":
                     dv.RowFilter = "Qtyinhand>0";
                     break;
                 default:
