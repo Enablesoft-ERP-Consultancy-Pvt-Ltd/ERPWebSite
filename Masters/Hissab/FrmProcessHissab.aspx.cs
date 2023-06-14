@@ -220,8 +220,8 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
                 }
                 else
                 {
-                    TxtFromDate.Enabled = true;
-                    TxtToDate.Enabled = true;
+                    TxtFromDate.Enabled = false;
+                    TxtToDate.Enabled = false;
                 }
             }
         }
@@ -421,13 +421,15 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
             TxtHissabNo.Text = "";
         }
 
-        if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex <= 0 && DDProcessName.SelectedItem.Text.ToUpper()=="WEAVING")
+        //if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex <= 0 && DDProcessName.SelectedItem.Text.ToUpper()=="WEAVING")
+        //{
+        if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex <= 0)
         {
             DGDetail.DataSource = null;
             DGDetail.DataBind();
 
             lblMessage.Visible = true;
-            lblMessage.Text = "Please Select Folio No for hissab";
+            lblMessage.Text = "Please Select Issue Challan No for hissab";
             return;
         }
         
@@ -1030,14 +1032,31 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
 
     protected void DDPOOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = @"select Replace(convert(nvarchar(11),isnull(MIN(PRM.ReceiveDate),Getdate()),106),' ','-') As FromDate,Replace(convert(nvarchar(11),
+        if (Session["VarCompanyNo"].ToString() == "42" && DDProcessName.SelectedValue != "1")
+        {
+            string str = @"select Replace(convert(nvarchar(11),isnull(MIN(PRM.ReceiveDate),Getdate()),106),' ','-') As FromDate,Replace(convert(nvarchar(11),
+                    isnull(MAX(PRM.ReceiveDate),getdate()),106),' ','-') as ToDate
+                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PRM(NoLock) 
+                    inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
+                    JOIN Employee_ProcessReceiveNo EPR(NoLock) ON PRM.Process_Rec_Id=EPR.Process_Rec_Id and PRD.Process_Rec_Detail_Id=EPR.Process_Rec_Detail_Id and EPR.ProcessId=" + DDProcessName.SelectedValue + @"
+                    Where PRD.IssueOrderId=" + DDPOOrderNo.SelectedValue + " and EPR.EmpId=" + DDEmployerName.SelectedValue;
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            TxtFromDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["FromDate"]);
+            TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);
+            FillSrno();
+        }
+        else
+        {
+
+            string str = @"select Replace(convert(nvarchar(11),isnull(MIN(PRM.ReceiveDate),Getdate()),106),' ','-') As FromDate,Replace(convert(nvarchar(11),
                     isnull(MAX(PRM.ReceiveDate),getdate()),106),' ','-') as ToDate
                     From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PRM(NoLock) inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
                     Where PRD.IssueOrderId=" + DDPOOrderNo.SelectedValue + " and PRM.EmpId=" + DDEmployerName.SelectedValue;
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-        TxtFromDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["FromDate"]);
-        TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);
-        FillSrno();
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            TxtFromDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["FromDate"]);
+            TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);
+            FillSrno();
+        }
 
         //if (Convert.ToInt16(Session["varcompanyId"]) == 16)
         //{
