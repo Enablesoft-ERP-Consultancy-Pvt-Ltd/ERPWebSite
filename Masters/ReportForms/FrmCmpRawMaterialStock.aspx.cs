@@ -4762,10 +4762,10 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             {
                 str = str + "AND g.godownid =" + DDGudown.SelectedValue;
             }
-            if (DDCompany.SelectedIndex > 0)
-            {
+           // if (DDCompany.SelectedIndex > 0)
+            //{
                 str = str + " AND s.companyid = " + DDCompany.SelectedValue;
-            }
+           // }
             if (DDCategory.SelectedIndex > 0)
             {
                 str = str + " AND v.CATEGORY_ID = " + DDCategory.SelectedValue;
