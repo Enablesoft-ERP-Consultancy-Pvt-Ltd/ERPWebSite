@@ -151,7 +151,14 @@ public partial class Masters_ReportForms_frmwipstockreportforothers : System.Web
     {
         if (chkWIPdetail.Checked == true)
         {
-            WIPDetail();
+            if (Session["VarCompanyNo"].ToString() == "38")
+            {
+                WIPDetailVikramKM();
+            }
+            else
+            {
+                WIPDetail();
+            }
         }
         else
         {
@@ -226,8 +233,6 @@ public partial class Masters_ReportForms_frmwipstockreportforothers : System.Web
         ds.Tables[0].Columns.Remove("Flagsize");
         if (ds.Tables[0].Rows.Count > 0)
         {
-
-
             //Export to excel
             GridView GridView1 = new GridView();
             GridView1.AllowPaging = false;
@@ -327,7 +332,103 @@ public partial class Masters_ReportForms_frmwipstockreportforothers : System.Web
         //Export to excel
         if (ds.Tables[0].Rows.Count > 0)
         {
+            GridView GridView1 = new GridView();
+            GridView1.AllowPaging = false;
 
+            GridView1.DataSource = ds;
+            GridView1.DataBind();
+            lblmsg.Text = "Wait....";
+            Response.Clear();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition",
+             "attachment;filename=WIPStockDetail" + DateTime.Now + ".xls");
+            Response.Charset = "";
+            Response.ContentType = "application/vnd.ms-excel";
+            StringWriter sw = new StringWriter();
+            HtmlTextWriter hw = new HtmlTextWriter(sw);
+
+            for (int i = 0; i < GridView1.Rows.Count; i++)
+            {
+                //Apply text style to each Row
+                GridView1.Rows[i].Attributes.Add("class", "textmode");
+            }
+            GridView1.RenderControl(hw);
+
+            //style to format numbers to string
+            string style = @"<style> .textmode { mso-number-format:\@; } </style>";
+            Response.Write(style);
+            Response.Output.Write(sw.ToString());
+            Response.Flush();
+            Response.End();
+            lblmsg.Text = "Done.....";
+            //*************
+        }
+        else
+        {
+            lblmsg.Text = "No records found..";
+        }
+    }
+    protected void WIPDetailVikramKM()
+    {
+        string where = "";
+        lblmsg.Text = "";
+        if (DDCategory.SelectedIndex > 0)
+        {
+            where = where + " and vf.CATEGORY_ID=" + DDCategory.SelectedValue;
+        }
+        if (ddItemName.SelectedIndex > 0)
+        {
+            where = where + " and vf.Item_id=" + ddItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            where = where + " and vf.qualityid=" + DDQuality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0)
+        {
+            where = where + " and vf.Designid=" + DDDesign.SelectedValue;
+        }
+        if (DDColor.SelectedIndex > 0)
+        {
+            where = where + " and vf.colorid=" + DDColor.SelectedValue;
+        }
+        if (DDShape.SelectedIndex > 0)
+        {
+            where = where + " and vf.shapeid=" + DDShape.SelectedValue;
+        }
+        if (DDSize.SelectedIndex > 0)
+        {
+            where = where + " and vf.sizeid=" + DDSize.SelectedValue;
+        }
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlCommand cmd = new SqlCommand("PRO_WIPDETAILSFOROTHERS_VikramKhamaria", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 3000;
+        //********
+        cmd.Parameters.AddWithValue("@companyId", DDcompany.SelectedValue);
+        cmd.Parameters.AddWithValue("@where", where);
+        cmd.Parameters.AddWithValue("@customerid", DDCustCode.SelectedIndex > 0 ? DDCustCode.SelectedValue : "0");
+        cmd.Parameters.AddWithValue("@orderid", DDOrderNo.SelectedIndex > 0 ? DDOrderNo.SelectedValue : "0");
+        DataTable dt = new DataTable();
+        dt.Load(cmd.ExecuteReader());
+        //*************
+        DataSet ds = new DataSet();
+        ds.Tables.Add(dt);
+
+        //SqlParameter[] param = new SqlParameter[2];
+        //param[0] = new SqlParameter("@companyId", DDcompany.SelectedValue);
+        //param[1] = new SqlParameter("@where", where);
+        //*************
+        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_Wipdetails", param);
+        ds.Tables[0].Columns.Remove("Stockno");
+        ds.Tables[0].Columns.Remove("SeqNo");
+        //Export to excel
+        if (ds.Tables[0].Rows.Count > 0)
+        {
             GridView GridView1 = new GridView();
             GridView1.AllowPaging = false;
 
