@@ -437,7 +437,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                 rdoPcWise.Checked = true;
                 DDOrderUnit.Enabled = false;
             }
-            if (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "38")
+            if (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "38" || Session["varcompanyid"].ToString() == "247")
             {
                 ddPreview.Items.Add(new ListItem("BOM DETAIL", "6"));
             }
