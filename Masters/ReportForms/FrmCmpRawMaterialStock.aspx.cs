@@ -5925,7 +5925,8 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
                 inner join companyinfo ci(NoLock) on cr.companyid=ci.companyid 
                 left join ordermaster o(NoLock) on cr.orderid=o.orderid 
                 left join customerinfo c(NoLock) on o.customerid= c.customerid 
-                left join v_finishedItemDetail v(NoLock) on cr.Item_Finished_Id = v.Item_Finished_ID WHERE isnull(PSD.ReceiveDetailId,0)>0 and cr.companyid=" + DDCompany.SelectedValue;
+                left join v_finishedItemDetail v(NoLock) on cr.Item_Finished_Id = v.Item_Finished_ID 
+                WHERE isnull(PSD.ReceiveDetailId,0)>0 and cr.companyid=" + DDCompany.SelectedValue + " AND PSD.ToProcessId= " + DDProcessName.SelectedValue;
         if (chkallstockno.Checked == false)
         {
             sQry = sQry + " and CR.PACK=0";
@@ -5942,10 +5943,10 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
         {
             sQry = sQry + " AND cr.orderid= " + DDOrder.SelectedValue;
         }
-        if (DDProcessName.SelectedIndex > 0)
-        {
-            sQry = sQry + " AND PSD.ToProcessId= " + DDProcessName.SelectedValue;
-        }
+        //if (DDProcessName.SelectedIndex > 0)
+        //{
+        //    sQry = sQry + " AND PSD.ToProcessId= " + DDProcessName.SelectedValue;
+        //}
         if (DDCategory.SelectedIndex > 0)
         {
             sQry = sQry + " AND v.CATEGORY_ID = " + DDCategory.SelectedValue;
