@@ -122,7 +122,7 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
         }
         if (Convert.ToInt16(Session["varCompanyId"]) == 16)
         {
-            Str = Str + " And QCM.QUALITYID is null";
+            Str = Str + " And IsNull(QCM.QUALITYID, 0) is null";
         }
         Str = Str + " Order By QCP.SrNo";
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);

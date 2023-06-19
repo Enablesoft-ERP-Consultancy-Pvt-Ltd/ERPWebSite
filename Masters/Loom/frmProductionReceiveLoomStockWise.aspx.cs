@@ -1069,9 +1069,6 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
             }
             //*************
-
-
-
         }
     }
 
@@ -1152,10 +1149,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             //*********
             if (dtrecord.Rows.Count > 0)
             {
-                SqlParameter[] param = new SqlParameter[2];
+                SqlParameter[] param = new SqlParameter[3];
                 param[0] = new SqlParameter("@dtrecord", dtrecord);
                 param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[1].Direction = ParameterDirection.Output;
+                param[2] = new SqlParameter("@UserID", Session["varuserId"]);
+
                 //*****
                 SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_saveQc", param);
                 lblqcmsg.Text = param[1].Value.ToString();
@@ -1749,8 +1748,6 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             Refreshcontrol();
             if (ds.Tables[0].Rows.Count > 0)
             {
-                
-
                 //btnconfirm.Visible = true;
                 VarConfirmButtonStatus = 1;
                 if (ds.Tables[0].Rows[0]["PcsType"].ToString() == "999")

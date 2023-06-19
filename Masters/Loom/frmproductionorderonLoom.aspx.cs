@@ -242,6 +242,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     btnbehadmadhav.Visible = true;
                     btnshahkulipur.Visible = true;
                     btnlaharpurunit1.Visible = true;
+                    btngokulpur.Visible = true;
                     TDChkForStockNoAttachWithoutMaterialIssue.Visible = true;
                     ChkForStockNoAttachWithoutMaterialIssue.Checked = true;
                     break;
@@ -3703,5 +3704,9 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 con.Dispose();
             }
         }
+    }
+    protected void btngokulpur_Click(object sender, EventArgs e)
+    {
+        OrderProcessToAllCompanyMWS(7);
     }
 }

@@ -700,7 +700,8 @@
                                     Visible="false" OnClick="btnlaharpurunit1_Click"   />
                                      <asp:Button ID="btnlaharpurunit2" runat="server" Text="LAHARPUR UNIT 2" CssClass="buttonnorm"
                                     Visible="false" OnClick="btnlaharpurunit2_Click"  />
-
+                                     <asp:Button ID="btngokulpur" runat="server" Text="GOKULPUR" CssClass="buttonnorm"
+                                    Visible="false" OnClick="btngokulpur_Click"  />
 
 
                                 <asp:Button ID="BtnStockNoStatus" runat="server" Text="StockNo Status" CssClass="buttonnorm"
