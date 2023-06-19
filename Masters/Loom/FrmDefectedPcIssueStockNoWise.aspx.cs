@@ -98,8 +98,16 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
         param[4] = new SqlParameter("@UserID", Session["varuserId"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FillPcIssueStockNoWise", param);
-        DGIssueDetail.DataSource = ds.Tables[0];
-        DGIssueDetail.DataBind();
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            DGIssueDetail.DataSource = ds.Tables[0];
+            DGIssueDetail.DataBind();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Receord Found');", true);
+            return;
+        }
     }
     protected void DGRecDetail_RowDataBound(object sender, GridViewRowEventArgs e)
     {

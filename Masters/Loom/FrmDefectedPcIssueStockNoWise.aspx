@@ -154,6 +154,11 @@
                                                     <asp:Label ID="lblitemdesc" Text='<%#Bind("itemdesc") %>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Chk Reject">
+                                                <ItemTemplate>
+                                                    <asp:CheckBox ID="chkReject" Text="" runat="server" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
                                             <asp:TemplateField Visible="false">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblStockNo" Text='<%#Bind("StockNo") %>' runat="server" />
