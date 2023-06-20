@@ -522,6 +522,12 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                                 on vc.finishedid=vf.ITEM_FINISHED_ID
                                 Where vc.orderid=" + ddorderno.SelectedValue + " order by Category_Name";
                         break;
+                    case "38":
+                        str = @"SELECT distinct CATEGORY_ID,Category_Name
+                                from V_ConsumptionQtyAndPurchaseQtyNew vc inner join " + view3 + @" vf
+                                on vc.finishedid=vf.ITEM_FINISHED_ID
+                                Where vc.orderid=" + ddorderno.SelectedValue + " order by Category_Name";
+                        break;
                     case "44":
                         str = @"SELECT distinct CATEGORY_ID,Category_Name
                                 from V_ConsumptionQtyAndPurchaseQtyAgni vc inner join " + view3 + @" vf
