@@ -25,7 +25,7 @@
                         if (inputs[0].type == "checkbox") {
                             if (inputs[0].checked) {
                                 isValid = true;
-                                return confirm('Do You Want To Save?')
+                                return confirm('Please Click Ok For Report Open')
                             }
                         }
                     }
