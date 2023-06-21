@@ -167,11 +167,14 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
                 {
                     Session["rptFileName"] = "~\\Reports\\rptmotteling_handspinningReceivedetailWithRateAmount.rpt";
                 }
+                else if (Session["VarCompanyNo"].ToString() == "46")
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptmotteling_handspinningReceivedetailWithRateAmountNeman.rpt";
+                }
                 else
                 {
                     Session["rptFileName"] = "~\\Reports\\rptmotteling_handspinningReceivedetail.rpt";
                 }
-
                
                 Session["Getdataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\rptmotteling_handspinningReceivedetail.xsd";

@@ -1407,6 +1407,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     cmd.Parameters.AddWithValue("@BranchId", DDBranchName.SelectedValue);
                     cmd.Parameters.AddWithValue("@PartyChallanNo", txtPartyChallanNo.Text);
                     cmd.Parameters.AddWithValue("@StockStatus", TDStockStatus.Visible == true ? DDStockStatus.SelectedValue : "0");
+                    cmd.Parameters.AddWithValue("@STOCKNOREMARKS", TxtRemarks.Text);
 
                     cmd.ExecuteNonQuery();
                     if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
@@ -1748,6 +1749,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             Refreshcontrol();
             if (ds.Tables[0].Rows.Count > 0)
             {
+                
+
                 //btnconfirm.Visible = true;
                 VarConfirmButtonStatus = 1;
                 if (ds.Tables[0].Rows[0]["PcsType"].ToString() == "999")
@@ -1757,6 +1760,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     //lblmessage.Text = "Stock No. Quality does match with last scan carpet quality. Please scan same quality carpet!.";
                     ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('" + ds.Tables[0].Rows[0]["Msg"] + "');", true);
                     return;                   
+                }
+
+                if (DDcompany.SelectedValue.ToString() != ds.Tables[0].Rows[0]["CompanyId"].ToString())
+                {
+                    ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('This Stock no does not belong to this company');", true);
+                    return;
                 }
 
                 LblPcsType.Text = ds.Tables[0].Rows[0]["PcsType"].ToString();

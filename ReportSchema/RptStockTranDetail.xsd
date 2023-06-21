@@ -38,7 +38,6 @@
               <xs:element name="LOTNO" type="xs:string" minOccurs="0" />
               <xs:element name="TAGNO" type="xs:string" minOccurs="0" />
               <xs:element name="TABLENAME" type="xs:string" minOccurs="0" />
-              <xs:element name="GODOWNNAME" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
