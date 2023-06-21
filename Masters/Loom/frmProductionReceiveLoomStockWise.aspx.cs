@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web.UI.Page
 {
+    static string TempProcessRecId = "";
     static int VarConfirmButtonStatus = 1;
     static int VarProcess_Rec_Detail_Id = 0;
     static int VarProcess_Rec_Id = 0;
@@ -299,8 +300,17 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             UtilityModule.ConditionalComboFill(ref DDreceiveNo, str, true, "--Plz Select--");
             if (DDreceiveNo.Items.Count > 0)
             {
-                DDreceiveNo.SelectedIndex = 1;
-                DDreceiveNo_SelectedIndexChanged(sender, new EventArgs());
+                
+                if (txtEditReceiveNoForCI.Text.Trim() != "")
+                {
+                    DDreceiveNo.SelectedValue = TempProcessRecId;
+                    DDreceiveNo_SelectedIndexChanged(sender, new EventArgs());
+                }
+                else
+                {
+                    DDreceiveNo.SelectedIndex = 1;
+                    DDreceiveNo_SelectedIndexChanged(sender, new EventArgs());
+                }
             }
         }
         fillGrid();
@@ -671,7 +681,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     protected void chkedit_CheckedChanged(object sender, EventArgs e)
     {
         if (chkedit.Checked == true)
-        {
+        {                   
             TDreceiveNo.Visible = true;
             btnsave.Visible = false;
             TDFolioNotext.Visible = true;          
@@ -683,11 +693,16 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     if (Session["usertype"].ToString() == "1")
                     {
                         BtnUpdateRate.Visible = true;
-                    } 
-                    break;  
+                    }
+                    TDEditReceiveNoForCI.Visible = false;
+                    break;
+                case "43":
+                    TDEditReceiveNoForCI.Visible = true;
+                    break;
                 default:
                     BtnUpdateRate.Visible = false;
                     BtnUpdateConsumption.Visible = true;
+                    TDEditReceiveNoForCI.Visible = false;
                     break;
             }
             
@@ -702,7 +717,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
         }
         else
-        {
+        {           
+            TDEditReceiveNoForCI.Visible = false;
             TDreceiveNo.Visible = false;
             btnsave.Visible = true;
             BtnUpdateRate.Visible = false;
@@ -2632,5 +2648,34 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     protected void DDStockStatus_SelectedIndexChanged(object sender, EventArgs e)
     {
 
+    }
+
+    protected void txtEditReceiveNoForCI_TextChanged(object sender, EventArgs e)
+    {
+        string str="",str2="";       
+
+        str = @"Select Distinct PRD.ISSUEORDERID,isnull(PRM.Process_Rec_Id,0) as Process_Rec_Id From PROCESS_RECEIVE_MASTER_1 PRM(NoLock) JOIN PROCESS_RECEIVE_DETAIL_1 PRD(NoLock) ON PRM.PROCESS_REC_ID=PRD.PROCESS_REC_ID
+                       Where PRM.CHALLANNO='" +txtEditReceiveNoForCI.Text+"'";
+         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+         if (ds.Tables[0].Rows.Count > 0)
+         {
+             int issueorderid = 0;
+             issueorderid =Convert.ToInt32(ds.Tables[0].Rows[0]["ISSUEORDERID"].ToString());
+             TempProcessRecId = ds.Tables[0].Rows[0]["Process_Rec_Id"].ToString();
+
+             str2 = @" Select isnull(PIM.ChallanNo,PIM.ISSUEORDERID) as FolioChallanNo from PROCESS_ISSUE_MASTER_1 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PID(NoLock) ON PIM.ISSUEORDERID=PID.ISSUEORDERID
+                    Where PIM.ISSUEORDERID="+issueorderid+"";
+             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+             if (ds2.Tables[0].Rows.Count > 0)
+             {
+                 txtfolionoedit.Text = ds2.Tables[0].Rows[0]["FolioChallanNo"].ToString();
+                 txtfolionoedit_TextChanged(sender, new EventArgs());
+             }
+         }
+         else
+         {           
+             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+         }        
+        
     }
 }

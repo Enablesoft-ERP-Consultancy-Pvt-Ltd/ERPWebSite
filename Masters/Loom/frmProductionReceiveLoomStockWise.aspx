@@ -124,8 +124,15 @@
                                 <asp:CheckBox ID="chkedit" Text="For Edit" CssClass="labelbold" runat="server" AutoPostBack="true"
                                     OnCheckedChanged="chkedit_CheckedChanged" />
                             </td>
+                            <td id="TDEditReceiveNoForCI" runat="server" visible="false">
+                            <asp:Label ID="Label25" runat="server" Text="Rec ChallanNo" CssClass="labelbold"></asp:Label>
+                             <br />
+                                 <asp:TextBox ID="txtEditReceiveNoForCI" CssClass="textb" Width="80px" runat="server" AutoPostBack="true"
+                                                OnTextChanged="txtEditReceiveNoForCI_TextChanged" />
+                            </td>
                             <td>
                                 <asp:TextBox ID="TxtUserType" runat="server" Style="display: none"></asp:TextBox>
+                                 
                             </td>
                         </tr>
                         <tr>
