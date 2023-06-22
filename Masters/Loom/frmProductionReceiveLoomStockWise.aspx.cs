@@ -2663,7 +2663,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
              issueorderid =Convert.ToInt32(ds.Tables[0].Rows[0]["ISSUEORDERID"].ToString());
              TempProcessRecId = ds.Tables[0].Rows[0]["Process_Rec_Id"].ToString();
 
-             str2 = @" Select isnull(PIM.ChallanNo,PIM.ISSUEORDERID) as FolioChallanNo from PROCESS_ISSUE_MASTER_1 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PID(NoLock) ON PIM.ISSUEORDERID=PID.ISSUEORDERID
+             str2 = @" Select distinct isnull(PIM.ChallanNo,PIM.ISSUEORDERID) as FolioChallanNo from PROCESS_ISSUE_MASTER_1 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PID(NoLock) ON PIM.ISSUEORDERID=PID.ISSUEORDERID
                     Where PIM.ISSUEORDERID="+issueorderid+"";
              DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
              if (ds2.Tables[0].Rows.Count > 0)

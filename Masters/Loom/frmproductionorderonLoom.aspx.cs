@@ -700,7 +700,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                                 if (hnEmployeeType.Value == "1")
                                 {
                                   str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                                        case when " + Session["varcompanyid"] + "=43 then VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                                         Else case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when " + ddunit.SelectedValue + @"=1 Then Vf.Sizemtr Else vf.sizeft end
                                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                                         " + Qtyrequired + @" as QtyRequired,
@@ -723,7 +723,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                                 else
                                 {
                                     str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                                        case when " + Session["varcompanyid"] + "=43 then VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                                         Else case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when " + ddunit.SelectedValue + @"=1 Then Vf.Sizemtr Else vf.sizeft end
                                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                                         " + Qtyrequired + @" as QtyRequired,
@@ -746,7 +746,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                                 break;
                             default:
                                 str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                                        case when " + Session["varcompanyid"] + "=43 then VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                                         Else case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when " + ddunit.SelectedValue + @"=1 Then Vf.Sizemtr Else vf.sizeft end
                                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                                         Vj.INTERNALPRODASSIGNEDQTY  as QtyRequired,
@@ -771,7 +771,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     else
                     {
                         str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                        case when " + Session["varcompanyid"] + "=43 then VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                         VJ.PREPRODASSIGNEDQTY as QtyRequired,
                         dbo.F_getProductionOrderQty(OM.OrderId,OD.Item_Finished_Id) as OrderedQty,JOBRATE.RATE,
