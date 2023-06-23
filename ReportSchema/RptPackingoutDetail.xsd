@@ -15,7 +15,6 @@
               <xs:element name="Area" type="xs:double" minOccurs="0" />
               <xs:element name="Fromdate" type="xs:string" minOccurs="0" />
               <xs:element name="Todate" type="xs:string" minOccurs="0" />
-              <xs:element name="StockNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

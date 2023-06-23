@@ -37,6 +37,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" align="right">
+                        <asp:CheckBox ID="ChkForExcelReport" Text="For Excel" CssClass="checkboxbold" runat="server" Visible="false"/>
                             <asp:Button ID="btnpreview" runat="server" Text="Preview" CssClass="buttonnorm" OnClick="btnpreview_Click" />
                             <asp:Button ID="btnclose" runat="server" Text="Close" CssClass="buttonnorm" OnClientClick="return CloseForm();" />
                         </td>
@@ -44,5 +45,8 @@
                 </table>
             </div>
         </ContentTemplate>
+         <Triggers>
+            <asp:PostBackTrigger ControlID="btnpreview" />
+        </Triggers>
     </asp:UpdatePanel>
 </asp:Content>
