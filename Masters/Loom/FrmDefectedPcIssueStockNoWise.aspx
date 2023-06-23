@@ -1,5 +1,5 @@
-﻿<%@ Page Title="PRODUCTION RECEIVE" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="FrmDefectedPcIssueStockNoWise.aspx.cs" Inherits="Masters_Loom_FrmDefectedPcIssueStockNoWise" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ERPmaster.master" AutoEventWireup="true"
+    CodeFile="FrmDefectedPcIssueStockNoWise.aspx.cs" Inherits="Masters_Loom_FrmDefectedPcIssueStockNoWise" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
@@ -156,7 +156,10 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Chk Reject">
                                                 <ItemTemplate>
-                                                    <asp:CheckBox ID="chkReject" Text="" runat="server" />
+                                                    <asp:DropDownList ID="DDReject" runat="server" CssClass="dropdown">
+                                                        <asp:ListItem Value="1">Issue</asp:ListItem>
+                                                        <asp:ListItem Value="2">Rejected</asp:ListItem>
+                                                    </asp:DropDownList>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField Visible="false">
@@ -182,8 +185,9 @@
                             <td align="right">
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
                                 <asp:Button ID="btnsave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="btnsave_Click"
-                                    Visible="false" UseSubmitBehavior="false" OnClientClick="if (!confirm('Do you want to save Data?')) return; this.disabled=true;this.value = 'wait ...';" />
-                                <asp:Button ID="btnPreview" runat="server" Text="Preview" CssClass="buttonnorm" OnClick="btnPreview_Click" />
+                                    UseSubmitBehavior="false" OnClientClick="if (!confirm('Do you want to save Data?')) return; this.disabled=true;this.value = 'wait ...';" />
+                                <asp:Button ID="btnPreview" runat="server" Text="Preview" Visible="false" CssClass="buttonnorm"
+                                    OnClick="btnPreview_Click" />
                                 <%--<asp:Button ID="btnReturnGatePass" runat="server" Text="Return GatePass" CssClass="buttonnorm"
                                     OnClick="btnReturnGatePass_Click" />--%>
                                 <asp:Button ID="btnclose" runat="server" Text="Close" CssClass="buttonnorm" OnClientClick="return CloseForm();" />

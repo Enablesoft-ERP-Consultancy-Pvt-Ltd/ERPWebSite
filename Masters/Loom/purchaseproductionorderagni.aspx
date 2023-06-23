@@ -137,13 +137,19 @@
             if (txttargetdate.value == "") {
                 Message = Message + "Please Enter Target Date. !!\n";
             }
-            selectedindex = $("#<%=DDcustcode.ClientID %>").attr('selectedIndex');
-            if (selectedindex <= 0) {
-                Message = Message + "Please select Buyer. !!\n";
-            }
-            selectedindex = $("#<%=DDorderNo.ClientID %>").attr('selectedIndex');
-            if (selectedindex <= 0) {
-                Message = Message + "Please select Order No. !!\n";
+            selectedindexcat = $("#<%=DDCategory.ClientID %>").attr('selectedIndex');
+
+            if (selectedindexcat <= 0) {
+
+
+                selectedindex = $("#<%=DDcustcode.ClientID %>").attr('selectedIndex');
+                if (selectedindex <= 0) {
+                    Message = Message + "Please select Buyer. !!\n";
+                }
+                selectedindex = $("#<%=DDorderNo.ClientID %>").attr('selectedIndex');
+                if (selectedindex <= 0) {
+                    Message = Message + "Please select Order No. !!\n";
+                }
             }
             if (Message == "") {
                 return true;
@@ -425,7 +431,195 @@
                                 </asp:DropDownList>
                             </td>
                         </tr>
+                          <tr>
+                                            <td id="TDCategory" runat="server">
+                                                <asp:Label ID="lblcategoryname" runat="server" Text="Category Name" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" ID="DDCategory" runat="server" Width="150px"
+                                                    AutoPostBack="True" OnSelectedIndexChanged="DDCategory_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                            </td>
+                                             <td id="tditem" runat="server">
+                                                <asp:Label ID="Label24" runat="server" Text="Item Name" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" ID="DDLItem" runat="server" Width="150px"
+                                                    AutoPostBack="True" OnSelectedIndexChanged="DDLItem_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                            </td>
+                                            <td id="tdqualityname1" runat="server">
+                                                <asp:Label ID="Label25" runat="server" Text="Quality" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" ID="DDQuality" runat="server" Width="150px"
+                                                    AutoPostBack="True" OnSelectedIndexChanged="DDQuality_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                            </td>
+                                            <td id="tddesign1" runat="server">
+                                                <asp:Label ID="lbldesignname" runat="server" Text="Design" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" ID="DDDesign" runat="server" AutoPostBack="true"
+                                                    Width="150px" OnSelectedIndexChanged="DDDesign_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td id="tdColor1" runat="server">
+                                                <asp:Label ID="lblcolorname" runat="server" Text="Color" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" ID="DDColor" runat="server" Width="150px" AutoPostBack="True"
+                                                    OnSelectedIndexChanged="DDColor_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                            </td>
+                                             <td id="tdShape" runat="server" >
+                                    <asp:Label ID="Label28" runat="server" Text="Shape"></asp:Label>
+                                    <br />
+                                    <asp:DropDownList CssClass="dropdown" ID="ddlshape" runat="server" Width="100px" AutoPostBack="True"
+                                        OnSelectedIndexChanged="ddlshape_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                    <asp:ListSearchExtender ID="ListSearchExtender1" runat="server" TargetControlID="DDShape"
+                                        ViewStateMode="Disabled" PromptCssClass="labelbold" PromptPosition="Bottom">
+                                    </asp:ListSearchExtender>
+                                </td>
+                                            <td id="tdsize1" runat="server">
+                                                <asp:Label ID="lblsizename" runat="server" Text="Size" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" Width="150px" ID="DDSize" runat="server" AutoPostBack="true"
+                                                    OnSelectedIndexChanged="DDSize_SelectedIndexChanged1">
+                                                </asp:DropDownList>
+                                            </td>
+                                            <td id="tdshade" runat="server" visible="false">
+                                                <asp:Label ID="Label31" runat="server" Text="Shade Color" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" ID="ddlshadecolor" runat="server" Width="150px" AutoPostBack="True"
+                                                   >
+                                                </asp:DropDownList>
+                                            </td>
+                                            <td id="TDEWayBillNo" runat="server" visible="false">
+                                                <asp:Label ID="Label26" runat="server" Text="EWayBill No" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:TextBox ID="txtEWayBillNo" CssClass="textb" Width="100px" runat="server" />
+                                            </td>
+                                            <td id="TDGSTType" runat="server" visible="false">
+                                                <asp:Label ID="Label27" runat="server" Text="GST TYPE" CssClass="labelbold"></asp:Label>
+                                                <br />
+                                                <asp:DropDownList CssClass="dropdown" Width="150px" ID="DDGSTType" runat="server">
+                                                    <asp:ListItem Value="0" Selected="True">---Select----</asp:ListItem>
+                                                    <asp:ListItem Value="1">CGST/SGST</asp:ListItem>
+                                                    <asp:ListItem Value="2">IGST</asp:ListItem>
+                                                </asp:DropDownList>
+                                            </td>
+                                        </tr>
                     </table>
+                    <div>
+                        <table>
+                            <tr id="Tr1" runat="server" visible="false">
+                                <td id="ProCod1" runat="server" visible="false">
+                                    Prod Code
+                                    <br />
+                                    <asp:TextBox CssClass="textb" ID="TxtItemCode" runat="server" Width="100px"></asp:TextBox>
+                                    <asp:AutoCompleteExtender ID="TxtProdCode_AutoCompleteExtender" runat="server" EnableCaching="true"
+                                        Enabled="True" MinimumPrefixLength="1" ServiceMethod="GetQuality" TargetControlID="TxtItemCode"
+                                        UseContextKey="True">
+                                    </asp:AutoCompleteExtender>
+                                </td>
+                                <td id="TDitemName" runat="server" visible="false">
+                                    <asp:Label ID="lblitemname" runat="server" Text="Articles"></asp:Label>
+                                    <br />
+                                    <asp:DropDownList CssClass="dropdown" ID="DDItemName" runat="server" Width="150px"
+                                        AutoPostBack="True" OnSelectedIndexChanged="DDItemName_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                    <asp:ListSearchExtender ID="ListSearchDDItemName" runat="server" TargetControlID="DDItemName"
+                                        ViewStateMode="Disabled" PromptCssClass="labelbold" PromptPosition="Bottom">
+                                    </asp:ListSearchExtender>
+                                </td>
+                                <td id="tdShape1" runat="server" visible="false">
+                                    <asp:Label ID="lblshapename" runat="server" Text="Shape"></asp:Label>
+                                    <br />
+                                    <asp:DropDownList CssClass="dropdown" ID="DDShape" runat="server" Width="100px" AutoPostBack="True"
+                                        OnSelectedIndexChanged="DDShape_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                    <asp:ListSearchExtender ID="ListSearchDDShape" runat="server" TargetControlID="DDShape"
+                                        ViewStateMode="Disabled" PromptCssClass="labelbold" PromptPosition="Bottom">
+                                    </asp:ListSearchExtender>
+                                </td>
+                                <td id="tdshadecolor" runat="server" visible="false">
+                                    <asp:Label ID="lblshadecolor" runat="server" Text="Shade Color"></asp:Label>
+                                    &nbsp;<br />
+                                    <asp:DropDownList ID="ddlshade" runat="server" Width="100px" CssClass="dropdown"
+                                        OnSelectedIndexChanged="ddlshade_SelectedIndexChanged" AutoPostBack="True">
+                                    </asp:DropDownList>
+                                    <asp:ListSearchExtender ID="ListSearchddlshade" runat="server" TargetControlID="ddlshade"
+                                        ViewStateMode="Disabled" PromptCssClass="labelbold" PromptPosition="Bottom">
+                                    </asp:ListSearchExtender>
+                                </td>
+                            </tr>
+                              <tr id="trvat" runat="server">
+                            <td class="style1">
+                                <asp:Label ID="Label22" runat="server" Text="Order Qty." CssClass="labelbold"></asp:Label>
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="TxtorderQty"
+                                    ErrorMessage="Invalid total Qty...." ForeColor="Red" SetFocusOnError="true" ValidationGroup="f1">*</asp:RequiredFieldValidator>
+                                <br />
+                                <asp:TextBox ID="txtorderqty" runat="server" Enabled="False" Width="80px" onkeypress="return isNumber(event);"
+                                    CssClass="textb"></asp:TextBox>
+                            </td>
+                            
+                          
+                            <td align="left" id="tdrate" runat="server" class="style1">
+                                <asp:Label ID="Label29" runat="server" Text="Rate" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="txtmainrate" runat="server" Enabled="false" CssClass="textb" Width="60px"
+                                    AutoPostBack="true" OnTextChanged="txtmainrate_TextChanged" onkeypress="return isNumber(event);"></asp:TextBox>
+                            </td>
+                            <td align="left" id="tdamout" runat="server" class="style1">
+                                <asp:Label ID="Label30" runat="server" Text="Amount" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="TxtAmount" runat="server" Enabled="false" CssClass="textb" Width="80px"
+                                    onkeypress="return isNumber(event);"></asp:TextBox>
+                            </td>
+                            <td align="left" class="tdstyle" id="mainGSTType" runat="server">
+                             <asp:Label ID="Label23" runat="server" Text="GSTmainType" CssClass="labelbold"></asp:Label>
+                                <br />
+                          <asp:DropDownList ID="gstmaintype" CssClass="dropdown" Width="150px" runat="server" OnSelectedIndexChanged="gstmaintype_SelectedIndexChanged"
+                                                        AutoPostBack="true">
+                                                         <asp:ListItem Value="0" Selected="True">---Select----</asp:ListItem>
+                                            <asp:ListItem Value="1">CGST/SGST</asp:ListItem>
+                                            <asp:ListItem Value="2">IGST</asp:ListItem>
+                                                    </asp:DropDownList>
+                                                    </td>
+                            
+                            <td align="left" class="tdstyle" id="TDtxtCGST" runat="server">
+                                <asp:Label ID="Label47" runat="server" Text="CGST" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="txtmainCGST" runat="server" CssClass="textb" Width="60px" onkeypress="return isNumber(event);"
+                                    Enabled="false" AutoPostBack="true" ></asp:TextBox>
+                            </td>
+                            <td align="left" class="tdstyle" id="TDtxtSGST" runat="server">
+                                <asp:Label ID="Label35" runat="server" Text="SGST" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="txtmainSGST" runat="server" CssClass="textb" Width="60px" onkeypress="return isNumber(event);"
+                                    Enabled="false" AutoPostBack="true" ></asp:TextBox>
+                            </td>
+                            <td align="left" class="tdstyle" id="TDtxtIGST" runat="server">
+                                <asp:Label ID="Label36" runat="server" Text="IGST" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="txtmainIGST" runat="server" CssClass="textb" Width="60px" onkeypress="return isNumber(event);"
+                                    Enabled="false" AutoPostBack="true" ></asp:TextBox>
+                            </td>
+                           <%-- <td align="left" class="tdstyle" id="TDTCS" runat="server">
+                                <asp:Label ID="Label50" runat="server" Text="TCS" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="txtTCS" runat="server" CssClass="textb" Width="60px" onkeypress="return isNumber(event);"
+                                    Enabled="false" AutoPostBack="true" OnTextChanged="txtTCS_TextChanged"></asp:TextBox>
+                            </td>--%>
+                            <td align="left" class="tdstyle" id="TDTxtnetamount" runat="server">
+                                <asp:Label ID="Label37" runat="server" Text="Net Amount" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="Txtnetamount" runat="server" Enabled="false" CssClass="textb" onkeypress="return isNumber(event);"
+                                    Width="80px"></asp:TextBox>
+                            </td>
+                            
+                        </tr>
+                        </table>
+                    </div>
                     <table border="1" cellspacing="7">
                         <tr>
                             <td id="TDcheckpurchasefolio" visible="false" runat="server" style="border-style: none">

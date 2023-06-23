@@ -47,7 +47,7 @@ public partial class Masters_Campany_ItemName : CustomPage
                     break;
                 case 16:
                     chkpretreat.Visible = true;
-                  //  chkdyesstuff.Visible = true;
+                    //  chkdyesstuff.Visible = true;
                     chkchem.Visible = true;
                     break;
                 case 28:
@@ -169,9 +169,11 @@ public partial class Masters_Campany_ItemName : CustomPage
         try
         {
             DataSet ds;
-            string sqlstr = @" Select CATEGORY_ID,UnitTypeID,ITEM_NAME,ITEM_CODE,FlagFixWeight,ItemType,
-            isnull(KATIWITHEXPORTSIZE,0) as KATIWITHEXPORTSIZE,isnull(MasterQualityTypeId,0) as MasterQualityTypeId, CUSHIONTYPEITEM ,pretreament,dyechem
-            FROM ITEM_MASTER where Item_Id=" + gdItem.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"];
+            string sqlstr = @" Select CATEGORY_ID, UnitTypeID, ITEM_NAME, ITEM_CODE, FlagFixWeight, ItemType, isnull(KATIWITHEXPORTSIZE,0) KATIWITHEXPORTSIZE,
+            IsNull(MasterQualityTypeId, 0) MasterQualityTypeId, CUSHIONTYPEITEM, pretreament, dyechem, PassSize 
+            From ITEM_MASTER(Nolock) 
+            Where Item_Id = " + gdItem.SelectedValue + " And MasterCompanyid = " + Session["varCompanyId"];
+
             ViewState["ItemId"] = gdItem.SelectedValue;
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sqlstr);
             ddCategory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
@@ -214,26 +216,22 @@ public partial class Masters_Campany_ItemName : CustomPage
             {
                 chkpretreat.Checked = true;
             }
-             chkchem.Checked = false;
+            chkchem.Checked = false;
             if (ds.Tables[0].Rows[0]["dyechem"].ToString() == "1")
             {
                 chkchem.Checked = true;
             }
-            // chkdyesstuff.Checked = false;
-            //if (ds.Tables[0].Rows[0]["dyestuff"].ToString() == "1")
-            //{
-            //    chkdyesstuff.Checked = true;
-            //}
-         //   ,Pretreatment,,
+            ChkForSizeWiseConsumption.Checked = false;
+            if (Convert.ToInt32(ds.Tables[0].Rows[0]["PassSize"]) == 1)
+            {
+                ChkForSizeWiseConsumption.Checked = true;
+            }
         }
         catch (Exception ex)
         {
             UtilityModule.MessageAlert(ex.Message, "Master/Carpet/ItemName.aspx");
         }
-
     }
-
-
     protected void btnsave_Click(object sender, EventArgs e)
     {
         validate();
@@ -250,7 +248,7 @@ public partial class Masters_Campany_ItemName : CustomPage
                 SqlTransaction Tran = con.BeginTransaction();
                 try
                 {
-                    SqlParameter[] _arrPara = new SqlParameter[14];
+                    SqlParameter[] _arrPara = new SqlParameter[15];
                     _arrPara[0] = new SqlParameter("@ITEM_Id", SqlDbType.Int);
                     _arrPara[1] = new SqlParameter("@CATEGORY_ID", SqlDbType.Int);
                     // _arrPara[2] = new SqlParameter("@ITEM_PARAMETER_ID", SqlDbType.Int);
@@ -266,8 +264,8 @@ public partial class Masters_Campany_ItemName : CustomPage
                     _arrPara[11] = new SqlParameter("@CushionTypeItem", SqlDbType.Int);
                     _arrPara[12] = new SqlParameter("@Pretreatment", SqlDbType.Int);
                     _arrPara[13] = new SqlParameter("@dyechem", SqlDbType.Int);
-                   // _arrPara[14] = new SqlParameter("@dyestuff", SqlDbType.Int);
-                    
+                    _arrPara[14] = new SqlParameter("@PassSize", SqlDbType.Int);
+
                     _arrPara[1].Value = ddCategory.SelectedValue;
                     //_arrPara[2].Value = ddItemParameter.SelectedValue;
                     _arrPara[2].Value = ddUnit.SelectedValue;
@@ -282,7 +280,7 @@ public partial class Masters_Campany_ItemName : CustomPage
                     _arrPara[11].Value = ChkForCushionTypeItem.Checked == true ? "1" : "0";
                     _arrPara[12].Value = chkpretreat.Checked == true ? "1" : "0";
                     _arrPara[13].Value = chkchem.Checked == true ? "1" : "0";
-                   // _arrPara[14].Value = chkdyesstuff.Checked == true ? "1" : "0";
+                    _arrPara[14].Value = ChkForSizeWiseConsumption.Checked == true ? "1" : "0";
 
                     if (btnsave.Text == "Update")
                     {
@@ -409,7 +407,7 @@ public partial class Masters_Campany_ItemName : CustomPage
             FROM ITEM_CATEGORY_MASTER IM INNER JOIN ITEM_MASTER I ON IM.CATEGORY_ID=I.CATEGORY_ID 
             INNER JOIN UNIT_TYPE_MASTER U ON I.UnitTypeID=U.UnittypeID LEFT JOIN ItemType IT ON I.ItemType=IT.ID 
             LEFT JOIN MasterQualityType MQT ON I.MasterQualityTypeId=MQT.MasterQualityTypeId
-            Where IM.Category_Id=" + ddCategory.SelectedValue+"  Order by I.ITEM_NAME ";
+            Where IM.Category_Id=" + ddCategory.SelectedValue + "  Order by I.ITEM_NAME ";
             ds = SqlHelper.ExecuteDataset(strsql);
         }
         catch (Exception ex)

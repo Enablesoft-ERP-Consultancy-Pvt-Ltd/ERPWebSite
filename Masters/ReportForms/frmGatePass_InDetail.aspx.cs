@@ -21,12 +21,13 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
         if (!IsPostBack)
         {
             string str = string.Empty;
-            if (Session["VarCompanyNo"].ToString() == "16")
+            if (Session["VarCompanyNo"].ToString() == "16" || Session["VarCompanyNo"].ToString() == "21")
             {
                 str = @"select CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["Varuserid"] + "  And CI.MasterCompanyId=" + Session["VarcompanyNo"] + @" Order by CompanyId
                     Select EmpId,EmpName From Empinfo  Where MasterCompanyId=" + Session["varcompanyNo"] + @" Order by Empname
-                    Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CATEGORY_NAME select GM.GODOWNID,GM.GODOWNNAME from GODOWNMASTER GM(NoLock) JOIN  Godown_Authentication GA(NoLock) ON GM.GoDownID=GA.GodownID 
-                             Where GM.MasterCompanyId=" + Session["varCompanyId"] + @" and GA.UserId=" + Session["VarUserId"] + " ORDER BY GM.GODOWNNAME";
+                     select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM join UserRights_Category sp on im.CATEGORY_ID=sp.Categoryid Where IM.MasterCompanyId=" + Session["varCompanyId"] + " and sp.userid=" + Session["varuserId"] + @" order by CATEGORY_NAME
+                select GM.GODOWNID,GM.GODOWNNAME from GODOWNMASTER GM(NoLock) JOIN  Godown_Authentication GA(NoLock) ON GM.GoDownID=GA.GodownID 
+                Where GM.MasterCompanyId=" + Session["varCompanyId"] + @" and GA.UserId=" + Session["VarUserId"] + " ORDER BY GM.GODOWNNAME";
             }
             else
             {
