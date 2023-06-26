@@ -74,6 +74,37 @@
                 return false;
             }
         }
+
+        function CheckBoxClick(objref) {
+            var row = objref.parentNode.parentNode;
+            if (objref.checked) {
+                row.style.backgroundColor = "Orange";
+            }
+            else {
+                row.style.backgroundColor = "White";
+            }
+        }
+
+        function CheckAll(objref) {
+            var gridview = objref.parentNode.parentNode.parentNode;
+            var inputlist = gridview.getElementsByTagName("input");
+            for (var i = 0; i < inputlist.length; i++) {
+                var row = inputlist[i].parentNode.parentNode;
+                if (inputlist[i].type == "checkbox" && objref != inputlist[i]) {
+                    if (objref.checked) {
+
+                        inputlist[i].checked = true;
+                        row.style.backgroundColor = "Orange";
+                    }
+                    else {
+                        inputlist[i].checked = false;
+                        row.style.backgroundColor = "White";
+
+                    }
+                }
+            }
+
+        }
         
     </script>
     <asp:UpdatePanel ID="updatepanal" runat="server">
@@ -244,8 +275,12 @@
                         <RowStyle CssClass="gvrow" />
                         <Columns>
                             <asp:TemplateField HeaderStyle-Width="50" ItemStyle-HorizontalAlign="Center">
+                                 <HeaderTemplate>
+                                                    <asp:CheckBox ID="ChkAllItem" runat="server" onclick="return CheckAll(this);" />
+                                                </HeaderTemplate>
+                                
                                 <ItemTemplate>
-                                    <asp:CheckBox ID="Chk1" runat="server" />
+                                    <asp:CheckBox ID="Chk1" runat="server" onclick="return CheckBoxClick(this);" />
                                 </ItemTemplate>
                                 <HeaderStyle HorizontalAlign="Center" Width="50px" />
                                 <ItemStyle HorizontalAlign="Center" Width="50px" />

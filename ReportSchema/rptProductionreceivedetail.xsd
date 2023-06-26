@@ -81,10 +81,15 @@
         <xs:element name="Table3">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="ItemName" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
               <xs:element name="QualityName" type="xs:string" minOccurs="0" />
-              <xs:element name="Qty" type="xs:double" minOccurs="0" />
-              <xs:element name="Loss" type="xs:double" minOccurs="0" />
+              <xs:element name="DesignName" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="RawMaterialItem" type="xs:string" minOccurs="0" />
+              <xs:element name="RawMaterialQuality" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:decimal" minOccurs="0" />
+              <xs:element name="Loss" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
