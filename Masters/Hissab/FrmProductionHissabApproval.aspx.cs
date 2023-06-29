@@ -275,7 +275,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                         isnull(AdditionAmt,0) as AdditionAmt,isnull(DeductionAmt,0) as DeductionAmt,ISNULL(PH.MaterialDeductionAmt,0) as MaterialDeductionAmt
                     From Process_Hissab PH
                     where PH.companyid=" + DDCompanyName.SelectedValue + " and PH.processid=" + DDProcessName.SelectedValue + " and PH.EmpId=" + DDEmployerName.SelectedValue + @" and 
-                    HissabNo not in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And HissabType=0 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + @") 
+                    HissabNo not in(Select HissabId From ProcessHissabApproved PHA(NoLock) JOIN ProcessHissabApprovedDetail PHAD(NoLock) ON PHA.ID=PHAD.ID Where PHA.HissabType=0 And PHA.ProcessId=" + DDProcessName.SelectedValue + " And PHA.EmpId=" + DDEmployerName.SelectedValue + @") 
                     Group By PH.HissabNo,PH.ChallanNo,PH.Date,PH.TDS,PH.AdditionAmt,PH.DeductionAmt,PH.EmpId,PH.ProcessOrderNo,PH.ProcessID,PH.MaterialDeductionAmt,PH.ProcessHissabGST,PH.FROMDATE,PH.TODATE,PH.CommPaymentFlag";
 
                 if (ChkEdit.Checked == true && DDApprovalNo.SelectedIndex > 0)
@@ -292,7 +292,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                         isnull(AdditionAmt,0) as AdditionAmt,isnull(DeductionAmt,0) as DeductionAmt,ISNULL(PH.MaterialDeductionAmt,0) as MaterialDeductionAmt
                     From Process_Hissab PH
                     where PH.companyid=" + DDCompanyName.SelectedValue + " and PH.processid=" + DDProcessName.SelectedValue + " and PH.EmpId=" + DDEmployerName.SelectedValue + @" and 
-                    HissabNo in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And HissabType=0 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And PHA.ID=" + DDApprovalNo.SelectedValue + @") 
+                    HissabNo in(Select HissabId From ProcessHissabApproved PHA(NoLock) JOIN ProcessHissabApprovedDetail PHAD(NoLock) ON PHA.ID=PHAD.ID Where PHA.HissabType=0 And PHA.ProcessId=" + DDProcessName.SelectedValue + " And PHA.EmpId=" + DDEmployerName.SelectedValue + " And PHA.ID=" + DDApprovalNo.SelectedValue + @") 
                     Group By PH.HissabNo,PH.ChallanNo,PH.Date,PH.TDS,PH.AdditionAmt,PH.DeductionAmt,PH.EmpId,PH.ProcessOrderNo,PH.ProcessID,PH.MaterialDeductionAmt,PH.ProcessHissabGST,PH.FROMDATE,PH.TODATE,PH.CommPaymentFlag";
                 }
             }
@@ -312,7 +312,25 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                 }
             }
         }
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlCommand cmd = new SqlCommand(str, con);
+        //cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 3000;
+
+        DataSet ds = new DataSet();
+        SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+        ad.Fill(ds);
+        //*************
+
+        con.Close();
+        con.Dispose();
 
         DGBillDetail.DataSource = ds;
         DGBillDetail.DataBind();

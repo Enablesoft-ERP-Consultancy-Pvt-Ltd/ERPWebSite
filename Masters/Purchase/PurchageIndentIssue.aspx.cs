@@ -522,12 +522,12 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                                 on vc.finishedid=vf.ITEM_FINISHED_ID
                                 Where vc.orderid=" + ddorderno.SelectedValue + " order by Category_Name";
                         break;
-                    case "38":
-                        str = @"SELECT distinct CATEGORY_ID,Category_Name
-                                from V_ConsumptionQtyAndPurchaseQtyNew vc inner join " + view3 + @" vf
-                                on vc.finishedid=vf.ITEM_FINISHED_ID
-                                Where vc.orderid=" + ddorderno.SelectedValue + " order by Category_Name";
-                        break;
+//                    case "38":
+//                        str = @"SELECT distinct CATEGORY_ID,Category_Name
+//                                from V_ConsumptionQtyAndPurchaseQtyNew vc inner join " + view3 + @" vf
+//                                on vc.finishedid=vf.ITEM_FINISHED_ID
+//                                Where vc.orderid=" + ddorderno.SelectedValue + " order by Category_Name";
+//                        break;
                     case "44":
                         str = @"SELECT distinct CATEGORY_ID,Category_Name
                                 from V_ConsumptionQtyAndPurchaseQtyAgni vc inner join " + view3 + @" vf
@@ -3675,15 +3675,16 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                     Group by vd.ITEM_FINISHED_ID,Category_Name,ITEM_NAME,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,vd.Item_Finished_Id,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vd.item_id,sizeid,finished_type_id,Unitid
                     Having  isnull(sum(consumptionqty),0)>isnull(sum(purchaseqty),0) Order By vd.ITEM_FINISHED_ID";
                 }
-                else if (chkcustomervise.Checked == true && Session["varcompanyId"].ToString() == "38")
+                else if (Session["varcompanyId"].ToString() == "38" && chkcustomervise.Checked == true)
                 {
                     strsql = @" SELECT Category_Name+'  '+ITEM_NAME +'  '+QualityName+'  '+DesignName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName  Description,
                     vd.ITEM_FINISHED_ID,sum(consumptionqty) as qty,sum(purchaseqty),vd.Item_Finished_Id as finishedid,Unitid as UnitId,
                     Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vd.item_id,sizeid ,'0' as thanlength,max(Isizeflag) as flagsize,finished_type_id as I_FINISHED_Type_ID ,'' AS Remark,'' as itemremark,0 AS IRate , 0  Iweight
-                    FROM " + view + @" vd ,V_ConsumptionQtyAndPurchaseQtyNew vc
+                    FROM " + view + @" vd ,V_ConsumptionQtyAndPurchaseQty_VikramKhamaria vc
                     WHERE  vc.finishedid=vd.ITEM_FINISHED_ID AND vc.ORDERID=" + ddorderno.SelectedValue + @"  And vd.MasterCompanyId=" + Session["varcompanyno"] + @"
                     Group by vd.ITEM_FINISHED_ID,Category_Name,ITEM_NAME,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,vd.Item_Finished_Id,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vd.item_id,sizeid,finished_type_id,Unitid
                     Having  isnull(sum(consumptionqty),0)>isnull(sum(purchaseqty),0) Order By vd.ITEM_FINISHED_ID";
+
                 }
                 else if (Session["varcompanyId"].ToString() != "6" && chkindentvise.Checked == false)
                 {
