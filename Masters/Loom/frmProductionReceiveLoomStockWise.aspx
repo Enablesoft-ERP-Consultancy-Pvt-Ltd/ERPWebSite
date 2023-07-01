@@ -250,9 +250,14 @@
                                             <asp:Label ID="Label36" runat="server" Text="Party ChallanNo" CssClass="labelbold"></asp:Label><br />
                                             <asp:TextBox ID="txtPartyChallanNo" CssClass="textb" Width="100px" runat="server" />
                                         </td>
+                                        <td id="TDbatch" runat="server" visible="false">
+                                            <asp:Label ID="Label26" runat="server" Text="Batch ChallanNo" CssClass="labelbold"></asp:Label><br />
+                                            <asp:TextBox ID="txtBatchChallanNo" CssClass="textb" Width="100px" runat="server" />
+                             </td>
                                     </tr>
                                 </table>
                             </td>
+                              
                             <td style="width: 20%" valign="top">
                                 <table width="100%">
                                     <tr>

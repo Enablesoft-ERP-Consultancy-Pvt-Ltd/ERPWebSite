@@ -14,23 +14,19 @@
             if (window.opener.document.getElementById('refreshitem11')) {
                 window.opener.document.getElementById('refreshitem11').click();
                 self.close();
-
             }
             else if (window.opener.document.getElementById('refreshitem')) {
                 window.opener.document.getElementById('refreshitem').click();
                 self.close();
-
             }
             else if (window.opener.document.getElementById('CPH_Form_refreshitemdr')) {
                 window.opener.document.getElementById('CPH_Form_refreshitemdr').click();
                 self.close();
-
             }
             else if (window.opener.document.getElementById('CPH_Form_BtnRefreshItem')) {
                 window.opener.document.getElementById('CPH_Form_BtnRefreshItem').click();
                 self.close();
             }
-
             else { }
         }
     </script>
@@ -132,6 +128,10 @@
                             <td class="tdstyle">
                                 <asp:CheckBox ID="ChkForSizeWiseConsumption" CssClass="checkboxbold" runat="server"
                                     Text="For Size Wise Consumption" />
+                            </td>
+                            <td class="tdstyle">
+                                <asp:CheckBox ID="ChkForAllDesignColorSizeWiseConsumption" CssClass="checkboxbold" runat="server"
+                                    Text="For All Design Color Size Wise Consumption" />
                             </td>
                         </tr>
                         <tr>

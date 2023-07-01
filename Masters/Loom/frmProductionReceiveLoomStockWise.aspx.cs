@@ -107,6 +107,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     TxtReceiveQty.Text = "1000";
                     DGStockDetail.PageSize = 1000;
                     TDstockno.Visible = true;
+                    TDbatch.Visible = true;
+                    
                     break;
                 case "16":
                 case "28":
@@ -534,6 +536,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 {
                     Tran.Commit();
                     txtreceiveno.Text = param[5].Value.ToString();
+                 //   txtBatchChallanNo.Text = param[16].Value.ToString();
                     hnprocessrecid.Value = param[0].Value.ToString();
                     lblmessage.Text = "Data saved successfully...";
                     FillRecDetails();
@@ -642,6 +645,9 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     break;
                 case "43":
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailCarpetInternational.rpt";
+                    break;
+                case "14":
+                    Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetaileastern.rpt";
                     break;
                 default:
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetail.rpt";
@@ -1686,6 +1692,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
                 cmd.Parameters.AddWithValue("@BranchId", DDBranchName.SelectedValue);
                 cmd.Parameters.AddWithValue("@PartyChallanNo", txtPartyChallanNo.Text);
+                cmd.Parameters.Add("@Batch_challanno", SqlDbType.Int);
+                cmd.Parameters["@Batch_challanno"].Direction = ParameterDirection.Output;
 
                 cmd.ExecuteNonQuery();
                 if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
@@ -1699,6 +1707,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     Tran.Commit();
                     txtreceiveno.Text = cmd.Parameters["@ReceiveNo"].Value.ToString();
                     hnprocessrecid.Value = cmd.Parameters["@Process_Rec_id"].Value.ToString();
+                    txtBatchChallanNo.Text = cmd.Parameters["@Batch_challanno"].Value.ToString();
                     hnlastfoliono.Value = DDFolioNo.SelectedValue;
 
                     lblmessage.Text = "Data saved successfully...";

@@ -222,9 +222,15 @@ public partial class Masters_Campany_ItemName : CustomPage
                 chkchem.Checked = true;
             }
             ChkForSizeWiseConsumption.Checked = false;
+            ChkForAllDesignColorSizeWiseConsumption.Checked = false;
+
             if (Convert.ToInt32(ds.Tables[0].Rows[0]["PassSize"]) == 1)
             {
                 ChkForSizeWiseConsumption.Checked = true;
+            }
+            if (Convert.ToInt32(ds.Tables[0].Rows[0]["PassSize"]) == 3)
+            {
+                ChkForAllDesignColorSizeWiseConsumption.Checked = true;
             }
         }
         catch (Exception ex)
@@ -280,7 +286,7 @@ public partial class Masters_Campany_ItemName : CustomPage
                     _arrPara[11].Value = ChkForCushionTypeItem.Checked == true ? "1" : "0";
                     _arrPara[12].Value = chkpretreat.Checked == true ? "1" : "0";
                     _arrPara[13].Value = chkchem.Checked == true ? "1" : "0";
-                    _arrPara[14].Value = ChkForSizeWiseConsumption.Checked == true ? "1" : "0";
+                    _arrPara[14].Value = ChkForSizeWiseConsumption.Checked == true ? "1" : ChkForAllDesignColorSizeWiseConsumption.Checked == true ? "3" : "0";
 
                     if (btnsave.Text == "Update")
                     {
@@ -308,6 +314,8 @@ public partial class Masters_Campany_ItemName : CustomPage
                     Lblerr.Visible = true;
                     Lblerr.Text = "Save Details....";
                     ChkForCushionTypeItem.Checked = false;
+                    ChkForSizeWiseConsumption.Checked = false;
+                    ChkForAllDesignColorSizeWiseConsumption.Checked = false;
                 }
                 catch (Exception ex)
                 {

@@ -138,6 +138,12 @@
                             <asp:CheckBox ID="ChkForSizeWiseConsumption" CssClass="checkboxbold" runat="server"
                                 Text="For Size Wise Consumption" />
                         </td>
+                        <td class="tdstyle">
+                            <asp:CheckBox ID="ChkForAllDesignColorSizeWiseConsumption" CssClass="checkboxbold" runat="server"
+                                Text="For All Design Color Size Wise Consumption" />
+                        </td>
+                        
+
                         <%-- <td class="tdstyle">
                             <asp:CheckBox ID="chkdyesstuff" Visible="false" CssClass="checkboxbold" runat="server" Text="Dyes Stuff" />
                         </td>--%>
