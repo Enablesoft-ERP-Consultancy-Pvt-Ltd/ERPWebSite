@@ -96,7 +96,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             UtilityModule.ConditionalComboFill(ref DDWeaverName, @"Select Distinct EI.EmpID, EI.EmpName + '(' + EI.EmpCode + ')' EmpName
                 From PUNCHCARDINDENT_RECEIVEFROMPRODUCTIONORDERMASTER a(nolock)
                 JOIN PUNCHCARDINDENT_RECEIVEFROMPRODUCTIONORDERDETAIL b(Nolock) ON b.PCIReceiveId = a.PCIReceiveId  
-                INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @" PIM ON b.FolioISSUEORDERID=PIM.ISSUEORDERID
+                INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @" PIM(nolock) ON a.FolioISSUEORDERID=PIM.ISSUEORDERID
                 JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID                   
                 Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By EI.EmpName + '(' + EI.EmpCode + ')'", true, "--Select--");            
@@ -106,7 +106,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             UtilityModule.ConditionalComboFill(ref DDWeaverName, @"Select Distinct EI.EmpID, EI.EmpName + '(' + EI.EmpCode + ')' EmpName
                 From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
-                INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @" PIM ON a.FolioISSUEORDERID=PIM.ISSUEORDERID 
+                INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @" PIM(nolock) ON a.FolioISSUEORDERID=PIM.ISSUEORDERID 
                 JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID 
                 Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By EI.EmpName + '(' + EI.EmpCode + ')'", true, "--Select--");
@@ -160,15 +160,15 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         string str = "";
         if (variable.VarLoomNoGenerated == "1")
         {
-            str = @"select Distinct PM.IssueOrderId,PM.ChallanNo from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM 
-                    inner join PROCESS_ISSUE_Detail_" + DDProcessName.SelectedValue + @" PD on Pm.issueorderid=Pd.issueorderid
-                    Left join LoomstockNo ls on pm.issueorderid=Ls.issueorderid And ls.ProcessID = " + DDProcessName.SelectedValue + @"
+            str = @"select Distinct PM.IssueOrderId,PM.ChallanNo from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM(nolock) 
+                    inner join PROCESS_ISSUE_Detail_" + DDProcessName.SelectedValue + @" PD(nolock) on Pm.issueorderid=Pd.issueorderid
+                    Left join LoomstockNo ls(nolock) on pm.issueorderid=Ls.issueorderid And ls.ProcessID = " + DDProcessName.SelectedValue + @"
                     where ls.issueorderid is null and  PM.Empid=" + DDWeaverName.SelectedValue + " and PM.CompanyId=" + DDCompany.SelectedValue + @" 
                     and PD.OrderId=" + DDOrderNo.SelectedValue + " and PM.Status<>'canceled' order by PM.Issueorderid";
         }
         else
         {
-            str = @"select Distinct PM.IssueOrderId,PM.ChallanNo from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_ISSUE_Detail_" + DDProcessName.SelectedValue + @" PD 
+            str = @"select Distinct PM.IssueOrderId,PM.ChallanNo from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(nolock),PROCESS_ISSUE_Detail_" + DDProcessName.SelectedValue + @" PD(nolock) 
                 where PM.Empid=" + DDWeaverName.SelectedValue + " and PM.CompanyId=" +DDCompany.SelectedValue + @" and PM.IssueOrderId=PD.IssueOrderId 
                 and PD.OrderId=" + DDOrderNo.SelectedValue + " and PM.Status<>'canceled' order by PM.Issueorderid";
         }
@@ -181,7 +181,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             str = @"Select distinct a.PCIReceiveID, cast( a.FolioIssueOrderId as varchar)+'/'+ cast( a.RecChallanNo  as varchar) as ChallanNo
             From PUNCHCARDINDENT_RECEIVEFROMPRODUCTIONORDERMASTER a(nolock)             
-            INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM ON a.FolioIssueOrderId=PIM.ISSUEORDERID
+            INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM(nolock) ON a.FolioIssueOrderId=PIM.ISSUEORDERID
             JOIN Empinfo EI(nolock) ON EI.EmpId=a.EmpID   
             Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And EI.EmpId in(" + DDWeaverName.SelectedValue + ")";
@@ -207,7 +207,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             str = @"Select distinct a.PCIIssueId, cast( a.FolioIssueOrderid as varchar)+'/'+ cast( a.ChallanNo  as varchar) as ChallanNo
             From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
             --INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
-            INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM ON a.FolioIssueOrderId=PIM.ISSUEORDERID
+            INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM(nolock) ON a.FolioIssueOrderId=PIM.ISSUEORDERID
             JOIN Empinfo EI(nolock) ON EI.EmpId=a.EmpID   
             Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And EI.EmpId in(" + DDWeaverName.SelectedValue + ") ";
@@ -230,48 +230,6 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
 //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.FolioIssueOrderId", true, "--Select--");
         }
 
-
-
-        //        //        if (RDReceive.Checked == true)
-        //        //        {
-        //        //            UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select distinct a.RecId, cast( b.IssueOrderid as varchar)+'/'+ cast( a.ChallanNo  as varchar) as ChallanNo
-        //        //            From MAP_ReceiveONPRODUCTIONORDERMASTER a(nolock)
-        //        //            JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL b(Nolock) ON b.RecID = a.RecID  
-        //        //            INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON b.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
-        //        //            JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo) 
-        //        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
-        //        //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.RecId", true, "--Select--");
-        //        //        }
-        //        //        else
-        //        //        {
-        //        //            UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select distinct a.IssueId, cast( a.IssueOrderid as varchar)+'/'+ cast( a.ChallanNo  as varchar) as ChallanNo
-        //        //            From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
-        //        //            INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
-        //        //            JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo) 
-        //        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
-        //        //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.IssueId", true, "--Select--");
-        //        //        }
-
-        //        if (Session["varCompanyId"].ToString() == "30")
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select distinct a.IssueOrderid, cast( PIM.ChallanNo as varchar) as ChallanNo
-        //            From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
-        //            --INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
-        //            INNER JOIN Process_Issue_Master_1 PIM ON a.ISSUEORDERID=PIM.ISSUEORDERID
-        //            JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID   
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
-        //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.IssueOrderid", true, "--Select--");
-        //        }
-        //        else
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select distinct a.IssueOrderid, cast( a.IssueOrderid as varchar) as ChallanNo
-        //            From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
-        //            INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
-        //            JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo) 
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
-        //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.IssueOrderid", true, "--Select--");
-        //        }
-
     }
     protected void DDPOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -288,14 +246,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.PCIIssueid = a.PCIISSUEID
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId 
             Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
-            And a.IssueOrderid = " + DDChallanNo.SelectedValue + " Order By VF.CATEGORY_NAME ", true, "--Select--");
-
-        //        UtilityModule.ConditionalComboFill(ref DDCategory, @"Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
-        //            From MAP_ISSUEMASTER a(nolock) 
-        //            JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
-        //            JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId 
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
-        //            And a.ID = " + DDChallanNo.SelectedValue + " Order By VF.CATEGORY_NAME ", true, "--Select--");
+            And a.IssueOrderid = " + DDChallanNo.SelectedValue + " Order By VF.CATEGORY_NAME ", true, "--Select--");      
 
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -303,13 +254,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         FillCategory_SelectedIndexChanged();
     }
     protected void FillCategory_SelectedIndexChanged()
-    {
-        //        string Str = @"Select Distinct VF.ITEM_ID, VF.ITEM_NAME 
-        //            From MAP_ISSUEMASTER a(nolock) 
-        //            JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
-        //            JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
-
+    {       
 
         string Str = @"Select Distinct VF.ITEM_ID, VF.ITEM_NAME 
             From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
@@ -397,7 +342,6 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             str = str + " And a.PCIIssueId= " + DDChallanNo.SelectedValue;
             
             //str = str + " And a.FolioIssueOrderid = " + DDChallanNo.SelectedValue;
-
         }
 
         str = str + " Order By VF.QualityName";
@@ -593,162 +537,16 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
     protected void btnpreview_Click(object sender, EventArgs e)
     {
         lblmsg.Text = "";
-
-        //if (RDAll.Checked == true)
-        //{
-        //    ForAllClick();
-        //}
+       
         if (RDPunchCardIssueDetail.Checked == true)
         {
             ForIssueClick();
         }
         else if (RDPunchCardReceiveDetail.Checked == true)
         {
-           // ForReceiveClick();
+            ForReceiveClick();
         }
     }
-//    protected void ForAllClick()
-//    {
-//        string str = "";
-//        if (Session["varCompanyId"].ToString() == "30")
-//        {
-//            str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName,U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
-//                        a.IssueDate, OM.CustomerOrderNo,  
-//                        VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 
-//                        Case When MSS.UnitID = 1 Then VF.SizeMtr Else Case When MSS.UnitID = 6 Then VF.SizeInch Else VF.SizeFt END END SIZE,( b.Qty) IssQty, 
-//                        IsNull((Select Sum(MRD.Qty) 
-//	                        From MAP_ReceiveONPRODUCTIONORDERMASTER MRM(nolock)
-//	                        JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL MRD(Nolock) ON MRD.RecId = MRM.RecId And MRD.IssueId = a.IssueId And MRD.IssueDetailId = b.IssueDetailid), 0) RecQty
-//                        From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock)
-//                        JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(Nolock) ON b.Issueid = a.ISSUEID 
-//                        JOIN CompanyInfo CI(Nolock) ON CI.CompanyId = a.CompanyId                        
-//					    JOIN OrderMaster OM(Nolock) ON OM.OrderiD = b.Orderid 
-//					    LEFT JOIN CustomerInfo CU(nolock) ON OM.CustomerId = CU.CustomerId 
-//					    JOIN Process_issue_Master_1 PIM(NoLock) ON a.IssueOrderId=PIM.ISSUEORDERID
-//					    JOIN Empinfo EI(nolock) ON PIM.EmpID=EI.EmpID
-//                       JOIN MAP_STENCILSTOCKNO_DETAIL MSSN(nolock) ON b.ISSUEID=MSSN.Issueid and b.IssueDetailId=MSSN.IssueDetailId
-//				       JOIN MAP_STENCILSTOCKNO MSS(nolock) ON MSSN.MapStencilNo=MSS.MapStencilNo
-//				       JOIN Unit U(Nolock) ON U.UnitId = MSS.UnitID
-//                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId  
-//                    Where a.CompanyID = " + DDCompany.SelectedValue + " And a.IssueDate >= '" + txtfromDate.Text + @"'
-//                    And a.IssueDate <= '" + txttodate.Text + "'";
-//        }
-//        else
-//        {
-
-//            str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName,U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
-//                        a.IssueDate, OM.CustomerOrderNo,  
-//                        VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 
-//                        Case When MSS.UnitID = 1 Then VF.SizeMtr Else Case When MSS.UnitID = 6 Then VF.SizeInch Else VF.SizeFt END END SIZE,( b.Qty) IssQty, 
-//                        IsNull((Select Sum(MRD.Qty) 
-//	                        From MAP_ReceiveONPRODUCTIONORDERMASTER MRM(nolock)
-//	                        JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL MRD(Nolock) ON MRD.RecId = MRM.RecId And MRD.IssueId = a.IssueId And MRD.IssueDetailId = b.IssueDetailid), 0) RecQty
-//                        From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock)
-//                        JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(Nolock) ON b.Issueid = a.ISSUEID 
-//                        JOIN CompanyInfo CI(Nolock) ON CI.CompanyId = a.CompanyId                        
-//					    JOIN OrderMaster OM(Nolock) ON OM.OrderiD = b.Orderid 
-//					    LEFT JOIN CustomerInfo CU(nolock) ON OM.CustomerId = CU.CustomerId 
-//					    INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
-//					    JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo) 
-//                       JOIN MAP_STENCILSTOCKNO_DETAIL MSSN(nolock) ON b.ISSUEID=MSSN.Issueid and b.IssueDetailId=MSSN.IssueDetailId
-//				       JOIN MAP_STENCILSTOCKNO MSS(nolock) ON MSSN.MapStencilNo=MSS.MapStencilNo
-//				       JOIN Unit U(Nolock) ON U.UnitId = MSS.UnitID
-//                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId  
-//                    Where a.CompanyID = " + DDCompany.SelectedValue + " And a.IssueDate >= '" + txtfromDate.Text + @"'
-//                    And a.IssueDate <= '" + txttodate.Text + "'";
-//        }
-
-//        if (DDCustCode.SelectedIndex > 0)
-//        {
-//            str = str + " And CU.CustomerID = " + DDCustCode.SelectedValue;
-//        }
-//        if (DDOrderNo.SelectedIndex > 0)
-//        {
-//            str = str + " And b.OrderID = " + DDOrderNo.SelectedValue;
-//        }
-//        if (DDWeaverName.SelectedIndex > 0)
-//        {
-//            str = str + " And EI.EmpID in( " + DDWeaverName.SelectedValue + ")";
-//        }
-//        if (DDChallanNo.SelectedIndex > 0)
-//        {
-//            //str = str + " And a.ISSUEID = " + DDChallanNo.SelectedValue;
-
-//            str = str + " And a.IssueOrderid = " + DDChallanNo.SelectedValue;
-//        }
-
-//        str = str + " And a.MapStencilType = " + DDMapStencilType.SelectedValue;
-
-//        if (DDCategory.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.Category_ID = " + DDCategory.SelectedValue;
-//        }
-//        if (DDItemName.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.Item_ID = " + DDItemName.SelectedValue;
-//        }
-//        if (DDQuality.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
-//        }
-//        if (DDDesign.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.DesignID = " + DDDesign.SelectedValue;
-//        }
-//        if (DDColor.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.ColorID = " + DDColor.SelectedValue;
-//        }
-//        if (DDShape.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.ShapeID = " + DDShape.SelectedValue;
-//        }
-//        if (DDSize.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.SizeID = " + DDSize.SelectedValue;
-//        }
-//        if (DDshade.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.ShadeColorID=" + DDshade.SelectedValue;
-//        }
-//        str = str + @"  Group By CI.CompanyName, CU.CustomerCode, EI.EmpName, a.ChallanNo,a.MapStencilType,a.IssueDate, OM.CustomerOrderNo,  
-//                    VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName,MSS.UnitID,VF.SizeMtr,VF.SizeInch,VF.SizeFt, a.IssueId,b.IssueDetailid,b.Qty,U.UnitName";
-
-//        str = str + " Order By a.IssueDate";
-
-//        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-//        if (ds.Tables[0].Rows.Count > 0)
-//        {
-//            GridView GridView1 = new GridView();
-//            GridView1.AllowPaging = false;
-
-//            GridView1.DataSource = ds;
-//            GridView1.DataBind();
-//            Response.Clear();
-//            Response.Buffer = true;
-//            Response.AddHeader("content-disposition",
-//             "attachment;filename=WeaverMapTraceAllIssRecDetail" + DateTime.Now + ".xls");
-//            Response.Charset = "";
-//            Response.ContentType = "application/vnd.ms-excel";
-//            StringWriter sw = new StringWriter();
-//            HtmlTextWriter hw = new HtmlTextWriter(sw);
-
-//            for (int i = 0; i < GridView1.Rows.Count; i++)
-//            {
-//                //Apply text style to each Row
-//                GridView1.Rows[i].Attributes.Add("class", "textmode");
-//            }
-//            GridView1.RenderControl(hw);
-
-//            //style to format numbers to string
-//            string style = @"<style> .textmode { mso-number-format:\@; } </style>";
-//            Response.Write(style);
-//            Response.Output.Write(sw.ToString());
-//            Response.Flush();
-//            Response.End();
-//            //*************
-//        }
-//    }
     protected void ForIssueClick()
     {
         string str = "";
@@ -827,77 +625,59 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             var sht = xapp.Worksheets.Add("sheet1");
             int row = 0;
 
-            sht.Range("A1:G1").Merge();
+            sht.Range("A1:L1").Merge();
             sht.Range("A1").SetValue("PUNCH CARD ISSUE DETAIL");
-            sht.Range("A2:G2").Merge();
-            sht.Range("A2").SetValue("FROM :" + txtfromDate.Text + "TO :" + txttodate.Text);
-            sht.Range("A1:G2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-            sht.Range("A1:G2").Style.Font.SetBold();
+            sht.Range("A2:L2").Merge();
+            sht.Range("A2").SetValue("FROM :" + txtfromDate.Text + " TO :" + txttodate.Text);
+            sht.Range("A1:L2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:L2").Style.Font.SetBold();
 
             //Headers
-            sht.Range("A3").Value = "INVOICE NO.";
-            sht.Range("B3").Value = "QUALITY";
-            sht.Range("C3").Value = "DESIGN";
-            sht.Range("D3").Value = "COLOR";
-            sht.Range("E3").Value = "SIZE";
-            sht.Range("F3").Value = "PCS";
-            sht.Range("G3").Value = "AREA";
+            sht.Range("A3").Value = "CHALLAN NO.";
+            sht.Range("B3").Value = "ISSUE DATE";
+            sht.Range("C3").Value = "ORDERNO";
+            sht.Range("D3").Value = "EMP NAME";
+            sht.Range("E3").Value = "FOLIO NO";
+            sht.Range("F3").Value = "QUALITY";
+            sht.Range("G3").Value = "DESIGN";
+            sht.Range("H3").Value = "COLOR";
+            sht.Range("I3").Value = "SIZE";
+            sht.Range("J3").Value = "PER SETQTY";
+            sht.Range("K3").Value = "NO OF SET";
+            //sht.Range("L3").Value = "TOTAL QTY";
 
-            sht.Range("A3:G3").Style.Font.Bold = true;
+            sht.Range("A3:L3").Style.Font.Bold = true;
 
             row = 4;
 
-            DataTable dtdistinctindent = ds.Tables[0].DefaultView.ToTable(true, "TInvoiceNo");
-            DataView dvindetnNo = new DataView(dtdistinctindent);
-            dvindetnNo.Sort = "TInvoiceNo asc";
-            DataTable dtdistinct = dvindetnNo.ToTable();
-
-            int rowfrom = 0, rowto = 0;
-            string TPcsRow = "", TAreaRow = "";
-            foreach (DataRow dr in dtdistinct.Rows)
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                DataView dvdetail = new DataView(ds.Tables[0]);
-                dvdetail.RowFilter = "TInvoiceNo='" + dr["TInvoiceNo"] + "' ";
-                dvdetail.Sort = "TInvoiceNo";
-                DataTable dt = dvdetail.ToTable();
-
-                rowfrom = row;
-                foreach (DataRow dr1 in dt.Rows)
-                {
-                    sht.Range("A" + row).SetValue(dr1["TInvoiceNo"]);
-                    sht.Range("B" + row).SetValue(dr1["QualityName"]);
-                    sht.Range("C" + row).SetValue(dr1["DesignName"]);
-                    sht.Range("D" + row).SetValue(dr1["ColorName"]);
-                    sht.Range("E" + row).SetValue(dr1["Size"]);
-                    sht.Range("F" + row).SetValue(dr1["Pcs"]);
-                    sht.Range("G" + row).SetValue(dr1["Area"]);
-
-                    row = row + 1;
-                }
-
-                rowto = row - 1;
-                sht.Range("E" + row).SetValue("Total");
-                sht.Range("F" + row).FormulaA1 = "=SUM(F" + rowfrom + ":F" + rowto + ")";
-                sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + rowto + ")";
-                sht.Range("E" + row + ":G" + row).Style.Font.Bold = true;
-
-                TPcsRow = TPcsRow + "+" + "F" + row;
-                TAreaRow = TAreaRow + "+" + "G" + row;
+                sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["ChallanNo"].ToString());
+                sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["IssueDate"].ToString());
+        
+                sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"].ToString());
+                sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"].ToString());
+                sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["FolioIssueOrderId"].ToString());
+                sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"].ToString());
+                sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["DesignName"].ToString());
+                sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["ColorName"].ToString());
+                sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Size"].ToString());
+                sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["PerSetQty"]);
+                sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["NoOfSet"]);
+                //sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["TotalIssueQty"]);
 
                 row = row + 1;
-            }
+            }           
 
-            TPcsRow = TPcsRow.TrimStart('+');
-            TAreaRow = TAreaRow.TrimStart('+');
+            //sht.Range("I" + row).SetValue("G. Total");
+            //sht.Range("L" + row).SetValue(ds.Tables[0].Compute("sum(TotalIssueQty)", ""));
+           //// sht.Range("L" + row).SetValue(string.Format("{0:0.00}", ds.Tables[0].Compute("sum(TotalIssueQty)", "")));
+            ////sht.Range("F" + row).FormulaA1 = "=SUM(" + TPcsRow + ")";
+            ////sht.Range("G" + row).FormulaA1 = "=SUM(" + TAreaRow + ")";
 
+            sht.Range("I" + row + ":L" + row).Style.Font.Bold = true;
 
-            sht.Range("E" + row).SetValue("G. Total");
-            sht.Range("F" + row).FormulaA1 = "=SUM(" + TPcsRow + ")";
-            sht.Range("G" + row).FormulaA1 = "=SUM(" + TAreaRow + ")";
-
-            sht.Range("E" + row + ":G" + row).Style.Font.Bold = true;
-
-            using (var a = sht.Range("A3:G" + row))
+            using (var a = sht.Range("A3:K" + row))
             {
                 a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
@@ -905,9 +685,9 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
                 a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             }
             //*************
-            sht.Columns(1, 15).AdjustToContents();
+            sht.Columns(1, 18).AdjustToContents();
             string Fileextension = "xlsx";
-            string name = "PackingOutSummary";
+            string name = "PunchCardIssueDetailReport";
             //if (DDEmpName.SelectedIndex > 0)
             //{
             //    name = name + "-" + DDEmpName.SelectedItem.Text;
@@ -932,169 +712,169 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         }
         
     }
+    protected void ForReceiveClick()
+    {
+        string str = "";
 
-//    protected void ForReceiveClick()
-//    {
-//        string str = "";
-//        if (Session["varCompanyId"].ToString() == "30")
-//        {
-//            str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName, U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
-//                    a.ReceiveDate, OM.CustomerOrderNo,OM.LocalOrder, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 
-//                    Case When MSS.UnitID = 1 Then VF.SizeMtr Else Case When MSS.UnitID = 6 Then VF.SizeInch Else VF.SizeFt END END SIZE, sum(b.Qty) as Qty, 
-//					(Select MSSTOCKNO + ', ' From MAP_STENCILSTOCKNO MSS(Nolock) JOIN MAP_STENCILSTOCKNO_DETAIL MSSD(Nolock) ON MSS.MapStencilNo=MSSD.MapStencilNo
-//					 Where MSS.CompanyId = a.CompanyId And MSSD.ReceiveId = a.RecID For XML Path('')) MAPSTENCILNo                   
-//                    From MAP_ReceiveONPRODUCTIONORDERMASTER a(nolock)
-//                    JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL b(Nolock) ON b.RecID = a.RecID 
-//                    JOIN CompanyInfo CI(Nolock) ON CI.CompanyId = a.CompanyId 
-//					JOIN OrderMaster OM(Nolock) ON OM.OrderiD = b.Orderid 
-//					LEFT JOIN CustomerInfo CU(nolock) ON OM.CustomerId = CU.CustomerId 
-//					JOIN PROCESS_ISSUE_MASTER_1 PIM ON b.IssueOrderID=PIM.ISSUEORDERID
-//					JOIN EmpInfo EI(NoLock) ON PIM.EmpID=EI.EmpID
-//					JOIN MAP_STENCILSTOCKNO_DETAIL MSSN(nolock) ON b.RecId=MSSN.ReceiveId and b.RecDetailId=MSSN.ReceiveDetailId
-//					JOIN MAP_STENCILSTOCKNO MSS(nolock) ON MSSN.MapStencilNo=MSS.MapStencilNo
-//					JOIN Unit U(Nolock) ON U.UnitId = MSS.UnitID                    
-//                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId                     
-//                    Where a.CompanyID = " + DDCompany.SelectedValue + " And a.ReceiveDate >= '" + txtfromDate.Text + @"'
-//                    And a.ReceiveDate <= '" + txttodate.Text + "'";
+        if (DDCustCode.SelectedIndex > 0)
+        {
+            str = str + " And OM.CustomerID = " + DDCustCode.SelectedValue;
+        }
+        if (DDOrderNo.SelectedIndex > 0)
+        {
+            str = str + " And MID.OrderID = " + DDOrderNo.SelectedValue;
+        }
+        if (DDWeaverName.SelectedIndex > 0)
+        {
+            //str = str + " And a.EmpID = " + DDWeaverName.SelectedValue;
+            str = str + " And EI.EmpID in( " + DDWeaverName.SelectedValue + ")";
+        }
+        if (DDPOrderNo.SelectedIndex > 0)
+        {
+            str = str + " And MIM.FolioIssueOrderID = " + DDPOrderNo.SelectedValue;
+        }
+        if (DDChallanNo.SelectedIndex > 0)
+        {
+            str = str + " And MIM.PCIReceiveID = " + DDChallanNo.SelectedValue;
+        }
+        if (DDCategory.SelectedIndex > 0)
+        {
+            str = str + " And VF.Category_ID = " + DDCategory.SelectedValue;
+        }
+        if (DDItemName.SelectedIndex > 0)
+        {
+            str = str + " And VF.Item_ID = " + DDItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0)
+        {
+            str = str + " And VF.DesignID = " + DDDesign.SelectedValue;
+        }
+        if (DDColor.SelectedIndex > 0)
+        {
+            str = str + " And VF.ColorID = " + DDColor.SelectedValue;
+        }
+        if (DDShape.SelectedIndex > 0)
+        {
+            str = str + " And VF.ShapeID = " + DDShape.SelectedValue;
+        }
+        if (DDSize.SelectedIndex > 0)
+        {
+            str = str + " And VF.SizeID = " + DDSize.SelectedValue;
+        }
+        if (DDshade.SelectedIndex > 0)
+        {
+            str = str + " And VF.ShadeColorID=" + DDshade.SelectedValue;
+        }
 
-////            str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName, U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
-////                    a.ReceiveDate, OM.CustomerOrderNo, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 
-////                    Case When MSS.UnitID = 1 Then VF.SizeMtr Else Case When MSS.UnitID = 6 Then VF.SizeInch Else VF.SizeFt END END SIZE, sum(b.Qty) as Qty, 
-////					(Select MSSTOCKNO + ', ' From MAP_STENCILSTOCKNO MSS(Nolock) JOIN MAP_STENCILSTOCKNO_DETAIL MSSD(Nolock) ON MSS.MapStencilNo=MSSD.MapStencilNo
-////					 Where MSS.CompanyId = a.CompanyId And MSSD.ReceiveId = a.RecID  For XML Path('')) MAPSTENCILNo                   
-////                    From MAP_ReceiveONPRODUCTIONORDERMASTER a(nolock)
-////                    JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL b(Nolock) ON b.RecID = a.RecID 
-////                    JOIN CompanyInfo CI(Nolock) ON CI.CompanyId = a.CompanyId 
-////					JOIN OrderMaster OM(Nolock) ON OM.OrderiD = b.Orderid 
-////					LEFT JOIN CustomerInfo CU(nolock) ON OM.CustomerId = CU.CustomerId 
-////					INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON b.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
-////					JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo)
-////					JOIN MAP_STENCILSTOCKNO_DETAIL MSSN(nolock) ON b.RecId=MSSN.ReceiveId and b.RecDetailId=MSSN.ReceiveDetailId
-////					JOIN MAP_STENCILSTOCKNO MSS(nolock) ON MSSN.MapStencilNo=MSS.MapStencilNo
-////					JOIN Unit U(Nolock) ON U.UnitId = MSS.UnitID                    
-////                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId                     
-////                    Where a.CompanyID = " + DDCompany.SelectedValue + " And a.ReceiveDate >= '" + txtfromDate.Text + @"'
-////                    And a.ReceiveDate <= '" + txttodate.Text + "'";
-//        }
-//        else
-//        {
-//            str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName, U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
-//                    a.ReceiveDate, OM.CustomerOrderNo,OM.LocalOrder, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 
-//                    Case When MSS.UnitID = 1 Then VF.SizeMtr Else Case When MSS.UnitID = 6 Then VF.SizeInch Else VF.SizeFt END END SIZE, sum(b.Qty) as Qty, 
-//					(Select MSSTOCKNO + ', ' From MAP_STENCILSTOCKNO MSS(Nolock) JOIN MAP_STENCILSTOCKNO_DETAIL MSSD(Nolock) ON MSS.MapStencilNo=MSSD.MapStencilNo
-//					 Where MSS.CompanyId = a.CompanyId And MSSD.ReceiveId = a.RecID For XML Path('')) MAPSTENCILNo                   
-//                    From MAP_ReceiveONPRODUCTIONORDERMASTER a(nolock)
-//                    JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL b(Nolock) ON b.RecID = a.RecID 
-//                    JOIN CompanyInfo CI(Nolock) ON CI.CompanyId = a.CompanyId 
-//					JOIN OrderMaster OM(Nolock) ON OM.OrderiD = b.Orderid 
-//					LEFT JOIN CustomerInfo CU(nolock) ON OM.CustomerId = CU.CustomerId 
-//					JOIN PROCESS_ISSUE_MASTER_1 PIM ON b.IssueOrderID=PIM.ISSUEORDERID
-//					JOIN EmpInfo EI(NoLock) ON PIM.EmpID=EI.EmpID
-//					JOIN MAP_STENCILSTOCKNO_DETAIL MSSN(nolock) ON b.RecId=MSSN.ReceiveId and b.RecDetailId=MSSN.ReceiveDetailId
-//					JOIN MAP_STENCILSTOCKNO MSS(nolock) ON MSSN.MapStencilNo=MSS.MapStencilNo
-//					JOIN Unit U(Nolock) ON U.UnitId = MSS.UnitID                    
-//                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId                     
-//                    Where a.CompanyID = " + DDCompany.SelectedValue + " And a.ReceiveDate >= '" + txtfromDate.Text + @"'
-//                    And a.ReceiveDate <= '" + txttodate.Text + "'";
-//        }
+        SqlParameter[] param = new SqlParameter[5];
+        param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+        param[1] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
+        param[2] = new SqlParameter("@FromDate", txtfromDate.Text);
+        param[3] = new SqlParameter("@ToDate", txttodate.Text);
+        param[4] = new SqlParameter("@Where", str);
+        //************
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_PunchCardReceiveDetailExcelReport", param);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+            }
+            string Path = "";
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("sheet1");
+            int row = 0;
 
-//        if (DDCustCode.SelectedIndex > 0)
-//        {
-//            //str = str + " And a.CustomerID = " + DDCustCode.SelectedValue;
+            sht.Range("A1:L1").Merge();
+            sht.Range("A1").SetValue("PUNCH CARD RECEIVE DETAIL");
+            sht.Range("A2:L2").Merge();
+            sht.Range("A2").SetValue("FROM :" + txtfromDate.Text + " TO :" + txttodate.Text);
+            sht.Range("A1:L2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:L2").Style.Font.SetBold();
 
-//            str = str + " And CU.CustomerID = " + DDCustCode.SelectedValue;
-//        }
-//        if (DDOrderNo.SelectedIndex > 0)
-//        {
-//            str = str + " And b.OrderID = " + DDOrderNo.SelectedValue;
-//        }
-//        if (DDWeaverName.SelectedIndex > 0)
-//        {
-//            //str = str + " And a.EmpID = " + DDWeaverName.SelectedValue;
+            //Headers
+            sht.Range("A3").Value = "CHALLAN NO.";
+            sht.Range("B3").Value = "RECEIVE DATE";
+            sht.Range("C3").Value = "ORDERNO";
+            sht.Range("D3").Value = "EMP NAME";
+            sht.Range("E3").Value = "FOLIO NO";
+            sht.Range("F3").Value = "QUALITY";
+            sht.Range("G3").Value = "DESIGN";
+            sht.Range("H3").Value = "COLOR";
+            sht.Range("I3").Value = "SIZE";
+            sht.Range("J3").Value = "PER SETQTY";
+            sht.Range("K3").Value = "NO OF SET";
+            //sht.Range("L3").Value = "TOTAL QTY";
 
-//            str = str + " And EI.EmpID in( " + DDWeaverName.SelectedValue + ")";
-//        }
-//        if (DDChallanNo.SelectedIndex > 0)
-//        {
-//            ////str = str + " And a.ID = " + DDChallanNo.SelectedValue;
+            sht.Range("A3:L3").Style.Font.Bold = true;
 
-//            //str = str + " And a.RecId = " + DDChallanNo.SelectedValue;
+            row = 4;
 
-//            str = str + " And b.ISSUEORDERID = " + DDChallanNo.SelectedValue;
-//        }
-//        if (DDCategory.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.Category_ID = " + DDCategory.SelectedValue;
-//        }
-//        if (DDItemName.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.Item_ID = " + DDItemName.SelectedValue;
-//        }
-//        if (DDQuality.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
-//        }
-//        if (DDDesign.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.DesignID = " + DDDesign.SelectedValue;
-//        }
-//        if (DDColor.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.ColorID = " + DDColor.SelectedValue;
-//        }
-//        if (DDShape.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.ShapeID = " + DDShape.SelectedValue;
-//        }
-//        if (DDSize.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.SizeID = " + DDSize.SelectedValue;
-//        }
-//        if (DDshade.SelectedIndex > 0)
-//        {
-//            str = str + " And VF.ShadeColorID=" + DDshade.SelectedValue;
-//        }
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["RecChallanNo"].ToString());
+                sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveDate"].ToString());
+                sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"].ToString());
+                sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"].ToString());
+                sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["FolioChallanNo"].ToString());
+                sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"].ToString());
+                sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["DesignName"].ToString());
+                sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["ColorName"].ToString());
+                sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Size"].ToString());
+                sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["RecPerSetQty"]);
+                sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["RecNoOfSet"]);
+                //sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["TotalReceiveQty"]);
 
-//        str = str + " And a.MapStencilType = " + DDMapStencilType.SelectedValue;
+                row = row + 1;
+            }
 
-//        str = str + @" Group by a.CompanyId,CI.CompanyName, CU.CustomerCode, EI.EmpName, a.ChallanNo,a.MapStencilType,a.ReceiveDate, OM.CustomerOrderNo, OM.LocalOrder, 
-//                    VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName,MSS.UnitID,VF.SizeMtr,VF.SizeInch,VF.SizeFt, U.UnitName,a.RecID";
+            //sht.Range("I" + row).SetValue("G. Total");
+            //sht.Range("L" + row).SetValue(ds.Tables[0].Compute("sum(TotalReceiveQty)", ""));
+            ////sht.Range("E" + row).SetValue("G. Total");
+            ////sht.Range("F" + row).FormulaA1 = "=SUM(" + TPcsRow + ")";
+            ////sht.Range("G" + row).FormulaA1 = "=SUM(" + TAreaRow + ")";
 
-//        str = str + " Order By a.ReceiveDate";
+            sht.Range("I" + row + ":L" + row).Style.Font.Bold = true;
 
-//        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-//        if (ds.Tables[0].Rows.Count > 0)
-//        {
-//            GridView GridView1 = new GridView();
-//            GridView1.AllowPaging = false;
-
-//            GridView1.DataSource = ds;
-//            GridView1.DataBind();
-//            Response.Clear();
-//            Response.Buffer = true;
-//            Response.AddHeader("content-disposition",
-//             "attachment;filename=WeaverMapTraceReceiveDetail" + DateTime.Now + ".xls");
-//            Response.Charset = "";
-//            Response.ContentType = "application/vnd.ms-excel";
-//            StringWriter sw = new StringWriter();
-//            HtmlTextWriter hw = new HtmlTextWriter(sw);
-
-//            for (int i = 0; i < GridView1.Rows.Count; i++)
-//            {
-//                //Apply text style to each Row
-//                GridView1.Rows[i].Attributes.Add("class", "textmode");
-//            }
-//            GridView1.RenderControl(hw);
-
-//            //style to format numbers to string
-//            string style = @"<style> .textmode { mso-number-format:\@; } </style>";
-//            Response.Write(style);
-//            Response.Output.Write(sw.ToString());
-//            Response.Flush();
-//            Response.End();
-//            //*************
-//        }
-//    }
+            using (var a = sht.Range("A3:K" + row))
+            {
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            }
+            //*************
+            sht.Columns(1, 18).AdjustToContents();
+            string Fileextension = "xlsx";
+            string name = "PunchCardReceiveDetailReport";
+            //if (DDEmpName.SelectedIndex > 0)
+            //{
+            //    name = name + "-" + DDEmpName.SelectedItem.Text;
+            //}
+            string filename = UtilityModule.validateFilename("" + name + "_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
+        }
+       
+    }
     protected void RDPunchCardReceiveDetail_CheckedChanged(object sender, EventArgs e)
     {
         FillWeaverName();
@@ -1103,8 +883,5 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
     {
         FillWeaverName();
     }
-    //protected void RDAll_CheckedChanged(object sender, EventArgs e)
-    //{
-    //    FillWeaverName();
-    //}
+    
 }
