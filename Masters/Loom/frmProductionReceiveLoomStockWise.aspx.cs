@@ -163,6 +163,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         TxtReceiveQty.Text = "200";
                         DGStockDetail.PageSize = 200;
                     }
+                    ChkForSummaryReport.Visible = true;
                     break;
                 case "45":
                     TxtReceiveQty.Enabled = true;
@@ -644,7 +645,14 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailchampo.rpt";
                     break;
                 case "43":
-                    Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailCarpetInternational.rpt";
+                    if (ChkForSummaryReport.Checked == true)
+                    {
+                        Session["rptFileName"] = "~\\Reports\\rptProductionreceiveSummaryCarpetInternational.rpt";
+                    }
+                    else
+                    {
+                        Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailCarpetInternational.rpt";
+                    }                    
                     break;
                 case "14":
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetaileastern.rpt";

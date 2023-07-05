@@ -1008,6 +1008,7 @@
                     <table width="100%">
                         <tr>
                             <td align="right">
+                            <asp:CheckBox ID="ChkForSummaryReport" Text="For Summary" CssClass="labelbold" runat="server" Visible="false" />
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
                                 <asp:Button ID="btnsave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="btnsave_Click"
                                     Visible="false" UseSubmitBehavior="false" OnClientClick="if (!confirm('Do you want to save Data?')) return; this.disabled=true;this.value = 'wait ...';" />
