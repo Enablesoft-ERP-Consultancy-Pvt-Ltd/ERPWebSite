@@ -246,6 +246,18 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     TDChkForStockNoAttachWithoutMaterialIssue.Visible = true;
                     ChkForStockNoAttachWithoutMaterialIssue.Checked = true;
                     break;
+                case "46":
+                    TDTanaCottonLotNo.Visible = false;
+                    BtnUpdateTanaLotNo.Visible = false;
+                    TDTanaLotNo.Visible = false;
+                    txtWeaverIdNo.Visible = true;
+                    txtWeaverIdNoscan.Visible = false;
+                    BtnPreviewConsumption.Visible = false;
+                    ChkForWithoutRate.Visible = false;
+                    TDLastFolioNo.Visible = false;
+                    ChkForSlipPrint.Visible = false;
+                    ChkForWithoutRate.Visible = true;
+                    break;
                 default:
                     TDTanaCottonLotNo.Visible = false;
                     BtnUpdateTanaLotNo.Visible = false;
@@ -296,6 +308,10 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             {
                 DDCalType.SelectedValue = "0";
                 hnordercaltype.Value = "0";
+            }
+            if (Session["varCompanyId"].ToString() == "46")
+            {
+                DDCalType.SelectedValue = "0";
             }
             //if (Session["varCompanyId"].ToString() == "43")
             //{
@@ -1571,7 +1587,14 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 case "46":
                     if (variable.VarLoomNoGenerated == "1")
                     {
-                        Session["rptFileName"] = "~\\Reports\\RptProductionOrderLoomWiseStockNeman.rpt";
+                        if (ChkForWithoutRate.Checked == true)
+                        {
+                            Session["rptFileName"] = "~\\Reports\\RptProductionOrderLoomWiseStockNemanWithoutRate.rpt";
+                        }
+                        else
+                        {
+                            Session["rptFileName"] = "~\\Reports\\RptProductionOrderLoomWiseStockNeman.rpt";
+                        }
                     }
                     else
                     {
