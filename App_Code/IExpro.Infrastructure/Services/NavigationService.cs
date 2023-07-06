@@ -19,7 +19,7 @@ namespace IExpro.Infrastructure.Services
         public NavigationService(IUnitOfWork _IU)
         {
             this.IU = _IU;
-            this.NavRepo = IU.NavRepository;
+            this.NavRepo = IU.NavRepo;
         }
 
         public List<MenuModel> GetMenus(int userId, int clientId)

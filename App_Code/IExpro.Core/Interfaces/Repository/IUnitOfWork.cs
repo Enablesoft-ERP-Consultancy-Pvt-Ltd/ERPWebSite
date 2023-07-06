@@ -9,18 +9,11 @@ namespace IExpro.Core.Interfaces.Repository
 {
     public interface IUnitOfWork
     {
-        IGenericRepository<T> GenericRepository<T>() where T : class; 
-
-        /// <summary>
-        /// This region  is  created by user Rakesh
-        /// </summary>    
-        #region Rakesh
+        IGenericRepository<T> GenericRepository<T>() where T : class;
         IAccountRepository AccontRepo { get; }
         IInvoiceRepository InvoiceRepo { get; }
-
-        INavigationRepository NavRepository { get; }
-        #endregion
-
+        INavigationRepository NavRepo { get; }
+        ICommonRepository CommRepo { get; }
         void SaveChanges();
 
 
@@ -28,5 +21,5 @@ namespace IExpro.Core.Interfaces.Repository
     }
 
 
-   
+
 }

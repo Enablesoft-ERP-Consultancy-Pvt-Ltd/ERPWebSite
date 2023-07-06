@@ -40,13 +40,7 @@ namespace IExpro.Infrastructure.Repository
             return repo;
         }
 
-
-
-
-
-
-
-        private IAccountRepository _AccontRepo;
+        IAccountRepository _AccontRepo;
         public IAccountRepository AccontRepo
         {
             get
@@ -59,8 +53,7 @@ namespace IExpro.Infrastructure.Repository
             }
 
         }
-
-        private IInvoiceRepository _InvoiceRepo;
+        IInvoiceRepository _InvoiceRepo;
         public IInvoiceRepository InvoiceRepo
         {
             get
@@ -73,9 +66,8 @@ namespace IExpro.Infrastructure.Repository
             }
 
         }
-
-        private INavigationRepository _NavRepository;
-        public INavigationRepository NavRepository
+        INavigationRepository _NavRepository;
+        public INavigationRepository NavRepo
         {
             get
             {
@@ -87,6 +79,26 @@ namespace IExpro.Infrastructure.Repository
             }
 
         }
+        ICommonRepository _CommRepo;
+        public ICommonRepository CommRepo
+        {
+            get
+            {
+                if (_CommRepo != null)
+                    return _CommRepo;
+                else
+                    return _CommRepo = new CommonRepository(entities);
+
+            }
+
+        }
+
+
+
+
+
+
+
 
 
 

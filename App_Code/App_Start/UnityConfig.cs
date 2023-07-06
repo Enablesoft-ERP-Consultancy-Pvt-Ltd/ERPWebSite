@@ -14,17 +14,21 @@ namespace ASP
     {
         public static void RegisterComponents()
         {
-			var container = new UnityContainer();
+            var container = new UnityContainer();
+            container.RegisterType<ICommonRepository, CommonRepository>();
+            container.RegisterType<ICommonService, CommonService>();
 
+            container.RegisterType<IInvoiceRepository, InvoiceRepository>();
+            container.RegisterType<IInvoiceService, InvoiceService>();
+
+
+
+            container.RegisterType<IUnitOfWork, UnitOfWork>();
+            container.RegisterType<IDataContext, IExproContext>();
             // register all your components with the container here
             // it is NOT necessary to register your controllers
 
             // e.g. container.RegisterType<ITestService, TestService>();
-
-            container.RegisterType<IInvoiceRepository, InvoiceRepository>();
-            container.RegisterType<IInvoiceService, InvoiceService>();
-            container.RegisterType<IUnitOfWork, UnitOfWork>();
-            container.RegisterType<IDataContext, IExproContext>();
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
         }

@@ -2,9 +2,12 @@
     CodeFile="Site.master.cs" Inherits="Site" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-    <link href="Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="Content/css/style.css" rel="stylesheet" />
+
+    <link href="<%= Page.ResolveUrl("~/Content/bootstrap/css/bootstrap.min.css")%>" rel="stylesheet" />
+    <link href="<%= Page.ResolveUrl("~/Content/font-awesome/css/font-awesome.min.css")%>"
+        rel="stylesheet" />
+    <link href="<%= Page.ResolveUrl("~/Content/css/style.css")%>" rel="stylesheet" />
+
     <asp:ContentPlaceHolder ID="pageStyles" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>

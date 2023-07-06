@@ -9,10 +9,13 @@ namespace IExpro.Core.Interfaces.Service
 {
     public interface ICommonService
     {
-        List<MenuModel> GetCompanyList();
-        List<MenuModel> GetCustomerList();
-        List<MenuModel> GetSessionList();
-        List<MenuModel> GetDocTypeList();
-        List<MenuModel> GetPrintTypeList();
+
+        IEnumerable<SelectList> GetCustomerList(int clientId);
+        IEnumerable<SelectList> GetDocTypeList(int clientId);
+        //List<MenuModel> GetCompanyList();
+        //List<MenuModel> GetCustomerList();
+        //List<MenuModel> GetSessionList();
+        //List<MenuModel> GetDocTypeList();
+        //List<MenuModel> GetPrintTypeList();
     }
 }
