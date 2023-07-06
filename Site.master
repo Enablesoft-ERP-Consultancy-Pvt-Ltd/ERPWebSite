@@ -1,0 +1,22 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/ERPmaster.master" AutoEventWireup="true"
+    CodeFile="Site.master.cs" Inherits="Site" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <link href="Content/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="Content/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="Content/css/style.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="pageStyles" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
+    <asp:ContentPlaceHolder ID="pageBody" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="CPH_SideBar" runat="Server">
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="CPH_Footer" runat="Server">
+    <span class="labelcopyr">&copy; Enablesoft Erp Consultancy Pvt. Ltd.All rights reserved.</span>
+    <asp:ContentPlaceHolder ID="pageScripts" runat="server">
+    </asp:ContentPlaceHolder>
+</asp:Content>
+
