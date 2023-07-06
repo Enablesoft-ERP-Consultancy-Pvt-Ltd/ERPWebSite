@@ -711,6 +711,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     TDEditReceiveNoForCI.Visible = false;
                     break;
                 case "43":
+                    BtnUpdateRate.Visible = false;
+                    BtnUpdateConsumption.Visible = true;
                     TDEditReceiveNoForCI.Visible = true;
                     break;
                 default:
