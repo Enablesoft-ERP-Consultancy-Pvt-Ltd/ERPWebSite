@@ -93,7 +93,19 @@ namespace IExpro.Infrastructure.Repository
 
         }
 
+        IDocumentRepository _DocRepo;
+        public IDocumentRepository DocRepo
+        {
+            get
+            {
+                if (_DocRepo != null)
+                    return _DocRepo;
+                else
+                    return _DocRepo = new DocumentRepository(entities);
 
+            }
+
+        }
 
 
 

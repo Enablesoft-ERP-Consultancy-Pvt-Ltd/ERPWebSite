@@ -9,8 +9,11 @@ using System.Web;
 /// <summary>
 /// Summary description for ICommonRepository
 /// </summary>
-public interface ICommonRepository : IGenericRepository<FormName>
+namespace IExpro.Core.Interfaces.Repository
 {
-    IEnumerable<SelectList> GetCustomerList(int clientId);
-    IEnumerable<SelectList> GetDocTypeList(int clientId);
+    public interface ICommonRepository : IGenericRepository<FormName>
+    {
+        IEnumerable<SelectList> GetCustomerList(int clientId);
+        IEnumerable<SelectList> GetDocTypeList(int clientId);
+    }
 }

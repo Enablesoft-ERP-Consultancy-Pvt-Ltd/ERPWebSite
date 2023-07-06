@@ -12,11 +12,13 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
 {
     ICommonService CommSrv;
     int ClientId;
+    IDocumentService DocSrv;
 
     public Settings_AddXSLT()
     {
         this.CommSrv = new CommonService(new UnitOfWork());
-     
+        this.DocSrv = new DocumentService(new UnitOfWork());
+
     }
 
     protected void Page_Load(object sender, EventArgs e)
@@ -28,8 +30,6 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
         }
 
 
-
-
         if (!IsPostBack)
         {
             ClientId = Convert.ToInt32(Session["varcompanyNo"].ToString());
@@ -38,15 +38,19 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
             ddlCustomer.DataValueField = "ItemId";
             ddlCustomer.DataBind();
 
-
             ddlDocument.DataSource = this.CommSrv.GetDocTypeList(ClientId);
             ddlDocument.DataTextField = "ItemName";
             ddlDocument.DataValueField = "ItemId";
             ddlDocument.DataBind();
+
+            rptDoc.DataSource = this.DocSrv.GetDocumentList();
+            rptDoc.DataBind();
+
+
         }
     }
 
- 
+
 
 
 

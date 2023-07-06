@@ -14,6 +14,8 @@ namespace IExpro.Core.Interfaces.Repository
         IInvoiceRepository InvoiceRepo { get; }
         INavigationRepository NavRepo { get; }
         ICommonRepository CommRepo { get; }
+
+        IDocumentRepository DocRepo { get;  }
         void SaveChanges();
 
 

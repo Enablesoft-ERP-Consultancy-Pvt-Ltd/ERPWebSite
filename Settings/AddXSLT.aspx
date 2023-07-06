@@ -1,4 +1,5 @@
-﻿<%@ Page Title="" EnableSessionState="True" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true"
+﻿<%@ Page Title="" EnableSessionState="True" Language="C#" MasterPageFile="~/Site.master"
+    AutoEventWireup="true"
     CodeFile="AddXSLT.aspx.cs" Inherits="Settings_AddXSLT" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="pageStyles" runat="Server">
@@ -17,6 +18,7 @@
         <div class="clearfix"></div>
     </div>
     <div class="page-content">
+
         <div class="panel">
             <div class="panel-body">
 
@@ -40,13 +42,13 @@
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label>Document Formate :</label>
-                            
+
                             <asp:FileUpload ID="flpFormate" CssClass="form-control" runat="server" />
-                            
+
                         </div>
                     </div>
                 </div>
-                
+
 
                 <div class="row">
                     <div class="col-lg-12">
@@ -60,6 +62,61 @@
 
             </div>
         </div>
+
+
+
+        <div class="panel">
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-bordered table-striped mbn">
+                                <asp:Repeater ID="rptDoc" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="bg-green-dark">
+                                                <th width="50%">Document Type</th>
+                                                <th width="500%">Train ID</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr>
+                                            <td><%# Eval("DocumentType") %>
+                                                <%# Eval("XsltId") %>
+                                            </td>
+
+
+                                            <td>
+
+                                                <i class="fa fa-info-circle text-red mrm mediumtxt" title="Detail"></i>
+
+                                            </td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+
+
+
+
+
+
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="pageScripts" runat="Server">

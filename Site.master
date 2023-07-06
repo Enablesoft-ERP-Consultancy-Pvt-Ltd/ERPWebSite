@@ -11,12 +11,13 @@
     <asp:ContentPlaceHolder ID="pageStyles" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>
+
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
     <asp:ContentPlaceHolder ID="pageBody" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="CPH_SideBar" runat="Server">
-</asp:Content>
+
+
 <asp:Content ID="Content4" ContentPlaceHolderID="CPH_Footer" runat="Server">
     <span class="labelcopyr">&copy; Enablesoft Erp Consultancy Pvt. Ltd.All rights reserved.</span>
     <asp:ContentPlaceHolder ID="pageScripts" runat="server">
