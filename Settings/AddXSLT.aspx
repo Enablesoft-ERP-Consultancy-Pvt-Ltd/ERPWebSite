@@ -12,23 +12,18 @@
                     <div class="page-title">Add formate for Document</div>
                 </div>
             </div>
-
         </div>
-
         <div class="clearfix"></div>
     </div>
     <div class="page-content">
-
         <div class="panel">
             <div class="panel-body">
-
                 <div class="row">
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label>DocumentType:</label>
                             <asp:DropDownList ID="ddlDocument" CssClass="form-control required" runat="server">
                             </asp:DropDownList>
-
                         </div>
                     </div>
                     <div class="col-lg-3">
@@ -38,7 +33,6 @@
                             </asp:DropDownList>
                         </div>
                     </div>
-
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label>Document Formate :</label>
@@ -48,37 +42,27 @@
                         </div>
                     </div>
                 </div>
-
-
                 <div class="row">
                     <div class="col-lg-12">
                         <button type="button" class="btn btn-md btn-red mrl">Cancel</button>
                         <button type="submit" class="btn btn-md btn-black mrl">Save Changes</button>
-
-
-
                     </div>
                 </div>
-
             </div>
         </div>
-
-
-
         <div class="panel">
             <div class="panel-body">
-
                 <div class="row">
-                    <div class="col-lg-12">
+
+                    <div class="col-lg-4">
                         <div class="table-responsive">
                             <table class="table table-hover table-bordered table-striped mbn">
-                                <asp:Repeater ID="rptDoc" runat="server">
+                                <asp:Repeater ID="rptDoc" runat="server" OnItemCommand="rptDoc_ItemCommand">
                                     <HeaderTemplate>
                                         <thead>
-                                            <tr class="bg-green-dark">
-                                                <th width="50%">Document Type</th>
-                                                <th width="500%">Train ID</th>
-
+                                            <tr class="bg-table-header">
+                                                <th width="80%">Document Type</th>
+                                                <th width="20%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -86,14 +70,13 @@
                                     <ItemTemplate>
                                         <tr>
                                             <td><%# Eval("DocumentType") %>
-                                                <%# Eval("XsltId") %>
+                                                <asp:HiddenField ID="hdnDocId" runat="server" Value='<%# Eval("XsltId") %>' />
+
                                             </td>
-
-
                                             <td>
-
-                                                <i class="fa fa-info-circle text-red mrm mediumtxt" title="Detail"></i>
-
+                                                <asp:Literal ID="lblText" runat="server"></asp:Literal>
+                                                <asp:LinkButton ID="lbtnView" Text="<i class='fa fa-info-circle mrm mediumtxt' title='Detail'></i>View"
+                                                    CommandName="View" CssClass="btn btn-xs btn-default" runat="server"></asp:LinkButton>
                                             </td>
                                         </tr>
                                     </ItemTemplate>
@@ -105,18 +88,17 @@
                             </table>
                         </div>
                     </div>
+
+
+                    <div class="col-lg-8">
+
+                        <asp:Literal ID="lblText" runat="server"></asp:Literal>
+                        <asp:Xml ID="xmlText" runat="server" Visible="false"></asp:Xml>
+                    </div>
+
                 </div>
-
-
             </div>
         </div>
-
-
-
-
-
-
-
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="pageScripts" runat="Server">
