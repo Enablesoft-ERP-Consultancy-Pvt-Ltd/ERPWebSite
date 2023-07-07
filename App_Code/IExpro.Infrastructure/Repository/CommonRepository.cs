@@ -11,6 +11,7 @@ using DocumentFormat.OpenXml.EMMA;
 using System.Data.Entity.Infrastructure;
 using IExpro.Infrastructure.Repository;
 using IExpro.Core.Interfaces.Repository;
+using IExpro.Core.Models;
 
 namespace IExpro.Infrastructure.Repository
 {

@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" EnableSessionState="True" Language="C#" MasterPageFile="~/Site.master"
-    AutoEventWireup="true"
+    AutoEventWireup="true"  validateRequest="false"
     CodeFile="AddXSLT.aspx.cs" Inherits="Settings_AddXSLT" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="pageStyles" runat="Server">
@@ -37,15 +37,38 @@
                         <div class="form-group">
                             <label>Document Formate :</label>
 
-                            <asp:FileUpload ID="flpFormate" CssClass="form-control" runat="server" />
+                            <asp:FileUpload ID="flpContent" CssClass="form-control" runat="server" />
 
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-lg-12">
-                        <button type="button" class="btn btn-md btn-red mrl">Cancel</button>
-                        <button type="submit" class="btn btn-md btn-black mrl">Save Changes</button>
+
+
+                        <div class="form-group">
+                            <label>Document Formate :</label>
+                            <asp:TextBox ID="txtContent" TextMode="MultiLine" CssClass="form-control" Rows="10" runat="server"></asp:TextBox>
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <asp:LinkButton ID="btnCancel" CssClass="btn btn-md btn-red mrl" runat="server">Cancel</asp:LinkButton>
+                        <asp:LinkButton ID="btnSave" CssClass="btn btn-md btn-black mrl" runat="server" OnClick="btnSave_Click">Save Changes</asp:LinkButton>
+
                     </div>
                 </div>
             </div>

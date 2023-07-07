@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IExpro.Core.Models.Document;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,5 +14,6 @@ namespace IExpro.Core.Interfaces.Service
     {
         IEnumerable<dynamic> GetDocumentList();
         string GetDocument(int DocumentId);
+        int AddDocument(DocumentModel doc);
     }
 }

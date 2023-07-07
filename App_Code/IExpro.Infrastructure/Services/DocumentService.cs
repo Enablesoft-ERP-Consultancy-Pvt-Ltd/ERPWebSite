@@ -1,5 +1,7 @@
-﻿using IExpro.Core.Interfaces.Repository;
+﻿using DocumentFormat.OpenXml.Office2010.Word;
+using IExpro.Core.Interfaces.Repository;
 using IExpro.Core.Interfaces.Service;
+using IExpro.Core.Models.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,5 +29,10 @@ namespace IExpro.Infrastructure.Services
             return this.DocRepo.GetDocument(DocumentId);
         }
 
-    }
+        public int AddDocument(DocumentModel doc)
+        {
+            return this.DocRepo.AddDocument(doc);
+        }
+
+        }
 }

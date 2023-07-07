@@ -29,8 +29,8 @@ namespace IExpro.Infrastructure.Services
                 string xsltText = this.InvoiceRepo.GetXSLTDetail(_clientId, docType, userId, userType);
                 XsltArgumentList arguments = new XsltArgumentList();
                 arguments.AddExtensionObject("pda:MyUtils", new MathHelper());
-
                 return XmlHelper.XmlWriterFunction(xmlText.ToString(), arguments, xsltText);
+           
             }
             catch (Exception ex)
             {

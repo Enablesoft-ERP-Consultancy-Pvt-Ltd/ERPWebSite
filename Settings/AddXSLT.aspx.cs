@@ -1,19 +1,22 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
+﻿
 using IExpro.Core.Common;
 using IExpro.Core.Interfaces.Service;
 using IExpro.Infrastructure.Repository;
 using IExpro.Infrastructure.Services;
+using IExpro.Core.Models.Document;
+
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Xsl;
+using System.Configuration;
+using System.Data.SqlClient;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Xml;
+using System.Text;
 
 public partial class Settings_AddXSLT : System.Web.UI.Page
 {
@@ -99,11 +102,40 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
     }
 
 
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        DocumentModel doc = new DocumentModel();
+        doc.DocType = Convert.ToInt32(ddlDocument.SelectedItem.Value);
+        doc.UserId = Convert.ToInt32(ddlCustomer.SelectedItem.Value);
+        doc.Title = ddlDocument.SelectedItem.Value + "for Customer" + ddlCustomer.SelectedItem.Text;
+        doc.CompanyId = Convert.ToInt32(Session["varCompanyId"]);
+        doc.CreatedBy = Convert.ToInt32(Session["varuserid"]);
+        doc.CreatedOn = DateTime.Now;
+        doc.Content = txtContent.Text;
+
+        if (flpContent.HasFiles)
+        {
+            foreach (HttpPostedFile postedFile in flpContent.PostedFiles)
+            {
+                if (postedFile.ContentLength > 0) //if file not empty
+                {
+                    string contentType = postedFile.ContentType;
+                    using (Stream fs = flpContent.PostedFile.InputStream)
+                    {
+                        using (BinaryReader br = new BinaryReader(fs))
+                        {
+                            byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                        }
+                    }
+                }
+            }
+        }
+
+        this.DocSrv.AddDocument(doc);
 
 
 
-
-
+    }
 
 
 
@@ -117,3 +149,27 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
