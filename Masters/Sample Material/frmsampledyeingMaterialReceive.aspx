@@ -269,6 +269,12 @@
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                                 </asp:TemplateField>
+                                <asp:TemplateField HeaderText="IssQty OnMachine" Visible="false">
+                                    <ItemTemplate>
+                                        <asp:TextBox ID="txtIssQtyOnMachine" Width="70px" runat="server" BackColor="Yellow" onkeypress="return isNumberKey(this);" />
+                                    </ItemTemplate>
+                                    <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                                </asp:TemplateField>
                                 <asp:TemplateField Visible="false">
                                     <ItemTemplate>
                                         <asp:Label ID="lblissueid" Text='<%#Bind("issueId") %>' runat="server" />
@@ -302,7 +308,7 @@
             <div id="Div1" runat="server" style="max-height: 500px; overflow: auto">
                 <asp:GridView ID="DGrecdetail" AutoGenerateColumns="False" runat="server" CssClass="grid-views"
                     Width="100%" OnRowEditing="DGrecdetail_RowEditing" OnRowCancelingEdit="DGrecdetail_RowCancelingEdit"
-                    OnRowDeleting="DGrecdetail_RowDeleting" OnRowUpdating="DGrecdetail_RowUpdating">
+                    OnRowDeleting="DGrecdetail_RowDeleting" OnRowUpdating="DGrecdetail_RowUpdating" OnRowDataBound="DGrecdetail_RowDataBound">
                     <HeaderStyle CssClass="gvheaders" />
                     <AlternatingRowStyle CssClass="gvalts" />
                     <RowStyle CssClass="gvrow" />
@@ -384,6 +390,16 @@
                             <EditItemTemplate>
                                 <asp:TextBox ID="txtBellWt" runat="server" CssClass="textb" Text='<%#Bind("BellWtQty") %>'
                                     Width="70px" BackColor="Yellow" />
+                            </EditItemTemplate>
+                            <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" />
+                        </asp:TemplateField>
+                        <asp:TemplateField HeaderText="IssQty OnMachine" Visible="false">
+                            <ItemTemplate>
+                                <asp:Label ID="lblIssQtyOnMachine" Text='<%#Bind("IssQtyOnMachine") %>' runat="server" />
+                            </ItemTemplate>
+                            <EditItemTemplate>
+                                <asp:TextBox ID="txtIssQtyOnMachine" runat="server" CssClass="textb" Text='<%#Bind("IssQtyOnMachine") %>'
+                                    Width="70px" BackColor="Yellow" onkeypress="return isNumberKey(this);" />
                             </EditItemTemplate>
                             <ItemStyle HorizontalAlign="Center" VerticalAlign="Middle" />
                         </asp:TemplateField>

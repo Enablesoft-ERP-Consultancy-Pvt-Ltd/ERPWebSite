@@ -129,6 +129,7 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
         dtrecord.Columns.Add("Ifinishedid", typeof(int));
         dtrecord.Columns.Add("BinNo", typeof(string));
         dtrecord.Columns.Add("BELLWT", typeof(float));
+        dtrecord.Columns.Add("IssQtyOnMachine", typeof(float));
         //************
         for (int i = 0; i < DG.Rows.Count; i++)
         {
@@ -146,6 +147,7 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
             TextBox txtundyedqty = (TextBox)DG.Rows[i].FindControl("txtundyedqty");
             Label lblifinishedid = (Label)DG.Rows[i].FindControl("lblifinishedid");
             DropDownList DDBinNo = (DropDownList)DG.Rows[i].FindControl("DDBinNo");
+            TextBox txtIssQtyOnMachine = (TextBox)DG.Rows[i].FindControl("txtIssQtyOnMachine");
 
             saveflag = false;
             double finalqty = Convert.ToDouble(txtrecqty.Text == "" ? "0" : txtrecqty.Text) - Convert.ToDouble(txtbellwt.Text == "" ? "0" : txtbellwt.Text);
@@ -182,6 +184,7 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
                 dr["Ifinishedid"] = lblifinishedid.Text;
                 dr["BinNo"] = variable.VarBINNOWISE == "1" ? DDBinNo.SelectedItem.Text : "";
                 dr["BELLWT"] = txtbellwt.Text == "" ? "0" : txtbellwt.Text;
+                dr["IssQtyOnMachine"] = txtIssQtyOnMachine.Text == "" ? "0" : txtIssQtyOnMachine.Text;
                 dtrecord.Rows.Add(dr);
 
             }
@@ -313,6 +316,14 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
                     }
 
                 }
+
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    if (DG.Columns[i].HeaderText.ToUpper() == "ISSQTY ONMACHINE")
+                    {
+                        DG.Columns[i].Visible = true;
+                    }
+                }
             }
             if (variable.VarBINNOWISE == "1")
             {
@@ -337,7 +348,8 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
     {
         string str = @"select SRM.ID,SRD.Detailid,dbo.F_getItemDescription(srd.Rfinishedid,SRD.Rflagsize) as RItemdescription,
                         gm.GodownName,SRD.LotNo,SRD.TagNo,SRD.Recqty,SRD.Lossqty,SRD.Rate,SRM.GateinNo,SRM.challanNo,SRM.receiveDate,srd.Undyedqty,
-                        isnull(Srm.Checkedby,'') as Checkedby,isnull(Srm.Approvedby,'') as Approvedby,isnull(SRD.bellWtQty,0) as BellWtQty
+                        isnull(Srm.Checkedby,'') as Checkedby,isnull(Srm.Approvedby,'') as Approvedby,isnull(SRD.bellWtQty,0) as BellWtQty,
+                        isnull(SRD.IssQtyOnMachine,0) as IssQtyOnMachine
                         From SampleDyeingReceivemaster SRM inner join SampleDyeingReceiveDetail SRD on SRM.ID=SRD.Masterid
                         inner join GodownMaster gm on SRD.godownid=gm.GoDownID Where SRM.id=" + hnid.Value;
 
@@ -376,6 +388,10 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
             if (Session["VarCompanyId"].ToString() == "22")
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingreceiveDiamond.rpt";
+            }
+            else if (Session["VarCompanyId"].ToString() == "43")
+            {
+                Session["rptFileName"] = "~\\Reports\\rptsampledyeingreceiveCI.rpt";
             }
             else
             {
@@ -421,6 +437,24 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
         hnid.Value = DDpartychallan.SelectedValue;
         fillgrid();
     }
+    protected void DGrecdetail_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            for (int i = 0; i < DGrecdetail.Columns.Count; i++)
+            {
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    if (DGrecdetail.Columns[i].HeaderText.ToUpper() == "ISSQTY ONMACHINE")
+                    {
+                        DGrecdetail.Columns[i].Visible = true;
+                    }
+                }
+            }          
+
+        }
+    }
+
     protected void DGrecdetail_RowEditing(object sender, GridViewEditEventArgs e)
     {
         DGrecdetail.EditIndex = e.NewEditIndex;
@@ -492,9 +526,10 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
             TextBox txtlossqty = (TextBox)DGrecdetail.Rows[rowindex].FindControl("txtlossqty");
             TextBox txteditrate = (TextBox)DGrecdetail.Rows[rowindex].FindControl("txteditrate");
             TextBox txtundyedqtyedit = (TextBox)DGrecdetail.Rows[rowindex].FindControl("txtundyedqtyedit");
+            TextBox txtIssQtyOnMachine = (TextBox)DGrecdetail.Rows[rowindex].FindControl("txtIssQtyOnMachine");
             double finalqty = Convert.ToDouble(txtrecqty.Text == "" ? "0" : txtrecqty.Text) - Convert.ToDouble(txtbellwtqty.Text == "" ? "0" : txtbellwtqty.Text);
             //*************
-            SqlParameter[] arr = new SqlParameter[10];
+            SqlParameter[] arr = new SqlParameter[11];
             arr[0] = new SqlParameter("@ID", lblid.Text);
             arr[1] = new SqlParameter("@Detailid", lbldetailid.Text);
             arr[2] = new SqlParameter("@recqty", finalqty);
@@ -506,6 +541,7 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
             arr[7] = new SqlParameter("@undyedqty", txtundyedqtyedit.Text == "" ? "0" : txtundyedqtyedit.Text);
             arr[8] = new SqlParameter("@checkedby", txtcheckedby.Text);
             arr[9] = new SqlParameter("@Approvedby", txtapprovedby.Text);
+            arr[10] = new SqlParameter("@IssQtyOnMachine", txtIssQtyOnMachine.Text == "" ? "0" : txtIssQtyOnMachine.Text);
             //*******
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_updateSampleDyeingReceive", arr);
             lblmsg.Text = arr[4].Value.ToString();
