@@ -167,6 +167,8 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
     }
     protected void fillGrid()
     {
+        DGIssueDetail.DataSource = null;
+        DGIssueDetail.DataBind();
         SqlParameter[] param = new SqlParameter[5];
         param[0] = new SqlParameter("@CompanyID", DDcompany.SelectedValue);
         param[1] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
@@ -177,8 +179,16 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FillPcIssueStockNoWise", param);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            DGIssueDetail.DataSource = ds.Tables[0];
-            DGIssueDetail.DataBind();
+            if (ds.Tables[0].Rows[0]["TStockNo"].ToString() == "")
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Receord Found');", true);
+                return;
+            }
+            else
+            {
+                DGIssueDetail.DataSource = ds.Tables[0];
+                DGIssueDetail.DataBind();
+            }
         }
         else
         {
@@ -194,12 +204,12 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            DropDownList DDGodown = ((DropDownList)e.Row.FindControl("DDGodown"));
-            string str = @"select GoDownID,GodownName from GodownMaster order by GodownName
-                           select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
+//            DropDownList DDGodown = ((DropDownList)e.Row.FindControl("DDGodown"));
+//            string str = @"select GoDownID,GodownName from GodownMaster order by GodownName
+//                           select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
-            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-            UtilityModule.ConditionalComboFillWithDS(ref DDGodown, ds, 0, true, "--Plz Select--");
+//            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+//            UtilityModule.ConditionalComboFillWithDS(ref DDGodown, ds, 0, true, "--Plz Select--");
         }
     }
 }

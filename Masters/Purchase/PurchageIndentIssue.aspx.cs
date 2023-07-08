@@ -468,11 +468,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         {
             hncunsp.Value = ds7.Tables[0].Rows[0][0].ToString();
         }
-        //if (ChkEditOrder.Checked == true)
-        //{
-        //    UtilityModule.ConditionalComboFill(ref ddempname, "select empid,empname from empinfo where MasterCompanyId=" + Session["varCompanyId"] + " And empid in(select distinct partyid from PurchaseIndentIssue where orderid=" + ddorderno.SelectedValue + ") Order By empname", true, "--Select--");
-        //    Fill_Grid();
-        //}
+
         if (hncunsp.Value == "1")
         {
             UtilityModule.ConditionalComboFill(ref ddCatagory, @"Select distinct icm.CATEGORY_ID,icm.CATEGORY_NAME 
@@ -685,22 +681,14 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                             join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" And OM.CompanyID = " + ddCompName.SelectedValue + @" 
                             join Jobassigns JA ON OM.Orderid=JA.Orderid 
                             Order By ci.Customercode + SPACE(5) + CI.CompanyName  ", true, "Select CustomerCode");
-                    
                     }
                 }
-
             }
 
+            string Str = @"select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname 
+            from empinfo EI 
+            join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
 
-            //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
-            //if (Session["varCompanyno"].ToString() != "6")
-            //{
-            //    Str = Str + "  AND DM.Departmentname='PURCHASE'";
-            //}
-            //Str = Str + "  Order By empname ";
-
-
-            string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
             if (Session["varCompanyno"].ToString() != "6")
             {
                 Str = Str + "  AND DM.Departmentname='PURCHASE'";
@@ -708,7 +696,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             Str = Str + "  Group by EI.empid,EI.empname,EI.EmpCode ";
             Str = Str + "  Order By empname ";
 
-            UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
+            FillEmployee(Str);
         }
         else if (chkindentvise.Checked)
         {
@@ -723,10 +711,6 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             string str = "";
             if (variable.VarPURCHASEORDER_INDENTOTHERVENDOR == "1")
             {
-                //str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where  EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0 and EI.Partytype=0";
-                //str = str + "  AND DM.Departmentname='PURCHASE'";
-                //str = str + "  Order By empname ";
-
                 str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where  EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0 and EI.Partytype=0";
                 str = str + "  AND DM.Departmentname='PURCHASE'";
                 str = str + "  Group by EI.empid,EI.empname,EI.EmpCode";
@@ -734,13 +718,12 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             }
             else
             {
-                //str = "select distinct ei.empid ,empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varCompanyId"] + " Order By empname ";
-
                 str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varCompanyId"] + "";
                 str = str + "  Group by EI.empid,EI.empname,EI.EmpCode";
                 str = str + "  Order By empname ";
             }
-            UtilityModule.ConditionalComboFill(ref ddempname, str, true, "Select Party");
+            FillEmployee(str);
+            //UtilityModule.ConditionalComboFill(ref ddempname, str, true, "Select Party");
         }
         else if (chkforsample.Checked)
         {
@@ -767,18 +750,6 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             AQty.Visible = false;
             PQty.Visible = false;
             btnopen.Visible = true;
-            
-            //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid  Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
-            //switch (Session["varcompanyNo"].ToString())
-            //{
-            //    case "6":
-            //        break;
-            //    default:
-            //        Str = Str + "  AND DM.Departmentname='PURCHASE'";
-            //        break;
-            //}
-            //Str = Str + "  Order By EI.empname ";
-            //UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
 
             string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid  Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
             switch (Session["varcompanyNo"].ToString())
@@ -791,7 +762,8 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             }
             Str = Str + "  Group by EI.empid,EI.empname,EI.EmpCode ";
             Str = Str + "  Order By EI.empname ";
-            UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
+            FillEmployee(Str);
+            //UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
 
             UtilityModule.ConditionalComboFill(ref ddCatagory, "select distinct category_id,category_name from ITEM_CATEGORY_MASTER icm inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") And icm.MasterCompanyId=" + Session["varCompanyId"] + " Order By category_name ", true, "Select Category");
 
@@ -806,6 +778,21 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             }
         }
     }
+
+    private void FillEmployee(string Str)
+    {
+        if (Convert.ToInt16(Session["varCompanyId"]) == 16 || Convert.ToInt16(Session["varCompanyId"]) == 28)
+        {
+            Str = @"Select EI.empid, EI.empname + (case when EI.Empcode <> '' Then '(' + EI.empcode + ')' Else '' End) EmpName 
+            From empinfo EI(nolock) 
+			JOIN VendorUser VU(nolock) ON VU.EmpID = EI.EmpId And VU.UserID = " + Session["varuserid"] + @" 
+            Join Department DM(nolock) ON DM.DepartmentID = EI.Departmentid And DM.Departmentname = 'PURCHASE' 
+			Where EI.MasterCompanyId = " + Session["varCompanyId"] + @" And EI.blacklist = 0 
+			Group by EI.empid,EI.empname,EI.EmpCode Order By empname ";
+        }
+        UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
+    }
+
     protected void ddempname_SelectedIndexChanged(object sender, EventArgs e)
     {
         ViewState["PIndentIssueId"] = "0";
@@ -4351,7 +4338,8 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         }
         Str = Str + "  Group By EI.empid,EI.empname,EI.Empcode";
         Str = Str + "  Order By EI.empname ";
-        UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
+        FillEmployee(Str);
+        //UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
     }
     protected void DDsizetype_SelectedIndexChanged(object sender, EventArgs e)
     {

@@ -141,7 +141,7 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Stock No.">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lbltstockno" Text='<%#Bind("Tstockno") %>' runat="server" />
+                                                    <asp:Label ID="lbltstockno" Text='<%#Bind("TStockno") %>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Parameter Name">

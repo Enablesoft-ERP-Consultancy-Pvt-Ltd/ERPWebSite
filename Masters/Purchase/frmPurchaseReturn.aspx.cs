@@ -48,18 +48,21 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
     }
     protected void BindEmp()
     {
-        string Str = "select Distinct E.EMpId,E.Empname +'/'+Address from Empinfo E,PurchaseReceiveMaster PM Where PM.PartyId=E.EmpId And E.MasterCompanyid=" + Session["varCompanyId"] + @" ";
-        Str = Str + " AND Challan_Status= 0";
-        //if (chkcomplete.Checked == true)
-        //{
-        //    Str = Str + " AND Challan_Status= 1";
-        //}
-        //else
-        //{
-        //    Str = Str + " AND Challan_Status= 0";
-        //}
+        string Str = @"select Distinct E.EMpId,E.Empname +'/'+Address 
+        From Empinfo E(nolock)
+        JOIN PurchaseReceiveMaster PM(nolock) ON PM.PartyId = E.EmpId And Challan_Status = 0 
+        Where E.MasterCompanyid=" + Session["varCompanyId"];
+
         Str = Str + " Order By E.Empname +'/'+Address";
 
+        if (Convert.ToInt32(Session["varCompanyno"]) == 16 || Convert.ToInt32(Session["varCompanyno"]) == 28)
+        {
+            Str = @"Select Distinct E.EMpId, E.Empname + '/' + Address 
+                From Empinfo E(nolock)
+                JOIN VendorUser VU(nolock) ON VU.EmpID = E.EmpId And VU.UserID = " + Session["varuserid"] + @" 
+                JOIN PurchaseReceiveMaster PM(nolock) ON PM.PartyId = E.EmpId And Challan_Status = 0 
+                Where E.MasterCompanyid = " + Session["varCompanyId"] + " Order By E.Empname +'/'+Address "; 
+        }
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
         UtilityModule.ConditionalComboFillWithDS(ref DDPartyName, Ds, 0, true, "--SELECT--");

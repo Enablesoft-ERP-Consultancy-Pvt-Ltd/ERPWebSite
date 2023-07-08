@@ -368,13 +368,13 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                 {
                     row = 0;
 
-                    sht.Range("A1:U1").Merge();
+                    sht.Range("A1:X1").Merge();
                     sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + " QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
-                    sht.Range("A1:U1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    sht.Range("A2:U2").Merge();
+                    sht.Range("A1:X1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A2:X2").Merge();
                     sht.Range("A2").SetValue("From :" + txtfromdate.Text + "  To : " + txttodate.Text);
-                    sht.Range("A2:U2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    sht.Range("A1:U2").Style.Font.SetBold();
+                    sht.Range("A2:X2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A1:X2").Style.Font.SetBold();
 
                     //Headers
                     sht.Range("A3").Value = "DATE";
@@ -402,13 +402,18 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     sht.Range("N3").Value = "DEFECTS";
                     sht.Range("O3").Value = "DEFECT TYPE";
                     sht.Range("P3").Value = "RESULT";
-                    sht.Range("Q3").Value = "REMARK";
-                    sht.Range("R3").Value = "ENTRY BY";
-                    sht.Range("S3").Value = "INSPECTED BY";
-                    sht.Range("T3").Value = "CUSTOMER CODE";
-                    sht.Range("U3").Value = "ORDER NO";
 
-                    sht.Range("A3:U3").Style.Font.Bold = true;
+                    sht.Range("Q3").Value = "STATUS";
+                    sht.Range("R3").Value = "NCM STATUS";
+                    sht.Range("S3").Value = "FINAL RESULT";
+
+                    sht.Range("T3").Value = "REMARK";
+                    sht.Range("U3").Value = "ENTRY BY";
+                    sht.Range("V3").Value = "INSPECTED BY";
+                    sht.Range("W3").Value = "CUSTOMER CODE";
+                    sht.Range("X3").Value = "ORDER NO";
+
+                    sht.Range("A3:X3").Style.Font.Bold = true;
 
                     row = 4;
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -438,15 +443,18 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                         sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["defect"]);
                         sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["DEFECTTYPE"]);
                         sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["defect"].ToString() == "" ? "PASS" : "FAIL");
-                        sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["remark"]);
-                        sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["scanby"]);
-                        sht.Range("S" + row).SetValue(ds.Tables[0].Rows[i]["QAPERSONNAME"]);
-                        sht.Range("T" + row).SetValue(ds.Tables[0].Rows[i]["CustomerCode"]);
-                        sht.Range("U" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"]);
+                        sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["STATUS"]);
+                        sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["NCM STATUS"]);
+                        sht.Range("S" + row).SetValue(ds.Tables[0].Rows[i]["FINAL RESULT"]);
+                        sht.Range("T" + row).SetValue(ds.Tables[0].Rows[i]["remark"]);
+                        sht.Range("U" + row).SetValue(ds.Tables[0].Rows[i]["scanby"]);
+                        sht.Range("V" + row).SetValue(ds.Tables[0].Rows[i]["QAPERSONNAME"]);
+                        sht.Range("W" + row).SetValue(ds.Tables[0].Rows[i]["CustomerCode"]);
+                        sht.Range("X" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"]);
 
                         row = row + 1;
                     }
-                    using (var a = sht.Range("A3:U" + row))
+                    using (var a = sht.Range("A3:X" + row))
                     {
                         a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                         a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
