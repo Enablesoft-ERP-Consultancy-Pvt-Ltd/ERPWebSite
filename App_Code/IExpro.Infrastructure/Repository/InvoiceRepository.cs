@@ -1,9 +1,11 @@
-﻿using IExpro.Core.Common;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using IExpro.Core.Common;
 using IExpro.Core.Entity;
 using IExpro.Core.Interfaces.Common;
 using IExpro.Core.Interfaces.Repository;
 using IExpro.Core.Models.Account;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -55,31 +57,29 @@ namespace IExpro.Infrastructure.Repository
 
         public string GetXSLTDetail(int clientId, short docType, int userId, short userType)
         {
-
-
-            //var resu2lt = (from xltMap in Context.tblXSLTClientMappings
-            //               join xlt in Context.tblXSLTDetails on xltMap.XSLTId equals xlt.XSLTId
-            //               where (xltMap.UserType == userType && xltMap.ClientId == clientId && (xltMap.UserId == userId || xltMap.UserId == null))
-            //               select new { UserId = (xltMap.UserId.HasValue ? xltMap.UserId.Value : 0), xlt.XSLTText }).ToList();
-
-
-
-            var result = (from xltMap in Context.tblXSLTClientMappings
-                          join xlt in Context.tblXSLTDetails on xltMap.XSLTId equals xlt.XSLTId
-                          where (xltMap.UserType == userType && xltMap.ClientId == clientId && xlt.DocumentType == docType && xltMap.UserId == userId)
-                          select new { UserId = (xltMap.UserId.HasValue ? xltMap.UserId.Value : 0), xlt.XSLTText }).
-                          Union(from xltMap in Context.tblXSLTClientMappings
-                                join xlt in Context.tblXSLTDetails on xltMap.XSLTId equals xlt.XSLTId
-                                where (xltMap.ClientId == clientId && xlt.DocumentType == docType && xltMap.UserId == null)
-                                select new { UserId = (xltMap.UserId.HasValue ? xltMap.UserId.Value : 0), xlt.XSLTText });
-
-
-
-
-
-
-
-
+            IEnumerable<dynamic> result = null;
+            string sqlQuery = @"select x.XSLTId,y.XSLTText,IsNUll(x.UserId,0) UserId from tblXSLTClientMapping x inner join tblXSLTDetails y on x.XSLTId=y.XSLTId 
+Where x.ClientId=@ClientId and IsNUll(x.UserId,@UserId)=@UserId and DocumentType=@DocumentType";
+            using (SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                SqlParameter[] param = new SqlParameter[3];
+                param[0] = new SqlParameter("@DocumentType", SqlDbType.Int);
+                param[0].Direction = ParameterDirection.Input;
+                param[0].Value = docType;
+                param[1] = new SqlParameter("@UserId", SqlDbType.Int);
+                param[1].Direction = ParameterDirection.Input;
+                param[1].Value = userId;
+                param[2] = new SqlParameter("@ClientId", SqlDbType.Int);
+                param[2].Direction = ParameterDirection.Input;
+                param[2].Value = clientId;
+                var dataSet = SqlHelper.ExecuteDataset(conn, CommandType.Text, sqlQuery, param);
+                result = dataSet.Tables[0].AsEnumerable().Select(dataRow => new
+                {
+                    XsltId = dataRow.Field<int>("XSLTId"),
+                    XSLTText = dataRow.Field<string>("XSLTText"),
+                    UserId = dataRow.Field<int>("UserId"),                
+                });
+            }
             if (result.Where(x => x.UserId == userId).Count() > 0)
             {
                 return result.Where(x => x.UserId == userId).SingleOrDefault().XSLTText;
@@ -88,7 +88,6 @@ namespace IExpro.Infrastructure.Repository
             {
                 return result.Where(x => x.UserId == 0).SingleOrDefault().XSLTText;
             }
-
         }
 
 
@@ -121,6 +120,10 @@ namespace IExpro.Infrastructure.Repository
                         result = readerXl.ReadOuterXml();
                     }
                 }
+                Context.Database.Connection.Close();
+
+
+
             }
             if (!string.IsNullOrEmpty(result))
             {

@@ -25,12 +25,14 @@ namespace IExpro.Infrastructure.Services
             {
                 string signaturePath = CommonHelper.GetURI() + "/Images/signature/client-" + _clientId + ".png";
                 var xmlText = this.InvoiceRepo.GetInvoiceDetail(_invoiceId);
+
+                userId = Convert.ToInt32(xmlText.Descendants("CustomerId").SingleOrDefault().Value);
                 xmlText.Descendants("InvoiceItem").SingleOrDefault().Add(new XElement("signature", signaturePath));
                 string xsltText = this.InvoiceRepo.GetXSLTDetail(_clientId, docType, userId, userType);
                 XsltArgumentList arguments = new XsltArgumentList();
                 arguments.AddExtensionObject("pda:MyUtils", new MathHelper());
                 return XmlHelper.XmlWriterFunction(xmlText.ToString(), arguments, xsltText);
-           
+
             }
             catch (Exception ex)
             {

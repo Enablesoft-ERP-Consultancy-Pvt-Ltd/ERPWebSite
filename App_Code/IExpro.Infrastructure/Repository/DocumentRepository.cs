@@ -33,7 +33,7 @@ namespace IExpro.Infrastructure.Repository
         public IEnumerable<dynamic> GetDocumentList()
         {
             IEnumerable<dynamic> result = null;
-            string sqlQuery = @"SELECT x.XSLTId,y.DocumentId,y.DocumentType From tblXSLTDetails x inner Join tblDocumentType y on x.DocumentType=y.DocumentId
+            string sqlQuery = @"SELECT x.XSLTId,x.XSLTSubject,y.DocumentId,y.DocumentType From tblXSLTDetails x inner Join tblDocumentType y on x.DocumentType=y.DocumentId
 Order By y.DocumentId";
             using (SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
@@ -41,6 +41,7 @@ Order By y.DocumentId";
                 result = dataSet.Tables[0].AsEnumerable().Select(dataRow => new
                 {
                     XsltId = dataRow.Field<int>("XSLTId"),
+                    Title= dataRow.Field<string>("XSLTSubject"),
                     DocumentId = dataRow.Field<int>("DocumentId"),
                     DocumentType = dataRow.Field<string>("DocumentType")
                 });

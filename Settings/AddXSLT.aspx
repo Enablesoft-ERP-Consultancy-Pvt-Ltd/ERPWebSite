@@ -92,7 +92,11 @@
                                     </HeaderTemplate>
                                     <ItemTemplate>
                                         <tr>
-                                            <td><%# Eval("DocumentType") %>
+                                            <td>
+                                                
+                                                   <%# Eval("Title") %>
+                                                
+                                                <%# Eval("DocumentType") %>
                                                 <asp:HiddenField ID="hdnDocId" runat="server" Value='<%# Eval("XsltId") %>' />
 
                                             </td>
