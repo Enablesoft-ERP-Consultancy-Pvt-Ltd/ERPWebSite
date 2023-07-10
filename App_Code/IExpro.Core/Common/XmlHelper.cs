@@ -43,6 +43,14 @@ namespace IExpro.Core.Common
             {
                 transform.Load(reader);
             }
+
+
+
+            //// Creating XSLCompiled object
+            //XslCompiledTransform transform = new XslCompiledTransform();
+            //transform.Load(xslt);
+
+
             StringWriter results = new StringWriter();
             using (XmlReader reader = XmlReader.Create(new StringReader(xml)))
             {

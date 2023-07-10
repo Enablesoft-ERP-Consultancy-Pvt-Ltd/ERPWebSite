@@ -108,8 +108,9 @@ public partial class Master_Inspection_RawYarnQCSummaryReport : System.Web.UI.Pa
             XsltArgumentList arguments = new XsltArgumentList();
 
             Xml1.TransformArgumentList = arguments;
+
             // Specify the XSL file to be used for transformation.
-            Xml1.TransformSource = Server.MapPath("~/Content/XSLT/" + xsltName);
+            Xml1.TransformSource = Server.MapPath("~/App_Data/XSLT/" + xsltName);
         }
         else
         {
