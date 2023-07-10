@@ -1,0 +1,39 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="testid" type="xs:int" minOccurs="0" />
+              <xs:element name="category_name" type="xs:string" minOccurs="0" />
+              <xs:element name="item_name" type="xs:string" minOccurs="0" />
+              <xs:element name="qualityname" type="xs:string" minOccurs="0" />
+              <xs:element name="designname" type="xs:string" minOccurs="0" />
+              <xs:element name="colorname" type="xs:string" minOccurs="0" />
+              <xs:element name="shapename" type="xs:string" minOccurs="0" />
+              <xs:element name="size" type="xs:string" minOccurs="0" />
+              <xs:element name="Sizeflag" type="xs:string" minOccurs="0" />
+              <xs:element name="challanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="BillNo" type="xs:string" minOccurs="0" />
+              <xs:element name="empname" type="xs:string" minOccurs="0" />
+              <xs:element name="recqty" type="xs:double" minOccurs="0" />
+              <xs:element name="categoryid" type="xs:int" minOccurs="0" />
+              <xs:element name="category" type="xs:string" minOccurs="0" />
+              <xs:element name="Subcategoryid" type="xs:int" minOccurs="0" />
+              <xs:element name="SubCategory" type="xs:string" minOccurs="0" />
+              <xs:element name="Requirement" type="xs:string" minOccurs="0" />
+              <xs:element name="Received" type="xs:string" minOccurs="0" />
+              <xs:element name="remark" type="xs:string" minOccurs="0" />
+              <xs:element name="testresult" type="xs:string" minOccurs="0" />
+              <xs:element name="passby" type="xs:string" minOccurs="0" />
+              <xs:element name="RowNumber" type="xs:long" minOccurs="0" />
+              <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

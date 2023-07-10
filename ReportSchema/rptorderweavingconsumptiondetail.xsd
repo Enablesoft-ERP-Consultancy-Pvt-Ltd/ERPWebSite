@@ -1,0 +1,96 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="ORDERDETAILID" type="xs:int" minOccurs="0" />
+              <xs:element name="CUSTOMERID" type="xs:int" minOccurs="0" />
+              <xs:element name="COMPANYID" type="xs:int" minOccurs="0" />
+              <xs:element name="ORDERCALTYPE" type="xs:int" minOccurs="0" />
+              <xs:element name="ORDERUNITID" type="xs:int" minOccurs="0" />
+              <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITY" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGN" type="xs:string" minOccurs="0" />
+              <xs:element name="COLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="SHAPE" type="xs:string" minOccurs="0" />
+              <xs:element name="EXPORTSIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="FINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="QTY" type="xs:double" minOccurs="0" />
+              <xs:element name="RATE" type="xs:double" minOccurs="0" />
+              <xs:element name="AMT" type="xs:double" minOccurs="0" />
+              <xs:element name="EXPORTMTRAREA" type="xs:double" minOccurs="0" />
+              <xs:element name="EXPORTAREA" type="xs:double" minOccurs="0" />
+              <xs:element name="MasterCompanyId" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ITEM_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="IFINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="FINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="QTY" type="xs:double" minOccurs="0" />
+              <xs:element name="ORDERNO" type="xs:string" minOccurs="0" />
+              <xs:element name="LOSSQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR2" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR3" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="OITEMNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="OQUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ODESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="OCOLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="OSHAPENAME" type="xs:string" minOccurs="0" />
+              <xs:element name="OSIZEMTR" type="xs:string" minOccurs="0" />
+              <xs:element name="OSHADECOLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="IITEMNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="IQUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="IDESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ICOLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ISHAPENAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ISIZEMTR" type="xs:string" minOccurs="0" />
+              <xs:element name="ISHADECOLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="STOCKQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="ORDERQUALITY" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERDESIGN" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERCOLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="Item_Finished_Id" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="ORDERAREA" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="Description" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:double" minOccurs="0" />
+              <xs:element name="STOCKQTY" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

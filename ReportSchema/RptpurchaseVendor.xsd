@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="empname" type="xs:string" minOccurs="0" />
+              <xs:element name="pindentissueid" type="xs:int" minOccurs="0" />
+              <xs:element name="finishedid" type="xs:int" minOccurs="0" />
+              <xs:element name="description" type="xs:string" minOccurs="0" />
+              <xs:element name="orderqty" type="xs:double" minOccurs="0" />
+              <xs:element name="orderdate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="recdate" type="xs:string" minOccurs="0" />
+              <xs:element name="recqty" type="xs:double" minOccurs="0" />
+              <xs:element name="FromDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+              <xs:element name="OrdercanQty" type="xs:double" minOccurs="0" />
+              <xs:element name="ReturnDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ReturnChallan" type="xs:string" minOccurs="0" />
+              <xs:element name="qtyreturn" type="xs:double" minOccurs="0" />
+              <xs:element name="PO" type="xs:string" minOccurs="0" />
+              <xs:element name="Localorder" type="xs:string" minOccurs="0" />
+              <xs:element name="customercode" type="xs:string" minOccurs="0" />
+              <xs:element name="deliverydate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="rate" type="xs:double" minOccurs="0" />
+              <xs:element name="LshortPercentage" type="xs:double" minOccurs="0" />
+              <xs:element name="pindentissuetranid" type="xs:int" minOccurs="0" />
+              <xs:element name="Category_name" type="xs:string" minOccurs="0" />
+              <xs:element name="Status" type="xs:string" minOccurs="0" />
+              <xs:element name="colour" type="xs:string" minOccurs="0" />
+              <xs:element name="Recqty_beforeRetnqty" type="xs:double" minOccurs="0" />
+              <xs:element name="GateInNo" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderID" type="xs:int" minOccurs="0" />
+              <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="DayDifference" type="xs:int" minOccurs="0" />
+              <xs:element name="SGSTIGST" type="xs:double" minOccurs="0" />
+              <xs:element name="requestby" type="xs:string" minOccurs="0" />
+              <xs:element name="requestfor" type="xs:string" minOccurs="0" />
+              <xs:element name="BranchName" type="xs:string" minOccurs="0" />
+              <xs:element name="UserName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

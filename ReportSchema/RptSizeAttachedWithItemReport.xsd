@@ -1,0 +1,43 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SizeAttachedWithItemId" type="xs:int" minOccurs="0" />
+              <xs:element name="SizeId" type="xs:int" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="Unitname" type="xs:string" minOccurs="0" />
+              <xs:element name="ExportSizeFt" type="xs:string" minOccurs="0" />
+              <xs:element name="CategoryId" type="xs:int" minOccurs="0" />
+              <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ItemId" type="xs:int" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ItemProdLengthFt" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ItemProdWidthFt" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ItemProdLengthMtr" type="xs:double" minOccurs="0" />
+              <xs:element name="ItemProdWidthMtr" type="xs:double" minOccurs="0" />
+              <xs:element name="ItemProdSizeFt" type="xs:string" minOccurs="0" />
+              <xs:element name="ItemProdSizeMtr" type="xs:string" minOccurs="0" />
+              <xs:element name="ItemProdAreaFt" type="xs:double" minOccurs="0" />
+              <xs:element name="ItemProdAreaMtr" type="xs:double" minOccurs="0" />
+              <xs:element name="Actualfullareasqyd" type="xs:decimal" minOccurs="0" />
+              <xs:element name="userid" type="xs:int" minOccurs="0" />
+              <xs:element name="MasterCompanyid" type="xs:int" minOccurs="0" />
+              <xs:element name="ItemFinishingLengthFt" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ItemFinishingWidthFt" type="xs:decimal" minOccurs="0" />
+              <xs:element name="ItemFinishingLengthMtr" type="xs:double" minOccurs="0" />
+              <xs:element name="ItemFinishingWidthMtr" type="xs:double" minOccurs="0" />
+              <xs:element name="ItemFinishingSizeFt" type="xs:string" minOccurs="0" />
+              <xs:element name="ItemFinishingSizeMtr" type="xs:string" minOccurs="0" />
+              <xs:element name="ItemFinishingAreaFt" type="xs:double" minOccurs="0" />
+              <xs:element name="ItemFinishingAreaMtr" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
