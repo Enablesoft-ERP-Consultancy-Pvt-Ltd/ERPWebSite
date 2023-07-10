@@ -6618,26 +6618,28 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("E3").Value = "DESIGN";
                 sht.Range("F3").Value = "COLOR";
                 sht.Range("G3").Value = "SIZE";
-                sht.Range("H3").Value = "NOOF PIECES";
+                sht.Range("H3").Value = "EXPORT SIZE";
+                sht.Range("I3").Value = "NOOF PIECES";
 
-                sht.Range("I3").Value = "AREA";
-                sht.Range("J3").Value = "RATE";
-                sht.Range("K3").Value = "AMOUNT";
-                sht.Range("L3").Value = "WOOL YARN KGS";
-                sht.Range("M3").Value = "SILK YARN KGS";
-                sht.Range("N3").Value = "JUTE YARN KGS";
-                sht.Range("O3").Value = "COTTON YARN KGS";
+                sht.Range("J3").Value = "AREA";
+                sht.Range("K3").Value = "EXPORT AREA";
+                sht.Range("L3").Value = "RATE";
+                sht.Range("M3").Value = "AMOUNT";
+                sht.Range("N3").Value = "WOOL YARN KGS";
+                sht.Range("O3").Value = "SILK YARN KGS";
+                sht.Range("P3").Value = "JUTE YARN KGS";
+                sht.Range("Q3").Value = "COTTON YARN KGS";
 
 
-                sht.Range("A3:O3").Style.Font.FontName = "Arial Unicode MS";
-                sht.Range("A3:O3").Style.Font.FontSize = 9;
-                sht.Range("A3:O3").Style.Font.Bold = true;
-                sht.Range("A3:O3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                sht.Range("A3:O3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A3:O3").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                sht.Range("A3:O3").Style.Alignment.SetWrapText();
+                sht.Range("A3:Q3").Style.Font.FontName = "Arial Unicode MS";
+                sht.Range("A3:Q3").Style.Font.FontSize = 9;
+                sht.Range("A3:Q3").Style.Font.Bold = true;
+                sht.Range("A3:Q3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A3:Q3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A3:Q3").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A3:Q3").Style.Alignment.SetWrapText();
 
-                using (var a = sht.Range("A3:O3"))
+                using (var a = sht.Range("A3:Q3"))
                 {
                     a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                     a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
@@ -6656,13 +6658,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
 
-                    sht.Range("A" + row + ":O" + row).Style.Font.FontName = "Arial Unicode MS";
-                    sht.Range("A" + row + ":O" + row).Style.Font.FontSize = 9;
+                    sht.Range("A" + row + ":Q" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A" + row + ":Q" + row).Style.Font.FontSize = 9;
                     //sht.Range("A" + row + ":L" + row).Style.Font.SetBold();
-                    sht.Range("A" + row + ":O" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A" + row + ":Q" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
 
                     //sht.Range("A" + row + ":L" + row).Style.Alignment.SetWrapText();
-                    sht.Range("A" + row + ":O" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                    sht.Range("A" + row + ":Q" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
 
                     Srno = Srno + 1;
 
@@ -6675,14 +6677,18 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["DESIGNNAME"]);
                     sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["COLORNAME"]);
                     sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["SIZE"]);
-                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["TotalQty"]);
-                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["TotalArea"]);
-                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["RATE"]);
-                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["AMOUNT"]);
-                    sht.Range("L" + row).SetValue("");
-                    sht.Range("M" + row).SetValue("");
+
+                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["ExportSizeFt"]);
+
+                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["TotalQty"]);
+                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["TotalArea"]);
+                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["TotalExportArea"]);
+                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["RATE"]);
+                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["AMOUNT"]);
                     sht.Range("N" + row).SetValue("");
                     sht.Range("O" + row).SetValue("");
+                    sht.Range("P" + row).SetValue("");
+                    sht.Range("Q" + row).SetValue("");
 
                     //decimal TDSAmt = 0;
                     //TDSAmt = Math.Round((Convert.ToDecimal(ds.Tables[0].Rows[i]["AMOUNT"]) * 1 / 100), 2);
@@ -6692,7 +6698,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     //sht.Range("N" + row).SetValue(NewWeavingAmt);
                     //sht.Range("O" + row).SetValue("");                   
 
-                    using (var a = sht.Range("A" + row + ":O" + row))
+                    using (var a = sht.Range("A" + row + ":Q" + row))
                     {
                         a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                         a.Style.Border.RightBorder = XLBorderStyleValues.Thin;

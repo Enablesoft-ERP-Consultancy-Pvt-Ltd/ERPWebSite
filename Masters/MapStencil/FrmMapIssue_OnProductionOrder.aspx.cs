@@ -52,6 +52,15 @@ public partial class Masters_MapStencil_FrmMapIssue_OnProductionOrder : System.W
                     //FillFolioEmployee();
                     FillFolioEmployee(sender);
                     break;
+                case "38":
+                    TDProductionUnit.Visible = false;
+                    TDLoomNo.Visible = false;
+                    TDEmployee.Visible = false;
+                    TDWeaverName.Visible = false;
+                    TDFolioEmployee.Visible = true;
+                    //FillFolioEmployee();
+                    FillFolioEmployee(sender);
+                    break;
                 default:
                     TDProductionUnit.Visible = true;
                     TDLoomNo.Visible = true;
@@ -447,7 +456,7 @@ public partial class Masters_MapStencil_FrmMapIssue_OnProductionOrder : System.W
     }
     protected void txtfolionoedit_TextChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "30")
+        if (Session["VarCompanyId"].ToString() == "30" || Session["VarCompanyId"].ToString() == "38")
         {
             FillFolioEmployee(sender);
         }
