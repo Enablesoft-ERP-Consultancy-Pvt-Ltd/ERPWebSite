@@ -12,7 +12,7 @@ using CrystalDecisions.CrystalReports;
 using System.Configuration;
 using System.Text;
 
-public partial class Masters_Order_Draft_order : System.Web.UI.Page
+public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

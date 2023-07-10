@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Draft_Order_New.aspx.cs"
-    ViewStateMode="Enabled" Inherits="Masters_Order_Draft_order" EnableEventValidation="false" %>
+    ViewStateMode="Enabled" Inherits="Masters_Order_Draft_Order_New" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

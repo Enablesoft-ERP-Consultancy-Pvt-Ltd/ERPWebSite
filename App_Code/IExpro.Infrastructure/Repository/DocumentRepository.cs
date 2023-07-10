@@ -69,17 +69,44 @@ Order By y.DocumentId";
         public int AddDocument(DocumentModel doc)
         {
             var result = 0;
-            string sqlQuery = @"INSERT INTO [dbo].[tblXSLTDetails]
+            string sqlQuery = @"IF NOT EXISTS (SELECT 0 FROM tblXSLTDetails WHERE XSLTSubject=@XSLTSubject and DocumentType=@DocumentType)
+BEGIN
+
+INSERT INTO tblXSLTDetails
 (DocumentType,XSLTText,XSLTSubject,CreatedOn,CreatedBy)
 VALUES(@DocumentType,@XSLTText,@XSLTSubject,@CreatedOn,@CreatedBy)
 Select @XSLTId=SCOPE_IDENTITY()
-INSERT INTO [dbo].[tblXSLTClientMapping]
+INSERT INTO tblXSLTClientMapping
 (XSLTId,ClientId,UserId,UserType)
 VALUES(@XSLTId,@ClientId,@UserId,@UserType)
+
+END
+
+Else
+BEGIN
+Select @XSLTId=XSLTId FROM tblXSLTDetails WHERE XSLTSubject=@XSLTSubject and DocumentType=@DocumentType
+Update  tblXSLTDetails Set XSLTText=@XSLTText Where XSLTId=@XSLTId
+
+
+
+IF NOT EXISTS (SELECT 0 FROM tblXSLTClientMapping WHERE XSLTId=@XSLTId and UserId=@UserId )
+BEGIN
+INSERT INTO tblXSLTClientMapping
+(XSLTId,ClientId,UserId,UserType)
+VALUES(@XSLTId,@ClientId,@UserId,@UserType)
+
+END
+
+
+
+
+END
+
+
 ";
             using (SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                SqlParameter[] param = new SqlParameter[8];
+                SqlParameter[] param = new SqlParameter[9];
                 param[0] = new SqlParameter("@DocumentType", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.Input;
                 param[0].Value = doc.DocType;
@@ -112,7 +139,9 @@ VALUES(@XSLTId,@ClientId,@UserId,@UserType)
                 param[7].Direction = ParameterDirection.Input;
 
 
-
+                param[8] = new SqlParameter("@XSLTSubject", SqlDbType.VarChar);
+                param[8].Direction = ParameterDirection.Input;
+                param[8].Value = doc.Title;
 
                 result = SqlHelper.ExecuteNonQuery(conn, CommandType.Text, sqlQuery, param);
             }

@@ -47,12 +47,10 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
             ddlCustomer.DataTextField = "ItemName";
             ddlCustomer.DataValueField = "ItemId";
             ddlCustomer.DataBind();
-
             ddlDocument.DataSource = this.CommSrv.GetDocTypeList(ClientId);
             ddlDocument.DataTextField = "ItemName";
             ddlDocument.DataValueField = "ItemId";
             ddlDocument.DataBind();
-
             rptDoc.DataSource = this.DocSrv.GetDocumentList();
             rptDoc.DataBind();
 
@@ -104,10 +102,15 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
+
+        //.
+        string fileName = ddlCustomer.SelectedItem.Text.Escape().Replace('.', '_').Replace('/', '_').Replace(' ', '_') + '_' + ddlDocument.SelectedItem.Value.Escape() + ".xslt";
+        string filePath = Path.Combine(Server.MapPath("~/App_Data/XSLT/"), fileName);
         DocumentModel doc = new DocumentModel();
         doc.DocType = Convert.ToInt32(ddlDocument.SelectedItem.Value);
         doc.UserId = Convert.ToInt32(ddlCustomer.SelectedItem.Value);
-        doc.Title = ddlDocument.SelectedItem.Value + "for Customer" + ddlCustomer.SelectedItem.Text;
+        doc.UserType = (byte)UserType.Customer;
+        doc.Title = ddlDocument.SelectedItem.Text + " for Customer " + ddlCustomer.SelectedItem.Text;
         doc.CompanyId = Convert.ToInt32(Session["varCompanyId"]);
         doc.CreatedBy = Convert.ToInt32(Session["varuserid"]);
         doc.CreatedOn = DateTime.Now;
@@ -115,20 +118,15 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
 
         if (flpContent.HasFiles)
         {
-            foreach (HttpPostedFile postedFile in flpContent.PostedFiles)
+            flpContent.SaveAs(filePath);
+            if (File.Exists(filePath))
             {
-                if (postedFile.ContentLength > 0) //if file not empty
-                {
-                    string contentType = postedFile.ContentType;
-                    using (Stream fs = flpContent.PostedFile.InputStream)
-                    {
-                        using (BinaryReader br = new BinaryReader(fs))
-                        {
-                            byte[] bytes = br.ReadBytes((Int32)fs.Length);
-                        }
-                    }
-                }
+                doc.Content = File.ReadAllText(filePath);
+                File.Delete(filePath);
             }
+
+
+
         }
 
         this.DocSrv.AddDocument(doc);
