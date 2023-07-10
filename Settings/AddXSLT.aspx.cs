@@ -68,9 +68,10 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
     {
         try
         {
+            int _docId = int.Parse(((HiddenField)e.Item.FindControl("hdnDocId")).Value);
             if (e.CommandName == "View")
             {
-                int _docId = int.Parse(((HiddenField)e.Item.FindControl("hdnDocId")).Value);
+
                 var xsltText = this.DocSrv.GetDocument(_docId);
                 var xmlText = XElement.Load(Server.MapPath("~/App_Data/XML/InvoiceData.xml"));
                 string signaturePath = CommonHelper.GetURI() + "/Images/signature/client-" + ClientId + ".png";
@@ -94,6 +95,16 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
                 //HttpContext.Current.Response.End();
                 //HttpContext.Current.Response.Close();
 
+
+            }
+            else if (e.CommandName == "Delete")
+            {
+                var result = this.DocSrv.DeleteDocument(_docId);
+                if (result > 0)
+                {
+                    BindDocument();
+
+                }
 
             }
         }

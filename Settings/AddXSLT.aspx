@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" EnableSessionState="True" Language="C#" MasterPageFile="~/Site.master"
-    AutoEventWireup="true"  validateRequest="false"
+    AutoEventWireup="true" ValidateRequest="false"
     CodeFile="AddXSLT.aspx.cs" Inherits="Settings_AddXSLT" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="pageStyles" runat="Server">
@@ -49,7 +49,8 @@
 
                         <div class="form-group">
                             <label>Document Formate :</label>
-                            <asp:TextBox ID="txtContent" TextMode="MultiLine" CssClass="form-control" Rows="10" runat="server"></asp:TextBox>
+                            <asp:TextBox ID="txtContent" TextMode="MultiLine" CssClass="form-control" Rows="10"
+                                runat="server"></asp:TextBox>
 
                         </div>
 
@@ -93,15 +94,17 @@
                                     <ItemTemplate>
                                         <tr>
                                             <td>
-                                                
-                                                   <%# Eval("Title") %>
-                                                
+
+                                                <%# Eval("Title") %>
+
                                                 <%# Eval("DocumentType") %>
                                                 <asp:HiddenField ID="hdnDocId" runat="server" Value='<%# Eval("XsltId") %>' />
 
                                             </td>
                                             <td>
                                                 <asp:Literal ID="lblText" runat="server"></asp:Literal>
+                                                <asp:LinkButton ID="lbtnDel" Text="<i class='fa fa-trash-o text-red mrm mediumtxt' title='Detail'></i>View"
+                                                    CommandName="Delete" CssClass="btn btn-xs btn-default" runat="server"></asp:LinkButton>
                                                 <asp:LinkButton ID="lbtnView" Text="<i class='fa fa-info-circle mrm mediumtxt' title='Detail'></i>View"
                                                     CommandName="View" CssClass="btn btn-xs btn-default" runat="server"></asp:LinkButton>
                                             </td>

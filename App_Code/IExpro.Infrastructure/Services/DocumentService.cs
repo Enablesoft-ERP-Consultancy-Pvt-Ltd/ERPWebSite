@@ -34,5 +34,18 @@ namespace IExpro.Infrastructure.Services
             return this.DocRepo.AddDocument(doc);
         }
 
+
+        public int DeleteDocument(int DocumentId)
+        {
+            return this.DocRepo.DeleteDocument(DocumentId);
         }
+
+
+
+
+
+
+
+
+    }
 }

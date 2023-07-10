@@ -13,5 +13,8 @@ namespace IExpro.Core.Interfaces.Repository
         IEnumerable<dynamic> GetDocumentList();
         string GetDocument(int DocumentId);
         int AddDocument(DocumentModel doc);
+
+        int DeleteDocument(int DocumentId);
+
     }
 }

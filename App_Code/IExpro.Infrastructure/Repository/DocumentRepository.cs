@@ -41,7 +41,7 @@ Order By y.DocumentId";
                 result = dataSet.Tables[0].AsEnumerable().Select(dataRow => new
                 {
                     XsltId = dataRow.Field<int>("XSLTId"),
-                    Title= dataRow.Field<string>("XSLTSubject"),
+                    Title = dataRow.Field<string>("XSLTSubject"),
                     DocumentId = dataRow.Field<int>("DocumentId"),
                     DocumentType = dataRow.Field<string>("DocumentType")
                 });
@@ -147,6 +147,51 @@ END
             }
             return result;
         }
+
+
+
+
+
+
+
+
+        public int DeleteDocument(int DocumentId)
+        {
+            var result = 0;
+            string sqlQuery = @"Begin Try 
+BEGIN TRANSACTION
+Delete FROM  tblXSLTClientMapping  where XSLTId =@XSLTId
+Delete FROM tblXSLTDetails  where XSLTId =@XSLTId 
+COMMIT
+End Try 
+Begin Catch 
+ROLLBACK
+End Catch";
+            using (SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                SqlParameter[] param = new SqlParameter[1];
+                param[0] = new SqlParameter("@XSLTId", SqlDbType.Int);
+                param[0].Direction = ParameterDirection.Input;
+                param[0].Value = DocumentId;
+
+
+                result = SqlHelper.ExecuteNonQuery(conn, CommandType.Text, sqlQuery, param);
+            }
+            return result;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     }
