@@ -8,7 +8,6 @@
             <xs:sequence>
               <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
               <xs:element name="USERNAME" type="xs:string" minOccurs="0" />
-              <xs:element name="APPROVALUSERNAME" type="xs:string" minOccurs="0" />
               <xs:element name="DOCID" type="xs:int" minOccurs="0" />
               <xs:element name="DOCNO" type="xs:string" minOccurs="0" />
               <xs:element name="PREFIX" type="xs:string" minOccurs="0" />
@@ -19,9 +18,6 @@
               <xs:element name="REPORTDATE" type="xs:dateTime" minOccurs="0" />
               <xs:element name="COMMENTS" type="xs:string" minOccurs="0" />
               <xs:element name="STATUS" type="xs:string" minOccurs="0" />
-              <xs:element name="APPROVESTATUS" type="xs:unsignedByte" minOccurs="0" />
-              <xs:element name="APPROVAL_USERID" type="xs:int" minOccurs="0" />
-              <xs:element name="BranchID" type="xs:int" minOccurs="0" />
               <xs:element name="DOCID1" type="xs:int" minOccurs="0" />
               <xs:element name="SUPPLIERNAME" type="xs:string" minOccurs="0" />
               <xs:element name="CHALLANNO" type="xs:string" minOccurs="0" />
