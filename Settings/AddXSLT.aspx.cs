@@ -51,11 +51,17 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
             ddlDocument.DataTextField = "ItemName";
             ddlDocument.DataValueField = "ItemId";
             ddlDocument.DataBind();
-            rptDoc.DataSource = this.DocSrv.GetDocumentList();
-            rptDoc.DataBind();
 
+            BindDocument();
 
         }
+    }
+
+
+    protected void BindDocument()
+    {
+        rptDoc.DataSource = this.DocSrv.GetDocumentList();
+        rptDoc.DataBind();
     }
 
     protected void rptDoc_ItemCommand(object source, RepeaterCommandEventArgs e)
@@ -129,8 +135,12 @@ public partial class Settings_AddXSLT : System.Web.UI.Page
 
         }
 
-        this.DocSrv.AddDocument(doc);
+        var result = this.DocSrv.AddDocument(doc);
+        if (result > 0)
+        {
+            BindDocument();
 
+        }
 
 
     }

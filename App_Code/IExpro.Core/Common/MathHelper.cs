@@ -15,10 +15,10 @@ namespace IExpro.Core.Common
             var beforeFloatingPoint = (int)Math.Floor(doubleNumber);
             var beforeFloatingPointWord = NumberToWords(beforeFloatingPoint);
             var afterFloatingPointWord = SmallNumberToWord((int)((doubleNumber - beforeFloatingPoint) * 100), "");
-               
+
             // return $"{beforeFloatingPointWord} and {afterFloatingPointWord}";
 
-            return "{beforeFloatingPointWord} ";
+            return beforeFloatingPointWord;
         }
 
         private static string NumberToWords(int number)
