@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" EnableEventValidation="false" ViewStateMode="Enabled"
-    CodeFile="NextIssueForAnisa.aspx.cs" Inherits="Masters_Process_NextIssue" Title="Job Issue" %>
+    CodeFile="NextIssueForAnisa.aspx.cs" Inherits="Masters_Process_NextIssueForAnisa" Title="Job Issue" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

@@ -16,7 +16,7 @@ using System.Diagnostics;
 //using IronPdf;
 //using ImageMagick;
 
-public partial class _Default : System.Web.UI.Page
+public partial class Viewpdftoimage : System.Web.UI.Page
 {
     ReportDocument RD = new ReportDocument();
     DataSet ds = new DataSet();

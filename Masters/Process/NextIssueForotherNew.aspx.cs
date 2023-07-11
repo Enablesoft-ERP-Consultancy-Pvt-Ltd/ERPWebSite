@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.IO;
 
-public partial class Masters_Process_NextIssue : System.Web.UI.Page
+public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
 {
     static int MasterCompanyId;
     protected static string Focus = "";

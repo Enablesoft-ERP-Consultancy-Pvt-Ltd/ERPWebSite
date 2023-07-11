@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ReportViewer1.aspx.cs" Inherits="Default2"  EnableEventValidation="false"%>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ReportViewer1.aspx.cs" Inherits="ReportViewer1"  EnableEventValidation="false"%>
 
 
 

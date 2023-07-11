@@ -10,7 +10,7 @@ using System.IO;
 using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
-public partial class Default2 : System.Web.UI.Page
+public partial class ReportViewer : System.Web.UI.Page
 {
     ReportDocument cryRpt = new ReportDocument();
     public static string Export = "Y";

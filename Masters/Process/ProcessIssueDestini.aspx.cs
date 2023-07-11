@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class Masters_ProcessIssue_ProcessIssue : System.Web.UI.Page
+public partial class Masters_ProcessIssue_ProcessIssueDestini : System.Web.UI.Page
 {
     // int PROCESS_ISSUE_ID = 0;
     static int MasterCompanyId;

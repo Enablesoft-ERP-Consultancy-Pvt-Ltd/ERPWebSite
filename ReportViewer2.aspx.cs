@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.IO;
 
-public partial class Default23 : System.Web.UI.Page
+public partial class ReportViewer2 : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

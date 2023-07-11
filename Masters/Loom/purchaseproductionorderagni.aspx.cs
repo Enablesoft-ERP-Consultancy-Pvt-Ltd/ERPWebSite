@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.IO;
 
-public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
+public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Page
 {
     static string ChkUpdateRateFlag = "";
     static int hnEmpId = 0;

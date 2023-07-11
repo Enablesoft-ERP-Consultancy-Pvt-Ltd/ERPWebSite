@@ -11,7 +11,7 @@ using System.IO.Compression;
 using CrystalDecisions.CrystalReports;
 using System.Configuration;
 using System.Text;
-public partial class Masters_Order_DRAFTORDRNEW : System.Web.UI.Page
+public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
 {
     public string CustomerName = "", CustomerMobile = "", CustomerEmailId = "", CustomerOrder = "0", CompanyName = "",
                   ProductName = "", TotalQty = "0", TotalAmount = "0", CurrencyName = "", DeliveryDate = "";

@@ -12,7 +12,7 @@ using System.Configuration;
 using System.IO;
 using CrystalDecisions.Shared;
 
-public partial class _Default : System.Web.UI.Page
+public partial class ViewReport : System.Web.UI.Page
 {
     ReportDocument RD = new ReportDocument();
     DataSet ds = new DataSet();
