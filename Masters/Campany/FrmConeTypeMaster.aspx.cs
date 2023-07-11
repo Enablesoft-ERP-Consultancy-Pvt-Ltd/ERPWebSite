@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 
-public partial class FrmConeTypeMaster : CustomPage
+public partial class Masters_Campany_FrmConeTypeMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

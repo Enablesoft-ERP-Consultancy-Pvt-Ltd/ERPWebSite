@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class ShippingMaster : CustomPage
+public partial class Masters_Campany_ShippingMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

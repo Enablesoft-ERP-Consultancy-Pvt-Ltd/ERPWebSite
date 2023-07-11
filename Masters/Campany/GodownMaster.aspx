@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Godown Master" Language="C#" AutoEventWireup="true" CodeFile="GodownMaster.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" Inherits="Masters_Campany_Term" EnableEventValidation="false" %>
+    MasterPageFile="~/ERPmaster.master" Inherits="Masters_Campany_GodownMaster" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="CPH_Form" runat="server">

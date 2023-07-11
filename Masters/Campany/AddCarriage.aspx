@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddCarriage.aspx.cs" Inherits="Masters_Campany_frmCarriage"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddCarriage.aspx.cs" Inherits="Masters_Campany_AddCarriage"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

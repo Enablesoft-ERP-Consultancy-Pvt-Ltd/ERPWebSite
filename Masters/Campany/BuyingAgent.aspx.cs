@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Text;
 
-public partial class BuyingAgent : CustomPage
+public partial class Masters_Campany_BuyingAgent : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

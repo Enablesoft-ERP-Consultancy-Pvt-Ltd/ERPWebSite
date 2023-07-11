@@ -10,7 +10,7 @@ using System.Text;
 using ClosedXML.Excel;
 using System.IO;
 
-public partial class GenrateInDent : System.Web.UI.Page
+public partial class EditGenrateInDent : System.Web.UI.Page
 {
     static int ReProcessType = 0;
     static int ChkReDeyingStatus = 0;

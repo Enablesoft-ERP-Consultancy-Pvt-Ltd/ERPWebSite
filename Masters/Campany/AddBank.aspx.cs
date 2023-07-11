@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_Campany_frmBank1 : CustomPage
+public partial class Masters_Campany_AddBank : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

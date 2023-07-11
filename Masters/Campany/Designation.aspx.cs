@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 
-public partial class Designation : CustomPage
+public partial class Masters_Campany_Designation : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

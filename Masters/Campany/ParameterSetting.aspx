@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="ParameterSetting.aspx.cs" Inherits="Masters_ParameterSetting" %>
+    CodeFile="ParameterSetting.aspx.cs" Inherits="Masters_Campany_ParameterSetting" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Page" ContentPlaceHolderID="CPH_Form" runat="server">

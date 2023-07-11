@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class frmColor : CustomPage
+public partial class Masters_Campany_frmDepartment : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

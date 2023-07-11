@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" EnableEventValidation="false" CodeFile="AddDyeingRat.aspx.cs"
-    Title="Add Dyeing Rate" Inherits="Masters_Process_DyeingRateDefine" %>
+    Title="Add Dyeing Rate" Inherits="Masters_Process_AddDyeingRat" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

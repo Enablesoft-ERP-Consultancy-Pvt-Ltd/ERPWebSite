@@ -10,7 +10,7 @@ using CrystalDecisions.CrystalReports;
 using System.Text;
 using System.IO;
 
-public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Page
+public partial class Masters_Process_frm_receive_process_nextForOther : System.Web.UI.Page
 {
     private const string SCRIPT_DOFOCUS =
   @"window.setTimeout('DoFocus()', 1);

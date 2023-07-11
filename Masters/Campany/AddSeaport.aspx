@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddSeaport.aspx.cs" Inherits="Masters_AddSeaportAirport"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddSeaport.aspx.cs" Inherits="Masters_Campany_AddSeaport"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

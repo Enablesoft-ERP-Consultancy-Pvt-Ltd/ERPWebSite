@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddShipping.aspx.cs" Inherits="AddShipping"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddShipping.aspx.cs" Inherits="Masters_Campany_AddShipping"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

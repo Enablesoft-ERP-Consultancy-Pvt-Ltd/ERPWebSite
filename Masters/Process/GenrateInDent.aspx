@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Genrate Indent" Language="C#" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="GenrateInDent.aspx.cs" Inherits="GenrateInDent" EnableEventValidation="false"
+    CodeFile="GenrateInDent.aspx.cs" Inherits="Masters_Process_GenrateInDent" EnableEventValidation="false"
     ViewStateMode="Enabled" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

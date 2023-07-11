@@ -10,7 +10,7 @@ using System.Text;
 using ClosedXML.Excel;
 using System.IO;
 
-public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
+public partial class Masters_Process_AddDyeingRat : System.Web.UI.Page
 {
     static int Finishedid;
     protected void Page_Load(object sender, EventArgs e)

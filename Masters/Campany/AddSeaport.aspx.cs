@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 
-public partial class Masters_AddSeaportAirport : System.Web.UI.Page
+public partial class Masters_Campany_AddSeaport : System.Web.UI.Page
 {
     public static int SeaPortId = 0;
 

@@ -13,7 +13,7 @@ using System.Data.SqlTypes;
 using System.Net;
 
 
-public partial class Masters_AddLegalinformation : System.Web.UI.Page
+public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

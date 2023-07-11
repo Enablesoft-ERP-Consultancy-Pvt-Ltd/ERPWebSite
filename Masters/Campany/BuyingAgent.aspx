@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="BuyingAgent" Language="C#" AutoEventWireup="true" CodeFile="BuyingAgent.aspx.cs"
-    Inherits="BuyingAgent" MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" %>
+    Inherits="Masters_Campany_BuyingAgent" MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="page" ContentPlaceHolderID="CPH_Form" runat="server">

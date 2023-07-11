@@ -10,7 +10,7 @@ using System.Text;
 using System.IO;
 using ClosedXML.Excel;
 
-public partial class Masters_process_itemRecieve : System.Web.UI.Page
+public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
 {
     int ItemFinishedId = 0;
     string remainstock = null;

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddBank.aspx.cs" Inherits="Masters_Campany_frmBank1"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddBank.aspx.cs" Inherits="Masters_Campany_AddBank"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

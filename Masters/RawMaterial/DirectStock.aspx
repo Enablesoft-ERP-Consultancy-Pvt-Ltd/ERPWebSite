@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Direct Stock Entry" Language="C#" AutoEventWireup="true" CodeFile="DirectStock.aspx.cs"
-    EnableEventValidation="false" Inherits="Masters_process_itemRecieve" MasterPageFile="~/ERPmaster.master" %>
+    EnableEventValidation="false" Inherits="Masters_RawMaterial_DirectStock" MasterPageFile="~/ERPmaster.master" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

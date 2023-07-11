@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 
-public partial class BuyingAgent : CustomPage
+public partial class Masters_Campany_AddBuyingAgent : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class Masters_process_itemRecieve : System.Web.UI.Page
+public partial class Masters_RawMaterial_DirectStockDestini : System.Web.UI.Page
 {
     int ItemFinishedId = 0;
     string remainstock = null;
