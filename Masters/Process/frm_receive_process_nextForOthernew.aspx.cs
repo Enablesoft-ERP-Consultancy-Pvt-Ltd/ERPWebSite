@@ -9,7 +9,9 @@ using System.Data.SqlClient;
 using CrystalDecisions.CrystalReports;
 using System.Text;
 using System.IO;
-
+/// <summary>
+/// rrr
+/// </summary>
 public partial class Masters_Process_frm_receive_process_nextForOthernew : System.Web.UI.Page
 {
     private const string SCRIPT_DOFOCUS =
@@ -36,7 +38,7 @@ public partial class Masters_Process_frm_receive_process_nextForOthernew : Syste
 
             ScriptManager.RegisterStartupScript(
                 this,
-                typeof(Masters_Process_frm_receive_process_next),
+                typeof(Masters_Process_frm_receive_process_nextForOthernew),
                 "ScriptDoFocus",
                 SCRIPT_DOFOCUS.Replace("REQUEST_LASTFOCUS", Request["__LASTFOCUS"]),
                 true);

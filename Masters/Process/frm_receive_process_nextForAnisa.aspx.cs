@@ -36,7 +36,7 @@ public partial class Masters_Process_frm_receive_process_nextForAnisa : System.W
             //and registers the script to start after Update panel was rendered
             ScriptManager.RegisterStartupScript(
                 this,
-                typeof(Masters_Process_frm_receive_process_next),
+                typeof(Masters_Process_frm_receive_process_nextForAnisa),
                 "ScriptDoFocus",
                 SCRIPT_DOFOCUS.Replace("REQUEST_LASTFOCUS", Request["__LASTFOCUS"]),
                 true);
