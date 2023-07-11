@@ -838,8 +838,8 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Column(26).Hide();
             sht.Column(27).Hide();
         }
-        
 
+        sht.Range("AB2").Value = "Remarks";     
         int row = 3;
 
         DataView dv = ds.Tables[0].DefaultView;
@@ -959,13 +959,13 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                 sht.Range("Z" + row).SetValue("");
                 sht.Range("AA" + row).SetValue("");
             }
-
+            sht.Range("AB" + row).SetValue(ds1.Tables[0].Rows[i]["REMARKS"]);
             row = row + 1;
         }
         ds.Dispose();
         ds1.Dispose();
         //*************************************************
-        using (var a = sht.Range("A1" + ":AA" + row))
+        using (var a = sht.Range("A1" + ":AB" + row))
         {
             a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
             a.Style.Border.TopBorder = XLBorderStyleValues.Thin;

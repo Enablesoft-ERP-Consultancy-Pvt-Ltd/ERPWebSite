@@ -289,6 +289,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
             case "30":
             case "42":
             case "43":
+            case "46":
                 break;
             default:
                 txtBuyerQuality.Text = "";

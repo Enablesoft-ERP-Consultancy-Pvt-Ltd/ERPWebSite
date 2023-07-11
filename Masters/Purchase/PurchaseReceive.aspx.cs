@@ -181,9 +181,22 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
     }
     private void CompanySelectedIndexChanged()
     {
-        UtilityModule.ConditionalComboFill(ref DDPartyName, @"select Distinct EI.EmpId,EI.EmpName 
-        From EmpInfo EI,PurchaseIndentIssue PII 
-        Where EI.Empid=PII.Partyid And PII.CompanyID = " + DDCompanyName.SelectedValue + " And IsNull(PII.BranchID, 0) = " + DDBranchName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " order by ei.empname", true, "--Select Employee--");
+        String Str = @"Select Distinct EI.EmpId,EI.EmpName 
+        From PurchaseIndentIssue PII(Nolock) 
+        JOIN EmpInfo EI(Nolock) ON EI.Empid = PII.Partyid And EI.MasterCompanyId=" + Session["varCompanyId"] + @" 
+        Where PII.CompanyID = " + DDCompanyName.SelectedValue + " And IsNull(PII.BranchID, 0) = " + DDBranchName.SelectedValue + @" 
+        order by ei.empname";
+
+        if (Convert.ToInt32(Session["varCompanyNo"]) == 16 || Convert.ToInt32(Session["varCompanyNo"]) == 28)
+        {
+            Str = @"Select Distinct EI.EmpId,EI.EmpName 
+                From PurchaseIndentIssue PII(Nolock) 
+                JOIN EmpInfo EI(Nolock) ON EI.Empid = PII.Partyid And EI.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                JOIN VendorUser VU(nolock) ON VU.EmpID = EI.EmpId And VU.UserID = " + Session["varuserid"] + @" 
+                Where PII.CompanyID = " + DDCompanyName.SelectedValue + " And IsNull(PII.BranchID, 0) = " + DDBranchName.SelectedValue + @" 
+                order by ei.empname";
+        }
+        UtilityModule.ConditionalComboFill(ref DDPartyName, Str, true, "--Select Employee--");
         if (DDPartyName.Items.Count > 0)
         {
             DDPartyName.SelectedIndex = 0;

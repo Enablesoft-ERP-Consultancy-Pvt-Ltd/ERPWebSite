@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web.UI.Page
 {
+    static string TempProcessRecId = "";
     static int VarConfirmButtonStatus = 1;
     static int VarProcess_Rec_Detail_Id = 0;
     static int VarProcess_Rec_Id = 0;
@@ -106,6 +107,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     TxtReceiveQty.Text = "1000";
                     DGStockDetail.PageSize = 1000;
                     TDstockno.Visible = true;
+                    TDbatch.Visible = true;
+                    
                     break;
                 case "16":
                 case "28":
@@ -160,6 +163,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         TxtReceiveQty.Text = "200";
                         DGStockDetail.PageSize = 200;
                     }
+                    ChkForSummaryReport.Visible = true;
                     break;
                 case "45":
                     TxtReceiveQty.Enabled = true;
@@ -299,8 +303,17 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             UtilityModule.ConditionalComboFill(ref DDreceiveNo, str, true, "--Plz Select--");
             if (DDreceiveNo.Items.Count > 0)
             {
-                DDreceiveNo.SelectedIndex = 1;
-                DDreceiveNo_SelectedIndexChanged(sender, new EventArgs());
+                
+                if (txtEditReceiveNoForCI.Text.Trim() != "")
+                {
+                    DDreceiveNo.SelectedValue = TempProcessRecId;
+                    DDreceiveNo_SelectedIndexChanged(sender, new EventArgs());
+                }
+                else
+                {
+                    DDreceiveNo.SelectedIndex = 1;
+                    DDreceiveNo_SelectedIndexChanged(sender, new EventArgs());
+                }
             }
         }
         fillGrid();
@@ -524,6 +537,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 {
                     Tran.Commit();
                     txtreceiveno.Text = param[5].Value.ToString();
+                 //   txtBatchChallanNo.Text = param[16].Value.ToString();
                     hnprocessrecid.Value = param[0].Value.ToString();
                     lblmessage.Text = "Data saved successfully...";
                     FillRecDetails();
@@ -631,7 +645,17 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailchampo.rpt";
                     break;
                 case "43":
-                    Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailCarpetInternational.rpt";
+                    if (ChkForSummaryReport.Checked == true)
+                    {
+                        Session["rptFileName"] = "~\\Reports\\rptProductionreceiveSummaryCarpetInternational.rpt";
+                    }
+                    else
+                    {
+                        Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailCarpetInternational.rpt";
+                    }                    
+                    break;
+                case "14":
+                    Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetaileastern.rpt";
                     break;
                 default:
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetail.rpt";
@@ -671,7 +695,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     protected void chkedit_CheckedChanged(object sender, EventArgs e)
     {
         if (chkedit.Checked == true)
-        {
+        {                   
             TDreceiveNo.Visible = true;
             btnsave.Visible = false;
             TDFolioNotext.Visible = true;          
@@ -683,11 +707,18 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     if (Session["usertype"].ToString() == "1")
                     {
                         BtnUpdateRate.Visible = true;
-                    } 
-                    break;  
+                    }
+                    TDEditReceiveNoForCI.Visible = false;
+                    break;
+                case "43":
+                    BtnUpdateRate.Visible = false;
+                    BtnUpdateConsumption.Visible = true;
+                    TDEditReceiveNoForCI.Visible = true;
+                    break;
                 default:
                     BtnUpdateRate.Visible = false;
                     BtnUpdateConsumption.Visible = true;
+                    TDEditReceiveNoForCI.Visible = false;
                     break;
             }
             
@@ -702,7 +733,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
         }
         else
-        {
+        {           
+            TDEditReceiveNoForCI.Visible = false;
             TDreceiveNo.Visible = false;
             btnsave.Visible = true;
             BtnUpdateRate.Visible = false;
@@ -1069,9 +1101,6 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
             }
             //*************
-
-
-
         }
     }
 
@@ -1152,10 +1181,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             //*********
             if (dtrecord.Rows.Count > 0)
             {
-                SqlParameter[] param = new SqlParameter[2];
+                SqlParameter[] param = new SqlParameter[3];
                 param[0] = new SqlParameter("@dtrecord", dtrecord);
                 param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[1].Direction = ParameterDirection.Output;
+                param[2] = new SqlParameter("@UserID", Session["varuserId"]);
+
                 //*****
                 SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_saveQc", param);
                 lblqcmsg.Text = param[1].Value.ToString();
@@ -1671,6 +1702,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
                 cmd.Parameters.AddWithValue("@BranchId", DDBranchName.SelectedValue);
                 cmd.Parameters.AddWithValue("@PartyChallanNo", txtPartyChallanNo.Text);
+                cmd.Parameters.Add("@Batch_challanno", SqlDbType.Int);
+                cmd.Parameters["@Batch_challanno"].Direction = ParameterDirection.Output;
 
                 cmd.ExecuteNonQuery();
                 if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
@@ -1684,6 +1717,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     Tran.Commit();
                     txtreceiveno.Text = cmd.Parameters["@ReceiveNo"].Value.ToString();
                     hnprocessrecid.Value = cmd.Parameters["@Process_Rec_id"].Value.ToString();
+                    txtBatchChallanNo.Text = cmd.Parameters["@Batch_challanno"].Value.ToString();
                     hnlastfoliono.Value = DDFolioNo.SelectedValue;
 
                     lblmessage.Text = "Data saved successfully...";
@@ -1749,8 +1783,6 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             Refreshcontrol();
             if (ds.Tables[0].Rows.Count > 0)
             {
-                
-
                 //btnconfirm.Visible = true;
                 VarConfirmButtonStatus = 1;
                 if (ds.Tables[0].Rows[0]["PcsType"].ToString() == "999")
@@ -2635,5 +2667,34 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     protected void DDStockStatus_SelectedIndexChanged(object sender, EventArgs e)
     {
 
+    }
+
+    protected void txtEditReceiveNoForCI_TextChanged(object sender, EventArgs e)
+    {
+        string str="",str2="";       
+
+        str = @"Select Distinct PRD.ISSUEORDERID,isnull(PRM.Process_Rec_Id,0) as Process_Rec_Id From PROCESS_RECEIVE_MASTER_1 PRM(NoLock) JOIN PROCESS_RECEIVE_DETAIL_1 PRD(NoLock) ON PRM.PROCESS_REC_ID=PRD.PROCESS_REC_ID
+                       Where PRM.CHALLANNO='" +txtEditReceiveNoForCI.Text+"'";
+         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+         if (ds.Tables[0].Rows.Count > 0)
+         {
+             int issueorderid = 0;
+             issueorderid =Convert.ToInt32(ds.Tables[0].Rows[0]["ISSUEORDERID"].ToString());
+             TempProcessRecId = ds.Tables[0].Rows[0]["Process_Rec_Id"].ToString();
+
+             str2 = @" Select distinct isnull(PIM.ChallanNo,PIM.ISSUEORDERID) as FolioChallanNo from PROCESS_ISSUE_MASTER_1 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PID(NoLock) ON PIM.ISSUEORDERID=PID.ISSUEORDERID
+                    Where PIM.ISSUEORDERID="+issueorderid+"";
+             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+             if (ds2.Tables[0].Rows.Count > 0)
+             {
+                 txtfolionoedit.Text = ds2.Tables[0].Rows[0]["FolioChallanNo"].ToString();
+                 txtfolionoedit_TextChanged(sender, new EventArgs());
+             }
+         }
+         else
+         {           
+             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+         }        
+        
     }
 }

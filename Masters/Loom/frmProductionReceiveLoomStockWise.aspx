@@ -124,6 +124,12 @@
                                 <asp:CheckBox ID="chkedit" Text="For Edit" CssClass="labelbold" runat="server" AutoPostBack="true"
                                     OnCheckedChanged="chkedit_CheckedChanged" />
                             </td>
+                            <td id="TDEditReceiveNoForCI" runat="server" visible="false">
+                                <asp:Label ID="Label25" runat="server" Text="Rec ChallanNo" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="txtEditReceiveNoForCI" CssClass="textb" Width="100px" runat="server"
+                                    AutoPostBack="true" OnTextChanged="txtEditReceiveNoForCI_TextChanged" />
+                            </td>
                             <td>
                                 <asp:TextBox ID="TxtUserType" runat="server" Style="display: none"></asp:TextBox>
                             </td>
@@ -244,9 +250,14 @@
                                             <asp:Label ID="Label36" runat="server" Text="Party ChallanNo" CssClass="labelbold"></asp:Label><br />
                                             <asp:TextBox ID="txtPartyChallanNo" CssClass="textb" Width="100px" runat="server" />
                                         </td>
+                                        <td id="TDbatch" runat="server" visible="false">
+                                            <asp:Label ID="Label26" runat="server" Text="Batch ChallanNo" CssClass="labelbold"></asp:Label><br />
+                                            <asp:TextBox ID="txtBatchChallanNo" CssClass="textb" Width="100px" runat="server" />
+                             </td>
                                     </tr>
                                 </table>
                             </td>
+                              
                             <td style="width: 20%" valign="top">
                                 <table width="100%">
                                     <tr>
@@ -997,6 +1008,7 @@
                     <table width="100%">
                         <tr>
                             <td align="right">
+                            <asp:CheckBox ID="ChkForSummaryReport" Text="For Summary" CssClass="labelbold" runat="server" Visible="false" />
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
                                 <asp:Button ID="btnsave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="btnsave_Click"
                                     Visible="false" UseSubmitBehavior="false" OnClientClick="if (!confirm('Do you want to save Data?')) return; this.disabled=true;this.value = 'wait ...';" />
@@ -1023,7 +1035,7 @@
                 <asp:HiddenField ID="hnlastfoliono" runat="server" Value="0" />
                 <asp:HiddenField ID="HiddenField1" runat="server" Value="0" />
                 <asp:HiddenField ID="hnRejectedGatePassNo" runat="server" Value="0" />
-                <asp:HiddenField ID="hnlastempids" runat="server" Value="" />                
+                <asp:HiddenField ID="hnlastempids" runat="server" Value="" />
                 <div>
                     <asp:Button runat="server" ID="btnModalPopUp" Style="display: none" />
                     <asp:ModalPopupExtender ID="Modalpopupext" runat="server" PopupControlID="pnModelPopup"
@@ -1173,73 +1185,71 @@
                         </div>
                     </asp:Panel>
                 </div>
-                
                 <asp:HiddenField ID="HnWPenalityId" runat="server" />
             </ContentTemplate>
         </asp:UpdatePanel>
-
         <div>
-                    <style type="text/css">
-                        #mask
-                        {
-                            position: fixed;
-                            left: 0px;
-                            top: 0px;
-                            z-index: 4;
-                            opacity: 0.4;
-                            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)"; /* first!*/
-                            filter: alpha(opacity=40); /* second!*/
-                            background-color: Gray;
-                            display: none;
-                            width: 100%;
-                            height: 100%;
-                        }
-                    </style>
-                    <script type="text/javascript" language="javascript">
-                        function ShowPopup() {
-                            $('#mask').show();
-                            $('#<%=pnlpopup4.ClientID %>').show();
-                        }
-                        function HidePopup() {
-                            $('#mask').hide();
-                            $('#<%=pnlpopup4.ClientID %>').hide();
-                        }
-                        $(".btnPwd").live('click', function () {
-                            HidePopup();
-                        });
-                    </script>
-                    <div id="mask">
-                    </div>
-                    <asp:Panel ID="pnlpopup4" runat="server" BackColor="White" Height="175px" Width="300px"
-                        Style="z-index: 111; background-color: White; position: absolute; left: 35%;
-                        top: 40%; border: outset 2px gray; padding: 5px; display: none">
-                        <table width="100%" style="width: 100%; height: 100%;" cellpadding="0" cellspacing="5">
-                            <tr style="background-color: #8B7B8B; height: 1px">
-                                <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
-                                    align="center">
-                                    ENTER PASSWORD <a id="closebtn" style="color: white; float: right; text-decoration: none"
-                                        class="btnPwd" href="#">X</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    Enter Password:
-                                </td>
-                                <td>
-                                    <asp:TextBox ID="txtpwd" runat="server" TextMode="Password" Height="30px" Width="174px" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                </td>
-                                <td align="right">
-                                    <asp:Button ID="btnCheck" CommandName="Check" runat="server" Text="Check" CssClass="btnPwd"
-                                        ValidationGroup="m" OnClick="btnCheck_Click" />
-                                    <input type="button" value="Cancel" class="btnPwd" />
-                                </td>
-                            </tr>
-                        </table>
-                    </asp:Panel>
-                </div>
+            <style type="text/css">
+                #mask
+                {
+                    position: fixed;
+                    left: 0px;
+                    top: 0px;
+                    z-index: 4;
+                    opacity: 0.4;
+                    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)"; /* first!*/
+                    filter: alpha(opacity=40); /* second!*/
+                    background-color: Gray;
+                    display: none;
+                    width: 100%;
+                    height: 100%;
+                }
+            </style>
+            <script type="text/javascript" language="javascript">
+                function ShowPopup() {
+                    $('#mask').show();
+                    $('#<%=pnlpopup4.ClientID %>').show();
+                }
+                function HidePopup() {
+                    $('#mask').hide();
+                    $('#<%=pnlpopup4.ClientID %>').hide();
+                }
+                $(".btnPwd").live('click', function () {
+                    HidePopup();
+                });
+            </script>
+            <div id="mask">
+            </div>
+            <asp:Panel ID="pnlpopup4" runat="server" BackColor="White" Height="175px" Width="300px"
+                Style="z-index: 111; background-color: White; position: absolute; left: 35%;
+                top: 40%; border: outset 2px gray; padding: 5px; display: none">
+                <table width="100%" style="width: 100%; height: 100%;" cellpadding="0" cellspacing="5">
+                    <tr style="background-color: #8B7B8B; height: 1px">
+                        <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
+                            align="center">
+                            ENTER PASSWORD <a id="closebtn" style="color: white; float: right; text-decoration: none"
+                                class="btnPwd" href="#">X</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">
+                            Enter Password:
+                        </td>
+                        <td>
+                            <asp:TextBox ID="txtpwd" runat="server" TextMode="Password" Height="30px" Width="174px" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td align="right">
+                            <asp:Button ID="btnCheck" CommandName="Check" runat="server" Text="Check" CssClass="btnPwd"
+                                ValidationGroup="m" OnClick="btnCheck_Click" />
+                            <input type="button" value="Cancel" class="btnPwd" />
+                        </td>
+                    </tr>
+                </table>
+            </asp:Panel>
+        </div>
     </div>
 </asp:Content>

@@ -1427,7 +1427,9 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         if (ds.Tables[0].Rows.Count > 0)
         {
             TxtFRDate.Text = ds.Tables[0].Rows[0]["Date"].ToString();
-            TxtTODate.Text = ds.Tables[0].Rows[0]["Date"].ToString();
+            TxtTODate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+
+            //TxtTODate.Text = ds.Tables[0].Rows[0]["Date"].ToString();
         }
         else
         {

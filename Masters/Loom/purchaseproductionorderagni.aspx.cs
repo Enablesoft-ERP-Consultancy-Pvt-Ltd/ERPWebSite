@@ -13,6 +13,7 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
 {
     static string ChkUpdateRateFlag = "";
     static int hnEmpId = 0;
+    protected static string Focus = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["varCompanyId"] == null)
@@ -56,7 +57,9 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
                 JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
                 Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
-                Order By D.DepartmentName";
+                Order By D.DepartmentName
+Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
+";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -74,6 +77,7 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
 
             UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 4, false, "");
             UtilityModule.ConditionalComboFillWithDS(ref ddlshipto, ds, 4, false, "");
+            UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 6, true, "--Plz Select--");
             DDBranchName.Enabled = false;
             if (DDBranchName.Items.Count == 0)
             {
@@ -239,6 +243,12 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
                     ChkForSlipPrint.Visible = false;
                     ddunit.Enabled = false;
                     tdprocess.Visible = true;
+                     TDCategory.Visible = true;
+                     tdqualityname1.Visible = true;
+                     tddesign1.Visible = true;
+                  //  TDgetstockdetail.Visible = false;
+                     tdColor1.Visible = true;
+                     tdsize1.Visible = true;
                     break;
                 default:
                     TDTanaCottonLotNo.Visible = false;
@@ -482,6 +492,26 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
     protected void DDcustcode_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
+
+        if (DDcustcode.SelectedIndex == 0)
+        {
+            DDCategory.Enabled = true;
+            DDQuality.Enabled = true;
+            DDDesign.Enabled = true;
+            DDColor.Enabled = true;
+            DDSize.Enabled = true;
+
+
+
+        }
+        else {
+
+            DDCategory.Enabled = false;
+            DDQuality.Enabled = false;
+            DDDesign.Enabled = false;
+            DDColor.Enabled = false;
+            DDSize.Enabled = false;
+        }
         if (TDDepartmentName.Visible == true && DDDepartmentName.SelectedIndex > 0)
         {
             FillDepartmentIssueNo();
@@ -1363,238 +1393,318 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
         dtrecords.Columns.Add("SGST", typeof(float));
         dtrecords.Columns.Add("CGST", typeof(float));
         dtrecords.Columns.Add("IGST", typeof(float));
-       
 
-        //**************
-        for (int i = 0; i < DG.Rows.Count; i++)
+        if (DDorderNo.SelectedIndex > 0)
         {
-            CheckBox Chkboxitem = ((CheckBox)DG.Rows[i].FindControl("Chkboxitem"));
-            TextBox txtloomqty = ((TextBox)DG.Rows[i].FindControl("txtloomqty"));
-            if (Chkboxitem.Checked == true && (txtloomqty.Text != "" && txtloomqty.Text != "0"))
+            //**************
+            for (int i = 0; i < DG.Rows.Count; i++)
             {
-                Label lblorderid = ((Label)DG.Rows[i].FindControl("lblorderid"));
-                Label lblOrderdetailid = ((Label)DG.Rows[i].FindControl("lblOrderdetailid"));
-                Label lblitemfinishedid = ((Label)DG.Rows[i].FindControl("lblitemfinishedid"));
-                Label lblunitid = ((Label)DG.Rows[i].FindControl("lblunitid"));
-                TextBox txtrate = ((TextBox)DG.Rows[i].FindControl("txtrate"));
-                TextBox txtwidth = ((TextBox)DG.Rows[i].FindControl("txtwidth"));
-                TextBox txtlength = ((TextBox)DG.Rows[i].FindControl("txtlength"));
-                Label lblarea = ((Label)DG.Rows[i].FindControl("lblarea"));
-                TextBox txtcommrate = ((TextBox)DG.Rows[i].FindControl("txtcommrate"));
-                TextBox TxtBonus = ((TextBox)DG.Rows[i].FindControl("TxtBonus"));
-                TextBox TxtFinisherRate = ((TextBox)DG.Rows[i].FindControl("txtFinisherRate"));
-                TextBox txtigst = ((TextBox)DG.Rows[i].FindControl("TXTIGST"));
-                TextBox txtsgst = ((TextBox)DG.Rows[i].FindControl("TXTSGST"));
-                TextBox txtcgst = ((TextBox)DG.Rows[i].FindControl("TXTCGST"));
-                DropDownList DDGSType = (DropDownList)DG.Rows[i].FindControl("gsttype");
-
-                //********Data Row
-                DataRow dr = dtrecords.NewRow();
-                dr["Orderid"] = lblorderid.Text;
-                dr["orderdetailid"] = lblOrderdetailid.Text;
-                dr["Item_finished_id"] = lblitemfinishedid.Text;
-                dr["Unitid"] = lblunitid.Text;
-                dr["LoomQty"] = txtloomqty.Text;
-                dr["rate"] = txtrate.Text == "" ? "0" : txtrate.Text;
-                dr["Width"] = txtwidth.Text;
-                dr["Length"] = txtlength.Text;
-                dr["area"] = lblarea.Text;
-                dr["commrate"] = txtcommrate.Text == "" ? "0" : txtcommrate.Text;
-                dr["Bonus"] = TxtBonus.Text == "" ? "0" : TxtBonus.Text;
-                dr["FinisherRate"] = TxtFinisherRate.Text == "" ? "0" : TxtFinisherRate.Text;
-                dr["GSTTYPEID"] = DDGSType.SelectedValue;
-                dr["CGST"] = txtcgst.Text == "" ? "0" : txtcgst.Text;
-                dr["SGST"] = txtsgst.Text == "" ? "0" : txtsgst.Text;
-                dr["IGST"] = txtigst.Text == "" ? "0" : txtigst.Text;
-                dtrecords.Rows.Add(dr);
-            }
-        }
-        if (dtrecords.Rows.Count > 0)
-        {
-            SqlTransaction Tran = con.BeginTransaction();
-            try
-            {
-                //Get Empid 
-                string StrEmpid = "";
-                for (int i = 0; i < listWeaverName.Items.Count; i++)
+                CheckBox Chkboxitem = ((CheckBox)DG.Rows[i].FindControl("Chkboxitem"));
+                TextBox txtloomqty = ((TextBox)DG.Rows[i].FindControl("txtloomqty"));
+                if (Chkboxitem.Checked == true && (txtloomqty.Text != "" && txtloomqty.Text != "0"))
                 {
-                    if (StrEmpid == "")
+                    Label lblorderid = ((Label)DG.Rows[i].FindControl("lblorderid"));
+                    Label lblOrderdetailid = ((Label)DG.Rows[i].FindControl("lblOrderdetailid"));
+                    Label lblitemfinishedid = ((Label)DG.Rows[i].FindControl("lblitemfinishedid"));
+                    Label lblunitid = ((Label)DG.Rows[i].FindControl("lblunitid"));
+                    TextBox txtrate = ((TextBox)DG.Rows[i].FindControl("txtrate"));
+                    TextBox txtwidth = ((TextBox)DG.Rows[i].FindControl("txtwidth"));
+                    TextBox txtlength = ((TextBox)DG.Rows[i].FindControl("txtlength"));
+                    Label lblarea = ((Label)DG.Rows[i].FindControl("lblarea"));
+                    TextBox txtcommrate = ((TextBox)DG.Rows[i].FindControl("txtcommrate"));
+                    TextBox TxtBonus = ((TextBox)DG.Rows[i].FindControl("TxtBonus"));
+                    TextBox TxtFinisherRate = ((TextBox)DG.Rows[i].FindControl("txtFinisherRate"));
+                    TextBox txtigst = ((TextBox)DG.Rows[i].FindControl("TXTIGST"));
+                    TextBox txtsgst = ((TextBox)DG.Rows[i].FindControl("TXTSGST"));
+                    TextBox txtcgst = ((TextBox)DG.Rows[i].FindControl("TXTCGST"));
+                    DropDownList DDGSType = (DropDownList)DG.Rows[i].FindControl("gsttype");
+
+                    //********Data Row
+                    DataRow dr = dtrecords.NewRow();
+                    dr["Orderid"] = lblorderid.Text;
+                    dr["orderdetailid"] = lblOrderdetailid.Text;
+                    dr["Item_finished_id"] = lblitemfinishedid.Text;
+                    dr["Unitid"] = lblunitid.Text;
+                    dr["LoomQty"] = txtloomqty.Text;
+                    dr["rate"] = txtrate.Text == "" ? "0" : txtrate.Text;
+                    dr["Width"] = txtwidth.Text;
+                    dr["Length"] = txtlength.Text;
+                    dr["area"] = lblarea.Text;
+                    dr["commrate"] = txtcommrate.Text == "" ? "0" : txtcommrate.Text;
+                    dr["Bonus"] = TxtBonus.Text == "" ? "0" : TxtBonus.Text;
+                    dr["FinisherRate"] = TxtFinisherRate.Text == "" ? "0" : TxtFinisherRate.Text;
+                    dr["GSTTYPEID"] = DDGSType.SelectedValue;
+                    dr["CGST"] = txtcgst.Text == "" ? "0" : txtcgst.Text;
+                    dr["SGST"] = txtsgst.Text == "" ? "0" : txtsgst.Text;
+                    dr["IGST"] = txtigst.Text == "" ? "0" : txtigst.Text;
+                    dtrecords.Rows.Add(dr);
+                }
+            }
+
+
+
+            if (dtrecords.Rows.Count > 0)
+            {
+                SqlTransaction Tran = con.BeginTransaction();
+                try
+                {
+                    //Get Empid 
+                    string StrEmpid = "";
+                    for (int i = 0; i < listWeaverName.Items.Count; i++)
                     {
-                        StrEmpid = listWeaverName.Items[i].Value;
+                        if (StrEmpid == "")
+                        {
+                            StrEmpid = listWeaverName.Items[i].Value;
+                        }
+                        else
+                        {
+                            StrEmpid = StrEmpid + "," + listWeaverName.Items[i].Value;
+                        }
+                    }
+                    if (ddempname.SelectedValue.ToString() == "0")
+                    {
+                        lblmessage.Text = "Plz Enter Weaver ID No...";
+                        return;
+
                     }
                     else
                     {
-                        StrEmpid = StrEmpid + "," + listWeaverName.Items[i].Value;
+                        StrEmpid = ddempname.SelectedValue;
                     }
-                }
-                if (ddempname.SelectedValue.ToString() == "0")
-                {
-                    lblmessage.Text = "Plz Enter Weaver ID No...";
-                    return;
-
-                }
-                else
-                {
-                    StrEmpid = ddempname.SelectedValue;
-                }
-                //Check Employee Entry
-                //if (StrEmpid == "")
-                //{
-                //    lblmessage.Text = "Plz Enter Weaver ID No...";
-                //    return;
-                //}
-                //******
-                SqlCommand cmd = new SqlCommand("Pro_SaveProductionOrderonLoom_agni", con, Tran);
-                cmd.CommandType = CommandType.StoredProcedure;
-                cmd.CommandTimeout = 30000;
-                cmd.Parameters.Add("@issueorderid", SqlDbType.Int);
-                cmd.Parameters["@issueorderid"].Direction = ParameterDirection.InputOutput;
-                cmd.Parameters["@issueorderid"].Value = hnissueorderid.Value;
-                cmd.Parameters.AddWithValue("@Companyid", DDcompany.SelectedValue);
-                cmd.Parameters.AddWithValue("@ProductionUnit", 1);
-                cmd.Parameters.AddWithValue("@LoomId",Convert.ToInt32(txtloomid.Text==""?"0":txtloomid.Text));
-                cmd.Parameters.AddWithValue("@Empid", StrEmpid);
-                cmd.Parameters.Add("@FolioNo", SqlDbType.VarChar, 100);
-                cmd.Parameters["@FolioNo"].Direction = ParameterDirection.Output;
-                cmd.Parameters.AddWithValue("@Issuedate", txtissuedate.Text);
-                cmd.Parameters.AddWithValue("@Targetdate", txttargetdate.Text);
-                cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
-                cmd.Parameters.AddWithValue("@dtrecords", dtrecords);
-                if (variable.VarProductionOrderPcsWise == "1" && ChkForPcsWise.Checked == true)
-                {
-                    hnordercaltype.Value = "1";
-                }
-                cmd.Parameters.AddWithValue("@Ordercaltype", (hnordercaltype.Value == "" ? "1" : hnordercaltype.Value));  //Pcs Wise
-                cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
-                cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
-                cmd.Parameters.AddWithValue("@Prefix", TxtPrefix.Text);
-                cmd.Parameters.AddWithValue("@Postfix", TxtPostfix.Text);
-               // cmd.Parameters.AddWithValue("@Purchaseflag", chkpurchasefolio.Checked == true ? "1" : "0");
-                cmd.Parameters.AddWithValue("@Purchaseflag",  "1");
-                cmd.Parameters.AddWithValue("@Exportsizeflag", chkexportsize.Checked == true ? "1" : "0");
-                cmd.Parameters.AddWithValue("@Remarks", TxtRemarks.Text.Trim());
-                cmd.Parameters.AddWithValue("@Instruction", TxtInstructions.Text.Trim());
-                cmd.Parameters.AddWithValue("@Tstockno", Tdstockno.Visible == true ? txtstockno.Text : "");
-                cmd.Parameters.AddWithValue("@FlagFixOrWeight", ChkForFix.Checked == true ? 0 : 1);
-                cmd.Parameters.AddWithValue("@TanaLotNo", TDTanaLotNo.Visible == true ? txtTanaLotNo.Text : "");
-                cmd.Parameters.AddWithValue("@StockNoAttachWithoutMaterialIssue", ChkForStockNoAttachWithoutMaterialIssue.Checked == true ? "1" : "0");
-                cmd.Parameters.AddWithValue("@StockNoAttach", ChkForStockNoAttach.Checked == true ? "1" : "0");
-                cmd.Parameters.AddWithValue("@BranchID", DDBranchName.SelectedValue);
-                cmd.Parameters.AddWithValue("@SHIPTO", ddlshipto.SelectedValue);
-                
-                if (TDDepartmentIssueNo.Visible == true)
-                {
-                    if (DDDepartmentIssueNo.SelectedIndex > 0)
+                    //Check Employee Entry
+                    //if (StrEmpid == "")
+                    //{
+                    //    lblmessage.Text = "Plz Enter Weaver ID No...";
+                    //    return;
+                    //}
+                    //******
+                    SqlCommand cmd = new SqlCommand("Pro_SaveProductionOrderonLoom_agni", con, Tran);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 30000;
+                    cmd.Parameters.Add("@issueorderid", SqlDbType.Int);
+                    cmd.Parameters["@issueorderid"].Direction = ParameterDirection.InputOutput;
+                    cmd.Parameters["@issueorderid"].Value = hnissueorderid.Value;
+                    cmd.Parameters.AddWithValue("@Companyid", DDcompany.SelectedValue);
+                    cmd.Parameters.AddWithValue("@ProductionUnit", 1);
+                    cmd.Parameters.AddWithValue("@LoomId", Convert.ToInt32(txtloomid.Text == "" ? "0" : txtloomid.Text));
+                    cmd.Parameters.AddWithValue("@Empid", StrEmpid);
+                    cmd.Parameters.Add("@FolioNo", SqlDbType.VarChar, 100);
+                    cmd.Parameters["@FolioNo"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.AddWithValue("@Issuedate", txtissuedate.Text);
+                    cmd.Parameters.AddWithValue("@Targetdate", txttargetdate.Text);
+                    cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.AddWithValue("@dtrecords", dtrecords);
+                    if (variable.VarProductionOrderPcsWise == "1" && ChkForPcsWise.Checked == true)
                     {
-                        cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", DDDepartmentIssueNo.SelectedValue);
+                        hnordercaltype.Value = "1";
+                    }
+                    cmd.Parameters.AddWithValue("@Ordercaltype", (hnordercaltype.Value == "" ? "1" : hnordercaltype.Value));  //Pcs Wise
+                    cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
+                    cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
+                    cmd.Parameters.AddWithValue("@Prefix", TxtPrefix.Text);
+                    cmd.Parameters.AddWithValue("@Postfix", TxtPostfix.Text);
+                    // cmd.Parameters.AddWithValue("@Purchaseflag", chkpurchasefolio.Checked == true ? "1" : "0");
+                    cmd.Parameters.AddWithValue("@Purchaseflag", "1");
+                    cmd.Parameters.AddWithValue("@Exportsizeflag", chkexportsize.Checked == true ? "1" : "0");
+                    cmd.Parameters.AddWithValue("@Remarks", TxtRemarks.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Instruction", TxtInstructions.Text.Trim());
+                    cmd.Parameters.AddWithValue("@Tstockno", Tdstockno.Visible == true ? txtstockno.Text : "");
+                    cmd.Parameters.AddWithValue("@FlagFixOrWeight", ChkForFix.Checked == true ? 0 : 1);
+                    cmd.Parameters.AddWithValue("@TanaLotNo", TDTanaLotNo.Visible == true ? txtTanaLotNo.Text : "");
+                    cmd.Parameters.AddWithValue("@StockNoAttachWithoutMaterialIssue", ChkForStockNoAttachWithoutMaterialIssue.Checked == true ? "1" : "0");
+                    cmd.Parameters.AddWithValue("@StockNoAttach", ChkForStockNoAttach.Checked == true ? "1" : "0");
+                    cmd.Parameters.AddWithValue("@BranchID", DDBranchName.SelectedValue);
+                    cmd.Parameters.AddWithValue("@SHIPTO", ddlshipto.SelectedValue);
+
+                    if (TDDepartmentIssueNo.Visible == true)
+                    {
+                        if (DDDepartmentIssueNo.SelectedIndex > 0)
+                        {
+                            cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", DDDepartmentIssueNo.SelectedValue);
+                        }
+                        else
+                        {
+                            cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", 0);
+                        }
                     }
                     else
                     {
                         cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", 0);
                     }
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", 0);
-                }
-                if (TDChkForMaterialRate.Visible == true)
-                {
-                    cmd.Parameters.AddWithValue("@MaterialRate", ChkForMaterialRate.Checked == true ? "1" : "0");
-                }
-                else
-                {
-                    cmd.Parameters.AddWithValue("@MaterialRate", 0);
-                }
-
-                cmd.ExecuteNonQuery();
-                if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
-                {
-                    lblmessage.Text = cmd.Parameters["@msg"].Value.ToString();
-                    Tran.Rollback();
-                }
-                else
-                {
-                    lblmessage.Text = "Data Saved Successfully.";
-                    Tran.Commit();
-                    DDCalType.Enabled = false;
-                    txtfoliono.Text = cmd.Parameters["@FolioNo"].Value.ToString(); //param[5].Value.ToString();
-                    hnissueorderid.Value = cmd.Parameters["@issueorderid"].Value.ToString();// param[0].Value.ToString();
-                    FillGrid();
-                    FillConsumptionQty();
-                    Refreshcontrol();
-                    disablecontrols();
-                    if (Session["varcompanyid"].ToString() == "21")
+                    if (TDChkForMaterialRate.Visible == true)
                     {
-                        chkforRateUpdate.Checked = false;
+                        cmd.Parameters.AddWithValue("@MaterialRate", ChkForMaterialRate.Checked == true ? "1" : "0");
                     }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@MaterialRate", 0);
+                    }
+
+                    cmd.ExecuteNonQuery();
+                    if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
+                    {
+                        lblmessage.Text = cmd.Parameters["@msg"].Value.ToString();
+                        Tran.Rollback();
+                    }
+                    else
+                    {
+                        lblmessage.Text = "Data Saved Successfully.";
+                        Tran.Commit();
+                        DDCalType.Enabled = false;
+                        txtfoliono.Text = cmd.Parameters["@FolioNo"].Value.ToString(); //param[5].Value.ToString();
+                        hnissueorderid.Value = cmd.Parameters["@issueorderid"].Value.ToString();// param[0].Value.ToString();
+                        FillGrid();
+                        FillConsumptionQty();
+                        Refreshcontrol();
+                        disablecontrols();
+                        if (Session["varcompanyid"].ToString() == "21")
+                        {
+                            chkforRateUpdate.Checked = false;
+                        }
+                    }
+                    //******
+                    #region Comment on 07-Sep-2018
+                    //SqlParameter[] param = new SqlParameter[20];
+                    //param[0] = new SqlParameter("@issueorderid", SqlDbType.Int);
+                    //param[0].Value = hnissueorderid.Value;
+                    //param[0].Direction = ParameterDirection.InputOutput;
+                    //param[1] = new SqlParameter("@Companyid", DDcompany.SelectedValue);
+                    //param[2] = new SqlParameter("@ProductionUnit", DDProdunit.SelectedValue);
+                    //param[3] = new SqlParameter("@LoomId", txtloomid.Text);
+                    //param[4] = new SqlParameter("@Empid", StrEmpid);
+                    //param[5] = new SqlParameter("@FolioNo", SqlDbType.Int);
+                    //param[5].Direction = ParameterDirection.Output;
+                    //param[6] = new SqlParameter("@Issuedate", txtissuedate.Text);
+                    //param[7] = new SqlParameter("@Targetdate", txttargetdate.Text);
+                    //param[8] = new SqlParameter("@Userid", Session["varuserid"]);
+                    //param[9] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+                    //param[10] = new SqlParameter("@dtrecords", dtrecords);
+                    //param[11] = new SqlParameter("@Ordercaltype", (hnordercaltype.Value == "" ? "1" : hnordercaltype.Value));  //Pcs Wise
+                    //param[12] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
+                    //param[12].Direction = ParameterDirection.Output;
+                    //param[13] = new SqlParameter("@Prefix", TxtPrefix.Text);
+                    //param[14] = new SqlParameter("@Postfix", TxtPostfix.Text);
+                    //param[15] = new SqlParameter("@Purchaseflag", chkpurchasefolio.Checked == true ? "1" : "0");
+                    //param[16] = new SqlParameter("@Exportsizeflag", chkexportsize.Checked == true ? "1" : "0");
+                    //param[17] = new SqlParameter("@Remarks", TxtRemarks.Text.Trim());
+                    //param[18] = new SqlParameter("@Instruction", TxtInstructions.Text.Trim());
+                    //param[19] = new SqlParameter("@Tstockno", Tdstockno.Visible == true ? txtstockno.Text : "");
+                    ////*************
+                    //SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveProductionOrderonLoom", param);
+                    //if (param[12].Value.ToString() != "")  ///IF DATA NOT SAVED
+                    //{
+                    //    lblmessage.Text = param[12].Value.ToString();
+                    //    Tran.Rollback();
+                    //}
+                    //else
+                    //{
+                    //    lblmessage.Text = "Data Saved Successfully.";
+                    //    Tran.Commit();
+                    //    txtfoliono.Text = param[5].Value.ToString();
+                    //    hnissueorderid.Value = param[0].Value.ToString();
+                    //    FillGrid();
+                    //    FillConsumptionQty();
+                    //    Refreshcontrol();
+                    //    disablecontrols();
+                    //    if (Session["varcompanyid"].ToString() == "21")
+                    //    {
+                    //        chkforRateUpdate.Checked = false;
+                    //    }
+                    //}
+                    #endregion
                 }
-                //******
-                #region Comment on 07-Sep-2018
-                //SqlParameter[] param = new SqlParameter[20];
-                //param[0] = new SqlParameter("@issueorderid", SqlDbType.Int);
-                //param[0].Value = hnissueorderid.Value;
-                //param[0].Direction = ParameterDirection.InputOutput;
-                //param[1] = new SqlParameter("@Companyid", DDcompany.SelectedValue);
-                //param[2] = new SqlParameter("@ProductionUnit", DDProdunit.SelectedValue);
-                //param[3] = new SqlParameter("@LoomId", txtloomid.Text);
-                //param[4] = new SqlParameter("@Empid", StrEmpid);
-                //param[5] = new SqlParameter("@FolioNo", SqlDbType.Int);
-                //param[5].Direction = ParameterDirection.Output;
-                //param[6] = new SqlParameter("@Issuedate", txtissuedate.Text);
-                //param[7] = new SqlParameter("@Targetdate", txttargetdate.Text);
-                //param[8] = new SqlParameter("@Userid", Session["varuserid"]);
-                //param[9] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
-                //param[10] = new SqlParameter("@dtrecords", dtrecords);
-                //param[11] = new SqlParameter("@Ordercaltype", (hnordercaltype.Value == "" ? "1" : hnordercaltype.Value));  //Pcs Wise
-                //param[12] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
-                //param[12].Direction = ParameterDirection.Output;
-                //param[13] = new SqlParameter("@Prefix", TxtPrefix.Text);
-                //param[14] = new SqlParameter("@Postfix", TxtPostfix.Text);
-                //param[15] = new SqlParameter("@Purchaseflag", chkpurchasefolio.Checked == true ? "1" : "0");
-                //param[16] = new SqlParameter("@Exportsizeflag", chkexportsize.Checked == true ? "1" : "0");
-                //param[17] = new SqlParameter("@Remarks", TxtRemarks.Text.Trim());
-                //param[18] = new SqlParameter("@Instruction", TxtInstructions.Text.Trim());
-                //param[19] = new SqlParameter("@Tstockno", Tdstockno.Visible == true ? txtstockno.Text : "");
-                ////*************
-                //SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveProductionOrderonLoom", param);
-                //if (param[12].Value.ToString() != "")  ///IF DATA NOT SAVED
-                //{
-                //    lblmessage.Text = param[12].Value.ToString();
-                //    Tran.Rollback();
-                //}
-                //else
-                //{
-                //    lblmessage.Text = "Data Saved Successfully.";
-                //    Tran.Commit();
-                //    txtfoliono.Text = param[5].Value.ToString();
-                //    hnissueorderid.Value = param[0].Value.ToString();
-                //    FillGrid();
-                //    FillConsumptionQty();
-                //    Refreshcontrol();
-                //    disablecontrols();
-                //    if (Session["varcompanyid"].ToString() == "21")
-                //    {
-                //        chkforRateUpdate.Checked = false;
-                //    }
-                //}
-                #endregion
+                catch (Exception ex)
+                {
+                    Tran.Rollback();
+                    lblmessage.Text = ex.Message;
+                }
+                finally
+                {
+                    con.Dispose();
+                    con.Close();
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Tran.Rollback();
-                lblmessage.Text = ex.Message;
-            }
-            finally
-            {
-                con.Dispose();
-                con.Close();
+                ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Please select atleast one check box to save data.');", true);
             }
         }
-        else
-        {
-            ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Please select atleast one check box to save data.');", true);
+        else {
+            if (DDCategory.SelectedIndex > 0)
+            {
+                SqlTransaction Tran = con.BeginTransaction();
+                try
+                {
+
+                    if (con.State == ConnectionState.Closed)
+                    {
+                        con.Open();
+                    }
+                     int Item_finished_id = UtilityModule.getItemFinishedId(DDLItem, DDQuality, DDDesign, DDColor, ddlshape, DDSize, TxtItemCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+                saverawdetailcarpet(Item_finished_id);
+                
+                SqlParameter[] param = new SqlParameter[29];
+                param[0] = new SqlParameter("@issueorderid", SqlDbType.Int);
+                param[0].Direction = ParameterDirection.InputOutput;
+                param[0].Value = hnissueorderid.Value;
+                param[1] = new SqlParameter("@orderid", SqlDbType.Int);
+                param[1].Direction = ParameterDirection.InputOutput;
+                param[1].Value = 0;
+                param[2] = new SqlParameter("@companyId", DDcompany.SelectedValue);
+                param[3] = new SqlParameter("@customerid", DDcustcode.SelectedValue);
+                param[4] = new SqlParameter("@Processid", 1);
+                param[5] = new SqlParameter("@empid", ddempname.SelectedValue);
+                param[6] = new SqlParameter("@assigndate", txtissuedate.Text);
+                param[7] = new SqlParameter("@Reqdate", txttargetdate.Text);
+                param[8] = new SqlParameter("@Unitid", ddunit.SelectedValue);
+                param[9] = new SqlParameter("@caltype", DDCalType.SelectedValue);
+                param[10] = new SqlParameter("@Remarks", TxtRemarks.Text);
+               
+                param[11] = new SqlParameter("@Item_finished_id", Item_finished_id);
+                param[12] = new SqlParameter("@Width", "0");
+                param[13] = new SqlParameter("@Length", "0");
+                param[14] = new SqlParameter("@Area", "0");
+                param[15] = new SqlParameter("@Rate", txtmainrate.Text == "" ? "0" : txtmainrate.Text);
+                param[16] = new SqlParameter("@Commrate",  "0");
+                param[17] = new SqlParameter("@Qty", txtorderqty .Text);
+                param[18] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+                param[18].Direction = ParameterDirection.Output;
+                param[19] = new SqlParameter("@userid", Session["varuserid"]);
+                param[20] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+
+                param[21] = new SqlParameter("@Quality", DDQuality.SelectedItem.Text);
+                param[22] = new SqlParameter("@Design", DDDesign.SelectedItem.Text);
+                param[23] = new SqlParameter("@color", DDColor.SelectedItem.Text);
+
+                param[24] = new SqlParameter("@QualityId", DDQuality.SelectedValue);
+                param[25] = new SqlParameter("@Designid", DDDesign.SelectedValue);
+                param[26] = new SqlParameter("@Colorid", DDColor.SelectedValue);
+                param[27] = new SqlParameter("@varcarpetcompany", variable.Carpetcompany);
+                param[28] = new SqlParameter("@Itemid", DDItemName.SelectedValue);
+
+                //*********************
+                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SAVESPPSTOCKORDER", param);
+                lblmessage.Text = param[18].Value.ToString();
+                Tran.Commit();
+                }
+                catch (Exception ex)
+                {
+                    Tran.Rollback();
+                    lblmessage.Text = ex.Message;
+                }
+                finally
+                {
+                    con.Dispose();
+                    con.Close();
+                }
+            
+            }
+        
+        
+        
         }
+       
     }
     protected void Refreshcontrol()
     {
@@ -4388,6 +4498,146 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
         //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_DDBIND_LOTNO", array);
         //}
     }
+    protected void gstmaintype_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        decimal qty = 0, amount = 0, total = 0, rate = 0;
+        int categoryid = 0, itemid = 0, qualityid;
+    //    DropDownList DDGSType = (DropDownList)sender;
+      //  GridViewRow row = (GridViewRow)DDGSType.Parent.Parent;
+        //TextBox txtigst = ((TextBox)row.FindControl("TXTIGST"));
+        //TextBox txtsgst = ((TextBox)row.FindControl("TXTSGST"));
+        //TextBox txtcgst = ((TextBox)row.FindControl("TXTCGST"));
+        //TextBox txtigst = ((TextBox)row.FindControl("TXTIGST"));
+        //Label lblcategoryid = ((Label)row.FindControl("lblcategoryid"));
+        //Label lblitemid = ((Label)row.FindControl("lblitemid"));
+        //Label lblqualityid = ((Label)row.FindControl("lblqualityid"));
+        //TextBox txtqty = ((TextBox)row.FindControl("txtloomqty"));
+        //Label lblamount = ((Label)row.FindControl("lblamount"));
+        //Label lbltotalamt = ((Label)row.FindControl("lbltotalamt"));
+        //TextBox txtrate = (TextBox)row.FindControl("txtrate");
+        qty = Convert.ToDecimal(txtorderqty.Text == "" ? "0" : txtorderqty.Text);
+        rate = Convert.ToDecimal(txtmainrate.Text == "" ? "0" : txtmainrate.Text);
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            SqlParameter[] param = new SqlParameter[11];
+            param[0] = new SqlParameter("@ProcessId", "9");
+            param[1] = new SqlParameter("@CategoryId", Convert.ToInt32(string.IsNullOrEmpty(DDCategory.SelectedValue) ? "0" : DDCategory.SelectedValue));
+            param[2] = new SqlParameter("@ItemId", Convert.ToInt32(string.IsNullOrEmpty(DDLItem.SelectedValue) ? "0" : DDLItem.SelectedValue));
+            param[3] = new SqlParameter("@QualityId", Convert.ToInt32(string.IsNullOrEmpty(DDQuality.SelectedValue) ? "0" : DDQuality.SelectedValue));
+            param[4] = new SqlParameter("@EffectiveDate", txtissuedate.Text);
+            param[5] = new SqlParameter("@GSTType", gstmaintype.SelectedValue);
+            param[6] = new SqlParameter("@CGSTRate", SqlDbType.Float);
+            param[6].Direction = ParameterDirection.Output;
+            param[7] = new SqlParameter("@SGSTRate", SqlDbType.Float);
+            param[7].Direction = ParameterDirection.Output;
+            param[8] = new SqlParameter("@IGSTRate", SqlDbType.Float);
+            param[8].Direction = ParameterDirection.Output;
+            param[9] = new SqlParameter("@CompanyID", DDcompany.SelectedValue);
+            param[10] = new SqlParameter("@BranchID", DDcompany.SelectedValue);
+
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_GetCGST_SGST_IGST_Rate", param);
+
+            if (gstmaintype.SelectedIndex > 0)
+            {
+                if (param[6].Value.ToString() != "" && param[7].Value.ToString() != "" || param[8].Value.ToString() != "")
+                {
+                    txtmainCGST.Text = param[6].Value.ToString();
+                    txtmainSGST.Text = param[7].Value.ToString();
+                    txtmainIGST.Text = param[8].Value.ToString();
+                    // fill_text();
+                }
+                else
+                {
+                    txtmainCGST.Text = "0";
+                    txtmainSGST.Text = "0";
+                    txtmainIGST.Text = "0";
+                    Label1.Visible = true;
+                    Label1.Text = "Please add GST/IGST regarding selected item";
+                    return;
+                }
+            }
+            else
+            {
+                txtmainCGST.Text = "0";
+                txtmainSGST.Text = "0";
+                txtmainIGST.Text = "0";
+                // fill_text();
+            }
+
+            Tran.Commit();
+            //qty = Convert.ToDecimal(txtqty.Text == "" ? "0" : txtqty.Text);
+            //rate = Convert.ToDecimal(txtrate.Text == "" ? "0" : txtrate.Text);
+            amount = qty * rate;
+            TxtAmount.Text = Convert.ToString(amount);
+            if (Convert.ToInt32(gstmaintype.SelectedValue) > 0)
+            {
+                if (gstmaintype.SelectedValue == "1")
+                {
+                    total = amount + ((amount * (Convert.ToDecimal(txtmainCGST.Text) + Convert.ToDecimal(txtmainSGST.Text))) / 100);
+
+
+                }
+                else { total = amount + ((amount * (Convert.ToDecimal(txtmainIGST.Text))) / 100); }
+
+            }
+            Txtnetamount.Text = Convert.ToString(total);
+        }
+        catch (Exception ex)
+        {
+            Tran.Rollback();
+            //lblerrormessage.Text = ex.Message;
+            con.Close();
+        }
+
+
+        //if (DDGSType.SelectedValue == "1")
+        //{
+        //TDCGST.Visible = true;
+        //TDSGST.Visible = true;
+        //TDIGST.Visible = false;
+        //    FillGSTIGST(Convert.ToInt32(lblcategoryid.Text), Convert.ToInt32(lblitemid.Text), Convert.ToInt32(lblqualityid.Text),Convert.ToInt32(DDGSType.SelectedValue));
+        //}
+        //else if (DDGSType.SelectedValue == "2")
+        //{
+        //    //TDCGST.Visible = false;
+        //    //TDSGST.Visible = false;
+        //    //TDIGST.Visible = true;
+        //    FillGSTIGST(Convert.ToInt32(lblcategoryid.Text), Convert.ToInt32(lblcategoryid.Text), Convert.ToInt32(lblcategoryid.Text), Convert.ToInt32(DDGSType.SelectedValue));
+        //}
+        //else
+        //{
+        //TDCGST.Visible = false;
+        //TDSGST.Visible = false;
+        //TDIGST.Visible = false;
+        //txtCGST.Text = "0";
+        //txtSGST.Text = "0";
+        //txtIGST.Text = "0";
+        //fill_text();
+        // }
+        //Label Ifinishedid = ((Label)row.FindControl("lblifinishedid"));
+        //DropDownList ddlgodown = ((DropDownList)row.FindControl("DDGodown"));
+
+        //DropDownList ddLotno = ((DropDownList)row.FindControl("DDLotNo"));
+        //if (Session["VarcompanyNo"].ToString() == "22")
+        //{
+        //    SqlParameter[] array = new SqlParameter[4];
+        //    array[0] = new SqlParameter("@CompanyId", DDCompanyName.SelectedValue);
+        //    array[1] = new SqlParameter("@GodownId", ddlgodown.SelectedValue);
+        //    array[2] = new SqlParameter("@item_finished_id", Ifinishedid.Text);
+        //    array[3] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyNo"]);
+        //    array[4] = new SqlParameter("@BinNo", variable.VarBINNOWISE == "1" ? DDBinNo.SelectedItem.Text : "");
+
+        //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_DDBIND_LOTNO", array);
+        //}
+    }
     protected void txtrate_TextChanged(object sender, EventArgs e)
     {
         decimal qty=0,amount=0,total=0,rate=0;
@@ -4423,6 +4673,45 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
 
         }
         lbltotalamt.Text =Convert.ToString(total);
+
+    }
+    protected void txtmainrate_TextChanged(object sender, EventArgs e)
+    {
+        decimal qty = 0, amount = 0, total = 0, rate = 0;
+        //TextBox txtrate = (TextBox)sender;
+        //GridViewRow row = (GridViewRow)txtrate.Parent.Parent;
+        //TextBox txtqty = ((TextBox)row.FindControl("txtloomqty"));
+        //Label lblamount = ((Label)row.FindControl("lblamount"));
+        //Label lbltotalamt = ((Label)row.FindControl("lbltotalamt"));
+        //TextBox txtigst = ((TextBox)row.FindControl("TXTIGST"));
+        //TextBox txtsgst = ((TextBox)row.FindControl("TXTSGST"));
+        //TextBox txtcgst = ((TextBox)row.FindControl("TXTCGST"));
+        // DropDownList DDGSType = (DropDownList)row.FindControl("gsttype");
+
+
+        qty = Convert.ToDecimal(txtorderqty.Text == "" ? "0" : txtorderqty.Text);
+        rate = Convert.ToDecimal(txtmainrate.Text == "" ? "0" : txtmainrate.Text);
+        amount = qty * rate;
+        TxtAmount.Text = Convert.ToString(amount);
+        if (Convert.ToInt32(gstmaintype.SelectedIndex) > 0)
+        {
+            if (gstmaintype.SelectedValue == "1")
+            {
+                total = amount + ((amount * (Convert.ToDecimal(txtmainCGST.Text) + Convert.ToDecimal(txtmainSGST.Text))) / 100);
+
+
+            }
+            else { total = amount + ((amount * (Convert.ToDecimal(txtmainIGST.Text))) / 100); }
+            //if(DDGSType.SelectedValue=="1")
+            //{
+            //    total=amount*(Convert.ToDecimal(txtcgst.Text)+Convert.ToDecimal(txtsgst.Text));
+
+
+            //}
+            //else{ total=amount*(Convert.ToDecimal(txtigst.Text));}
+
+        }
+        Txtnetamount.Text = Convert.ToString(total);
 
     }
     protected void ddempname_SelectedIndexChanged(object sender, EventArgs e)
@@ -4547,4 +4836,434 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
     //    }
     //}
 
+    protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string Str = string.Empty;
+        //ddlcategorycange();
+        if (DDCategory.SelectedIndex >0)
+        {
+            DDcustcode.Enabled = false;
+            DDorderNo.Enabled = false;
+            ddunit.Enabled = true;
+            ddunit.SelectedIndex = 2;
+            txtorderqty.Enabled = true;
+            txtmainrate.Enabled = true;
+            //TxtAmount.Enabled = true;
+            txtmainIGST.Enabled = true;
+            txtmainSGST.Enabled = true;
+            txtmainCGST.Enabled = true;
+
+
+        }
+        else
+        {
+            DDcustcode.Enabled = true;
+            DDorderNo.Enabled = true;
+            ddunit.Enabled = false;
+            ddunit.SelectedIndex = 0;
+            txtorderqty.Enabled = false;
+            txtmainrate.Enabled = false;
+            //TxtAmount.Enabled = true;
+            txtmainIGST.Enabled = false;
+            txtmainSGST.Enabled = false;
+            txtmainCGST.Enabled = false;
+        
+        }
+        //if (tditem.Visible == true)
+        //{
+            UtilityModule.ConditionalComboFill(ref DDLItem, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By Item_Name", true, "---Select Item----");
+        //}
+//        string Str = @"select Distinct Q.QualityId,q.QualityName+' ['+Im.Item_Name+']' as QualityName 
+//                    From ITEM_MASTER IM(Nolock) 
+//                    join CategorySeparate CS(Nolock) on IM.CATEGORY_ID=cs.Categoryid and cs.id=0  and Cs.Categoryid=" + DDCategory.SelectedValue + @" 
+//                    join Quality Q(Nolock) on IM.ITEM_ID=q.Item_Id  
+//                    Where Im.mastercompanyid=" + Session["varcompanyid"] + " order by Qualityname";
+        if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+        {
+            Str = @"Select Distinct VF.QualityId, VF.QualityName + ' [' + VF.Item_Name + ']' QualityName 
+                From OrderDetail OD(Nolock)
+                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
+                Where OD.OrderId = " + DDorderNo.SelectedValue + @"
+                Order BY QualityName";
+        }
+      //  UtilityModule.ConditionalComboFill(ref DDQuality, Str, true, "--Plz Select--");
+        //fill_gride();
+    }
+    protected void DDLItem_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // FindFromProcessId(Convert.ToInt16(DDItemName.SelectedValue), Convert.ToInt16(DDTOProcess.SelectedValue));
+        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDLItem.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QualityName", true, "--Select Quality--");
+        //fill_gride();
+
+    }
+    protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // FindFromProcessId(Convert.ToInt16(DDItemName.SelectedValue), Convert.ToInt16(DDTOProcess.SelectedValue));
+        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QualityName", true, "--Select Quality--");
+        //fill_gride();
+
+    }
+    private void ddlcategorycange()
+    {
+        tdqualityname1.Visible = false;
+        tddesign1.Visible = false;
+        tdColor1.Visible = false;
+        tdShape1.Visible = false;
+        tdsize1.Visible = false;
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT PARAMETER_ID FROM ITEM_CATEGORY_PARAMETERS where CATEGORY_ID=" + DDCategory.SelectedValue);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                switch (dr["PARAMETER_ID"].ToString())
+                {
+                    case "1":
+                        tdqualityname1.Visible = true;
+                        break;
+                    case "2":
+                        tddesign1.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref DDDesign, "Select DesignId,Designname from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order by DesignName", true, "--Select Design--");
+                        break;
+                    case "3":
+                        tdColor1.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref DDColor, "select  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ColorName", true, "--Select Color--");
+                        break;
+                    case "4":
+                        tdShape1.Visible = true;
+                        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " order By ShapeName", true, "--Select Shape--");
+                        break;
+                    case "5":
+                        tdsize1.Visible = true;
+                        break;
+                    case "6":
+                        tdshadecolor.Visible = true;
+                        break;
+                }
+            }
+        }
+    }
+    protected void FindFromProcessId(int ItemId, int ProcessId)
+    {
+        SqlParameter[] array = new SqlParameter[5];
+        array[0] = new SqlParameter("@Itemid", SqlDbType.Int);
+        array[1] = new SqlParameter("@ProcessId", SqlDbType.Int);
+        array[2] = new SqlParameter("@FromProcessId", SqlDbType.Int);
+
+        array[0].Value = ItemId;
+        array[1].Value = ProcessId;
+        array[2].Direction = ParameterDirection.Output;
+
+        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_getFromProcessId", array);
+
+        ViewState["FromProcessId"] = array[2].Value.ToString();
+
+    }
+    protected void ddlshade_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //fill_gride();
+    }
+    protected void DDColor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string StrSize = "vf.shapename";
+        string str = "";
+        //if (Session["varcompanyId"].ToString() == "44")
+        //{
+        //    str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
+        //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+        //    if (ds.Tables[0].Rows.Count > 0)
+        //    {
+        //        if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "1")
+        //        {
+        //            StrSize = "vf.SizeMtr + ' ' + vf.shapename";
+        //        }
+        //        else if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "2")
+        //        {
+        //            StrSize = "vf.Sizeft + ' ' + vf.shapename";
+        //        }
+        //        else if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "6")
+        //        {
+
+        //            StrSize = "vf.SizeInch + ' ' + vf.shapename";
+        //        }
+        //        else
+        //        {
+        //            StrSize = "vf.Sizeft + ' ' + vf.shapename";
+        //        }
+
+        //    }
+        //}
+        //if (Session["varcompanyId"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
+        //{
+        //    StrSize = "vf.Sizeft + ' ' + vf.shapename";
+
+        //}
+
+        if (Session["varcompanyId"].ToString() == "38")
+        {
+            StrSize = "vf.Sizeft + ' ' + vf.shapename";
+
+        }
+
+        str = @"select Distinct vf.shapeid, " + StrSize + @" size From V_FinishedItemDetail vf 
+            where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid=" + DDColor.SelectedValue + @" and 
+            vf.sizeid<>0 order by Size";
+
+        if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+        {
+            str = @"Select Distinct vf.sizeid, " + StrSize + @" size 
+                From OrderDetail OD(Nolock)
+                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" And 
+                    vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + " And vf.colorid=" + DDColor.SelectedValue + @" 
+                Where OD.OrderId = " + DDorderNo.SelectedValue + @"
+                Order BY Size";
+        }
+
+        UtilityModule.ConditionalComboFill(ref ddlshape, str, true, "--Plz Select--");
+
+        Focus = "DDSize";
+    }
+    protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        fillsize();
+        // fill_gride();
+    }
+    protected void ddlshape_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string StrSize = "vf.SizeMtr";
+        string str = "";
+        //if (Session["varcompanyId"].ToString() == "44")
+        //{
+        //    str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
+        //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+        //    if (ds.Tables[0].Rows.Count > 0)
+        //    {
+        //        if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "1")
+        //        {
+        //            StrSize = "vf.SizeMtr + ' ' + vf.shapename";
+        //        }
+        //        else if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "2")
+        //        {
+        //            StrSize = "vf.Sizeft + ' ' + vf.shapename";
+        //        }
+        //        else if (ds.Tables[0].Rows[0]["orderunitid"].ToString() == "6")
+        //        {
+
+        //            StrSize = "vf.SizeInch + ' ' + vf.shapename";
+        //        }
+        //        else
+        //        {
+        //            StrSize = "vf.Sizeft + ' ' + vf.shapename";
+        //        }
+
+        //    }
+        //}
+        //if (Session["varcompanyId"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
+        //{
+        //    StrSize = "vf.Sizeft + ' ' + vf.shapename";
+
+        //}
+
+        if (Session["varcompanyId"].ToString() == "38")
+        {
+            StrSize = "vf.Sizeft + ' ' + vf.shapename";
+
+        }
+
+        str = @"select Distinct vf.sizeid, " + StrSize + @" size From V_FinishedItemDetail vf 
+            where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid=" + DDColor.SelectedValue + @" and vf.shapeid=" + ddlshape.SelectedValue + @" and 
+            vf.sizeid<>0 order by Size";
+
+        if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+        {
+            str = @"Select Distinct vf.sizeid, " + StrSize + @" size 
+                From OrderDetail OD(Nolock)
+                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" And 
+                    vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + " And vf.colorid=" + DDColor.SelectedValue + @" 
+                Where OD.OrderId = " + DDorderNo.SelectedValue + @"
+                Order BY Size";
+        }
+
+        UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--Plz Select--");
+
+        Focus = "DDSize";
+    }
+    private void fillsize()
+    {
+        if (ddunit.SelectedValue == "2")
+        {
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeFt from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By SizeFt", true, "--Select Size--");
+        }
+        else
+        {
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeMtr from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By SizeFt", true, "--Select Size--");
+        }
+    }
+    protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //fill_gride();
+        string str = "select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where vf.QualityId=" + DDQuality.SelectedValue + @" and vf.designid<>0 order by vf.designName";
+
+        if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+        {
+            str = @"Select Distinct vf.designId,vf.designName 
+                From OrderDetail OD(Nolock)
+                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + " And vf.QualityId=" + DDQuality.SelectedValue + @" 
+                Where OD.OrderId = " + DDorderNo.SelectedValue + @"
+                Order BY vf.designName";
+        }
+
+        //str = str + @" Select Distinct IsNull((select Top 1 processId From Item_Process Where QualityId=" + DDQuality.SelectedValue + " and SeqNo=IP.SeqNo-1),0) as FromProcessid From Item_Process IP Where QualityId=" + DDQuality.SelectedValue + " and processid=" + ddfrom.SelectedValue;
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        UtilityModule.ConditionalComboFillWithDS(ref DDDesign, ds, 0, true, "--Plz Select--");
+        //***Get From Processid
+        //if (ds.Tables[1].Rows.Count > 0)
+        //{
+        //    hnfromprocessid.Value = ds.Tables[1].Rows[0]["FromProcessid"].ToString();
+        //}
+        //else
+        //{
+        //    hnfromprocessid.Value = "0";
+        //}
+        Focus = "DDDesign";
+    }
+    protected void DDSize_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //fill_gride();
+    }
+    protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string str = "select Distinct vf.ColorId,vf.ColorName From V_FinishedItemDetail vf where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid<>0 order by vf.colorname";
+        if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+        {
+            str = @"Select Distinct vf.ColorId,vf.ColorName 
+                From OrderDetail OD(Nolock)
+                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + " And vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + @" 
+                Where OD.OrderId = " + DDorderNo.SelectedValue + @"
+                Order BY vf.ColorName";
+        }
+
+        UtilityModule.ConditionalComboFill(ref DDColor, str, true, "--Plz Select--");
+        Focus = "DDColor";
+    }
+    protected void DDSize_SelectedIndexChanged1(object sender, EventArgs e)
+    {
+        //if (TDPacktype.Visible == true)
+        //{
+        //    UtilityModule.ConditionalComboFill(ref DDPacktype, "select ID,Packingtype From packingtype order by PackingType", true, "--Plz Select--");
+        //}
+    }
+    //protected void txtmainSGST_TextChanged(object sender, EventArgs e)
+    //{
+    //    fillAmount();
+    //    //BtnSave.Focus();
+    //}
+    //protected void txtmainSGST_TextChanged(object sender, EventArgs e)
+    //{
+    //    fillAmount();
+    //    txtIGST.Focus();
+    //}
+    //protected void txtmainSGST_TextChanged(object sender, EventArgs e)
+    //{
+    //    fillAmount();
+    //  //  BtnSave.Focus();
+    //}
+    private void fillAmount()
+    {
+        double amount = 0;
+        double Qty = 0;
+        Qty = Convert.ToDouble(txtorderqty.Text == "" ? "0" : txtorderqty.Text);
+        //Lshort
+      //  Qty = Qty - (Qty * Convert.ToDouble((txtLshort.Text == "" ? "0" : txtLshort.Text)) / 100);
+        //Bell Wt
+       // Qty = Qty - Convert.ToDouble(txtbellwt.Text == "" ? "0" : txtbellwt.Text);
+        //
+        amount = Qty * Convert.ToDouble(txtmainrate.Text == "" ? "0" : txtmainrate.Text);
+        TxtAmount.Text = amount.ToString();
+        ////vat
+        //double vat = 0.00, cst = 0.00;//,//freight=0.00;
+        //vat = amount * Convert.ToDouble(txtvat.Text == "" ? "0" : txtvat.Text) / 100;
+        //cst = amount * Convert.ToDouble(txtcst.Text == "" ? "0" : txtcst.Text) / 100;
+        ////freight =Convert.ToDouble(txtfreight.Text == "" ? "0" : txtfreight.Text);
+        ////cst
+
+        ////CGST SGST IGST
+        double SGST = 0.00, IGST = 0.00, TCS = 0.00;//,//freight=0.00;
+        SGST = amount * (Convert.ToDouble(txtmainSGST.Text == "" ? "0" : txtmainSGST.Text) + Convert.ToDouble(txtmainCGST.Text == "" ? "0" : txtmainCGST.Text)) / 100;
+        IGST = amount * Convert.ToDouble(txtmainIGST.Text == "" ? "0" : txtmainIGST.Text) / 100;
+       // TCS = amount * Convert.ToDouble(txtTCS.Text == "" ? "0" : txtTCS.Text) / 100;
+        //freight =Convert.ToDouble(txtfreight.Text == "" ? "0" : txtfreight.Text);
+
+        ////Penality
+        amount = amount + SGST + IGST + TCS;
+      //  amount = amount - Convert.ToDouble(TxtPenalty.Text == "" ? "0" : TxtPenalty.Text);
+        Txtnetamount.Text = amount.ToString();
+    }
+    private void saverawdetailcarpet(int finsihedid)
+    {
+        int varfinishtype_Id = 0;
+        int ItemFinishedId=0;
+        //if (txtlotno.Text == "")
+        //{
+        //    txtlotno.Text = "Without Lot No";
+        //}
+        //if (txttagno.Text == "")
+        //{
+        //    txttagno.Text = "Without Tag No";
+        //}
+        //if (TdFINISHED_TYPE.Visible == false)
+        //{
+        //    varfinishtype_Id = 0;
+        //}
+        //else
+        //{
+        //    varfinishtype_Id = Convert.ToInt32(ddFINISHED_TYPE.SelectedValue);
+        //}
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        //ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        ItemFinishedId = finsihedid;
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            //string strstock = "select * from stock where ITEM_FINISHED_ID=" + ItemFinishedId + "and companyid=" + ddlcompany.SelectedValue + "and Godownid=" + ddlgodown.SelectedValue + "and lotno='" + txtlotno.Text + "' and TagNo='" + txttagno.Text + "' And Finished_Type_Id=" + varfinishtype_Id;
+            //DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, strstock);
+            //if (ds.Tables[0].Rows.Count > 0)
+            //{
+            //    //int openstock = Convert.ToInt32(ds.Tables[0].Rows[0]["openstock"].ToString());
+            //    int stockid = Convert.ToInt32(ds.Tables[0].Rows[0]["StockID"]);
+            //    string str = @"Select StockId,Quantity,isnull(coneuse,0) From StockTran where TableName='Opening stock' And StockID=" + stockid + " and Unitid=" + ddlunit.SelectedValue;
+            //    DataSet ds1 = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
+            //    if (ds1.Tables[0].Rows.Count > 0)
+            //    {
+            //        Double Qty = Convert.ToDouble(ds1.Tables[0].Rows[0]["Quantity"]);
+            //        Double coneuse = Convert.ToDouble(ds1.Tables[0].Rows[0]["Quantity"]);
+            //        string str1 = @"Update Stock set QtyinHand=QtyinHand-(" + Qty + "),OpenStock=OpenStock-(" + Qty + "),Noofcone=noofcone-(" + coneuse + ") where stockId=" + stockid + "";
+            //        str1 = str1 + @" Delete From Stocktran where StockId=" + stockid + " And TableName='Opening stock' and unitid=" + ddlunit.SelectedValue;
+            //        SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str1);
+
+            //    }
+            //}
+            UtilityModule.StockStockTranTableUpdateWithOpeningStock(ItemFinishedId, Convert.ToInt32(0), Convert.ToInt32(DDcompany.SelectedValue), "Without Lot No", Convert.ToDouble(txtorderqty.Text), txtissuedate.Text.ToString(), DateTime.Now.ToString("dd-MMM-yyyy"), "Opening stock", 0, Tran, 1, true, 0, varfinishtype_Id, Convert.ToDouble(txtmainrate.Text), Unitid: 2, Noofcone: 0, TagNo: "Without Tag No");
+            Tran.Commit();
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/RawMaterial/DirectStock.aspx");
+            Tran.Rollback();
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+        lblmessage.Visible = true;
+    }
 }

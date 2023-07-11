@@ -559,6 +559,19 @@ public partial class GenrateInDent : System.Web.UI.Page
                                    where PP.PPId=" + DDProcessProgramNo.SelectedValue + " and IM.Item_Id=" + DDItem.SelectedValue + " and IPM.Quality_Id=" + DDQuality.SelectedValue + @" 
                                    And IM.MasterCompanyId=" + Session["varCompanyId"];
             }
+            else if (MasterCompanyId == 44)	
+            {	
+                strShadeColor = @"select distinct  case when pp.Process_ID  IN (12,11,18,8,29,34) then SCI.ShadeColorId else SC.ShadeColorId  end ShadeColorId,case when pp.Process_ID IN (12,11,18,8,29,34) then SCI.ShadeColorName+'/'+SC.ShadeColorName else  SC.ShadeColorName+'/'+SCI.ShadeColorName  end ShadeColorName 	
+                                        from PP_Consumption OCD  	
+                                        inner join ProcessProgram PP on OCD.OrderId=PP.Order_Id   and ocd.PPId=pp.PPID	
+                                        inner join Item_Parameter_Master IPM on IPM.Item_Finished_Id=OCD.FinishedId  	
+                                        inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id  	
+                                        inner join ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id	
+                                        inner join  Item_Parameter_Master IPM1 on IPM1.Item_Finished_id=OCD.IFinishedid 	
+                                        inner join ShadeColor SCI on SCI.ShadeColorId=IPM1.ShadeColor_Id 	
+                                        where PP.PPId=" + DDProcessProgramNo.SelectedValue + " and IM.Item_Id=" + DDItem.SelectedValue + " and                                                              IPM.Quality_Id=" + DDQuality.SelectedValue + @" 	
+                                            And IM.MasterCompanyId=" + Session["varCompanyId"];	
+            }	
             else
             {
                 strShadeColor = @"select distinct SC.ShadeColorId,SC.ShadeColorName+'/'+SCI.ShadeColorName 

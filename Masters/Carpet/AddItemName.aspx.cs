@@ -160,9 +160,11 @@ public partial class Masters_Carpet_AddItemName : System.Web.UI.Page
         try
         {
             DataSet ds;
-            string sqlstr = @" Select CATEGORY_ID,UnitTypeID,ITEM_NAME,ITEM_CODE,FlagFixWeight,ItemType,
-            isnull(KATIWITHEXPORTSIZE,0) as KATIWITHEXPORTSIZE,isnull(MasterQualityTypeId,0) as MasterQualityTypeId, CUSHIONTYPEITEM 
-            FROM ITEM_MASTER where Item_Id=" + gdItem.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"];
+            string sqlstr = @" Select CATEGORY_ID, UnitTypeID, ITEM_NAME, ITEM_CODE, FlagFixWeight, ItemType, isnull(KATIWITHEXPORTSIZE,0) KATIWITHEXPORTSIZE,
+            IsNull(MasterQualityTypeId, 0) MasterQualityTypeId, CUSHIONTYPEITEM, pretreament, dyechem, PassSize 
+            From ITEM_MASTER(Nolock) 
+            Where Item_Id=" + gdItem.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"];
+
             ViewState["ItemId"] = gdItem.SelectedValue;
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sqlstr);
             ddCategory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
@@ -200,6 +202,17 @@ public partial class Masters_Carpet_AddItemName : System.Web.UI.Page
             {
                 ChkForCushionTypeItem.Checked = true;
             }
+            ChkForSizeWiseConsumption.Checked = false;
+            ChkForAllDesignColorSizeWiseConsumption.Checked = false;
+
+            if (Convert.ToInt32(ds.Tables[0].Rows[0]["PassSize"]) == 1)
+            {
+                ChkForSizeWiseConsumption.Checked = true;
+            }
+            if (Convert.ToInt32(ds.Tables[0].Rows[0]["PassSize"]) == 3)
+            {
+                ChkForAllDesignColorSizeWiseConsumption.Checked = true;
+            }
         }
         catch (Exception ex)
         {
@@ -224,7 +237,7 @@ public partial class Masters_Carpet_AddItemName : System.Web.UI.Page
                 SqlTransaction Tran = con.BeginTransaction();
                 try
                 {
-                    SqlParameter[] _arrPara = new SqlParameter[12];
+                    SqlParameter[] _arrPara = new SqlParameter[15];
                     _arrPara[0] = new SqlParameter("@ITEM_Id", SqlDbType.Int);
                     _arrPara[1] = new SqlParameter("@CATEGORY_ID", SqlDbType.Int);
                     // _arrPara[2] = new SqlParameter("@ITEM_PARAMETER_ID", SqlDbType.Int);
@@ -238,6 +251,9 @@ public partial class Masters_Carpet_AddItemName : System.Web.UI.Page
                     _arrPara[9] = new SqlParameter("@Katiwithexportsize", SqlDbType.Int);
                     _arrPara[10] = new SqlParameter("@MasterQualityTypeId", SqlDbType.Int);
                     _arrPara[11] = new SqlParameter("@CushionTypeItem", SqlDbType.Int);
+                    _arrPara[12] = new SqlParameter("@Pretreatment", SqlDbType.Int);
+                    _arrPara[13] = new SqlParameter("@dyechem", SqlDbType.Int);
+                    _arrPara[14] = new SqlParameter("@PassSize", SqlDbType.Int);
 
                     _arrPara[1].Value = ddCategory.SelectedValue;
                     //_arrPara[2].Value = ddItemParameter.SelectedValue;
@@ -251,6 +267,9 @@ public partial class Masters_Carpet_AddItemName : System.Web.UI.Page
                     _arrPara[9].Value = TDkatiwithexportsize.Visible == false ? "0" : (chkkatiwithexportsize.Checked == true ? "1" : "0");
                     _arrPara[10].Value = TDMasterQualityType.Visible == false ? "0" : (DDMasterQualityType.SelectedIndex > 0 ? DDMasterQualityType.SelectedValue : "0");
                     _arrPara[11].Value = ChkForCushionTypeItem.Checked == true ? "1" : "0";
+                    _arrPara[12].Value = "0";
+                    _arrPara[13].Value = "0";
+                    _arrPara[14].Value = ChkForSizeWiseConsumption.Checked == true ? "1" : ChkForAllDesignColorSizeWiseConsumption.Checked == true ? "3" : "0";
 
                     if (btnsave.Text == "Update")
                     {
@@ -278,6 +297,8 @@ public partial class Masters_Carpet_AddItemName : System.Web.UI.Page
                     Lblerr.Visible = true;
                     Lblerr.Text = "Save Details....";
                     ChkForCushionTypeItem.Checked = false;
+                    ChkForSizeWiseConsumption.Checked = false;
+                    ChkForAllDesignColorSizeWiseConsumption.Checked = false;
                 }
                 catch (Exception ex)
                 {
@@ -317,7 +338,6 @@ public partial class Masters_Carpet_AddItemName : System.Web.UI.Page
         {
             Lblerr.Visible = false;
         }
-
     }
 
     private void CheckDuplicateDate()

@@ -36,7 +36,7 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             SELECT DISTINCT  LOTNO AS TEXTLOTNO,LOTNO FROM STOCK ORDER BY LOTNO
             select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by CATEGORY_NAME";
             }
-            else if (Session["varCompanyId"].ToString() == "16")
+            else if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "21")
             {
                 str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
             Select customerid,customercode+'/'+Companyname from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by customercode            
@@ -69,7 +69,7 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER " + "WHERE CATEGORY_ID = " + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by ITEM_NAME", true, "ALL");
 
             string str2 = "";
-            if (Session["VarCompanyNo"].ToString() == "22" || Session["VarCompanyNo"].ToString() == "16")
+            if (Session["VarCompanyNo"].ToString() == "22" || Session["VarCompanyNo"].ToString() == "16" || Session["VarCompanyNo"].ToString() == "21")
             {
                  str2 = @"select GM.GODOWNID,GM.GODOWNNAME from GODOWNMASTER GM(NoLock) JOIN  Godown_Authentication GA(NoLock) ON GM.GoDownID=GA.GodownID 
                              Where GM.MasterCompanyId=" + Session["varCompanyId"] + @" and GA.UserId=" + Session["VarUserId"] + " ORDER BY GM.GODOWNNAME";
@@ -4762,10 +4762,10 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             {
                 str = str + "AND g.godownid =" + DDGudown.SelectedValue;
             }
-            if (DDCompany.SelectedIndex > 0)
-            {
+           // if (DDCompany.SelectedIndex > 0)
+            //{
                 str = str + " AND s.companyid = " + DDCompany.SelectedValue;
-            }
+           // }
             if (DDCategory.SelectedIndex > 0)
             {
                 str = str + " AND v.CATEGORY_ID = " + DDCategory.SelectedValue;
@@ -5925,7 +5925,8 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
                 inner join companyinfo ci(NoLock) on cr.companyid=ci.companyid 
                 left join ordermaster o(NoLock) on cr.orderid=o.orderid 
                 left join customerinfo c(NoLock) on o.customerid= c.customerid 
-                left join v_finishedItemDetail v(NoLock) on cr.Item_Finished_Id = v.Item_Finished_ID WHERE isnull(PSD.ReceiveDetailId,0)>0 and cr.companyid=" + DDCompany.SelectedValue;
+                left join v_finishedItemDetail v(NoLock) on cr.Item_Finished_Id = v.Item_Finished_ID 
+                WHERE isnull(PSD.ReceiveDetailId,0)>0 and cr.companyid=" + DDCompany.SelectedValue + " AND PSD.ToProcessId= " + DDProcessName.SelectedValue;
         if (chkallstockno.Checked == false)
         {
             sQry = sQry + " and CR.PACK=0";
@@ -5942,10 +5943,10 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
         {
             sQry = sQry + " AND cr.orderid= " + DDOrder.SelectedValue;
         }
-        if (DDProcessName.SelectedIndex > 0)
-        {
-            sQry = sQry + " AND PSD.ToProcessId= " + DDProcessName.SelectedValue;
-        }
+        //if (DDProcessName.SelectedIndex > 0)
+        //{
+        //    sQry = sQry + " AND PSD.ToProcessId= " + DDProcessName.SelectedValue;
+        //}
         if (DDCategory.SelectedIndex > 0)
         {
             sQry = sQry + " AND v.CATEGORY_ID = " + DDCategory.SelectedValue;

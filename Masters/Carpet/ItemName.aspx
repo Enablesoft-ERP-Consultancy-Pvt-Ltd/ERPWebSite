@@ -70,22 +70,23 @@
                             &nbsp;
                         </td>
                         <td>
-                          <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
+                            <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
                             <asp:TextBox ID="txtItemName" runat="server" CssClass="textb">
                             </asp:TextBox>
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtItemName"
                                 ErrorMessage="Please Enter Item Name" ForeColor="Red">*</asp:RequiredFieldValidator>
-                                 <cc1:AutoCompleteExtender ID="txtItemName_AutoCompleteExtender" runat="server" BehaviorID="SrchAutoComplete1"
-                                                            CompletionInterval="20" Enabled="True" ServiceMethod="GetItemName" CompletionSetCount="20"
-                                                            OnClientItemSelected="ItemSelected" ServicePath="~/Autocomplete.asmx" TargetControlID="txtItemName"
-                                                            UseContextKey="True" ContextKey="0" MinimumPrefixLength="2" DelimiterCharacters="">
-                                                        </cc1:AutoCompleteExtender>
+                            <cc1:AutoCompleteExtender ID="txtItemName_AutoCompleteExtender" runat="server" BehaviorID="SrchAutoComplete1"
+                                CompletionInterval="20" Enabled="True" ServiceMethod="GetItemName" CompletionSetCount="20"
+                                OnClientItemSelected="ItemSelected" ServicePath="~/Autocomplete.asmx" TargetControlID="txtItemName"
+                                UseContextKey="True" ContextKey="0" MinimumPrefixLength="2" DelimiterCharacters="">
+                            </cc1:AutoCompleteExtender>
                         </td>
                         <td>
                             <asp:CheckBox ID="ChkFlagFixWeight" CssClass="checkboxbold" runat="server" Text="For Fix Or Weight" />
                         </td>
-                         <td class="tdstyle">
-                            <asp:CheckBox ID="chkpretreat" Visible="false" CssClass="checkboxbold" runat="server" Text="Receipe Pre Treatment" />
+                        <td class="tdstyle">
+                            <asp:CheckBox ID="chkpretreat" Visible="false" CssClass="checkboxbold" runat="server"
+                                Text="Receipe Pre Treatment" />
                         </td>
                     </tr>
                     <tr>
@@ -112,8 +113,9 @@
                         <td id="TDkatiwithexportsize" runat="server" visible="false">
                             <asp:CheckBox ID="chkkatiwithexportsize" CssClass="checkboxbold" runat="server" Text="Kati With Export Size" />
                         </td>
-                         <td class="tdstyle">
-                            <asp:CheckBox ID="chkchem" Visible="false" CssClass="checkboxbold" runat="server" Text="Dye Bath" />
+                        <td class="tdstyle">
+                            <asp:CheckBox ID="chkchem" Visible="false" CssClass="checkboxbold" runat="server"
+                                Text="Dye Bath" />
                         </td>
                     </tr>
                     <tr id="tr2" runat="server" visible="true">
@@ -132,10 +134,19 @@
                         <td class="tdstyle">
                             <asp:CheckBox ID="ChkForCushionTypeItem" CssClass="checkboxbold" runat="server" Text="Cushion Type Item" />
                         </td>
+                        <td class="tdstyle">
+                            <asp:CheckBox ID="ChkForSizeWiseConsumption" CssClass="checkboxbold" runat="server"
+                                Text="For Size Wise Consumption" />
+                        </td>
+                        <td class="tdstyle">
+                            <asp:CheckBox ID="ChkForAllDesignColorSizeWiseConsumption" CssClass="checkboxbold" runat="server"
+                                Text="For All Design Color Size Wise Consumption" />
+                        </td>
+                        
+
                         <%-- <td class="tdstyle">
                             <asp:CheckBox ID="chkdyesstuff" Visible="false" CssClass="checkboxbold" runat="server" Text="Dyes Stuff" />
                         </td>--%>
-
                     </tr>
                     <tr>
                         <td colspan="4" class="style1" align="right">

@@ -179,73 +179,44 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         }
         if (DDProcessName.SelectedIndex > 0)
         {
-//            //UtilityModule.ConditionalComboFill(ref DDPOOrderNo, "select IssueOrderId,IssueOrderId As POOrderNo from Process_Issue_Master_" + DDProcessName.SelectedValue + " PM Where Companyid=" + DDCompanyName.SelectedValue + "  And EmpId= " + DDEmployerName.SelectedValue + "  Order by IssueOrderId  asc", true, "--Select--");
-//            string str = @"select Distinct PIm.IssueOrderId,PIm.IssueOrderId as Porodrno 
-//                        From Process_issue_Master_" + DDProcessName.SelectedValue + @" PIM(NoLock)  
-//                        inner join Process_issue_detail_" + DDProcessName.SelectedValue + @" PID(NoLock)  on PIM.IssueOrderId=PID.IssueOrderId and PIM.Status<>'canceled'
-//                        inner join Process_Stock_Detail psd(NoLock)  on Pid.Issue_Detail_Id=Psd.IssueDetailId and psd.ToProcessId=" + DDProcessName.SelectedValue + @" And Psd.HissabFlag=0  
-//                        Where PIM.CompanyId=" + DDCompanyName.SelectedValue + " and  PIm.Empid=" + DDEmployerName.SelectedValue + " order  by Issueorderid ";
-//            if (Convert.ToInt32(Session["varcompanyId"]) == 28)
-//            {
-//                str = @"select Distinct PIm.IssueOrderId,PIm.IssueOrderId as Porodrno 
-//                From Process_issue_Master_1 PIM(nolock) 
-//                inner join Process_issue_detail_1 PID(nolock) on PIM.IssueOrderId=PID.IssueOrderId and PIM.Status<>'canceled'
-//                inner join Process_Stock_Detail psd(nolock) on Pid.Issue_Detail_Id=Psd.IssueDetailId and psd.ToProcessId=1 And Psd.HissabFlag=0  
-//                JOIN (Select a.IssueOrderId, a.ProcessID, Count(*) NoOFEmp 
-//                        From View_Employee_ProcessOrderNo a(Nolock) 
-//                        Where a.ProcessID = 1 
-//                        Group By a.IssueOrderId, a.ProcessID Having Count(*) = 1) VEPO ON VEPO.IssueOrderId = PIM.ISSUEORDERID 
-//                JOIN Employee_ProcessOrderNo EPO(nolock) ON EPO.ProcessID = 1 And EPO.IssueOrderId = PIM.ISSUEORDERID And EPO.IssueDetailId = PID.ISSUE_DETAIL_ID AND EPO.Empid = " + DDEmployerName.SelectedValue + @" 
-//                Where PIM.CompanyId=" + DDCompanyName.SelectedValue + @" order  by PIm.Issueorderid ";
-//            }
-
-            //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-            //if (con.State == ConnectionState.Closed)
-            //{
-            //    con.Open();
-            //}
-            //SqlCommand cmd = new SqlCommand(str, con);
-            ////cmd.CommandType = CommandType.StoredProcedure;
-            //cmd.CommandTimeout = 300;
-
-            //DataSet ds = new DataSet();
-            //SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            //cmd.ExecuteNonQuery();
-            //ad.Fill(ds);
-            ////*************
-
-            //con.Close();
-            //con.Dispose();
-
-            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-            if (con.State == ConnectionState.Closed)
+            if (DDProcessName.SelectedItem.Text == "WEAVING" && Session["VarCompanyId"].ToString() == "43")
             {
-                con.Open();
+                TDPoOrderNo.Visible = false;
+                FillReceiveChallanNo();
             }
+            else
+            {
 
-            SqlCommand cmd = new SqlCommand("PRO_BindProductionOrderNoForHissab", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandTimeout = 3000;
+                SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+                if (con.State == ConnectionState.Closed)
+                {
+                    con.Open();
+                }
 
-            cmd.Parameters.AddWithValue("@CompanyId", DDCompanyName.SelectedValue);
-            cmd.Parameters.AddWithValue("@ProcessId", DDProcessName.SelectedValue);
-            cmd.Parameters.AddWithValue("@Empid", DDEmployerName.SelectedValue);
-            cmd.Parameters.AddWithValue("@Mastercompanyid", Session["VarCompanyNo"]);
-            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+                SqlCommand cmd = new SqlCommand("PRO_BindProductionOrderNoForHissab", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.CommandTimeout = 3000;
 
-            DataSet ds = new DataSet();
-            SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            cmd.ExecuteNonQuery();
-            ad.Fill(ds);
-            //*************
+                cmd.Parameters.AddWithValue("@CompanyId", DDCompanyName.SelectedValue);
+                cmd.Parameters.AddWithValue("@ProcessId", DDProcessName.SelectedValue);
+                cmd.Parameters.AddWithValue("@Empid", DDEmployerName.SelectedValue);
+                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["VarCompanyNo"]);
+                cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
 
-            con.Close();
-            con.Dispose();
+                DataSet ds = new DataSet();
+                SqlDataAdapter ad = new SqlDataAdapter(cmd);
+                cmd.ExecuteNonQuery();
+                ad.Fill(ds);
+                //*************
 
-            UtilityModule.ConditionalComboFillWithDS(ref DDPOOrderNo, ds, 0, true, "--Plz Select--");
+                con.Close();
+                con.Dispose();
+
+                UtilityModule.ConditionalComboFillWithDS(ref DDPOOrderNo, ds, 0, true, "--Plz Select--");
 
 
-            ////UtilityModule.ConditionalComboFill(ref DDPOOrderNo, str, true, "--Plz Select--");
+                ////UtilityModule.ConditionalComboFill(ref DDPOOrderNo, str, true, "--Plz Select--");
+            }
         }
         ViewState["Hissab_No"] = 0;
     }
@@ -916,15 +887,22 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         //TxtFromDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["FromDate"]);
         //TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);
         FillSrno();
-        FillReceiveChallanNo();
+        //FillReceiveChallanNo();
         
     }
     private void FillReceiveChallanNo()
     {
+//        string str = @"select Distinct PRM.PROCESS_REC_ID,PRM.CHALLANNO
+//                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PRM(NoLock) inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
+//                    Where PRD.IssueOrderId=" + DDPOOrderNo.SelectedValue + "";
+//        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
         string str = @"select Distinct PRM.PROCESS_REC_ID,PRM.CHALLANNO
-                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PRM(NoLock) inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
-                    Where PRD.IssueOrderId=" + DDPOOrderNo.SelectedValue + "";
-        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PRM(NoLock) 
+                    inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
+                    inner join Process_Stock_Detail psd(NoLock)  on PRD.Process_Rec_Detail_Id=Psd.ReceiveDetailId and psd.ToProcessId=" + DDProcessName.SelectedValue + @" And Psd.HissabFlag=0 
+                    JOIN Employee_ProcessReceiveNo EPO(nolock) ON EPO.ProcessID = " + DDProcessName.SelectedValue + @" And EPO.Process_Rec_id = PRM.PROCESS_REC_ID And EPO.Process_Rec_Detail_id = PRD.PROCESS_REC_DETAIL_ID AND EPO.Empid = " + DDEmployerName.SelectedValue+@"
+                    Where PRM.CompanyId=" + DDCompanyName.SelectedValue + " Order by PRM.PROCESS_REC_ID desc";
 
         UtilityModule.ConditionalComboFill(ref DDReceiveChallanNo, str, true, "--Select--");
     }

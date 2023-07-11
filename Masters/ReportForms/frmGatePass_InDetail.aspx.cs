@@ -20,7 +20,18 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
         }
         if (!IsPostBack)
         {
-            string str = @"select CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["Varuserid"] + "  And CI.MasterCompanyId=" + Session["VarcompanyNo"] + @" Order by CompanyId
+            string str = string.Empty;
+            if (Session["VarCompanyNo"].ToString() == "16" || Session["VarCompanyNo"].ToString() == "21")
+            {
+                str = @"select CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["Varuserid"] + "  And CI.MasterCompanyId=" + Session["VarcompanyNo"] + @" Order by CompanyId
+                    Select EmpId,EmpName From Empinfo  Where MasterCompanyId=" + Session["varcompanyNo"] + @" Order by Empname
+                     select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM join UserRights_Category sp on im.CATEGORY_ID=sp.Categoryid Where IM.MasterCompanyId=" + Session["varCompanyId"] + " and sp.userid=" + Session["varuserId"] + @" order by CATEGORY_NAME
+                select GM.GODOWNID,GM.GODOWNNAME from GODOWNMASTER GM(NoLock) JOIN  Godown_Authentication GA(NoLock) ON GM.GoDownID=GA.GodownID 
+                Where GM.MasterCompanyId=" + Session["varCompanyId"] + @" and GA.UserId=" + Session["VarUserId"] + " ORDER BY GM.GODOWNNAME";
+            }
+            else
+            {
+                str = @"select CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["Varuserid"] + "  And CI.MasterCompanyId=" + Session["VarcompanyNo"] + @" Order by CompanyId
                     Select EmpId,EmpName From Empinfo  Where MasterCompanyId=" + Session["varcompanyNo"] + @" Order by Empname
                     Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CATEGORY_NAME
                     Select Distinct GM.GoDownID, GM.GodownName  
@@ -29,6 +40,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                     JOIN GodownMaster GM ON GM.GoDownID = b.GODOWNID 
                     Where a.CompanyId = " + Session["CurrentWorkingCompanyID"] + " And a.MASTERCOMPANYID = " + Session["varcompanyNo"] + @" 
                     Order By GM.GodownName ";
+            }
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, true, "Select CompanyName");
             if (DDCompany.Items.Count > 0)
@@ -224,6 +236,10 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                         str = str + " And EI.EmpId=" + DDEmpName.SelectedValue;
                         Filterby = Filterby + " Employee-" + DDEmpName.SelectedItem.Text + ",";
                     }
+                    if (DDGodownName.Items.Count > 0 && DDGodownName.SelectedIndex > 0)
+                    {
+                        str = str + " And GD.GodownID = " + DDGodownName.SelectedValue;
+                    }
                     if (DDGatePass_In.SelectedIndex > 0)
                     {
                         str = str + "  And GM.GateoutId=" + DDGatePass_In.SelectedValue;
@@ -262,7 +278,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                     {
                         str = str + " AND GM.IssueNo='" + TxtGateInOutPassNo.Text.Trim() + "'";
                     }
-                    str = str + " group by IssueNo,CompanyName,CI.compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,Lotno,ISSUEDATE,GD.Remark,GM.MasterCompanyid";
+                    str = str + " group by IssueNo,CompanyName,CI.compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,Lotno,ISSUEDATE,GD.Remark,GM.MasterCompanyid,GD.GodownID";
                     ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                     if (chkexcelexport.Checked == true)
                     {
@@ -378,6 +394,10 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                         str = str + " And EI.EmpId=" + DDEmpName.SelectedValue;
                         Filterby = Filterby + " Employee-" + DDEmpName.SelectedItem.Text + ",";
                     }
+                    if (DDGodownName.Items.Count > 0 && DDGodownName.SelectedIndex > 0)
+                    {
+                        str = str + " And GD.GodownID = " + DDGodownName.SelectedValue;
+                    }
                     if (DDGatePass_In.SelectedIndex > 0)
                     {
                         str = str + "  And GM.GateoutId=" + DDGatePass_In.SelectedValue;
@@ -416,7 +436,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                     {
                         str = str + " AND GM.IssueNo='" + TxtGateInOutPassNo.Text.Trim() + "'";
                     }
-                    str = str + " group by IssueNo,CompanyName,CI.compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,Lotno,ISSUEDATE,GM.MasterCompanyId  Union ALL";
+                    str = str + " group by IssueNo,CompanyName,CI.compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,Lotno,ISSUEDATE,GM.MasterCompanyId,GD.GodownID  Union ALL";
                     str = str + @" select GateInNo As GateNo,case When " + DDCompany.SelectedIndex + ">0 then CI.CompanyName Else 'ALL' End ComPanyName,EmpName+' '+'/'+Address As Employee,ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName As Description,Lotno,GateInDate Date,0 As IssQty,Sum(Qty) As RecQty,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @" Dateflag
                         ,case when " + DDCompany.SelectedIndex + ">0 then CI.compaddr1 else '' END as Address,case when " + DDCompany.SelectedIndex + @">0 then CI.GstNo else '' END as Gstno,GM.MasterCompanyId
                         from GateInMaster GM,GateInDetail GD,Companyinfo CI,Empinfo EI,V_FinishedItemDetail vf
@@ -429,6 +449,10 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                     if (DDEmpName.SelectedIndex > 0)
                     {
                         str = str + " And EI.EmpId=" + DDEmpName.SelectedValue;
+                    }
+                    if (DDGodownName.Items.Count > 0 && DDGodownName.SelectedIndex > 0)
+                    {
+                        str = str + " And GD.GodownID = " + DDGodownName.SelectedValue;
                     }
                     if (DDGatePass_In.SelectedIndex > 0)
                     {
@@ -467,7 +491,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                     {
                         str = str + " AND GM.GateInNo='" + TxtGateInOutPassNo.Text.Trim() + "'";
                     }
-                    str = str + "  group by GateInNo,CompanyName,CI.Compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,Lotno,GateInDate,GM.MasterCompanyId";
+                    str = str + "  group by GateInNo,CompanyName,CI.Compaddr1,ci.gstno,EmpName,Address,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,Lotno,GateInDate,GM.MasterCompanyId,GD.GodownID";
                     ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                     if (chkexcelexport.Checked == true)
                     {

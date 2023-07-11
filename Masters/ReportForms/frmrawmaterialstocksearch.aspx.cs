@@ -19,7 +19,7 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
         if (!IsPostBack)
         {
             string str = string.Empty;
-            if (Session["VarCompanyNo"].ToString() == "16")
+            if (Session["VarCompanyNo"].ToString() == "16" || Session["VarCompanyNo"].ToString() == "21")
             {
 
                 str = @"select GM.GODOWNID,GM.GODOWNNAME from GODOWNMASTER GM(NoLock) JOIN  Godown_Authentication GA(NoLock) ON GM.GoDownID=GA.GodownID 
