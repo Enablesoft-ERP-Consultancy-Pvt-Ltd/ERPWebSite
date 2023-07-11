@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Sample Development" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="frmsampledevelopment.aspx.cs" Inherits="Masters_Process_frmsampledevelopment" %>
+    AutoEventWireup="true" CodeFile="frmsampledevelopment.aspx.cs" Inherits="Masters_Sample_frmsampledevelopment" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="page" ContentPlaceHolderID="CPH_Form" runat="server">

@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-public partial class Masters_Process_frmsampledevelopment : System.Web.UI.Page
+public partial class Masters_Sample_frmsampledevelopment : System.Web.UI.Page
 {
     static int DataGridDeleteID = 0;
     protected void Page_Load(object sender, EventArgs e)

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="RecipeMaster.aspx.cs" MasterPageFile="~/ERPmaster.master" Inherits="Masters_Dying_RecipeMaster" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="RecipeMaster.aspx.cs" MasterPageFile="~/ERPmaster.master" Inherits="Master_Recipe_RecipeMaster" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="server">

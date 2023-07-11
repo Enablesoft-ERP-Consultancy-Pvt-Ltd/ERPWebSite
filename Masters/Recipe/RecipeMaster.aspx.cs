@@ -11,7 +11,7 @@ using ClosedXML.Excel;
 using System.Configuration;
 using System.Text;
 
-public partial class Masters_Dying_RecipeMaster : System.Web.UI.Page
+public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
