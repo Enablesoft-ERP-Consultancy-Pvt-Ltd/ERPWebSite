@@ -13,11 +13,11 @@ namespace IExpro.Web.Pages
 {
     public class BasePage : System.Web.UI.Page
     {
-        bool IsUpdated = false;
+        bool IsNewTheme = false;
         protected void Page_PreInit(object sender, EventArgs e)
         {
-            this.IsUpdated = Convert.ToBoolean(ConfigurationManager.AppSettings["IsUpdate"]);
-            if (this.IsUpdated)
+            this.IsNewTheme = Convert.ToBoolean(ConfigurationManager.AppSettings["IsNewTheme"]);
+            if (this.IsNewTheme)
             {
 
                 this.MasterPageFile = "~/App.master";
