@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 
-public partial class Masters_Carpet_itemcode : System.Web.UI.Page
+public partial class Masters_Carpet_Additemcode : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
