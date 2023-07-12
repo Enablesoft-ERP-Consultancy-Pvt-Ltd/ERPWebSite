@@ -17,8 +17,9 @@ using System.Data.SqlClient;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Xml;
 using System.Text;
+using IExpro.Web.Pages;
 
-public partial class Settings_AddXSLT : System.Web.UI.Page
+public partial class Settings_AddXSLT : BasePage
 {
     ICommonService CommSrv;
     int ClientId;

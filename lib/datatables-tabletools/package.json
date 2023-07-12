@@ -1,0 +1,9 @@
+{
+	"name": "datatables-tabletools",
+	"version": "2.2.2",
+	"main": "js/dataTables.tableTools.js",
+	"dependencies": {
+		"jquery": ">=1.7.0",
+		"datatables": ">=1.9.0"
+	}
+}

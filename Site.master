@@ -2,25 +2,41 @@
     CodeFile="Site.master.cs" Inherits="Site" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-
-    <link href="<%= Page.ResolveUrl("~/Content/bootstrap/css/bootstrap.min.css")%>" rel="stylesheet" />
-    <link href="<%= Page.ResolveUrl("~/Content/font-awesome/css/font-awesome.min.css")%>"
-        rel="stylesheet" />
-    <link href="<%= Page.ResolveUrl("~/Content/css/style.css")%>" rel="stylesheet" />
-
-    <asp:ContentPlaceHolder ID="pageStyles" runat="server">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
+    <!--Loading bootstrap css-->
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700" />
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,700,300" />
+    <link type="text/css" rel="stylesheet" href="<%= Page.ResolveUrl("~/lib/bootstrap/css/bootstrap.css")%>" />
+    <link type="text/css" rel="stylesheet" href="<%= Page.ResolveUrl("~/lib/bootstrap-icons/font/bootstrap-icons.css")%>" />
+    <link type="text/css" rel="stylesheet" href="<%= Page.ResolveUrl("~/lib/font-awesome/css/font-awesome.min.css")%>" />
+    <!--Loading style-->
+    <link type="text/css" rel="stylesheet" href="<%= Page.ResolveUrl("~/Content/css/style.css")%>" />
+    <link type="text/css" rel="stylesheet" href="<%= Page.ResolveUrl("~/Content/css/style-responsive.css")%>" />
+    <asp:ContentPlaceHolder ID="styleSection" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
-    <asp:ContentPlaceHolder ID="pageBody" runat="server">
+    <asp:ContentPlaceHolder ID="bodySection" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="CPH_SideBar" runat="Server">
+</asp:Content>
+
+
+
+
+
 
 
 <asp:Content ID="Content4" ContentPlaceHolderID="CPH_Footer" runat="Server">
-    <span class="labelcopyr">&copy; Enablesoft Erp Consultancy Pvt. Ltd.All rights reserved.</span>
-    <asp:ContentPlaceHolder ID="pageScripts" runat="server">
+
+    <asp:ContentPlaceHolder ID="scriptSection" runat="server">
     </asp:ContentPlaceHolder>
 </asp:Content>
+
+
 

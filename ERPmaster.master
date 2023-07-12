@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="ERPmaster.master.cs" Inherits="ERPmaster" %>
+
 <%@ Register Src="UserControls/ucmenu.ascx" TagName="ucmenu" TagPrefix="uc1" %>
 <%@ Register Src="UserControls/SearchA.ascx" TagName="SearchA" TagPrefix="uc1" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -10,7 +11,7 @@
     <link href="App_Themes/Default/Style.css" rel="stylesheet" type="text/css" />
     <link href="Styles/vijay.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="Styles/thickbox.css" type="text/css" media="screen" />
-    <link id="Link1" runat="server" rel="shortcut icon" href="logo.ico" type="image/x-icon" />
+    <link runat="server" rel="shortcut icon" href="logo.ico" type="image/x-icon" />
     <script language="javascript" type="text/css">
         function GetSiteRoot() {
             var rootPath = window.location.protocol + "//" + window.location.host + "/";
@@ -33,902 +34,890 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <table width="100%" border="1">
-        <tr style="width: 100%" align="left" id="trheader" runat="server">
-            <td style="height: 66px; width: 80%" align="left">
-                <asp:Image ID="Image1" ImageUrl="~/Images/header.jpg" runat="server" Width="100%"
-                    Height="66px" />
-            </td>
-            <td style="background-color: #499ad3;" width="20%" valign="bottom">
-                <table style="width: 100%">
-                    <tr>
-                        <td>
-                            <asp:Image ID="imgLogo" align="left" runat="server" Height="66px" Width="111px" />
-                        </td>
-                        <td style="text-align: center">
-                            <asp:Label ID="LblCompanyName" runat="server" Text="" ForeColor="White" Font-Bold="true"
-                                CssClass="labelbold" Style="font-style: italic" Font-Size="Small"></asp:Label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            &nbsp
-                        </td>
-                        <td style="text-align: center">
-                            <i><font size="2" face="GEORGIA">
-                                <asp:Label ID="LblUserName" ForeColor="White" runat="server" Text=""></asp:Label></font>
-                            </i>
-                        </td>
-                    </tr>
-                </table>
-                <%--<asp:Image ID="imgLogo" align="left" runat="server" Height="66px" Width="111px" />
-                <span style="color: Black; margin-left: 30px; font-family: Arial; font-size: xx-large">
-                    <strong><em><i><font size="4" face="GEORGIA">
-                        <asp:Label ID="LblCompanyName" runat="server" Text=""></asp:Label></font></i></em>
-                    </strong></span>
-                <br />
-                <i><font size="2" face="GEORGIA">
-                    <asp:Label ID="LblUserName" ForeColor="White" runat="server" Text=""></asp:Label></font>
-                </i>--%>
-            </td>
-        </tr>
-        <tr bgcolor="#999999" style="width: 100%">
-            <td class="style1" style="width: 75%">
-                <uc1:ucmenu ID="ucmenu1" runat="server" />
-                <asp:Label ID="LblFrmName" ForeColor="White" Font-Bold="true" Font-Size="15px" runat="server"
-                    CssClass="labelbold"></asp:Label>
-                <asp:ScriptManager ID="ScriptManager1" runat="server" AsyncPostBackTimeout="5000">
-                </asp:ScriptManager>
-            </td>
-            <td width="25%">
-                <asp:UpdatePanel ID="up" runat="server">
-                    <ContentTemplate>
-                        <asp:Button Width="100%" BorderStyle="None" BackColor="#999999" ID="BtnLogout" runat="server"
-                            Text="Logout" OnClick="BtnLogout_Click" Style="cursor: pointer; text-decoration: underline;
-                            font-weight: bold" ToolTip="Click For logout" UseSubmitBehavior="False" ValidationGroup="a" />
-                    </ContentTemplate>
-                </asp:UpdatePanel>
-            </td>
-        </tr>
-        <tr style="width: 100%">
-            <td align="center" height="inherit" valign="top" class="style1">
-                <div id="1" style="height: auto" align="left">
-                    <asp:ContentPlaceHolder ID="CPH_Form" runat="server">
-                    </asp:ContentPlaceHolder>
-                    <asp:ContentPlaceHolder ID="CPH_SideBar" runat="server">
-                    </asp:ContentPlaceHolder>
-                </div>
-            </td>
-            <td valign="top">
-                <div style="width: auto; height: 500px; overflow: scroll">
-                    <table>
-                        <tr runat="server" visible="false" id="TRDelayOrder" valign="top">
+        <table width="100%" border="1">
+            <tr style="width: 100%" align="left" id="trheader" runat="server">
+                <td style="height: 66px; width: 80%" align="left">
+                    <asp:Image ID="Image1" ImageUrl="~/Images/header.jpg" runat="server" Width="100%"
+                        Height="66px" />
+                </td>
+                <td style="background-color: #499ad3;" width="20%" valign="bottom">
+                    <table style="width: 100%">
+                        <tr>
                             <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="Label1" runat="server" Font-Bold="true" Text="Delayed Orders"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 101%; height: 150px; overflow: scroll">
-                                                <asp:GridView ID="GVDelayCustomerOrder" runat="server" AutoGenerateColumns="false" ShowHeader="true"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Code">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblCustomerCode" Text='<%#Bind("CustomerCode") %>' runat="server" Width="80px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Customer OrderNo">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblCustomerOrder" Text='<%#Bind("CustomerOrderNo") %>' runat="server" Width="150px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Delivery Date">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblDeliveryDate" Text='<%#Bind("DispatchDate2") %>' runat="server" Width="80px"/>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                                <asp:Image ID="imgLogo" align="left" runat="server" Height="66px" Width="111px" />
+                            </td>
+                            <td style="text-align: center">
+                                <asp:Label ID="LblCompanyName" runat="server" Text="" ForeColor="White" Font-Bold="true"
+                                    CssClass="labelbold" Style="font-style: italic" Font-Size="Small"></asp:Label>
                             </td>
                         </tr>
-
-                        <tr runat="server" visible="false" id="TRDelayPurchaseOrder" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="Label2" runat="server" Font-Bold="true" Text="Delayed Purchase Order"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="GVDelayPurchaseOrder" runat="server" AutoGenerateColumns="false" ShowHeader="true"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Challan No">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblChallanNo" Text='<%#Bind("ChallanNo") %>' runat="server" Width="100px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Vendor Name">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblVendorName" Text='<%#Bind("EmpName") %>' runat="server" Width="100px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Due Date">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblDueDate" Text='<%#Bind("DueDate2") %>' runat="server" Width="100px"/>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>                                                     
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                        <tr>
+                            <td>&nbsp
                             </td>
-                        </tr>
-
-                        <tr runat="server" visible="false" id="TRDelayDyeingIndent" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="Label3" runat="server" Font-Bold="true" Text="Delayed Dyeing Indent"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="GVDelayDyeingIndent" runat="server" AutoGenerateColumns="false" ShowHeader="true"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Indent No">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblIndentNo" Text='<%#Bind("IndentNo") %>' runat="server" Width="100px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Vendor Name">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblVendorName" Text='<%#Bind("EmpName") %>' runat="server" Width="100px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Due Date">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblDueDate" Text='<%#Bind("DueDate2") %>' runat="server" Width="100px"/>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>                                                     
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-
-                        <tr runat="server" visible="false" id="TRDelayProductionOrder" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="Label4" runat="server" Font-Bold="true" Text="Delayed Production Order"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="GVDelayProductionOrder" runat="server" AutoGenerateColumns="false" ShowHeader="true"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Folio No">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblIssueOrderId" Text='<%#Bind("IssueOrderID") %>' runat="server" Width="100px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Emp Name">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblEmpName" Text='<%#Bind("EmpName") %>' runat="server" Width="100px" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                         <asp:TemplateField HeaderText="Due Date">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblDueDate" Text='<%#Bind("DueDate") %>' runat="server" Width="100px"/>
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>                                                     
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-
-                        <tr runat="server" visible="false" id="Trconsump" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblconsump" runat="server" Font-Bold="true" Text="Specify Fabric Qty"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="Dgtoconsump" runat="server" AutoGenerateColumns="false" Width="300px"
-                                                    ShowHeader="false">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Specify Fabric Qty">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/order/Order.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="Trtoplan" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lbltoplan" runat="server" Font-Bold="true" Text="To Plan"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="dgtoplan" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="To Plan">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/order/FrmOrderPlanning.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="tdplaning" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblAlertplaned" runat="server" Font-Bold="true" Text="Date To Confirm"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="DGAlertplaned" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Date To Confirm">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/order/OrderDeptPlanning.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="tdplaninggf" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblAlertplanedGF" runat="server" Font-Bold="true" Text="To Plan Finally"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: 300px; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="DGAlertplanedGF" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="To Plan Finally">
-                                                            <ItemTemplate>
-                                                                <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/order/FrmOrderPlanning.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="tdplaningconformation" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblAlertolanedconf" runat="server" Font-Bold="true" Text="Fabric To Purchase"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="DGAlertolanedconf" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Fabric To Purchase">
-                                                            <ItemTemplate>
-                                                                <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/Purchase/PurchageIndentIssue.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="Trdelvorder" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblAlertdelvorder" runat="server" Font-Bold="true" Text="Impending Fabric Deliveries"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="DGAlertdelvorder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Impending Fabric Deliveries">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false"
-                                                                    Text='<%# Bind("OrderNo") %>'> </asp:Label>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="TrJWorder" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblJW" runat="server" Font-Bold="true" Text="JW ORDER To Make"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="DgJW" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="JW ORDER To Make">
-                                                            <ItemTemplate>
-                                                                <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/Process/GenrateInDent.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="TrAlertindentprodIss" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblalertindentprodIss" runat="server" Font-Bold="true" Text="Fabric To Issue"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="DgalertindentprodIss" runat="server" AutoGenerateColumns="false"
-                                                    ShowHeader="false" Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Fabric To Issue">
-                                                            <ItemTemplate>
-                                                                <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/RawMaterial/IndentRowIssue.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="TrAlertindentprod" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblalertindentprod" runat="server" Font-Bold="true" Text="Impending Garment Deliveries"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="Dgalertindentprod" runat="server" ShowHeader="false" AutoGenerateColumns="false"
-                                                    Width="303px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Impending Garment Deliveries">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false"
-                                                                    Text='<%# Bind("OrderNo") %>'> </asp:Label>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="Trdporder" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lbldporder" runat="server" Font-Bold="true" Text="DP order To Make"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="Dgdpordertomake" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Impending DP Deliveries">
-                                                            <ItemTemplate>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/Process/FrmSupplyOrder.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="Trisq" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblisq" runat="server" Font-Bold="true" Text="ISQ Alert"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="GVisq" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="ISQ">
-                                                            <ItemTemplate>
-                                                                <%--<asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/Process/FrmSupplyOrder.aspx?orderid=" + Eval("orderid")%>'
-                                                                    Target="_parent" />--%>
-                                                                <asp:Label ID="lblisq" runat="server" ForeColor="Red" Enabled="false" Text='<%# Bind("isq") %>'> </asp:Label>
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="TrAlertindentprodDP" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblalertindentprodDP" runat="server" Font-Bold="true" Text="Impending DP Deliveries"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="DgalertindentprodDP" runat="server" AutoGenerateColumns="false"
-                                                    ShowHeader="false" Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Impending DP Deliveries">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false"
-                                                                    Text='<%# Bind("OrderNo") %>'> </asp:Label>
-                                                                <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
-                                                                    Text='<%# Bind("OrderId") %>'> </asp:Label>
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="Trremark" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblremark" runat="server" Font-Bold="true" Text="Last Remark Alert"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="Dgremark" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="ISQ">
-                                                            <ItemTemplate>
-                                                                <asp:HyperLink ID="hrpremark" ForeColor="Red" Font-Underline="true" Text='<%# Bind("remark") %>'
-                                                                    runat="server" NavigateUrl='<%# "Masters/Purchase/FrmPurchaseRevisedDate.aspx"%>'
-                                                                    Target="_parent" />
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="Trartalert" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblalert" runat="server" Font-Bold="true" Text="Change In Order"></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="dgalertart" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px" OnRowDeleting="dgalertart_RowDeleting">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Change In Order">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("Orderid") %>'> </asp:Label>
-                                                                <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
-                                                                    Text='<%# Bind("OrderNo") %>'></asp:LinkButton>
-                                                            </ItemTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="trlatedeldate" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lbllatedelorder" runat="server" Font-Bold="true" Text=""></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="Gvlatedelorder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Order Tag">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("orderid") %>'> </asp:Label>
-                                                                <asp:Label ID="LinkButton1" runat="server" Text='<%# Bind("orderno") %>'></asp:Label>
-                                                                <%--<asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
-                                                                                 Text='<%# Bind("poNo") %>'></asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                            <%--<FooterTemplate>
-                                                            <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
-                                                                    runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=1&VarProcessId=9"%>'
-                                                                    Target="_parent" />
-                                                            </FooterTemplate>--%>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="trorder" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblordertag" runat="server" Font-Bold="true" Text=""></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="GvTag" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px" OnRowDeleting="dgalertart_RowDeleting" ShowFooter="true">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Order Tag">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("Orderid") %>'> </asp:Label>
-                                                                <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
-                                                                    Text='<%# Bind("OrderNo") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <FooterTemplate>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
-                                                                    runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=5"%>' Target="_parent" /></FooterTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="trpurchase" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblpurchase" runat="server" Font-Bold="true" Text=""></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="gvpurchase" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Order Tag">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("Pindentissueid") %>'> </asp:Label>
-                                                                <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
-                                                                    Text='<%# Bind("poNo") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <FooterTemplate>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
-                                                                    runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=4"%>' Target="_parent" />
-                                                            </FooterTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="trproductionorder" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lblproductionorder" runat="server" Font-Bold="true" Text=""></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="gvproductionorder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Order Tag">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("orderid") %>'> </asp:Label>
-                                                                <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
-                                                                    Text='<%# Bind("orderno") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <FooterTemplate>
-                                                                <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
-                                                                    runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=4"%>' Target="_parent" />
-                                                            </FooterTemplate>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="trdporder11" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lbldporder11" runat="server" Font-Bold="true" Text=""></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="gvdporder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    Width="300px" OnRowDeleting="dgalertart_RowDeleting" ShowFooter="true">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Order Tag">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("orderid") %>'> </asp:Label>
-                                                                <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
-                                                                    Text='<%# Bind("orderno") %>'></asp:Label>
-                                                            </ItemTemplate>
-                                                            <%--<FooterTemplate>
-                                                            <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
-                                                                    runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=1&VarProcessId=9"%>'
-                                                                    Target="_parent" />
-                                                            </FooterTemplate>--%>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr runat="server" visible="false" id="trdpreceive" valign="top">
-                            <td>
-                                <table>
-                                    <tr>
-                                        <td align="center">
-                                            <asp:Label ID="lbldprec" runat="server" Font-Bold="true" Text=""></asp:Label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
-                                                <asp:GridView ID="Gvdprec" runat="server" AutoGenerateColumns="false" ShowHeader="false"
-                                                    ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
-                                                    <Columns>
-                                                        <asp:TemplateField HeaderText="Order Tag">
-                                                            <ItemTemplate>
-                                                                <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
-                                                                    Enabled="false" Text='<%# Bind("supplyorder") %>'> </asp:Label>
-                                                                <asp:Label ID="LinkButton1" runat="server" Text='<%# Bind("supplyorderno") %>'></asp:Label>
-                                                                <%--<asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
-                                                                                 Text='<%# Bind("poNo") %>'></asp:LinkButton>--%>
-                                                            </ItemTemplate>
-                                                            <%--<FooterTemplate>
-                                                            <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
-                                                                    runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=1&VarProcessId=9"%>'
-                                                                    Target="_parent" />
-                                                            </FooterTemplate>--%>
-                                                            <ItemStyle />
-                                                        </asp:TemplateField>
-                                                    </Columns>
-                                                </asp:GridView>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </table>
+                            <td style="text-align: center">
+                                <i><font size="2" face="GEORGIA">
+                                    <asp:Label ID="LblUserName" ForeColor="White" runat="server" Text=""></asp:Label></font>
+                                </i>
                             </td>
                         </tr>
                     </table>
-                </div>
-            </td>
-        </tr>
-        <tr style="width: 100%">
-            <td colspan="2" valign="top" align="center">
-                <div style="background-color: #edf3fe52; height: 20px; width: 100%; padding-top: 5px">
-                    <asp:ContentPlaceHolder ID="CPH_Footer" runat="server">
-                        <span class="labelcopyr">&copy; Enablesoft Erp Consultancy Pvt. Ltd.All rights reserved.</span></asp:ContentPlaceHolder>
-                </div>
-            </td>
-        </tr>
-    </table>
+                </td>
+            </tr>
+            <tr bgcolor="#999999" style="width: 100%">
+                <td class="style1" style="width: 75%">
+                    <uc1:ucmenu ID="ucmenu1" runat="server" />
+                    <asp:Label ID="LblFrmName" ForeColor="White" Font-Bold="true" Font-Size="15px" runat="server"
+                        CssClass="labelbold"></asp:Label>
+                    <asp:ScriptManager ID="ScriptManager1" runat="server" AsyncPostBackTimeout="5000">
+                    </asp:ScriptManager>
+                </td>
+                <td width="25%">
+                    <asp:UpdatePanel ID="up" runat="server">
+                        <ContentTemplate>
+                            <asp:Button Width="100%" BorderStyle="None" BackColor="#999999" ID="BtnLogout" runat="server"
+                                Text="Logout" OnClick="BtnLogout_Click" Style="cursor: pointer; text-decoration: underline;
+                                font-weight: bold"
+                                ToolTip="Click For logout" UseSubmitBehavior="False" ValidationGroup="a" />
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                </td>
+            </tr>
+            <tr style="width: 100%">
+                <td align="center" height="inherit" valign="top" class="style1">
+                    <div id="1" style="height: auto" align="left">
+                        <asp:ContentPlaceHolder ID="CPH_Form" runat="server">
+                        </asp:ContentPlaceHolder>
+                        <asp:ContentPlaceHolder ID="CPH_SideBar" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                </td>
+                <td valign="top">
+                    <div style="width: auto; height: 500px; overflow: scroll">
+                        <table>
+                            <tr runat="server" visible="false" id="TRDelayOrder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="Label1" runat="server" Font-Bold="true" Text="Delayed Orders"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 101%; height: 150px; overflow: scroll">
+                                                    <asp:GridView ID="GVDelayCustomerOrder" runat="server" AutoGenerateColumns="false"
+                                                        ShowHeader="true"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Code">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblCustomerCode" Text='<%#Bind("CustomerCode") %>' runat="server"
+                                                                        Width="80px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Customer OrderNo">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblCustomerOrder" Text='<%#Bind("CustomerOrderNo") %>' runat="server"
+                                                                        Width="150px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Delivery Date">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblDeliveryDate" Text='<%#Bind("DispatchDate2") %>' runat="server"
+                                                                        Width="80px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="TRDelayPurchaseOrder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="Label2" runat="server" Font-Bold="true" Text="Delayed Purchase Order"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="GVDelayPurchaseOrder" runat="server" AutoGenerateColumns="false"
+                                                        ShowHeader="true"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Challan No">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblChallanNo" Text='<%#Bind("ChallanNo") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Vendor Name">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblVendorName" Text='<%#Bind("EmpName") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Due Date">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblDueDate" Text='<%#Bind("DueDate2") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr runat="server" visible="false" id="TRDelayDyeingIndent" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="Label3" runat="server" Font-Bold="true" Text="Delayed Dyeing Indent"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="GVDelayDyeingIndent" runat="server" AutoGenerateColumns="false"
+                                                        ShowHeader="true"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Indent No">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblIndentNo" Text='<%#Bind("IndentNo") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Vendor Name">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblVendorName" Text='<%#Bind("EmpName") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Due Date">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblDueDate" Text='<%#Bind("DueDate2") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr runat="server" visible="false" id="TRDelayProductionOrder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="Label4" runat="server" Font-Bold="true" Text="Delayed Production Order"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="GVDelayProductionOrder" runat="server" AutoGenerateColumns="false"
+                                                        ShowHeader="true"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Folio No">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblIssueOrderId" Text='<%#Bind("IssueOrderID") %>' runat="server"
+                                                                        Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Emp Name">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblEmpName" Text='<%#Bind("EmpName") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                            <asp:TemplateField HeaderText="Due Date">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblDueDate" Text='<%#Bind("DueDate") %>' runat="server" Width="100px" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr runat="server" visible="false" id="Trconsump" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblconsump" runat="server" Font-Bold="true" Text="Specify Fabric Qty"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="Dgtoconsump" runat="server" AutoGenerateColumns="false" Width="300px"
+                                                        ShowHeader="false">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Specify Fabric Qty">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/order/Order.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="Trtoplan" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lbltoplan" runat="server" Font-Bold="true" Text="To Plan"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="dgtoplan" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="To Plan">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/order/FrmOrderPlanning.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="tdplaning" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblAlertplaned" runat="server" Font-Bold="true" Text="Date To Confirm"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 101%; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="DGAlertplaned" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Date To Confirm">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/order/OrderDeptPlanning.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="tdplaninggf" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblAlertplanedGF" runat="server" Font-Bold="true" Text="To Plan Finally"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: 300px; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="DGAlertplanedGF" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="To Plan Finally">
+                                                                <ItemTemplate>
+                                                                    <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/order/FrmOrderPlanning.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="tdplaningconformation" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblAlertolanedconf" runat="server" Font-Bold="true" Text="Fabric To Purchase"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="DGAlertolanedconf" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Fabric To Purchase">
+                                                                <ItemTemplate>
+                                                                    <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/Purchase/PurchageIndentIssue.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="Trdelvorder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblAlertdelvorder" runat="server" Font-Bold="true" Text="Impending Fabric Deliveries"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="DGAlertdelvorder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Impending Fabric Deliveries">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false"
+                                                                        Text='<%# Bind("OrderNo") %>'> </asp:Label>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="TrJWorder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblJW" runat="server" Font-Bold="true" Text="JW ORDER To Make"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="DgJW" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="JW ORDER To Make">
+                                                                <ItemTemplate>
+                                                                    <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/Process/GenrateInDent.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="TrAlertindentprodIss" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblalertindentprodIss" runat="server" Font-Bold="true" Text="Fabric To Issue"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="DgalertindentprodIss" runat="server" AutoGenerateColumns="false"
+                                                        ShowHeader="false" Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Fabric To Issue">
+                                                                <ItemTemplate>
+                                                                    <%--<asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false" Text='<%# Bind("OrderNo") %>'> </asp:Label>--%>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/RawMaterial/IndentRowIssue.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="TrAlertindentprod" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblalertindentprod" runat="server" Font-Bold="true" Text="Impending Garment Deliveries"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="Dgalertindentprod" runat="server" ShowHeader="false" AutoGenerateColumns="false"
+                                                        Width="303px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Impending Garment Deliveries">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false"
+                                                                        Text='<%# Bind("OrderNo") %>'> </asp:Label>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="Trdporder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lbldporder" runat="server" Font-Bold="true" Text="DP order To Make"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="Dgdpordertomake" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Impending DP Deliveries">
+                                                                <ItemTemplate>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/Process/FrmSupplyOrder.aspx?orderid=" + Eval("orderid")%>'
+                                                                        Target="_parent" />
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="Trisq" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblisq" runat="server" Font-Bold="true" Text="ISQ Alert"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="GVisq" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="ISQ">
+                                                                <ItemTemplate>
+                                                                    <%--<asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text='<%# Bind("OrderNo") %>'
+                                                                    runat="server" NavigateUrl='<%# "Masters/Process/FrmSupplyOrder.aspx?orderid=" + Eval("orderid")%>'
+                                                                    Target="_parent" />--%>
+                                                                    <asp:Label ID="lblisq" runat="server" ForeColor="Red" Enabled="false" Text='<%# Bind("isq") %>'> </asp:Label>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="TrAlertindentprodDP" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblalertindentprodDP" runat="server" Font-Bold="true" Text="Impending DP Deliveries"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="DgalertindentprodDP" runat="server" AutoGenerateColumns="false"
+                                                        ShowHeader="false" Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Impending DP Deliveries">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Font-Underline="true" Enabled="false"
+                                                                        Text='<%# Bind("OrderNo") %>'> </asp:Label>
+                                                                    <asp:Label ID="lblOrderId" runat="server" ForeColor="Red" Enabled="false" Visible="false"
+                                                                        Text='<%# Bind("OrderId") %>'> </asp:Label>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="Trremark" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblremark" runat="server" Font-Bold="true" Text="Last Remark Alert"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="Dgremark" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="ISQ">
+                                                                <ItemTemplate>
+                                                                    <asp:HyperLink ID="hrpremark" ForeColor="Red" Font-Underline="true" Text='<%# Bind("remark") %>'
+                                                                        runat="server" NavigateUrl='<%# "Masters/Purchase/FrmPurchaseRevisedDate.aspx"%>'
+                                                                        Target="_parent" />
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="Trartalert" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblalert" runat="server" Font-Bold="true" Text="Change In Order"></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="dgalertart" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px" OnRowDeleting="dgalertart_RowDeleting">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Change In Order">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("Orderid") %>'> </asp:Label>
+                                                                    <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                                                        Text='<%# Bind("OrderNo") %>'></asp:LinkButton>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="trlatedeldate" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lbllatedelorder" runat="server" Font-Bold="true" Text=""></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="Gvlatedelorder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Order Tag">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("orderid") %>'> </asp:Label>
+                                                                    <asp:Label ID="LinkButton1" runat="server" Text='<%# Bind("orderno") %>'></asp:Label>
+                                                                    <%--<asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                                                                 Text='<%# Bind("poNo") %>'></asp:LinkButton>--%>
+                                                                </ItemTemplate>
+                                                                <%--<FooterTemplate>
+                                                            <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
+                                                                    runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=1&VarProcessId=9"%>'
+                                                                    Target="_parent" />
+                                                            </FooterTemplate>--%>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="trorder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblordertag" runat="server" Font-Bold="true" Text=""></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="GvTag" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px" OnRowDeleting="dgalertart_RowDeleting" ShowFooter="true">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Order Tag">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("Orderid") %>'> </asp:Label>
+                                                                    <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                                                        Text='<%# Bind("OrderNo") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <FooterTemplate>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
+                                                                        runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=5"%>' Target="_parent" />
+                                                                </FooterTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="trpurchase" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblpurchase" runat="server" Font-Bold="true" Text=""></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="gvpurchase" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Order Tag">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("Pindentissueid") %>'> </asp:Label>
+                                                                    <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                                                        Text='<%# Bind("poNo") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <FooterTemplate>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
+                                                                        runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=4"%>' Target="_parent" />
+                                                                </FooterTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="trproductionorder" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lblproductionorder" runat="server" Font-Bold="true" Text=""></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="gvproductionorder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Order Tag">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("orderid") %>'> </asp:Label>
+                                                                    <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                                                        Text='<%# Bind("orderno") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <FooterTemplate>
+                                                                    <asp:HyperLink ID="hlDetails1" ForeColor="Red" Font-Underline="true" Text="Show Detail"
+                                                                        runat="server" NavigateUrl='<%# "Masters/Carpet/FrmAlert.aspx?VarFlag=4"%>' Target="_parent" />
+                                                                </FooterTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="trdporder11" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lbldporder11" runat="server" Font-Bold="true" Text=""></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="gvdporder" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        Width="300px" OnRowDeleting="dgalertart_RowDeleting" ShowFooter="true">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Order Tag">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("orderid") %>'> </asp:Label>
+                                                                    <asp:Label ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                                                        Text='<%# Bind("orderno") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr runat="server" visible="false" id="trdpreceive" valign="top">
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td align="center">
+                                                <asp:Label ID="lbldprec" runat="server" Font-Bold="true" Text=""></asp:Label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div style="background-color: #edf3fe; width: auto; height: 100px; overflow: scroll">
+                                                    <asp:GridView ID="Gvdprec" runat="server" AutoGenerateColumns="false" ShowHeader="false"
+                                                        ShowFooter="true" Width="300px" OnRowDeleting="dgalertart_RowDeleting">
+                                                        <Columns>
+                                                            <asp:TemplateField HeaderText="Order Tag">
+                                                                <ItemTemplate>
+                                                                    <asp:Label ID="lblOrderNo" runat="server" ForeColor="Red" Visible="false" Font-Underline="true"
+                                                                        Enabled="false" Text='<%# Bind("supplyorder") %>'> </asp:Label>
+                                                                    <asp:Label ID="LinkButton1" runat="server" Text='<%# Bind("supplyorderno") %>'></asp:Label>
+                                                                </ItemTemplate>
+                                                                <ItemStyle />
+                                                            </asp:TemplateField>
+                                                        </Columns>
+                                                    </asp:GridView>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr style="width: 100%">
+                <td colspan="2" valign="top" align="center">
+                    <div style="background-color: #edf3fe52; height: 20px; width: 100%; padding-top: 5px">
+                        <span class="labelcopyr">&copy; Enablesoft Erp Consultancy Pvt. Ltd.All rights reserved.</span>
+                        <asp:ContentPlaceHolder ID="CPH_Footer" runat="server">
+                        </asp:ContentPlaceHolder>
+                    </div>
+                </td>
+            </tr>
+        </table>
     </form>
 </body>
 </html>

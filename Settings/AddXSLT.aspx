@@ -1,10 +1,10 @@
-﻿<%@ Page Title="" EnableSessionState="True" Language="C#" MasterPageFile="~/Site.master"
+﻿<%@ Page Title="" EnableSessionState="True" Language="C#" MasterPageFile="~/App.master"
     AutoEventWireup="true" ValidateRequest="false"
     CodeFile="AddXSLT.aspx.cs" Inherits="Settings_AddXSLT" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="pageStyles" runat="Server">
+<asp:Content ID="Content1" ContentPlaceHolderID="styleSection" runat="Server">
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="pageBody" runat="Server">
+<asp:Content ID="Content2" ContentPlaceHolderID="bodySection" runat="Server">
     <div id="title-breadcrumb-option-demo" class="page-title-breadcrumb">
         <div class="row">
             <div class="col-lg-12">
@@ -16,26 +16,26 @@
         <div class="clearfix"></div>
     </div>
     <div class="page-content">
-        <div class="panel">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
                 <div class="row">
                     <div class="col-lg-3">
-                        <div class="form-group">
-                            <label>DocumentType:</label>
+                        <div class="mb-3">
+                            <label class="form-label">DocumentType:</label>
                             <asp:DropDownList ID="ddlDocument" CssClass="form-control required" runat="server">
                             </asp:DropDownList>
                         </div>
                     </div>
                     <div class="col-lg-3">
-                        <div class="form-group">
-                            <label>Customer :</label>
+                        <div class="mb-3">
+                            <label class="form-label">Customer :</label>
                             <asp:DropDownList ID="ddlCustomer" CssClass="form-control required" runat="server">
                             </asp:DropDownList>
                         </div>
                     </div>
                     <div class="col-lg-3">
-                        <div class="form-group">
-                            <label>Document Formate :</label>
+                        <div class="mb-3">
+                            <label class="form-label">Document Formate :</label>
 
                             <asp:FileUpload ID="flpContent" CssClass="form-control" runat="server" />
 
@@ -47,8 +47,8 @@
                     <div class="col-lg-12">
 
 
-                        <div class="form-group">
-                            <label>Document Formate :</label>
+                        <div class="mb-3">
+                            <label class="form-label">Document Formate :</label>
                             <asp:TextBox ID="txtContent" TextMode="MultiLine" CssClass="form-control" Rows="10"
                                 runat="server"></asp:TextBox>
 
@@ -74,8 +74,8 @@
                 </div>
             </div>
         </div>
-        <div class="panel">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
                 <div class="row">
 
                     <div class="col-lg-4">
@@ -131,6 +131,6 @@
         </div>
     </div>
 </asp:Content>
-<asp:Content ID="Content3" ContentPlaceHolderID="pageScripts" runat="Server">
+<asp:Content ID="Content3" ContentPlaceHolderID="scriptSection" runat="Server">
 </asp:Content>
 

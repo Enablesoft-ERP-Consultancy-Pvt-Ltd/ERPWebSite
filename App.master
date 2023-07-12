@@ -1,0 +1,149 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="App.master.cs" Inherits="App" %>
+
+<%@ Register Src="~/UserControls/VerticleMenu.ascx" TagPrefix="uc1" TagName="VerticleMenu" %>
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <title>IEXPRO ERP</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="">
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <!--Loading bootstrap css-->
+    <link type="text/css" rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700">
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,700,300">
+
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+
+
+    <!--Loading style-->
+    <link type="text/css" rel="stylesheet" href="~/Content/css/style.css">
+    <link type="text/css" rel="stylesheet" href="~/Content/css/style-responsive.css">
+    <asp:ContentPlaceHolder ID="styleSection" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form class="was-validated" novalidate="novalidate" runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server" AsyncPostBackTimeout="5000">
+        </asp:ScriptManager>
+        <div id="header-topbar-option-demo" class="page-header-topbar">
+            <nav id="topbar" role="navigation" style="margin-bottom: 0; z-index: 2;"
+                class="navbar navbar-default navbar-static-top">
+                <div class="navbar-header">
+                    <button type="button" data-bs-toggle="collapse" href="#sidebar-collapse" role="button"
+                        aria-expanded="false" aria-controls="sidebar-collapse" class="navbar-toggle">
+                        <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar">
+                        </span>
+                    </button>
+                    <a id="logo" href="#" class="navbar-brand">
+                        <span class="fa fa-rocket"></span><span class="logo-text">
+                            <img src="<%= Page.ResolveUrl("~/images/logo.png")%>" alt="" /></span>
+                        <span style="display: none" class="logo-text-icon">
+                            <img src="<%= Page.ResolveUrl("~/images/logo.png")%>" alt="" /></span>
+                    </a>
+                </div>
+                <div class="topbar-main">
+                    <a id="menu-toggle" href="#" class="d-none d-sm-block"><i class="fa fa-bars"></i>
+                    </a>
+                    <ul class="nav navbar navbar-top-links navbar-right mbn">
+                        <li>
+                            <img style="max-height: 70px;" src="<%= Page.ResolveUrl("~/images/logo/"+Session["varCompanyId"].ToString()+"_company.png")%>"
+                                class="img-fluid top-righ-logo" alt="" />
+                        </li>
+                        <li class="dropdown topbar-user">
+                            <a data-hover="dropdown" href="#" class="dropdown-bs-toggle">
+                                <img src="<%= Page.ResolveUrl("~/images/profile.jpg")%>" width="128" height="128"
+                                    alt=""
+                                    class="img-fluid img-circle" />&nbsp;<span class="hidden-xs">
+                                        <asp:Label ID="LblCompanyName" runat="server" Text="" Visible="false"></asp:Label>
+                                        <asp:Label ID="LblUserName" runat="server"></asp:Label>
+                                        <asp:Image Visible="false" ID="imgLogo" runat="server" />
+                                        <asp:Label Visible="false" ID="LblFrmName" runat="server" CssClass="labelbold"></asp:Label>
+                                        <asp:Image Visible="false" ID="Image2" align="left" runat="server" Width="150" />
+                                        <asp:Label Visible="false" ID="Label5" runat="server"></asp:Label>
+                                    </span>&nbsp;<span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user pull-right">
+                                <li><a href="#"><i class="fa fa-user"></i>My Profile</a></li>
+                                <li class="divider"></li>
+                                <li>
+                                    <asp:LinkButton ID="ltnLogout" runat="server" OnClick="BtnLogout_Click"><i class="fa fa-key"></i>Log Out</asp:LinkButton>
+
+
+
+
+
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+
+        </div>
+        <!--END TOPBAR-->
+        <div id="wrapper">
+            <!--BEGIN SIDEBAR MENU-->
+            <nav id="sidebar" role="navigation" class="navbar-default navbar-static-side">
+                <div id="sidebar-collapse" class="menu-scroll collapse d-sm-block">
+                    <asp:UpdatePanel ID="up" runat="server">
+                        <ContentTemplate>
+                            <asp:Button Visible="false" Width="100%" BorderStyle="None" BackColor="#999999" ID="BtnLogout"
+                                runat="server"
+                                Text="Logout" OnClick="BtnLogout_Click" Style="cursor: pointer; text-decoration: underline;
+                                font-weight: bold"
+                                ToolTip="Click For logout" UseSubmitBehavior="False" ValidationGroup="a" />
+                        </ContentTemplate>
+                    </asp:UpdatePanel>
+                    <uc1:VerticleMenu runat="server" ID="VerticleMenu" />
+                </div>
+            </nav>
+            <!--END SIDEBAR MENU-->
+            <!--BEGIN PAGE WRAPPER-->
+            <div id="page-wrapper">
+                <asp:ContentPlaceHolder ID="bodySection" runat="server">
+                </asp:ContentPlaceHolder>
+            </div>
+            <div id="footer" style="">
+                <div class="copyright">
+                    <%: DateTime.Now.Year %> © Enablesoft ERP Conslustancy Pvt Ltd
+                </div>
+            </div>
+            <!--END FOOTER-->
+        </div>
+        <!--END PAGE WRAPPER-->
+
+    </form>
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/jquery/dist/jquery.min.js")%>"></script>
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/bootstrap/js/bootstrap.js")%>"></script>
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js")%>"></script>
+    <script src="<%= Page.ResolveUrl("~/lib/metisMenu/jquery.metisMenu.js")%>"></script>
+    <script src="<%= Page.ResolveUrl("~/lib/jquery-cookie/jquery.cookie.js")%>"></script>
+    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/main.js")%>"></script>
+    <script language="javascript" type="text/javascript">
+        function GetSiteRoot() {
+            var rootPath = window.location.protocol + "//" + window.location.host + "/";
+            if (window.location.hostname == "localhost") {
+                var path = window.location.pathname;
+                if (path.indexOf("/") == 0) {
+                    path = path.substring(1);
+                }
+                path = path.split("/", 1);
+                if (path != "") {
+                    rootPath = rootPath + path + "/";
+                }
+            }
+            alert(rootPath);
+            return rootPath;
+        }
+    </script>
+    <asp:ContentPlaceHolder ID="scriptSection" runat="server">
+    </asp:ContentPlaceHolder>
+</body>
+</html>
