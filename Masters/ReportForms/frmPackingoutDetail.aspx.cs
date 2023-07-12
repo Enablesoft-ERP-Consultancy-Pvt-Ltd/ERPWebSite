@@ -171,6 +171,143 @@ public partial class Masters_ReportForms_frmPackingoutDetail : System.Web.UI.Pag
         }
 
     }
+    protected void PackingOutExcelReportVKhamaria(DataSet ds)
+    {
+        try
+        {
+            //           string str = @"select PM.TInvoiceNo,vf.QualityName,vf.designName,vf.ColorName,PD.Width+'x'+PD.Length as Size,
+            //                        sum(Pd.pcs) as pcs,Sum(PD.area) as Area,'" + txtfromdate.Text + "' as Fromdate,'" + txttodate.Text + @"' as Todate
+            //                        From Packing PM(NoLock) inner join PackingInformation PD(NoLock) on PM.PackingId=PD.PackingId
+            //                        inner join V_FinishedItemDetail vf(NoLock) on PD.FinishedId=vf.ITEM_FINISHED_ID
+            //                        Where PM.ConsignorId = " + Session["CurrentWorkingCompanyID"] + " And PM.PackingDate>='" + txtfromdate.Text + "' and PM.PackingDate<='" + txttodate.Text + @"'
+            //                        group by PM.TInvoiceNo,vf.QualityName,vf.designName,vf.ColorName,PD.Width,PD.Length";
+
+
+            //            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+
+                sht.Range("A1:H1").Merge();
+                sht.Range("A1").SetValue("PACKING OUT SUMMARY");
+                sht.Range("A2:H2").Merge();
+                sht.Range("A2").SetValue("FROM :" + txtfromdate.Text + "TO :" + txttodate.Text);
+                sht.Range("A1:H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:H2").Style.Font.SetBold();
+
+                //Headers
+                sht.Range("A3").Value = "INVOICE NO.";
+                sht.Range("B3").Value = "BPO NO";
+                sht.Range("C3").Value = "QUALITY";
+                sht.Range("D3").Value = "DESIGN";
+                sht.Range("E3").Value = "COLOR";
+                sht.Range("F3").Value = "SIZE";
+                sht.Range("G3").Value = "PCS";
+                sht.Range("H3").Value = "AREA";
+
+                sht.Range("A3:H3").Style.Font.Bold = true;
+
+                row = 4;
+
+                DataTable dtdistinctindent = ds.Tables[0].DefaultView.ToTable(true, "TInvoiceNo");
+                DataView dvindetnNo = new DataView(dtdistinctindent);
+                dvindetnNo.Sort = "TInvoiceNo asc";
+                DataTable dtdistinct = dvindetnNo.ToTable();
+
+                int rowfrom = 0, rowto = 0;
+                string TPcsRow = "", TAreaRow = "";
+                foreach (DataRow dr in dtdistinct.Rows)
+                {
+                    DataView dvdetail = new DataView(ds.Tables[0]);
+                    dvdetail.RowFilter = "TInvoiceNo='" + dr["TInvoiceNo"] + "' ";
+                    dvdetail.Sort = "TInvoiceNo";
+                    DataTable dt = dvdetail.ToTable();
+
+                    rowfrom = row;
+                    foreach (DataRow dr1 in dt.Rows)
+                    {
+                        sht.Range("A" + row).SetValue(dr1["TInvoiceNo"]);
+                        sht.Range("B" + row).SetValue(dr1["CustomerOrderNo"]);
+                        sht.Range("C" + row).SetValue(dr1["QualityName"]);
+                        sht.Range("D" + row).SetValue(dr1["DesignName"]);
+                        sht.Range("E" + row).SetValue(dr1["ColorName"]);
+                        sht.Range("F" + row).SetValue(dr1["Size"]);
+                        sht.Range("G" + row).SetValue(dr1["Pcs"]);
+                        sht.Range("H" + row).SetValue(dr1["Area"]);
+
+                        row = row + 1;
+                    }
+
+                    rowto = row - 1;
+                    sht.Range("F" + row).SetValue("Total");
+                    sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + rowto + ")";
+                    sht.Range("H" + row).FormulaA1 = "=SUM(H" + rowfrom + ":H" + rowto + ")";
+                    sht.Range("E" + row + ":H" + row).Style.Font.Bold = true;
+
+                    TPcsRow = TPcsRow + "+" + "G" + row;
+                    TAreaRow = TAreaRow + "+" + "H" + row;
+
+                    row = row + 1;
+                }
+
+                TPcsRow = TPcsRow.TrimStart('+');
+                TAreaRow = TAreaRow.TrimStart('+');
+
+
+                sht.Range("F" + row).SetValue("G. Total");
+                sht.Range("G" + row).FormulaA1 = "=SUM(" + TPcsRow + ")";
+                sht.Range("H" + row).FormulaA1 = "=SUM(" + TAreaRow + ")";
+
+                sht.Range("E" + row + ":H" + row).Style.Font.Bold = true;
+
+                using (var a = sht.Range("A3:H" + row))
+                {
+                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                }
+                //*************
+                sht.Columns(1, 15).AdjustToContents();
+                string Fileextension = "xlsx";
+                string name = "PackingOutSummary";
+                //if (DDEmpName.SelectedIndex > 0)
+                //{
+                //    name = name + "-" + DDEmpName.SelectedItem.Text;
+                //}
+                string filename = UtilityModule.validateFilename("" + name + "_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altPacking", "alert('No records found for this combination.')", true);
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+    }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
         string str = "";
@@ -182,6 +319,17 @@ public partial class Masters_ReportForms_frmPackingoutDetail : System.Web.UI.Pag
                         inner join V_FinishedItemDetail vf(NoLock) on PD.FinishedId=vf.ITEM_FINISHED_ID
                         Where PM.ConsignorId = " + Session["CurrentWorkingCompanyID"] + " And PM.PackingDate>='" + txtfromdate.Text + "' and PM.PackingDate<='" + txttodate.Text + @"'
                         group by PM.TInvoiceNo,vf.QualityName,vf.designName,vf.ColorName,PD.Width,PD.Length,PD.ID";
+        }
+        else if (Session["VarCompanyNo"].ToString() == "38")
+        {
+            str = @"select PM.TInvoiceNo,vf.QualityName,vf.designName,vf.ColorName,PD.Width+'x'+PD.Length as Size,
+                        sum(Pd.pcs) as pcs,Sum(PD.area) as Area,'" + txtfromdate.Text + "' as Fromdate,'" + txttodate.Text + @"' as Todate,
+                        isnull(OM.CustomerOrderNo,'') as CustomerOrderNo
+                        From Packing PM(NoLock) inner join PackingInformation PD(NoLock) on PM.PackingId=PD.PackingId
+                        inner join V_FinishedItemDetail vf(NoLock) on PD.FinishedId=vf.ITEM_FINISHED_ID
+                        Left JOIN OrderMaster OM(NoLock) ON PD.OrderId=OM.OrderId
+                        Where PM.ConsignorId = " + Session["CurrentWorkingCompanyID"] + " And PM.PackingDate>='" + txtfromdate.Text + "' and PM.PackingDate<='" + txttodate.Text + @"'
+                        group by PM.TInvoiceNo,vf.QualityName,vf.designName,vf.ColorName,PD.Width,PD.Length,OM.CustomerOrderNo";
         }
         else
         {
@@ -205,7 +353,14 @@ public partial class Masters_ReportForms_frmPackingoutDetail : System.Web.UI.Pag
             {
                 if (ChkForExcelReport.Checked == true)
                 {
-                    PackingOutExcelReport(ds);
+                    if (Session["VarCompanyNo"].ToString() == "38")
+                    {
+                        PackingOutExcelReportVKhamaria(ds);
+                    }
+                    else
+                    {
+                        PackingOutExcelReport(ds);
+                    }
                 }
                 else
                 {
