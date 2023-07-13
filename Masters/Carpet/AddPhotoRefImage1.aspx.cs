@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.IO.Compression;
 using CrystalDecisions.CrystalReports;
 using System.Configuration;
-public partial class Masters_Carpet_AddPhotoRefImage : System.Web.UI.Page
+public partial class Masters_Carpet_AddPhotoRefImage1 : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

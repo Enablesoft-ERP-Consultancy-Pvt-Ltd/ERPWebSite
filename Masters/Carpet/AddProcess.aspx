@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddProcess.aspx.cs" Inherits="Masters_Campany_Design"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AddProcess.aspx.cs" Inherits="Masters_Carpet_AddProcess"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

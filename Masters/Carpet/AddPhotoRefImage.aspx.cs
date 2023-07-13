@@ -12,7 +12,7 @@ using CrystalDecisions.CrystalReports;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-public partial class Masters_Carpet_AddShape : System.Web.UI.Page
+public partial class Masters_Carpet_AddPhotoRefImage : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
