@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class OtherExpense : System.Web.UI.Page
+public partial class Masters_Carpet_OtherExpense : System.Web.UI.Page
 {
     int CWOEID = 0;
     string Msg = "";

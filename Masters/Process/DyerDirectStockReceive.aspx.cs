@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Text;
 
-public partial class Masters_ProcessIssue_DyerDirectStockReceive : System.Web.UI.Page
+public partial class Masters_Process_DyerDirectStockReceive : System.Web.UI.Page
 {
     public int UnitId = 0;
     public string LastReceivedDate2="";

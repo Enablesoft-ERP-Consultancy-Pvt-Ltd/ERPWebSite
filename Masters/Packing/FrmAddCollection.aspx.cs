@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_Campany_FrmAddCollection : System.Web.UI.Page
+public partial class Masters_Packing_FrmAddCollection : System.Web.UI.Page
 {
     public static int Collectionid = 0;
     protected void Page_Load(object sender, EventArgs e)

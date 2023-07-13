@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Text;
 
-public partial class Masters_ProcessIssue_DyerDirectStock : System.Web.UI.Page
+public partial class Masters_Process_DyerDirectStock : System.Web.UI.Page
 {
     public int UnitId = 0;
     protected void Page_Load(object sender, EventArgs e)

@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Net;
 
-public partial class Masters_Hissab_Frmadvanceforanisha : System.Web.UI.Page
+public partial class Masters_Hissab_FrmadvanceEntryforanisha : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

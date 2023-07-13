@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_process_PRI : System.Web.UI.Page
+public partial class Masters_RawMaterial_IndentRowIssue : System.Web.UI.Page
 {
     int ItemFinishedId = 0;
     static int MasterCompanyId;

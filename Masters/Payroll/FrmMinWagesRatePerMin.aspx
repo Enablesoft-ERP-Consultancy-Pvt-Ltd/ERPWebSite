@@ -1,6 +1,6 @@
 ﻿<%@ Page Language="C#" Title="Min Wages Rate Per Min" AutoEventWireup="true" EnableEventValidation="false"
     MasterPageFile="~/ERPmaster.master" CodeFile="FrmMinWagesRatePerMin.aspx.cs"
-    Inherits="Masters_Carpet_FrmMinWagesRatePerMin" %>
+    Inherits="Masters_Payroll_FrmMinWagesRatePerMin" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

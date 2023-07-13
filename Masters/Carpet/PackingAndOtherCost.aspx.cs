@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class OtherExpense : System.Web.UI.Page
+public partial class Masters_Carpet_PackingAndOtherCost : System.Web.UI.Page
 {
   static  int MasterCompanyId;
     protected void Page_Load(object sender, EventArgs e)

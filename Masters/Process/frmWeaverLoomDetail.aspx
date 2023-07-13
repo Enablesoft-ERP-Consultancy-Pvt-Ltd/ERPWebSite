@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frmWeaverLoomDetail.aspx.cs"
-    Inherits="Masters_Process_frm_WeaverLoomDetail" %>
+    Inherits="Masters_Process_frmWeaverLoomDetail" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <link href="../../App_Themes/Default/Style.css" rel="stylesheet" type="text/css" />

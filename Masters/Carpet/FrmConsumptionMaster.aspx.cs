@@ -18,7 +18,7 @@ using System.Web.Script.Serialization;
 using System.Web.Script.Services;
 using System.Text;
 
-public partial class FrmConsumptionMaster : CustomPage
+public partial class Masters_Carpet_FrmConsumptionMaster : CustomPage
 {
     public string mode = "";
 

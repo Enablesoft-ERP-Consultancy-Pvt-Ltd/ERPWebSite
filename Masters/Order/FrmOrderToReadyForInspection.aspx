@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="FrmOrderToReadyForInspection.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" Title="Order Inspection" Inherits="Masters_Campany_FrmOrderToReadyForInspection"
+    MasterPageFile="~/ERPmaster.master" Title="Order Inspection" Inherits="Masters_Order_FrmOrderToReadyForInspection"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

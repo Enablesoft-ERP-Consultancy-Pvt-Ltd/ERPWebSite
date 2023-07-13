@@ -11,7 +11,7 @@ using System.Text;
 using ClosedXML.Excel;
 
 
-public partial class Masters_ReportForms_frmJobcard : System.Web.UI.Page
+public partial class Masters_ReportForms_frmJobPaymentSummary : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

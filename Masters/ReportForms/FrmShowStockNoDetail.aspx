@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Show Stock no. Detail" Language="C#" AutoEventWireup="true" CodeFile="FrmShowStockNoDetail.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" Inherits="Masters_Campany_FrmShowStockNoDetail"
+    MasterPageFile="~/ERPmaster.master" Inherits="Masters_ReportForms_FrmShowStockNoDetail"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

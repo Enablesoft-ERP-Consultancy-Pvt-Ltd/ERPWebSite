@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using System.IO;
 using ClosedXML.Excel;
 
-public partial class Masters_ProcessIssue_ProcessIssue : System.Web.UI.Page
+public partial class Masters_Process_ProcessIssue : System.Web.UI.Page
 {
     private DataSet DS;
     static int MasterCompanyId;

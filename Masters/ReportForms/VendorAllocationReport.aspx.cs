@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Text;
 
-public partial class VendorAllocationReport : System.Web.UI.Page
+public partial class Masters_ReportForms_VendorAllocationReport : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

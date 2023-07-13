@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="FrmUPCNO.aspx.cs" Inherits="DefineItemCode"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="FrmUPCNO.aspx.cs" Inherits="Masters_Campany_FrmUPCNO"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

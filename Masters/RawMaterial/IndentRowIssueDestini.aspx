@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Indent Raw Issue" Language="C#" AutoEventWireup="true" CodeFile="IndentRowIssueDestini.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_process_PRI" %>
+    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_RawMaterial_IndentRowIssueDestini" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

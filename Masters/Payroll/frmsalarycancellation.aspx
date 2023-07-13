@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Salary Cancellation" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="frmsalarycancellation.aspx.cs" Inherits="Masters_Payroll_frmsalaryprocessmaster" %>
+    AutoEventWireup="true" CodeFile="frmsalarycancellation.aspx.cs" Inherits="Masters_Payroll_frmsalarycancellation" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
     <script src="../../Scripts/JScript.js" type="text/javascript"></script>

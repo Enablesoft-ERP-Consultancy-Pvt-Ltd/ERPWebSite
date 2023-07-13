@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="QualityMaster.aspx.cs" Inherits="Masters_Campany_QualityMaster"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="QualityMaster.aspx.cs" Inherits="Masters_Carpet_QualityMaster"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

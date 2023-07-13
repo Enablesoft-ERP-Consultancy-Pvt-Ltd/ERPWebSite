@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="FrmDefineColorRate.aspx.cs"
-    Inherits="FrmDefineColorRate" MasterPageFile="~/ERPmaster.master" Title="Define Shade Rate"
+    Inherits="Masters_Carpet_FrmDefineColorRate" MasterPageFile="~/ERPmaster.master" Title="Define Shade Rate"
     EnableEventValidation="false" %>
 
 <asp:Content ID="page" ContentPlaceHolderID="CPH_Form" runat="server">

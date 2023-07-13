@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="DefineItemCode.aspx.cs" Inherits="DefineItemCode"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="DefineItemCode.aspx.cs" Inherits="Masters_Carpet_DefineItemCode"
     Title="Define Item Code" EnableEventValidation="false" ViewStateMode="Enabled" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

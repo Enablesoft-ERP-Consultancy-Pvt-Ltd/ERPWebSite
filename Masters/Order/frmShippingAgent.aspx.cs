@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class ShippingMaster : CustomPage
+public partial class Masters_Order_frmShippingAgent : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

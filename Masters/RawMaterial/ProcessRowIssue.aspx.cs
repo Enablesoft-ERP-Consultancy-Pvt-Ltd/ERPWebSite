@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_process_PRI : System.Web.UI.Page
+public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
 {
     static int MasterCompanyId;
     static string TempLotNo = "";

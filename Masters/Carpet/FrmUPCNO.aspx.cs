@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class DefineItemCode : System.Web.UI.Page
+public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

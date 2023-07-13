@@ -10,7 +10,7 @@ using System.Text;
 using System.IO;
 using ClosedXML.Excel;
 
-public partial class Masters_ProcessIssue_ProcessIssue : System.Web.UI.Page
+public partial class Masters_Process_EditProcessIssue : System.Web.UI.Page
 {
     private DataSet DS;
     int PROCESS_ISSUE_ID = 0;

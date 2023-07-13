@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" Title="EditProcessReceive" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="EditProcessReceive.aspx.cs" Inherits="Masters_process_ProcessReceive" %>
+    CodeFile="EditProcessReceive.aspx.cs" Inherits="Masters_Process_EditProcessReceive" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Page" ContentPlaceHolderID="CPH_Form" runat="server">

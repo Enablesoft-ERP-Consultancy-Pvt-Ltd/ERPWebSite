@@ -15,7 +15,7 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Text;
 using System.Globalization;
-public partial class DefineItemCode : System.Web.UI.Page
+public partial class Masters_Carpet_DefineItemCode : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

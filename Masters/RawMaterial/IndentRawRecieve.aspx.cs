@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
+public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
 {
     static int MasterCompanyId;
     static int Item_finished_id;

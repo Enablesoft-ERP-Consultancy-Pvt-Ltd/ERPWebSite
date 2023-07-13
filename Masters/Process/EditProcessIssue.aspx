@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" Title="EditProcessIssue" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="EditProcessIssue.aspx.cs" Inherits="Masters_ProcessIssue_ProcessIssue"
+    CodeFile="EditProcessIssue.aspx.cs" Inherits="Masters_Process_EditProcessIssue"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

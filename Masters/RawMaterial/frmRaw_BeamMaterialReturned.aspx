@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frmRaw_BeamMaterialReturned.aspx.cs"
-    Inherits="Masters_RawMaterial_frmRawMaterialReturned" MasterPageFile="~/ERPmaster.master"
+    Inherits="Masters_RawMaterial_frmRaw_BeamMaterialReturned" MasterPageFile="~/ERPmaster.master"
     Title="RAW_BEAM RETURNED" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

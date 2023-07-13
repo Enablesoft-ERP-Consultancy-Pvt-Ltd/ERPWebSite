@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Department Raw Issue" Language="C#" AutoEventWireup="true" CodeFile="FrmDepartmentRowIssue.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_process_FrmDepartmentRowIssue" %>
+    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_RawMaterial_FrmDepartmentRowIssue" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

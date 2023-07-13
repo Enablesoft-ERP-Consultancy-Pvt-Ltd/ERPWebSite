@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_process_ProcessReceive : System.Web.UI.Page
+public partial class Masters_Process_EditProcessReceive : System.Web.UI.Page
 {
     static int Gridindex = -1;
     static int VarProcess_Rec_Detail_Id = 0;

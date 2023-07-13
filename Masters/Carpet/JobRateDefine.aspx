@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="JobRateDefine" Language="C#" AutoEventWireup="true" CodeFile="JobRateDefine.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_Process_Default" %>
+    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_Carpet_JobRateDefine" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Form" ContentPlaceHolderID="CPH_Form" runat="server">

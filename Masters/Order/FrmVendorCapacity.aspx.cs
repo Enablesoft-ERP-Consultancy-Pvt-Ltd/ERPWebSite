@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
 
-public partial class FrmVendorCapacity : System.Web.UI.Page
+public partial class Masters_Order_FrmVendorCapacity : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

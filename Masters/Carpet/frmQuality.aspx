@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frmQuality.aspx.cs" Inherits="Masters_Campany_Quality"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frmQuality.aspx.cs" Inherits="Masters_Campany_frmQuality"
     MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

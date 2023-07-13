@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Allowances/Deductions" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="frmallowance_deductionmaster.aspx.cs" Inherits="Payroll_frmallowance_deductionmaster" %>
+    AutoEventWireup="true" CodeFile="frmallowance_deductionmaster.aspx.cs" Inherits="Masters_Payroll_frmallowance_deductionmaster" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
     <script src="../../Scripts/JScript.js" type="text/javascript"></script>

@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 
 
-public partial class Masters_RawMaterial_frmRawMaterialReturned : System.Web.UI.Page
+public partial class Masters_RawMaterial_frmRaw_BeamMaterialReturned : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

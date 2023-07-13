@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Design Ratio Size wise" Language="C#" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="FrmDesignRatioSizeWise.aspx.cs" Inherits="FrmDesignRatioSizeWise" EnableEventValidation="false"
+    CodeFile="FrmDesignRatioSizeWise.aspx.cs" Inherits="Masters_Carpet_FrmDesignRatioSizeWise" EnableEventValidation="false"
     EnableViewStateMac="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

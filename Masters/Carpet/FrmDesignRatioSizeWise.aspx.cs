@@ -18,7 +18,7 @@ using System.Web.Script.Serialization;
 using System.Web.Script.Services;
 using System.Text;
 
-public partial class FrmDesignRatioSizeWise : CustomPage
+public partial class Masters_Carpet_FrmDesignRatioSizeWise : CustomPage
 {
     public string mode = "";
     //public Boolean DgClk;

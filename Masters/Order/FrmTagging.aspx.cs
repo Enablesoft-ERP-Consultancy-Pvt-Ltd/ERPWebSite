@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.IO;
 using ClosedXML.Excel;
-public partial class Masters_Campany_FrmTagging : CustomPage
+public partial class Masters_Order_FrmTagging : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

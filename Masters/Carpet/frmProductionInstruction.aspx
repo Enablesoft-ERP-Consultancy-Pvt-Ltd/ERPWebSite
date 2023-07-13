@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frmProductionInstruction.aspx.cs"
-    Inherits="Masters_frmProductionInstruction" MasterPageFile="~/ERPmaster.master"
+    Inherits="Masters_Carpet_frmProductionInstruction" MasterPageFile="~/ERPmaster.master"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

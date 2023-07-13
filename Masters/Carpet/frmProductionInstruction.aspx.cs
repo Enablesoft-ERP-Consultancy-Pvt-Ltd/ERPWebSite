@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 using System.Web.UI.WebControls;
 using System.Text;
 
-public partial class Masters_frmProductionInstruction : CustomPage
+public partial class Masters_Carpet_frmProductionInstruction : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ERPmaster.master" AutoEventWireup="true"
-    CodeFile="FrmadvanceEntryforanisha.aspx.cs" Inherits="Masters_Hissab_Frmadvanceforanisha" %>
+    CodeFile="FrmadvanceEntryforanisha.aspx.cs" Inherits="Masters_Hissab_FrmadvanceEntryforanisha" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

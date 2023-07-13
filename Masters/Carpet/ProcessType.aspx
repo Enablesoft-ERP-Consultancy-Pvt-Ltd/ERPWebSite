@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ProcessType.aspx.cs" Inherits="ProcessType"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="ProcessType.aspx.cs" Inherits="Masters_Carpet_ProcessType"
     MasterPageFile="~/ERPmaster.master" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

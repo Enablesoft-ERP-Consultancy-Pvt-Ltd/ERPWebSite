@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/ERPmaster.master" AutoEventWireup="true"
-    CodeFile="JobWorkIssuePrototype.aspx.cs" Inherits="JobWorkIssuePrototype" %>
+    CodeFile="JobWorkIssuePrototype.aspx.cs" Inherits="Masters_Order_JobWorkIssuePrototype" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 </asp:Content>

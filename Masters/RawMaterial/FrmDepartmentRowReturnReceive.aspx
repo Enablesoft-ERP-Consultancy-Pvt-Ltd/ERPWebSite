@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Department Raw Return Receive" Language="C#" AutoEventWireup="true" CodeFile="FrmDepartmentRowReturnReceive.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_process_FrmDepartmentRowReceive" %>
+    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_RawMaterial_FrmDepartmentRowReturnReceive" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

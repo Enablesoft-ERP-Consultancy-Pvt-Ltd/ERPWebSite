@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-public partial class Masters_ProcessIssue_ProcessIssueNew : System.Web.UI.Page
+public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
 {
     private DataSet DS;
     int PROCESS_ISSUE_ID = 0;

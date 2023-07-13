@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Text;
-public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
+public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
 {
 
     private const string SCRIPT_DOFOCUS =
@@ -36,7 +36,7 @@ public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
             //and registers the script to start after Update panel was rendered
             ScriptManager.RegisterStartupScript(
                 this,
-                typeof(Masters_Campany_FrmShowStockNoDetail),
+                typeof(Masters_ReportForms_FrmShowStockNoDetail),
                 "ScriptDoFocus",
                 SCRIPT_DOFOCUS.Replace("REQUEST_LASTFOCUS", Request["__LASTFOCUS"]),
                 true);

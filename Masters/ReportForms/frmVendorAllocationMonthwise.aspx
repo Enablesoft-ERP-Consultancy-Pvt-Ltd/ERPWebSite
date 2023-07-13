@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Vendor Allocation Month Wise" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="frmVendorAllocationMonthwise.aspx.cs" Inherits="frmVendorAllocationMonthwise" %>
+    AutoEventWireup="true" CodeFile="frmVendorAllocationMonthwise.aspx.cs" Inherits="Masters_ReportForms_frmVendorAllocationMonthwise" %>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
     <%--<script type="text/javascript" src="../../Scripts/Fixfocus.js"></script>--%>

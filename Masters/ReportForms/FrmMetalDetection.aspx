@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Metal Detection Report" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="FrmMetalDetection.aspx.cs" Inherits="Masters_ReportForms_frmroaminginspection" %>
+    AutoEventWireup="true" CodeFile="FrmMetalDetection.aspx.cs" Inherits="Masters_ReportForms_FrmMetalDetection" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">

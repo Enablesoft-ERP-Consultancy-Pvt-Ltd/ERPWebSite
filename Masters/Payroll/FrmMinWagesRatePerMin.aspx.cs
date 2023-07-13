@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-public partial class Masters_Carpet_FrmMinWagesRatePerMin : System.Web.UI.Page
+public partial class Masters_Payroll_FrmMinWagesRatePerMin : System.Web.UI.Page
 {
 
     static int MasterCompanyId;

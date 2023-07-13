@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Poly Bag inspection" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="frmpolybaginspection.aspx.cs" Inherits="Masters_Inspection_frmcartoninspection" %>
+    AutoEventWireup="true" CodeFile="frmpolybaginspection.aspx.cs" Inherits="Masters_Inspection_frmpolybaginspection" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">

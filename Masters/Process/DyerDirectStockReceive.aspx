@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Dyer Direct Stock Receive" Language="C#" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="DyerDirectStockReceive.aspx.cs" Inherits="Masters_ProcessIssue_DyerDirectStockReceive"
+    CodeFile="DyerDirectStockReceive.aspx.cs" Inherits="Masters_Process_DyerDirectStockReceive"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

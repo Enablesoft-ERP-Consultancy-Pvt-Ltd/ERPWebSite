@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frmReportForm_ProductionCard.aspx.cs"
-    Inherits="Masters_ReportForms_frmReportFormJob_ProductionCard" MasterPageFile="~/ERPmaster.master"
+    Inherits="Masters_ReportForms_frmReportForm_ProductionCard" MasterPageFile="~/ERPmaster.master"
     Title="PRODUCTION CARD" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

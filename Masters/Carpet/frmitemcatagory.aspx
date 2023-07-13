@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="ItemCategory" Language="C#" AutoEventWireup="true" CodeFile="frmitemcatagory.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" Inherits="frmitemcatagory" EnableEventValidation="false" %>
+    MasterPageFile="~/ERPmaster.master" Inherits="Masters_Carpet_frmitemcatagory" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="CPH_Form" runat="server">
@@ -147,29 +147,31 @@
                     <asp:Label ID="lblshqadename" runat="server" Text="ShadeColor"></asp:Label>
                 </td>
             <tr>--%>
-                <td colspan="3">
-                    <asp:Label ID="Lblerrer" runat="server" ForeColor="Red" Text=""></asp:Label>
-                </td>
                 <tr>
                 
-                    <td colspan="2" style="text-align: right">
-                        <asp:Button ID="btndelete" runat="server" CssClass="buttonnorm" OnClick="btndelete_Click"
-                            OnClientClick="return confirm('Do you want to Delete data?')" Text="Delete" Visible="False" />
-                        <asp:Button ID="btnSave" runat="server" CssClass="buttonnorm" OnClick="btnSave_Click"
-                            OnClientClick="return confirm('Do you want to save data?')" Text="Save" />
-                        <asp:Button ID="btnClear" runat="server" CssClass="buttonnorm" OnClick="btnClear_Click"
-                            Text="New" />
-                        <asp:Button ID="btnclose" runat="server" CssClass="buttonnorm" OnClientClick="return  CloseForm();"
-                            Text="Close" />
+                    <td colspan="3">
+                        <asp:Label ID="Lblerrer" runat="server" ForeColor="Red" Text=""></asp:Label>
                     </td>
-                </tr>
-                <tr>
-                   
-                </tr>
-                <tr>
-                    <td colspan="3" style="font-family: Times New Roman; font-size: 18px">
-                        <asp:Label ID="lblMessage" runat="server" Text=" "></asp:Label>
-                    </td>
+                    <tr>
+                        <td colspan="2" style="text-align: right">
+                            <asp:Button ID="btndelete" runat="server" CssClass="buttonnorm" 
+                                OnClick="btndelete_Click" 
+                                OnClientClick="return confirm('Do you want to Delete data?')" Text="Delete" 
+                                Visible="False" />
+                            <asp:Button ID="btnSave" runat="server" CssClass="buttonnorm" 
+                                OnClick="btnSave_Click" 
+                                OnClientClick="return confirm('Do you want to save data?')" Text="Save" />
+                            <asp:Button ID="btnClear" runat="server" CssClass="buttonnorm" 
+                                OnClick="btnClear_Click" Text="New" />
+                            <asp:Button ID="btnclose" runat="server" CssClass="buttonnorm" 
+                                OnClientClick="return  CloseForm();" Text="Close" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="font-family: Times New Roman; font-size: 18px">
+                            <asp:Label ID="lblMessage" runat="server" Text=" "></asp:Label>
+                        </td>
+                    </tr>
                 </tr>
             </table>
             </td>

@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="CreateProcess" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="CreateProcess.aspx.cs" Inherits="Masters_Campany_Design"
+    AutoEventWireup="true" CodeFile="CreateProcess.aspx.cs" Inherits="Masters_Process_CreateProcess"
     EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

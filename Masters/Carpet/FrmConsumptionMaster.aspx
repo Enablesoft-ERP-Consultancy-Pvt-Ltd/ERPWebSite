@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Consumption Master" Language="C#" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="FrmConsumptionMaster.aspx.cs" Inherits="FrmConsumptionMaster" EnableEventValidation="false" %>
+    CodeFile="FrmConsumptionMaster.aspx.cs" Inherits="Masters_Carpet_FrmConsumptionMaster" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

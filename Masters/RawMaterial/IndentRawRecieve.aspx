@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="INDENT RECEIVE" Language="C#" AutoEventWireup="true" CodeFile="IndentRawRecieve.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" Inherits="Masters_RawMaterial_ProcessRawRecieve" %>
+    MasterPageFile="~/ERPmaster.master" Inherits="Masters_RawMaterial_IndentRawRecieve" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>

@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class frmSize : CustomPage
+public partial class Masters_Carpet_AddSize : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

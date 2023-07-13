@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="Division master" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="frmdivisionMaster.aspx.cs" Inherits="Masters_Payroll_frmsubdeptmaster" %>
+    AutoEventWireup="true" CodeFile="frmdivisionMaster.aspx.cs" Inherits="Masters_Payroll_frmdivisionMaster" %>
 
 <%@ Register Src="~/HRUserControls/Division.ascx" TagPrefix="uc" TagName="Division" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">

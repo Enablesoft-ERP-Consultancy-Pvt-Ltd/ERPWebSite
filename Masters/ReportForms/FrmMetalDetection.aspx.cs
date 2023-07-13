@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using ClosedXML.Excel;
-public partial class Masters_ReportForms_frmroaminginspection : System.Web.UI.Page
+public partial class Masters_ReportForms_FrmMetalDetection : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {

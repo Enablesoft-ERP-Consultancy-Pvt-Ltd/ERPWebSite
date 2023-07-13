@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AccessOrders.aspx.cs" Inherits="AccessOrders"
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="AccessOrders.aspx.cs" Inherits="Masters_ReportForms_AccessOrders"
     MasterPageFile="~/ERPmaster.master" Title="Confirm/Unconfirm DraftOrder" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>

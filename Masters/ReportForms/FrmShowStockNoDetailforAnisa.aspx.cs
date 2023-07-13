@@ -10,7 +10,7 @@ using System.IO;
 using System.Text;
 using ClosedXML.Excel;
 
-public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
+public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

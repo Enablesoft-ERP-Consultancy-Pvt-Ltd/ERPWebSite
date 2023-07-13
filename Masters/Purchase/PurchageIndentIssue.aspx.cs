@@ -12,7 +12,7 @@ using System.IO;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
-public partial class PurchageIndentIssue : System.Web.UI.Page
+public partial class Masters_Purchase_PurchageIndentIssue : System.Web.UI.Page
 {
     static int MasterCompanyId;
     string msg = "";

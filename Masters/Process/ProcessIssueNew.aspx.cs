@@ -12,7 +12,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using System.Data.Common;
 
-public partial class Masters_ProcessIssue_ProcessIssueNew : System.Web.UI.Page
+public partial class Masters_Process_ProcessIssueNew : System.Web.UI.Page
 {
     private DataSet DS;
     static int MasterCompanyId;
