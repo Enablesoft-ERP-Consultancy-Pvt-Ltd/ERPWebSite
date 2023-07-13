@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 
-public partial class Masters_MachineProcess_FrmMachineNoMaster : CustomPage
+public partial class Masters_Campany_FrmMachineNoMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {

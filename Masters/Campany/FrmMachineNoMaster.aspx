@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" Title="Master Machine No" AutoEventWireup="true" MasterPageFile="~/ERPmaster.master"
-    CodeFile="FrmMachineNoMaster.aspx.cs" Inherits="Masters_MachineProcess_FrmMachineNoMaster" EnableEventValidation="false" %>
+    CodeFile="FrmMachineNoMaster.aspx.cs" Inherits="Masters_Campany_FrmMachineNoMaster" EnableEventValidation="false" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ID="page" ContentPlaceHolderID="CPH_Form" runat="server">
