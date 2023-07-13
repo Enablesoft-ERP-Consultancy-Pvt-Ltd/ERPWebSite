@@ -84,6 +84,24 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="Table4">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HissabNo" type="xs:int" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="LagatQty" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table5">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HissabNo" type="xs:int" minOccurs="0" />
+              <xs:element name="WoolAvgLagat" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
   </xs:element>
