@@ -6797,19 +6797,20 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                 sht.Range("L2").Value = "Balance Qty";
                 sht.Range("M2").Value = "Rec Qty";
                 sht.Range("N2").Value = "Order Status";
+                sht.Range("O2").Value = "Folio Status";
 
 
-                sht.Range("A2:N2").Style.Font.FontName = "Calibri";
-                sht.Range("A2:N2").Style.Font.FontSize = 11;
-                sht.Range("A2:N2").Style.Font.Bold = true;
+                sht.Range("A2:O2").Style.Font.FontName = "Calibri";
+                sht.Range("A2:O2").Style.Font.FontSize = 11;
+                sht.Range("A2:O2").Style.Font.Bold = true;
                 //sht.Range("M1:S1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                 row = 3;
 
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
-                    sht.Range("A" + row + ":N" + row).Style.Font.FontName = "Calibri";
-                    sht.Range("A" + row + ":N" + row).Style.Font.FontSize = 10;
+                    sht.Range("A" + row + ":O" + row).Style.Font.FontName = "Calibri";
+                    sht.Range("A" + row + ":O" + row).Style.Font.FontSize = 10;
 
                     sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["Process_Name"]);
                     sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["AssignDate"]);
@@ -6825,6 +6826,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                     sht.Range("L" + row).SetValue(Convert.ToDouble(ds.Tables[0].Rows[i]["ConsumptionQTY"]) - Convert.ToDouble(ds.Tables[0].Rows[i]["IssueQty"]));
                     sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["RecQty"]);
                     sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["OrderStatus"]);
+                    sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["FolioStatus"]);
 
                     row = row + 1;
                 }
@@ -6832,7 +6834,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                 //*************
                 sht.Columns(1, 30).AdjustToContents();
 
-                using (var a = sht.Range(sht.Cell(1, 1), sht.Cell(row, "N")))
+                using (var a = sht.Range(sht.Cell(1, 1), sht.Cell(row, "O")))
                 {
                     a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
