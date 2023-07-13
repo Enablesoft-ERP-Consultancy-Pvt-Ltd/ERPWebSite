@@ -32,8 +32,6 @@
               <xs:element name="DryWeight" type="xs:double" minOccurs="0" />
               <xs:element name="QualityName" type="xs:string" minOccurs="0" />
               <xs:element name="QualityId" type="xs:int" minOccurs="0" />
-              <xs:element name="DEDUCTIONINPER" type="xs:double" minOccurs="0" />
-              <xs:element name="CONSUMEDQTY" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

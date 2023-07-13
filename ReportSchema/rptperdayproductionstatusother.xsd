@@ -28,7 +28,6 @@
               <xs:element name="FROMDATE" type="xs:string" minOccurs="0" />
               <xs:element name="TODATE" type="xs:string" minOccurs="0" />
               <xs:element name="AREA" type="xs:double" minOccurs="0" />
-              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

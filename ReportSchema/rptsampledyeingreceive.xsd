@@ -35,7 +35,6 @@
               <xs:element name="Checkedby" type="xs:string" minOccurs="0" />
               <xs:element name="Approvedby" type="xs:string" minOccurs="0" />
               <xs:element name="CompanyGstNo" type="xs:string" minOccurs="0" />
-              <xs:element name="IssQtyOnMachine" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
