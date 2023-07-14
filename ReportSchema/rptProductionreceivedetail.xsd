@@ -93,6 +93,17 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="Table4">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="RawMaterialItem" type="xs:string" minOccurs="0" />
+              <xs:element name="RawMaterialQuality" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:decimal" minOccurs="0" />
+              <xs:element name="Loss" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
   </xs:element>
