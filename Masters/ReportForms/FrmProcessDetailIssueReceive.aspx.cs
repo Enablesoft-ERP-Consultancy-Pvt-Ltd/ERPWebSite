@@ -7370,9 +7370,10 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                     sht.Range("F2").Value = "Area";
                     sht.Range("G2").Value = "Rate";
                     sht.Range("H2").Value = "Amount";
+                    sht.Range("I2").Value = "Party ChallanNo";
 
-                    sht.Range("A2:H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
-                    sht.Range("A2:H2").Style.Font.Bold = true;
+                    sht.Range("A2:I2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
+                    sht.Range("A2:I2").Style.Font.Bold = true;
 
                     row = 3;
                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -7385,6 +7386,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                         sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["Area"]);
                         sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["Rate"]);
                         sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["Amount"]);
+                        sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["PartyChallanNo"]);
 
                         row = row + 1;
                     }
@@ -7398,7 +7400,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                     sht.Columns(1, 10).AdjustToContents();
                     //sht.Rows().AdjustToContents();
 
-                    using (var a = sht.Range("A2" + ":H" + row))
+                    using (var a = sht.Range("A2" + ":I" + row))
                     {
                         a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                         a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
@@ -7436,8 +7438,6 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                     ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
                 }
             }
-
-
 
         }
         else
