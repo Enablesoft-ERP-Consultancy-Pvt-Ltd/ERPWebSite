@@ -959,6 +959,20 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
     }
     protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
     {
+        if (Session["varCompanyId"].ToString() == "44")
+        {
+            if (ddCatagory.SelectedValue == "10")
+            {
+                tdextra.Visible = true;
+
+            }
+            else
+            {
+
+                tdextra.Visible = false;
+            }
+        }
+
         ddlcategorycange();
         ddlcategorychange1();
     }
@@ -1613,7 +1627,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
 
                     //ViewState["PIndentIssueId"] = 0;
                     ViewState["PIndentIssueTranId"] = 0;
-                    SqlParameter[] arr = new SqlParameter[59];
+                    SqlParameter[] arr = new SqlParameter[60];
                     arr[0] = new SqlParameter("@PindentIssueid", SqlDbType.Int);
                     arr[1] = new SqlParameter("@Companyid", SqlDbType.Int);
                     arr[2] = new SqlParameter("@Partyid", SqlDbType.Int);
@@ -1675,6 +1689,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                     arr[56] = new SqlParameter("@CustomerID", SqlDbType.Int);
                     arr[57] = new SqlParameter("@ReqBy", SqlDbType.VarChar, 100);
                     arr[58] = new SqlParameter("@ReqFor", SqlDbType.VarChar, 100);
+                    arr[59] = new SqlParameter("@EXTRAQUANTITY", SqlDbType.Float);
 
                     arr[0].Direction = ParameterDirection.InputOutput;
                     arr[0].Value = ViewState["PIndentIssueId"];
@@ -1779,6 +1794,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                     arr[56].Value = 0;
                     arr[57].Value = txtReqBy.Text;
                     arr[58].Value = txtreqfor.Text;
+                    arr[59].Value = Convert.ToDouble(txtextraqty.Text != "" ? txtextraqty.Text : "0");
                     if (tdcustomer.Visible == true && ddcustomercode.SelectedIndex > 0)
                     {
                         arr[56].Value = ddcustomercode.SelectedValue;
@@ -1801,7 +1817,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                         {
                             if (ddCatagory.SelectedIndex > 0 && dditemname.SelectedIndex > 0 && ddempname.SelectedIndex > 0)
                             {
-                                SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_PurchaseIndentIssue]", arr);
+                                SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_PurchaseIndentIssuenew]", arr);
                                 ViewState["PIndentIssueId"] = arr[0].Value;
                                 ViewState["PIndentIssueTranId"] = arr[9].Value;
                                 //string A = arr[35].Value;
@@ -1989,7 +2005,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                          ELSE replace(convert(varchar(11),pist.delivery_date,106), ' ','-') END as ddate ,CASE WHEN Pii.duedate IS NULL THEN 
                          replace(convert(varchar(11),GETDATE(),106), ' ','-') ELSE replace(convert(varchar(11),pii.duedate,106), ' ','-') END as duedate,
                           pist.vat,pist.Cst,pist.SGST/2 as SGST,pist.SGST/2 as CGST,pist.IGST, pist.NetAmount,isnull(pist.canqty,0) as cancel,pist.remark as itemremark, pist.Finishedid,
-                           isnull(pist.TCS,0) as TCS,pii.deliverytermid
+                           isnull(pist.TCS,0) as TCS,pii.deliverytermid,pist.extraqty
                          FROM ITEM_MASTER im INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN ITEM_PARAMETER_MASTER IPM ON im.ITEM_ID = IPM.ITEM_ID 
                          INNER JOIN PurchaseIndentIssueTran pist ON IPM.ITEM_FINISHED_ID = pist.Finishedid inner join " + view2 + @" IPM1 on IPM.Item_Finished_Id=IPM1.Finishedid 
                          inner join PurchaseIndentIssue pii on pii.pindentissueid=pist.pindentissueid
@@ -2006,7 +2022,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                         else cast(sizemtr as varchar)+' Mtr' end else case when sizeinch='' then sizeinch else cast(sizeinch as varchar)+' Inch' end end  DESCRIPTION,
                         replace(convert(varchar(11),pist.delivery_date,106), ' ','-') as ddate, replace(convert(varchar(11),pii.duedate,106), ' ','-') as duedate,
                         pist.vat,pist.Cst,pist.SGST/2 as SGST,pist.SGST/2 as CGST,pist.IGST,pist.NetAmount,pist.canqty as cancel,pist.remark as itemremark, pist.Finishedid
-                        ,  isnull(pist.TCS,0) as TCS,pii.deliverytermid
+                        ,  isnull(pist.TCS,0) as TCS,pii.deliverytermid,pist.extraqty
                         FROM ITEM_MASTER im INNER JOIN ITEM_CATEGORY_MASTER icm  ON im.CATEGORY_ID = icm.CATEGORY_ID 
                         INNER JOIN ITEM_PARAMETER_MASTER IPM ON im.ITEM_ID = IPM.ITEM_ID INNER JOIN PurchaseIndentIssueTran pist ON IPM.ITEM_FINISHED_ID = pist.Finishedid
                         Inner Join  " + view2 + @" IPM1 on IPM.Item_Finished_Id=IPM1.Finishedid inner join PurchaseIndentIssue pii on 
@@ -2456,9 +2472,19 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         //}
         TxtRate.Focus();
     }
+    protected void txtextraqty_TextChanged(object sender, EventArgs e)
+    {
+        fill_text();
+        //if (Session["varcompanyNo"].ToString() == "12")
+        //{
+        //  int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //  TxtRate.Text = UtilityModule.getItemRate(Convert.ToInt16(ddempname.SelectedValue), varfinishedid, "PURCHASE").ToString();
+        //}
+        TxtRate.Focus();
+    }
     private void fill_text()
     {
-        double TotalAmt = 0.00;
+       double TotalAmt = 0.00;
         //double NetAmt = 0.00;
         double cst = 0.00;
         double IGST = 0.00;
@@ -2489,11 +2515,45 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                 return;
             }
         }
-        if (TxtRate.Text != "" && txtqty.Text != "")
+        double orderQty = 0,Qty = 0,extraqty=0,finalqty=0;
+        
+        if (txtqty.Text != "")
         {
-            double Rate = Convert.ToDouble(TxtRate.Text);
-            double Qty = Convert.ToDouble(txtqty.Text);
-            TxtAmount.Text = (Rate * Qty).ToString();
+            DataSet ds = new DataSet();
+           if (Session["varCompanyId"].ToString() == "44")
+            {
+                extraqty = Convert.ToDouble(string.IsNullOrEmpty(txtextraqty.Text) ? "0" : txtextraqty.Text);
+                //if (ddCatagory.SelectedValue == "10")
+                //{
+                //    tdextra.Visible = true;
+                //}
+                //else
+                //{
+                //    tdextra.Visible = false;
+                
+                //}
+                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select varcompanyNo,PercentageExecssQtyForProduction From Mastersetting ");
+                int varcompanyno = Convert.ToInt32(ds.Tables[0].Rows[0]["varcompanyNo"]);
+                Double Percentage = Convert.ToDouble(ds.Tables[0].Rows[0]["PercentageExecssQtyForProduction"]);
+
+                orderQty = Math.Round((Convert.ToDouble(txtqty.Text ) * Percentage / 100), 3);
+               
+               // Qty = orderQty;
+                finalqty = Convert.ToDouble(txtqty.Text) + extraqty ;
+            //    if (Convert.ToDouble(finalqty) > (Convert.ToDouble(hnqty.Value)+orderQty))
+            //{
+            //    lblqty.Text = "Qty Is Greater Then Required Qty";
+            //    lblqty.Visible = true;
+            //    return;
+            //}
+            }
+            else
+            {
+                Qty = Convert.ToDouble(txtqty.Text);
+            }
+            double Rate = Convert.ToDouble(string.IsNullOrEmpty(TxtRate.Text) ? "0" : TxtRate.Text);
+
+            TxtAmount.Text = (Rate * (finalqty)).ToString();
         }
         if (TxtAmount.Text != "")
         {
@@ -3109,7 +3169,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         string PIndentIssueTranId = ((Label)gddetail.Rows[Rowindex].FindControl("lbldetailId")).Text;
         string amount;
 
-        string str = @"select PT.PindentIssueId,PT.PIndentIssueTranid,Quantity As issueQty,Isnull(CanQty,0) As CanQty,Isnull(Sum(Qty-isnull(ReturnQty,0)),0) As RecQty  from PurchaseIndentIssueTran PT Left Outer Join PurchaseReceivedetail PR 
+        string str = @"select PT.PindentIssueId,PT.PIndentIssueTranid,Quantity As issueQty,Isnull(CanQty,0) As CanQty,Isnull(Sum(Qty-isnull(ReturnQty,0)),0) As RecQty,PT.extraqty  from PurchaseIndentIssueTran PT Left Outer Join PurchaseReceivedetail PR 
                      On PT.Pindentissuetranid=PR.PIndentIssueTranId left outer join V_PurchaseReturnDetail V on V.PurchaseReceiveDetailId=PR.PurchaseReceiveDetailId
                      Where PT.PindentIssueTranid=" + PIndentIssueTranId + " group  by PT.PindentIssueId,PT.PIndentIssueTranid,Quantity,CanQty";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -3169,6 +3229,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                 {
                     ((TextBox)gddetail.Rows[i].FindControl("TXTRate1")).Enabled = true;
                     ((TextBox)gddetail.Rows[i].FindControl("TXTQTY1")).Enabled = true;
+                    ((TextBox)gddetail.Rows[i].FindControl("TXTextraQTY")).Enabled = true;
                 }
             }
         }
@@ -3440,12 +3501,14 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
     private void FILL_TEXT1()
     {
         // double tot = 0;
-        double qty, rate, VAT, CST, amt, SGST, IGST, Weight;
-        double TotalQty = 0, TotalAmount = 0, TotalWeight = 0;
+        double qty,extraqty, rate, VAT, CST, amt, SGST, IGST, Weight;
+        double TotalQty = 0,totalextraqty=0, TotalAmount = 0, TotalWeight = 0;
         for (int i = 0; i < gddetail.Rows.Count; i++)
         {
 
             qty = Convert.ToDouble(((TextBox)gddetail.Rows[i].FindControl("TXTQTY1")).Text);
+           // extraqty = Convert.ToDouble(((TextBox)gddetail.Rows[i].FindControl("TXTextraQTY")).Text);
+          //  extraqty = Convert.ToDouble(val); //Convert.ToDouble(((Label)gddetail.Rows[i].FindControl("lblextraqty")).Text);
             rate = Convert.ToDouble(((TextBox)gddetail.Rows[i].FindControl("TXTRate1")).Text);
             Weight = Convert.ToDouble(((TextBox)gddetail.Rows[i].FindControl("TXTweig1")).Text);
             gddetail.Rows[i].Cells[7].Text = Convert.ToString(qty * rate);
@@ -3457,12 +3520,15 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             ((TextBox)gddetail.Rows[i].FindControl("TXTnetamount")).Text = Convert.ToString(amt + (amt * SGST) / 100 + (amt * IGST) / 100);
 
             TotalQty += qty;
+           // totalextraqty += extraqty;
             TotalAmount += amt;
             TotalWeight += Weight;
 
         }
         Label lblTotalQty = (Label)gddetail.FooterRow.FindControl("lblTotalQty");
         lblTotalQty.Text = Convert.ToString(TotalQty);
+        Label lblTotalextraqty = (Label)gddetail.FooterRow.FindControl("lblextraTotalQty");
+        lblTotalextraqty.Text = Convert.ToString(totalextraqty);
         Label lblTotalAmount = (Label)gddetail.FooterRow.FindControl("lblTotalAmount");
         lblTotalAmount.Text = Convert.ToString(TotalAmount);
         Label lblTotalWeight = (Label)gddetail.FooterRow.FindControl("lblTotalWeight");
@@ -3622,7 +3688,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             {
                 if (Session["varcompanyno"].ToString() == "44" && chkcustomervise.Checked == true)
                 {
-                    strsql = @"SELECT VF.Category_Name + '  ' + VF.ITEM_NAME + '  ' + VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + VF.ShadeColorName + '  ' + VF.ShapeName Description,
+                    strsql = @"SELECT VF.Category_Name + '  ' + VF.ITEM_NAME + '  ' + VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + case when isnull(vc.oshadeid,0)>0 then (select top 1 ShadeColorName from V_FinishedItemDetail where ShadecolorId=vc.oshadeid) else  VF.ShadeColorName end  + '  ' + VF.ShapeName Description,
                     VF.ITEM_FINISHED_ID, Sum(VC.ConsumptionQty) Qty, Sum(VC.PurchaseQty) PurchaseQty, VC.UnitID, VF.Qualityid, VF.Colorid, VF.designid, VF.shapeid, VF.shadecolorid, VF.category_id, VF.item_id, VF.sizeid , '0' thanlength, max(VC.Isizeflag) flagsize, VC.finished_type_id I_FINISHED_Type_ID,
                     '' Remark, '' ItemRemark, 0 IRate, 0 Iweight, VF.ITEM_FINISHED_ID FinishedID  
                     FROM V_ConsumptionQtyAndPurchaseQtyAgni VC
@@ -3630,7 +3696,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                     --LEFT JOIN DefinePurchaseItemUserWise b(Nolock) ON b.ITEM_FINISHED_ID = vc.finishedid And b.OrderID = VC.OrderID 
                     Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @" --And b.UserID = " + Session["varuserid"] + @"
                     Group by VF.ITEM_FINISHED_ID, VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShadeColorName, VF.ShapeName,VF.Item_Finished_Id, VF.Qualityid,
-                    VF.Colorid, VF.designid, VF.shapeid, VF.shadecolorid, VF.category_id, VF.item_id, VF.sizeid, VC.finished_type_id, VC.Unitid 
+                    VF.Colorid, VF.designid, VF.shapeid, VF.shadecolorid, VF.category_id, VF.item_id, VF.sizeid, VC.finished_type_id, VC.Unitid ,oshadeid ,vf.MasterCompanyId
                     Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
                     Order By VF.Category_Name + '  ' + VF.ITEM_NAME + '  ' + VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + VF.ShadeColorName + '  ' + VF.ShapeName";
                 }
@@ -4102,6 +4168,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
     //        e.Row.CssClass = "alternate";
     //}
     decimal TotalQty = 0;
+    decimal TotalextraQty = 0;
     decimal TotalAmt = 0;
     decimal TotalWeight = 0;
     protected void gddetail_RowDataBound2(object sender, GridViewRowEventArgs e)
@@ -4110,6 +4177,8 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         {
             TextBox txtQty = (TextBox)e.Row.FindControl("TXTQTY1");
             TotalQty += Convert.ToDecimal(txtQty.Text);
+            TextBox txtextraQty = (TextBox)e.Row.FindControl("TXTextraQTY");
+            TotalextraQty += Convert.ToDecimal(string.IsNullOrEmpty(txtextraQty.Text) ? "0" : txtextraQty.Text);
             Label lblTotalAmt = (Label)e.Row.FindControl("lblAmount");
             TotalAmt += Convert.ToDecimal(lblTotalAmt.Text);
             TextBox txtWeight = (TextBox)e.Row.FindControl("TXTweig1");
@@ -4123,6 +4192,9 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         {
             Label lblTotalQty = (Label)e.Row.FindControl("lblTotalQty");
             lblTotalQty.Text = TotalQty.ToString();
+            Label lblextraTotalQty = (Label)e.Row.FindControl("lblextraTotalQty");
+            lblextraTotalQty.Text = TotalextraQty.ToString();
+            
             Label lblTotalAmount = (Label)e.Row.FindControl("lblTotalAmount");
             lblTotalAmount.Text = TotalAmt.ToString();
             Label lblTotalWeight = (Label)e.Row.FindControl("lblTotalWeight");
@@ -4179,6 +4251,20 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             ddCatagory.SelectedValue = category;
             ddlcategorycange();
             ddlcategorychange1();
+            if (Session["varCompanyId"].ToString() == "44")
+            {
+                if (category == "10")
+                {
+                    tdextra.Visible = true;
+
+                }
+                else
+                {
+
+                    tdextra.Visible = false;
+                }
+            }
+
         }
         if (dditemname.Visible == true)
         {

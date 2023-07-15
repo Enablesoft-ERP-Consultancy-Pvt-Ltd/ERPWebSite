@@ -410,12 +410,7 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
                 }
 
 
-                ////                qry = @"SELECT vo.empname,vo.pindentissueid,vo.finishedid,vo.item_description as description,qty as orderqty,vo.orderdate,vo.recdate,vo.recqty,
-                ////                    '" + TxtFRDate.Text + "' FromDate,'" + TxtTODate.Text + @"' as ToDate,vo.CanQty OrdercanQty,vo.ReturnDate,vo.ReturnChallan,vo.qtyreturn,vo.PO,
-                ////                    vo.Localorder,vo.customercode,vo.deliverydate,vo.rate,vo.LshortPercentage,vo.pindentissuetranid,vo.Category_name,vo.Status,Vo.colour,
-                ////                    vo.Recqty_beforeRetnqty, IsNull(vo.GATEINNO, '') GateInNo, vo.OrderID, vo.CustomerOrderNo 
-                ////                    From v_purchase_emp_order_wise vo inner join V_FinishedItemDetail vf on vo.finishedid=vf.ITEM_FINISHED_ID
-                ////                    where 1 =1 ";
+                
                 if (ChkForDate.Checked == true)
                 {
                     qry = qry + " And vo.orderdate >= '" + TxtFRDate.Text + "' and vo.orderdate <='" + TxtTODate.Text + "'";
@@ -2372,25 +2367,26 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
             sht.Range("F3").Value = "Item Name";
             sht.Range("G3").Value = "Rate";
             sht.Range("H3").Value = "PO Qty";
+            sht.Range("I3").Value = "Extra Qty";
             sht.Range("G3:H3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-            sht.Range("I3").Value = "Delv Date";
-            sht.Range("J3").Value = "CanQty/Date";
-            sht.Range("K3").Value = "RecDate";
+            sht.Range("J3").Value = "Delv Date";
+            sht.Range("K3").Value = "CanQty/Date";
+            sht.Range("L3").Value = "RecDate";
 
-            sht.Range("L3").Value = "ChallanNo";
+            sht.Range("M3").Value = "ChallanNo";
 
-            sht.Range("M3").Value = "LotNo";
-            sht.Range("N3").Value = "Bill No";
+            sht.Range("N3").Value = "LotNo";
+            sht.Range("O3").Value = "Bill No";
 
-            sht.Range("O3").Value = "Rec Qty";
-            sht.Range("O3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-            sht.Range("P3").Value = "Ret Date";
-            sht.Range("Q3").Value = "Ret Qty";
-            sht.Range("R3").Value = "Pending Qty";
-            sht.Range("S3").Value = "Receive Remark";
-            sht.Range("T3").Value = "Order Remark";
-            sht.Range("U3").Value = "Order No.";
-            sht.Range("V3").Value = "Customer Code";
+            sht.Range("P3").Value = "Rec Qty";
+            sht.Range("P3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("Q3").Value = "Ret Date";
+            sht.Range("R3").Value = "Ret Qty";
+            sht.Range("S3").Value = "Pending Qty";
+            sht.Range("T3").Value = "Receive Remark";
+            sht.Range("U3").Value = "Order Remark";
+            sht.Range("V3").Value = "Order No.";
+            sht.Range("W3").Value = "Customer Code";
 
             //if (Session["VarCompanyNo"].ToString() == "21")
             //{
@@ -2438,40 +2434,41 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
                     sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["Description"].ToString() + ds1.Tables[0].Rows[i]["Colour"]);
                     sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Rate"]);
                     sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["Orderqty"]);
-                    sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Deliverydate"]);
-                    sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Ordercanqty"]);
-                    sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Recdate"]);
+                    sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["extraqty"]);
+                    sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Deliverydate"]);
+                    sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Ordercanqty"]);
+                    sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["Recdate"]);
 
-                    sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["ChallanNo"]);
+                    sht.Range("M" + row).SetValue(ds1.Tables[0].Rows[i]["ChallanNo"]);
 
-                    sht.Range("M" + row).SetValue(ds1.Tables[0].Rows[i]["LotNo"]);
-                    sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["BillNo1"]);
+                    sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["LotNo"]);
+                    sht.Range("O" + row).SetValue(ds1.Tables[0].Rows[i]["BillNo1"]);
 
-                    sht.Range("O" + row).SetValue(Convert.ToDecimal(ds1.Tables[0].Rows[i]["Recqty"]) + Convert.ToDecimal(ds1.Tables[0].Rows[i]["Qtyreturn"]));
-                    sht.Range("P" + row).SetValue(ds1.Tables[0].Rows[i]["Returnchallan"]);
-                    sht.Range("Q" + row).SetValue(ds1.Tables[0].Rows[i]["Qtyreturn"]);
+                    sht.Range("P" + row).SetValue(Convert.ToDecimal(ds1.Tables[0].Rows[i]["Recqty"]) + Convert.ToDecimal(ds1.Tables[0].Rows[i]["Qtyreturn"]));
+                    sht.Range("Q" + row).SetValue(ds1.Tables[0].Rows[i]["Returnchallan"]);
+                    sht.Range("R" + row).SetValue(ds1.Tables[0].Rows[i]["Qtyreturn"]);
                     //sht.Range("O" + row).SetValue("");
                     if (i == 0)
                     {
-                        sht.Range("R" + row).FormulaA1 = "=H" + row + '+' + "$Q$" + row + '-' + "$O$" + row;
+                        sht.Range("S" + row).FormulaA1 = "=H" + row + '+' + "$Q$" + row + '-' + "$O$" + row;
                     }
                     else
                     {
-                        sht.Range("R" + row).FormulaA1 = "=R" + (row - 1) + '+' + "$Q$" + row + '-' + "$O$" + row;
+                        sht.Range("S" + row).FormulaA1 = "=R" + (row - 1) + '+' + "$Q$" + row + '-' + "$O$" + row;
                     }
-                    sht.Range("S" + row).SetValue(ds1.Tables[0].Rows[i]["PurchaseReceiveItemRemark"]);
-                    sht.Range("T" + row).SetValue(ds1.Tables[0].Rows[i]["PurchaseOrderMasterRemark"]);
-                    sht.Range("U" + row).SetValue(ds1.Tables[0].Rows[i]["ORDERNO"]);
-                    sht.Range("V" + row).SetValue(ds1.Tables[0].Rows[i]["customercode"]);
+                    sht.Range("T" + row).SetValue(ds1.Tables[0].Rows[i]["PurchaseReceiveItemRemark"]);
+                    sht.Range("U" + row).SetValue(ds1.Tables[0].Rows[i]["PurchaseOrderMasterRemark"]);
+                    sht.Range("V" + row).SetValue(ds1.Tables[0].Rows[i]["ORDERNO"]);
+                    sht.Range("W" + row).SetValue(ds1.Tables[0].Rows[i]["customercode"]);
 
-                    if (Session["VarCompanyNo"].ToString() == "21")
-                    {
-                        sht.Range("U" + row).Value = ds1.Tables[0].Rows[i]["GateInNo"];
-                    }
-                    else
-                    {
-                        sht.Range("U" + row).Value = "";
-                    }
+                    //if (Session["VarCompanyNo"].ToString() == "21")
+                    //{
+                    //    sht.Range("U" + row).Value = ds1.Tables[0].Rows[i]["GateInNo"];
+                    //}
+                    //else
+                    //{
+                    //    sht.Range("U" + row).Value = "";
+                    //}
 
                     row = row + 1;
                 }

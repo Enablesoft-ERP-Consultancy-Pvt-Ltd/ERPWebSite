@@ -157,7 +157,7 @@
                                             <asp:TemplateField HeaderText="Chk Reject">
                                                 <ItemTemplate>
                                                     <asp:DropDownList ID="DDReject" runat="server" CssClass="dropdown">
-                                                        <asp:ListItem Value="1">Issue</asp:ListItem>
+                                                        <asp:ListItem Value="1">Re-Work</asp:ListItem>
                                                         <asp:ListItem Value="2">Rejected</asp:ListItem>
                                                     </asp:DropDownList>
                                                 </ItemTemplate>

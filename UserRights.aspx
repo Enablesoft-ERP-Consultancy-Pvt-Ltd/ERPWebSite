@@ -103,6 +103,24 @@
                 }
             }
         }
+        function AllEmpVendor() {
+            if (document.getElementById('CPH_Form_ChkEmpVendor').checked == true) {
+                var gvcheck = document.getElementById('CPH_Form_ChkForEmpVendor');
+                var i;
+                for (i = 0; i < gvcheck.rows.length; i++) {
+                    var inputs = gvcheck.rows[i].getElementsByTagName('input');
+                    inputs[0].checked = true;
+                }
+            }
+            else {
+                var gvcheck = document.getElementById('CPH_Form_ChkForEmpVendor');
+                var i;
+                for (i = 0; i < gvcheck.rows.length; i++) {
+                    var inputs = gvcheck.rows[i].getElementsByTagName('input');
+                    inputs[0].checked = false;
+                }
+            }
+        }
         function AllBranch() {
             if (document.getElementById('CPH_Form_ChkAllBranch').checked == true) {
                 var gvcheck = document.getElementById('CPH_Form_ChkForBranch');
@@ -274,7 +292,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div style="overflow: scroll; height: 150px; width: 250PX">
+                                        <div style="overflow: scroll; height: 65px; width: 250PX">
                                             <asp:CheckBoxList ID="ChkForBranch" CssClass="checkboxbold" runat="server">
                                             </asp:CheckBoxList>
                                         </div>
@@ -297,6 +315,26 @@
                                     </td>
                                 </tr>
                             </table>
+
+                            
+                            <table>
+                                <tr>
+                                    <td>
+                                        <asp:CheckBox ID="ChkEmpVendor" runat="server" Text=" Chk For All Vendor" ForeColor="Red"
+                                            CssClass="checkboxbold" onclick="return AllEmpVendor();" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="overflow: scroll; height: 140px; width: 250PX">
+                                            <asp:CheckBoxList ID="ChkForEmpVendor" CssClass="checkboxbold" runat="server">
+                                            </asp:CheckBoxList>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+
                         </td>
                         <td>
                             <table>

@@ -26,7 +26,7 @@
             window.location.href = "../../main.aspx";
         }
         function NewForm() {
-            window.location.href = "PurchageIndentIssue.aspx";
+            window.location.href = "PurchageIndentIssuenew.aspx";
         }
         function isNumberKey(evt) {
             var charCode = (evt.which) ? evt.which : event.keyCode
@@ -673,6 +673,15 @@
                                             ErrorMessage="please Enter Date" ControlToValidate="txtqty" ValidationGroup="f1"
                                             ForeColor="Red">*</asp:RequiredFieldValidator>--%>
                                     </td>
+                                     <td class="tdstyle" id="tdextra" runat="server" visible="false">
+                                        <asp:Label ID="Label66" runat="server" Text="Extra Qty." CssClass="labelbold"></asp:Label>
+                                        <br />
+                                        <asp:TextBox ID="txtextraqty" runat="server" Width="90px" OnTextChanged="txtextraqty_TextChanged"
+                                            CssClass="textb" AutoPostBack="True" BackColor="#8B7B8B"></asp:TextBox>
+                                        <%--  <asp:RequiredFieldValidator SetFocusOnError="true" ID="RequiredFieldValidator2" runat="server"
+                                            ErrorMessage="please Enter Date" ControlToValidate="txtqty" ValidationGroup="f1"
+                                            ForeColor="Red">*</asp:RequiredFieldValidator>--%>
+                                    </td>
                                     <td id="tdrate" runat="server" class="tdstyle">
                                         <asp:Label ID="Label20" runat="server" Text="Rate" CssClass="labelbold"></asp:Label>
                                         <br />
@@ -1150,6 +1159,18 @@
                                 <HeaderStyle Width="80px" />
                                 <FooterTemplate>
                                     <asp:Label ID="lblTotalQty" runat="server" />
+                                </FooterTemplate>
+                                <FooterStyle BackColor="Gray" />
+                            </asp:TemplateField>
+                             <asp:TemplateField HeaderText="Extra Qty">
+                                <ItemTemplate>
+                                    <asp:TextBox ID="TXTextraQTY" runat="server" Enabled="false" Width="70px" Text='<%# Bind("extraqty") %>' 
+                                        ></asp:TextBox>
+                                   <%-- <asp:Label ID="lblextraqty" runat="server"  Text='<%# Bind("extraqty") %>' />--%>
+                                </ItemTemplate>
+                                <HeaderStyle Width="80px" />
+                                <FooterTemplate>
+                                    <asp:Label ID="lblextraTotalQty" runat="server" />
                                 </FooterTemplate>
                                 <FooterStyle BackColor="Gray" />
                             </asp:TemplateField>
