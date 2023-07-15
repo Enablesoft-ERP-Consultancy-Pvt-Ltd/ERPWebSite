@@ -180,7 +180,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         TxtReceiveQty.Enabled = true;
                         TxtReceiveQty.Text = "200";
                         DGStockDetail.PageSize = 200;
-                    }  
+                    }
+  
                     break;
                 default:
                     break;

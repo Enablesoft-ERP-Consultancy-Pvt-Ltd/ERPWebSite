@@ -312,6 +312,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             if (Session["varCompanyId"].ToString() == "46")
             {
                 DDCalType.SelectedValue = "0";
+                hnordercaltype.Value = "0";
             }
             //if (Session["varCompanyId"].ToString() == "43")
             //{
