@@ -132,6 +132,18 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="Table8">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IssueOrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="IssueReceiveDate" type="xs:string" minOccurs="0" />
+              <xs:element name="MapStencilType" type="xs:string" minOccurs="0" />
+              <xs:element name="IssueReceiveQty" type="xs:int" minOccurs="0" />
+              <xs:element name="MSStockNo" type="xs:string" minOccurs="0" />
+              <xs:element name="MapStatus" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
   </xs:element>
