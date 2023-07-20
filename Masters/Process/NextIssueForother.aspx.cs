@@ -180,7 +180,10 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                             btnsavegrid.Visible = true;
                             TDCustomerCode.Visible = true;
                             TDCustomerOrderNo.Visible = true;
-                            ChkForWithoutRate.Visible = true;                            
+                            ChkForWithoutRate.Visible = true;
+                            TxtIssueQty.Enabled = true;
+                            TxtIssueQty.Text = "200";
+                            DGStockDetail.PageSize = 200;
                             break;
                         default:
                             btnsavegrid.Visible = false;
