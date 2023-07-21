@@ -147,6 +147,23 @@
             });
         }
     </script>
+    <script type="text/javascript" language="javascript">
+        //There's a bug in Microsoft's Ajax script that stops the modal popups from working
+        //This overrides the the code that causes the error
+        Sys.UI.Point = function Sys$UI$Point(x, y) {
+
+            x = Math.round(x);
+            y = Math.round(y);
+
+            var e = Function._validateParams(arguments, [
+                { name: "x", type: Number, integer: true },
+                { name: "y", type: Number, integer: true }
+            ]);
+            if (e) throw e;
+            this.x = x;
+            this.y = y;
+        }
+    </script>
     <asp:UpdatePanel ID="upd1" runat="server">
         <ContentTemplate>
             <script type="text/javascript" language="javascript">
