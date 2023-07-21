@@ -12,6 +12,7 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
 {
     static int MasterCompanyId;
     static string TempLotNo = "";
+    static string TempSelectedGodownId = "0";
     protected void Page_Load(object sender, EventArgs e)
     {
         MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
@@ -610,6 +611,7 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
     protected void ddlshade_SelectedIndexChanged(object sender, EventArgs e)
     {
         TempLotNo = "";
+        TempSelectedGodownId = "0";
         fill_qty(sender);
     }
     protected void ddgodown_SelectedIndexChanged(object sender, EventArgs e)
@@ -1059,6 +1061,7 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
                 arr[34].Value = txtCGSTSGST.Text == "" ? "0" : txtCGSTSGST.Text;
 
                 TempLotNo = ddlotno.SelectedValue;
+                TempSelectedGodownId =  ddgodown.SelectedValue;
 
                 if (TdDDItemDesignName.Visible == true)
                 {
@@ -1742,7 +1745,23 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
                 }
                 else
                 {
-                    ddgodown.SelectedIndex = 1;
+
+                    if (Session["VarCompanyNo"].ToString() == "43")
+                    {
+                        if (TempSelectedGodownId != "")
+                        {
+                            ddgodown.SelectedValue = TempSelectedGodownId;
+                        }
+                        else
+                        {
+                            ddgodown.SelectedIndex = 1;
+                        }
+                    }
+                    else
+                    {
+                        ddgodown.SelectedIndex = 1;
+                    }
+                    
                     if (sender != null)
                     {
                         ddgodown_SelectedIndexChanged(sender, new EventArgs());

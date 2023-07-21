@@ -525,7 +525,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
     protected void ForAllClick()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "30")
+        if (Session["varCompanyId"].ToString() == "30" || Session["varCompanyId"].ToString() == "38")
         {
             str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName,U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
                         a.IssueDate, OM.CustomerOrderNo,  
@@ -667,7 +667,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
     protected void ForIssueClick()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "30")
+        if (Session["varCompanyId"].ToString() == "30" || Session["varCompanyId"].ToString() == "38")
         {
             str = @"SELECT CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, PRM.ISSUEORDERID FOLIONO, EI.EmpName, U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
                         a.IssueDate, OM.CustomerOrderNo, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 
@@ -821,7 +821,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
     protected void ForReceiveClick()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "30")
+        if (Session["varCompanyId"].ToString() == "30" || Session["varCompanyId"].ToString() == "38")
         {
             str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName, U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
                     a.ReceiveDate, OM.CustomerOrderNo,OM.LocalOrder, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 

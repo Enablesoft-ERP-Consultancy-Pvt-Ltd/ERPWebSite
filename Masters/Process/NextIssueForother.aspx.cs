@@ -130,9 +130,9 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                 case 30:
                     lblStockCarpetNo.Text = "Enter Carpet No";
                     break;
-                
+
                 case 44:
-                      DIVStockDetail.Visible = true;
+                    DIVStockDetail.Visible = true;
                     btngetstock.Visible = true;
                     btnsavegrid.Visible = true;
                     TDCustomerCode.Visible = true;
@@ -181,6 +181,9 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                             TDCustomerCode.Visible = true;
                             TDCustomerOrderNo.Visible = true;
                             ChkForWithoutRate.Visible = true;
+                            TxtIssueQty.Enabled = true;
+                            TxtIssueQty.Text = "200";
+                            DGStockDetail.PageSize = 200;
                             break;
                         default:
                             btnsavegrid.Visible = false;
@@ -1302,7 +1305,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                     }
                 }
             }
-        }        
+        }
     }
     protected void DGDetail_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
@@ -2158,14 +2161,14 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                 //if (dsORDER.Tables[0].Rows[0]["orderunitid"].ToString() == "1")
                 //{
                 if (DDUnit.Items.FindByValue(dsORDER.Tables[0].Rows[0]["orderunitid"].ToString()) != null)
-                    {
-                        DDUnit.SelectedValue = dsORDER.Tables[0].Rows[0]["orderunitid"].ToString();
-                    }
-               // }
+                {
+                    DDUnit.SelectedValue = dsORDER.Tables[0].Rows[0]["orderunitid"].ToString();
+                }
+                // }
             }
 
         }
-    
+
     }
     protected void TxtIssueQty_TextChanged(object sender, EventArgs e)
     {

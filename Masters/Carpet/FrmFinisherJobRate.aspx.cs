@@ -61,7 +61,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 TDCustomercode.Visible = true;
                 tdShape.Visible = false;
             }
-            if (MasterCompanyId == 16 || MasterCompanyId == 28 || MasterCompanyId == 42 || MasterCompanyId == 38)
+            if (MasterCompanyId == 16 || MasterCompanyId == 28 || MasterCompanyId == 42 || MasterCompanyId == 38 || MasterCompanyId == 46)
             {
                 TDEmployeeName.Visible = true;
             }         

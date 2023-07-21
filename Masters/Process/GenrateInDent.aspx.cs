@@ -1179,6 +1179,9 @@ public partial class Masters_Process_GenrateInDent : System.Web.UI.Page
             case "44":
                 Session["ReportPath"] = "Reports/GenrateIndentAgni.rpt";
                 break;
+            case "38":
+                Session["ReportPath"] = "Reports/GenrateIndentVikramKhamaria.rpt";
+                break;
             default:
                 Session["ReportPath"] = "Reports/GenrateIndent.rpt";
                 break;

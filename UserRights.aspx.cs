@@ -29,6 +29,11 @@ public partial class UserRigets : System.Web.UI.Page
             UtilityModule.NewChkBoxListFill(ref ChkGodown, "select GodownId,GodownName from GodownMaster Where MasterCompanyId=" + Session["varCompanyId"] + "  Order by  GodownName");
             UtilityModule.NewChkBoxListFill(ref ChkForBranch, "Select ID, BranchName From BRANCHMASTER(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + " Order By BranchName ");
             UtilityModule.NewChkBoxListFill(ref ChkForCustomerCode, "Select CustomerID,CONCAT(CustomerCode,'(',customername,')') as CustomerCode  From CustomerInfo(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + " and isnull(CustomerCode,'')<>'' Order By CustomerCode");
+            UtilityModule.NewChkBoxListFill(ref ChkForEmpVendor, @"Select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname 
+            From empinfo EI(Nolock) 
+            join Department DM(Nolock) on EI.Departmentid=DM.Departmentid 
+            Where EI.MasterCompanyId = " + Session["varCompanyId"] + @" and EI.blacklist = 0  AND DM.Departmentname = 'PURCHASE' 
+            Group by EI.empid,EI.empname,EI.EmpCode   Order By EI.empname ");
 
             switch (Session["varcompanyNo"].ToString())
             {
@@ -117,9 +122,34 @@ public partial class UserRigets : System.Web.UI.Page
         CheckedCheckBoxChkGodown();
         CheckedCheckBoxChkForBranch();
         CheckedCheckBoxChkForCustomer();
-
+        CheckedCheckBoxChkForEmpVendor();
         filltree();
     }
+
+    protected void CheckedCheckBoxChkForEmpVendor()
+    {
+        for (int c = 0; c < ChkForEmpVendor.Items.Count; c++)
+        {
+            ChkForEmpVendor.Items[c].Selected = false;
+        }
+        string str = "Select Distinct EmpID From VendorUser(Nolock) Where UserId=" + DDUserName.SelectedValue;
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
+            {
+                for (int i = 0; i < ChkForEmpVendor.Items.Count; i++)
+                {
+                    if (ChkForEmpVendor.Items[i].Value == ds.Tables[0].Rows[j]["EmpID"].ToString())
+                    {
+                        ChkForEmpVendor.Items[i].Selected = true;
+                    }
+                }
+            }
+        }
+    }
+
+
     protected void CheckedCheckBoxChkForCustomer()
     {
         for (int c = 0; c < ChkForCustomerCode.Items.Count; c++)
@@ -350,8 +380,6 @@ public partial class UserRigets : System.Web.UI.Page
                     From FormName FN
                     JOIN UserRights UR(Nolock) ON UR.MenuId = FN.MenuID And UR.UserID = " + DDUserName.SelectedValue + @" 
                     Where DisplayName='" + nd.Text + "'";
-               
-                    
 
                 DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str );
                 if (ds1.Tables[0].Rows.Count > 0)
@@ -516,6 +544,7 @@ public partial class UserRigets : System.Web.UI.Page
 
             string str5 = null;  //// For Branch 
             string str6 = null;  //// For Customer 
+            string str7 = null;  //// For Emp Vendor
 
             for (int i = 0; i < n; i++)
             {
@@ -570,6 +599,15 @@ public partial class UserRigets : System.Web.UI.Page
                     str6 = str6 == null ? ChkForCustomerCode.Items[j].Value : str6 + "," + ChkForCustomerCode.Items[j].Value;
                 }
             }
+            //EmpVendor authentication
+            for (int j = 0; j < ChkForEmpVendor.Items.Count; j++)
+            {
+                if (ChkForEmpVendor.Items[j].Selected)
+                {
+                    str7 = str7 == null ? ChkForEmpVendor.Items[j].Value : str7 + "," + ChkForEmpVendor.Items[j].Value;
+                }
+            }
+
             string Str = "Delete From UserRightsProcess where UserId=" + DDUserName.SelectedValue + " And CompanyId=" + Session["varCompanyId"] + @"
                           Delete From UserRights_Category where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
                           Delete From Company_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
@@ -577,6 +615,7 @@ public partial class UserRigets : System.Web.UI.Page
                           Delete From Godown_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
                           Delete From BranchUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
                           Delete From CustomerUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
+                          Delete From VendorUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
 
                           Insert into UserRightsProcess select distinct " + DDUserName.SelectedValue + "," + Session["varCompanyId"] + ",*," + Session["varuserid"] + " from Split('" + str + @"',',')
                           Insert into UserRights_Category select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str1 + @"',',')
@@ -584,7 +623,8 @@ public partial class UserRigets : System.Web.UI.Page
                           Insert into Units_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str3 + @"',',')
                           Insert into Godown_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str4 + @"',',')
                           Insert into BranchUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str5 + @"',',')
-                          Insert into CustomerUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str6 + @"',',')";
+                          Insert into CustomerUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str6 + @"',',')
+                          Insert into VendorUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str7 + @"',',')";
 
 
             SqlHelper.ExecuteNonQuery(con, CommandType.Text, Str);

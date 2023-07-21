@@ -36,17 +36,17 @@
               <xs:element name="MasterCompanyId" type="xs:int" minOccurs="0" />
               <xs:element name="ProcessName" type="xs:string" minOccurs="0" />
               <xs:element name="FolioChallanNo" type="xs:string" minOccurs="0" />
-              <xs:element name="GirahArea" type="xs:decimal" minOccurs="0" />
-              <xs:element name="GrandTotalGirahAreaNew" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GirahArea" type="xs:int" minOccurs="0" />
+              <xs:element name="GrandTotalGirahAreaNew" type="xs:int" minOccurs="0" />
               <xs:element name="ExportSize" type="xs:string" minOccurs="0" />
-              <xs:element name="TOTALWEIGHT" type="xs:double" minOccurs="0" />
+              <xs:element name="TOTALWEIGHT" type="xs:int" minOccurs="0" />
               <xs:element name="CHECKPCS" type="xs:int" minOccurs="0" />
-              <xs:element name="CHECKWEIGHT" type="xs:double" minOccurs="0" />
+              <xs:element name="CHECKWEIGHT" type="xs:int" minOccurs="0" />
               <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerQuality" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
-              <xs:element name="ConsmpQty" type="xs:double" minOccurs="0" />
-              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="ConsmpQty" type="xs:int" minOccurs="0" />
+              <xs:element name="Rate" type="xs:int" minOccurs="0" />
               <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
               <xs:element name="QUALITYNAME1" type="xs:string" minOccurs="0" />
               <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
@@ -55,6 +55,7 @@
               <xs:element name="WIDTH" type="xs:string" minOccurs="0" />
               <xs:element name="LENGTH" type="xs:string" minOccurs="0" />
               <xs:element name="UNITNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="BATCHCHALLANNO" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
@@ -83,8 +84,8 @@
             <xs:sequence>
               <xs:element name="ItemName" type="xs:string" minOccurs="0" />
               <xs:element name="QualityName" type="xs:string" minOccurs="0" />
-              <xs:element name="Qty" type="xs:double" minOccurs="0" />
-              <xs:element name="Loss" type="xs:double" minOccurs="0" />
+              <xs:element name="Qty" type="xs:int" minOccurs="0" />
+              <xs:element name="Loss" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
