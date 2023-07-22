@@ -1479,7 +1479,7 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
             sht.Range("E3").SetValue("Tag No.");
             sht.Range("F3").SetValue("Bin No.");
             sht.Range("G3").SetValue("Godown");
-            sht.Range("H3").SetValue("Stock Qty(Kgs.)");
+            sht.Range("H3").SetValue("Stock Qty");
             if (chkwithpurchasedetail.Checked == true)
             {
                 sht.Range("I3").SetValue("Vendor Name");

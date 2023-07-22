@@ -126,12 +126,12 @@
                                 <asp:CheckBox ID="ChkForCushionTypeItem" CssClass="checkboxbold" runat="server" Text="Cushion Type Item" />
                             </td>
                             <td class="tdstyle">
-                                <asp:CheckBox ID="ChkForSizeWiseConsumption" CssClass="checkboxbold" runat="server"
-                                    Text="For Size Wise Consumption" />
+                                <asp:CheckBox ID="ChkForAllDesignAllColorAndSizeWiseConsumption" CssClass="checkboxbold" runat="server"
+                                Text="For All Design All Color And Size Wise Consumption" />
                             </td>
                             <td class="tdstyle">
-                                <asp:CheckBox ID="ChkForAllDesignColorSizeWiseConsumption" CssClass="checkboxbold" runat="server"
-                                    Text="For All Design Color Size Wise Consumption" />
+                                <asp:CheckBox ID="ChkForAllDesignAllColorAllSizeWiseConsumption" CssClass="checkboxbold" runat="server"
+                                Text="For All Design All Color All Size Wise Consumption" />
                             </td>
                         </tr>
                         <tr>

@@ -1165,18 +1165,21 @@ public partial class Masters_Order_Order : System.Web.UI.Page
     protected void enabledisbalesizetype()
     {
         DDsizetype.Enabled = true;
-        switch (DDOrderUnit.SelectedValue.ToString())
+        if (Session["varcompanyId"].ToString() != "45")
         {
-            case "1":
-                DDsizetype.Enabled = false;
-                DDsizetype.SelectedValue = "1";
-                break;
-            case "2":
-                DDsizetype.Enabled = false;
-                DDsizetype.SelectedValue = "0";
-                break;
-            default:
-                break;
+            switch (DDOrderUnit.SelectedValue.ToString())
+            {
+                case "1":
+                    DDsizetype.Enabled = false;
+                    DDsizetype.SelectedValue = "1";
+                    break;
+                case "2":
+                    DDsizetype.Enabled = false;
+                    DDsizetype.SelectedValue = "0";
+                    break;
+                default:
+                    break;
+            }
         }
     }
     //*************************TO Fill Item Name in In DropDown*******************************************************************
