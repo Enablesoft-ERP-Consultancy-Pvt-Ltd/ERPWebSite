@@ -29,7 +29,7 @@
         window.open("../../ReportViewer.aspx");
     }
     function KeyDownHandler(btn) {
-      
+
         var objParent = window.opener;
         if (objParent != null) {
             btn = "usercontrol_btnsearch";
@@ -71,28 +71,28 @@
                         <asp:Label ID="lbldesignname" runat="server" Text="DesignName" Font-Bold="true"></asp:Label>
                     </td>
                     <td>
-                      <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
+                        <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
                         <asp:TextBox ID="txtDesign" runat="server" CssClass="textb" ValidationGroup="a" Width="200px"></asp:TextBox>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Please Enter Design Name"
                             ControlToValidate="txtDesign" ValidationGroup="a" ForeColor="Red">*</asp:RequiredFieldValidator>
-                            <cc1:AutoCompleteExtender ID="txtDesign_AutoCompleteExtender" runat="server" BehaviorID="SrchAutoComplete1"
-                                                            CompletionInterval="20" Enabled="True" ServiceMethod="GetDesignName" CompletionSetCount="20"
-                                                            OnClientItemSelected="DesignSelected" ServicePath="~/Autocomplete.asmx" TargetControlID="txtDesign"
-                                                            UseContextKey="True" ContextKey="0" MinimumPrefixLength="2" DelimiterCharacters="">
-                                                        </cc1:AutoCompleteExtender>
+                        <cc1:AutoCompleteExtender ID="txtDesign_AutoCompleteExtender" runat="server" BehaviorID="SrchAutoComplete1"
+                            CompletionInterval="20" Enabled="True" ServiceMethod="GetDesignName" CompletionSetCount="20"
+                            OnClientItemSelected="DesignSelected" ServicePath="~/Autocomplete.asmx" TargetControlID="txtDesign"
+                            UseContextKey="True" ContextKey="0" MinimumPrefixLength="2" DelimiterCharacters="">
+                        </cc1:AutoCompleteExtender>
                     </td>
                 </tr>
                 <tr>
-                     <td class="tdstyle">
+                    <td class="tdstyle">
                         <asp:Label ID="lblDesignCode" runat="server" Text="DesignCode" Font-Bold="true"></asp:Label>
                     </td>
                     <td>
-                        <asp:TextBox ID="txtDesignCode" runat="server" CssClass="textb" ValidationGroup="a" Width="200px"></asp:TextBox>
-                      <%--  <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="Please Enter Design Code"
+                        <asp:TextBox ID="txtDesignCode" runat="server" CssClass="textb" ValidationGroup="a"
+                            Width="200px"></asp:TextBox>
+                        <%--  <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ErrorMessage="Please Enter Design Code"
                             ControlToValidate="txtDesignCode" ValidationGroup="a" ForeColor="Red">*</asp:RequiredFieldValidator>--%>
                     </td>
                 </tr>
-
                 <tr>
                     <td colspan="2">
                         &nbsp;
@@ -144,9 +144,21 @@
                                             <asp:Label ID="lbldesign" Text='<%#Bind("DesignName") %>' runat="server" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
-                                     <asp:TemplateField HeaderText="Design Code">
+                                    <asp:TemplateField HeaderText="Design Code">
                                         <ItemTemplate>
                                             <asp:Label ID="lblDesignCode" Text='<%#Bind("DesignCode") %>' runat="server" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Enable/Disable" Visible="false">
+                                        <ItemTemplate>
+                                            <asp:LinkButton ID="lnkDesign_ED" Text='<%#Bind("Status") %>' runat="server" OnClick="lnkDesign_ED"
+                                                OnClientClick="return confirm('Do you want to Enable_Disable Design')" />
+                                        </ItemTemplate>
+                                        <ItemStyle HorizontalAlign="Center" />
+                                    </asp:TemplateField>
+                                    <asp:TemplateField Visible="false">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblDesignenable_disable" Text='<%#Bind("Enable_Disable") %>' runat="server" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>

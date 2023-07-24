@@ -68,7 +68,8 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select DesignId as Sr_No,DesignName  as Designname,isnull(DesignCode,'') as DesignCode from Design where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = @"select DesignId as Sr_No,DesignName  as Designname,isnull(DesignCode,'') as DesignCode, case when Enable_Disable=1 Then 'Disable' Else 'Enable' ENd as Status,Enable_Disable
+            from Design where MasterCompanyId=" + Session["varCompanyId"];
             if (txtsearchdesign.Text != "")
             {
                 strsql = strsql + " and Designname like '" + txtsearchdesign.Text + "%'";
@@ -140,6 +141,30 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
             e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
             e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
             e.Row.Attributes["onclick"] = Page.ClientScript.GetPostBackClientHyperlink(this.gdDesign, "select$" + e.Row.RowIndex);
+
+            Label lblDesignenable_disable = (Label)e.Row.FindControl("lblDesignenable_disable");
+            if (lblDesignenable_disable.Text == "0")
+            {
+                e.Row.BackColor = System.Drawing.Color.Red;
+            }
+
+            for (int i = 0; i < gdDesign.Columns.Count; i++)
+            {
+                if (Session["VarCompanyNo"].ToString()=="14")
+                {
+                    if (gdDesign.Columns[i].HeaderText == "Enable/Disable")
+                    {
+                        gdDesign.Columns[i].Visible = true;
+                    }
+                }
+                else
+                {
+                    if (gdDesign.Columns[i].HeaderText == "Enable/Disable")
+                    {
+                        gdDesign.Columns[i].Visible = false;
+                    }
+                }
+            }
 
         }
     }
@@ -329,5 +354,17 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
     protected void gdDesign_Init(object sender, EventArgs e)
     {
         Response.CacheControl = "no-cache";
+    }
+    protected void lnkDesign_ED(object sender, EventArgs e)
+    {
+        LinkButton lnk = sender as LinkButton;
+        if (lnk != null)
+        {
+            GridViewRow gvr = lnk.NamingContainer as GridViewRow;
+            Label lblDesignenable_disable = (Label)gvr.FindControl("lblDesignenable_disable");
+            string updateval = lblDesignenable_disable.Text == "1" ? "0" : "1";
+            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "update Design set Enable_Disable=" + updateval + " where DesignId=" + gdDesign.DataKeys[gvr.RowIndex].Value + "");
+            Fill_Grid();
+        }
     }
 }
