@@ -56,7 +56,8 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
                 Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
-                Order By D.DepartmentName";
+                Order By D.DepartmentName
+select isnull(masterunitid,0) as masterunitid from mastersetting";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -74,6 +75,16 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
 
             UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 4, false, "");
             DDBranchName.Enabled = false;
+            int masterunitid = 0;
+            if (ds != null)
+            {
+                if (ds.Tables[6].Rows.Count > 0)
+                {
+                    masterunitid = Convert.ToInt32( ds.Tables[6].Rows[0]["masterunitid"]);
+                
+                }
+            
+            }
             if (DDBranchName.Items.Count == 0)
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Branch not define for this user!');", true);
@@ -234,15 +245,29 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     txtWeaverIdNoscan.Visible = false;
                     BtnPreviewConsumption.Visible = false;
                     ChkForWithoutRate.Visible = false;
+                    
                     TDLastFolioNo.Visible = false;
                     ChkForSlipPrint.Visible = false;
-                    btnaurai.Visible = true;
-                    btngopalapur.Visible = true;
-                    btnlaharpurunit2.Visible = true;
-                    btnbehadmadhav.Visible = true;
-                    btnshahkulipur.Visible = true;
-                    btnlaharpurunit1.Visible = true;
-                    btngokulpur.Visible = true;
+                    if (masterunitid == 1)
+                    {
+                        btnaurai.Visible = true;
+                        btngopalapur.Visible = true;
+                        btnlaharpurunit2.Visible = true;
+                        btnbehadmadhav.Visible = true;
+                        btnshahkulipur.Visible = true;
+                        btnlaharpurunit1.Visible = true;
+                        btngokulpur.Visible = true;
+                    }
+                    else {
+                        btnaurai.Visible = false;
+                        btngopalapur.Visible = false;
+                        btnlaharpurunit2.Visible = false;
+                        btnbehadmadhav.Visible = false;
+                        btnshahkulipur.Visible = false;
+                        btnlaharpurunit1.Visible = false;
+                        btngokulpur.Visible = false;
+                    
+                    }
                     TDChkForStockNoAttachWithoutMaterialIssue.Visible = true;
                     ChkForStockNoAttachWithoutMaterialIssue.Checked = true;
                     break;
@@ -312,7 +337,6 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             if (Session["varCompanyId"].ToString() == "46")
             {
                 DDCalType.SelectedValue = "0";
-                hnordercaltype.Value = "0";
             }
             //if (Session["varCompanyId"].ToString() == "43")
             //{
@@ -1502,12 +1526,13 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
         //array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
 
         //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
-
+        string SP = string.Empty;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         if (con.State == ConnectionState.Closed)
         {
             con.Open();
         }
+        
         SqlCommand cmd = new SqlCommand("Pro_ForProductionOrder", con);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.CommandTimeout = 300;
@@ -1601,6 +1626,9 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     {
                         Session["rptFileName"] = "~\\Reports\\RptProductionOrderLoomWise.rpt";
                     }
+                    break;
+                case "45":
+                    Session["rptFileName"] = "~\\Reports\\RptProductionOrderLoomWiseStockmws.rpt";                        
                     break;
                 default:
                     if (variable.VarLoomNoGenerated == "1")
