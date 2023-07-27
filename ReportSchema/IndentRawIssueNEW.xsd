@@ -43,11 +43,11 @@
               <xs:element name="localorder" type="xs:string" minOccurs="0" />
               <xs:element name="customerorderno" type="xs:string" minOccurs="0" />
               <xs:element name="Remark" type="xs:string" minOccurs="0" />
+              <xs:element name="Tagno" type="xs:string" minOccurs="0" />
               <xs:element name="GSTIN" type="xs:string" minOccurs="0" />
-              <xs:element name="EMPGSTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpGStno" type="xs:string" minOccurs="0" />
               <xs:element name="BinNo" type="xs:string" minOccurs="0" />
               <xs:element name="UserName" type="xs:string" minOccurs="0" />
-              <xs:element name="reqdate" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
