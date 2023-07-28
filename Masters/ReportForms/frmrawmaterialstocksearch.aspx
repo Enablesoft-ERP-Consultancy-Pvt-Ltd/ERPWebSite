@@ -91,7 +91,9 @@
                         <asp:Button Text="Clear Search" ID="btnnewsearch" CssClass="buttonnorm" runat="server"
                             OnClientClick="return ClickNew();" />
                         <asp:LinkButton ID="lnkshowdetailedreport" CssClass="labelbold" ForeColor="Blue"
-                            Font-Size="Small" Text="Show Detailed Report" runat="server" OnClick="lnkshowdetailedreport_Click" />
+                            Font-Size="Small" Text="Show Report" runat="server" OnClick="lnkshowdetailedreport_Click" /></br>
+                             <asp:LinkButton ID="lnkShowReportNew" CssClass="labelbold" ForeColor="Blue" Visible="false"
+                            Font-Size="Small" Text="Show Report New" runat="server" OnClick="lnkShowReportNew_Click" />
                     </td>
                 </tr>
                 <tr>

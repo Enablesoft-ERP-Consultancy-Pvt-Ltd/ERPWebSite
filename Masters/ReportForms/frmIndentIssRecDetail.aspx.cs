@@ -1265,7 +1265,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                                 case When vf.SizeId>0 then vf.SizeFt else '' End As Description,Sum(Srd.recqty) as Recqty,sum(srd.lossqty) as Lossqty,0 as retqty,
                                 '" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,'' as Localorder,'' as Customerorderno,0 as Lshort,0 as shrinkage,sm.id as prmid,pnm.process_name as Re_process,
                                 SUM(SRD.UNDYEDQTY) AS UNDYEDQTY,Srd.TagNo,'' as CustomerCode,0 as Moisture,'' as CheckedBy,'' as IndentRecRemarks 
-                                ,0 as IssueQtyOnMachine,'' as OrderQuality,GM.GodownName
+                                ,sum(isnull(srd.IssQtyOnMachine,0)) as IssueQtyOnMachine,'' as OrderQuality,GM.GodownName
                                 From SampleDyeingReceivemaster Srm inner join SampleDyeingReceiveDetail srd on srm.ID=srd.Masterid
                                 inner join SampleDyeingmaster sm on srd.issueid=sm.ID
                                 inner join companyinfo ci on srm.companyid=ci.companyid
