@@ -213,6 +213,14 @@
                         <td>
                             <asp:TextBox ID="TxtAreaProdSqYD" runat="server" CssClass="textb" Width="80px" ReadOnly="true"></asp:TextBox>
                         </td>
+                        
+                        <td class="tdstyle">
+                            <asp:Label ID="Label8" runat="server" Text=" Round Ovel Area in Sq.Yd." Font-Bold="true"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="TxtRoundOvelSqYDArea" runat="server" CssClass="textb" Width="80px" ></asp:TextBox>
+                        </td>
+
                     </tr>
                     <tr id="Tr3" runat="server" visible="false">
                         <td class="tdstyle">
@@ -241,6 +249,14 @@
                         <td>
                             <asp:TextBox ID="TxtAreaProdSqMtr" runat="server" CssClass="textb" Width="80px" ReadOnly="true"></asp:TextBox>
                         </td>
+
+                        <td class="tdstyle">
+                            <asp:Label ID="Label22" runat="server" Text=" Round Ovel Area in Sq.Mtr." Font-Bold="true"></asp:Label>
+                        </td>
+                        <td>
+                            <asp:TextBox ID="TxtRoundOvelAreaProdSqMtr" runat="server" CssClass="textb" Width="80px" ></asp:TextBox>
+                        </td>
+
                     </tr>
                     <tr>
                         <td colspan="10" runat="server" align="right">

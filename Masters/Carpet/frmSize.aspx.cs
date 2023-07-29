@@ -565,7 +565,7 @@ public partial class frmSize : CustomPage
                     break;
             }
 
-            SqlParameter[] _arrPara = new SqlParameter[32];
+            SqlParameter[] _arrPara = new SqlParameter[34];
             _arrPara[0] = new SqlParameter("@SizeId", SqlDbType.Int);
             _arrPara[1] = new SqlParameter("@SizeFt", SqlDbType.NVarChar, 50);
             _arrPara[2] = new SqlParameter("@SizeMtr", SqlDbType.NVarChar, 50);
@@ -599,6 +599,8 @@ public partial class frmSize : CustomPage
             _arrPara[29] = new SqlParameter("@ProdAreaFt", SqlDbType.Float);
             _arrPara[30] = new SqlParameter("@ProdAreaMtr", SqlDbType.Float);
             _arrPara[31] = new SqlParameter("@SizeCode", SqlDbType.VarChar, 10);
+            _arrPara[32] = new SqlParameter("@ProdRoundOvelAreaFt", SqlDbType.Float);
+            _arrPara[33] = new SqlParameter("@ProdRoundOvelAreaMtr", SqlDbType.Float);
 
             _arrPara[0].Value = Convert.ToInt32(txtid.Text);
             int VarCompanyNo = Convert.ToInt16(Session["VarcompanyNo"]);
@@ -707,6 +709,9 @@ public partial class frmSize : CustomPage
             _arrPara[29].Value = Convert.ToDouble(TxtAreaProdSqYD.Text);
             _arrPara[30].Value = Convert.ToDouble(TxtAreaProdSqMtr.Text);
             _arrPara[31].Value = txtSizeCode.Text;
+            _arrPara[32].Value = TxtRoundOvelSqYDArea.Text;
+            _arrPara[33].Value = TxtRoundOvelAreaProdSqMtr.Text;
+
             SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_SIZE", _arrPara);
             UnitDependControls();
             txtid.Text = "0";
@@ -774,18 +779,16 @@ public partial class frmSize : CustomPage
             //if size is in used
             if (ds.Tables[1].Rows.Count > 0)
             {
-                if (Session["varcompanyNo"].ToString() != "9")
-                {
-                    txtSizeCode.Text = ds.Tables[0].Rows[0]["SizeCode"].ToString();
-                    lblMessage.Text = "Size is already in used...";
-                    UnitDependControls();
-                    return;
-                }
-
+                //if (Session["varcompanyNo"].ToString() != "9")
+                //{
+                //    txtSizeCode.Text = ds.Tables[0].Rows[0]["SizeCode"].ToString();
+                //    lblMessage.Text = "Size is already in used...";
+                //    UnitDependControls();
+                //    return;
+                //}
             }
             if (ds.Tables[0].Rows.Count == 1)
-            {
-                txtid.Text = ds.Tables[0].Rows[0]["SizeId"].ToString();
+            {   
                 ddunit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
                 ddunit_SelectedIndexChanged(sender, e);
                 ddshape.SelectedValue = ds.Tables[0].Rows[0]["Shapeid"].ToString();
@@ -811,8 +814,9 @@ public partial class frmSize : CustomPage
                 TxtAreaProdSqYD.Text = ds.Tables[0].Rows[0]["ProdAreaFt"].ToString();
                 TxtAreaProdSqMtr.Text = ds.Tables[0].Rows[0]["ProdAreaMtr"].ToString();
                 txtSizeCode.Text = ds.Tables[0].Rows[0]["SizeCode"].ToString();
-
-
+                TxtRoundOvelSqYDArea.Text = ds.Tables[0].Rows[0]["ProdRoundOvelAreaFt"].ToString();
+                TxtRoundOvelAreaProdSqMtr.Text = ds.Tables[0].Rows[0]["ProdRoundOvelAreaMtr"].ToString();
+                txtid.Text = ds.Tables[0].Rows[0]["SizeId"].ToString();
             }
         }
         catch (Exception ex)
@@ -936,6 +940,8 @@ public partial class frmSize : CustomPage
             txtheightInch.Enabled = true;
             txtwidthInch.Focus();
         }
+        TxtRoundOvelSqYDArea.Text = "";
+        TxtRoundOvelAreaProdSqMtr.Text = "";
     }
     protected void ddshape_SelectedIndexChanged(object sender, EventArgs e)
     {

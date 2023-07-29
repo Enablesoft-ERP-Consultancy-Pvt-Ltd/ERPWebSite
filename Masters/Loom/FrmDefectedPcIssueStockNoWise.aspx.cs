@@ -28,7 +28,7 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
             Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
             From PROCESS_NAME_MASTER PNM(nolock) 
             JOIN UserRightsProcess URP(nolock) ON URP.ProcessID = PNM.PROCESS_NAME_ID And URP.Userid = " + Session["varuserid"] + @" 
-            WHere PNM.ProcessType = 1 And PNM.PROCESS_NAME_ID = 1 Order By PNM.PROCESS_NAME";
+            WHere PNM.ProcessType = 1 Order By PNM.PROCESS_NAME";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
