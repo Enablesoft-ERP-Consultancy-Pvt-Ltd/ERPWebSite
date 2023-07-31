@@ -514,10 +514,21 @@ public partial class Masters_Campany_FrmTagging : CustomPage
         {
             if (ChkForEdit.Checked == true)
             {
-                Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.LocalOrder+ ' | ' + OM.CustomerOrderNo Else OM.customerorderno End as OrderNo 
+                if (Session["varCompanyNo"].ToString() == "43")
+                {
+                    Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.CustomerOrderNo+ ' | ' + OM.LocalOrder Else OM.customerorderno End as OrderNo 
                     FROM OrderMaster OM(Nolock) 
                     INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
                     Where OM.Companyid=" + DDLInCompanyName.SelectedValue + " And om.status=0 and Om.ORDERFROMSAMPLE=0  and OM.Customerid=" + DDLCustomerCode.SelectedValue;
+                }
+                else
+                {
+                    Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.LocalOrder+ ' | ' + OM.CustomerOrderNo Else OM.customerorderno End as OrderNo 
+                    FROM OrderMaster OM(Nolock) 
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    Where OM.Companyid=" + DDLInCompanyName.SelectedValue + " And om.status=0 and Om.ORDERFROMSAMPLE=0  and OM.Customerid=" + DDLCustomerCode.SelectedValue;
+                }
+               
 
                 if (Session["usertype"].ToString() != "1")
                 {
@@ -533,11 +544,24 @@ public partial class Masters_Campany_FrmTagging : CustomPage
             }
             else
             {
-                Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.LocalOrder+ ' | ' + OM.CustomerOrderNo Else OM.customerorderno End as OrderNo 
-                FROM OrderDetail OD(Nolock) 
-                INNER JOIN OrderMaster OM(Nolock) ON OD.OrderId=OM.OrderId 
-                INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
-                Where (OD.TAG_FLAG is null OR OD.TAG_FLAG=0) And Om.status=0 and Om.ORDERFROMSAMPLE=0 and OM.Companyid=" + DDLInCompanyName.SelectedValue + " And OM.Customerid=" + DDLCustomerCode.SelectedValue;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.CustomerOrderNo+ ' | ' + OM.LocalOrder Else OM.customerorderno End as OrderNo 
+                    FROM OrderDetail OD(Nolock) 
+                    INNER JOIN OrderMaster OM(Nolock) ON OD.OrderId=OM.OrderId 
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    Where (OD.TAG_FLAG is null OR OD.TAG_FLAG=0) And Om.status=0 and Om.ORDERFROMSAMPLE=0 and OM.Companyid=" + DDLInCompanyName.SelectedValue + " And OM.Customerid=" + DDLCustomerCode.SelectedValue;
+                }
+                else
+                {
+                    Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.LocalOrder+ ' | ' + OM.CustomerOrderNo Else OM.customerorderno End as OrderNo 
+                    FROM OrderDetail OD(Nolock) 
+                    INNER JOIN OrderMaster OM(Nolock) ON OD.OrderId=OM.OrderId 
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    Where (OD.TAG_FLAG is null OR OD.TAG_FLAG=0) And Om.status=0 and Om.ORDERFROMSAMPLE=0 and OM.Companyid=" + DDLInCompanyName.SelectedValue + " And OM.Customerid=" + DDLCustomerCode.SelectedValue;
+                }
+
+                
             }
             Str = Str + "  Order by  orderno";
             UtilityModule.ConditionalComboFill(ref DDLOrderNo, Str, true, "--Select--");

@@ -2508,6 +2508,12 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 From OrderMaster OM 
                 Where OM.Status=0";
         }
+        else if (Session["varcompanyid"].ToString() == "43")
+        {
+            str = @"Select distinct OM.OrderId, CustomerOrderNo+ ' / ' +LocalOrder as CustomerOrderNo 
+                From OrderMaster OM 
+                join V_Indent_OredrId VO ON Om.OrderId=VO.Orderid Where OM.Status=0";
+        }
         else
         {
             str = @"Select distinct OM.OrderId, LocalOrder+ ' / ' +CustomerOrderNo as CustomerOrderNo 

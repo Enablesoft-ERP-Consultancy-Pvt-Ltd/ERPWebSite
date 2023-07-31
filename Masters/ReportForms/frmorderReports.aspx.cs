@@ -151,15 +151,30 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
             {
                 str = @"Select OrderId, CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
             }
+            if (Session["varCompanyId"].ToString() == "43")
+            {
+                str = @"Select OrderId,CustomerOrderNo+ ' / ' +LocalOrder From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
+            }
             UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
         }
         UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string Str = @"Select OrderId, case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @" = 1 THen LocalOrder + ' / ' + CustomerOrderNo Else customerorderno End OrderNo 
+        string Str = "";
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            Str = @"Select OrderId, case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @" = 1 THen CustomerOrderNo + ' / ' +LocalOrder  Else customerorderno End OrderNo 
             From OrderMaster 
             Where CustomerId = " + DDCustCode.SelectedValue + " And CompanyId = " + DDCompany.SelectedValue;
+        }
+        else
+        {
+            Str = @"Select OrderId, case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @" = 1 THen LocalOrder + ' / ' + CustomerOrderNo Else customerorderno End OrderNo 
+            From OrderMaster 
+            Where CustomerId = " + DDCustCode.SelectedValue + " And CompanyId = " + DDCompany.SelectedValue;
+        }
+        
         if (DDorderstatus.SelectedIndex > 0)
         {
             Str = Str + " And Status = " + DDorderstatus.SelectedValue;
