@@ -292,7 +292,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     {
 
         string str = "";
-        str = @"select distinct OrderUnitId from OrderDetail Where OrderUnitId=1";
+        str = @"select distinct OrderUnitId from OrderDetail Where OrderUnitId=" + DDCustomerOrderNumber.SelectedValue + "";
          DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
          if (Ds.Tables[0].Rows.Count > 0)
          {
