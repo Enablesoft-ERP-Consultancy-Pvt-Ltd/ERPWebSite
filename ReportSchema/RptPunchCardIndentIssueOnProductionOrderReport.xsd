@@ -32,6 +32,7 @@
               <xs:element name="TotalIssueQty" type="xs:int" minOccurs="0" />
               <xs:element name="StockNoSeries" type="xs:string" minOccurs="0" />
               <xs:element name="SNSID" type="xs:int" minOccurs="0" />
+              <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
               <xs:element name="FolioChallanNo" type="xs:int" minOccurs="0" />
               <xs:element name="Process_Name" type="xs:string" minOccurs="0" />
               <xs:element name="PunchCardStockNo" type="xs:string" minOccurs="0" />
