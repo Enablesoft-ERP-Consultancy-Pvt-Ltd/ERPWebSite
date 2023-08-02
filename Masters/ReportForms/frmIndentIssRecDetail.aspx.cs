@@ -2996,9 +2996,25 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     sht.Range("B1").Value = "BPO";
                     sht.Range("C1").Value = "DELV DT.";
                     sht.Range("D1").Value = "COUNT";
-                    sht.Range("E1").Value = "ORDER AREA(SQYD)";
+                    if (Session["VarCompanyNo"].ToString() == "14")
+                    {
+                        sht.Range("E1").Value = "ORDER AREA(SQM)";
+                    }
+                    else
+                    {
+                        sht.Range("E1").Value = "ORDER AREA(SQYD)";
+                    }                   
                     sht.Range("F1").Value = "SHADE NO";
-                    sht.Range("G1").Value = "LAGAT(SQYD)";
+
+                    if (Session["VarCompanyNo"].ToString() == "14")
+                    {
+                        sht.Range("G1").Value = "LAGAT(SQM)";
+                    }
+                    else
+                    {
+                        sht.Range("G1").Value = "LAGAT(SQYD)";
+                    } 
+                    
                     sht.Range("H1").Value = "REQ QTY";
                     sht.Range("I1").Value = "INDENT QTY";
                     sht.Range("J1").Value = "REC QTY";
