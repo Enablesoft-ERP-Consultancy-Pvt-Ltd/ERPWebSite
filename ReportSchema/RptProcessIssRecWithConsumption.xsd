@@ -160,6 +160,10 @@
               <xs:element name="DepartmentIssueOrderID" type="xs:int" minOccurs="0" />
               <xs:element name="RawMaterialAmountDeductionFlag" type="xs:int" minOccurs="0" />
               <xs:element name="SHIPTO" type="xs:int" minOccurs="0" />
+              <xs:element name="BatchCode" type="xs:string" minOccurs="0" />
+              <xs:element name="BatchChallanNo" type="xs:int" minOccurs="0" />
+              <xs:element name="CustomBatchId" type="xs:int" minOccurs="0" />
+              <xs:element name="CustomBatchChallanNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
