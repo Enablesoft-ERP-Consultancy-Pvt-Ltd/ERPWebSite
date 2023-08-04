@@ -1389,6 +1389,35 @@ Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 
             }
         }
     }
+    private void CarpetInternationalFormatReport()
+    {
+        SqlParameter[] _array = new SqlParameter[3];
+        _array[0] = new SqlParameter("@prmId", SqlDbType.Int);
+        _array[1] = new SqlParameter("@ProcessId", SqlDbType.Int);
+        _array[2] = new SqlParameter("@Trantype", SqlDbType.Int);
+
+        _array[0].Value = ViewState["Prmid"];
+        _array[1].Value = ddProcessName.SelectedValue;
+        _array[2].Value = 1; //For Issue
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_WeaverRawMaterialIssuedDetail_CarpetInternational", _array);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\RptRawMaterialReceiveDetailCarpetInternational.rpt";
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptRawMaterialReceiveDetailCarpetInternational.xsd";
+
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+    }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
         string str = "";
@@ -1457,6 +1486,9 @@ Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 
 
                 }
                 else { ScriptManager.RegisterStartupScript(Page, GetType(), "opn2", "alert('No Record Found!');", true); }
+                break;
+            case "43":
+                CarpetInternationalFormatReport();
                 break;
             default:
                 if (variable.VarMANYFOLIORAWRECEIVE_SINGLECHALAN == "1")

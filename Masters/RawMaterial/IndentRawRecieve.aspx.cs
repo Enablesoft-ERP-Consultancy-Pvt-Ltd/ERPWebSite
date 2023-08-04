@@ -2426,7 +2426,7 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
                     TextBox txtgloss = (TextBox)e.Row.FindControl("txtgloss");
                     if (txtgloss != null)
                     {
-                        txtgloss.Enabled = false;
+                        //txtgloss.Enabled = false;
                     }
 
 

@@ -99,7 +99,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                 string Query = @"select '0|0|0|0|0' Stockno,CN.Tstockno,'-' as Empname,P.TInvoiceNo as IssueChallanNo,Replace(convert(nvarchar(11),P.PackingDate,106),' ','-') as orderDate,
                                 '-' as RecchallanNo,'-' as Receivedate,CN.CompanyId,0,0,0,0,CN.Pack,'STOCK OUT' as Process_name,VF.Item_Name+' '+VF.QualityName+' '+VF.DesignName+' '+VF.ColorName+' '+VF.ShapeName+' '+VF.SizeFt  Description,
                                 isnull(CC.customercode,'') as customercode,isnull(OM.customerorderNO,'') as customerorderNO,999999999999999999999999 as ProcessDetailId,isnull(CN.PackingId,0) as PackingId ,0 as ToProcessid,
-                                CN.Item_Finished_Id,isnull(OM.LocalOrder,'') as LocalOrder, 0 Penality, '' PenalityRemark 
+                                CN.Item_Finished_Id,isnull(OM.LocalOrder,'') as LocalOrder, 0 Penality, '' PenalityRemark ,0 as OnlyIssueOrderId
                                 From carpetnumber CN(Nolock) 
                                 inner Join packing P(Nolock) on CN.PackingID=P.PackingId
                                 inner join V_FinishedItemDetail vf(Nolock) on CN.Item_Finished_Id=vf.ITEM_FINISHED_ID
@@ -118,7 +118,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                                         Else '' End Else '' End Description,
                                 CC.customercode,OM.customerorderNO,psd.ProcessDetailId,isnull(CN.PackingId,0) as PackingId,PSd.Toprocessid,CN.Item_Finished_Id,
                                 isnull(OM.LocalOrder,'') as LocalOrder, 
-                                Case When PSD.ToProcessId = 1 Then PRD.Penality Else 0 End Penality, Case When PSD.ToProcessId = 1 Then PRD.PRemarks Else '' End PenalityRemark 
+                                Case When PSD.ToProcessId = 1 Then PRD.Penality Else 0 End Penality, Case When PSD.ToProcessId = 1 Then PRD.PRemarks Else '' End PenalityRemark,0 as OnlyIssueOrderId 
                                 From CarpetNumber CN(Nolock) 
                                 inner join V_FinishedItemDetail VF(Nolock) on cn.Item_Finished_Id=vf.ITEM_FINISHED_ID 
                                 left outer join Process_Stock_Detail PSD(Nolock) on PSD.StockNo=CN.StockNo  
@@ -133,7 +133,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                                 '' ReceiveDate,PIM.CompanyId,0 as FromProcessId,ls.ProcessId ToProcessId,ls.Process_rec_detail_id as  ReceiveDetailId,IssueDetailId,0 as Pack,
                                 PNM.Process_Name,VF.Item_Name+' '+VF.QualityName+' '+VF.DesignName+' '+VF.ColorName+' '+VF.ShapeName+' '+VF.SizeFt  Description,
                                 CC.customercode,OM.customerorderNO,0 as ProcessDetailId,0 as PackingId,ls.ProcessId Toprocessid,ls.Item_Finished_Id, 
-                                isnull(OM.LocalOrder,'') LocalOrder, 0 Penality, '' PenalityRemark 
+                                isnull(OM.LocalOrder,'') LocalOrder, 0 Penality, '' PenalityRemark ,0 as OnlyIssueOrderId
                                 From LoomStockNo ls(Nolock) 
                                 JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = ls.ProcessId 
                                 inner join V_FinishedItemDetail vf(Nolock) on ls.Item_Finished_id=vf.ITEM_FINISHED_ID
@@ -154,7 +154,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                                 replace(convert(varchar(11), prm.ReceiveDate, 106), ' ', '-') ReceiveDate, PIM.CompanyId, HSD.FromProcessId, HSD.ToProcessId, HSD.Process_rec_detail_id ReceiveDetailId, 
                                 HSD.IssueDetailId, 0 Pack, PNM.PROCESS_NAME, VF.Item_Name + ' ' + VF.QualityName + ' ' + VF.DesignName + ' ' + VF.ColorName + ' ' + VF.ShapeName + ' ' + VF.SizeFt Description, 
                                 CC.customercode, OM.customerorderNO, 0 ProcessDetailId, 0 PackingId, HSD.Toprocessid, ls.OrderDetailDetail_FinishedID Item_Finished_Id, 
-                                isnull(OM.LocalOrder, '') LocalOrder, 0 Penality, '' PenalityRemark 
+                                isnull(OM.LocalOrder, '') LocalOrder, 0 Penality, '' PenalityRemark ,0 as OnlyIssueOrderId
                                 From HomeFurnishingStockNo ls(Nolock) 
                                 JOIN HomeFurnishing_Stock_Detail HSD(Nolock) ON HSD.StockNo = ls.StockNo 
                                 inner join V_FinishedItemDetail vf(Nolock) on ls.OrderDetailDetail_FinishedID = vf.ITEM_FINISHED_ID
@@ -168,7 +168,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                                 select '0|0|0|0|0' as Stockno,CN.Tstockno,'-' as Empname, SOWC.IssueNo IssueChallanNo, Replace(convert(nvarchar(11), SOWC.IssueDate, 106), ' ', '-') orderDate,
                                 '-' as RecchallanNo,'-' as Receivedate,CN.CompanyId,0,0,0,0,CN.Pack,'STOCK OUT' as Process_name,VF.Item_Name+' '+VF.QualityName+' '+VF.DesignName+' '+VF.ColorName+' '+VF.ShapeName+' '+VF.SizeFt  Description,
                                 isnull(CC.customercode,'') as customercode,isnull(OM.customerorderNO,'') as customerorderNO,999999999999999999999999 as ProcessDetailId,isnull(CN.PackingId,0) as PackingId ,0 as ToProcessid,
-                                CN.Item_Finished_Id,isnull(OM.LocalOrder,'') as LocalOrder, 0 Penality, '' PenalityRemark 
+                                CN.Item_Finished_Id,isnull(OM.LocalOrder,'') as LocalOrder, 0 Penality, '' PenalityRemark ,0 as OnlyIssueOrderId
                                 From carpetnumber CN(Nolock) 
                                 JOIN StockNoOutWardChallan SOWC(Nolock) ON SOWC.StockNo = CN.StockNo 
                                 inner join V_FinishedItemDetail vf(Nolock) on CN.Item_Finished_Id=vf.ITEM_FINISHED_ID
@@ -180,7 +180,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                                 '-' RecchallanNo, '-' Receivedate, CN.CompanyId, 0, 0, 0, 0, CN.Pack,'METAL DETECTION' Process_name, 
                                 VF.Item_Name + ' ' + VF.QualityName + ' ' + VF.DesignName + ' ' + VF.ColorName + ' ' + VF.ShapeName + ' ' + VF.SizeFt  Description, 
                                 IsNull(CC.customercode, '') customercode, IsNull(OM.customerorderNO, '') customerorderNO, 999999999999999999999999 ProcessDetailId, 
-                                IsNull(CN.PackingId, 0) PackingId, 0 ToProcessid, CN.Item_Finished_Id, isnull(OM.LocalOrder, '') LocalOrder, 0 Penality, '' PenalityRemark 
+                                IsNull(CN.PackingId, 0) PackingId, 0 ToProcessid, CN.Item_Finished_Id, isnull(OM.LocalOrder, '') LocalOrder, 0 Penality, '' PenalityRemark,0 as OnlyIssueOrderId 
                                 From carpetnumber CN(Nolock) 
                                 JOIN METALDETECTION MD(Nolock) ON MD.StockNo = CN.StockNo 
                                 inner join V_FinishedItemDetail vf(Nolock) on CN.Item_Finished_Id = vf.ITEM_FINISHED_ID
@@ -250,7 +250,8 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                             {
                                 Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text,
                                             @"select Distinct replace(convert(varchar(11),PIM.AssignDate,106), ' ','-') AssignDate,isnull(PIM.ChallanNo,PIM.IssueOrderId) as IssueOrderId,
-                                            Case when EI.EMPID is null Then dbo.F_getFolioEmployeeNew_IssueDetailIdWise(PIM.IssueOrderId," + VarProcessId + @",PID.Issue_Detail_id) Else EI.EMpName End as Empname 
+                                            Case when EI.EMPID is null Then dbo.F_getFolioEmployeeNew_IssueDetailIdWise(PIM.IssueOrderId," + VarProcessId + @",PID.Issue_Detail_id) Else EI.EMpName End as Empname,
+                                            PIM.IssueOrderId as OnlyIssueOrderId 
                                             From process_issue_Master_" + VarProcessId + @" PIM 
                                             inner Join PROCESS_ISSUE_DETAIL_" + VarProcessId + @" PID on PIM.IssueOrderId=PID.IssueOrderId
                                             left join EmpInfo ei on Pim.Empid=ei.EmpId 
@@ -260,7 +261,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                             else
                             {
                                 Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, @"Select replace(convert(varchar(11),PM.AssignDate,106), ' ','-') AssignDate,
-                                isnull(PM.ChallanNo,PM.IssueOrderId) as IssueOrderId,EI.EmpName 
+                                isnull(PM.ChallanNo,PM.IssueOrderId) as IssueOrderId,EI.EmpName,PM.IssueOrderId as OnlyIssueOrderId 
                                 From PROCESS_ISSUE_MASTER_" + VarProcessId + " PM,PROCESS_ISSUE_DETAIL_" + VarProcessId + @" PD,EmpInfo EI 
                                 Where PM.IssueOrderId=PD.IssueOrderId And PM.EmpID=EI.EmpID And Issue_Detail_Id=" + VarIssueDetailId + @" And 
                                 EI.MasterCompanyId=" + Session["varCompanyId"] + "");
@@ -281,6 +282,8 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
                                 {
                                     DGStock.Rows[i].Cells[4].Text = Ds.Tables[0].Rows[0]["AssignDate"].ToString();
                                 }
+
+                                DGStock.Rows[i].Cells[16].Text = (Ds.Tables[0].Rows[0]["OnlyIssueOrderId"]).ToString();
                             }
                         }
                         if (VarReceiveDetailId > 0 && VarTypeFlag == 0)
@@ -347,8 +350,9 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
         if (lnk != null)
         {
             GridViewRow grv = lnk.NamingContainer as GridViewRow;
-            hngridrowindex.Value = grv.RowIndex.ToString();
+            hngridrowindex.Value = grv.RowIndex.ToString();            
 
+            //int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[16].Text);
             int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[3].Text);
             int ProcessId = Convert.ToInt32(((Label)DGStock.Rows[grv.RowIndex].FindControl("lblProcessId")).Text);
             int Item_Finished_Id = Convert.ToInt32(((Label)DGStock.Rows[grv.RowIndex].FindControl("lblFinishedid")).Text);
@@ -461,8 +465,9 @@ public partial class Masters_ReportForms_FrmShowStockNoDetail : CustomPage
     }
     protected void GetStockRawdetail()
     {
+        
         int rowindex = Convert.ToInt16(hngridrowindex.Value);
-        int IssueOrderId = Convert.ToInt32(DGStock.Rows[rowindex].Cells[3].Text);
+        int IssueOrderId = Convert.ToInt32(DGStock.Rows[rowindex].Cells[3].Text);        
         int ProcessId = Convert.ToInt32(((Label)DGStock.Rows[rowindex].FindControl("lblProcessId")).Text);
         int Item_Finished_Id = Convert.ToInt32(((Label)DGStock.Rows[rowindex].FindControl("lblFinishedid")).Text);
         string ReceiveDate = DGStock.Rows[rowindex].Cells[6].Text;

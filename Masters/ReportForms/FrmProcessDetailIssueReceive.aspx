@@ -163,7 +163,7 @@
                                 <br />
                                 
                                 &nbsp;&nbsp;
-                                <asp:RadioButton ID="RDWeaverRawMaterialIssueDetail" runat="server" Text="Weaver RawMaterial Issue Detail"
+                                <asp:RadioButton ID="RDWeaverRawMaterialIssueDetail" runat="server" Text="Weaving & Finishing RawMaterial Issue Detail"
                                     Visible="false" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
                                     OnCheckedChanged="RDWeaverRawMaterialIssueDetail_CheckedChanged" />
                                 <br />

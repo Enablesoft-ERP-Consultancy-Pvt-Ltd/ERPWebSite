@@ -23,6 +23,7 @@
               <xs:element name="Empgstin" type="xs:string" minOccurs="0" />
               <xs:element name="issueorderid" type="xs:int" minOccurs="0" />
               <xs:element name="assigndate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="reqbydate" type="xs:dateTime" minOccurs="0" />
               <xs:element name="Job" type="xs:string" minOccurs="0" />
               <xs:element name="QualityName" type="xs:string" minOccurs="0" />
               <xs:element name="designName" type="xs:string" minOccurs="0" />
@@ -36,6 +37,7 @@
               <xs:element name="Issue_Detail_Id" type="xs:int" minOccurs="0" />
               <xs:element name="TStockNo" type="xs:string" minOccurs="0" />
               <xs:element name="Instruction" type="xs:string" minOccurs="0" />
+              <xs:element name="Remarks" type="xs:string" minOccurs="0" />
               <xs:element name="Item_Finished_Id" type="xs:int" minOccurs="0" />
               <xs:element name="FolioNo" type="xs:string" minOccurs="0" />
               <xs:element name="JobIssueWeight" type="xs:double" minOccurs="0" />
@@ -50,6 +52,7 @@
               <xs:element name="UserName" type="xs:string" minOccurs="0" />
               <xs:element name="Bonus" type="xs:double" minOccurs="0" />
               <xs:element name="BonusAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="MasterCompanyID" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

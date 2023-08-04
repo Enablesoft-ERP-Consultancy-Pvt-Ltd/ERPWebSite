@@ -137,6 +137,11 @@
                                             <asp:Label ID="lblFinishedId" runat="server" Text='<%#Bind("Item_Finished_id") %>'></asp:Label>
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                     <asp:TemplateField Visible="false">
+                                        <ItemTemplate>
+                                            <asp:Label ID="lblOnlyIssueOrderId" runat="server" Text='<%#Bind("OnlyIssueOrderId") %>'></asp:Label>
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                 </Columns>
                                 <EmptyDataRowStyle CssClass="gvemptytext" />
                             </asp:GridView>

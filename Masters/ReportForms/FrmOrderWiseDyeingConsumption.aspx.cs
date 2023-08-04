@@ -197,7 +197,7 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
                         string StrHeaderText = "";
                         for (int i = 0; i < GridView1.HeaderRow.Cells.Count; i++)
                         {
-                            if (GridView1.HeaderRow.Cells[i].Text == "FinishedId" || GridView1.HeaderRow.Cells[i].Text == "PK1")
+                            if (GridView1.HeaderRow.Cells[i].Text == "FinishedId" || GridView1.HeaderRow.Cells[i].Text == "PK1" || GridView1.HeaderRow.Cells[i].Text == "RowType")
                             {
                                 StrHeaderText = GridView1.HeaderRow.Cells[i].Text;
 
@@ -210,6 +210,7 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
                         {
                             GridView1.Rows[i].Cells[0].Visible = false;
                             GridView1.Rows[i].Cells[columncount - 1].Visible = false;
+                            GridView1.Rows[i].Cells[columncount - 2].Visible = false;
                            
                             
                         }

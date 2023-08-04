@@ -2330,6 +2330,10 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         {
             Str = "CustomerOrderNo";
         }
+        if (Session["varCompanyNo"].ToString() == "43")
+        {
+            Str = "CustomerOrderNo+ ' / ' +LocalOrder";
+        }
         UtilityModule.ConditionalComboFill(ref DDOrderNo, "Select OrderId, " + Str + @" CustomerOrderNo 
         From OrderMaster(Nolock) Where CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDCompany.SelectedValue + @" And 
         Status=0 Order By CustomerOrderNo", true, "--Select--");

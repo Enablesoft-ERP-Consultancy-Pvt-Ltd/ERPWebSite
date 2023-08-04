@@ -15,7 +15,7 @@ using System.Net;
 using System.Web.Services.Description;
 //using DocumentFormat.OpenXml.Drawing.Charts;
 
-public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
+public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -108,6 +108,7 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
                 TDinternalfoliodetail.Visible = false;
                 TDProcessWiseReport.Visible = false;
                 TD1.Visible = false;
+                TrProcessname.Visible = true;
                 TDCustomerOrderInvoiceStatus.Visible = false;
                 TRProcessDetails.Visible = true;
                 RDCustomerOrderInternalOC.Visible = false;
@@ -144,44 +145,30 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
     }
     private void CompanySelectedChange()
     {
-        if (variable.VarWEAVERORDERWITHOUTCUSTCODE == "1")
-        {
-            string str = @"Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
-            if (Session["varCompanyId"].ToString() == "16")
-            {
+        string str = string.Empty;
+        //if (variable.VarWEAVERORDERWITHOUTCUSTCODE == "1")
+        //{
+        //    string str = @"Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
+        //    if (Session["varCompanyId"].ToString() == "16")
+        //    {
                 str = @"Select OrderId, CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
-            }
-            if (Session["varCompanyId"].ToString() == "43")
-            {
-                str = @"Select OrderId,CustomerOrderNo+ ' / ' +LocalOrder From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
-            }
+        //    }
             UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
-        }
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        //}
+        //UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string Str = "";
-        if (Session["VarCompanyNo"].ToString() == "43")
-        {
-            Str = @"Select OrderId, case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @" = 1 THen CustomerOrderNo + ' / ' +LocalOrder  Else customerorderno End OrderNo 
-            From OrderMaster 
-            Where CustomerId = " + DDCustCode.SelectedValue + " And CompanyId = " + DDCompany.SelectedValue;
-        }
-        else
-        {
-            Str = @"Select OrderId, case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @" = 1 THen LocalOrder + ' / ' + CustomerOrderNo Else customerorderno End OrderNo 
-            From OrderMaster 
-            Where CustomerId = " + DDCustCode.SelectedValue + " And CompanyId = " + DDCompany.SelectedValue;
-        }
-        
-        if (DDorderstatus.SelectedIndex > 0)
-        {
-            Str = Str + " And Status = " + DDorderstatus.SelectedValue;
-        }
-        Str = Str + " Order By OrderNo";
+//        string Str = @"Select OrderId, case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @" = 1 THen LocalOrder + ' / ' + CustomerOrderNo Else customerorderno End OrderNo 
+//            From OrderMaster 
+//            Where CustomerId = " + DDCustCode.SelectedValue + " And CompanyId = " + DDCompany.SelectedValue;
+//        if (DDorderstatus.SelectedIndex > 0)
+//        {
+//            Str = Str + " And Status = " + DDorderstatus.SelectedValue;
+//        }
+//        Str = Str + " Order By OrderNo";
 
-        UtilityModule.ConditionalComboFill(ref DDOrderNo, Str, true, "--Select--");
+//        UtilityModule.ConditionalComboFill(ref DDOrderNo, Str, true, "--Select--");
     }
     protected void BtnPreview_Click(object sender, EventArgs e)
     {
@@ -593,9 +580,10 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
     }
     private void orderconsumptiondetail_Carpetcompany_agni()
     {
-        SqlParameter[] param = new SqlParameter[2];
+        SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@orderid", DDOrderNo.SelectedValue);
         param[1] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+        param[2] = new SqlParameter("@jobid", DDjobname.SelectedValue);
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_OrderCosting", param);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -4760,6 +4748,10 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
     }
     protected void DDOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select c.CustomerId,CustomerCode From ordermaster o join  CustomerInfo c on o.customerid=c.CustomerId Where MasterCompanyId=" + Session["varCompanyId"] + " and o.orderid="+DDOrderNo.SelectedValue+" Order By CustomerCode", true, "");
+
+       // UtilityModule.ConditionalComboFill(ref DDOrderNo, Str, true, "--Select--");
+
         if (RDPOSTATUS.Checked == true)
         {
 

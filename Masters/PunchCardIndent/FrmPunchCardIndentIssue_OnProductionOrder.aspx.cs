@@ -290,6 +290,17 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     }
     private void dditemname_chage()
     {
+
+        string str = "";
+        str = @"select distinct OrderUnitId from OrderDetail Where OrderId=" + DDCustomerOrderNumber.SelectedValue + "";
+         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+         if (Ds.Tables[0].Rows.Count > 0)
+         {
+             DDunit.SelectedValue = Ds.Tables[0].Rows[0]["OrderUnitId"].ToString();
+         }
+        
+
+
         string size = "";
         if ( (variable.VarWEAVERPURCHASEORDER_FULLAREA == "1"))
         {

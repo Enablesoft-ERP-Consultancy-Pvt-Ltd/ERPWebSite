@@ -57,6 +57,16 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
                 DDcompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDcompanyName.Enabled = false;
             }
+
+            switch (Session["varCompanyId"].ToString())
+            {
+                case "43":
+                    lnkShowReportNew.Visible = true;
+                    break;                
+                default:
+                    lnkShowReportNew.Visible = false;
+                    break;
+            }
         }
     }
     protected void btnshowdetail_Click(object sender, EventArgs e)
@@ -344,5 +354,108 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
         //}
 
     }
+    protected void lnkShowReportNew_Click(object sender, EventArgs e)
+    {
+        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        //if (con.State == ConnectionState.Closed)
+        //{
+        //    con.Open();
+        //}
+        //SqlTransaction Tran = con.BeginTransaction();
+        //try
+        //{
+        DataSet DS = new DataSet();
 
+        string sQry = "  Vf.mastercompanyId=" + Session["varcompanyId"] + "";
+        sQry = sQry + " AND S.companyid =" + DDcompanyName.SelectedValue;
+
+        if (txtlotno.Text != "")
+        {
+            sQry = sQry + " AND S.LotNo = '" + txtlotno.Text + "'";
+        }
+        if (txttagno.Text != "")
+        {
+            sQry = sQry + " AND S.TagNo = '" + txttagno.Text + "'";
+        }
+        if (txtBinNo.Text != "")
+        {
+            sQry = sQry + " AND S.BinNo = '" + txtBinNo.Text + "'";
+        }
+        if (DDgodown.SelectedIndex > 0)
+        {
+            sQry = sQry + " AND S.Godownid =" + DDgodown.SelectedValue;
+        }
+
+        if (DDshadeno.SelectedIndex > 0)
+        {
+            sQry = sQry + " and vf.ShadeColorName='" + DDshadeno.SelectedItem.Text + "'";
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            sQry = sQry + " and vf.QualityName='" + DDQuality.SelectedItem.Text + "'";
+        }
+
+        //SqlParameter[] array = new SqlParameter[4];
+        //array[0] = new SqlParameter("@Where", SqlDbType.VarChar, 8000);
+        //array[1] = new SqlParameter("@FROMSTOCKSEARCH", SqlDbType.Int);
+        //array[2] = new SqlParameter("@PurchaseReceiveBillNo", SqlDbType.VarChar,50);
+        //array[3] = new SqlParameter("@DyeingReceiveBillNo", SqlDbType.VarChar, 50);
+
+        //array[0].Value = sQry;
+        //array[1].Value = 1;
+        //array[2].Value = txtPurchaseReceiveBillNo.Text;
+        //array[3].Value = txtDyeingReceiveBillNo.Text;
+
+        //DataSet DS = SqlHelper.ExecuteDataset(Tran, CommandType.StoredProcedure, "Pro_GetStockTranDetail", array);
+
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlCommand cmd = new SqlCommand("PRO_GETSTOCKTRANDETAILCarpetInternational", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 30000;
+
+        cmd.Parameters.AddWithValue("@Where", sQry);
+        cmd.Parameters.AddWithValue("@FROMSTOCKSEARCH", 1);
+        cmd.Parameters.AddWithValue("@PurchaseReceiveBillNo", txtPurchaseReceiveBillNo.Text);
+        cmd.Parameters.AddWithValue("@DyeingReceiveBillNo", txtDyeingReceiveBillNo.Text);
+        SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+        ad.Fill(DS);
+
+
+        // DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sQry);
+        if (DS.Tables[0].Rows.Count > 0)
+        {
+
+            Session["rptFileName"] = "reports/RptStockTranDetailLotWiseTagWiseNewCI.rpt";
+
+            Session["GetDataset"] = DS;
+            Session["dsFileName"] = "~\\ReportSchema\\RptStockTranDetailLotWiseTagWiseNewCI.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+        //}
+        //catch (Exception ex)
+        //{
+        //    lblmsg.Text = ex.ToString();
+        //    // UtilityModule.MessageAlert(ex.Message, "Master/ReportForms/FrmProcessDetailIssueReceive.aspx");
+        //    Tran.Rollback();
+        //}
+        //finally
+        //{
+        //    con.Close();
+        //    con.Dispose();
+        //}
+
+    }
 }
