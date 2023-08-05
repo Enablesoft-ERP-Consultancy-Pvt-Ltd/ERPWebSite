@@ -81,9 +81,7 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                 if (ds.Tables[6].Rows.Count > 0)
                 {
                     masterunitid = Convert.ToInt32( ds.Tables[6].Rows[0]["masterunitid"]);
-                
                 }
-            
             }
             if (DDBranchName.Items.Count == 0)
             {

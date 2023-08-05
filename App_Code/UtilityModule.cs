@@ -862,6 +862,58 @@ public class UtilityModule
         }
         return itemfinishedid;
     }
+    public static int getItemFinishedId(DropDownList ddItemName, DropDownList ddQuality, DropDownList ddDesign, DropDownList ddColor, DropDownList ddShape, DropDownList ddSize, TextBox ProdCode, int ShadeColorID, int ProdType, string VarOurCode, int MasterCompanyId)
+    {
+        int itemfinishedid = 0;
+        try
+        {
+            string VarProdCode = ProdCode.Text;
+            if (ProdType == 0)
+            {
+                VarProdCode = "";
+            }
+            SqlParameter[] _arrPara = new SqlParameter[12];
+            _arrPara[0] = new SqlParameter("@ITEM_FINISHED_ID", SqlDbType.Int);
+            _arrPara[1] = new SqlParameter("@QUALITY_ID", SqlDbType.Int);
+            _arrPara[2] = new SqlParameter("@DESIGN_ID", SqlDbType.Int);
+            _arrPara[3] = new SqlParameter("@COLOR_ID", SqlDbType.Int);
+            _arrPara[4] = new SqlParameter("@SHAPE_ID", SqlDbType.Int);
+            _arrPara[5] = new SqlParameter("@SIZE_ID", SqlDbType.Int);
+            _arrPara[6] = new SqlParameter("@DESCRIPTION", SqlDbType.VarChar, 100);
+            _arrPara[7] = new SqlParameter("@ITEM_ID", SqlDbType.Int);
+            _arrPara[8] = new SqlParameter("@ProCode", SqlDbType.NVarChar);
+            _arrPara[9] = new SqlParameter("@SHADECOLOR_ID", SqlDbType.Int);
+            _arrPara[10] = new SqlParameter("@VarOurCode", SqlDbType.VarChar, 100);
+            _arrPara[11] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
+
+            _arrPara[0].Direction = ParameterDirection.Output;
+            ///ddShadeColor
+            _arrPara[1].Value = ddQuality.Visible == true ? Convert.ToInt32(ddQuality.SelectedValue) : 0;
+            _arrPara[2].Value = ddDesign.Visible == true ? Convert.ToInt32(ddDesign.SelectedValue) : 0;
+            _arrPara[3].Value = ddColor.Visible == true ? Convert.ToInt32(ddColor.SelectedValue) : 0;
+            _arrPara[4].Value = ddShape.Visible == true ? Convert.ToInt32(ddShape.SelectedValue) : 0;
+            _arrPara[5].Value = ddSize.Visible == true ? Convert.ToInt32(ddSize.SelectedValue) : 0;
+            _arrPara[6].Value = "";
+            _arrPara[7].Value = ddItemName.SelectedIndex <= 0 ? "0" : ddItemName.SelectedValue;
+            _arrPara[8].Value = VarProdCode;
+            _arrPara[9].Value = ShadeColorID;
+            _arrPara[10].Value = VarOurCode;
+            _arrPara[11].Value = MasterCompanyId;
+
+            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GET_ITEM_FINISHED_ID", _arrPara);
+
+            itemfinishedid = Convert.ToInt32(_arrPara[0].Value);
+        }
+        catch (Exception ex)
+        {
+            Logs.WriteErrorLog("getItemParametreId|" + ex.Message);
+        }
+        finally
+        {
+
+        }
+        return itemfinishedid;
+    }
     public static bool VALIDDROPDOWNLIST(DropDownList DD)
     {
         bool VALIDVALUE;

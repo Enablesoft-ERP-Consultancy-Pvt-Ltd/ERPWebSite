@@ -181,7 +181,16 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
         }
         else if (RDWarpingBeamReceiveDetail.Checked == true)
         {
-            WarpingBeamReceiveDetail();
+            if (Session["varcompanyId"].ToString() == "45")
+            {
+
+                WarpingBeamReceiveDetailmws();
+            }
+            else
+            {
+                WarpingBeamReceiveDetail();
+            
+            }
         }
         else if (RDLoomBeamIssueDetail.Checked == true)
         {
@@ -450,6 +459,208 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
             //**********Total
             sht.Columns(4, 15).AdjustToContents(); row = row - 1;
             using (var a = sht.Range("A1" + ":O" + row))
+            {
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            }
+            string Fileextension = "xlsx";
+            string filename = UtilityModule.validateFilename("BeamReceiveDetail_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+
+            #region
+
+            //ds.Tables[0].Columns.Remove("ID");
+            //ds.Tables[0].Columns.Remove("DetailID");
+            ////Export to excel
+            //GridView GridView1 = new GridView();
+            //GridView1.AllowPaging = false;
+
+            //GridView1.DataSource = ds;
+            //GridView1.DataBind();
+            //Response.Clear();
+            //Response.Buffer = true;
+            //Response.AddHeader("content-disposition",
+            // "attachment;filename=BeamReceiveDetail" + DateTime.Now + ".xls");
+            //Response.Charset = "";
+            //Response.ContentType = "application/vnd.ms-excel";
+            //StringWriter sw = new StringWriter();
+            //HtmlTextWriter hw = new HtmlTextWriter(sw);
+
+            //for (int i = 0; i < GridView1.Rows.Count; i++)
+            //{
+            //    //Apply text style to each Row
+            //    GridView1.Rows[i].Attributes.Add("class", "textmode");                 
+            //}
+            //GridView1.RenderControl(hw);
+
+            ////style to format numbers to string
+            //string style = @"<style> .textmode { mso-number-format:\@; } </style>";
+
+            //Response.Write(style);
+            //Response.Output.Write(sw.ToString());
+            //Response.Flush();
+            //Response.End();
+            ////*************
+            #endregion
+
+        }
+    }
+    protected void WarpingBeamReceiveDetailmws()
+    {
+        string str = "";
+        if (ddItemName.SelectedIndex > 0)
+        {
+            str = str + " and VF.ITEM_ID=" + ddItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            str = str + " and VF.Qualityid=" + DDQuality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0)
+        {
+            str = str + " and VF.DesignId=" + DDDesign.SelectedValue;
+        }
+        if (DDColor.SelectedIndex > 0)
+        {
+            str = str + " and VF.colorid=" + DDColor.SelectedValue;
+        }
+        if (DDShape.SelectedIndex > 0)
+        {
+            str = str + " and VF.shapeid=" + DDShape.SelectedValue;
+        }
+        if (DDSize.SelectedIndex > 0)
+        {
+            str = str + " and VF.sizeid=" + DDSize.SelectedValue;
+        }
+        if (DDShadeColor.SelectedIndex > 0)
+        {
+            str = str + " and VF.shadecolorid=" + DDShadeColor.SelectedValue;
+        }
+
+        SqlParameter[] param = new SqlParameter[5];
+        param[0] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
+        param[1] = new SqlParameter("@ProcessID", DDProcess.SelectedValue);
+        param[2] = new SqlParameter("@Where", str);
+        param[3] = new SqlParameter("@FromDate", txtfromdate.Text);
+        param[4] = new SqlParameter("@Todate", txttodate.Text);
+        //*********
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetWarpingBeamReceiveDetailmws", param);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+            {
+                Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+            }
+            string Path = "";
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("sheet1");
+            int row = 0;
+            sht.Range("A1:S1").Merge();
+            sht.Range("A1:S1").Style.Font.FontSize = 10;
+            sht.Range("A1:S1").Style.Font.Bold = true;
+            sht.Range("A1:S1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:S1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:S1").Style.Alignment.WrapText = true;
+            //************
+            sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + " BEAM RECEIVE DETAIL From : " + txtfromdate.Text + " To : " + txttodate.Text + "");
+
+            sht.Range("A2:M2").Style.Font.FontSize = 10;
+            sht.Range("A2:M2").Style.Font.Bold = true;
+            sht.Columns("A").Width = 15.78;
+            sht.Columns("B").Width = 15.78;
+            sht.Columns("C").Width = 15.78;
+            sht.Columns("D").Width = 15.78;
+            sht.Columns("E").Width = 15.78;
+            sht.Columns("F").Width = 15.78;
+            sht.Columns("G").Width = 15.78;
+            sht.Columns("H").Width = 15.78;
+            sht.Columns("I").Width = 15.78;
+            sht.Columns("J").Width = 15.78;
+            sht.Columns("K").Width = 15.78;
+            sht.Columns("L").Width = 15.78;
+            sht.Columns("M").Width = 15.78;
+            sht.Columns("N").Width = 15.78;
+            sht.Columns("O").Width = 15.78;
+            sht.Columns("P").Width = 15.78;
+            sht.Columns("Q").Width = 15.78;
+            sht.Columns("R").Width = 15.78;
+            sht.Columns("S").Width = 15.78;
+            //sht.Columns("B").Width = 15.78;
+            //sht.Columns("C").Width = 15.78;
+
+            //Headers
+            sht.Range("A2").Value = "RECEIVE DATE";
+            sht.Range("B2").Value = "PRODUCTION UNIT";
+            sht.Range("C2").Value = "WARPING NO.(M/C)";
+            sht.Range("D2").Value = "EMPNAME";
+            sht.Range("E2").Value = "ITEMDESCRIPTION";
+            sht.Range("F2").Value = "UNITNAME";
+            sht.Range("G2").Value = "LOTNO";
+            sht.Range("H2").Value = "TAGNO";
+            sht.Range("I2").Value = "PCSBEAM";
+            sht.Range("J2").Value = "NOOFBEAMREQ";
+            sht.Range("K2").Value = "GODOWNNAME";
+            sht.Range("L2").Value = "ISSUE CHALLAN NO";
+            sht.Range("M2").Value = "RECEIVEQTY";
+            sht.Range("N2").Value = "BEAMNO";
+            sht.Range("O2").Value = "GROSS WEIGHT";
+            sht.Range("P2").Value = "TARE WEIGHT";
+            sht.Range("Q2").Value = "NET WEIGHT";
+            sht.Range("R2").Value = "USERNAME";
+            sht.Range("S2").Value = "REMARKS";
+            //sht.Range("O2").Value = "Company Name";
+
+            sht.Range("A2:S2").Style.Font.Bold = true;
+            //sht.Range("G2:H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            //sht.Range("K2:K2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+            //******************************
+            row = 3;
+            decimal Bal = 0;
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                sht.Range("A" + row + ":L" + row).Style.Alignment.SetWrapText();
+
+                sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveDate"]);
+                sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["ProductionUnitName"]);
+                sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["MCNO"]);
+                sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
+
+                sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["ItemDescription"]);
+                sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["UnitName"]);
+                sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["LotNo"]);
+                sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["TagNo"]);
+                sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["PCSBEAM"]);
+                sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["NOOFBEAMREQ"]);
+                sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["GodownName"]);
+                sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["IssueNo"]);
+                sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveQty"]);
+                sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["BeamNo"]);
+                sht.Range("N" + row).Style.NumberFormat.Format = "@";
+
+                sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["grosswt"]);
+                sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["tarewt"]);
+                sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["netwt"]);
+                sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["UserName"]);
+                sht.Range("S" + row).SetValue("");
+                row = row + 1;
+            }
+            //**********Total
+            sht.Columns(4, 15).AdjustToContents(); row = row - 1;
+            using (var a = sht.Range("A1" + ":S" + row))
             {
                 a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                 a.Style.Border.TopBorder = XLBorderStyleValues.Thin;

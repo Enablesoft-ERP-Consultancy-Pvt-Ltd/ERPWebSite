@@ -25,13 +25,17 @@
                     <tr>
                         <td class="tdstyle">
                             <asp:Label Text="Godown Name" runat="server" ID="label12" Font-Bold="true" />
-                            &nbsp;
-                        </td>
-                        <td>
+                            <br />
                             <asp:TextBox ID="txtGodawnName" runat="server" CssClass="textb" Width="300px">
                             </asp:TextBox>
                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Please Enter Term"
                                 ControlToValidate="txtGodawnName" ForeColor="Red">*</asp:RequiredFieldValidator>
+                        </td>
+                        <td>
+                            <asp:Label ID="Label29" runat="server" Text="BranchName" Font-Bold="true"></asp:Label>
+                            <br />
+                            <asp:DropDownList CssClass="dropdown" ID="DDBranchName" Width="250" runat="server">
+                            </asp:DropDownList>
                         </td>
                     </tr>
                     <tr>
