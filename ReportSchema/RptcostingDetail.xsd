@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Costingid" type="xs:int" minOccurs="0" />
+              <xs:element name="ItemDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="SampleCode" type="xs:string" minOccurs="0" />
+              <xs:element name="CostingType" type="xs:string" minOccurs="0" />
+              <xs:element name="costingDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="sizeid" type="xs:int" minOccurs="0" />
+              <xs:element name="ImageName" type="xs:string" minOccurs="0" />
+              <xs:element name="Image" type="xs:base64Binary" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CostingMid" type="xs:int" minOccurs="0" />
+              <xs:element name="Details" type="xs:string" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="qty" type="xs:double" minOccurs="0" />
+              <xs:element name="Amount" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="costingid" type="xs:int" minOccurs="0" />
+              <xs:element name="margin" type="xs:double" minOccurs="0" />
+              <xs:element name="Currency" type="xs:double" minOccurs="0" />
+              <xs:element name="Overheads" type="xs:double" minOccurs="0" />
+              <xs:element name="Finance" type="xs:double" minOccurs="0" />
+              <xs:element name="Commission" type="xs:double" minOccurs="0" />
+              <xs:element name="Quote" type="xs:double" minOccurs="0" />
+              <xs:element name="CurrencyName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Sizeid" type="xs:int" minOccurs="0" />
+              <xs:element name="BoxSize" type="xs:string" minOccurs="0" />
+              <xs:element name="Length" type="xs:string" minOccurs="0" />
+              <xs:element name="Width" type="xs:string" minOccurs="0" />
+              <xs:element name="Height" type="xs:string" minOccurs="0" />
+              <xs:element name="PC_Box" type="xs:int" minOccurs="0" />
+              <xs:element name="Boxply" type="xs:double" minOccurs="0" />
+              <xs:element name="CBM_Pc" type="xs:double" minOccurs="0" />
+              <xs:element name="Rate_Cbm" type="xs:double" minOccurs="0" />
+              <xs:element name="Rate_Pc" type="xs:double" minOccurs="0" />
+              <xs:element name="boxprice" type="xs:double" minOccurs="0" />
+              <xs:element name="box_pc" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

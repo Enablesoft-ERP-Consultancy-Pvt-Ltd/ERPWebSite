@@ -1,0 +1,60 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYID" type="xs:int" minOccurs="0" />
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR2" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR3" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPANYEMAIL" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPTEL" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPID" type="xs:int" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ADDRESS" type="xs:string" minOccurs="0" />
+              <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+              <xs:element name="ADDRESS3" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPGSTIN" type="xs:string" minOccurs="0" />
+              <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="customercode" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Localorder" type="xs:string" minOccurs="0" />
+              <xs:element name="INDENTID" type="xs:int" minOccurs="0" />
+              <xs:element name="INDENTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="INDENTDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="OutPutItemName" type="xs:string" minOccurs="0" />
+              <xs:element name="OutPutQuality" type="xs:string" minOccurs="0" />
+              <xs:element name="OutPutColor" type="xs:string" minOccurs="0" />
+              <xs:element name="OFINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="InputItemName" type="xs:string" minOccurs="0" />
+              <xs:element name="InputQualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="InputColor" type="xs:string" minOccurs="0" />
+              <xs:element name="lotno" type="xs:string" minOccurs="0" />
+              <xs:element name="TagNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Quantity" type="xs:double" minOccurs="0" />
+              <xs:element name="IndentReqDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="DyeingType" type="xs:string" minOccurs="0" />
+              <xs:element name="DyingMatch" type="xs:string" minOccurs="0" />
+              <xs:element name="MainItemQualityName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="OutPutColor" type="xs:string" minOccurs="0" />
+              <xs:element name="lotno" type="xs:string" minOccurs="0" />
+              <xs:element name="TagNo" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalQty" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

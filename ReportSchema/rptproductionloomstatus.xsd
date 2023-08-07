@@ -1,0 +1,48 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IssueOrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="LoomNo" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="AssignDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Processid" type="xs:int" minOccurs="0" />
+              <xs:element name="Dateflag" type="xs:int" minOccurs="0" />
+              <xs:element name="FromDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Prorderid" type="xs:int" minOccurs="0" />
+              <xs:element name="Processid" type="xs:int" minOccurs="0" />
+              <xs:element name="finishedid" type="xs:int" minOccurs="0" />
+              <xs:element name="Itemdescription" type="xs:string" minOccurs="0" />
+              <xs:element name="BeamNo" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ItemDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="consmpqty" type="xs:double" minOccurs="0" />
+              <xs:element name="IssuedQty" type="xs:double" minOccurs="0" />
+              <xs:element name="IFINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="IUNITID" type="xs:int" minOccurs="0" />
+              <xs:element name="ISizeflag" type="xs:unsignedByte" minOccurs="0" />
+              <xs:element name="issueorderid" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
