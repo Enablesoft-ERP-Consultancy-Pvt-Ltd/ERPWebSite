@@ -301,10 +301,21 @@ public partial class Login : System.Web.UI.Page
                 variable.VarRoundFtFlag = Convert.ToInt32(ds.Tables[0].Rows[0]["RoundFtFlag"].ToString());
                 variable.VarGetPurchaseRateFromMaster = ds.Tables[0].Rows[0]["GetPurchaseRateFromMaster"].ToString();
 
+                string path = string.Empty;
 
 
+                if (Convert.ToBoolean(ConfigurationManager.AppSettings["IsNewHome"]))
+                {
 
-                Response.Redirect("Home.aspx");
+                    path = "Home.aspx";
+                }
+                else
+                {
+                    path = "main.aspx";
+                }
+
+
+                Response.Redirect(path);
                 //}
                 //else
                 //{
