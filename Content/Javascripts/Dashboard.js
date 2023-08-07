@@ -114,7 +114,7 @@
 
                 $('div.modal-title').html("Purchase Report");
 
-                
+
 
                 const obj = { OrderId: _OrderId };
                 $.ajax({
@@ -240,7 +240,12 @@
 
         },
         error: function (xhr) {
-            alert('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
+
+
+
+            alert("There is some technical Issue contact with admin!");
+
+
         }
     });
 
