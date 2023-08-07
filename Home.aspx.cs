@@ -1,17 +1,12 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using IExpro.Core.Interfaces.Service;
+﻿using IExpro.Core.Interfaces.Service;
 using IExpro.Infrastructure.Repository;
 using IExpro.Infrastructure.Services;
 using IExpro.Web.Pages;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-
-using System.Web.Mvc;
 using System.Web.Script.Services;
 using System.Web.Services;
-
 using System.Web.UI.WebControls;
 
 
