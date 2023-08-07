@@ -70,6 +70,7 @@ public partial class Masters_Process_ProcessIssue : System.Web.UI.Page
 
                 if (Session["VarCompanyId"].ToString() == "37")
                 {
+                    DDunit.SelectedValue = "2";
                     ChkForExport.Visible = true;
                 }
                 else
@@ -308,7 +309,10 @@ public partial class Masters_Process_ProcessIssue : System.Web.UI.Page
         }
         if (ds.Tables[1].Rows.Count > 0)
         {
-            DDunit.SelectedValue = ds.Tables[1].Rows[0]["OrderUnitid"].ToString();
+            if (Session["VarCompanyNo"].ToString() != "37")
+            {
+                DDunit.SelectedValue = ds.Tables[1].Rows[0]["OrderUnitid"].ToString();
+            }
         }
 
         if (variable.VarMANYCUSTOMERORDERISSUE_SINGLEPRODUCTIONORDERNO == "1")

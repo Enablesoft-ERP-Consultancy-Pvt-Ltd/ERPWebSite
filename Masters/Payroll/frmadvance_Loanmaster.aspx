@@ -109,6 +109,7 @@
                                         <asp:ListItem Text="Loan" Value="2" />
                                         <asp:ListItem Text="Kharcha" Value="3" />
                                         <asp:ListItem Text="TDS" Value="4" />
+                                        <asp:ListItem Text="Other" Value="5" />
                                     </asp:DropDownList>
                                 </td>
                                 <td style="width: 20%">

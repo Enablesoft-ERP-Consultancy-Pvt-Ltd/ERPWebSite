@@ -102,7 +102,17 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                 int row = 0;
 
                 sht.Range("A1:K1").Merge();
-                sht.Range("A1").SetValue("QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
+                if (Session["varcompanyId"].ToString() == "45" && DDprocessname.SelectedItem.Text == "RE-WEAVING")
+                {
+                    sht.Range("A1").SetValue("NON CONFORMING REPORT");
+
+                   
+                }
+                else
+                {
+
+                    sht.Range("A1").SetValue("QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
+                }
                 sht.Range("A1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 sht.Range("A2:K2").Merge();
                 sht.Range("A2").SetValue("From :" + txtfromdate.Text + "  To : " + txttodate.Text);
@@ -369,7 +379,16 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     row = 0;
 
                     sht.Range("A1:X1").Merge();
-                    sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + " QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
+                    if (Session["varcompanyId"].ToString() == "45" && DDprocessname.SelectedItem.Text == "RE-WEAVING")
+                    {
+                        sht.Range("A1").SetValue("NON CONFORMING REPORT");
+                    }
+                    else
+                    {
+                        sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"] + " QC REPORT (" + DDprocessname.SelectedItem.Text + ")");
+                    
+                    }
+                    
                     sht.Range("A1:X1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                     sht.Range("A2:X2").Merge();
                     sht.Range("A2").SetValue("From :" + txtfromdate.Text + "  To : " + txttodate.Text);
@@ -402,11 +421,12 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     sht.Range("N3").Value = "DEFECTS";
                     sht.Range("O3").Value = "DEFECT TYPE";
                     sht.Range("P3").Value = "RESULT";
-
-                    sht.Range("Q3").Value = "STATUS";
-                    sht.Range("R3").Value = "NCM STATUS";
-                    sht.Range("S3").Value = "FINAL RESULT";
-
+                    if (Session["varcompanyId"].ToString() != "45")
+                    {
+                        sht.Range("Q3").Value = "STATUS";
+                        sht.Range("R3").Value = "NCM STATUS";
+                        sht.Range("S3").Value = "FINAL RESULT";
+                    }
                     sht.Range("T3").Value = "REMARK";
                     sht.Range("U3").Value = "ENTRY BY";
                     sht.Range("V3").Value = "INSPECTED BY";
@@ -443,9 +463,12 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                         sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["defect"]);
                         sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["DEFECTTYPE"]);
                         sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["defect"].ToString() == "" ? "PASS" : "FAIL");
-                        sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["STATUS"]);
-                        sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["NCM STATUS"]);
-                        sht.Range("S" + row).SetValue(ds.Tables[0].Rows[i]["FINAL RESULT"]);
+                        if (Session["varcompanyId"].ToString() != "45")
+                        {
+                            sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["STATUS"]);
+                            sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["NCM STATUS"]);
+                            sht.Range("S" + row).SetValue(ds.Tables[0].Rows[i]["FINAL RESULT"]);
+                        }
                         sht.Range("T" + row).SetValue(ds.Tables[0].Rows[i]["remark"]);
                         sht.Range("U" + row).SetValue(ds.Tables[0].Rows[i]["scanby"]);
                         sht.Range("V" + row).SetValue(ds.Tables[0].Rows[i]["QAPERSONNAME"]);

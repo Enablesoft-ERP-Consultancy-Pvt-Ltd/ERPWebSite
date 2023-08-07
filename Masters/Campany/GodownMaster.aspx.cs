@@ -18,6 +18,16 @@ public partial class Masters_Campany_GodownMaster : CustomPage
         if (!IsPostBack)
         {
             txtid.Text = "0";
+            
+            UtilityModule.ConditionalComboFill(ref DDBranchName, @"Select ID, BranchName 
+                            From BRANCHMASTER BM(nolock) 
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"], false, "");
+
+            if (DDBranchName.Items.Count == 0)
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Branch not define for this user!');", true);
+                return;
+            }
 
             UtilityModule.ConditonalChkBoxListFill(ref ChkBoxListProcessEmployeName, @"Select EI.EmpId, EI.EmpName 
                 From EmpInfo EI(Nolock) 
@@ -78,7 +88,7 @@ public partial class Masters_Campany_GodownMaster : CustomPage
                     }
                 }
 
-                SqlParameter[] _arrPara = new SqlParameter[7];
+                SqlParameter[] _arrPara = new SqlParameter[8];
                 _arrPara[0] = new SqlParameter("@GodawnId", Convert.ToInt32(txtid.Text));
                 _arrPara[1] = new SqlParameter("@GodownName", txtGodawnName.Text.ToUpper());
                 _arrPara[2] = new SqlParameter("@varuserid", Session["varuserid"]);
@@ -87,6 +97,7 @@ public partial class Masters_Campany_GodownMaster : CustomPage
                 _arrPara[5] = new SqlParameter("@EmpIDs", EmpID);
                 _arrPara[6] = new SqlParameter("@Msg", SqlDbType.NVarChar, 250);
                 _arrPara[6].Direction = ParameterDirection.Output;
+                _arrPara[7] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
 
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Godown", _arrPara);
 
@@ -150,7 +161,8 @@ public partial class Masters_Campany_GodownMaster : CustomPage
         {
             ChkForCompanyGodown.Checked = true;
         }
-        string strsql = "Select EmpID From GodownWiseEmp(nolock) Where GodownID = " + txtid.Text;
+        string strsql = "Select EmpID From GodownWiseEmp(nolock) Where GodownID = " + txtid.Text + @"
+                Select BranchID From GodownMaster(nolock) Where GodownID = " + txtid.Text;
         DataSet ds = SqlHelper.ExecuteDataset(strsql);
 
         if (ds.Tables[0].Rows.Count > 0)
@@ -165,6 +177,10 @@ public partial class Masters_Campany_GodownMaster : CustomPage
                     }
                 }
             }
+        }
+        if (ds.Tables[1].Rows.Count > 0)
+        {
+            DDBranchName.SelectedValue = ds.Tables[1].Rows[0]["BranchID"].ToString();
         }
 
         btnsave.Text = "Update";

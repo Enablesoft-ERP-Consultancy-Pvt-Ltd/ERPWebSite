@@ -1393,24 +1393,17 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 sht.Range("C2").Value = "Area";
                 sht.Range("B2:C2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
-                //DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "Width", "Length", "ShapeName");
-                DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "AREANEW", "ShapeName");
+                DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "Width", "Length", "ShapeName");
                 DataView dv1 = new DataView(dtdistinct);
-                //dv1.Sort = "Width,Length,ShapeName";
-                dv1.Sort = "AREANEW,ShapeName";
+                dv1.Sort = "Width,Length,ShapeName";
                 DataTable dtdistinct1 = dv1.ToTable();
                 row = 3;
 
                 foreach (DataRow dr in dtdistinct1.Rows)
                 {
-                    //sht.Range("A" + row).SetValue(dr["width"] + "x" + dr["Length"] + "  (" + dr["ShapeName"] + ")");
-                    //var qty = ds.Tables[0].Compute("sum(qty)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
-                    //var Area = ds.Tables[0].Compute("sum(ARea)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
-                    
-                    sht.Range("A" + row).SetValue(dr["AREANEW"] + "  (" + dr["ShapeName"] + ")");
-                    var qty = ds.Tables[0].Compute("sum(qty)", "AREANEW='" + dr["AREANEW"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
-                    var Area = ds.Tables[0].Compute("sum(ARea)", "AREANEW='" + dr["AREANEW"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
-
+                    sht.Range("A" + row).SetValue(dr["width"] + "x" + dr["Length"] + "  (" + dr["ShapeName"] + ")");
+                    var qty = ds.Tables[0].Compute("sum(qty)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
+                    var Area = ds.Tables[0].Compute("sum(Area)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
                     sht.Range("B" + row).SetValue(qty == DBNull.Value ? 0 : qty);
                     sht.Range("C" + row).SetValue(Area == DBNull.Value ? 0 : Area);
                     row = row + 1;
