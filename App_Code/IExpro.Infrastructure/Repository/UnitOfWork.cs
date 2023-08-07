@@ -93,6 +93,22 @@ namespace IExpro.Infrastructure.Repository
 
         }
 
+
+        IOrderRepository _OrdRepo;
+        public IOrderRepository OrdRepo
+        {
+            get
+            {
+                if (_OrdRepo != null)
+                    return _OrdRepo;
+                else
+                    return _OrdRepo = new OrderRepository(entities);
+
+            }
+
+        }
+
+
         IDocumentRepository _DocRepo;
         public IDocumentRepository DocRepo
         {

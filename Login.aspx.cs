@@ -300,7 +300,11 @@ public partial class Login : System.Web.UI.Page
                 variable.VarAreaFtRound = ds.Tables[0].Rows[0]["VarAreaFtRound"].ToString();
                 variable.VarRoundFtFlag = Convert.ToInt32(ds.Tables[0].Rows[0]["RoundFtFlag"].ToString());
                 variable.VarGetPurchaseRateFromMaster = ds.Tables[0].Rows[0]["GetPurchaseRateFromMaster"].ToString();
-                Response.Redirect("main.aspx");
+
+
+
+
+                Response.Redirect("Home.aspx");
                 //}
                 //else
                 //{
