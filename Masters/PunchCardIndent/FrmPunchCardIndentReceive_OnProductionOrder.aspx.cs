@@ -774,7 +774,8 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive_OnProduct
     protected void FillReceiveGrid()
     {
         string str = @"select MIM.PCIReceiveId, MID.PCIReceiveDetailID,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
-                        CASE WHEN PCIGSNS.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
+                        CASE WHEN OD.OrderUnitId = 6 THEN VF.SizeInch else Case When OD.OrderUnitId = 1 THEN VF.SizeMtr ELSE VF.SizeFt END End As Size,
+                        --CASE WHEN PCIGSNS.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
                         MID.PCIIssueDetailId,MIM.FolioIssueOrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.RecChallanNo,
                         Replace(CONVERT(nvarchar(11),MIM.ReceiveDate,106),' ','-') as ReceiveDate,MID.RecNoOfSet,MID.RecPerSetQty,MId.TotalReceiveQty,
                         PCIGSNS.StockNoSeries,MID.SNSID,MID.PCIIssueId,MID.PCIIssueDetailId,isnull(MID.Rate,0) as Rate,

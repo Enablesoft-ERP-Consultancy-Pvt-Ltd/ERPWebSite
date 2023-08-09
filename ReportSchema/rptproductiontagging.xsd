@@ -30,6 +30,7 @@
               <xs:element name="IssueInternalProdAssQty" type="xs:int" minOccurs="0" />
               <xs:element name="UserName" type="xs:string" minOccurs="0" />
               <xs:element name="MaxDispatchedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="BuyerDesign" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
