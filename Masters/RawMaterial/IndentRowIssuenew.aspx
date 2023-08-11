@@ -1,5 +1,5 @@
-﻿<%@ Page Title="Indent Raw Issue" Language="C#" AutoEventWireup="true" CodeFile="IndentRowIssue.aspx.cs"
-    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_process_PRI" %>
+﻿<%@ Page Title="Indent Raw Issue" Language="C#" AutoEventWireup="true" CodeFile="IndentRowIssuenew.aspx.cs"
+    MasterPageFile="~/ERPmaster.master" EnableEventValidation="false" Inherits="Masters_process_IndentRowIssuenew" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
@@ -77,12 +77,12 @@
                                     <asp:DropDownList ID="ddCompName" runat="server" Width="150px" CssClass="dropdown">
                                     </asp:DropDownList>
                                 </td>
-                                <td class="tdstyle">
-                                    <asp:Label ID="Label33" runat="server" Text="BranchName" CssClass="labelbold"></asp:Label>
-                                    <br />
-                                    <asp:DropDownList CssClass="dropdown" ID="DDBranchName" Width="150" runat="server">
-                                    </asp:DropDownList>
-                                </td>
+                            <td class="tdstyle">
+                                <asp:Label ID="Label33" runat="server" Text="BranchName" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:DropDownList CssClass="dropdown" ID="DDBranchName" Width="150" runat="server">
+                                </asp:DropDownList>
+                            </td>
                                 <td id="Td2" class="tdstyle">
                                     <asp:Label ID="Label3" Text=" Process Name" runat="server" CssClass="labelbold" />
                                     <br />
@@ -103,6 +103,12 @@
                                         AutoPostBack="True" OnSelectedIndexChanged="ddindentno_SelectedIndexChanged">
                                     </asp:DropDownList>
                                 </td>
+                                 <td id="TDItemDescription" runat="server">
+                                <asp:Label ID="Label32" runat="server" Text="Order Description" CssClass="labelbold"></asp:Label><br />
+                                <asp:DropDownList ID="DDitemdescription" runat="server" CssClass="dropdown" AutoPostBack="true"
+                                    Width="370px" OnSelectedIndexChanged="DDitemdescription_SelectedIndexChanged">
+                                </asp:DropDownList>
+                            </td>
                                 <td id="Td5" align="center" class="tdstyle">
                                     <asp:Label ID="Label5" Text=" Issue Date" runat="server" CssClass="labelbold" />
                                     <b style="color: Red">&nbsp; *</b><br />
@@ -130,10 +136,9 @@
                                         UseContextKey="True">
                                     </cc1:AutoCompleteExtender>
                                 </td>
-                                <td id="TDGenerateIndentDate" class="tdstyle" runat="server" visible="false">
-                                    <asp:Label ID="lblGenerateIndentDate" Text="Indent Date" runat="server" CssClass="labelbold" />
-                                    <asp:TextBox ID="txtGenerateIndentDate" Width="100px" runat="server" CssClass="textb"
-                                        ReadOnly="true" Enabled="false"></asp:TextBox>
+                                 <td id="TDGenerateIndentDate" class="tdstyle" runat="server" visible="false">
+                                    <asp:Label ID="lblGenerateIndentDate" Text="Indent Date" runat="server" CssClass="labelbold" />  
+                                    <asp:TextBox ID="txtGenerateIndentDate" Width="100px" runat="server" CssClass="textb" ReadOnly="true" Enabled="false"></asp:TextBox>                                 
                                 </td>
                             </tr>
                         </table>
@@ -314,12 +319,12 @@
                     </table>
                 </fieldset>
                 <table width="100%">
-                    <tr>
-                        <td align="left" class="tdstyle" id="TDMoisture" runat="server" visible="false">
-                            <asp:Label ID="Label48" runat="server" Text="Moisture" CssClass="labelbold"></asp:Label>
-                            <br />
-                            <asp:TextBox ID="TxtMoisture" runat="server" CssClass="textb" Width="80px"></asp:TextBox>
-                        </td>
+                    <tr>                            
+                    <td align="left" class="tdstyle" id="TDMoisture" runat="server" visible="false">
+                                <asp:Label ID="Label48" runat="server" Text="Moisture" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:TextBox ID="TxtMoisture" runat="server" CssClass="textb" Width="80px"></asp:TextBox>
+                            </td>
                         <td style="width: 60%" id="TDtxtremarks" runat="server">
                             <asp:Label ID="Label16" Text="Remark" runat="server" CssClass="labelbold" />
                             <br />
@@ -329,8 +334,6 @@
                         <td style="width: 40%; text-align: right">
                             <asp:CheckBox ID="ChkForGSTReport" runat="server" Text="Check For GST Report" CssClass="checkboxbold"
                                 Visible="false" />
-                            <asp:Button ID="BtnProcessToPNM" runat="server" Text="PNM INC." CssClass="buttonnorm"
-                                Visible="false" OnClick="BtnProcessToPNM_Click" />
                             <asp:Button ID="btnstatus" runat="server" Text="Order Complete" Width="150px" Visible="false"
                                 CssClass="buttonnorm" OnClick="btnstatus_Click" />
                             <asp:Button ID="btnnew" runat="server" Text="New" OnClientClick="return ClickNew()"

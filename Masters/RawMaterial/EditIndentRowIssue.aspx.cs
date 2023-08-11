@@ -78,6 +78,7 @@ public partial class Masters_Rawmaterial_EditIndentRowIssue : System.Web.UI.Page
                     break;
                 case "16":
                     TDMoisture.Visible = true;
+                    BtnProcessToPNM.Visible = true;
                     break;
                 case "28":
                     TDMoisture.Visible = true;
@@ -1914,6 +1915,42 @@ public partial class Masters_Rawmaterial_EditIndentRowIssue : System.Web.UI.Page
             lblSGST.Text = "0";
             lblIGST.Text = "0";
             // fill_text();
+        }
+    }
+    protected void BtnProcessToPNM_Click(object sender, EventArgs e)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            SqlParameter[] param = new SqlParameter[5];
+            param[0] = new SqlParameter("@ChampoPrmID", ViewState["Prmid"]);
+            param[1] = new SqlParameter("@USERID", 1);
+            param[2] = new SqlParameter("@MASTERCOMPANYID", 28);
+            param[3] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
+            param[3].Direction = ParameterDirection.Output;
+            param[4] = new SqlParameter("@TYPEFLAG", 0);
+
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Save_ChampoIndentRawIssueToOtherCompany", param);
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + param[3].Value + "')", true);
+            Tran.Commit();
+        }
+        catch (Exception ex)
+        {
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + ex.Message + "')", true);
+            Tran.Rollback();
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
         }
     }
 }

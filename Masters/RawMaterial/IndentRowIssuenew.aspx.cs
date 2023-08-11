@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_process_PRI : System.Web.UI.Page
+public partial class Masters_process_IndentRowIssuenew : System.Web.UI.Page
 {
     int ItemFinishedId = 0;
     static int MasterCompanyId;
@@ -105,7 +105,6 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                     break;
                 case "16":
                     TDMoisture.Visible = true;
-                    BtnProcessToPNM.Visible = true;
                     break;
                 case "28":
                     TDMoisture.Visible = true;
@@ -271,6 +270,27 @@ public partial class Masters_process_PRI : System.Web.UI.Page
     }
     protected void ddindentno_SelectedIndexChanged(object sender, EventArgs e)
     {
+
+
+        string stritems = @"select OD.OrderDetailId,Vf.ITEM_NAME+' '+VF.QualityName+' '+Vf.designName+' '+Vf.ColorName+' '+vf.ShapeName+' '+case when OD.flagsize=1 Then Vf.SizeMtr When OD.flagsize=2 Then
+                    vf.sizeinch ELse vf.sizeft End+' '+case when Vf.SizeId>0 Then Sz.Type Else '' ENd as ItemDescription
+                    From OrderMaster Om inner join OrderDetail OD on Om.OrderId=Od.OrderId
+                    inner join IndentDetail pp on pp.ORDERID=od.orderid --and pp.OrderDetailId=od.OrderDetailId
+                    inner Join V_FinishedItemDetail vf on OD.Item_Finished_Id=vf.ITEM_FINISHED_ID
+                    Left join SizeType Sz on Od.flagsize=Sz.val Where OM.Companyid=" + ddCompName.SelectedValue + "and pp.IndentId=" + ddindentno.SelectedValue + @" 
+                     group by OD.OrderDetailId,Vf.ITEM_NAME,VF.QualityName,Vf.designName,Vf.ColorName,
+					vf.ShapeName,OD.flagsize,Vf.SizeMtr,vf.sizeft,sizeinch,Vf.SizeId,Sz.Type order by OD.orderdetailid";
+        UtilityModule.ConditionalComboFill(ref DDitemdescription, stritems, true, "--Plz Select--");
+
+
+
+
+      
+    }
+
+    protected void DDitemdescription_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
         int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarCompanyType From MasterSetting"));
         switch (VarCompanyNo)
         {
@@ -281,25 +301,25 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 procode.Visible = true;
                 break;
         }
-        if (Convert.ToInt32(Session["varcompanyNo"]) == 42)
-        {
-            UtilityModule.ConditionalComboFill(ref ddgodown, @"Select Distinct ID.GodownID, GM.GodownName  
-                From IndentDetail ID(Nolock)
-                JOIN GodownMaster GM(Nolock) ON GM.GoDownID = ID.GodownID 
-                Where IndentId = " + ddindentno.SelectedValue + @" 
-                Order By GM.GodownName ", true, "Select Godown");
-        }
+//        if (Convert.ToInt32(Session["varcompanyNo"]) == 42)
+//        {
+//            UtilityModule.ConditionalComboFill(ref ddgodown, @"Select Distinct ID.GodownID, GM.GodownName  
+//                From IndentDetail ID(Nolock)
+//                JOIN GodownMaster GM(Nolock) ON GM.GoDownID = ID.GodownID 
+//                Where IndentId = " + ddindentno.SelectedValue + @" 
+//                Order By GM.GodownName ", true, "Select Godown");
+//        }
 
-        if (Convert.ToInt32(Session["varcompanyNo"]) == 22)
-        {
-            string str2 = "";
-            str2 = "select IsNull(REPLACE(CONVERT(NVARCHAR(11),Date,106),' ','-'),'') As GenerateIndentDate  From IndentMaster where IndentId=" + ddindentno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
-             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
-             if (ds2.Tables[0].Rows.Count > 0)
-             {
-                 txtGenerateIndentDate.Text = ds2.Tables[0].Rows[0]["GenerateIndentDate"].ToString();
-             }
-        }
+//        if (Convert.ToInt32(Session["varcompanyNo"]) == 22)
+//        {
+//            string str2 = "";
+//            str2 = "select IsNull(REPLACE(CONVERT(NVARCHAR(11),Date,106),' ','-'),'') As GenerateIndentDate  From IndentMaster where IndentId=" + ddindentno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+//            DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+//            if (ds2.Tables[0].Rows.Count > 0)
+//            {
+//                txtGenerateIndentDate.Text = ds2.Tables[0].Rows[0]["GenerateIndentDate"].ToString();
+//            }
+//        }
 
         fillordergrid();
         trorder.Visible = true;
@@ -319,28 +339,47 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 ChKForOrder.Checked = true;
                 checkBoxEvent();
                 TDForOrderWise.Visible = true;
-
-
-                switch (Session["varcompanyNo"].ToString())
+                if (DDitemdescription.SelectedIndex > 0)
                 {
-                    case "7":
-                        UtilityModule.ConditionalComboFill(ref ddCatagory, @"  SELECT DISTINCT icm.CATEGORY_ID , icm.CATEGORY_NAME  FROM ITEM_MASTER im INNER JOIN
+                    UtilityModule.ConditionalComboFill(ref ddCatagory, @"  SELECT DISTINCT icm.CATEGORY_ID , icm.CATEGORY_NAME  FROM ITEM_MASTER im INNER JOIN
                  ITEM_PARAMETER_MASTER ipm ON im.ITEM_ID = ipm.ITEM_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN
                  OrderLocalConsumption OC  ON  ipm.ITEM_FINISHED_ID = OC.FinishedId Inner join UserRights_Category UC on(icm.Category_ID=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @")
-                 Where OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ")", true, "Select Category Name");
-                 
-                 CommanFunction.FillCombo(ddlunit, @"Select DISTINCT U.UnitId,UnitName from OrderLocalConsumption OC,Unit U
+                 Where OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ") and IndentId =" + ddindentno.SelectedValue + ")", true, "Select Category Name");
+                    CommanFunction.FillCombo(ddlunit, @"Select DISTINCT U.UnitId,UnitName from OrderLocalConsumption OC,Unit U
                  Where  U.MasterCompanyId=" + Session["varCompanyId"] + " And U.UnitId=OC.UnitId And OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ") Order By U.UnitId");
-                        break;
-                    default:
-                        UtilityModule.ConditionalComboFill(ref ddCatagory, @"  SELECT DISTINCT icm.CATEGORY_ID , icm.CATEGORY_NAME  FROM ITEM_MASTER im INNER JOIN
-                 ITEM_PARAMETER_MASTER ipm ON im.ITEM_ID = ipm.ITEM_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN
-                 OrderLocalConsumption OC  ON  ipm.ITEM_FINISHED_ID = OC.FinishedId Inner join UserRights_Category UC on(icm.Category_ID=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @")
-                 Where OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ")", true, "Select Category Name");
-                        CommanFunction.FillCombo(ddlunit, @"Select DISTINCT U.UnitId,UnitName from OrderLocalConsumption OC,Unit U
-                 Where  U.MasterCompanyId=" + Session["varCompanyId"] + " And U.UnitId=OC.UnitId And OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ") Order By U.UnitId");
-                        break;
+
+
                 }
+                else
+                {
+
+                    UtilityModule.ConditionalComboFill(ref ddCatagory, @"  SELECT DISTINCT icm.CATEGORY_ID , icm.CATEGORY_NAME  FROM ITEM_MASTER im INNER JOIN
+                 ITEM_PARAMETER_MASTER ipm ON im.ITEM_ID = ipm.ITEM_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN
+                 OrderLocalConsumption OC  ON  ipm.ITEM_FINISHED_ID = OC.FinishedId Inner join UserRights_Category UC on(icm.Category_ID=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @")
+                 Where OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ")", true, "Select Category Name");
+                    CommanFunction.FillCombo(ddlunit, @"Select DISTINCT U.UnitId,UnitName from OrderLocalConsumption OC,Unit U
+                 Where  U.MasterCompanyId=" + Session["varCompanyId"] + " And U.UnitId=OC.UnitId And OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ") Order By U.UnitId");
+                
+                
+                
+                
+                }
+
+//                switch (Session["varcompanyNo"].ToString())
+//                {
+//                    case "7":
+//                        UtilityModule.ConditionalComboFill(ref ddCatagory, @"  SELECT DISTINCT icm.CATEGORY_ID , icm.CATEGORY_NAME  FROM ITEM_MASTER im INNER JOIN
+//                 ITEM_PARAMETER_MASTER ipm ON im.ITEM_ID = ipm.ITEM_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN
+//                 OrderLocalConsumption OC  ON  ipm.ITEM_FINISHED_ID = OC.FinishedId Inner join UserRights_Category UC on(icm.Category_ID=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @")
+//                 Where OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ")", true, "Select Category Name");
+
+//                        CommanFunction.FillCombo(ddlunit, @"Select DISTINCT U.UnitId,UnitName from OrderLocalConsumption OC,Unit U
+//                 Where  U.MasterCompanyId=" + Session["varCompanyId"] + " And U.UnitId=OC.UnitId And OrderId in(Select Distinct OrderId From  dbo.IndentDetail where IndentId =" + ddindentno.SelectedValue + ") Order By U.UnitId");
+//                        break;
+                   // default:
+                       
+                 //       break;
+               // }
                 Fill_GridForLocalConsump();
             }
             else
@@ -357,16 +396,33 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 }
                 else
                 {
+                    if(DDitemdescription.SelectedIndex>0)
+                    {
                     UtilityModule.ConditionalComboFill(ref ddCatagory, @"  SELECT DISTINCT icm.CATEGORY_ID , icm.CATEGORY_NAME  FROM ITEM_MASTER im INNER JOIN
                  ITEM_PARAMETER_MASTER ipm ON im.ITEM_ID = ipm.ITEM_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN
                  IndentDetail  id INNER JOIN   IndentMaster idm ON id.IndentId = idm.IndentID ON  ipm.ITEM_FINISHED_ID = id.IFinishedId Inner join UserRights_Category UC on(icm.Category_ID=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @")
-                 Where idm.partyid=" + ddempname.SelectedValue + " and idm.processid=" + ddProcessName.SelectedValue + " and  idm.IndentId=" + ddindentno.SelectedValue, true, "Select Category Name");
+                 Where idm.partyid=" + ddempname.SelectedValue + " and idm.processid=" + ddProcessName.SelectedValue + " and  idm.IndentId=" + ddindentno.SelectedValue+" and  id.orderdetailid=" + DDitemdescription.SelectedValue, true, "Select Category Name");
+                    }
+                    else
+                    {
+                        UtilityModule.ConditionalComboFill(ref ddCatagory, @"  SELECT DISTINCT icm.CATEGORY_ID , icm.CATEGORY_NAME  FROM ITEM_MASTER im INNER JOIN
+                 ITEM_PARAMETER_MASTER ipm ON im.ITEM_ID = ipm.ITEM_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN
+                 IndentDetail  id INNER JOIN   IndentMaster idm ON id.IndentId = idm.IndentID ON  ipm.ITEM_FINISHED_ID = id.IFinishedId Inner join UserRights_Category UC on(icm.Category_ID=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @")
+                 Where idm.partyid=" + ddempname.SelectedValue + " and idm.processid=" + ddProcessName.SelectedValue + " and  idm.IndentId=" + ddindentno.SelectedValue , true, "Select Category Name");
+                    
+                    
+                    
+                    }
                 }
                 CommanFunction.FillCombo(ddlunit, @"Select DISTINCT U.UnitId,UnitName from PP_Consumption PP,IndentDetail ID,ORDER_CONSUMPTION_DETAIL OCD,Unit U,ProcessProgram P
                  Where ID.PPNo=PP.PPId And OCD.OrderDetailId=PP.OrderDetailId And U.UnitId=OCD.IUnitId And P.PPID=PP.PPId And OCD.ProcessiD=P.Process_iD
                  And Id.IndentId=" + ddindentno.SelectedValue + " And P.MasterCompanyId=" + Session["varCompanyId"] + " Order By U.UnitId");
             }
         }
+
+
+
+
     }
     protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -419,10 +475,24 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref dddesign, @"SELECT DISTINCT dbo.Design.designId, dbo.Design.designName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                                if (DDitemdescription.SelectedIndex > 0)
+                                {
+                                    UtilityModule.ConditionalComboFill(ref dddesign, @"SELECT DISTINCT dbo.Design.designId, dbo.Design.designName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
                       dbo.Design ON dbo.ITEM_PARAMETER_MASTER.DESIGN_ID = dbo.Design.designId
-                       WHERE  dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue, true, "--Select Design--");
+                       WHERE  dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + " and dbo.IndentDetail.orderdetailid =" + DDitemdescription.SelectedValue, true, "--Select Design--");
+                                }
+                                else
+                                {
+
+                                    UtilityModule.ConditionalComboFill(ref dddesign, @"SELECT DISTINCT dbo.Design.designId, dbo.Design.designName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                      dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
+                      dbo.Design ON dbo.ITEM_PARAMETER_MASTER.DESIGN_ID = dbo.Design.designId
+                       WHERE  dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue , true, "--Select Design--");
+                                
+                                
+                                
+                                }
                             }
                         }
                         break;
@@ -445,10 +515,21 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                                if (DDitemdescription.SelectedIndex > 0)
+                                {
+                                    UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
                       dbo.color ON dbo.ITEM_PARAMETER_MASTER.COLOR_ID = dbo.color.ColorId
-                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue, true, "--Select Color--");
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + " and isnull(IndentDetail.orderdetailid,0)= " + DDitemdescription.SelectedValue + "", true, "--Select Color--");
+                                }
+                                else
+                                {
+
+                                    UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                      dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
+                      dbo.color ON dbo.ITEM_PARAMETER_MASTER.COLOR_ID = dbo.color.ColorId
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue , true, "--Select Color--");
+                                }
                             }
                         }
                         break;
@@ -471,11 +552,22 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                             }
                             else
                             {
+                                if (DDitemdescription.SelectedIndex > 0)
+                                {
 
-                                UtilityModule.ConditionalComboFill(ref ddshape, @"SELECT DISTINCT dbo.Shape.ShapeId, dbo.Shape.ShapeName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                                    UtilityModule.ConditionalComboFill(ref ddshape, @"SELECT DISTINCT dbo.Shape.ShapeId, dbo.Shape.ShapeName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
                       dbo.Shape ON dbo.ITEM_PARAMETER_MASTER.SHAPE_ID = dbo.Shape.ShapeId
-                      WHERE dbo.IndentDetail.IndentId = " + ddindentno.SelectedValue, true, "--Select Shape--");
+                      WHERE dbo.IndentDetail.IndentId = " + ddindentno.SelectedValue + " and isnull(IndentDetail.orderdetailid,0)=" + DDitemdescription.SelectedValue + " ", true, "--Select Shape--");
+                                }
+                                else
+                                {
+                                    UtilityModule.ConditionalComboFill(ref ddshape, @"SELECT DISTINCT dbo.Shape.ShapeId, dbo.Shape.ShapeName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                      dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
+                      dbo.Shape ON dbo.ITEM_PARAMETER_MASTER.SHAPE_ID = dbo.Shape.ShapeId
+                      WHERE dbo.IndentDetail.IndentId = " + ddindentno.SelectedValue , true, "--Select Shape--");
+                                
+                                }
                             }
                         }
                         break;
@@ -499,10 +591,25 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref ddsize, @"SELECT DISTINCT dbo.Size.SizeId, dbo.Size.SizeFt FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                                if (DDitemdescription.SelectedIndex > 0)
+                                {
+
+
+                                    UtilityModule.ConditionalComboFill(ref ddsize, @"SELECT DISTINCT dbo.Size.SizeId, dbo.Size.SizeFt FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
                       dbo.Size ON dbo.ITEM_PARAMETER_MASTER.SIZE_ID = dbo.Size.SizeId
-                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue, true, "Size in Ft");
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + " and isnull(IndentDetail.orderdetailid,0)= " + DDitemdescription.SelectedValue + "", true, "Size in Ft");
+                                }
+                                else
+                                {
+                                    UtilityModule.ConditionalComboFill(ref ddsize, @"SELECT DISTINCT dbo.Size.SizeId, dbo.Size.SizeFt FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                      dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
+                      dbo.Size ON dbo.ITEM_PARAMETER_MASTER.SIZE_ID = dbo.Size.SizeId
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue , true, "Size in Ft");
+                                
+                                
+                                }
+
                             }
                         }
                         break;
@@ -520,10 +627,23 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                         }
                         else
                         {
-                            UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                            if (DDitemdescription.SelectedIndex > 0)
+                            {
+                                UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
                       dbo.color ON dbo.ITEM_PARAMETER_MASTER.COLOR_ID = dbo.color.ColorId
-                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue, true, "--Select Color--");
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + " and isnull(IndentDetail.orderdetailid,0)= " + DDitemdescription.SelectedValue + "", true, "--Select Color--");
+                            }
+                            else
+                            {
+                                UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                      dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
+                      dbo.color ON dbo.ITEM_PARAMETER_MASTER.COLOR_ID = dbo.color.ColorId
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue , true, "--Select Color--");
+                            
+                            
+                            
+                            }
                         }
                         break;
                 }
@@ -546,10 +666,23 @@ public partial class Masters_process_PRI : System.Web.UI.Page
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
+
+                if (DDitemdescription.SelectedIndex > 0)
+                {
+                    UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
                       dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
-                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + " AND dbo.ITEM_MASTER.CATEGORY_ID =" + ddCatagory.SelectedValue, true, "--Select Item--");
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + " AND dbo.ITEM_MASTER.CATEGORY_ID =" + ddCatagory.SelectedValue + " and isnull(IndentDetail.orderdetailid,0)= " + DDitemdescription.SelectedValue + " ", true, "--Select Item--");
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                      dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
+                      dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
+                      WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + " AND dbo.ITEM_MASTER.CATEGORY_ID =" + ddCatagory.SelectedValue , true, "--Select Item--");
+                
+                
+                }
             }
         }
     }
@@ -594,11 +727,24 @@ public partial class Masters_process_PRI : System.Web.UI.Page
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT dbo.Quality.QualityId,dbo.Quality.QualityName
+                if (DDitemdescription.SelectedIndex > 0)
+                {
+                    UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT dbo.Quality.QualityId,dbo.Quality.QualityName
                      FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
                       dbo.Quality ON dbo.ITEM_PARAMETER_MASTER.QUALITY_ID = dbo.Quality.QualityId
-                     WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + "and quality.item_id=" + dditemname.SelectedValue, true, "Select Quallity");
+                     WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + "and quality.item_id=" + dditemname.SelectedValue + " and isnull(IndentDetail.orderdetailid,0)= " + DDitemdescription.SelectedValue + "", true, "Select Quallity");
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT dbo.Quality.QualityId,dbo.Quality.QualityName
+                     FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
+                      dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.IFinishedId And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN
+                      dbo.Quality ON dbo.ITEM_PARAMETER_MASTER.QUALITY_ID = dbo.Quality.QualityId
+                     WHERE dbo.IndentDetail.IndentId =" + ddindentno.SelectedValue + "and quality.item_id=" + dditemname.SelectedValue , true, "Select Quallity");     
+                
+                
+                }
             }
         }
     }
@@ -632,7 +778,7 @@ public partial class Masters_process_PRI : System.Web.UI.Page
             SqlTransaction tran = con.BeginTransaction();
             try
             {
-                SqlParameter[] arr = new SqlParameter[29];
+                SqlParameter[] arr = new SqlParameter[30];
                 arr[0] = new SqlParameter("@prmid", SqlDbType.Int);
                 arr[1] = new SqlParameter("@companyid", SqlDbType.Int);
                 arr[2] = new SqlParameter("@empid", SqlDbType.Int);
@@ -662,6 +808,7 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 arr[26] = new SqlParameter("@IGST", SqlDbType.Float);
                 arr[27] = new SqlParameter("@Moisture", SqlDbType.Float);
                 arr[28] = new SqlParameter("@BranchID", SqlDbType.Int);
+                arr[29] = new SqlParameter("@orderdetailid", SqlDbType.Int);
 
                 arr[0].Direction = ParameterDirection.InputOutput;
                 arr[0].Value = ViewState["Prmid"];
@@ -716,8 +863,9 @@ public partial class Masters_process_PRI : System.Web.UI.Page
                 arr[26].Value = TDGSTType.Visible == true ? lblIGST.Text : "0";
                 arr[27].Value = TDMoisture.Visible == true ? TxtMoisture.Text : "0";
                 arr[28].Value = DDBranchName.SelectedValue;
+                arr[29].Value = DDitemdescription.SelectedValue;
 
-                SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[PRO_PP_PRM]", arr);
+                SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[PRO_PP_PRM_agni]", arr);
                 txtchalanno.Text = arr[5].Value.ToString();
                 ViewState["Prmid"] = arr[0].Value.ToString();
                 ViewState["Prtid"] = arr[8].Value.ToString();
@@ -1177,6 +1325,7 @@ public partial class Masters_process_PRI : System.Web.UI.Page
             }
             else
             {
+
                 str = "SELECT Distinct LotNo,LotNo FROM IndentDetail Where IndentId=" + ddindentno.SelectedValue + " and ifinishedid=" + Varfinishedid;
             }
             UtilityModule.ConditionalComboFill(ref ddlotno, str, true, "Select LotNo");
@@ -1186,7 +1335,7 @@ public partial class Masters_process_PRI : System.Web.UI.Page
         {
             UtilityModule.ConditionalComboFill(ref ddlotno, "SELECT Distinct LotNo,LotNo FROM IndentDetail Where IndentId=" + ddindentno.SelectedValue + "", true, "Select LotNo");
         }
-        SqlParameter[] _array = new SqlParameter[7];
+        SqlParameter[] _array = new SqlParameter[8];
         _array[0] = new SqlParameter("@Finishedid", Varfinishedid);
         _array[1] = new SqlParameter("@indentId", ddindentno.SelectedValue);
         _array[2] = new SqlParameter("@StockQty", SqlDbType.Float);
@@ -1194,13 +1343,14 @@ public partial class Masters_process_PRI : System.Web.UI.Page
         _array[4] = new SqlParameter("@PreIssueQty", SqlDbType.Float);
         _array[5] = new SqlParameter("@PendingQty", SqlDbType.Float);
         _array[6] = new SqlParameter("@varcompanyType", SqlDbType.Int);
+        _array[7] = new SqlParameter("@orderdetailid", DDitemdescription.SelectedValue);
         _array[2].Direction = ParameterDirection.Output;
         _array[3].Direction = ParameterDirection.Output;
         _array[4].Direction = ParameterDirection.Output;
         _array[5].Direction = ParameterDirection.Output;
         _array[6].Direction = ParameterDirection.Output;
 
-        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FillIndent_Issue_Qty", _array);
+        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FillIndent_Issue_Qty_agni", _array);
         if (_array[6].Value.ToString() == "7")
         {
             txtstock.Text = "0";
@@ -1912,7 +2062,17 @@ public partial class Masters_process_PRI : System.Web.UI.Page
     }
     private void fillordergrid()
     {
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CATEGORY_NAME +' '+ ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName AS description,Quantity as qty from IndentMaster IM INNER JOIN INDENTDETAIL ID ON ID.INDENTID=IM.INDENTID INNER JOIN V_FinishedItemDetail VD ON VD.ITEM_FINISHED_ID=ID.OFINISHEDID where id.indentid=" + ddindentno.SelectedValue + " And VD.MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = new DataSet();
+        if (DDitemdescription.SelectedIndex > 0)
+        {
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CATEGORY_NAME +' '+ ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName AS description,Quantity as qty from IndentMaster IM INNER JOIN INDENTDETAIL ID ON ID.INDENTID=IM.INDENTID INNER JOIN V_FinishedItemDetail VD ON VD.ITEM_FINISHED_ID=ID.OFINISHEDID where id.indentid=" + ddindentno.SelectedValue + " And VD.MasterCompanyId=" + Session["varCompanyId"] + "and ID.orderdetailid="+DDitemdescription.SelectedValue);
+
+        }
+        else
+        {
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CATEGORY_NAME +' '+ ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName AS description,Quantity as qty from IndentMaster IM INNER JOIN INDENTDETAIL ID ON ID.INDENTID=IM.INDENTID INNER JOIN V_FinishedItemDetail VD ON VD.ITEM_FINISHED_ID=ID.OFINISHEDID where id.indentid=" + ddindentno.SelectedValue + " And VD.MasterCompanyId=" + Session["varCompanyId"] + "");
+        }
+
         dgorder.DataSource = ds;
         dgorder.DataBind();
     }
@@ -2255,42 +2415,6 @@ public partial class Masters_process_PRI : System.Web.UI.Page
             lblSGST.Text = "0";
             lblIGST.Text = "0";
             // fill_text();
-        }
-    }
-    protected void BtnProcessToPNM_Click(object sender, EventArgs e)
-    {
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        if (con.State == ConnectionState.Closed)
-        {
-            con.Open();
-        }
-        SqlTransaction Tran = con.BeginTransaction();
-        try
-        {
-            SqlParameter[] param = new SqlParameter[5];
-            param[0] = new SqlParameter("@ChampoPrmID", ViewState["Prmid"]);
-            param[1] = new SqlParameter("@USERID", 1);
-            param[2] = new SqlParameter("@MASTERCOMPANYID", 28);
-            param[3] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
-            param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@TYPEFLAG", 0);
-
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Save_ChampoIndentRawIssueToOtherCompany", param);
-            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + param[3].Value + "')", true);
-            Tran.Commit();
-        }
-        catch (Exception ex)
-        {
-            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + ex.Message + "')", true);
-            Tran.Rollback();
-        }
-        finally
-        {
-            if (con.State == ConnectionState.Open)
-            {
-                con.Close();
-                con.Dispose();
-            }
         }
     }
 }
