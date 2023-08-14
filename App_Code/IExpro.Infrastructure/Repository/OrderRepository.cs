@@ -234,30 +234,8 @@ PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGS
                     RetQty = x.ReturnQty != null ? x.ReturnQty.ToString() : string.Empty,
                     BillNo = x.BillNo != null ? x.BillNo : string.Empty,
                 });
-
-
                 return (lst);
-
-
-
             }
-
-
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
