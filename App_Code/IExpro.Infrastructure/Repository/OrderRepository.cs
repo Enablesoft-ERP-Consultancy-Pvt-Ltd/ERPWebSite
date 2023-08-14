@@ -45,7 +45,9 @@ namespace IExpro.Infrastructure.Repository
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
 
-                string sqlQuery = @"Select p.CompanyId,r.OrderId,q.ShortName,t.CustomerCode,r.CustomerOrderNo,r.OrderDate,r.DispatchDate,r.PackingDate,r.PackingId,r.ItemQuantity Quantity,r.DelayDays
+                string sqlQuery = @"Select p.CompanyId,r.OrderId,q.ShortName,t.CustomerCode,r.CustomerOrderNo,CONVERT(NVARCHAR(11), r.OrderDate, 106) OrderDate,
+CONVERT(NVARCHAR(11), r.DispatchDate, 106) DispatchDate,CONVERT(NVARCHAR(11), r.PackingDate, 106) PackingDate,
+r.PackingId,r.ItemQuantity Quantity,r.DelayDays
 from Master_Company p inner join CompanyInfo q on p.CompanyId=q.MasterCompanyid
 inner join (
 Select p.CompanyId,p.CustomerId,p.OrderId,--q.Item_Finished_Id as FinishedId,
@@ -60,7 +62,8 @@ p.CustomerOrderNo,p.OrderDate,p.DispatchDate,DATEDIFF(day,CAST(p.DispatchDate as
 Having s.PackingDate is null
 ) as r on q.CompanyId=r.CompanyId
 inner join customerinfo t on r.CustomerId=t.CustomerId
-Where (r.OrderDate >= DATEADD(month, -6, GetDate())) AND  p.CompanyId=@CompanyId";
+Where (r.OrderDate >= DATEADD(month, -6, GetDate())) AND  p.CompanyId=@CompanyId
+";
                 return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
 
 
@@ -201,7 +204,7 @@ LEFT JOIN PURCHASERECEIVEDETAIL PIIR ON PIIR.PINDENTISSUETRANID=PIIT.PINDENTISSU
 LEFT JOIN PURCHASERECEIVEMASTER PRM ON PRM.PURCHASERECEIVEID=PIIR.PURCHASERECEIVEID    
 LEFT JOIN V_PURCHASERETURNDETAIL V ON PIIR.PURCHASERECEIVEDETAILID=V.PURCHASERECEIVEDETAILID    
 --LEFT JOIN V_PURCHASEWITHBUYER VP ON VP.PINDENTISSUEID=PII.PINDENTISSUEID    
-LEFT JOIN OrderMaster OM ON OM.OrderID = PIIT.OrderID     
+INNER JOIN OrderMaster OM ON OM.OrderID = PIIT.OrderID     
 LEFT JOIN CustomerInfo CI ON CI.CustomerId = OM.CustomerId     
 LEFT JOIN SIZETYPE ST ON PIIT.FLAGSIZE=ST.VAL    
 GROUP BY E.EMPNAME, EMPID, ITEM_NAME, DESIGNNAME, VF.QUALITYNAME, COLORNAME, SHADECOLORNAME, SHAPENAME, PII.PINDENTISSUEID, PIIT.DELIVERY_DATE,     
