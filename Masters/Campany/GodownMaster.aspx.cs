@@ -180,7 +180,10 @@ public partial class Masters_Campany_GodownMaster : CustomPage
         }
         if (ds.Tables[1].Rows.Count > 0)
         {
-            DDBranchName.SelectedValue = ds.Tables[1].Rows[0]["BranchID"].ToString();
+            if (DDBranchName.Items.FindByValue(ds.Tables[1].Rows[0]["BranchID"].ToString()) != null)
+            {
+                DDBranchName.SelectedValue = ds.Tables[1].Rows[0]["BranchID"].ToString();
+            }
         }
 
         btnsave.Text = "Update";

@@ -340,6 +340,8 @@
                         <td style="width: 40%; text-align: center">
                             <asp:CheckBox ID="ChkForGSTReport" runat="server" Text="Check For GST Report" CssClass="checkboxbold"
                                 Visible="false" />
+                            <asp:Button ID="BtnProcessToPNM" runat="server" Text="PNM INC." CssClass="buttonnorm"
+                                Visible="false" OnClick="BtnProcessToPNM_Click" />
                             <asp:Button ID="btnnew" runat="server" Text="New" OnClientClick="return NewForm();"
                                 CssClass="buttonnorm" />
                             <asp:Button ID="btnsave" runat="server" Text="Save" OnClick="btnsave_Click" OnClientClick="return validate(); "
