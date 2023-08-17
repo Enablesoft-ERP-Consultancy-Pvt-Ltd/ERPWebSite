@@ -16,3 +16,18 @@ $(function () {
     //$("a.selected").closest("li").addClass("active");
     //$("a.selected").closest(".dropdown-toggle").addClass("active");
 });
+
+
+
+$(document).bind("ajaxStart", function () {
+    $("#ldrdiv").show();
+}).bind("ajaxStop", function () {
+    $("#ldrdiv").hide();
+});
+
+function Loader() {
+    $('.blackscreen').show();
+    $('.loader_popup').show();
+}
+
+

@@ -24,6 +24,7 @@ namespace IExproERP.UI.Models
             this.Identity = new GenericIdentity(Username);
         }
         public long UserId { get; set; }
+        public int IExproId { get; set; }
         public long LoginId { get; set; }
         public int CultureId { get; set; }
         public string FirstName { get; set; }
@@ -44,6 +45,9 @@ namespace IExproERP.UI.Models
         public long UserId { get; set; }
         public long LoginId { get; set; }
         public int CultureId { get; set; }
+
+        public int IExproId { get; set; }
+
         public int CompanyId { get; set; }
         public int BranchId { get; set; }
         public string FirstName { get; set; }

@@ -53,11 +53,6 @@
                                         </table>
                                     </div>
                                 </div>
-
-
-
-
-
                             </div>
                         </div>
                     </div>
@@ -78,7 +73,6 @@
                                         <table id="tblOrder" class="table table-hover table-striped table-bordered table-advanced tablesorter display">
                                             <thead>
                                                 <tr>
-
                                                     <th>Customer Code</th>
                                                     <th>Order No</th>
                                                     <th>Order Date</th>
@@ -95,11 +89,6 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
-
                 <div class="accordion-item">
                     <%--  <h2 class="accordion-header" id="heading3">
                         <button class="accordion-button collapsed bg-blue" type="button" data-bs-toggle="collapse"
@@ -181,6 +170,6 @@
     <script src="<%= Page.ResolveUrl("~/lib/datatables-tabletools/js/dataTables.tableTools.min.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/datatables.net-bs5/js/dataTables.bootstrap5.min.js")%>"></script>
 
-    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.0")%>"></script>
+    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.1")%>"></script>
 </asp:Content>
 

@@ -121,20 +121,20 @@ namespace IExpro.Core.Models.Reports
         public int OFinishedId { get; set; }
         public string IssueDate { get; set; }
         public string ReqDate { get; set; }
-        public double IndentQty { get; set; }
-        public double ExtraQty { get; set; }
-        public double CancelQty { get; set; }
-        public double Quantity { get; set; }
+        public decimal IndentQty { get; set; }
+        public decimal ExtraQty { get; set; }
+        public decimal CancelQty { get; set; }
+        public decimal Quantity { get; set; }
         public int IssueId { get; set; }
         public string ReceiveDate { get; set; }
-        public double RecQuantity { get; set; }
-        public double Moisture { get; set; }
-        public double IssueQuantity { get; set; }
-        public double ConsmpQty { get; set; }
-        public double LossQty { get; set; }
-        public double RequiredQty { get; set; }
+        public decimal RecQuantity { get; set; }
+        public decimal Moisture { get; set; }
+        public decimal IssueQuantity { get; set; }
+        public decimal ConsmpQty { get; set; }
+        public decimal LossQty { get; set; }
+        public decimal RequiredQty { get; set; }
         public int ReturnId { get; set; }
-        public double ReturnQty { get; set; }
+        public decimal ReturnQty { get; set; }
         public string TagRemarks { get; set; }
         public string ReturnDate { get; set; }
 

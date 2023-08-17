@@ -26,6 +26,42 @@ namespace IExpro.Core.Common
 
     public static class CommonHelper
     {
+        public static decimal ToNumber(this double? str)
+        {
+            decimal num = 0;
+            if (str != null)
+            {
+                num = Convert.ToDecimal(str);
+            }
+            return num;
+
+        }
+        public static decimal ToNumber(this double str)
+        {
+            decimal num = Convert.ToDecimal(str);      
+            return num;
+
+        }
+        
+
+        public static decimal ToNumber(this string str)
+        {
+            decimal num = 0;
+            if (!string.IsNullOrEmpty(str))
+            {
+                num = Convert.ToDecimal(str);
+            }
+            return num;
+
+        }
+
+
+
+
+
+
+
+
 
 
 

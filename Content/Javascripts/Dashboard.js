@@ -20,7 +20,7 @@
         success: function (data) {
 
             orderlist = $.parseJSON(data.d);
-
+            //BindChart(orderlist);
             /* alert(orderlist.chartData[0].OrderCount);*/
             let table = $('#tblOrder').DataTable({
                 lengthMenu: [[5, 10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -29,9 +29,6 @@
                     { data: 'CustomerCode' },
                     { data: 'CustomerOrderNo' },
                     { data: 'OrderDate' },
-
-
-
                     { data: 'DispatchDate' },
                     {
                         data: 'DelayDays',
@@ -60,17 +57,13 @@
 
                     {
                         data: null,
-
                         render: function (data, type, row, meta) {
-                            return "<a class='btnPurchase' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart text-red mrm mediumtxt'></i>Purchase</a>";
+                            var btnHtml = "<a class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mrm mediumtxt'></i>Info</a>";
+                            btnHtml += "<a class='btnPurchase' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart text-red mrm mediumtxt'></i>Purchase</a>";
+                            btnHtml += "<a class='btnDyeing' exthref=" + data.OrderId + "><i class='fa fa-paint-brush text-red mrm mediumtxt'></i>Dyeing</a>";
+                            return btnHtml;
                         },
                     },
-
-
-
-
-
-
                 ],
 
                 columnDefs: [
@@ -91,244 +84,39 @@
 
             });
 
-            var SeriesList = [];
-            orderlist.chartData.forEach(myFunction);
-
-            function myFunction(item, index, arr) {
-                var coOrdinate = [];
-                coOrdinate.push((item.OrderStatus == 0 ? "Open" : "Close"));
-                coOrdinate.push((item.OrderCount / orderlist.totalSum * 100));
-                SeriesList.push(coOrdinate);
-            }
 
 
+            table.on('click', 'a.btnOrder', function (e) {
+                var elem = $(this);
+                var id = elem.attr('exthref');
+                var _orderId = parseInt(id);
+                OrderDetail(_orderId);
+            });
 
-            // Add event listener for opening and closing details
             table.on('click', 'a.btnPurchase', function (e) {
-
                 var elem = $(this);
                 var id = elem.attr('exthref');
-                var _OrderId = parseInt(id);
-                var bodyHtml = "";
-                $('div.modal-title').empty();
-
-                $('div.modal-title').html("Purchase Report");
-
-
-
-                const obj = { OrderId: _OrderId };
-                $.ajax({
-
-                    url: "Home.aspx/GetPurchaseList",
-                    contentType: "application/json; charset=utf-8",
-                    type: "POST",
-                    data: JSON.stringify(obj),
-                    success: function (data) {
-
-                        var result = $.parseJSON(data.d);
-
-                        bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
-                        bodyHtml += " <table class='table table-hover table-bordered table-striped'>";
-                        bodyHtml += " <tr><th>Category</th><th>PO No</th><th>PO Status</th><th>PO Date</th><th>Supplier Name</th>";
-                        bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th><th>Delay Days</th></tr>";
-                        if (result.length > 0) {
-                            $.each(result, function (item) {
-
-                                bodyHtml += "<tr><td>" + item.category + "</td><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td><td>" + item.DelayDays + "</td></tr>"
-
-                            });
-                        }
-                        else {
-                            bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
-                        }
-
-                        bodyHtml += "</table></div></div></div>"
-
-                    },
-                    error: function (xhr, status, error) {
-                        var msg = "Response failed with status: " + status + "</br>"
-                            + " Error: " + error;
-                        bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
-                    },
-                    complete: function (xhr, status) {
-
-                        $('div.modal-body').empty();
-
-                        $('div.modal-body').html(bodyHtml);
-                        $('#myModal').modal('show');
-                    }
-                });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                var _orderId = parseInt(id);
+                PurchaseReport(_orderId);
             });
 
-
-
-
-            // Add event listener for opening and closing details
             table.on('click', 'a.btnDyeing', function (e) {
-
                 var elem = $(this);
                 var id = elem.attr('exthref');
-                var _OrderId = parseInt(id);
-                var bodyHtml = "";
-                $('div.modal-title').empty();
-
-                $('div.modal-title').html("Purchase Report");
-
-
-
-                const obj = { OrderId: _OrderId };
-                $.ajax({
-
-                    url: "Home.aspx/GetPurchaseList",
-                    contentType: "application/json; charset=utf-8",
-                    type: "POST",
-                    data: JSON.stringify(obj),
-                    success: function (data) {
-
-                        var result = $.parseJSON(data.d);
-
-                        bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
-                        bodyHtml += " <table class='table table-hover table-bordered table-striped'>";
-                        bodyHtml += " <tr><th>Category</th><th>PO No</th><th>PO Status</th><th>PO Date</th><th>Supplier Name</th>";
-                        bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th><th>Delay Days</th></tr>";
-                        if (result.length > 0) {
-                            $.each(result, function (item) {
-
-                                bodyHtml += "<tr><td>" + item.category + "</td><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td><td>" + item.DelayDays + "</td></tr>"
-
-                            });
-                        }
-                        else {
-                            bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
-                        }
-
-                        bodyHtml += "</table></div></div></div>"
-
-                    },
-                    error: function (xhr, status, error) {
-                        var msg = "Response failed with status: " + status + "</br>"
-                            + " Error: " + error;
-                        bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
-                    },
-                    complete: function (xhr, status) {
-
-                        $('div.modal-body').empty();
-
-                        $('div.modal-body').html(bodyHtml);
-                        $('#myModal').modal('show');
-                    }
-                });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                var _orderId = parseInt(id);
+                var _processId = 5;
+                DyeingReport(_orderId, _processId);
             });
-
-
-
-
-
-
-
-
-            console.log(SeriesList);
-            $('#pie-chart').highcharts({
-                chart: {
-                    plotBackgroundColor: null,
-                    plotBorderWidth: null,
-                    plotShadow: false
-                },
-                title: {
-                    text: 'Orders'
-                },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            color: '#000000',
-                            connectorColor: '#000000',
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                        }
-                    }
-                },
-                series: [{
-                    type: 'pie',
-                    name: 'Order share',
-                    data: SeriesList
-                }]
-            });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         },
         error: function (xhr) {
-
-
-
             alert("There is some technical Issue contact with admin!");
-
-
         }
     });
 
 
 
-
-
-
-
-    var polist = null;
-    var jqxhr = $.getJSON('Home.aspx/GetPOStatusList', function (data) {
-
-
+    var polist = null; var jqxhr = $.getJSON('Home.aspx/GetPOStatusList', function (data) {
         polist = $.parseJSON(data.d);
 
     });
@@ -454,3 +242,221 @@
 
 
 });
+
+function BindChart(orderlist) {
+
+    var SeriesList = [];
+    orderlist.chartData.forEach(myFunction);
+    function myFunction(item, index, arr) {
+        var coOrdinate = [];
+        coOrdinate.push((item.OrderStatus == 0 ? "Open" : "Close"));
+        coOrdinate.push((item.OrderCount / orderlist.totalSum * 100));
+        SeriesList.push(coOrdinate);
+    }
+    //console.log(seriesList);
+    $('#pie-chart').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: 'Orders'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    color: '#000000',
+                    connectorColor: '#000000',
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Order share',
+            data: SeriesList
+        }]
+    });
+}
+
+
+
+
+function OrderDetail(_orderId) {
+
+
+    var bodyHtml = "";
+
+    $('#myModal').find('h4.modal-title').empty();
+
+
+    $('#myModal').find('h4.modal-title').html("Order Info");
+    const obj = { OrderId: _orderId };
+    $.ajax({
+        url: "Home.aspx/GetOrderDetail",
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(obj),
+        success: function (data) {
+
+            var result = $.parseJSON(data.d);
+            console.log(data.d)
+
+            bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
+            bodyHtml += "<tr><th>Order No.</th><th>Local Order</th><th>Order Date</th><th>Dispatch Date</th><th>Due Date</th>";
+            bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
+            bodyHtml += "<th>Color</th><th>Shape</th><th>Shade</th><th>Size</th>";
+            bodyHtml += "<th>Unit</th><th>Ouantity</th><th>Filler</th></tr></thead><tbody>";
+            if (result.data.length > 0) {
+
+
+
+
+
+                $.each(result.data, function (index, item) {
+
+
+
+                    bodyHtml += "<tr><td>" + item.CustomerOrderNo + "</td><td>" + item.LocalOrder + "</td><td>" + item.OrderDate + "</td><td>" + item.DispatchDate + "</td><td>" + item.DueDate + "</td>";
+                    bodyHtml += "<td>" + item.Technique + "</td><td>" + item.Quality + "</td><td>" + item.Design + "</td>";
+                    bodyHtml += "<td>" + item.Color + "</td><td>" + item.Shape + "</td><td>" + item.Shade + "</td><td>" + item.Size + "</td>";
+                    bodyHtml += "<td>" + item.Unit + "</td><td>" + item.OrderQty + "</td><td>" + item.Filler + "</td></tr>";
+                });
+            }
+            else {
+                bodyHtml += "<tr><td colspan='14'>Data not found</td></tr>";
+            }
+
+            bodyHtml += "</tbody></table></div></div></div>"
+
+        },
+        error: function (xhr, status, error) {
+            var msg = "Response failed with status: " + status + "</br>"
+                + " Error: " + error;
+            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+        },
+        complete: function (xhr, status) {
+            $('#myModal').find('div.modal-body').empty();
+            $('#myModal').find('div.modal-body').html(bodyHtml);
+            $('#myModal').modal('show');
+        }
+    });
+
+
+}
+
+
+function PurchaseReport(_orderId) {
+
+    var bodyHtml = "";
+    $('h4.modal-title').empty();
+    $('h4.modal-title').html("Purchase Report");
+    const obj = { OrderId: _orderId };
+    $.ajax({
+        url: "Home.aspx/GetPurchaseList",
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(obj),
+        success: function (data) {
+
+            console.log(data.d)
+
+            var result = $.parseJSON(data.d);
+
+            bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'>";
+            bodyHtml += " <tr><th>Category</th><th>PO No</th><th>PO Status</th><th>PO Date</th><th>Supplier Name</th>";
+            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th><th>Delay Days</th></tr><tbody>";
+            if (result.data.length > 0) {
+                $.each(result.data, function (index, item) {
+
+                    bodyHtml += "<tr><td>" + item.category + "</td><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td><td>" + item.DelayDays + "</td></tr>"
+
+                });
+            }
+            else {
+                bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
+            }
+
+            bodyHtml += "</tbody></table></div></div></div>"
+
+        },
+        error: function (xhr, status, error) {
+            var msg = "Response failed with status: " + status + "</br>"
+                + " Error: " + error;
+            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+        },
+        complete: function (xhr, status) {
+            $('div.modal-body').empty();
+            $('div.modal-body').html(bodyHtml);
+            $('#myModal').modal('show');
+        }
+    });
+
+
+}
+
+
+function DyeingReport(_orderId, _processId) {
+
+    var bodyHtml = "";
+    $('h4.modal-title').empty();
+    $('h4.modal-title').html("Dyeing Report");
+    const obj = { OrderId: _orderId, ProcessId: _processId };
+    $.ajax({
+        url: "Home.aspx/GetIndentDetail",
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            console.log(data.d)
+            var result = $.parseJSON(data.d);
+
+            bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
+            bodyHtml += "<tr><th>Supplier</th><th>Category</th><th>Material Name</th><th>Quality</th><th>Color</th>";
+            bodyHtml += "<th>Shade</th><th>Indent No.</th><th>Issue Date</th>";
+            bodyHtml += "<th>Request Date</th><th>Quantity</th><th>Receive Date</th><th>Rec. Qty</th>";
+            bodyHtml += "<th>Issue Qty</th><th>Consm. Qty</th><th>Return Date</th><th>Return Qty</th>";
+            bodyHtml += "<th>Remarks</th></tr></thead><tbody>";
+
+            if (result.data.length > 0) {
+
+                $.each(result.data, function (index, item) {
+
+                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.Category + "</td><td>" + item.MaterialName + "</td><td>" + item.QualityName + "</td><td>" + item.ColorName + "</td>";
+                    bodyHtml += "<td>" + item.ShadeName + "</td><td>" + item.IndentNo + "</td><td>" + item.IssueDate + "</td><td>" + item.ReqDate + "</td>";
+                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.ReceiveDate + "</td><td>" + item.RecQuantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.ConsmpQty + "</td>";
+                    bodyHtml += "<td>" + item.ReturnDate + "</td><td>" + item.ReturnQty + "</td><td>" + item.TagRemarks + "</td></tr>";
+
+                });
+            }
+            else {
+                bodyHtml += "<tr><td colspan='17'>Data not found</td></tr></tbody>";
+            }
+
+            bodyHtml += "</tbody></table></div></div></div>"
+
+        },
+        error: function (xhr, status, error) {
+            var msg = "Response failed with status: " + status + "</br>"
+                + " Error: " + error;
+            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+        },
+        complete: function (xhr, status) {
+            $('div.modal-body').empty();
+            $('div.modal-body').html(bodyHtml);
+            $('#myModal').modal('show');
+        }
+    });
+
+
+}

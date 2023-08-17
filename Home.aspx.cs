@@ -14,10 +14,9 @@ using System.Web.UI.WebControls;
 
 public partial class Home : BasePage
 {
-
+    public static int IExproId { get; set; }
     public static int CompanyId { get; set; }
-    public static int UserId { get; set; }
-    public static int BranchId { get; set; }
+    public static long UserId { get; set; }
 
 
     static IOrderService OrdSrv;
@@ -25,33 +24,25 @@ public partial class Home : BasePage
     {
         OrdSrv = new OrderService(new UnitOfWork());
     }
-
-
     protected void Page_Load(object sender, EventArgs e)
     {
-
         if (!IsPostBack)
         {
-            Home.BranchId = Session["CurrentWorkingCompanyID"] != null ? Convert.ToInt32(Session["CurrentWorkingCompanyID"]) : 0;
-            Home.CompanyId = Session["varCompanyId"] != null ? Convert.ToInt32(Session["varCompanyId"]) : 0;
-            Home.UserId = Session["varuserid"] != null ? Convert.ToInt32(Session["varuserid"]) : 0;
+            Home.IExproId = User.IExproId;
+            Home.CompanyId = User.CompanyId;
+            Home.UserId = User.UserId;
         }
-
     }
 
-
-
-
-
     [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-
     public static string OrderList()
     {
         string resultString = "";
         try
         {
+    
 
-            var obj = OrdSrv.GetOrderList(Home.CompanyId).OrderByDescending(x=>x.OrderId);
+            var obj = OrdSrv.GetOrderList(Home.CompanyId).OrderByDescending(x => x.OrderId);
             var objdata = obj.GroupBy(x => x.OrderStatus).Select(y => new
             {
                 OrderStatus = y.Key,
@@ -62,16 +53,15 @@ public partial class Home : BasePage
 
 
         }
-        catch(Exception ex) {
+        catch (Exception ex)
+        {
 
             throw ex;
-        
+
         }
         return resultString;
     }
 
-
-
     /// <summary>
     /// Logs in the user
     /// </summary>
@@ -79,11 +69,10 @@ public partial class Home : BasePage
     /// <param name="Password">The password</param>
     /// <returns>true if login successful</returns>
     [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-
     public static string GetPOStatusList()
     {
         string resultString = "";
-        var obj = OrdSrv.GetVendorPOStatus(Home.BranchId);
+        var obj = OrdSrv.GetVendorPOStatus(Home.CompanyId);
         var result = new { data = obj };
         resultString = JsonConvert.SerializeObject(result);
         return resultString;
@@ -96,11 +85,10 @@ public partial class Home : BasePage
     /// <param name="Password">The password</param>
     /// <returns>true if login successful</returns>
     [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-
     public static string GetDyeingStatusList()
     {
         string resultString = "";
-        var obj = OrdSrv.DyeingStatus(Home.BranchId);
+        var obj = OrdSrv.DyeingStatus(Home.CompanyId);
         var result = new { data = obj };
         resultString = JsonConvert.SerializeObject(result);
         return resultString;
@@ -113,7 +101,6 @@ public partial class Home : BasePage
     /// <param name="Password">The password</param>
     /// <returns>true if login successful</returns>
     [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-
     public static string GetPurchaseList(int OrderId)
     {
         string resultString = "";
@@ -123,18 +110,14 @@ public partial class Home : BasePage
         return resultString;
     }
 
-
-
-
-
     /// <summary>
-    /// Logs in the user
+    /// Get Indent detail According to Process and Order
     /// </summary>
-    /// <param name="Username">The username</param>
-    /// <param name="Password">The password</param>
+    /// <param name="OrderId">The Order No</param>
+    /// <param name="ProcessId">The Process No</param>
     /// <returns>true if login successful</returns>
     [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public static string GetOrderByIndentDetail(int OrderId, int ProcessId)
+    public static string GetIndentDetail(int OrderId, int ProcessId)
     {
         string resultString = "";
         var obj = OrdSrv.GetOrderByIndentDetail(OrderId, ProcessId).ToList();
@@ -143,19 +126,20 @@ public partial class Home : BasePage
         return resultString;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /// <summary>
+    /// Get Order Deatil
+    /// </summary>
+    /// <param name="OrderId">The OrderId</param>
+    /// <returns>order detail successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetOrderDetail(int OrderId)
+    {
+        string resultString = "";
+        var obj = OrdSrv.GetOrderDetail(OrderId).ToList();
+        var result = new { data = obj };
+        resultString = JsonConvert.SerializeObject(result);
+        return resultString;
+    }
 
 
 

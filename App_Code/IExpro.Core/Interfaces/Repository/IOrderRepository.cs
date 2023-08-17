@@ -6,6 +6,7 @@ namespace IExpro.Core.Interfaces.Repository
     public interface IOrderRepository
     {
         IEnumerable<OrderStatusModel> GetOrderList(int CompanyId);
+        IEnumerable<OrderDetailModel> GetOrderDetail(int OrderId);
         IEnumerable<VendorPOStatusModel> GetVendorPOStatus(int CompanyId);
         IEnumerable<DyeingStatusModel> DyeingStatus(int CompanyId);
         IEnumerable<PurchaseRawMaterialModel> GetPurchaseList(int OrderId);
