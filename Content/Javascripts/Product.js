@@ -29,11 +29,6 @@ $(function () {
         var _attributeVal = $('#txtAttributeValue').val();
         var $table = $(this).closest("table").find('tbody');
         SaveData(_attributeId, _attribute, _attributeVal, $table);
-
-
-
-
-
     });
 
 
@@ -111,7 +106,7 @@ function SaveData(_attributeId, _attribute, _attributeVal, $table) {
 
 function deleteData($row) {
 
-    
+
     const obj = { attributeId: $row.find("input.AttributeId").val(), attribute: $row.find("input.AttributeValue").val() };
     $.ajax({
         type: "POST",

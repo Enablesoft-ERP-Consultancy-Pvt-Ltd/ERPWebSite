@@ -233,5 +233,132 @@ PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGS
                 return (lst);
             }
         }
+
+
+
+
+
+
+
+
+
+
+        public IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId)
+        {
+            using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+
+                string sqlQuery = @"WITH IndentItem(PPNo,OrderDetailId,IndentNo,IndentId,PartyId,IFinishedId,OFinishedId,IssueDate,ReqDate,IndentQty,ExtraQty,CancelQty,Quantity,FLAGSIZE,RowNo) AS 
+(SELECT ID.PPNo,ID.Orderdetailid,IM.IndentNo,IM.IndentId,IM.PartyId,Id.IFinishedId,Id.OFinishedId,IM.Date IssueDate,IM.ReqDate,
+SUM(IsNull(ID.IndentQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) IndentQty,
+SUM(IsNull(ID.ExtraQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) ExtraQty,
+SUM(IsNull(ID.CancelQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) CancelQty,
+SUM(IsNull(ID.Quantity,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) Quantity,Id.FLAGSIZE,
+ROW_NUMBER() OVER(PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId ORDER BY IM.ReqDate DESC) RowNo
+FROM  INDENTDETAIL ID Inner Join INDENTMASTER IM  on IM.IndentId=ID.IndentId 
+),
+ ReceiveItem(IssueId,IndentId,EmpId,GodownId,IFinishedid,OFinishedId,ReceiveDate,RecQuantity,Moisture,IssueQuantity,RowNo) AS 
+(Select PREMT.IssPrtId,PREMT.IndentId,PREM.EmpId,PREMT.GodownId,PRT.Finishedid IFinishedid,PREMT.FinishedId OFinishedId, 
+PREMT.AddedDate as ReceiveDate,SUM(IsNull(PREMT.RecQuantity,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId,PRT.Finishedid) RecQuantity,
+SUM(IsNull(PREMT.Moisture,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId,PRT.Finishedid) Moisture,
+PRT.IssueQuantity,
+ROW_NUMBER() OVER(PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId,PRT.Finishedid ORDER BY PREMT.AddedDate DESC) RowNo
+from  PP_ProcessRecMaster PREM inner join PP_ProcessRecTran  PREMT on PREM.PRMid=PREMT.PRMid 
+inner join PP_PROCESSRAWTRAN PRT  ON PREMT.IssPrtId=PRT.PRTid
+--Where PRT.Indentid=44
+),
+ ConsumeItem(PPID,ProcessId,CompanyId,OrderId,OrderDetailId,IFinishedId,OFinishedId,ConsmpQty,LossQty, RequiredQty,RowNo) 
+AS 
+(SELECT PP.PPID,PP.Process_ID ProcessId,PP.MasterCompanyid,PP.Order_ID as OrderId,PPC.OrderDetailId,PPC.IFinishedId,PPC.FinishedId,
+SUM(IsNull(PPC.ConsmpQty,0.00)) OVER (PARTITION BY PP.PPID,PP.Process_ID,PP.MasterCompanyid,PP.Order_ID,PPC.OrderDetailId,PPC.IFinishedId,PPC.FinishedId) ConsmpQty,
+SUM(IsNull(PPC.LossQty,0.00)) OVER (PARTITION BY PP.PPID,PP.Process_ID,PP.MasterCompanyid,PP.Order_ID,PPC.OrderDetailId,PPC.IFinishedId,PPC.FinishedId) LossQty,
+SUM(IsNull(PPC.Qty+PPC.ExtraQty,0.00)) OVER (PARTITION BY PP.PPID,PP.Process_ID,PP.MasterCompanyid,PP.Order_ID,PPC.OrderDetailId,PPC.IFinishedId,PPC.FinishedId) RequiredQty,
+ROW_NUMBER() OVER(PARTITION BY PP.PPID,PP.Process_ID,PP.MasterCompanyid,PP.Order_ID,PPC.OrderDetailId,PPC.IFinishedId,PPC.FinishedId ORDER BY PPC.OrderDetailId DESC) RowNo
+FROM ProcessProgram PP INNER JOIN PP_Consumption PPC ON PP.PPID=PPC.PPID 
+--Where  PPC.PPId=2
+),
+ReturnItem (ReturnId,IssueId,IndentId,PartyId,IFinishedId,GodownId,ReturnQty,TagRemarks,ReturnDate,RowNo) 
+AS 
+(Select IRRM.ID,PREMT.IssPrtId,IPRRD.INDENTID,IRRM.PartyID,IPRRD.FinishedID,IPRRD.GodownID,
+SUM(IsNull(IPRRD.Qty,0.00)) OVER (PARTITION BY IPRRD.PRTID,IPRRD.INDENTID,IPRRD.FinishedID) ReturnQty,IPRRD.Remarks,
+Max(IPRRD.Date) OVER (PARTITION BY IPRRD.PRTID,IPRRD.INDENTID,IPRRD.FinishedID) ReturnDate,
+ROW_NUMBER() OVER(PARTITION BY IPRRD.PRTID,IPRRD.INDENTID,IPRRD.FinishedID ORDER BY IPRRD.Date DESC) RowNo
+from IndentRawReturnDetail IPRRD inner join  IndentRawReturnMaster IRRM  ON  IPRRD.ID=IRRM.ID 
+inner join PP_ProcessRecTran PREMT on IPRRD.PRTID=PREMT.PRTid
+) 
+select 
+emp.EMPNAME VendorName, VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
+ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName, 
+VF.QUALITYNAME, VF.COLORNAME,VF.SHAPENAME,VF.SHADECOLORNAME,VF.CATEGORY_NAME Category,
+z.OrderId,z.OrderDetailId,z.ConsmpQty,z.LossQty,z.ProcessId,z.RequiredQty,x.IndentId,x.IndentNo,x.IFinishedId,x.OFinishedId,
+x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.ReceiveDate,y.RecQuantity,y.Moisture,y.IssueId,y.IssueQuantity,
+zz.ReturnId,zz.ReturnDate,zz.ReturnQty,zz.TagRemarks
+from IndentItem x Left join ReceiveItem y on x.Indentid=y.Indentid and x.IFinishedId=y.IFinishedId and x.OFinishedId=y.OFinishedId and x.RowNo=y.RowNo --and x.OrderDetailId=y.OrderDetailId
+inner join ConsumeItem z on x.PPNo=z.PPID and x.IFinishedId=z.IFinishedId  and  x.OFinishedId=z.OFinishedId and x.RowNo=z.RowNo
+Left join ReturnItem zz on y.Indentid=zz.Indentid and y.IFinishedid=zz.IFinishedid and y.RowNo=zz.RowNo and y.IssueId=zz.IssueId
+INNER JOIN V_FINISHEDITEMDETAIL VF ON x.OFinishedId=VF.ITEM_FINISHED_ID   
+INNER JOIN EMPINFO emp ON x.PartyId=emp.EmpId    
+LEFT JOIN SIZETYPE ST ON x.FLAGSIZE=ST.VAL    
+Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
+
+                var result = conn.Query(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, });
+                var lst = result.Select(x => new IndentRawMaterialModel
+                {
+                    Category = x.Category != null ? x.Category : string.Empty,
+                    VendorName = x.VendorName != null ? x.VendorName : string.Empty,
+                    MaterialName = x.MaterialName != null ? x.MaterialName : string.Empty,
+                    QualityName = x.QualityName != null ? x.QualityName : string.Empty,
+                    ColorName = x.ColorName != null ? x.ColorName : string.Empty,
+                    ShadeName = x.ShadeName != null ? x.ShadeName : string.Empty,
+                    PPNo = x.PPNo != null ? x.PPNo : 0,
+                    ProcessId = x.ProcessId != null ? x.ProcessId : 0,
+                    CompanyId = x.CompanyId != null ? x.CompanyId : 0,
+                    OrderId = x.OrderId != null ? x.OrderId : 0,
+                    OrderDetailId = x.OrderDetailId != null ? x.OrderDetailId : 0,
+                    IndentNo = x.IndentNo != null ? x.IndentNo : string.Empty,
+                    PartyId = x.PartyId != null ? x.PartyId : 0,
+                    IFinishedId = x.IFinishedId != null ? x.IFinishedId : 0,
+                    OFinishedId = x.OFinishedId != null ? x.OFinishedId : 0,
+                    IssueDate = x.IssueDate != null ? x.IssueDate.ToString("dd MMM yyyy") : string.Empty,
+                    ReqDate = x.ReqDate != null ? x.ReqDate.ToString("dd MMM yyyy") : string.Empty,
+                    IndentQty = x.IndentQty != null ? x.IndentQty : 0.0,
+                    ExtraQty = x.ExtraQty != null ? x.ExtraQty : 0.0,
+                    CancelQty = x.CancelQty != null ? x.CancelQty : 0.0,
+                    Quantity = x.Quantity != null ? x.Quantity : 0.0,
+                    IssueId = x.IssueId != null ? x.IssueId : 0,
+                    IssueQuantity = x.IssueQuantity != null ? x.IssueQuantity : 0.0,
+                    ReceiveDate = x.ReceiveDate != null ? x.ReceiveDate.ToString("dd MMM yyyy") : string.Empty,
+                    RecQuantity = x.RecQuantity != null ? x.RecQuantity : 0.0,
+                    ConsmpQty = x.ConsmpQty != null ? x.ConsmpQty : 0.0,
+                    Moisture = x.Moisture != null ? x.Moisture : 0.0,
+                    LossQty = x.LossQty != null ? x.LossQty : 0.0,
+                    RequiredQty = x.RequiredQty != null ? x.RequiredQty : 0.0,
+                    ReturnId = x.ReturnId != null ? x.ReturnId : 0,
+                    ReturnQty = x.ReturnQty != null ? x.ReturnQty : 0.0,
+                    TagRemarks = x.TagRemarks != null ? x.TagRemarks : string.Empty,
+                    ReturnDate = x.ReturnDate != null ? x.ReturnDate.ToString("dd MMM yyyy") : string.Empty,
+                });
+                return (lst);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

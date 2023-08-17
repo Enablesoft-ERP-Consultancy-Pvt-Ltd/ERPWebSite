@@ -94,4 +94,63 @@ namespace IExpro.Core.Models.Reports
 
 
 
+
+
+
+
+
+
+
+    public class IndentRawMaterialModel
+    {
+        public string VendorName { get; set; }
+        public string Category { get; set; }
+        public string MaterialName { get; set; }
+        public string QualityName { get; set; }
+        public string ColorName { get; set; }
+        public string ShadeName { get; set; }
+        public int PPNo { get; set; }
+        public int ProcessId { get; set; }
+        public int CompanyId { get; set; }
+        public int OrderId { get; set; }
+        public int OrderDetailId { get; set; }
+        public int IndentId { get; set; }
+        public string IndentNo { get; set; }
+        public int PartyId { get; set; }
+        public int IFinishedId { get; set; }
+        public int OFinishedId { get; set; }
+        public string IssueDate { get; set; }
+        public string ReqDate { get; set; }
+        public double IndentQty { get; set; }
+        public double ExtraQty { get; set; }
+        public double CancelQty { get; set; }
+        public double Quantity { get; set; }
+        public int IssueId { get; set; }
+        public string ReceiveDate { get; set; }
+        public double RecQuantity { get; set; }
+        public double Moisture { get; set; }
+        public double IssueQuantity { get; set; }
+        public double ConsmpQty { get; set; }
+        public double LossQty { get; set; }
+        public double RequiredQty { get; set; }
+        public int ReturnId { get; set; }
+        public double ReturnQty { get; set; }
+        public string TagRemarks { get; set; }
+        public string ReturnDate { get; set; }
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

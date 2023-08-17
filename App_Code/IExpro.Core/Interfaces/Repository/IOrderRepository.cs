@@ -9,6 +9,7 @@ namespace IExpro.Core.Interfaces.Repository
         IEnumerable<VendorPOStatusModel> GetVendorPOStatus(int CompanyId);
         IEnumerable<DyeingStatusModel> DyeingStatus(int CompanyId);
         IEnumerable<PurchaseRawMaterialModel> GetPurchaseList(int OrderId);
+        IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId);
 
 
     }

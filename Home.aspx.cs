@@ -1,9 +1,11 @@
 ﻿using IExpro.Core.Interfaces.Service;
+using IExpro.Core.Models.Reports;
 using IExpro.Infrastructure.Repository;
 using IExpro.Infrastructure.Services;
 using IExpro.Web.Pages;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Services;
 using System.Web.Services;
@@ -124,6 +126,22 @@ public partial class Home : BasePage
 
 
 
+
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetOrderByIndentDetail(int OrderId, int ProcessId)
+    {
+        string resultString = "";
+        var obj = OrdSrv.GetOrderByIndentDetail(OrderId, ProcessId).ToList();
+        var result = new { data = obj };
+        resultString = JsonConvert.SerializeObject(result);
+        return resultString;
+    }
 
 
 

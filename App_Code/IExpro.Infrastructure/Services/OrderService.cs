@@ -34,8 +34,10 @@ namespace IExpro.Infrastructure.Services
         {
             return this.IU.OrdRepo.GetPurchaseList(OrderId);
         }
-
-
+        public IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId)
+        {
+            return this.IU.OrdRepo.GetOrderByIndentDetail(OrderId, ProcessId);
+        }
 
     }
 }

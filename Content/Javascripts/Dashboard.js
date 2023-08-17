@@ -177,6 +177,76 @@
 
 
 
+            // Add event listener for opening and closing details
+            table.on('click', 'a.btnDyeing', function (e) {
+
+                var elem = $(this);
+                var id = elem.attr('exthref');
+                var _OrderId = parseInt(id);
+                var bodyHtml = "";
+                $('div.modal-title').empty();
+
+                $('div.modal-title').html("Purchase Report");
+
+
+
+                const obj = { OrderId: _OrderId };
+                $.ajax({
+
+                    url: "Home.aspx/GetPurchaseList",
+                    contentType: "application/json; charset=utf-8",
+                    type: "POST",
+                    data: JSON.stringify(obj),
+                    success: function (data) {
+
+                        var result = $.parseJSON(data.d);
+
+                        bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
+                        bodyHtml += " <table class='table table-hover table-bordered table-striped'>";
+                        bodyHtml += " <tr><th>Category</th><th>PO No</th><th>PO Status</th><th>PO Date</th><th>Supplier Name</th>";
+                        bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th><th>Delay Days</th></tr>";
+                        if (result.length > 0) {
+                            $.each(result, function (item) {
+
+                                bodyHtml += "<tr><td>" + item.category + "</td><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td><td>" + item.DelayDays + "</td></tr>"
+
+                            });
+                        }
+                        else {
+                            bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
+                        }
+
+                        bodyHtml += "</table></div></div></div>"
+
+                    },
+                    error: function (xhr, status, error) {
+                        var msg = "Response failed with status: " + status + "</br>"
+                            + " Error: " + error;
+                        bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+                    },
+                    complete: function (xhr, status) {
+
+                        $('div.modal-body').empty();
+
+                        $('div.modal-body').html(bodyHtml);
+                        $('#myModal').modal('show');
+                    }
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            });
 
 
 
