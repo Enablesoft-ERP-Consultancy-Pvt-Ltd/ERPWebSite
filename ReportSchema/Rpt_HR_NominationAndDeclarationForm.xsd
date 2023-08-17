@@ -1,0 +1,49 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPCODE" type="xs:string" minOccurs="0" />
+              <xs:element name="FATHERNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DOB" type="xs:string" minOccurs="0" />
+              <xs:element name="GENDER" type="xs:string" minOccurs="0" />
+              <xs:element name="MARITALSTATUS" type="xs:string" minOccurs="0" />
+              <xs:element name="DATEOFJOINIG" type="xs:string" minOccurs="0" />
+              <xs:element name="VILL_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="VILL_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="PO_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="PO_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DISTT_PRESENT" type="xs:string" minOccurs="0" />
+              <xs:element name="DISTT_PERMANENT" type="xs:string" minOccurs="0" />
+              <xs:element name="NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="NomineeAddress" type="xs:string" minOccurs="0" />
+              <xs:element name="SRNO" type="xs:int" minOccurs="0" />
+              <xs:element name="RELATION" type="xs:string" minOccurs="0" />
+              <xs:element name="YEAROFBIRTH" type="xs:string" minOccurs="0" />
+              <xs:element name="GRAUITYSHAREOFNOMINEE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="BANKACNO" type="xs:string" minOccurs="0" />
+              <xs:element name="APPOINTMENTDATE" type="xs:string" minOccurs="0" />
+              <xs:element name="PLACE" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="EMPCODE" type="xs:string" minOccurs="0" />
+              <xs:element name="SRNO" type="xs:int" minOccurs="0" />
+              <xs:element name="NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="NOMINEEADDRESS" type="xs:string" minOccurs="0" />
+              <xs:element name="YEAROFBIRTH" type="xs:string" minOccurs="0" />
+              <xs:element name="RELATION" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

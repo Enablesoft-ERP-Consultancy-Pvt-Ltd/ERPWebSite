@@ -1,0 +1,53 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Companyname" type="xs:string" minOccurs="0" />
+              <xs:element name="compaddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="comptel" type="xs:string" minOccurs="0" />
+              <xs:element name="compfax" type="xs:string" minOccurs="0" />
+              <xs:element name="email" type="xs:string" minOccurs="0" />
+              <xs:element name="Customercompany" type="xs:string" minOccurs="0" />
+              <xs:element name="Customeraddress" type="xs:string" minOccurs="0" />
+              <xs:element name="customerPhoneno" type="xs:string" minOccurs="0" />
+              <xs:element name="customermail" type="xs:string" minOccurs="0" />
+              <xs:element name="Customerfax" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitId" type="xs:int" minOccurs="0" />
+              <xs:element name="OrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="customerorderno" type="xs:string" minOccurs="0" />
+              <xs:element name="Dispatchdate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="PrecarriageBy" type="xs:string" minOccurs="0" />
+              <xs:element name="Placeofreceipt" type="xs:string" minOccurs="0" />
+              <xs:element name="Portofloading" type="xs:string" minOccurs="0" />
+              <xs:element name="destinationplace" type="xs:string" minOccurs="0" />
+              <xs:element name="CountryName" type="xs:string" minOccurs="0" />
+              <xs:element name="Modofpayment" type="xs:string" minOccurs="0" />
+              <xs:element name="DeliveryTerm" type="xs:string" minOccurs="0" />
+              <xs:element name="CurrencyName" type="xs:string" minOccurs="0" />
+              <xs:element name="BankName" type="xs:string" minOccurs="0" />
+              <xs:element name="street" type="xs:string" minOccurs="0" />
+              <xs:element name="city" type="xs:string" minOccurs="0" />
+              <xs:element name="ACNo" type="xs:string" minOccurs="0" />
+              <xs:element name="SwiftCode" type="xs:string" minOccurs="0" />
+              <xs:element name="AccountName" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="designName" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitRate" type="xs:double" minOccurs="0" />
+              <xs:element name="QtyRequired" type="xs:int" minOccurs="0" />
+              <xs:element name="Amount" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

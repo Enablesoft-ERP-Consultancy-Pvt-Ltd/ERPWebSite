@@ -1,0 +1,66 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IndentDetailId" type="xs:int" minOccurs="0" />
+              <xs:element name="QualityId" type="xs:int" minOccurs="0" />
+              <xs:element name="Process_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="PPNo" type="xs:int" minOccurs="0" />
+              <xs:element name="LocalOrder" type="xs:string" minOccurs="0" />
+              <xs:element name="ShortName" type="xs:string" minOccurs="0" />
+              <xs:element name="IndentNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Quantity" type="xs:double" minOccurs="0" />
+              <xs:element name="OutDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpName" type="xs:string" minOccurs="0" />
+              <xs:element name="PartyAddress" type="xs:string" minOccurs="0" />
+              <xs:element name="PartPhoneNO" type="xs:string" minOccurs="0" />
+              <xs:element name="PartyMobile" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyAddress" type="xs:string" minOccurs="0" />
+              <xs:element name="CompFax" type="xs:string" minOccurs="0" />
+              <xs:element name="CompTel" type="xs:string" minOccurs="0" />
+              <xs:element name="IColor" type="xs:string" minOccurs="0" />
+              <xs:element name="OColor" type="xs:string" minOccurs="0" />
+              <xs:element name="CalType" type="xs:string" minOccurs="0" />
+              <xs:element name="TinNo" type="xs:string" minOccurs="0" />
+              <xs:element name="LotNo" type="xs:string" minOccurs="0" />
+              <xs:element name="IndentID" type="xs:int" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="Date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ReqDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+              <xs:element name="customerorderno" type="xs:string" minOccurs="0" />
+              <xs:element name="ApprovedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="approvedby" type="xs:string" minOccurs="0" />
+              <xs:element name="companyid" type="xs:int" minOccurs="0" />
+              <xs:element name="userid" type="xs:int" minOccurs="0" />
+              <xs:element name="CustomerId" type="xs:int" minOccurs="0" />
+              <xs:element name="Gremark" type="xs:string" minOccurs="0" />
+              <xs:element name="flagsize" type="xs:int" minOccurs="0" />
+              <xs:element name="itemremark" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeId" type="xs:int" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="MasterCompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="CancelQty" type="xs:double" minOccurs="0" />
+              <xs:element name="UserName" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
+              <xs:element name="reportcount" type="xs:int" minOccurs="0" />
+              <xs:element name="Revisedstatus" type="xs:int" minOccurs="0" />
+              <xs:element name="DyingMatch" type="xs:string" minOccurs="0" />
+              <xs:element name="DyeingType" type="xs:string" minOccurs="0" />
+              <xs:element name="Dyeing" type="xs:string" minOccurs="0" />
+              <xs:element name="Tagno" type="xs:string" minOccurs="0" />
+              <xs:element name="SubitemName" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Empgstno" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

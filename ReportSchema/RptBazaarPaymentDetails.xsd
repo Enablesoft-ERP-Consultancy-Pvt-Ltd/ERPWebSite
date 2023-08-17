@@ -1,0 +1,46 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNo" type="xs:string" minOccurs="0" />
+              <xs:element name="CompTel" type="xs:string" minOccurs="0" />
+              <xs:element name="CompFax" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpName" type="xs:string" minOccurs="0" />
+              <xs:element name="PanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ReceiveDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Process_Rec_Id" type="xs:int" minOccurs="0" />
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:int" minOccurs="0" />
+              <xs:element name="Area" type="xs:double" minOccurs="0" />
+              <xs:element name="GrossAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="Penality" type="xs:double" minOccurs="0" />
+              <xs:element name="TdsAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="SecAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="PayAmt" type="xs:int" minOccurs="0" />
+              <xs:element name="CGST" type="xs:double" minOccurs="0" />
+              <xs:element name="SGST" type="xs:double" minOccurs="0" />
+              <xs:element name="IGST" type="xs:double" minOccurs="0" />
+              <xs:element name="Wool" type="xs:double" minOccurs="0" />
+              <xs:element name="Lachhi" type="xs:double" minOccurs="0" />
+              <xs:element name="TAR" type="xs:double" minOccurs="0" />
+              <xs:element name="THARRI" type="xs:double" minOccurs="0" />
+              <xs:element name="MISC" type="xs:double" minOccurs="0" />
+              <xs:element name="EXTRA" type="xs:double" minOccurs="0" />
+              <xs:element name="FROMDATE" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
