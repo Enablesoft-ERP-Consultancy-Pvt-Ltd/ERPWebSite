@@ -254,13 +254,13 @@ PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGS
                     Category = x.Category != null ? x.Category : string.Empty,
                     PONo = x.PurchaseOrderNo != null ? x.PurchaseOrderNo : string.Empty,
                     POStatus = x.STATUS != null ? x.STATUS : string.Empty,
-                    PODate = x.IssueDate != null ? x.IssueDate.ToString("dd MMM yyyy") : string.Empty,
+                    PODate = x.IssueDate != null ? x.IssueDate : string.Empty,
                     SupplierName = x.Vendor != null ? x.Vendor : string.Empty,
                     ItemName = x.Technique != null ? x.Technique : string.Empty,
                     Rate = x.Rate != null ? x.Rate.ToString() : string.Empty,
                     POQty = x.IssueQty != null ? x.IssueQty.ToString() : string.Empty,
-                    DelvDate = x.DeliveryDate != null ? x.DeliveryDate.ToString("dd MMM yyyy") : string.Empty,
-                    RecDate = x.ReceiveDate != null ? x.ReceiveDate.ToString("dd MMM yyyy") : string.Empty,
+                    DelvDate = x.DeliveryDate != null ? x.DeliveryDate : string.Empty,
+                    RecDate = x.ReceiveDate != null ? x.ReceiveDate : string.Empty,
                     RecQty = x.ReceiveQty != null ? x.ReceiveQty.ToString() : string.Empty,
                     ChallanNo = x.PurchaseOrderNo != null ? x.PurchaseOrderNo : string.Empty,
                     RetDate = x.Returndate != null ? x.Returndate.ToString() : string.Empty,
@@ -374,7 +374,7 @@ Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
                     });
 
 
-                    var ddd = lst.ToList();
+               
                     return (lst);
                 }
                 catch (Exception ex)

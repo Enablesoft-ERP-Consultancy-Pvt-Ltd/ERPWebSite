@@ -372,13 +372,13 @@ function PurchaseReport(_orderId) {
             var result = $.parseJSON(data.d);
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
-            bodyHtml += " <table class='table table-hover table-bordered table-striped'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += " <tr><th>Category</th><th>PO No</th><th>PO Status</th><th>PO Date</th><th>Supplier Name</th>";
-            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th><th>Delay Days</th></tr><tbody>";
+            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th><th>Delay Days</th></tr></thead><tbody>";
             if (result.data.length > 0) {
                 $.each(result.data, function (index, item) {
 
-                    bodyHtml += "<tr><td>" + item.category + "</td><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td><td>" + item.DelayDays + "</td></tr>"
+                    bodyHtml += "<tr><td>" + item.Category + "</td><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td><td>" + item.DelayDays + "</td></tr>"
 
                 });
             }
