@@ -1901,8 +1901,9 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
             TextBox txtqty = (TextBox)DGOrderdetail.Rows[e.RowIndex].FindControl("txtqty");
             TextBox txtrategrid = (TextBox)DGOrderdetail.Rows[e.RowIndex].FindControl("txtrategrid");
             TextBox txtcommrategrid = (TextBox)DGOrderdetail.Rows[e.RowIndex].FindControl("txtcommrategrid");
+            Label lblBonus = (Label)DGOrderdetail.Rows[e.RowIndex].FindControl("lblBonus");
 
-            SqlParameter[] param = new SqlParameter[10];
+            SqlParameter[] param = new SqlParameter[11];
             param[0] = new SqlParameter("@issueorderid", lblissueorderid.Text);
             param[1] = new SqlParameter("@issuedetailid", lblissuedetailid.Text);
             param[2] = new SqlParameter("@qty", txtqty.Text == "" ? "0" : txtqty.Text);
@@ -1914,6 +1915,7 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
             param[7] = new SqlParameter("@commrate", txtcommrategrid.Text == "" ? "0" : txtcommrategrid.Text);
             param[8] = new SqlParameter("@Remarks", TxtRemarks.Text.Trim());
             param[9] = new SqlParameter("@Instruction", TxtInstructions.Text.Trim());
+            param[10] = new SqlParameter("@BonusRate", lblBonus.Text);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "pro_UpdateproductionorderLoomWise", param);
             //*************
