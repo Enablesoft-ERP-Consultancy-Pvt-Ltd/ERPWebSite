@@ -615,7 +615,8 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         //************
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_PunchCardIssueDetailExcelReport", param);
         if (ds.Tables[0].Rows.Count > 0)
-        {
+        {           
+
             if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
             {
                 Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
@@ -644,6 +645,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             sht.Range("I3").Value = "SIZE";
             sht.Range("J3").Value = "PER SETQTY";
             sht.Range("K3").Value = "NO OF SET";
+            sht.Range("L3").Value = "REMARKS";
             //sht.Range("L3").Value = "TOTAL QTY";
 
             sht.Range("A3:L3").Style.Font.Bold = true;
@@ -664,6 +666,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
                 sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Size"].ToString());
                 sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["PerSetQty"]);
                 sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["NoOfSet"]);
+                sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["Remarks"]);
                 //sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["TotalIssueQty"]);
 
                 row = row + 1;
@@ -677,7 +680,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
 
             sht.Range("I" + row + ":L" + row).Style.Font.Bold = true;
 
-            using (var a = sht.Range("A3:K" + row))
+            using (var a = sht.Range("A3:L" + row))
             {
                 a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;

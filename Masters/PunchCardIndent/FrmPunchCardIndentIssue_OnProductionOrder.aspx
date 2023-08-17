@@ -210,6 +210,10 @@
                                 <asp:Label ID="Label8" runat="server" Text="Issue No" CssClass="labelbold"></asp:Label><br />
                                 <asp:TextBox ID="txtIssueNo" CssClass="textb" Width="61px" runat="server" Enabled="false" />
                             </td>
+                             <td colspan="2">
+                                <asp:Label ID="Label5" runat="server" Text="Remarks" CssClass="labelbold"></asp:Label><br />
+                                <asp:TextBox ID="txtRemarks" CssClass="textb"  runat="server" TextMode="MultiLine" Height="50px" Width="300px"/>
+                            </td>
                         </tr>
                     </table>
                 </fieldset>
