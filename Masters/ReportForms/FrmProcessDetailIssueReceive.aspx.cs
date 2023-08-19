@@ -1352,17 +1352,42 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         {
             ReportType = 2;
         }
-        SqlParameter[] param = new SqlParameter[20];
-        param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
-        param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
-        param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
-        param[3] = new SqlParameter("@Todate", TxtToDate.Text);
-        param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
-        param[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
-        param[6] = new SqlParameter("@Where", strCondition);
-        param[7] = new SqlParameter("@ReportType", ReportType);
 
-        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FinishinghissabchallanWise", param);
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        
+        SqlCommand cmd = new SqlCommand("FinishinghissabchallanWise", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 30000;
+
+        cmd.Parameters.AddWithValue("@processid", DDProcessName.SelectedValue);
+        cmd.Parameters.AddWithValue("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
+        cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
+        cmd.Parameters.AddWithValue("@Todate", TxtToDate.Text);
+        cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
+        cmd.Parameters.AddWithValue("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
+        cmd.Parameters.AddWithValue("@Where", strCondition);
+        cmd.Parameters.AddWithValue("@ReportType", ReportType);
+
+        SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+        ad.Fill(ds);
+
+        //SqlParameter[] param = new SqlParameter[20];
+        //param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
+        //param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
+        //param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
+        //param[3] = new SqlParameter("@Todate", TxtToDate.Text);
+        //param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
+        //param[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
+        //param[6] = new SqlParameter("@Where", strCondition);
+        //param[7] = new SqlParameter("@ReportType", ReportType);
+
+        //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FinishinghissabchallanWise", param);
 
         Session["dsFileName"] = "~\\ReportSchema\\RptProcessDetailNEW.xsd";
 

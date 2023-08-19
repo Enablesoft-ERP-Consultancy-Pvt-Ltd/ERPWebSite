@@ -243,10 +243,10 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
                 var sht = xapp.Worksheets.Add("sheet1");
                 int row = 0;
 
-                sht.Range("A1:O1").Merge();
+                sht.Range("A1:Y1").Merge();
                 sht.Range("A1").SetValue("STOCK WITH RATE AMOUNT DETAIL REPORT");
-                sht.Range("A1:O1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A1:K1").Style.Font.SetBold();
+                sht.Range("A1:Y1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:Y1").Style.Font.SetBold();
 
                 sht.Range("A2").Value = "COMPANY NAME";
                 sht.Range("B2").Value = "GODOWN NAME";
@@ -257,14 +257,24 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
                 sht.Range("G2").Value = "LOT NO";
                 sht.Range("H2").Value = "TAG NO";
                 sht.Range("I2").Value = "BIN NO";
-                sht.Range("J2").Value = "PURCHASE RATE";
-                sht.Range("K2").Value = "DYEING RATE";
-                sht.Range("L2").Value = "STOCK QTY";
-                sht.Range("M2").Value = "PURCHASE AMOUNT";
-                sht.Range("N2").Value = "DYEING AMOUNT";
-                sht.Range("O2").Value = "TOTAL AMOUNT";
+                sht.Range("J2").Value = "HAND SPINNING RATE";
+                sht.Range("K2").Value = "MOTTELING RATE";
+                sht.Range("L2").Value = "RAPIER RATE";
+                sht.Range("M2").Value = "YARN OPENING RATE";
+                sht.Range("N2").Value = "SAMPLING DYEING RATE";
+                sht.Range("O2").Value = "PURCHASE RATE";
+                sht.Range("P2").Value = "DYEING RATE";
+                sht.Range("Q2").Value = "STOCK QTY";
+                sht.Range("R2").Value = "HAND SPINNING AMOUNT";
+                sht.Range("S2").Value = "MOTTELING AMOUNT";
+                sht.Range("T2").Value = "RAPIER AMOUNT";
+                sht.Range("U2").Value = "YARN OPENING AMOUNT";
+                sht.Range("V2").Value = "SAMPLING DYEING AMOUNT";
+                sht.Range("W2").Value = "PURCHASE AMOUNT";
+                sht.Range("X2").Value = "DYEING AMOUNT";
+                sht.Range("Y2").Value = "TOTAL AMOUNT";
 
-                sht.Range("A2:O2").Style.Font.Bold = true;
+                sht.Range("A2:Y2").Style.Font.Bold = true;
 
                 row = 3;
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
@@ -278,16 +288,26 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
                     sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["LotNo"]);
                     sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["TagNo"]);
                     sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["BINNO"]);
-                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["PurchaseRate"]);
-                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["DyeingRate"]);
-                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["StockQty"]);
-                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["PurchaseAmount"]);
-                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["DyeingAmount"]);
-                    sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["TotalAmount"]);
+                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["HandSpinningRate"]);
+                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["MottelingRate"]);
+                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["RapierRate"]);
+                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["YarnOpeningRate"]);
+                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["SamplingDyeingRate"]);
+                    sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["PurchaseRate"]);
+                    sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["DyeingRate"]);
+                    sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["StockQty"]);
+                    sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["HandSpinningAmount"]);
+                    sht.Range("S" + row).SetValue(ds.Tables[0].Rows[i]["MottelingAmount"]);
+                    sht.Range("T" + row).SetValue(ds.Tables[0].Rows[i]["RapierAmount"]);
+                    sht.Range("U" + row).SetValue(ds.Tables[0].Rows[i]["YarnOpeningAmount"]);
+                    sht.Range("V" + row).SetValue(ds.Tables[0].Rows[i]["SamplingDyeingAmount"]);
+                    sht.Range("W" + row).SetValue(ds.Tables[0].Rows[i]["PurchaseAmount"]);
+                    sht.Range("X" + row).SetValue(ds.Tables[0].Rows[i]["DyeingAmount"]);
+                    sht.Range("Y" + row).SetValue(ds.Tables[0].Rows[i]["TotalAmount"]);
 
                     row = row + 1;
                 }
-                using (var a = sht.Range("A2:O" + row))
+                using (var a = sht.Range("A2:Y" + row))
                 {
                     a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                     a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
