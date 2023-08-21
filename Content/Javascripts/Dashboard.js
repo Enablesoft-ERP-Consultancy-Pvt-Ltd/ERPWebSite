@@ -71,10 +71,10 @@ $(function () {
                     {
                         data: null,
                         render: function (data, type, row, meta) {
-                            var btnHtml = "<a class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mrm mediumtxt'></i>Info</a>";
-                            btnHtml += "<a class='btnPurchase' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart text-red mrm mediumtxt'></i>Purchase</a>";
-                            btnHtml += "<a class='btnDyeing' exthref=" + data.OrderId + "><i class='fa fa-pencil text-red mrm mediumtxt'></i>Dyeing</a>";
-                            btnHtml += "<a class='btnDigiPrint' exthref=" + data.OrderId + "><i class='fa fa-print text-red mrm mediumtxt'></i>DIGITAL PRINTING(MTR)</a>";
+                            var btnHtml = "<a class='btnOrder mrm' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mrm mediumtxt'></i>Info</a>";
+                            btnHtml += "<a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart text-red mrm mediumtxt'></i>Purchase</a>";
+                            btnHtml += "<a class='btnDyeing mrm' exthref=" + data.OrderId + "><i class='fa fa-pencil text-red mrm mediumtxt'></i>Dyeing</a>";
+                            btnHtml += "<a class='btnDigiPrint mrm' exthref=" + data.OrderId + "><i class='fa fa-print text-red mrm mediumtxt'></i>DIGITAL PRINTING(MTR)</a>";
                             return btnHtml;
                         },
                     },
