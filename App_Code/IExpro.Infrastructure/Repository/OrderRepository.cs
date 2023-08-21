@@ -31,7 +31,8 @@ namespace IExpro.Infrastructure.Repository
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
                 string sqlQuery = @"Select p.CompanyId BranchId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
-p.LocalOrder,p.OrderDate,p.DispatchDate,p.DueDate,p.Remarks,q.Item_Finished_Id as FinishedId,
+p.LocalOrder,CONVERT(NVARCHAR(11), p.OrderDate, 106) OrderDate,CONVERT(NVARCHAR(11), p.DispatchDate, 106) DispatchDate,CONVERT(NVARCHAR(11), p.DueDate, 106) DueDate,
+p.Remarks,q.Item_Finished_Id as FinishedId,
 VF.ITEM_NAME Technique,VF.QUALITYNAME Quality,VF.DESIGNNAME Design, VF.COLORNAME Color,VF.SHAPENAME Shape,
 VF.SHADECOLORNAME Shade,(CASE WHEN q.FLAGSIZE=0 THEN VF.SIZEFT ELSE CASE WHEN q.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END) SIZE,
 CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END Unit,q.OrderDetailId, IsNULL(q.CancelQty,0.0) CancelQty,
@@ -90,7 +91,7 @@ AS (Select r.PackingId ,r.OrderId,Max(s.PackingDate) OVER (PARTITION BY r.OrderI
 ROW_NUMBER() OVER(PARTITION BY r.OrderId,r.PackingId ORDER BY r.OrderId,r.PackingId) RowNo
 from PackingInformation r WITH (NOLOCK)  
 Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId)
-Select top 2 p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
+Select p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
 CONVERT(NVARCHAR(11), x.OrderDate, 106) OrderDate,
 CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
 IsNULL(y.PackingId,0) PackingId,

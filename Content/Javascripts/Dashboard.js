@@ -1,4 +1,17 @@
-﻿$(function () {
+﻿
+
+//enum ProcessName {
+//    Dyeing = 5,
+//    DIGITALPRINTING=11,
+//    TASSEL = 15,
+
+//}
+
+
+
+
+
+$(function () {
 
     const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS';
     const TO_PATTERN = 'DD/MM/YYYY';
@@ -60,12 +73,12 @@
                         render: function (data, type, row, meta) {
                             var btnHtml = "<a class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mrm mediumtxt'></i>Info</a>";
                             btnHtml += "<a class='btnPurchase' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart text-red mrm mediumtxt'></i>Purchase</a>";
-                            btnHtml += "<a class='btnDyeing' exthref=" + data.OrderId + "><i class='fa fa-paint-brush text-red mrm mediumtxt'></i>Dyeing</a>";
+                            btnHtml += "<a class='btnDyeing' exthref=" + data.OrderId + "><i class='fa fa-pencil text-red mrm mediumtxt'></i>Dyeing</a>";
+                            btnHtml += "<a class='btnDigiPrint' exthref=" + data.OrderId + "><i class='fa fa-print text-red mrm mediumtxt'></i>DIGITAL PRINTING(MTR)</a>";
                             return btnHtml;
                         },
                     },
-                ],
-
+                ], 
                 columnDefs: [
 
                     {
@@ -84,7 +97,7 @@
 
             });
 
-
+       
 
             table.on('click', 'a.btnOrder', function (e) {
                 var elem = $(this);
@@ -107,6 +120,19 @@
                 var _processId = 5;
                 DyeingReport(_orderId, _processId);
             });
+
+
+            table.on('click', 'a.btnDigiPrint', function (e) {
+                var elem = $(this);
+                var id = elem.attr('exthref');
+                var _orderId = parseInt(id);
+                var _processId = 11;
+                DyeingReport(_orderId, _processId);
+            });
+            
+
+
+
 
         },
         error: function (xhr) {
@@ -311,28 +337,20 @@ function OrderDetail(_orderId) {
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += "<tr><th>Order No.</th><th>Local Order</th><th>Order Date</th><th>Dispatch Date</th><th>Due Date</th>";
+            bodyHtml += "<tr><th>Due Date</th>";
             bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
             bodyHtml += "<th>Color</th><th>Shape</th><th>Shade</th><th>Size</th>";
             bodyHtml += "<th>Unit</th><th>Ouantity</th><th>Filler</th></tr></thead><tbody>";
             if (result.data.length > 0) {
-
-
-
-
-
                 $.each(result.data, function (index, item) {
-
-
-
-                    bodyHtml += "<tr><td>" + item.CustomerOrderNo + "</td><td>" + item.LocalOrder + "</td><td>" + item.OrderDate + "</td><td>" + item.DispatchDate + "</td><td>" + item.DueDate + "</td>";
+                    bodyHtml += "<tr><td>" + item.DueDate + "</td>";
                     bodyHtml += "<td>" + item.Technique + "</td><td>" + item.Quality + "</td><td>" + item.Design + "</td>";
                     bodyHtml += "<td>" + item.Color + "</td><td>" + item.Shape + "</td><td>" + item.Shade + "</td><td>" + item.Size + "</td>";
                     bodyHtml += "<td>" + item.Unit + "</td><td>" + item.OrderQty + "</td><td>" + item.Filler + "</td></tr>";
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='14'>Data not found</td></tr>";
+                bodyHtml += "<tr><td colspan='11'>Data not found</td></tr>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
@@ -373,17 +391,17 @@ function PurchaseReport(_orderId) {
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += " <tr><th>Category</th><th>PO No</th><th>PO Status</th><th>PO Date</th><th>Supplier Name</th>";
-            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th><th>Delay Days</th></tr></thead><tbody>";
+            bodyHtml += " <tr><th>PO No</th><th>PO Status</th><th>PO Date</th><th>Supplier Name</th>";
+            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Delv. Date</th></tr></thead><tbody>";
             if (result.data.length > 0) {
                 $.each(result.data, function (index, item) {
 
-                    bodyHtml += "<tr><td>" + item.Category + "</td><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td><td>" + item.DelayDays + "</td></tr>"
+                    bodyHtml += "<tr><td>" + item.PONo + "</td><td>" + item.POStatus + "</td><td>" + item.PODate + "</td ><td>" + item.SupplierName + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.DelvDate + "</td></tr>"
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
+                bodyHtml += "<tr><td colspan='8'>Data not found</td></tr>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
@@ -408,8 +426,20 @@ function PurchaseReport(_orderId) {
 function DyeingReport(_orderId, _processId) {
 
     var bodyHtml = "";
+
     $('h4.modal-title').empty();
-    $('h4.modal-title').html("Dyeing Report");
+    if (_processId == 11) {
+        $('h4.modal-title').html("DIGITAL PRINTING(MTR) Report");
+    }
+    else {
+        $('h4.modal-title').html("Dyeing Report");
+    }
+ 
+ 
+
+
+
+
     const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
         url: "Home.aspx/GetIndentDetail",
@@ -422,20 +452,20 @@ function DyeingReport(_orderId, _processId) {
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += "<tr><th>Supplier</th><th>Category</th><th>Material Name</th><th>Quality</th><th>Color</th>";
-            bodyHtml += "<th>Shade</th><th>Indent No.</th><th>Issue Date</th>";
-            bodyHtml += "<th>Request Date</th><th>Quantity</th><th>Receive Date</th><th>Rec. Qty</th>";
-            bodyHtml += "<th>Issue Qty</th><th>Consm. Qty</th><th>Return Date</th><th>Return Qty</th>";
+            bodyHtml += "<tr><th>Supplier</th><th>Material Name</th><th>Quality</th><th>Color</th>";
+            bodyHtml += "<th>Shade</th><th>Indent No.</th>";
+            bodyHtml += "<th>Request Date</th><th>Quantity</th><th>Rec. Qty</th>";
+            bodyHtml += "<th>Issue Qty</th><th>Consm. Qty</th><th>Return Qty</th>";
             bodyHtml += "<th>Remarks</th></tr></thead><tbody>";
 
             if (result.data.length > 0) {
 
                 $.each(result.data, function (index, item) {
 
-                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.Category + "</td><td>" + item.MaterialName + "</td><td>" + item.QualityName + "</td><td>" + item.ColorName + "</td>";
-                    bodyHtml += "<td>" + item.ShadeName + "</td><td>" + item.IndentNo + "</td><td>" + item.IssueDate + "</td><td>" + item.ReqDate + "</td>";
-                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.ReceiveDate + "</td><td>" + item.RecQuantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.ConsmpQty + "</td>";
-                    bodyHtml += "<td>" + item.ReturnDate + "</td><td>" + item.ReturnQty + "</td><td>" + item.TagRemarks + "</td></tr>";
+                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td><td>" + item.QualityName + "</td><td>" + item.ColorName + "</td>";
+                    bodyHtml += "<td>" + item.ShadeName + "</td><td>" + item.IndentNo + "</td><td>" + item.ReqDate + "</td>";
+                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.RecQuantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.ConsmpQty + "</td>";
+                    bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.TagRemarks + "</td></tr>";
 
                 });
             }
