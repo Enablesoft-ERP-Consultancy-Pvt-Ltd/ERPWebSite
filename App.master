@@ -137,7 +137,10 @@
 
     </form>
     <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/jquery/dist/jquery.min.js")%>"></script>
-    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/bootstrap/js/bootstrap.js")%>"></script>
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/bootstrap/js/bootstrap.bundle.min.js")%>"></script>
+
+ 
+
     <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/metisMenu/jquery.metisMenu.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/jquery-cookie/jquery.cookie.js")%>"></script>

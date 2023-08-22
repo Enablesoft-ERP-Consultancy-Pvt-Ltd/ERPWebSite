@@ -71,14 +71,29 @@ $(function () {
                     {
                         data: null,
                         render: function (data, type, row, meta) {
-                            var btnHtml = "<a class='btnOrder mrm' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mrm mediumtxt'></i>Info</a>";
-                            btnHtml += "<a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart text-red mrm mediumtxt'></i>Purchase</a>";
-                            btnHtml += "<a class='btnDyeing mrm' exthref=" + data.OrderId + "><i class='fa fa-pencil text-red mrm mediumtxt'></i>Dyeing</a>";
-                            btnHtml += "<a class='btnDigiPrint mrm' exthref=" + data.OrderId + "><i class='fa fa-print text-red mrm mediumtxt'></i>DIGITAL PRINTING(MTR)</a>";
+
+
+
+                            var btnHtml = "<a title='Order Detail' class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mediumtxt mrm'></i></a>";
+                            btnHtml += "<div class='btn-group'><button type='button' data-bs-toggle='dropdown' class='btn btn-dark dropdown-toggle  ptx pbx'>";
+                            btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion'>";
+
+                          
+                            btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
+                            btnHtml += "<li><a class='btnDyeing mrm' exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing</strong></a></li>";
+                            btnHtml += "<li><a class='btnDigiPrint mrm' exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
+
+                            btnHtml += "</ul></div>";
+
+
+
+
+
+                   
                             return btnHtml;
                         },
                     },
-                ], 
+                ],
                 columnDefs: [
 
                     {
@@ -97,7 +112,7 @@ $(function () {
 
             });
 
-       
+
 
             table.on('click', 'a.btnOrder', function (e) {
                 var elem = $(this);
@@ -129,7 +144,7 @@ $(function () {
                 var _processId = 11;
                 DyeingReport(_orderId, _processId);
             });
-            
+
 
 
 
@@ -150,7 +165,7 @@ $(function () {
         console.log(orderlist);
 
         $('#tblVendorPO').DataTable({
-            lengthMenu: [[5, 10, 25, 50, -1], [10, 25, 50, "All"]],
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
             data: polist.data,
             columns: [
                 { data: 'VendorName' },
@@ -434,8 +449,8 @@ function DyeingReport(_orderId, _processId) {
     else {
         $('h4.modal-title').html("Dyeing Report");
     }
- 
- 
+
+
 
 
 
