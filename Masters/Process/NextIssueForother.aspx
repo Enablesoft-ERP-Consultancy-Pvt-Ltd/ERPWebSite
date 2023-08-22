@@ -186,6 +186,27 @@
                                                 <asp:TextBox ID="txtrecchallanNo" CssClass="textb" Width="100px" runat="server" Enabled="false" />
                                             </td>
                                         </tr>
+                                        <tr id="TrBindRecChallanNoJobWise" runat="server" visible="false">
+                                            <td id="Td9" class="tdstyle" runat="server">
+                                                &nbsp;
+                                            </td>
+                                            <td id="Td10" class="tdstyle" runat="server">
+                                                &nbsp;
+                                            </td>
+                                            <td id="TD11" runat="server" visible="true">
+                                                <asp:Label ID="Label18" runat="server" Text="From Process" CssClass="labelbold"></asp:Label><br />
+                                                <asp:DropDownList ID="DDFromProcessForRecChallanNo" runat="server" CssClass="dropdown" Width="150px"
+                                                    AutoPostBack="true" OnSelectedIndexChanged="DDFromProcessForRecChallanNo_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                            </td>
+                                            <td id="TD12" runat="server" visible="true">
+                                                <asp:Label ID="Label19" runat="server" Text="Rec ChallanNo." CssClass="labelbold"></asp:Label><br />
+                                                <asp:DropDownList ID="DDRecChallanNoJobWise" runat="server" CssClass="dropdown" Width="150px">
+                                                </asp:DropDownList>
+                                            </td>
+                                        
+                                        </tr>
+
                                         <tr>
                                             <td id="Tdissuedate" class="tdstyle" runat="server">
                                                 <span class="labelbold">IssueDate</span>
