@@ -1,14 +1,14 @@
 ﻿
 
-//enum ProcessName {
-//    Dyeing = 5,
-//    DIGITALPRINTING=11,
-//    TASSEL = 15,
-
-//}
 
 
+var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report" },
+{ ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS) Report" },
+{ ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report" },
+{ ProcessId: 15, Process: "TASSEL MAKING", Title: "TASSEL MAKING Report" },
+{ ProcessId: 21, Process: "BLOCK PRINTING(BP)", Title: "BLOCK PRINTING(BP) Report" }
 
+];
 
 
 $(function () {
@@ -78,18 +78,23 @@ $(function () {
                             btnHtml += "<div class='btn-group'><button type='button' data-bs-toggle='dropdown' class='btn btn-dark dropdown-toggle  ptx pbx'>";
                             btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion'>";
 
-                          
-                            btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
-                            btnHtml += "<li><a class='btnDyeing mrm' exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing</strong></a></li>";
-                            btnHtml += "<li><a class='btnDigiPrint mrm' exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
 
+                            btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
+
+
+
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 5 + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>COMPUTER EMBROIDERY(PCS)</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 11 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 15 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>TASSEL MAKING</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 21 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>BLOCK PRINTING(BP)</strong></a></li>";
                             btnHtml += "</ul></div>";
 
 
 
 
 
-                   
+
                             return btnHtml;
                         },
                     },
@@ -128,25 +133,12 @@ $(function () {
                 PurchaseReport(_orderId);
             });
 
-            table.on('click', 'a.btnDyeing', function (e) {
+            table.on('click', 'a.btnProcess', function (e) {
                 var elem = $(this);
-                var id = elem.attr('exthref');
-                var _orderId = parseInt(id);
-                var _processId = 5;
-                DyeingReport(_orderId, _processId);
+                var _orderId = parseInt(elem.attr('exthref'));
+                var _processId = parseInt(elem.attr('prhref'));
+                ProcessReport(_orderId, _processId);
             });
-
-
-            table.on('click', 'a.btnDigiPrint', function (e) {
-                var elem = $(this);
-                var id = elem.attr('exthref');
-                var _orderId = parseInt(id);
-                var _processId = 11;
-                DyeingReport(_orderId, _processId);
-            });
-
-
-
 
 
         },
@@ -438,20 +430,13 @@ function PurchaseReport(_orderId) {
 }
 
 
-function DyeingReport(_orderId, _processId) {
+function ProcessReport(_orderId, _processId) {
 
     var bodyHtml = "";
 
     $('h4.modal-title').empty();
-    if (_processId == 11) {
-        $('h4.modal-title').html("DIGITAL PRINTING(MTR) Report");
-    }
-    else {
-        $('h4.modal-title').html("Dyeing Report");
-    }
-
-
-
+    var item = ProcessList.find(S => S.ProcessId == _processId);
+    $('h4.modal-title').html(item.Title);
 
 
 
