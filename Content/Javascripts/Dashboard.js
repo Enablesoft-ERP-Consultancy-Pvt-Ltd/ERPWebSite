@@ -452,25 +452,25 @@ function ProcessReport(_orderId, _processId) {
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += "<tr><th>Supplier</th><th>Material Name</th><th>Quality</th><th>Color</th>";
-            bodyHtml += "<th>Shade</th><th>Indent No.</th>";
-            bodyHtml += "<th>Request Date</th><th>Quantity</th><th>Rec. Qty</th>";
-            bodyHtml += "<th>Issue Qty</th><th>Consm. Qty</th><th>Return Qty</th>";
+            bodyHtml += "<tr><th>Supplier</th><th>Material Name</th>";
+            bodyHtml += "<th>Indent No.</th>";
+            bodyHtml += "<th>Request Date</th><th>Indent Qty.</th><th>Rec. Qty</th>";
+            bodyHtml += "<th>Issue Qty</th><th>Return Qty</th>";
             bodyHtml += "<th>Remarks</th></tr></thead><tbody>";
 
             if (result.data.length > 0) {
 
                 $.each(result.data, function (index, item) {
 
-                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td><td>" + item.QualityName + "</td><td>" + item.ColorName + "</td>";
-                    bodyHtml += "<td>" + item.ShadeName + "</td><td>" + item.IndentNo + "</td><td>" + item.ReqDate + "</td>";
-                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.RecQuantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.ConsmpQty + "</td>";
+                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
+                    bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.ReqDate + "</td>";
+                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.RecQuantity + "</td><td>" + item.IssueQuantity + "</td>";
                     bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.TagRemarks + "</td></tr>";
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='17'>Data not found</td></tr></tbody>";
+                bodyHtml += "<tr><td colspan='9'>Data not found</td></tr></tbody>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
