@@ -26,17 +26,22 @@ namespace IExpro.Core.Models.Reports
         public string SupplierName { get; set; }
         public string ItemName { get; set; }
         public string Rate { get; set; }
-        public string POQty { get; set; }
+        public double POQty { get; set; }
+        public double RecQty { get; set; }
+        public double RetQty { get; set; }
+
+        public double PendingQty
+        {
+            get { return (POQty - (RetQty + RecQty)); }
+        }
         public string DelvDate { get; set; }
         public string DelayDays { get; set; }
         public string RecDate { get; set; }
-        public string RecQty { get; set; }
         public string ChallanNo { get; set; }
         public string LotNo { get; set; }
         public string BillNo { get; set; }
         public string RetDate { get; set; }
-        public string RetQty { get; set; }
-        public string PendingQty { get; set; }
+
         public string ReceiveRemark { get; set; }
         public string OrderRemark { get; set; }
 

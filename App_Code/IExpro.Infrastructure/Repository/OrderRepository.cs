@@ -253,20 +253,24 @@ PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGS
                 var lst = result.Select(x => new PurchaseRawMaterialModel
                 {
                     Category = x.Category != null ? x.Category : string.Empty,
+                    SupplierName = x.Vendor != null ? x.Vendor : string.Empty,
+                    BillNo = x.BillNo != null ? x.BillNo : string.Empty,
+                    ItemName = x.Technique != null ? x.Technique : string.Empty,
+                    ChallanNo = x.PurchaseOrderNo != null ? x.PurchaseOrderNo : string.Empty,
                     PONo = x.PurchaseOrderNo != null ? x.PurchaseOrderNo : string.Empty,
                     POStatus = x.STATUS != null ? x.STATUS : string.Empty,
                     PODate = x.IssueDate != null ? x.IssueDate : string.Empty,
-                    SupplierName = x.Vendor != null ? x.Vendor : string.Empty,
-                    ItemName = x.Technique != null ? x.Technique : string.Empty,
-                    Rate = x.Rate != null ? x.Rate.ToString() : string.Empty,
-                    POQty = x.IssueQty != null ? x.IssueQty.ToString() : string.Empty,
+                    Rate = x.RATE != null ? x.RATE.ToString() : string.Empty,
+
+                    POQty = x.IssueQty != null ? Convert.ToDouble(x.IssueQty) : 0,
+                    RetQty = x.ReturnQty != null ? Convert.ToDouble(x.ReturnQty) : 0,
+                    RecQty = x.ReceiveQty != null ? Convert.ToDouble(x.ReceiveQty) : 0,
+
                     DelvDate = x.DeliveryDate != null ? x.DeliveryDate : string.Empty,
                     RecDate = x.ReceiveDate != null ? x.ReceiveDate : string.Empty,
-                    RecQty = x.ReceiveQty != null ? x.ReceiveQty.ToString() : string.Empty,
-                    ChallanNo = x.PurchaseOrderNo != null ? x.PurchaseOrderNo : string.Empty,
                     RetDate = x.Returndate != null ? x.Returndate.ToString() : string.Empty,
-                    RetQty = x.ReturnQty != null ? x.ReturnQty.ToString() : string.Empty,
-                    BillNo = x.BillNo != null ? x.BillNo : string.Empty,
+
+
                 });
                 return (lst);
             }
@@ -375,7 +379,7 @@ Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
                     });
 
 
-               
+
                     return (lst);
                 }
                 catch (Exception ex)
