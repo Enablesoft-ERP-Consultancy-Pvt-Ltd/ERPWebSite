@@ -10,6 +10,7 @@ using Dapper;
 using IExpro.Core.Entity;
 using IExpro.Core.Interfaces.Common;
 using IExpro.Core.Common;
+using AjaxControlToolkit;
 
 namespace IExpro.Infrastructure.Repository
 {
@@ -218,36 +219,30 @@ Where x.CompanyId=@CompanyId";
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
 
-                string sqlQuery = @"SELECT E.EMPNAME Vendor, EMPID EMPID, ITEM_NAME+' '+QUALITYNAME+' '+DESIGNNAME+' '+COLORNAME+' '+SHAPENAME+' '+ShadeColorName+' '+CASE WHEN FLAGSIZE=0 THEN SIZEFT    
-ELSE CASE WHEN FLAGSIZE=1 THEN SIZEMTR ELSE SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END Technique,     
-VF.QUALITYNAME, COLORNAME+' '+SHAPENAME+' '+SHADECOLORNAME COLOUR, PIIT.QUANTITY IssueQty, ISNULL(SUM(PIIR.QTY-ISNULL(PIIR.BELLWT, 0) - ISNULL(V.RETURNQTY, 0)), 0) ReceiveQty,     
-CONVERT(NVARCHAR(11), PIIT.DELIVERY_DATE, 106) DeliveryDate, PIIT.ORDERID, PII.PINDENTISSUEID, CONVERT(NVARCHAR(11), PII.DUEDATE, 106) DUEDATE,CONVERT(NVARCHAR(11), PRM.RECEIVEDATE, 106) RECEIVEDATE,PRM.BILLNO,   
---REPLACE(CONVERT(NVARCHAR(11), PRM.RECEIVEDATE, 106), ' ', '-') + '/'+ BILLNO RECDATE, PRM.BILLNO, PRM.GATEINNO, ISNULL(PRM.PURCHASERECEIVEID, 0) PURCHASERECEIVEID,     
+                string sqlQuery = @"SELECT E.EMPNAME Vendor, EMPID EMPID,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN PIIT.FLAGSIZE=0 THEN VF.SIZEFT    
+ELSE CASE WHEN PIIT.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END Technique, 
+VF.QUALITYNAME, VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.SHADECOLORNAME COLOUR, PIIT.QUANTITY IssueQty, ISNULL(SUM(PIIR.QTY-ISNULL(PIIR.BELLWT, 0) - ISNULL(V.RETURNQTY, 0)), 0) ReceiveQty,     
+PIIT.DELIVERY_DATE DeliveryDate, PIIT.ORDERID, PII.PINDENTISSUEID, CONVERT(NVARCHAR(11), PII.DUEDATE, 106) DUEDATE,PRM.RECEIVEDATE,PRM.BILLNO,   
 '' RECDATE, '' BILLNO, '' GATEINNO, 0 PURCHASERECEIVEID,PIIT.RATE, Sum(ISNULL(V.RETURNQTY, 0)) ReturnQty, BILLNO1,CONVERT(NVARCHAR(11), PII.DATE, 106) IssueDate, ISNULL(PIIT.CANQTY, 0) CANQTY, PII.USERID, PII.PAYEMENTTERMID PAYEMENTTERMID,     
 PII.DELIVERYTERMID DELIVERYTERMID, ISNULL(SUM(PIIR.PENALTY), 0) PENALTYORDEBITNOTE, ISNULL(PIIR.VAT, 0) VAT,     
 SUM(((ISNULL(PIIR.QTY, 0)-ISNULL(PIIR.BELLWT, 0)- ISNULL(V.RETURNQTY, 0))*ISNULL(PIIR.RATE, 0) )+((((ISNULL(PIIR.QTY, 0)-ISNULL(PIIR.BELLWT, 0)- ISNULL(V.RETURNQTY, 0))*ISNULL(PIIR.RATE, 0))- ISNULL(PIIR.PENALTY, 0))*ISNULL(PIIR.VAT, 0)/100)) HISSSAB,     
-VF.ITEM_FINISHED_ID FINISHEDID, PIIT.PINDENTISSUETRANID, --REPLACE(CONVERT(NVARCHAR(11), V.DATE, 106), ' ', '-')     
-'' RETURNDATE, '' RETURNCHALLAN, PII.CHALLANNO PurchaseOrderNo,     
+VF.ITEM_FINISHED_ID FINISHEDID, PIIT.PINDENTISSUETRANID, '' RETURNDATE, '' RETURNCHALLAN, PII.CHALLANNO PurchaseOrderNo,     
 ISNULL(OM.LOCALORDER, 'STOCK') LOCALORDER, ISNULL(CI.CUSTOMERCODE, 'STOCK') CUSTOMERCODE, ISNULL(SUM(PIIR.LSHORTPERCENTAGE), 0) LSHORTPERCENTAGE, OM.CUSTOMERID,     
 PIIT.FLAGSIZE, VF.CATEGORY_NAME Category, PII.STATUS, ISNULL(SUM(PIIR.QTY-ISNULL(PIIR.BELLWT, 0)), 0) Recqty_beforeRetnqty, pii.Companyid, OM.CustomerOrderNo,PIIT.GSTType,PIIT.SGST,PIIT.IGST,PII.requestby,PII.requestfor     
-FROM PURCHASEINDENTISSUE PII     
-INNER JOIN EMPINFO E ON PII.PARTYID=EMPID     
+FROM PURCHASEINDENTISSUE PII INNER JOIN EMPINFO E ON PII.PARTYID=EMPID     
 INNER JOIN PURCHASEINDENTISSUETRAN PIIT ON PIIT.PINDENTISSUEID=PII.PINDENTISSUEID     
 INNER JOIN OrderMaster OM ON OM.OrderID = PIIT.OrderID     
 LEFT JOIN V_FINISHEDITEMDETAIL VF ON PIIT.FINISHEDID=VF.ITEM_FINISHED_ID     
 LEFT JOIN PURCHASERECEIVEDETAIL PIIR ON PIIR.PINDENTISSUETRANID=PIIT.PINDENTISSUETRANID AND PIIR.PINDENTISSUEID=PII.PINDENTISSUEID     
 LEFT JOIN PURCHASERECEIVEMASTER PRM ON PRM.PURCHASERECEIVEID=PIIR.PURCHASERECEIVEID    
-LEFT JOIN V_PURCHASERETURNDETAIL V ON PIIR.PURCHASERECEIVEDETAILID=V.PURCHASERECEIVEDETAILID    
---LEFT JOIN V_PURCHASEWITHBUYER VP ON VP.PINDENTISSUEID=PII.PINDENTISSUEID    
-LEFT JOIN CustomerInfo CI ON CI.CustomerId = OM.CustomerId     
-LEFT JOIN SIZETYPE ST ON PIIT.FLAGSIZE=ST.VAL    
+LEFT JOIN V_PURCHASERETURNDETAIL V ON PIIR.PURCHASERECEIVEDETAILID=V.PURCHASERECEIVEDETAILID       
+LEFT JOIN CustomerInfo CI ON CI.CustomerId = OM.CustomerId LEFT JOIN SIZETYPE ST ON PIIT.FLAGSIZE=ST.VAL    
 GROUP BY E.EMPNAME, EMPID, ITEM_NAME, DESIGNNAME, VF.QUALITYNAME, COLORNAME, SHADECOLORNAME, SHAPENAME, PII.PINDENTISSUEID, PIIT.DELIVERY_DATE,     
-PIIT.ORDERID, PII.PINDENTISSUEID, PII.DUEDATE,PRM.RECEIVEDATE, PRM.BILLNO, --PRM.GATEINNO, PRM.PURCHASERECEIVEID,     
-PIIT.RATE, QTYRETURN, BILLNO1, PII.DATE, PIIT.CANQTY,     
-PII.USERID, PII.PAYEMENTTERMID, PII.DELIVERYTERMID, PIIR.VAT, VF.ITEM_FINISHED_ID, PIIT.QUANTITY, PIIT.PINDENTISSUETRANID, --V.RETURNQTY, V.DATE,     
+PIIT.ORDERID, PII.PINDENTISSUEID, PII.DUEDATE,PRM.RECEIVEDATE, PRM.BILLNO, PIIT.RATE, QTYRETURN, BILLNO1, PII.DATE, 
+PIIT.CANQTY, PII.USERID, PII.PAYEMENTTERMID, PII.DELIVERYTERMID, PIIR.VAT, VF.ITEM_FINISHED_ID, PIIT.QUANTITY, PIIT.PINDENTISSUETRANID,     
 FLAGSIZE, SIZEFT, SIZEMTR, SIZEINCH, PII.CHALLANNO, OM.LOCALORDER, CI.CUSTOMERCODE, OM.CUSTOMERID, ST.TYPE, VF.SIZEID, VF.CATEGORY_NAME, PII.STATUS,     
 PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGST,PIIT.IGST,PII.requestby,PII.requestfor         
-  having OM.OrderID=@OrderId";
+Having OM.OrderID=@OrderId";
 
                 var result = conn.Query(sqlQuery, new { @OrderId = OrderId, });
                 var lst = result.Select(x => new PurchaseRawMaterialModel
@@ -261,13 +256,11 @@ PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGS
                     POStatus = x.STATUS != null ? x.STATUS : string.Empty,
                     PODate = x.IssueDate != null ? x.IssueDate : string.Empty,
                     Rate = x.RATE != null ? x.RATE.ToString() : string.Empty,
-
                     POQty = x.IssueQty != null ? Convert.ToDouble(x.IssueQty) : 0,
                     RetQty = x.ReturnQty != null ? Convert.ToDouble(x.ReturnQty) : 0,
                     RecQty = x.ReceiveQty != null ? Convert.ToDouble(x.ReceiveQty) : 0,
-
-                    DelvDate = x.DeliveryDate != null ? x.DeliveryDate : string.Empty,
-                    RecDate = x.ReceiveDate != null ? x.ReceiveDate : string.Empty,
+                    DeliveryDate = x.DeliveryDate != null ? x.DeliveryDate : DateTime.Now,
+                    ReceiveDate = x.ReceiveDate != null ? x.ReceiveDate : DateTime.Now,
                     RetDate = x.Returndate != null ? x.Returndate.ToString() : string.Empty,
 
 
@@ -325,7 +318,7 @@ ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE 
 VF.QUALITYNAME, VF.COLORNAME,VF.SHAPENAME,VF.SHADECOLORNAME,VF.CATEGORY_NAME Category,
 z.OrderId,z.OrderDetailId,z.ConsmpQty,z.LossQty,z.ProcessId,z.RequiredQty,x.IndentId,x.IndentNo,x.IFinishedId,x.OFinishedId,
 x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.ReceiveDate,y.RecQuantity,y.Moisture,y.IssueId,y.IssueQuantity,
-zz.ReturnId,zz.ReturnDate,zz.ReturnQty,zz.TagRemarks
+zz.ReturnId,zz.ReturnDate,IsNull(zz.ReturnQty,0.00) ReturnQty,zz.TagRemarks
 from IndentItem x Left join ReceiveItem y on x.Indentid=y.Indentid and x.IFinishedId=y.IFinishedId and x.OFinishedId=y.OFinishedId and x.RowNo=y.RowNo --and x.OrderDetailId=y.OrderDetailId
 inner join ConsumeItem z on x.PPNo=z.PPID and x.IFinishedId=z.IFinishedId  and  x.OFinishedId=z.OFinishedId and x.RowNo=z.RowNo
 Left join ReturnItem zz on y.Indentid=zz.Indentid and y.IFinishedid=zz.IFinishedid and y.RowNo=zz.RowNo and y.IssueId=zz.IssueId
@@ -337,50 +330,104 @@ Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
                 try
                 {
 
-                    var result = conn.Query(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, });
+                    var result = conn.Query<IndentRawMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, }).GroupBy(n => n.IndentId).
+                        Select(x => new IndentRawMaterialModel
+                        {
+                            IndentId = x.Key,
+                            Category = x.FirstOrDefault().Category,
+                            VendorName = x.FirstOrDefault().VendorName,
+                            MaterialName = x.FirstOrDefault().MaterialName,
+                            QualityName = x.FirstOrDefault().QualityName,
+                            ColorName = x.FirstOrDefault().ColorName,
+                            ShadeName = x.FirstOrDefault().ShadeName,
+                            PPNo = x.FirstOrDefault().PPNo,
+                            ProcessId = x.FirstOrDefault().ProcessId,
+                            CompanyId = x.FirstOrDefault().CompanyId,
+                            OrderId = x.FirstOrDefault().OrderId,
+                            OrderDetailId = x.FirstOrDefault().OrderDetailId,
+                            IndentNo = x.FirstOrDefault().IndentNo,
+                            PartyId = x.FirstOrDefault().PartyId,
+                            IFinishedId = x.FirstOrDefault().IFinishedId,
+                            OFinishedId = x.FirstOrDefault().OFinishedId,
+
+                            IndentQty = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().IndentQty),
+                            ExtraQty = x.Sum(y => y.ExtraQty),
+                            CancelQty = x.Sum(y => y.CancelQty),
+                            //Quantity = x.Sum(y => y.Quantity),
+                            IssueId = x.FirstOrDefault().IssueId,
+                            Quantity = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().Quantity),
+
+                            //IssueQuantity = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().IssueQuantity),
+                            IssueQuantity = x.FirstOrDefault().IssueQuantity,
+                            RecQuantity = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().RecQuantity),
+                            //RecQuantity = x.Sum(y => y.RecQuantity),
+
+                            ConsmpQty = x.Sum(y => y.ConsmpQty),
+                            Moisture = x.Sum(y => y.Moisture),
+                            LossQty = x.Sum(y => y.LossQty),
+
+
+                            ReturnQty = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().ReturnQty),
+
+                            //ReturnQty = x.Sum(y => y.ReturnQty),
 
 
 
-                    var lst = result.Select(x => new IndentRawMaterialModel
-                    {
-                        Category = x.Category != null ? x.Category : string.Empty,
-                        VendorName = x.VendorName != null ? x.VendorName : string.Empty,
-                        MaterialName = x.MaterialName != null ? x.MaterialName : string.Empty,
-                        QualityName = x.QualityName != null ? x.QualityName : string.Empty,
-                        ColorName = x.ColorName != null ? x.ColorName : string.Empty,
-                        ShadeName = x.ShadeName != null ? x.ShadeName : string.Empty,
-                        PPNo = x.PPNo != null ? x.PPNo : 0,
-                        ProcessId = x.ProcessId != null ? x.ProcessId : 0,
-                        CompanyId = x.CompanyId != null ? x.CompanyId : 0,
-                        OrderId = x.OrderId != null ? x.OrderId : 0,
-                        OrderDetailId = x.OrderDetailId != null ? x.OrderDetailId : 0,
-                        IndentNo = x.IndentNo != null ? x.IndentNo : string.Empty,
-                        PartyId = x.PartyId != null ? x.PartyId : 0,
-                        IFinishedId = x.IFinishedId != null ? x.IFinishedId : 0,
-                        OFinishedId = x.OFinishedId != null ? x.OFinishedId : 0,
-                        IssueDate = x.IssueDate != null ? x.IssueDate.ToString("dd MMM yyyy") : string.Empty,
-                        ReqDate = x.ReqDate != null ? x.ReqDate.ToString("dd MMM yyyy") : string.Empty,
-                        IndentQty = x.IndentQty != null ? (decimal)x.IndentQty : 0.0m,
-                        ExtraQty = x.ExtraQty != null ? (decimal)x.ExtraQty : 0.0m,
-                        CancelQty = x.CancelQty != null ? (decimal)x.CancelQty : 0.0m,
-                        Quantity = x.Quantity != null ? (decimal)x.Quantity : 0.0m,
-                        IssueId = x.IssueId != null ? x.IssueId : 0,
-                        IssueQuantity = x.IssueQuantity != null ? (decimal)x.IssueQuantity : 0.0m,
-                        ReceiveDate = x.ReceiveDate != null ? x.ReceiveDate.ToString("dd MMM yyyy") : string.Empty,
-                        RecQuantity = x.RecQuantity != null ? (decimal)x.RecQuantity : 0.0m,
-                        ConsmpQty = x.ConsmpQty != null ? (decimal)x.ConsmpQty : 0.0m,
-                        Moisture = x.Moisture != null ? (decimal)x.Moisture : 0.0m,
-                        LossQty = x.LossQty != null ? (decimal)x.LossQty : 0.0m,
-                        RequiredQty = x.RequiredQty != null ? (decimal)x.RequiredQty : 0.0m,
-                        ReturnId = x.ReturnId != null ? x.ReturnId : 0,
-                        ReturnQty = x.ReturnQty != null ? (decimal)x.ReturnQty : 0.0m,
-                        TagRemarks = x.TagRemarks != null ? x.TagRemarks : string.Empty,
-                        ReturnDate = x.ReturnDate != null ? x.ReturnDate.ToString("dd MMM yyyy") : string.Empty,
-                    });
+                            RequiredQty = x.Sum(y => y.RequiredQty),
+
+                            ReturnId = x.FirstOrDefault().ReturnId,
+                            TagRemarks = x.FirstOrDefault().TagRemarks,
+                            ReqDate = x.FirstOrDefault().ReqDate,
+                            IssueDate = x.FirstOrDefault().IssueDate,
+                            ReceiveDate = x.Max(y => y.ReceiveDate),
+                            ReturnDate = x.Max(y => y.ReturnDate),
+
+                        });
 
 
 
-                    return (lst);
+
+
+                    //var lst = result.Select(x => new IndentRawMaterialModel
+                    //{
+                    //    Category = x.Category != null ? x.Category : string.Empty,
+                    //    VendorName = x.VendorName != null ? x.VendorName : string.Empty,
+                    //    MaterialName = x.MaterialName != null ? x.MaterialName : string.Empty,
+                    //    QualityName = x.QualityName != null ? x.QualityName : string.Empty,
+                    //    ColorName = x.ColorName != null ? x.ColorName : string.Empty,
+                    //    ShadeName = x.ShadeName != null ? x.ShadeName : string.Empty,
+                    //    PPNo = x.PPNo != null ? x.PPNo : 0,
+                    //    ProcessId = x.ProcessId != null ? x.ProcessId : 0,
+                    //    CompanyId = x.CompanyId != null ? x.CompanyId : 0,
+                    //    OrderId = x.OrderId != null ? x.OrderId : 0,
+                    //    OrderDetailId = x.OrderDetailId != null ? x.OrderDetailId : 0,
+                    //    IndentNo = x.IndentNo != null ? x.IndentNo : string.Empty,
+                    //    PartyId = x.PartyId != null ? x.PartyId : 0,
+                    //    IFinishedId = x.IFinishedId != null ? x.IFinishedId : 0,
+                    //    OFinishedId = x.OFinishedId != null ? x.OFinishedId : 0,
+                    //    IssueDate = x.IssueDate != null ? x.IssueDate.ToString("dd MMM yyyy") : string.Empty,
+                    //    ReqDate = x.ReqDate != null ? x.ReqDate.ToString("dd MMM yyyy") : string.Empty,
+                    //    IndentQty = x.IndentQty != null ? (decimal)x.IndentQty : 0.0m,
+                    //    ExtraQty = x.ExtraQty != null ? (decimal)x.ExtraQty : 0.0m,
+                    //    CancelQty = x.CancelQty != null ? (decimal)x.CancelQty : 0.0m,
+                    //    Quantity = x.Quantity != null ? (decimal)x.Quantity : 0.0m,
+                    //    IssueId = x.IssueId != null ? x.IssueId : 0,
+                    //    IssueQuantity = x.IssueQuantity != null ? (decimal)x.IssueQuantity : 0.0m,
+                    //    ReceiveDate = x.ReceiveDate != null ? x.ReceiveDate.ToString("dd MMM yyyy") : string.Empty,
+                    //    RecQuantity = x.RecQuantity != null ? (decimal)x.RecQuantity : 0.0m,
+                    //    ConsmpQty = x.ConsmpQty != null ? (decimal)x.ConsmpQty : 0.0m,
+                    //    Moisture = x.Moisture != null ? (decimal)x.Moisture : 0.0m,
+                    //    LossQty = x.LossQty != null ? (decimal)x.LossQty : 0.0m,
+                    //    RequiredQty = x.RequiredQty != null ? (decimal)x.RequiredQty : 0.0m,
+                    //    ReturnId = x.ReturnId != null ? x.ReturnId : 0,
+                    //    ReturnQty = x.ReturnQty != null ? (decimal)x.ReturnQty : 0.0m,
+                    //    TagRemarks = x.TagRemarks != null ? x.TagRemarks : string.Empty,
+                    //    ReturnDate = x.ReturnDate != null ? x.ReturnDate.ToString("dd MMM yyyy") : string.Empty,
+                    //});
+
+
+
+                    return (result);
                 }
                 catch (Exception ex)
                 {

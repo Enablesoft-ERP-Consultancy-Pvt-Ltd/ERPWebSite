@@ -399,16 +399,16 @@ function PurchaseReport(_orderId) {
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += " <tr><th>Supplier Name</th><th>PO No</th><th>PO Date</th><th>Delv. Date</th>";
-            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Pending Qty.</th><th>PO Status</th></tr></thead><tbody>";
+            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Pending Qty.</th><th>Delay Days</th><th>PO Status</th></tr></thead><tbody>";
             if (result.data.length > 0) {
                 $.each(result.data, function (index, item) {
 
-                    bodyHtml += "<tr><td>" + item.SupplierName + "</td><td>" + item.PONo + "</td><td>" + item.PODate + "</td ><td>" + item.DelvDate + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.PendingQty + "</td><td>" + item.POStatus + "</td></tr>"
+                    bodyHtml += "<tr><td>" + item.SupplierName + "</td><td>" + item.PONo + "</td><td>" + item.PODate + "</td ><td>" + item.DelvDate + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.POStatus + "</td></tr>"
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='9'>Data not found</td></tr>";
+                bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
@@ -452,25 +452,25 @@ function ProcessReport(_orderId, _processId) {
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += "<tr><th>Supplier</th><th>Material Name</th>";
+            bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
             bodyHtml += "<th>Indent No.</th>";
-            bodyHtml += "<th>Request Date</th><th>Indent Qty.</th><th>Rec. Qty</th>";
-            bodyHtml += "<th>Issue Qty</th><th>Return Qty</th>";
-            bodyHtml += "<th>Remarks</th></tr></thead><tbody>";
+            bodyHtml += "<th>Req. Date</th><th>Indent Qty.</th>";
+            bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Return Qty.</th>";
+            bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
 
             if (result.data.length > 0) {
 
                 $.each(result.data, function (index, item) {
 
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
-                    bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.ReqDate + "</td>";
-                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.RecQuantity + "</td><td>" + item.IssueQuantity + "</td>";
-                    bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.TagRemarks + "</td></tr>";
+                    bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.RequestDate + "</td>";
+                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
+                    bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.ItemStatus + "</td></tr>";
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='9'>Data not found</td></tr></tbody>";
+                bodyHtml += "<tr><td colspan='11'>Data not found</td></tr></tbody>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
