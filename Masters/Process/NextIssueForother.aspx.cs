@@ -823,7 +823,10 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                         ,EI.Empname,Ei.Empaddress as address,'' as Address2,'' asAddress3,'' as Mobile,Ei.EMPGSTIN as Empgstin,PIM.issueorderid
                         ,PIM.assigndate,PID.reqbydate,(select PROCESS_NAME From PROCESS_NAME_MASTER Where PROCESS_NAME_ID=" + DDTOProcess.SelectedValue + @") as Job,
                         Vf.QualityName,Vf.designName,Vf.ColorName,Case When Vf.shapeid=1 Then '' Else Left(vf.shapename,1) End  as Shapename,
-                        PID.Width+' x ' +PID.Length as Size,PID.qty,PID.Qty*PID.area as Area,PIM.UnitId,PID.Rate,PID.Issue_Detail_Id,
+                        PID.Width+' x ' +PID.Length as Size,PID.qty,----PID.Qty*PID.area as Area,
+                        Case When " + Session["varcompanyId"].ToString() + @"=43 Then Case When (Select PROCESS_NAME From PROCESS_NAME_MASTER Where PROCESS_NAME_ID=" + DDTOProcess.SelectedValue + @")='Binding' Then cast(PID.Qty*PID.area as int) Else PID.Qty*PID.area End
+						Else PID.Qty*PID.area End as Area,
+                        PIM.UnitId,PID.Rate,PID.Issue_Detail_Id,
                         (Select * from [dbo].[Get_StockNoIssue_Detail_Wise](PID.Issue_Detail_Id," + DDTOProcess.SelectedValue + @")) TStockNo,PIM.Instruction,PIM.Remarks,PID.Item_Finished_Id,
                         case when " + Session["varcompanyId"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '' end as FolioNo,
                         isnull(PID.JobIssueWeight,0) as JobIssueWeight, PID.Amount,PID.GSTTYPE,
@@ -2224,15 +2227,37 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
 
     protected void DDFromProcessForRecChallanNo_SelectedIndexChanged(object sender, EventArgs e)
     {
+        string str = "";
+        str = @"Select EI.EmpId,EI.EmpName+' - '+EI.EmpCode from EmpInfo EI(NoLock) JOIN EmpProcess EP(NoLock) ON EI.EmpId=EP.EmpId 
+                Where EP.ProcessID=" + DDFromProcessForRecChallanNo.SelectedValue + " Order by EI.EmpName";
+
+//        str = @"Select EI.EmpId,EI.EmpName+' - '+EI.Empcode as EmpName From PROCESS_RECEIVE_MASTER_" + DDFromProcessForRecChallanNo.SelectedValue + " PRM(NoLock) JOIN PROCESS_RECEIVE_DETAIL_" + DDFromProcessForRecChallanNo.SelectedValue + @" PRD(NoLock) ON PRM.PROCESS_REC_ID=PRD.PROCESS_REC_ID
+//                JOIN Employee_ProcessReceiveNo EPR(NoLock) ON PRM.PROCESS_REC_ID=EPR.Process_Rec_id and EPR.ProcessId=" + DDFromProcessForRecChallanNo.SelectedValue + @"
+//                JOIN EmpInfo EI(NoLock) ON EPR.Empid=EI.EmpId
+//                Group by EI.EmpId,EI.EmpName,EI.Empcode
+//                Order by EI.EmpName";        
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        UtilityModule.ConditionalComboFillWithDS(ref DDProcessWiseEmpName, ds, 0, true, "--Select Emp--"); 
+    }
+    protected void DDProcessWiseEmpName_SelectedIndexChanged(object sender, EventArgs e)
+    {
         ViewState["IssueOrderid"] = 0;
         TxtIssueDate.Enabled = true;
 
         string str = "";
-        str = @"Select PRM.Process_Rec_Id,PRM.ChallanNo From PROCESS_RECEIVE_MASTER_" + DDFromProcessForRecChallanNo.SelectedValue + " PRM(NoLock) Where CompanyId=" + DDCompanyName.SelectedValue + "";
-
+        str = @"Select PRM.Process_Rec_Id,PRM.ChallanNo From PROCESS_RECEIVE_MASTER_" + DDFromProcessForRecChallanNo.SelectedValue + " PRM(NoLock) JOIN PROCESS_RECEIVE_DETAIL_" + DDFromProcessForRecChallanNo.SelectedValue + @" PRD(NoLock) ON PRM.PROCESS_REC_ID=PRD.PROCESS_REC_ID
+                JOIN Employee_ProcessReceiveNo EPR(NoLock) ON PRM.PROCESS_REC_ID=EPR.Process_Rec_id and EPR.ProcessId=" + DDFromProcessForRecChallanNo.SelectedValue + @"
+                JOIN EmpInfo EI(NoLock) ON EPR.Empid=EI.EmpId
+                Where EI.EmpId=" + DDProcessWiseEmpName.SelectedValue + @"
+                Group by PRM.Process_Rec_Id,PRM.ChallanNo
+                Order by PRM.Process_Rec_Id";
+       
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-        UtilityModule.ConditionalComboFillWithDS(ref DDRecChallanNoJobWise, ds, 0, true, "--Plz RecChallanNo--");        
-        
+        UtilityModule.ConditionalComboFillWithDS(ref DDRecChallanNoJobWise, ds, 0, true, "--Plz RecChallanNo--");
+
+        //str = @"Select PRM.Process_Rec_Id,PRM.ChallanNo From PROCESS_RECEIVE_MASTER_" + DDFromProcessForRecChallanNo.SelectedValue + " PRM(NoLock) Where CompanyId=" + DDCompanyName.SelectedValue + "";
+
     }
     
 }

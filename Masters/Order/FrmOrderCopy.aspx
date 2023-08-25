@@ -290,8 +290,8 @@
                                 <ItemStyle HorizontalAlign="Left" Width="100px" />
                             </asp:BoundField>
                             <asp:BoundField DataField="Description" HeaderText="Description">
-                                <HeaderStyle HorizontalAlign="Left" Width="500px" />
-                                <ItemStyle HorizontalAlign="Left" Width="500px" />
+                                <HeaderStyle HorizontalAlign="Left" Width="800px" />
+                                <ItemStyle HorizontalAlign="Left" Width="800px" />
                             </asp:BoundField>
                           
                             <asp:TemplateField HeaderText="Qty">
@@ -316,7 +316,7 @@
                             </asp:BoundField>
                             <asp:TemplateField HeaderText="Remark">
                                 <ItemTemplate>
-                                    <asp:TextBox ID="Remark" Text='<%# Bind("Remark") %>' runat="server" Width="200px"
+                                    <asp:TextBox ID="Remark" Text='<%# Bind("Remark") %>' runat="server" Width="100px"
                                         CssClass="textb"></asp:TextBox>
                                 </ItemTemplate>
                             </asp:TemplateField>

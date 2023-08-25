@@ -191,12 +191,15 @@
                                                 &nbsp;
                                             </td>
                                             <td id="Td10" class="tdstyle" runat="server">
-                                                &nbsp;
-                                            </td>
-                                            <td id="TD11" runat="server" visible="true">
                                                 <asp:Label ID="Label18" runat="server" Text="From Process" CssClass="labelbold"></asp:Label><br />
                                                 <asp:DropDownList ID="DDFromProcessForRecChallanNo" runat="server" CssClass="dropdown" Width="150px"
                                                     AutoPostBack="true" OnSelectedIndexChanged="DDFromProcessForRecChallanNo_SelectedIndexChanged">
+                                                </asp:DropDownList>
+                                            </td>
+                                            <td id="TD11" runat="server" visible="true">
+                                                <asp:Label ID="Label20" runat="server" Text="EmpName" CssClass="labelbold"></asp:Label><br />
+                                                <asp:DropDownList ID="DDProcessWiseEmpName" runat="server" CssClass="dropdown" Width="150px"
+                                                    AutoPostBack="true" OnSelectedIndexChanged="DDProcessWiseEmpName_SelectedIndexChanged">
                                                 </asp:DropDownList>
                                             </td>
                                             <td id="TD12" runat="server" visible="true">
