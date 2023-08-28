@@ -290,16 +290,13 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     }
     private void dditemname_chage()
     {
-
         string str = "";
         str = @"select distinct OrderUnitId from OrderDetail Where OrderId=" + DDCustomerOrderNumber.SelectedValue + "";
          DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
          if (Ds.Tables[0].Rows.Count > 0)
          {
              DDunit.SelectedValue = Ds.Tables[0].Rows[0]["OrderUnitId"].ToString();
-         }
-        
-
+         } 
 
         string size = "";
         if ( (variable.VarWEAVERPURCHASEORDER_FULLAREA == "1"))
@@ -724,6 +721,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
                     cmd.Parameters.Add("@ChallanNo", SqlDbType.VarChar, 30);
                     cmd.Parameters["@ChallanNo"].Direction = ParameterDirection.InputOutput;
                     cmd.Parameters["@ChallanNo"].Value = "";
+                    cmd.Parameters.AddWithValue("@Remarks", txtRemarks.Text);
                     cmd.ExecuteNonQuery();
                     if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
                     {
@@ -767,7 +765,8 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
                          CASE WHEN OD.OrderUnitId = 6 THEN VF.SizeInch else Case When OD.OrderUnitId = 1 THEN VF.SizeMtr ELSE VF.SizeFt END End As Size,
                         --CASE WHEN PCIGSNS.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
                         MID.PCIIssueDetailId,MIM.FolioIssueOrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.ChallanNo,
-                        Replace(CONVERT(nvarchar(11),MIM.IssueDate,106),' ','-') as IssueDate,MID.NoOfSet,MID.PerSetQty,MId.TotalIssueQty,PCIGSNS.StockNoSeries,MID.SNSID
+                        Replace(CONVERT(nvarchar(11),MIM.IssueDate,106),' ','-') as IssueDate,MID.NoOfSet,MID.PerSetQty,MId.TotalIssueQty,PCIGSNS.StockNoSeries,MID.SNSID,
+                        isnull(MIM.Remarks,'') as Remarks
                         from PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER MIM(NoLock) 
                         JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL MID(NoLock) ON MIM.PCIIssueId=MID.PCIIssueid 
                         JOIN V_FinishedItemDetail VF(NoLock) ON MID.ItemFinishedId=VF.Item_Finished_Id
@@ -787,6 +786,11 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         gvdetail.DataSource = ds.Tables[0];
         gvdetail.DataBind();
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            txtRemarks.Text = ds.Tables[0].Rows[0]["Remarks"].ToString();
+        }
     }
     protected void RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -855,8 +859,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
         //************
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_PunchCardIndentIssueOnProductionOrderReport", param);
         if (ds.Tables[0].Rows.Count > 0)
-        {
-            //Session["rptFileName"] = "~\\Reports\\RptWeaverMapIssue.rpt";
+        {            
             Session["rptFileName"] = "~\\Reports\\RptPunchCardIndentIssueOnProductionOrderReport.rpt";
             Session["Getdataset"] = ds;
             Session["dsFileName"] = "~\\ReportSchema\\RptPunchCardIndentIssueOnProductionOrderReport.xsd";

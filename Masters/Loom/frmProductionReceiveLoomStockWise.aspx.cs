@@ -165,6 +165,9 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     }
                     ChkForSummaryReport.Visible = true;
                     break;
+                case "44":
+                    TxtReceiveQty.Enabled = true;
+                    break;
                 case "45":
                     TxtReceiveQty.Enabled = true;
                     TxtReceiveQty.Text = "500";
@@ -422,6 +425,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 listWeaverName.Items.Add(new ListItem(ds.Tables[0].Rows[i]["Empname"].ToString(), ds.Tables[0].Rows[i]["Empid"].ToString()));
             }
         }
+       
         if (hnlastempids.Value == "")
         {
             hnlastempids.Value = empids;
@@ -645,6 +649,13 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             //}
             DGEmployee.DataSource = ds.Tables[1];
             DGEmployee.DataBind();
+        }
+        if (chkedit.Checked)
+        {
+            if (ds.Tables[3].Rows.Count > 0)
+            {
+                txtBatchChallanNo.Text = ds.Tables[3].Rows[0]["BatchChallanNo"].ToString();
+            }
         }
         //
     }
@@ -1024,7 +1035,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         DGRecDetail.Columns[i].Visible = false;
                     }
 
-                if (Session["varcompanyId"].ToString() == "43")
+                if (Session["varcompanyId"].ToString() == "43" || Session["varcompanyId"].ToString() == "46")
                 {
                     if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "ADD PENALITY")
                     {
@@ -1693,7 +1704,19 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-                SqlCommand cmd = new SqlCommand("PRO_PRODUCTIONLOOMRECEIVE_BULK_STOCKNO_WISE", con, Tran);
+                string sp = string.Empty;
+                if (Session["varcompanyid"].ToString() == "44")
+                {
+                    sp = "PRO_PRODUCTIONLOOMRECEIVE_BULK_STOCKNO_WISE_AGNI";
+                }
+                else
+                {
+                    sp = "PRO_PRODUCTIONLOOMRECEIVE_BULK_STOCKNO_WISE";
+                
+                }
+
+
+                SqlCommand cmd = new SqlCommand(sp, con, Tran);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandTimeout = 300;
 

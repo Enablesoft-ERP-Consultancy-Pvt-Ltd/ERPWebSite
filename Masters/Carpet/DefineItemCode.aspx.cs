@@ -951,6 +951,7 @@ public partial class Masters_Carpet_DefineItemCode : System.Web.UI.Page
                     switch (Session["varcompanyId"].ToString())
                     {
                         case "4":
+                        case "43":
                             Size = "sizeft+'  '+'['+Prodsizeft+']'";
                             break;
 
@@ -963,6 +964,7 @@ public partial class Masters_Carpet_DefineItemCode : System.Web.UI.Page
                     switch (Session["varcompanyId"].ToString())
                     {
                         case "4":
+                        case "43":
                             Size = "sizemtr+'  '+'['+ProdSizemtr+']'";
                             break;
                         default:
@@ -974,6 +976,7 @@ public partial class Masters_Carpet_DefineItemCode : System.Web.UI.Page
                     switch (Session["varcompanyId"].ToString())
                     {
                         case "4":
+                        case "43":
                             Size = "sizeinch+'  '+'['+ProdSizeft+']'";
                             break;
                         default:
@@ -985,6 +988,7 @@ public partial class Masters_Carpet_DefineItemCode : System.Web.UI.Page
                     switch (Session["varcompanyId"].ToString())
                     {
                         case "4":
+                        case "43":
                             Size = "sizeft+'  '+'['+Prodsizeft+']'";
                             break;
                         default:

@@ -274,8 +274,8 @@ public partial class Masters_process_IndentRowIssuenew : System.Web.UI.Page
 
         string stritems = @"select OD.OrderDetailId,Vf.ITEM_NAME+' '+VF.QualityName+' '+Vf.designName+' '+Vf.ColorName+' '+vf.ShapeName+' '+case when OD.flagsize=1 Then Vf.SizeMtr When OD.flagsize=2 Then
                     vf.sizeinch ELse vf.sizeft End+' '+case when Vf.SizeId>0 Then Sz.Type Else '' ENd as ItemDescription
-                    From OrderMaster Om inner join OrderDetail OD on Om.OrderId=Od.OrderId
-                    inner join IndentDetail pp on pp.ORDERID=od.orderid --and pp.OrderDetailId=od.OrderDetailId
+                    From  IndentDetail pp inner join OrderDetail OD on pp.Orderdetailid =od.OrderDetailId inner join OrderMaster Om  on Om.OrderId=Od.OrderId
+                     --and pp.OrderDetailId=od.OrderDetailId
                     inner Join V_FinishedItemDetail vf on OD.Item_Finished_Id=vf.ITEM_FINISHED_ID
                     Left join SizeType Sz on Od.flagsize=Sz.val Where OM.Companyid=" + ddCompName.SelectedValue + "and pp.IndentId=" + ddindentno.SelectedValue + @" 
                      group by OD.OrderDetailId,Vf.ITEM_NAME,VF.QualityName,Vf.designName,Vf.ColorName,
@@ -882,15 +882,15 @@ public partial class Masters_process_IndentRowIssuenew : System.Web.UI.Page
                 }
                 if (variable.VarMANYINDENTROWISSUE_SINGLECHALLAN == "1")
                 {
-                    ddCompName.Enabled = false;
-                    ddProcessName.Enabled = false;
-                    ddempname.Enabled = false;
-                    txtdate.Enabled = false;
-                    txtchalanno.Enabled = false;
+                    ddCompName.Enabled = true;
+                    ddProcessName.Enabled = true;
+                    ddempname.Enabled = true;
+                    txtdate.Enabled = true;
+                    txtchalanno.Enabled = true;
                 }
                 else
                 {
-                    pnl1.Enabled = false;
+                    pnl1.Enabled = true;
                 }
                 btnsave.Text = "Save";
                 Fill_Grid();
@@ -1427,7 +1427,7 @@ public partial class Masters_process_IndentRowIssuenew : System.Web.UI.Page
             string strsql;
             DataSet ds;
             strsql = "Select finishedid from pp_processrawtran where finishedid=" + Varfinishedid + " and prmid =" + ViewState["Prmid"] + @" And 
-            indentid=" + ddindentno.SelectedValue + " and Lotno='" + Lotno + "' and BinNo='" + BinNo + "'  ";
+            indentid=" + ddindentno.SelectedValue + " and orderdetailid=" + DDitemdescription.SelectedValue + " and Lotno='" + Lotno + "' and BinNo='" + BinNo + "'  ";
             if (TDTagNo.Visible == true)
             {
                 strsql = strsql + " And TagNo = '" + DDTagNo.SelectedItem.Text + "'";

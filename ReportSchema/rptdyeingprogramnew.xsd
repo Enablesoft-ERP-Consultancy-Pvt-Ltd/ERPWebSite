@@ -89,6 +89,26 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="PPID" type="xs:int" minOccurs="0" />
+              <xs:element name="OrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="ItemId" type="xs:int" minOccurs="0" />
+              <xs:element name="QualityId" type="xs:int" minOccurs="0" />
+              <xs:element name="DesignId" type="xs:int" minOccurs="0" />
+              <xs:element name="ColorId" type="xs:int" minOccurs="0" />
+              <xs:element name="RawMaterial" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:double" minOccurs="0" />
+              <xs:element name="IQty" type="xs:double" minOccurs="0" />
+              <xs:element name="ItemType" type="xs:int" minOccurs="0" />
+              <xs:element name="ItemName" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="DesignName" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
   </xs:element>

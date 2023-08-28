@@ -214,6 +214,26 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                             break;
                     }
                     break;
+                case 43:
+                    switch (Session["Usertype"].ToString())
+                    {
+                        case "1":
+                            DIVStockDetail.Visible = true;
+                            btngetstock.Visible = true;
+                            btnsavegrid.Visible = true;
+                            TrBindRecChallanNoJobWise.Visible = true;
+
+                            break;
+                        default:
+                            //DIVStockDetail.Visible = false;
+                            //btngetstock.Visible = false;
+                            btnsavegrid.Visible = false;
+                            TDCustomerCode.Visible = false;
+                            TDCustomerOrderNo.Visible = false;
+                            TrBindRecChallanNoJobWise.Visible = true;
+                            break;
+                    }
+                    break;
                 default:
                     switch (Session["Usertype"].ToString())
                     {
@@ -308,6 +328,21 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
         TDBatchNo.Visible = false;
         TDAreaNew.Visible = false;
         TxtAreaNew.Text = "";
+
+        ////****************************
+        if (Session["varCompanyNo"].ToString() == "43")
+        {     
+            string strNew = "";
+            strNew = @"Select PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From PROCESS_NAME_MASTER PNM inner join UserRightsProcess URP on PNM.PROCESS_NAME_ID=URP.ProcessId and URP.Userid=" + Session["varuserid"] + @"
+                        WHere PNM.ProcessType=1 and PNM.PROCESS_NAME_ID!=" + DDTOProcess.SelectedValue + " order by PROCESS_NAME";
+
+            DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strNew);
+            UtilityModule.ConditionalComboFillWithDS(ref DDFromProcessForRecChallanNo, ds2, 0, true, "--Plz Select Process--");
+        }
+
+        ////***************************
+
+
         //**************
         string str = "select isnull(AreaEditable,0) as AreaEditable,isnull(issreconetime,0) as issreconetime  From  Process_Name_master Where Process_name_id=" + DDTOProcess.SelectedValue + "";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -1807,6 +1842,8 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@QualityID", DDQuality.SelectedValue);
         cmd.Parameters.AddWithValue("@DesignID", DDDesign.SelectedValue);
         cmd.Parameters.AddWithValue("@OrderID", DDorderNo.SelectedValue);
+        cmd.Parameters.AddWithValue("@JobWiseRecChallanNo", DDRecChallanNoJobWise.SelectedValue);
+        cmd.Parameters.AddWithValue("@FromProcessForRecChallanNo", DDFromProcessForRecChallanNo.SelectedValue);
 
         // DataSet ds = new DataSet();
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -2184,4 +2221,18 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
             Fillstockdetail();
         }
     }
+
+    protected void DDFromProcessForRecChallanNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ViewState["IssueOrderid"] = 0;
+        TxtIssueDate.Enabled = true;
+
+        string str = "";
+        str = @"Select PRM.Process_Rec_Id,PRM.ChallanNo From PROCESS_RECEIVE_MASTER_" + DDFromProcessForRecChallanNo.SelectedValue + " PRM(NoLock) Where CompanyId=" + DDCompanyName.SelectedValue + "";
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        UtilityModule.ConditionalComboFillWithDS(ref DDRecChallanNoJobWise, ds, 0, true, "--Plz RecChallanNo--");        
+        
+    }
+    
 }

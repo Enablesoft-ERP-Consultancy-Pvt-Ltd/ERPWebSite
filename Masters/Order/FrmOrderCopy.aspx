@@ -266,10 +266,10 @@
                         <EmptyDataRowStyle CssClass="gvemptytext" />
                     </asp:GridView>
                 </div>
-                <div style="width: 80%; height: 250px; overflow: scroll">
+                <div style="width: 90%; height: 250px; overflow: scroll">
                     <asp:GridView ID="DGOrderDetail" Width="100%" runat="server" AutoGenerateColumns="False"
                         DataKeyNames="OrderDetailId" CssClass="grid-view" OnRowDataBound="DGOrderDetail_RowDataBound"
-                        OnRowCreated="DGOrderDetail_RowCreated">
+                        OnRowCreated="DGOrderDetail_RowCreated" CellSpacing="5">
                         <HeaderStyle CssClass="gvheader" />
                         <AlternatingRowStyle CssClass="gvalt" />
                         <RowStyle CssClass="gvrow" />
@@ -290,9 +290,10 @@
                                 <ItemStyle HorizontalAlign="Left" Width="100px" />
                             </asp:BoundField>
                             <asp:BoundField DataField="Description" HeaderText="Description">
-                                <HeaderStyle HorizontalAlign="Left" Width="350px" />
-                                <ItemStyle HorizontalAlign="Left" Width="350px" />
+                                <HeaderStyle HorizontalAlign="Left" Width="500px" />
+                                <ItemStyle HorizontalAlign="Left" Width="500px" />
                             </asp:BoundField>
+                          
                             <asp:TemplateField HeaderText="Qty">
                                 <ItemTemplate>
                                     <asp:TextBox ID="Qty" Text='<%# Bind("Qty") %>' runat="server" Width="75px" onkeypress="return isNumberKey(event);"
