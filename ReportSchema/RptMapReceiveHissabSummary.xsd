@@ -1,0 +1,48 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="MRHID" type="xs:int" minOccurs="0" />
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyGSTNo" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="DesignerId" type="xs:int" minOccurs="0" />
+              <xs:element name="EmpName" type="xs:string" minOccurs="0" />
+              <xs:element name="MapIssueNo" type="xs:int" minOccurs="0" />
+              <xs:element name="MapReceiveHissabNo" type="xs:int" minOccurs="0" />
+              <xs:element name="HissabDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Item_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="DesignName" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="Finishedid" type="xs:int" minOccurs="0" />
+              <xs:element name="MapStencilNo" type="xs:int" minOccurs="0" />
+              <xs:element name="Qty" type="xs:int" minOccurs="0" />
+              <xs:element name="MapArea" type="xs:decimal" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="Amount" type="xs:double" minOccurs="0" />
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="PaymentFlag" type="xs:int" minOccurs="0" />
+              <xs:element name="FromDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+              <xs:element name="LocalOrder" type="xs:string" minOccurs="0" />
+              <xs:element name="MasterCompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="MapIssueChallanNo" type="xs:int" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="FinishedId1" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

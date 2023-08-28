@@ -1,0 +1,46 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HISSABID" type="xs:int" minOccurs="0" />
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR2" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR3" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPTEL" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="PROCESSNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="BILLNO" type="xs:string" minOccurs="0" />
+              <xs:element name="BILLDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPCODE" type="xs:string" minOccurs="0" />
+              <xs:element name="ADDRESS" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPGSTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="AdditionAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="DeductionAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="NetAmt" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="HISSABID" type="xs:int" minOccurs="0" />
+              <xs:element name="CHALLANNO" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="RECQTY" type="xs:decimal" minOccurs="0" />
+              <xs:element name="LOSSQTY" type="xs:decimal" minOccurs="0" />
+              <xs:element name="AMOUNT" type="xs:double" minOccurs="0" />
+              <xs:element name="RATE" type="xs:double" minOccurs="0" />
+              <xs:element name="PENALITYAMT" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
