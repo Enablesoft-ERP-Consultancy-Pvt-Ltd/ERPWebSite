@@ -3,12 +3,20 @@
 
 
 var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report" },
-{ ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS) Report" },
+{ ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report" },
 { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report" },
-{ ProcessId: 15, Process: "TASSEL MAKING", Title: "TASSEL MAKING Report" },
-{ ProcessId: 21, Process: "BLOCK PRINTING(BP)", Title: "BLOCK PRINTING(BP) Report" }
-
+{ ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report" },
+{ ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report" },
+{ ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report" },
+{ ProcessId: 24, Process: "SCREEN PRINTING", Title: "SCREEN PRINTING Report" }
 ];
+
+
+
+
+
+
+
 
 
 $(function () {
@@ -84,7 +92,7 @@ $(function () {
 
 
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 5 + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing(DY)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 8 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>BLOCK PRINTING(MTR)</strong></a></li>";                            
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 8 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>BLOCK PRINTING(MTR)</strong></a></li>";
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 11 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 12 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>COMPUTER EMBROIDERY(MTR)</strong></a></li>";
 
@@ -93,12 +101,12 @@ $(function () {
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 24 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>SCREEN PRINTING</strong></a></li>";
 
 
-                            
+
                             btnHtml += "</ul></div>";
 
 
 
-	
+
 
                             return btnHtml;
                         },
