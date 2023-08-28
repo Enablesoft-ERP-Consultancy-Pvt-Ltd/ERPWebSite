@@ -792,7 +792,8 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                                 ,isnull(NU.UserName,'') as UserName,(Select Distinct OM.CustomerOrderNo+',' from PROCESS_ISSUE_DETAIL_" + ddprocess.SelectedValue + @" PID1(NoLock) JOIN  OrderMaster OM(NoLock) ON PID1.OrderID=OM.OrderID 
                             Where PID.IssueOrderID=PID1.IssueOrderId and PID.ITEM_FINISHED_ID=PID1.Item_Finished_Id For XML PATH('')) as CustomerOrderNo,
                         (Select Distinct CustIn.CustomerCode+',' from PROCESS_ISSUE_DETAIL_" + ddprocess.SelectedValue + @" PID2(NoLock) JOIN  OrderMaster OM2(NoLock) ON OM2.OrderID = PID2.OrderID 
-                            JOIN CustomerInfo CustIn(NoLock) ON OM2.CustomerId=CustIn.CustomerId  Where PID2.IssueOrderId=PID.IssueOrderID For XML PATH('')) as CustomerCode,pim.Remarks
+                            JOIN CustomerInfo CustIn(NoLock) ON OM2.CustomerId=CustIn.CustomerId  Where PID2.IssueOrderId=PID.IssueOrderID For XML PATH('')) as CustomerCode,pim.Remarks,
+                                Case When PIM.CALTYPE=0 Then 'Area Wise' Else 'Pcs Wise' End as CalType
                                 From PROCESS_Receive_MASTER_" + ddprocess.SelectedValue + @" PIM(NoLock) 
                                 Join PROCESS_Receive_DETAIL_" + ddprocess.SelectedValue + @" PID(NoLock) on PIM.Process_Rec_Id=PID.Process_Rec_Id
                         Join PROCESS_ISSUE_DETAIL_" + ddprocess.SelectedValue + @" PIS(NoLock) on PIS.IssueOrderId=PID.IssueOrderId AND PIS.Issue_Detail_Id=PID.Issue_Detail_Id
