@@ -83,17 +83,22 @@ $(function () {
 
 
 
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 5 + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>COMPUTER EMBROIDERY(PCS)</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 5 + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing(DY)</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 8 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>BLOCK PRINTING(MTR)</strong></a></li>";                            
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 11 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 15 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>TASSEL MAKING</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 21 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>BLOCK PRINTING(BP)</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 12 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>COMPUTER EMBROIDERY(MTR)</strong></a></li>";
+
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 18 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>WASHING(MTR)</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 34 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>STONE WASH(MTR)</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 24 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>SCREEN PRINTING</strong></a></li>";
+
+
+                            
                             btnHtml += "</ul></div>";
 
 
 
-
-
+	
 
                             return btnHtml;
                         },
