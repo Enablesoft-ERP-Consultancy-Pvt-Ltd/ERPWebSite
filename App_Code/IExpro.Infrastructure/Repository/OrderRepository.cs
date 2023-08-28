@@ -274,8 +274,8 @@ Having OM.OrderID=@OrderId";
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
 
-                string sqlQuery = @"WITH IndentItem(PPNo,OrderDetailId,IndentNo,IndentId,PartyId,IFinishedId,OFinishedId,IssueDate,ReqDate,IndentQty,ExtraQty,CancelQty,Quantity,FLAGSIZE,RowNo) AS 
-(SELECT ID.PPNo,ID.Orderdetailid,IM.IndentNo,IM.IndentId,IM.PartyId,Id.IFinishedId,Id.OFinishedId,IM.Date IssueDate,IM.ReqDate,
+                string sqlQuery = @"WITH IndentItem(PPNo,ProcessId,OrderId,OrderDetailId,IndentNo,IndentId,PartyId,IFinishedId,OFinishedId,IssueDate,ReqDate,IndentQty,ExtraQty,CancelQty,Quantity,FLAGSIZE,RowNo) AS 
+(SELECT ID.PPNo,IM.ProcessID,ID.ORDERID,ID.Orderdetailid,IM.IndentNo,IM.IndentId,IM.PartyId,Id.IFinishedId,Id.OFinishedId,IM.Date IssueDate,IM.ReqDate,
 SUM(IsNull(ID.IndentQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) IndentQty,
 SUM(IsNull(ID.ExtraQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) ExtraQty,
 SUM(IsNull(ID.CancelQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) CancelQty,
@@ -303,14 +303,16 @@ ROW_NUMBER() OVER(PARTITION BY PP.PPID,PP.Process_ID,PP.MasterCompanyid,PP.Order
 FROM ProcessProgram PP WITH (NOLOCK)  INNER JOIN PP_Consumption PPC WITH (NOLOCK)  ON PP.PPID=PPC.PPID 
 --Where  PPC.PPId=2
 ),
-ReturnItem (ReturnId,IssueId,IndentId,PartyId,IFinishedId,GodownId,ReturnQty,TagRemarks,ReturnDate,RowNo) 
+ReturnItem (ReturnId,IssueId,IndentId,PartyId,IFinishedId,OFinishedId,GodownId,ReturnQty,TagRemarks,ReturnDate,RowNo) 
 AS 
-(Select IRRM.ID,PREMT.IssPrtId,IPRRD.INDENTID,IRRM.PartyID,IPRRD.FinishedID,IPRRD.GodownID,
-SUM(IsNull(IPRRD.Qty,0.00)) OVER (PARTITION BY IPRRD.PRTID,IPRRD.INDENTID,IPRRD.FinishedID) ReturnQty,IPRRD.Remarks,
-Max(IPRRD.Date) OVER (PARTITION BY IPRRD.PRTID,IPRRD.INDENTID,IPRRD.FinishedID) ReturnDate,
-ROW_NUMBER() OVER(PARTITION BY IPRRD.PRTID,IPRRD.INDENTID,IPRRD.FinishedID ORDER BY IPRRD.Date DESC) RowNo
-from IndentRawReturnDetail IPRRD WITH (NOLOCK)  inner join  IndentRawReturnMaster IRRM WITH (NOLOCK)   ON  IPRRD.ID=IRRM.ID 
-inner join PP_ProcessRecTran PREMT WITH (NOLOCK)  on IPRRD.PRTID=PREMT.PRTid
+(
+Select IRRM.ID,PREMT.IssPrtId,IPRRD.INDENTID,IRRM.PartyID,PRT.Finishedid IFinishedId,IPRRD.FinishedID OFinishedId,IPRRD.GodownID,
+SUM(IsNull(IPRRD.Qty,0.00)) OVER (PARTITION BY IPRRD.INDENTID,PRT.Finishedid,IPRRD.FinishedID) ReturnQty,
+IPRRD.Remarks,Max(IPRRD.Date) OVER (PARTITION BY IPRRD.INDENTID,PRT.Finishedid,IPRRD.FinishedID) ReturnDate,
+ROW_NUMBER() OVER(PARTITION BY IPRRD.INDENTID,PRT.Finishedid,IPRRD.FinishedID ORDER BY IPRRD.Date DESC) RowNo
+from IndentRawReturnDetail IPRRD WITH (NOLOCK)  inner join  IndentRawReturnMaster IRRM WITH (NOLOCK) ON  IPRRD.ID=IRRM.ID 
+inner join PP_ProcessRecTran PREMT WITH (NOLOCK) on IPRRD.PRTID=PREMT.PRTid
+inner join PP_PROCESSRAWTRAN PRT WITH (NOLOCK) ON PREMT.IssPrtId=PRT.PRTid
 ) 
 select 
 emp.EMPNAME VendorName, VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
@@ -321,7 +323,7 @@ x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.
 zz.ReturnId,zz.ReturnDate,IsNull(zz.ReturnQty,0.00) ReturnQty,zz.TagRemarks
 from IndentItem x Left join ReceiveItem y on x.Indentid=y.Indentid and x.IFinishedId=y.IFinishedId and x.OFinishedId=y.OFinishedId and x.RowNo=y.RowNo --and x.OrderDetailId=y.OrderDetailId
 inner join ConsumeItem z on x.PPNo=z.PPID and x.IFinishedId=z.IFinishedId  and  x.OFinishedId=z.OFinishedId and x.RowNo=z.RowNo
-Left join ReturnItem zz on y.Indentid=zz.Indentid and y.IFinishedid=zz.IFinishedid and y.RowNo=zz.RowNo and y.IssueId=zz.IssueId
+Left join ReturnItem zz on y.Indentid=zz.Indentid and  y.IFinishedid=zz.IFinishedid and y.OFinishedid=zz.OFinishedid and y.RowNo=zz.RowNo 
 INNER JOIN V_FINISHEDITEMDETAIL VF ON x.OFinishedId=VF.ITEM_FINISHED_ID   
 INNER JOIN EMPINFO emp WITH (NOLOCK)  ON x.PartyId=emp.EmpId    
 LEFT JOIN SIZETYPE ST WITH (NOLOCK)  ON x.FLAGSIZE=ST.VAL    
@@ -330,10 +332,12 @@ Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
                 try
                 {
 
-                    var result = conn.Query<IndentRawMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, }).GroupBy(n => n.IndentId).
+                    var result = conn.Query<IndentRawMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, }).GroupBy(n => new { n.IndentId, n.IFinishedId, n.OFinishedId }).
                         Select(x => new IndentRawMaterialModel
                         {
-                            IndentId = x.Key,
+                            IndentId = x.Key.IndentId,
+                            IFinishedId = x.Key.IFinishedId,
+                            OFinishedId = x.Key.OFinishedId,
                             Category = x.FirstOrDefault().Category,
                             VendorName = x.FirstOrDefault().VendorName,
                             MaterialName = x.FirstOrDefault().MaterialName,
@@ -347,34 +351,18 @@ Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
                             OrderDetailId = x.FirstOrDefault().OrderDetailId,
                             IndentNo = x.FirstOrDefault().IndentNo,
                             PartyId = x.FirstOrDefault().PartyId,
-                            IFinishedId = x.FirstOrDefault().IFinishedId,
-                            OFinishedId = x.FirstOrDefault().OFinishedId,
-
-                            IndentQty = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().IndentQty),
+                            IndentQty = x.Sum(y => y.IndentQty),
                             ExtraQty = x.Sum(y => y.ExtraQty),
                             CancelQty = x.Sum(y => y.CancelQty),
-                            //Quantity = x.Sum(y => y.Quantity),
                             IssueId = x.FirstOrDefault().IssueId,
-                            Quantity = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().Quantity),
-
-                            //IssueQuantity = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().IssueQuantity),
-                            IssueQuantity = x.FirstOrDefault().IssueQuantity,
-                            RecQuantity = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().RecQuantity),
-                            //RecQuantity = x.Sum(y => y.RecQuantity),
-
+                            Quantity = x.Sum(q => q.Quantity),
+                            IssueQuantity = x.Select(y => new { y.IssueId, y.IssueQuantity }).Distinct().Sum(p => p.IssueQuantity),
+                            RecQuantity = x.Sum(q => q.RecQuantity),
                             ConsmpQty = x.Sum(y => y.ConsmpQty),
                             Moisture = x.Sum(y => y.Moisture),
                             LossQty = x.Sum(y => y.LossQty),
-
-
-                            ReturnQty = x.GroupBy(p => new { p.IFinishedId, p.OFinishedId }).Sum(q => q.FirstOrDefault().ReturnQty),
-
-                            //ReturnQty = x.Sum(y => y.ReturnQty),
-
-
-
+                            ReturnQty = x.Sum(q => q.ReturnQty),
                             RequiredQty = x.Sum(y => y.RequiredQty),
-
                             ReturnId = x.FirstOrDefault().ReturnId,
                             TagRemarks = x.FirstOrDefault().TagRemarks,
                             ReqDate = x.FirstOrDefault().ReqDate,

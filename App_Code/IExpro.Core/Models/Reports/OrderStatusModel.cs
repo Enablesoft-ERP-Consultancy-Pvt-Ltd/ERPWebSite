@@ -176,7 +176,7 @@ namespace IExpro.Core.Models.Reports
 
         public decimal PendingQty
         {
-            get { return (IssueQuantity - (RecQuantity + ReturnQty)); }
+            get { return (IssueQuantity - (RecQuantity - ReturnQty)); }
         }
 
         public int DelayDays { get { return (ReceiveDate.Date - ReqDate.Date).Days; } }
