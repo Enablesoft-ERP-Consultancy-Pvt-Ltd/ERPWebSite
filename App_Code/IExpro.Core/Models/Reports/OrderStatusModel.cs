@@ -171,7 +171,7 @@ namespace IExpro.Core.Models.Reports
 
         public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
 
-
+        public string IndentDate { get { return IssueDate.ToString("dd MMM yyyy"); } }
 
 
         public decimal PendingQty
@@ -182,6 +182,7 @@ namespace IExpro.Core.Models.Reports
         public int DelayDays { get { return (ReceiveDate.Date - ReqDate.Date).Days; } }
 
         public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+        public string IStatus { get { return this.ItemStatus.ToString(); } }
 
     }
 

@@ -8,7 +8,7 @@ var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) R
 { ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report" },
 { ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report" },
 { ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report" },
-{ ProcessId: 24, Process: "SCREEN PRINTING", Title: "SCREEN PRINTING Report" }
+    { ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report" }
 ];
 
 
@@ -98,7 +98,7 @@ $(function () {
 
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 18 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>WASHING(MTR)</strong></a></li>";
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 34 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>STONE WASH(MTR)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 24 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>SCREEN PRINTING</strong></a></li>";
+                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 29 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>SCREEN PRINTING (MTR)</strong></a></li>";
 
 
 
@@ -466,7 +466,7 @@ function ProcessReport(_orderId, _processId) {
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
-            bodyHtml += "<th>Indent No.</th>";
+            bodyHtml += "<th>Indent No.</th><th>Indent Date</th>";
             bodyHtml += "<th>Req. Date</th><th>Indent Qty.</th>";
             bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Return Qty.</th>";
             bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
@@ -476,14 +476,14 @@ function ProcessReport(_orderId, _processId) {
                 $.each(result.data, function (index, item) {
 
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
-                    bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.RequestDate + "</td>";
+                    bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.IndentDate + "</td><td>" + item.RequestDate + "</td>";
                     bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
-                    bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.ItemStatus + "</td></tr>";
+                    bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='11'>Data not found</td></tr></tbody>";
+                bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
