@@ -32,7 +32,12 @@ namespace IExpro.Core.Common
         Client = 5,
         Customer = 6,
     }
-
+    public enum ProcessStatus
+    {
+        Pending = 0,
+        Completed = 1,
+ 
+    }
 
 }
 

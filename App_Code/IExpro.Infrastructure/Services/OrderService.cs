@@ -20,6 +20,10 @@ namespace IExpro.Infrastructure.Services
             return this.IU.OrdRepo.GetOrderList(CompanyId);
         }
 
+        public IEnumerable<OrderDetailModel> GetOrderDetail(int OrderId)
+        {
+            return this.IU.OrdRepo.GetOrderDetail(OrderId);
+        }
         public IEnumerable<VendorPOStatusModel> GetVendorPOStatus(int CompanyId)
         {
             return this.IU.OrdRepo.GetVendorPOStatus(CompanyId);

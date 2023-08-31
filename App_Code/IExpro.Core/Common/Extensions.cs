@@ -45,6 +45,26 @@ namespace IExpro.Core.Common
             return dt;
         }
 
+        public static T GetPropValue<T>(this object src, string propName)
+        {
+            var result = src.GetType().GetProperty(propName).GetValue(src, null);
+            if (result == DBNull.Value)
+                return default(T);
+            return (T)result;
+        }
+
+
+
+        //public static object GetPropValue(this object src, string propName)
+        //{
+        //    return src.GetType().GetProperty(propName).GetValue(src, null);
+        //}
+
+
+
+
+
+
         public static IList<T> EmptyList<T>(this IList<T> list)
         {
             return list ?? new List<T>();

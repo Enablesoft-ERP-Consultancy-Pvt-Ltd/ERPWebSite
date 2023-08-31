@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Web.Services.Description;
+using System.Windows;
+using IExpro.Core.Common;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace IExpro.Core.Models.Reports
 {
@@ -21,24 +25,37 @@ namespace IExpro.Core.Models.Reports
     {
         public string Category { get; set; }
         public string PONo { get; set; }
-        public string POStatus { get; set; }
+
         public string PODate { get; set; }
         public string SupplierName { get; set; }
         public string ItemName { get; set; }
         public string Rate { get; set; }
-        public string POQty { get; set; }
-        public string DelvDate { get; set; }
-        public string DelayDays { get; set; }
-        public string RecDate { get; set; }
-        public string RecQty { get; set; }
+        public double POQty { get; set; }
+        public double RecQty { get; set; }
+        public double RetQty { get; set; }
         public string ChallanNo { get; set; }
         public string LotNo { get; set; }
         public string BillNo { get; set; }
         public string RetDate { get; set; }
-        public string RetQty { get; set; }
-        public string PendingQty { get; set; }
         public string ReceiveRemark { get; set; }
         public string OrderRemark { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public DateTime ReceiveDate { get; set; }
+        public string DelvDate { get { return DeliveryDate.ToString("dd MMM yyyy"); } }
+        public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
+
+        public double PendingQty
+        {
+            get { return (POQty - (RetQty + RecQty)); }
+        }
+
+        public int DelayDays { get { return (ReceiveDate.Date - DeliveryDate.Date).Days; } }
+
+
+        public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+        public string POStatus { get { return this.ItemStatus.ToString(); } }
+
+
 
     }
 
@@ -71,6 +88,12 @@ namespace IExpro.Core.Models.Reports
         public int ReceiveQuantity { get; set; }
         public int DelayDays { get { return (DateTime.Now.Date - ExpectedDate.Date).Days; } }
         public int OrderStatus { get { return Quantity > 0 ? 0 : 1; } }
+
+
+
+
+
+
 
 
     }
@@ -119,27 +142,49 @@ namespace IExpro.Core.Models.Reports
         public int PartyId { get; set; }
         public int IFinishedId { get; set; }
         public int OFinishedId { get; set; }
-        public string IssueDate { get; set; }
-        public string ReqDate { get; set; }
-        public double IndentQty { get; set; }
-        public double ExtraQty { get; set; }
-        public double CancelQty { get; set; }
-        public double Quantity { get; set; }
+        public decimal IndentQty { get; set; }
+        public decimal IssueQuantity { get; set; }
+        public decimal RecQuantity { get; set; }
+        public decimal RequiredQty { get; set; }
+
+        public decimal ReturnQty { get; set; }
+        public decimal ExtraQty { get; set; }
+        public decimal CancelQty { get; set; }
+        public decimal Quantity { get; set; }
         public int IssueId { get; set; }
-        public string ReceiveDate { get; set; }
-        public double RecQuantity { get; set; }
-        public double Moisture { get; set; }
-        public double IssueQuantity { get; set; }
-        public double ConsmpQty { get; set; }
-        public double LossQty { get; set; }
-        public double RequiredQty { get; set; }
+
+        public decimal Moisture { get; set; }
+
+        public decimal ConsmpQty { get; set; }
+        public decimal LossQty { get; set; }
+
         public int ReturnId { get; set; }
-        public double ReturnQty { get; set; }
+
         public string TagRemarks { get; set; }
-        public string ReturnDate { get; set; }
+        public DateTime ReqDate { get; set; }
+        public DateTime IssueDate { get; set; }
+        public DateTime ReceiveDate { get; set; }
+        public DateTime ReturnDate { get; set; }
 
 
 
+
+        public string RequestDate { get { return ReqDate.ToString("dd MMM yyyy"); } }
+
+        public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
+
+        public string IndentDate { get { return IssueDate.ToString("dd MMM yyyy"); } }
+
+
+        public decimal PendingQty
+        {
+            get { return (IssueQuantity - (RecQuantity - ReturnQty)); }
+        }
+
+        public int DelayDays { get { return (ReceiveDate.Date - ReqDate.Date).Days; } }
+
+        public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+        public string IStatus { get { return this.ItemStatus.ToString(); } }
 
     }
 

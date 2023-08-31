@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,6 +27,46 @@ namespace IExpro.Core.Common
 
     public static class CommonHelper
     {
+        public static decimal ToNumber(this double? str)
+        {
+            decimal num = 0;
+            if (str != null)
+            {
+                num = Convert.ToDecimal(str);
+            }
+            return num;
+
+        }
+        public static decimal ToNumber(this double str)
+        {
+            decimal num = Convert.ToDecimal(str);      
+            return num;
+
+        }
+        
+
+        public static decimal ToNumber(this string str)
+        {
+            decimal num = 0;
+            if (!string.IsNullOrEmpty(str))
+            {
+                num = Convert.ToDecimal(str);
+            }
+            return num;
+
+        }
+
+
+
+
+
+        public static DateTime ModifyToDateTime(this string strDate, string format)
+        {
+            return DateTime.ParseExact(strDate.Trim(), format, CultureInfo.InvariantCulture);
+        }
+
+
+
 
 
 
