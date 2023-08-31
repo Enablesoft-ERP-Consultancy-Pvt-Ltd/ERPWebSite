@@ -25,7 +25,7 @@ namespace IExpro.Core.Models.Reports
     {
         public string Category { get; set; }
         public string PONo { get; set; }
-        public string POStatus { get; set; }
+
         public string PODate { get; set; }
         public string SupplierName { get; set; }
         public string ItemName { get; set; }
@@ -33,7 +33,6 @@ namespace IExpro.Core.Models.Reports
         public double POQty { get; set; }
         public double RecQty { get; set; }
         public double RetQty { get; set; }
-
         public string ChallanNo { get; set; }
         public string LotNo { get; set; }
         public string BillNo { get; set; }
@@ -41,16 +40,9 @@ namespace IExpro.Core.Models.Reports
         public string ReceiveRemark { get; set; }
         public string OrderRemark { get; set; }
         public DateTime DeliveryDate { get; set; }
-
         public DateTime ReceiveDate { get; set; }
-
-
-
         public string DelvDate { get { return DeliveryDate.ToString("dd MMM yyyy"); } }
-
         public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
-
-
 
         public double PendingQty
         {
@@ -58,6 +50,10 @@ namespace IExpro.Core.Models.Reports
         }
 
         public int DelayDays { get { return (ReceiveDate.Date - DeliveryDate.Date).Days; } }
+
+
+        public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+        public string POStatus { get { return this.ItemStatus.ToString(); } }
 
 
 
@@ -92,6 +88,12 @@ namespace IExpro.Core.Models.Reports
         public int ReceiveQuantity { get; set; }
         public int DelayDays { get { return (DateTime.Now.Date - ExpectedDate.Date).Days; } }
         public int OrderStatus { get { return Quantity > 0 ? 0 : 1; } }
+
+
+
+
+
+
 
 
     }
