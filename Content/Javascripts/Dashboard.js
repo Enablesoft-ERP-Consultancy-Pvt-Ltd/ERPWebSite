@@ -9,12 +9,18 @@ var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) R
     { ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report", Type: 1 },
     { ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report", Type: 1 },
     { ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report", Type: 1 },
-    { ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 }
+    { ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 },
+    { ProcessId: 1, Process: "CUTTING", Title: "CUTTING", Type: 2 },
+    { ProcessId: 2, Process: "MANUAL EMBROIDERY(PCS)", Title: "MANUAL EMBROIDERY(PCS)", Type: 2 },
+    { ProcessId: 42, Process: "PANNEL WEAVING", Title: "PANNEL WEAVING", Type: 2 },
+    { ProcessId: 4, Process: "PATCH STITCHING", Title: "PATCH STITCHING", Type: 2 },
+    { ProcessId: 38, Process: "TABLE TUFTING", Title: "TABLE TUFTING", Type: 2 }
+   
 ];
 
 
 
-
+	
 
 
 
@@ -101,9 +107,28 @@ $(function () {
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 34 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>STONE WASH(MTR)</strong></a></li>";
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 29 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>SCREEN PRINTING (MTR)</strong></a></li>";
 
+                            
+
+
+
                             btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>COMPUTER EMBROIDERY(PCS)</strong></a></li>";
+                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 1 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>CUTTING</strong></a></li>";
+                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 2 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>MANUAL EMBROIDERY(PCS)</strong></a></li>";
+                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 42 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>PANNEL WEAVING</strong></a></li>";
+                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 4 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>PATCH STITCHING</strong></a></li>";
+                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 38 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>TABLE TUFTING</strong></a></li>";
+
+
 
                             btnHtml += "</ul></div>";
+
+
+
+
+
+
+
+
 
 
 
