@@ -2,13 +2,14 @@
 
 
 
-var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report" },
-{ ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report" },
-{ ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report" },
-{ ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report" },
-{ ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report" },
-{ ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report" },
-    { ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report" }
+var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report" ,Type:1},
+    { ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
+    { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
+    { ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report", Type: 1 },
+    { ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report", Type: 1 },
+    { ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report", Type: 1 },
+    { ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report", Type: 1 }
+    { ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 }
 ];
 
 
@@ -100,7 +101,7 @@ $(function () {
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 34 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>STONE WASH(MTR)</strong></a></li>";
                             btnHtml += "<li><a class='btnProcess mrm' prhref=" + 29 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>SCREEN PRINTING (MTR)</strong></a></li>";
 
-
+                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-print mrs text-green'></i><strong>COMPUTER EMBROIDERY(PCS)</strong></a></li>";
 
                             btnHtml += "</ul></div>";
 
@@ -152,6 +153,15 @@ $(function () {
                 var _processId = parseInt(elem.attr('prhref'));
                 ProcessReport(_orderId, _processId);
             });
+
+            table.on('click', 'a.btnIssueProcess', function (e) {
+                var elem = $(this);
+                var _orderId = parseInt(elem.attr('exthref'));
+                var _processId = parseInt(elem.attr('prhref'));
+                ProcessIssueReport(_orderId, _processId);
+            });
+
+            
 
 
         },
@@ -479,6 +489,77 @@ function ProcessReport(_orderId, _processId) {
                     bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.IndentDate + "</td><td>" + item.RequestDate + "</td>";
                     bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
                     bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
+
+                });
+            }
+            else {
+                bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
+            }
+
+            bodyHtml += "</tbody></table></div></div></div>"
+
+        },
+        error: function (xhr, status, error) {
+            var msg = "Response failed with status: " + status + "</br>"
+                + " Error: " + error;
+            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+        },
+        complete: function (xhr, status) {
+            $('div.modal-body').empty();
+            $('div.modal-body').html(bodyHtml);
+            $('#myModal').modal('show');
+        }
+    });
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+function ProcessIssueReport(_orderId, _processId) {
+
+    var bodyHtml = "";
+
+    $('h4.modal-title').empty();
+    var item = ProcessList.find(S => S.ProcessId == _processId);
+    $('h4.modal-title').html(item.Title);
+
+
+
+    const obj = { OrderId: _orderId, ProcessId: _processId };
+    $.ajax({
+        url: "Home.aspx/GetIssueDetail",
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(obj),
+        success: function (data) {
+            console.log(data.d)
+            var result = $.parseJSON(data.d);
+
+            bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
+            bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
+            bodyHtml += "<th>Issue No.</th><th>Issue Date</th>";
+            bodyHtml += "<th>Req. Date</th><th>Rec. Date</th>";
+            bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Rate</th>";
+            bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
+
+            if (result.data.length > 0) {
+
+                $.each(result.data, function (index, item) {
+
+                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
+                    bodyHtml += "<td>" + item.IssueNo + "</td><td>" + item.IssueDate + "</td><td>" + item.ReqDate + "</td>";
+                    bodyHtml += "<td>" + item.RecDate + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
+                    bodyHtml += "<td>" + item.Rate + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
 
                 });
             }

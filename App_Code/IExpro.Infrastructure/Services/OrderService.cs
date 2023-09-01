@@ -43,5 +43,11 @@ namespace IExpro.Infrastructure.Services
             return this.IU.OrdRepo.GetOrderByIndentDetail(OrderId, ProcessId);
         }
 
+        public IEnumerable<IssueMaterialModel> GetOrderByIssueId(int OrderId, int ProcessId)
+        {
+            return this.IU.OrdRepo.GetOrderByIssueId(OrderId, ProcessId);
+        }
+
+
     }
 }

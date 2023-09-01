@@ -119,6 +119,34 @@ namespace IExpro.Core.Models.Reports
 
 
 
+    public class IssueMaterialModel
+    {
+        public int IssueId { get; set; }
+        public string IssueNo { get; set; }
+        public int ProcessId { get; set; }
+        public int EmpId { get; set; }
+        public int OrderId { get; set; }
+        public int FinishedId { get; set; }
+        public int MaterialId { get; set; }
+        public DateTime AssignDate { get; set; }
+        public DateTime RequestDate { get; set; }
+        public DateTime ReceiveDate { get; set; }
+        public string VendorName { get; set; }
+        public string MaterialName { get; set; }
+        public decimal Rate { get; set; }
+        public decimal IssueQuantity { get; set; }
+        public decimal RecQuantity { get; set; }
+        public string IssueDate { get { return AssignDate.ToString("dd MMM yyyy"); } }
+        public string ReqDate { get { return RequestDate.ToString("dd MMM yyyy"); } }
+        public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
+        public decimal PendingQty
+        {
+            get { return (IssueQuantity - RecQuantity); }
+        }
+        public int DelayDays { get { return (ReceiveDate.Date - RequestDate.Date).Days; } }
+        public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+        public string IStatus { get { return this.ItemStatus.ToString(); } }
+    }
 
 
 

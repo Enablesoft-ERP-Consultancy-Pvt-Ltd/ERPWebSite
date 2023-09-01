@@ -142,7 +142,21 @@ public partial class Home : BasePage
     }
 
 
-
+    /// <summary>
+    /// Get Home furnishing Issue detail According to Process and Order
+    /// </summary>
+    /// <param name="OrderId">The Order No</param>
+    /// <param name="ProcessId">The Process No</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetIssueDetail(int OrderId, int ProcessId)
+    {
+        string resultString = "";
+        var obj = OrdSrv.GetOrderByIssueId(OrderId, ProcessId).ToList();
+        var result = new { data = obj };
+        resultString = JsonConvert.SerializeObject(result);
+        return resultString;
+    }
 
 
 
