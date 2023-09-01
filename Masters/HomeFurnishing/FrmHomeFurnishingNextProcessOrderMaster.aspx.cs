@@ -80,7 +80,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
                     From HomeFurnishingStockNo a(Nolock) 
                     JOIN HomeFurnishing_Stock_Detail HSD(Nolock) ON HSD.StockNo = a.StockNo And HSD.ToProcessID = a.CurrentProStatus 
                     JOIN HomeFurnishingReceiveMaster b(Nolock) ON b.CompanyID = HSD.CompanyID And b.ProcessRecId = HSD.Process_Rec_ID And b.ProcessID = HSD.ToProcessID 
-                    Where a.Pack = 0 And a.IssRecStatus = 0 And IsNull(a.PRMID, 0) = 0 And a.CompanyID = " + DDcompany.SelectedValue + @" And 
+                    Where a.Pack = 0 And a.IssRecStatus = 0  And (a.PRMID = 0 or a.PRMID is null) And a.CompanyID = " + DDcompany.SelectedValue + @" And 
                     a.CurrentProStatus = " + DDFromProcessName.SelectedValue + @" 
                     Order By b.ProcessRecId";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
