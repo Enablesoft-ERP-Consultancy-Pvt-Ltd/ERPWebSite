@@ -2483,20 +2483,24 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
         //*******Chages For Scanning Tagging Stock No
         if (variable.VarGENERATESTOCKNOONTAGGING == "1" && hnEmployeeType.Value == "0")
         {
-            if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+            if (Session["varcompanyNo"].ToString() != "43")
             {
-                if (chkEdit.Checked == true)
+                if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                 {
+                    if (chkEdit.Checked == true)
+                    {
+                        Tdstockno.Visible = true;
+                    }
+                }
+                else
+                {
+                    btnsave.Visible = false;
+                    DDcustcode.Enabled = false;
+                    DDorderNo.Enabled = false;
                     Tdstockno.Visible = true;
                 }
             }
-            else
-            {
-                btnsave.Visible = false;
-                DDcustcode.Enabled = false;
-                DDorderNo.Enabled = false;
-                Tdstockno.Visible = true;
-            }
+           
         }
         if (Session["varcompanyNo"].ToString() == "45" && chkEdit.Checked == true)
         {
@@ -2684,8 +2688,10 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                     DDCalType.SelectedValue = hnordercaltype.Value;
                 }
             }
-            txtWeaverIdNoscan.Focus();
-            DisablecontrolwithGENERATESTOCKNOONTAGGING();
+            txtWeaverIdNoscan.Focus();            
+             DisablecontrolwithGENERATESTOCKNOONTAGGING();
+            
+           
         }
         catch (Exception ex)
         {
