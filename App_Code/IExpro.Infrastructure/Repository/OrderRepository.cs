@@ -464,7 +464,7 @@ VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPEN
 ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName, 
 
 x.IssueId,x.IssueNo,x.ProcessId,x.EmpId,x.OrderId,x.Finishedid,x.MaterialId,
-x.AssignDate,x.RequestDate,y.ReceiveDate,x.Rate,x.IssueQuantity,
+x.AssignDate,x.RequestDate,IsNUll(y.ReceiveDate,GetDate()) ReceiveDate,x.Rate,x.IssueQuantity,
 IsNUll(y.RecQuantity,0.00) RecQuantity
 from IssueItem x 
 Left Join ReceiveItem y on  x.OrderId=y.OrderId and x.Finishedid=y.Finishedid 
