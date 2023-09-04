@@ -488,7 +488,7 @@ HFRD.Order_FinishedID,HFRD.OrderDetailDetail_FinishedID,
 AVG(IsNull(HFRD.Rate,0.00)) OVER (PARTITION BY  HFRD.OrderId,HFRD.Order_FinishedID,HFRD.OrderDetailDetail_FinishedID,HFRD.ISSUEORDERID ) Rate,
 SUM(IsNull(HFRD.Qty,0.00)) OVER (PARTITION BY  HFRD.OrderId,HFRD.Order_FinishedID,HFRD.OrderDetailDetail_FinishedID,
 HFRD.ISSUEORDERID ) recQuantity,
-Max(IsNull(HFRM.ReceiveDate,0.00)) OVER (PARTITION BY  HFRD.OrderId,HFRD.Order_FinishedID,HFRD.OrderDetailDetail_FinishedID,HFRD.ISSUEORDERID ) Rate,
+Max(HFRM.ReceiveDate) OVER (PARTITION BY  HFRD.OrderId,HFRD.Order_FinishedID,HFRD.OrderDetailDetail_FinishedID,HFRD.ISSUEORDERID ) Rate,
 ROW_NUMBER() OVER(PARTITION BY  HFRD.OrderId,HFRD.Order_FinishedID,HFRD.OrderDetailDetail_FinishedID,HFRD.ISSUEORDERID ORDER BY HFRD.ISSUEORDERID) RowNo
 From HomeFurnishingReceiveMaster HFRM(NoLock)   
 Inner JOIN HomeFurnishingReceiveDetail HFRD(NoLock) ON HFRM.ProcessRecId=HFRD.ProcessRecId 
@@ -507,7 +507,7 @@ and x.MaterialId=y.MaterialId and x.IssueId=y.IssueId and x.RowNo=y.RowNo
 INNER JOIN V_FINISHEDITEMDETAIL VF ON x.MaterialId=VF.ITEM_FINISHED_ID  
 LEFT JOIN SIZETYPE ST WITH (NOLOCK)  ON x.FLAGSIZE=ST.VAL  
 INNER JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId    
-Where  x.OrderId=@OrderId  and x.RowNo=1 and  x.ProcessId=@ProcessId 
+Where  x.OrderId= @OrderId  and x.RowNo=1 and  x.ProcessId=@ProcessId 
 Order BY  x.IssueId";
 
                 try

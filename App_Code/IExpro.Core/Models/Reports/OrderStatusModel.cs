@@ -104,7 +104,7 @@ namespace IExpro.Core.Models.Reports
         public int MaterialId { get; set; }
         public DateTime AssignDate { get; set; }
         public DateTime RequestDate { get; set; }
-        public DateTime ReceiveDate { get; set; }
+        public DateTime? ReceiveDate { get; set; }
         public string VendorName { get; set; }
         public string MaterialName { get; set; }
         public decimal Rate { get; set; }
@@ -121,18 +121,36 @@ namespace IExpro.Core.Models.Reports
         {
             get
             {
-                return ReceiveDate != null ? ReceiveDate.ToString("dd MMM yyyy") : "---";
+                return ReceiveDate.HasValue ? ReceiveDate.Value.ToString("dd MMM yyyy") : "---";
             }
         }
         public int DelayDays
         {
             get
             {
-                var result = (ReceiveDate.Date - RequestDate.Date).Days;
-                return result < 0 ? 0 : result;
+                int result = 0;
+                if (ReceiveDate.HasValue)
+                {
+                    result = (ReceiveDate.Value.Date - RequestDate.Date).Days;
+
+                }
+                return result;
             }
         }
-        public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+        public ProcessStatus ItemStatus
+        {
+            get
+            {
+                if (IssueQuantity == 0)
+                {
+                    return ProcessStatus.Pending;
+                }
+                else
+                {
+                    return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed;
+                }
+            }
+        }
         public string IStatus { get { return this.ItemStatus.ToString(); } }
 
     }
@@ -217,7 +235,20 @@ namespace IExpro.Core.Models.Reports
 
 
 
-        public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+        public ProcessStatus ItemStatus
+        {
+            get
+            {
+                if (IssueQuantity == 0)
+                {
+                    return ProcessStatus.Pending;
+                }
+                else
+                {
+                    return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed;
+                }
+            }
+        }
         public string IStatus { get { return this.ItemStatus.ToString(); } }
 
     }
