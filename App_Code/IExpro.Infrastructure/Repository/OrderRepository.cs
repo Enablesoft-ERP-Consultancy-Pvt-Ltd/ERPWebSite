@@ -11,6 +11,8 @@ using IExpro.Core.Entity;
 using IExpro.Core.Interfaces.Common;
 using IExpro.Core.Common;
 using AjaxControlToolkit;
+using DocumentFormat.OpenXml.Bibliography;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
 namespace IExpro.Infrastructure.Repository
 {
@@ -331,48 +333,81 @@ Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
                 try
                 {
 
-                    var result = conn.Query<IndentRawMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, }).GroupBy(n => new { n.IndentId, n.IFinishedId, n.OFinishedId }).
+                    var result = conn.Query<IndentRawMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, }).
                         Select(x => new IndentRawMaterialModel
                         {
-                            IndentId = x.Key.IndentId,
-                            IFinishedId = x.Key.IFinishedId,
-                            OFinishedId = x.Key.OFinishedId,
-                            Category = x.FirstOrDefault().Category,
-                            VendorName = x.FirstOrDefault().VendorName,
-                            MaterialName = x.FirstOrDefault().MaterialName,
-                            QualityName = x.FirstOrDefault().QualityName,
-                            ColorName = x.FirstOrDefault().ColorName,
-                            ShadeName = x.FirstOrDefault().ShadeName,
-                            PPNo = x.FirstOrDefault().PPNo,
-                            ProcessId = x.FirstOrDefault().ProcessId,
-                            CompanyId = x.FirstOrDefault().CompanyId,
-                            OrderId = x.FirstOrDefault().OrderId,
-                            OrderDetailId = x.FirstOrDefault().OrderDetailId,
-                            IndentNo = x.FirstOrDefault().IndentNo,
-                            PartyId = x.FirstOrDefault().PartyId,
-                            IndentQty = x.Sum(y => y.IndentQty),
-                            ExtraQty = x.Sum(y => y.ExtraQty),
-                            CancelQty = x.Sum(y => y.CancelQty),
-                            IssueId = x.FirstOrDefault().IssueId,
-                            Quantity = x.Sum(q => q.Quantity),
-                            IssueQuantity = x.Select(y => new { y.IssueId, y.IssueQuantity }).Distinct().Sum(p => p.IssueQuantity),
-                            RecQuantity = x.Sum(q => q.RecQuantity),
-                            ConsmpQty = x.Sum(y => y.ConsmpQty),
-                            Moisture = x.Sum(y => y.Moisture),
-                            LossQty = x.Sum(y => y.LossQty),
-                            ReturnQty = x.Sum(q => q.ReturnQty),
-                            RequiredQty = x.Sum(y => y.RequiredQty),
-                            ReturnId = x.FirstOrDefault().ReturnId,
-                            TagRemarks = x.FirstOrDefault().TagRemarks,
-                            ReqDate = x.FirstOrDefault().ReqDate,
-                            IssueDate = x.FirstOrDefault().IssueDate,
-                            ReceiveDate = x.Max(y => y.ReceiveDate),
-                            ReturnDate = x.Max(y => y.ReturnDate),
+                            IndentId = x.IndentId,
+                            IFinishedId = x.IFinishedId,
+                            OFinishedId = x.OFinishedId,
+                            Category = x.Category,
+                            VendorName = x.VendorName,
+                            MaterialName = x.MaterialName,
+                            QualityName = x.QualityName,
+                            ColorName = x.ColorName,
+                            ShadeName = x.ShadeName,
+                            PPNo = x.PPNo,
+                            ProcessId = x.ProcessId,
+                            CompanyId = x.CompanyId,
+                            OrderId = x.OrderId,
+                            OrderDetailId = x.OrderDetailId,
+                            IndentNo = x.IndentNo,
+                            PartyId = x.PartyId,
+                            IndentQty = x.IndentQty,
+                            ExtraQty = x.ExtraQty,
+                            CancelQty = x.CancelQty,
+                            IssueId = x.IssueId,
+                            Quantity = x.Quantity,
+                            IssueQuantity = x.IssueQuantity,
+                            RecQuantity = x.RecQuantity,
+                            ConsmpQty = x.ConsmpQty,
+                            Moisture = x.Moisture,
+                            LossQty = x.LossQty,
+                            ReturnQty = x.ReturnQty,
+                            RequiredQty = x.RequiredQty,
+                            ReturnId = x.ReturnId,
+                            TagRemarks = x.TagRemarks,
+                            ReqDate = x.ReqDate,
+                            IssueDate = x.IssueDate,
+                            ReceiveDate = x.ReceiveDate,
+                            ReturnDate = x.ReturnDate,
 
                         });
 
 
-
+                    //IndentId = x.Key.IndentId,
+                    //        IFinishedId = x.Key.IFinishedId,
+                    //        OFinishedId = x.Key.OFinishedId,
+                    //        Category = x.FirstOrDefault().Category,
+                    //        VendorName = x.VendorName.,
+                    //        MaterialName = x.FirstOrDefault().MaterialName,
+                    //        QualityName = x.FirstOrDefault().QualityName,
+                    //        ColorName = x.FirstOrDefault().ColorName,
+                    //        ShadeName = x.FirstOrDefault().ShadeName,
+                    //        PPNo = x.FirstOrDefault().PPNo,
+                    //        ProcessId = x.FirstOrDefault().ProcessId,
+                    //        CompanyId = x.FirstOrDefault().CompanyId,
+                    //        OrderId = x.FirstOrDefault().OrderId,
+                    //        OrderDetailId = x.FirstOrDefault().OrderDetailId,
+                    //        IndentNo = x.FirstOrDefault().IndentNo,
+                    //        PartyId = x.FirstOrDefault().PartyId,
+                    //        IndentQty = x.Sum(y => y.IndentQty),
+                    //        ExtraQty = x.Sum(y => y.ExtraQty),
+                    //        CancelQty = x.Sum(y => y.CancelQty),
+                    //        IssueId = x.FirstOrDefault().IssueId,
+                    //        Quantity = x.Sum(q => q.Quantity),
+                    //        IssueQuantity = x.Select(y => new { y.IssueId, y.IssueQuantity }).Distinct().Sum(p => p.IssueQuantity),
+                    //        RecQuantity = x.Sum(q => q.RecQuantity),
+                    //        ConsmpQty = x.Sum(y => y.ConsmpQty),
+                    //        Moisture = x.Sum(y => y.Moisture),
+                    //        LossQty = x.Sum(y => y.LossQty),
+                    //        ReturnQty = x.Sum(q => q.ReturnQty),
+                    //        RequiredQty = x.Sum(y => y.RequiredQty),
+                    //        ReturnId = x.FirstOrDefault().ReturnId,
+                    //        TagRemarks = x.FirstOrDefault().TagRemarks,
+                    //        ReqDate = x.FirstOrDefault().ReqDate,
+                    //        IssueDate = x.FirstOrDefault().IssueDate,
+                    //        ReceiveDate = x.Max(y => y.ReceiveDate),
+                    //        ReturnDate = x.Max(y => y.ReturnDate),
 
 
                     //var lst = result.Select(x => new IndentRawMaterialModel
@@ -464,7 +499,7 @@ VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPEN
 ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName, 
 
 x.IssueId,x.IssueNo,x.ProcessId,x.EmpId,x.OrderId,x.Finishedid,x.MaterialId,
-x.AssignDate,x.RequestDate,IsNUll(y.ReceiveDate,GetDate()) ReceiveDate,x.Rate,x.IssueQuantity,
+x.AssignDate,x.RequestDate,y.ReceiveDate,x.Rate,x.IssueQuantity,
 IsNUll(y.RecQuantity,0.00) RecQuantity
 from IssueItem x 
 Left Join ReceiveItem y on  x.OrderId=y.OrderId and x.Finishedid=y.Finishedid 

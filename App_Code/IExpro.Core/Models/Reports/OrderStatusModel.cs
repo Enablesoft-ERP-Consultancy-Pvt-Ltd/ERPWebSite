@@ -50,23 +50,10 @@ namespace IExpro.Core.Models.Reports
         }
 
         public int DelayDays { get { return (ReceiveDate.Date - DeliveryDate.Date).Days; } }
-
-
         public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
         public string POStatus { get { return this.ItemStatus.ToString(); } }
 
-
-
     }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -88,14 +75,6 @@ namespace IExpro.Core.Models.Reports
         public int ReceiveQuantity { get; set; }
         public int DelayDays { get { return (DateTime.Now.Date - ExpectedDate.Date).Days; } }
         public int OrderStatus { get { return Quantity > 0 ? 0 : 1; } }
-
-
-
-
-
-
-
-
     }
 
 
@@ -112,12 +91,7 @@ namespace IExpro.Core.Models.Reports
         public int DelayDays { get { return (DateTime.Now.Date - ExpectedDate.Date).Days; } }
         public int DyeingStatus { get { return Quantity > 0 ? 0 : 1; } }
 
-
     }
-
-
-
-
 
     public class IssueMaterialModel
     {
@@ -138,14 +112,29 @@ namespace IExpro.Core.Models.Reports
         public decimal RecQuantity { get; set; }
         public string IssueDate { get { return AssignDate.ToString("dd MMM yyyy"); } }
         public string ReqDate { get { return RequestDate.ToString("dd MMM yyyy"); } }
-        public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
+
         public decimal PendingQty
         {
             get { return (IssueQuantity - RecQuantity); }
         }
-        public int DelayDays { get { return (ReceiveDate.Date - RequestDate.Date).Days; } }
+        public string RecDate
+        {
+            get
+            {
+                return ReceiveDate != null ? ReceiveDate.ToString("dd MMM yyyy") : "---";
+            }
+        }
+        public int DelayDays
+        {
+            get
+            {
+                var result = (ReceiveDate.Date - RequestDate.Date).Days;
+                return result < 0 ? 0 : result;
+            }
+        }
         public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
         public string IStatus { get { return this.ItemStatus.ToString(); } }
+
     }
 
 
@@ -198,10 +187,27 @@ namespace IExpro.Core.Models.Reports
 
 
         public string RequestDate { get { return ReqDate.ToString("dd MMM yyyy"); } }
-
-        public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
-
         public string IndentDate { get { return IssueDate.ToString("dd MMM yyyy"); } }
+
+
+        public string RecDate
+        {
+            get
+            {
+
+
+                return ReceiveDate != null ? ReceiveDate.ToString("dd MMM yyyy") : "---";
+            }
+        }
+
+        public int DelayDays
+        {
+            get
+            {
+                var result = (ReceiveDate.Date - ReqDate.Date).Days;
+                return result < 0 ? 0 : result;
+            }
+        }
 
 
         public decimal PendingQty
@@ -209,7 +215,7 @@ namespace IExpro.Core.Models.Reports
             get { return (IssueQuantity - (RecQuantity - ReturnQty)); }
         }
 
-        public int DelayDays { get { return (ReceiveDate.Date - ReqDate.Date).Days; } }
+
 
         public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
         public string IStatus { get { return this.ItemStatus.ToString(); } }

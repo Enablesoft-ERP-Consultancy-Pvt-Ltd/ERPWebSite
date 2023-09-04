@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -27,6 +28,26 @@ namespace IExpro.Core.Common
 
     public static class CommonHelper
     {
+
+        public static string IsString(this string str)
+        {
+            string result = string.Empty;
+            if (!string.IsNullOrEmpty(str))
+            {
+                result = result.Trim();
+            }
+            return result;
+
+        }
+        public static int IsInt(this int? num)
+        {
+            int result = num.HasValue ? num.Value : 0;
+            return result;
+        }
+
+
+
+
         public static decimal ToNumber(this double? str)
         {
             decimal num = 0;
@@ -39,11 +60,11 @@ namespace IExpro.Core.Common
         }
         public static decimal ToNumber(this double str)
         {
-            decimal num = Convert.ToDecimal(str);      
+            decimal num = Convert.ToDecimal(str);
             return num;
 
         }
-        
+
 
         public static decimal ToNumber(this string str)
         {
