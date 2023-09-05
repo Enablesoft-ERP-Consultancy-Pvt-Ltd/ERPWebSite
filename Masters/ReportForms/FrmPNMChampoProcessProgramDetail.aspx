@@ -1,5 +1,5 @@
-﻿<%@ Page Title="Indent Detail" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="FrmPNMChampoIndentDetail.aspx.cs" Inherits="Masters_ReportForms_FrmPNMChampoIndentDetail" %>
+﻿<%@ Page Title="Process program Detail" Language="C#" MasterPageFile="~/ERPmaster.master"
+    AutoEventWireup="true" CodeFile="FrmPNMChampoProcessProgramDetail.aspx.cs" Inherits="Masters_ReportForms_FrmPNMChampoProcessProgramDetail" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
@@ -8,13 +8,33 @@
     <script type="text/javascript">
         function CloseForm() {
             window.location.href = "../../main.aspx";
-        }
+        }       
     </script>
     <asp:UpdatePanel ID="Upd1" runat="server">
         <ContentTemplate>
             <div style="margin: 2% 20% 0% 20%">
                 <asp:Panel ID="pnl2" runat="server">
                     <table>
+                        <tr>
+                            <td>
+                                <asp:Label ID="lblcompany" runat="server" Text="Company Name" Width="100%" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:DropDownList ID="ddcompany" runat="server" Width="150px" CssClass="dropdown">
+                                </asp:DropDownList>
+                            </td>
+                            <td class="tdstyle">
+                                <asp:Label ID="lblprocess" runat="server" Text="Process Name" Width="100%" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:DropDownList ID="ddprocess" runat="server" Width="150px" CssClass="dropdown">
+                                </asp:DropDownList>
+                            </td>
+                            <td id="Tdcustcode" runat="server">
+                                <asp:Label ID="lblcustomer" runat="server" Text="Customer Code" Width="100%" CssClass="labelbold"></asp:Label>
+                                <br />
+                                <asp:DropDownList ID="ddcustomer" runat="server" Width="250px" CssClass="dropdown">
+                                </asp:DropDownList>
+                            </td>
+                        </tr>
                         <tr>
                             <td>
                                 <asp:Label ID="lblfromdt" Text="From Date" runat="server" CssClass="labelbold" />
@@ -40,7 +60,7 @@
                         <tr>
                             <td>
                                 <div style="width: 100%; max-height: 300px; overflow: auto">
-                                    <asp:GridView ID="DGIndentDetail" runat="server" Width="100%" Style="margin-left: 10px"
+                                    <asp:GridView ID="DGPPDetail" runat="server" Width="100%" Style="margin-left: 10px"
                                         ForeColor="#333333" AutoGenerateColumns="False" CssClass="grid-view">
                                         <HeaderStyle CssClass="gvheader" Height="20px" />
                                         <AlternatingRowStyle CssClass="gvalt" />
@@ -50,40 +70,40 @@
                                         <Columns>
                                             <asp:TemplateField Visible="false">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblIndentID" runat="server" Text='<%#Bind("IndentID") %>'></asp:Label>
+                                                    <asp:Label ID="lblPPID" runat="server" Text='<%#Bind("PPID") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Branch Name">
+                                            <asp:TemplateField HeaderText="Customer Code">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblBranchName" runat="server" Text='<%#Bind("BranchName") %>'></asp:Label>
+                                                    <asp:Label ID="lblCustomerCode" runat="server" Text='<%#Bind("CustomerCode") %>'></asp:Label>
                                                 </ItemTemplate>
                                                 <HeaderStyle Width="125px" />
                                                 <ItemStyle Width="125px" />
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Indent No">
+                                            <asp:TemplateField HeaderText="PP No">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblIndentNo" runat="server" Text='<%#Bind("IndentNo") %>'></asp:Label>
+                                                    <asp:Label ID="lblPPNo" runat="server" Text='<%#Bind("PPNo") %>'></asp:Label>
                                                 </ItemTemplate>
                                                 <HeaderStyle Width="100px" />
                                                 <ItemStyle Width="100px" />
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Indent Date">
+                                            <asp:TemplateField HeaderText="Order No">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblIndentDate" runat="server" Text='<%#Bind("IndentDate") %>'></asp:Label>
+                                                    <asp:Label ID="lblOrderNo" runat="server" Text='<%#Bind("OrderNo") %>'></asp:Label>
                                                 </ItemTemplate>
                                                 <HeaderStyle Width="100px" />
                                                 <ItemStyle Width="100px" />
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Indent Qty">
+                                            <asp:TemplateField HeaderText="PP Date">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblIndentQty" runat="server" Text='<%#Bind("IndentQty") %>'></asp:Label>
+                                                    <asp:Label ID="lblPPDate" runat="server" Text='<%#Bind("PPDate") %>'></asp:Label>
                                                 </ItemTemplate>
                                                 <HeaderStyle Width="100px" />
                                                 <ItemStyle Width="100px" />
                                             </asp:TemplateField>
                                             <asp:TemplateField>
                                                 <ItemTemplate>
-                                                    <asp:LinkButton ID="LinkForOpenIndentDetail" runat="server" CommandName="" Text="Indent Detail"
+                                                    <asp:LinkButton ID="LinkForOpenPPDetail" runat="server" CommandName="" Text="PP Detail"
                                                         OnClick="lnkbtnToOpenIndentDetail_Click" Font-Size="12px">
                                                     </asp:LinkButton>
                                                 </ItemTemplate>

@@ -274,7 +274,7 @@ public partial class Masters_Purchase_PurchageIndentIssue : System.Web.UI.Page
                     trrevisedremark.Visible = true;
                     ddlDeliveryAddress.Visible = true;
                     txtDeliveryAddress.Visible = false;
-                    break;
+                    break;               
             }
             OnCheckedChange();
             if (ddcustomercode.Items.Count > 0)
@@ -614,6 +614,7 @@ public partial class Masters_Purchase_PurchageIndentIssue : System.Web.UI.Page
     }
     private void OnCheckedChange()
     {
+        
         if (chkcustomervise.Checked)
         {
             ddCatagory.Enabled = false;
@@ -776,6 +777,11 @@ public partial class Masters_Purchase_PurchageIndentIssue : System.Web.UI.Page
                     ddlcategorychange1();
                 }
             }
+        }
+
+        if (Session["VarCompanyNo"].ToString() == "46")
+        {
+            btnopen.Visible = false;
         }
     }
 
