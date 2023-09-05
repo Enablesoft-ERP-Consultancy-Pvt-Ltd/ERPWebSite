@@ -229,6 +229,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
     {
         string str = "";
         string ColumnName = "";
+        string ColumnName2 = "";
         if (chkForFtSize.Checked == true)
         {
             if (variable.VarNewQualitySize == "1")
@@ -238,8 +239,16 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             }
             else
             {
+                if (Session["varCompanyNo"].ToString() == "43")
+                {
+                    ColumnName = "SizeFt";
+                    ColumnName2 = "ItemFinishingSizeFT";
 
-                ColumnName = "SizeFt";
+                }
+                else
+                {
+                    ColumnName = "SizeFt";
+                }
             }
         }
         else if (ChkForInchSize.Checked == true)
@@ -265,8 +274,15 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             }
             else
             {
-
-                ColumnName = "SizeMtr";
+                if (Session["varCompanyNo"].ToString() == "43")
+                {
+                    ColumnName = "SizeMtr";
+                    ColumnName2 = "ItemFinishingSizeMtr";
+                }
+                else
+                {
+                    ColumnName = "SizeMtr";
+                }
             }
 
         }
@@ -304,8 +320,20 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         {
             if (DDCustomerCode.SelectedIndex > 0)
             {
-                str = @"select Distinct vf.sizeid,vf." + ColumnName + @" as size From V_FinishedItemDetail vf inner join OrderDetail od on vf.ITEM_FINISHED_ID=od.Item_Finished_Id
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    str = @"select Distinct vf.sizeid,vf." + ColumnName + "+ '- ['" + "+SA." + ColumnName2 + "+']'" + @" as size From V_FinishedItemDetail vf(NoLock) 
+                            inner join OrderDetail od(NoLock) on vf.ITEM_FINISHED_ID=od.Item_Finished_Id
+                            inner join OrderMaster om(NoLock) on od.orderid=om.OrderId 
+                            Join SizeAttachedWithItem SA(NoLock) ON VF.sizeId=SA.SizeId and VF.Item_Id=SA.ItemId and VF.QualityId=SA.QualityId
+                            Where om.customerid=" + DDCustomerCode.SelectedValue + " and  vf.ITEM_ID=" + DDQualityType.SelectedValue + @" 
+                            and vf.shapeid=" + DDShape.SelectedValue;
+                }
+                else
+                {
+                    str = @"select Distinct vf.sizeid,vf." + ColumnName + @" as size From V_FinishedItemDetail vf inner join OrderDetail od on vf.ITEM_FINISHED_ID=od.Item_Finished_Id
                       inner join OrderMaster om on od.orderid=om.OrderId Where om.customerid=" + DDCustomerCode.SelectedValue + " and  vf.ITEM_ID=" + DDQualityType.SelectedValue + " and vf.shapeid=" + DDShape.SelectedValue;
+                }
                 if (DDQuality.SelectedIndex > 0)
                 {
                     str = str + " and Vf.QualityId=" + DDQuality.SelectedValue;
@@ -322,7 +350,17 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             }
             else
             {
-                str = @"select Distinct Vf.SizeId,Vf." + ColumnName + " as Size From V_FinishedItemDetail Vf  Where Shapeid=" + DDShape.SelectedValue;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    str = @"select Distinct Vf.SizeId,Vf." + ColumnName+ "+ '- ['"+  "+SA." + ColumnName2 + "+']'" + @" as Size From V_FinishedItemDetail Vf(NoLock)  
+                    JOIN SizeAttachedWithItem SA(NoLock) ON VF.sizeId=SA.SizeId and VF.Item_Id=SA.ItemId and VF.QualityId=SA.QualityId
+                    Where Shapeid=" + DDShape.SelectedValue;
+                }
+                else
+                {
+                    str = @"select Distinct Vf.SizeId,Vf." + ColumnName + " as Size From V_FinishedItemDetail Vf  Where Shapeid=" + DDShape.SelectedValue;
+                }
+                
                 if (DDQualityType.SelectedIndex > 0)
                 {
                     str = str + " and Vf.Item_id=" + DDQualityType.SelectedValue;
