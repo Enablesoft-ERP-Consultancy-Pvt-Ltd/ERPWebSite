@@ -52,13 +52,11 @@ Where p.OrderId=@OrderId";
 
         }
 
-
         public IEnumerable<OrderStatusModel> GetOrderList(int CompanyId)
         {
 
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-
                 //                string sqlQuery = @"Select p.CompanyId,r.OrderId,q.ShortName,t.CustomerCode,r.CustomerOrderNo,CONVERT(NVARCHAR(11), r.OrderDate, 106) OrderDate,
                 //CONVERT(NVARCHAR(11), r.DispatchDate, 106) DispatchDate,CONVERT(NVARCHAR(11), r.PackingDate, 106) PackingDate,
                 //r.PackingId,r.ItemQuantity Quantity,r.DelayDays
@@ -78,8 +76,6 @@ Where p.OrderId=@OrderId";
                 //inner join customerinfo t on r.CustomerId=t.CustomerId
                 //Where (r.OrderDate >= DATEADD(month, -6, GetDate())) AND  p.CompanyId=@CompanyId
                 //";
-
-
                 string sqlQuery = @"With OrderItem(CompanyId,CustomerId,OrderId,CustomerOrderNo,LocalOrder,OrderDate,DispatchDate,
 DueDate,Remarks,OrderQty,ExtraQty,CancelQty,HoldQty,RowNo)
 AS (Select p.CompanyId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
@@ -109,13 +105,8 @@ inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
 Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId";
 
                 return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
-
-
-
             }
-
         }
-
         public IEnumerable<VendorPOStatusModel> GetVendorPOStatus(int CompanyId)
         {
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
@@ -276,7 +267,6 @@ Having OM.OrderID=@OrderId";
                     throw ex;
                 }
             }
-
         }
 
         public IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId)
@@ -467,11 +457,6 @@ Where z.OrderId=@OrderId and z.ProcessId=@ProcessId and x.RowNo=1";
             }
         }
 
-
-
-
-
-
         public IEnumerable<IssueMaterialModel> GetOrderByIssueId(int OrderId, int ProcessId)
         {
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
@@ -552,10 +537,6 @@ Order BY  x.IssueId";
             }
         }
 
-
-
-
-
         public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId)
         {
             //int ProcessId = 7;
@@ -625,11 +606,6 @@ Order BY  x.IssueId";
                 }
             }
         }
-
-
-
-
-
 
     }
 }
