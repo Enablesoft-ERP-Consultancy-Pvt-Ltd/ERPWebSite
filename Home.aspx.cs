@@ -159,5 +159,21 @@ public partial class Home : BasePage
     }
 
 
+    /// <summary>
+    /// Get Home furnishing Issue detail According to Process and Order
+    /// </summary>
+    /// <param name="OrderId">The Order No</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetFinishDetail(int OrderId)
+    {
+        //OrderId = 8;
+        string resultString = "";
+        var obj = OrdSrv.GetFinishedItem(OrderId).ToList();
+        var result = new { data = obj };
+        resultString = JsonConvert.SerializeObject(result);
+        return resultString;
+    }
+    
 
 }

@@ -13,6 +13,7 @@ using IExpro.Core.Common;
 using AjaxControlToolkit;
 using DocumentFormat.OpenXml.Bibliography;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using System.Diagnostics;
 
 namespace IExpro.Infrastructure.Repository
 {
@@ -221,14 +222,14 @@ Where x.CompanyId=@CompanyId";
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
 
-                string sqlQuery = @"SELECT E.EMPNAME Vendor, EMPID EMPID,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN PIIT.FLAGSIZE=0 THEN VF.SIZEFT    
-ELSE CASE WHEN PIIT.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END Technique, 
-VF.QUALITYNAME, VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.SHADECOLORNAME COLOUR, PIIT.QUANTITY IssueQty, ISNULL(SUM(PIIR.QTY-ISNULL(PIIR.BELLWT, 0) - ISNULL(V.RETURNQTY, 0)), 0) ReceiveQty,     
-PIIT.DELIVERY_DATE DeliveryDate, PIIT.ORDERID, PII.PINDENTISSUEID, CONVERT(NVARCHAR(11), PII.DUEDATE, 106) DUEDATE,PRM.RECEIVEDATE,PRM.BILLNO,   
-'' RECDATE, '' BILLNO, '' GATEINNO, 0 PURCHASERECEIVEID,PIIT.RATE, Sum(ISNULL(V.RETURNQTY, 0)) ReturnQty, BILLNO1,CONVERT(NVARCHAR(11), PII.DATE, 106) IssueDate, ISNULL(PIIT.CANQTY, 0) CANQTY, PII.USERID, PII.PAYEMENTTERMID PAYEMENTTERMID,     
+                string sqlQuery = @"SELECT E.EMPNAME SupplierName, EMPID EMPID,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN PIIT.FLAGSIZE=0 THEN VF.SIZEFT    
+ELSE CASE WHEN PIIT.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END ItemName, 
+VF.QUALITYNAME, VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.SHADECOLORNAME COLOUR, PIIT.QUANTITY POQty, ISNULL(SUM(PIIR.QTY-ISNULL(PIIR.BELLWT, 0) - ISNULL(V.RETURNQTY, 0)), 0) RecQty,     
+PIIT.DELIVERY_DATE DeliveryDate, PIIT.ORDERID, PII.PINDENTISSUEID, PII.DUEDATE DueDate,PRM.RECEIVEDATE ReceiveDate,PRM.BILLNO BillNo,   
+PIIT.RATE Rate, Sum(ISNULL(V.RETURNQTY, 0)) RetQty, BILLNO1,PII.DATE IssueDate, ISNULL(PIIT.CANQTY, 0) CANQTY, PII.USERID, PII.PAYEMENTTERMID PAYEMENTTERMID,     
 PII.DELIVERYTERMID DELIVERYTERMID, ISNULL(SUM(PIIR.PENALTY), 0) PENALTYORDEBITNOTE, ISNULL(PIIR.VAT, 0) VAT,     
 SUM(((ISNULL(PIIR.QTY, 0)-ISNULL(PIIR.BELLWT, 0)- ISNULL(V.RETURNQTY, 0))*ISNULL(PIIR.RATE, 0) )+((((ISNULL(PIIR.QTY, 0)-ISNULL(PIIR.BELLWT, 0)- ISNULL(V.RETURNQTY, 0))*ISNULL(PIIR.RATE, 0))- ISNULL(PIIR.PENALTY, 0))*ISNULL(PIIR.VAT, 0)/100)) HISSSAB,     
-VF.ITEM_FINISHED_ID FINISHEDID, PIIT.PINDENTISSUETRANID, '' RETURNDATE, '' RETURNCHALLAN, PII.CHALLANNO PurchaseOrderNo,     
+VF.ITEM_FINISHED_ID FINISHEDID, PIIT.PINDENTISSUETRANID,Max(PIIR.Returndate) RetDate, '' RETURNCHALLAN, PII.CHALLANNO PONo,     
 ISNULL(OM.LOCALORDER, 'STOCK') LOCALORDER, ISNULL(CI.CUSTOMERCODE, 'STOCK') CUSTOMERCODE, ISNULL(SUM(PIIR.LSHORTPERCENTAGE), 0) LSHORTPERCENTAGE, OM.CUSTOMERID,     
 PIIT.FLAGSIZE, VF.CATEGORY_NAME Category, PII.STATUS, ISNULL(SUM(PIIR.QTY-ISNULL(PIIR.BELLWT, 0)), 0) Recqty_beforeRetnqty, pii.Companyid, OM.CustomerOrderNo,PIIT.GSTType,PIIT.SGST,PIIT.IGST,PII.requestby,PII.requestfor     
 FROM PURCHASEINDENTISSUE PII INNER JOIN EMPINFO E ON PII.PARTYID=EMPID     
@@ -243,31 +244,39 @@ GROUP BY E.EMPNAME, EMPID, ITEM_NAME, DESIGNNAME, VF.QUALITYNAME, COLORNAME, SHA
 PIIT.ORDERID, PII.PINDENTISSUEID, PII.DUEDATE,PRM.RECEIVEDATE, PRM.BILLNO, PIIT.RATE, QTYRETURN, BILLNO1, PII.DATE, 
 PIIT.CANQTY, PII.USERID, PII.PAYEMENTTERMID, PII.DELIVERYTERMID, PIIR.VAT, VF.ITEM_FINISHED_ID, PIIT.QUANTITY, PIIT.PINDENTISSUETRANID,     
 FLAGSIZE, SIZEFT, SIZEMTR, SIZEINCH, PII.CHALLANNO, OM.LOCALORDER, CI.CUSTOMERCODE, OM.CUSTOMERID, ST.TYPE, VF.SIZEID, VF.CATEGORY_NAME, PII.STATUS,     
-PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGST,PIIT.IGST,PII.requestby,PII.requestfor         
+PIIT.CANQTY, pii.Companyid, OM.OrderID,OM.CustomerOrderNo ,PIIT.GSTType,PIIT.SGST,PIIT.IGST,PII.requestby,PII.requestfor                 
 Having OM.OrderID=@OrderId";
 
-                var result = conn.Query(sqlQuery, new { @OrderId = OrderId, });
-                var lst = result.Select(x => new PurchaseRawMaterialModel
+
+                try
                 {
-                    Category = x.Category != null ? x.Category : string.Empty,
-                    SupplierName = x.Vendor != null ? x.Vendor : string.Empty,
-                    BillNo = x.BillNo != null ? x.BillNo : string.Empty,
-                    ItemName = x.Technique != null ? x.Technique : string.Empty,
-                    ChallanNo = x.PurchaseOrderNo != null ? x.PurchaseOrderNo : string.Empty,
-                    PONo = x.PurchaseOrderNo != null ? x.PurchaseOrderNo : string.Empty,
-                    PODate = x.IssueDate != null ? x.IssueDate : string.Empty,
-                    Rate = x.RATE != null ? x.RATE.ToString() : string.Empty,
-                    POQty = x.IssueQty != null ? Convert.ToDouble(x.IssueQty) : 0,
-                    RetQty = x.ReturnQty != null ? Convert.ToDouble(x.ReturnQty) : 0,
-                    RecQty = x.ReceiveQty != null ? Convert.ToDouble(x.ReceiveQty) : 0,
-                    DeliveryDate = x.DeliveryDate != null ? x.DeliveryDate : DateTime.Now,
-                    ReceiveDate = x.ReceiveDate != null ? x.ReceiveDate : DateTime.Now,
-                    RetDate = x.Returndate != null ? x.Returndate.ToString() : string.Empty,
+                    var result = conn.Query<PurchaseRawMaterialModel>(sqlQuery, new { @OrderId = OrderId }).Select(x => new PurchaseRawMaterialModel
+                    {
+                        Category = x.Category,
+                        SupplierName = x.SupplierName,
+                        BillNo = x.BillNo,
+                        ItemName = x.ItemName,
+                        PONo = x.PONo,
+                        IssueDate = x.IssueDate,
+                        Rate = x.Rate,
+                        POQty = x.POQty,
+                        RetQty = x.RetQty,
+                        RecQty = x.RecQty,
+                        DeliveryDate = x.DeliveryDate,
+                        ReceiveDate = x.ReceiveDate,
+                        RetDate = x.RetDate,
 
 
-                });
-                return (lst);
+                    });
+                    return (result);
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
+
         }
 
         public IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId)
@@ -547,7 +556,75 @@ Order BY  x.IssueId";
 
 
 
+        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId)
+        {
+            //int ProcessId = 7;
 
+            using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+
+                string sqlQuery = @"With IssueItem(IssueId,DetailId,EmpId,OrderId,FinishedId,AssignDate,RequestDate,
+IssueDate,Rate,IssueQty,PQty,CancelQty,RowNo)
+AS
+(select x.IssueOrderId,y.Issue_Detail_Id,x.UserId,y.Orderid,y.Item_Finished_Id,
+x.AssignDate,y.ReqByDate, 
+Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueDate,
+AVg(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
+SUM(y.Qty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueQty,
+SUM(y.PQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) PQty,
+SUM(y.CancelQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) CancelQty,
+ROW_NUMBER() OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) RowNo
+from PROCESS_ISSUE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_ISSUE_DETAIL_7 y WITH (NOLOCK)
+on x.IssueOrderId=y.IssueOrderId and y.OrderId=@OrderId),
+ReceiveItem(ReceiveId,DetailId,OrderId,IssueId,EmpId,FinishedId,ReceiveQty,ReceiveDate,RowNo)
+AS
+(select x.Process_Rec_Id,y.Process_Rec_Detail_Id,y.OrderId,y.IssueOrderId,x.UserId,
+y.Item_Finished_Id,
+SUM(y.Qty) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
+Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
+ROW_NUMBER() OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) RowNo 
+from PROCESS_RECEIVE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_RECEIVE_DETAIL_7 y WITH (NOLOCK)
+ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId=@OrderId
+)
+Select emp.EMPNAME VendorName,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName MaterialName, 
+x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
+x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
+On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
+Inner JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
+Inner JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
+Where x.OrderId=@OrderId and x.RowNo=1
+Order BY  x.IssueId";
+
+                try
+                {
+
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId }).
+                        Select(x => new IssueMaterialModel
+                        {
+                            IssueId = x.IssueId,
+                            EmpId = x.EmpId,
+                            OrderId = x.OrderId,
+                            FinishedId = x.FinishedId,
+                            MaterialId = x.MaterialId,
+                            AssignDate = x.AssignDate,
+                            RequestDate = x.RequestDate,
+                            ReceiveDate = x.ReceiveDate,
+                            VendorName = x.VendorName,
+                            MaterialName = x.MaterialName,
+                            Rate = x.Rate,
+                            IssueQuantity = x.IssueQuantity,
+                            RecQuantity = x.RecQuantity,
+                        });
+
+
+                    return (result);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
 
 
 

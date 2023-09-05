@@ -12,7 +12,7 @@ namespace IExpro.Core.Interfaces.Repository
         IEnumerable<PurchaseRawMaterialModel> GetPurchaseList(int OrderId);
         IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId);
         IEnumerable<IssueMaterialModel> GetOrderByIssueId(int OrderId, int ProcessId);
-
+        IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId);
 
     }
 }

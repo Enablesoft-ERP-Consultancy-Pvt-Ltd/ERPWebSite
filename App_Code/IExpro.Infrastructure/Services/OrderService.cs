@@ -48,6 +48,12 @@ namespace IExpro.Infrastructure.Services
             return this.IU.OrdRepo.GetOrderByIssueId(OrderId, ProcessId);
         }
 
+        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId)
+        {
+            return this.IU.OrdRepo.GetFinishedItem(OrderId);
+        }
+
+
 
     }
 }

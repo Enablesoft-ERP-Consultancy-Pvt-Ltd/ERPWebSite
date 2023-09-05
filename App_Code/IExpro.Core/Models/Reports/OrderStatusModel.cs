@@ -26,7 +26,6 @@ namespace IExpro.Core.Models.Reports
         public string Category { get; set; }
         public string PONo { get; set; }
 
-        public string PODate { get; set; }
         public string SupplierName { get; set; }
         public string ItemName { get; set; }
         public string Rate { get; set; }
@@ -40,17 +39,65 @@ namespace IExpro.Core.Models.Reports
         public string ReceiveRemark { get; set; }
         public string OrderRemark { get; set; }
         public DateTime DeliveryDate { get; set; }
-        public DateTime ReceiveDate { get; set; }
+        public DateTime? ReceiveDate { get; set; }
+        public DateTime IssueDate { get; set; }
+        public DateTime DueDate { get; set; }
+        
         public string DelvDate { get { return DeliveryDate.ToString("dd MMM yyyy"); } }
-        public string RecDate { get { return ReceiveDate.ToString("dd MMM yyyy"); } }
+        public string PODate { get { return IssueDate.ToString("dd MMM yyyy"); } }
+
+        public string RecDate
+        {
+            get
+            {
+                return ReceiveDate.HasValue ? ReceiveDate.Value.ToString("dd MMM yyyy") : "---";
+            }
+        }
 
         public double PendingQty
         {
-            get { return (POQty - (RetQty + RecQty)); }
+            get { return (POQty - (RecQty)); }
         }
 
-        public int DelayDays { get { return (ReceiveDate.Date - DeliveryDate.Date).Days; } }
-        public ProcessStatus ItemStatus { get { return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed; } }
+
+        public int DelayDays
+        {
+            get
+            {
+                int result = 0;
+                if (ReceiveDate.HasValue)
+                {
+                    result = (ReceiveDate.Value.Date - DeliveryDate.Date).Days;
+
+                }
+                else
+                {
+                    result = (DeliveryDate.Date - DateTime.Now.Date).Days;
+
+                    if (result < 0)
+                    {
+                        result = 0;
+                    }
+
+
+                }
+                return result;
+            }
+        }
+        public ProcessStatus ItemStatus
+        {
+            get
+            {
+                if (POQty == 0)
+                {
+                    return ProcessStatus.Pending;
+                }
+                else
+                {
+                    return PendingQty > 0 ? ProcessStatus.Pending : ProcessStatus.Completed;
+                }
+            }
+        }
         public string POStatus { get { return this.ItemStatus.ToString(); } }
 
     }
@@ -134,6 +181,17 @@ namespace IExpro.Core.Models.Reports
                     result = (ReceiveDate.Value.Date - RequestDate.Date).Days;
 
                 }
+                else
+                {
+                    result = (RequestDate.Date - DateTime.Now.Date).Days;
+
+                    if (result < 0)
+                    {
+                        result = 0;
+                    }
+
+
+                }
                 return result;
             }
         }
@@ -198,7 +256,7 @@ namespace IExpro.Core.Models.Reports
         public string TagRemarks { get; set; }
         public DateTime ReqDate { get; set; }
         public DateTime IssueDate { get; set; }
-        public DateTime ReceiveDate { get; set; }
+        public DateTime? ReceiveDate { get; set; }
         public DateTime ReturnDate { get; set; }
 
 
@@ -208,13 +266,12 @@ namespace IExpro.Core.Models.Reports
         public string IndentDate { get { return IssueDate.ToString("dd MMM yyyy"); } }
 
 
+
         public string RecDate
         {
             get
             {
-
-
-                return ReceiveDate != null ? ReceiveDate.ToString("dd MMM yyyy") : "---";
+                return ReceiveDate.HasValue ? ReceiveDate.Value.ToString("dd MMM yyyy") : "---";
             }
         }
 
@@ -222,10 +279,35 @@ namespace IExpro.Core.Models.Reports
         {
             get
             {
-                var result = (ReceiveDate.Date - ReqDate.Date).Days;
-                return result < 0 ? 0 : result;
+                int result = 0;
+                if (ReceiveDate.HasValue)
+                {
+                    result = (ReceiveDate.Value.Date - ReqDate.Date).Days;
+
+                }
+                else
+                {
+                    result = (ReqDate.Date - DateTime.Now.Date).Days;
+
+                    if (result < 0)
+                    {
+                        result = 0;
+                    }
+
+
+                }
+                return result;
             }
         }
+
+
+
+
+
+
+
+
+
 
 
         public decimal PendingQty
