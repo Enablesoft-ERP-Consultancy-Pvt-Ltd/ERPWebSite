@@ -622,7 +622,7 @@ function ProcessReport(_orderId, _processId) {
             bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
             bodyHtml += "<th>Indent No.</th><th>Indent Date</th>";
             bodyHtml += "<th>Req. Date</th>";
-            bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Return Qty.</th>";
+            bodyHtml += "<th> Qty.</th><th>Rec. Qty.</th><th>Return Qty.</th>";
             bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
 
             if (result.data.length > 0) {
@@ -631,7 +631,7 @@ function ProcessReport(_orderId, _processId) {
 
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
                     bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.IndentDate + "</td><td>" + item.RequestDate + "</td>";
-                    bodyHtml += "<td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
+                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.RecQuantity + "</td>";
                     bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
 
                 });
