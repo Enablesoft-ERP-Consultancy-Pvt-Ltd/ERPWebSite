@@ -537,7 +537,7 @@ Order BY  x.IssueId";
             }
         }
 
-        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId)
+        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId, int ProcessId)
         {
             //int ProcessId = 7;
 
@@ -638,7 +638,7 @@ EXEC(@SQL) ";
                 try
                 {
 
-                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId }).
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId,ProcessId=ProcessId }).
                         Select(x => new IssueMaterialModel
                         {
                             IssueId = x.IssueId,

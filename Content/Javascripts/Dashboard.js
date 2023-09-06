@@ -2,6 +2,21 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
 { ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
 { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
@@ -16,7 +31,7 @@ var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) R
 { ProcessId: 4, Process: "PATCH STITCHING", Title: "PATCH STITCHING", Type: 2 },
 { ProcessId: 38, Process: "TABLE TUFTING", Title: "TABLE TUFTING", Type: 2 },
 { ProcessId: 13, Process: "STITCHING", Title: "STITCHING", Type: 3 },
-    { ProcessId: 7, Process: "Finishing", Title: "Finishing", Type: 3 }
+    
 ];
 
 
@@ -122,7 +137,7 @@ $(function () {
 
 
 
-                            btnHtml += "<li><a class='btnFinish mrm' prhref=" + 7 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing</strong></a></li>";
+                            btnHtml += "<li><a class='btnFinish mrm' prhref=" + 13 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>STITCHING</strong></a></li>";
 
 
 
@@ -575,7 +590,7 @@ function FinishItemReport(_orderId, _processId) {
 
 
 
-    const obj = { OrderId: _orderId };
+    const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
         url: "Home.aspx/GetFinishDetail",
         contentType: "application/json; charset=utf-8",

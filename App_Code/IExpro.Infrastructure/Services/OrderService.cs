@@ -48,9 +48,9 @@ namespace IExpro.Infrastructure.Services
             return this.IU.OrdRepo.GetOrderByIssueId(OrderId, ProcessId);
         }
 
-        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId)
+        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId, int ProcessId)
         {
-            return this.IU.OrdRepo.GetFinishedItem(OrderId);
+            return this.IU.OrdRepo.GetFinishedItem(OrderId,ProcessId);
         }
 
 
