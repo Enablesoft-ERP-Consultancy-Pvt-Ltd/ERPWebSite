@@ -797,17 +797,18 @@ public partial class GenrateInDentAgni : System.Web.UI.Page
 
                 if (finishedid > 0)
                 {
-                    SqlParameter[] _arrpara = new SqlParameter[6];
+                    SqlParameter[] _arrpara = new SqlParameter[7];
                     _arrpara[0] = new SqlParameter("@FinishedId", SqlDbType.Int);
                     _arrpara[1] = new SqlParameter("@PPID", SqlDbType.Int);
                     _arrpara[2] = new SqlParameter("@ProcessID", SqlDbType.Int);
                     _arrpara[3] = new SqlParameter("@TotalQty", SqlDbType.Float);
                     _arrpara[4] = new SqlParameter("@PreQty", SqlDbType.Float);
                     _arrpara[5] = new SqlParameter("@Loss", SqlDbType.Float);
-                    //_arrpara[6] = new SqlParameter("@TotalAssignedQTY", SqlDbType.Float);
+                    _arrpara[6] = new SqlParameter("@DETAILID", SqlDbType.Int);
                     _arrpara[0].Value = finishedid;
                     _arrpara[1].Value = DDProcessProgramNo.SelectedValue;
                     _arrpara[2].Value = DDProcessName.SelectedValue;
+                    _arrpara[6].Value = DDitemdescription.SelectedValue;
                     _arrpara[3].Direction = ParameterDirection.Output;
                     _arrpara[4].Direction = ParameterDirection.Output;
                     _arrpara[5].Direction = ParameterDirection.Output;
@@ -1221,18 +1222,18 @@ public partial class GenrateInDentAgni : System.Web.UI.Page
             _arrpara[18].Value = 0;
             _arrpara[19].Value = ddUnit.SelectedValue;
             _arrpara[20].Value = TxtReqDate.Text;
-            if (DDProcessName.SelectedValue == "2" && Convert.ToInt32(Session["varCompanyId"]) == 7 && tdordergrid.Visible == true)
-            {
-                _arrpara[23].Value = hnorderid.Value;
-            }
-            else if (ChkForOrder.Checked == true)
-            {
-                _arrpara[23].Value = hnorderid.Value;
-            }
-            else
-            {
-                _arrpara[23].Value = 0;
-            }
+            //if (DDProcessName.SelectedValue == "2" && Convert.ToInt32(Session["varCompanyId"]) == 7 && tdordergrid.Visible == true)
+            //{
+            //    _arrpara[23].Value = hnorderid.Value;
+            //}
+            //else if (ChkForOrder.Checked == true)
+            //{
+            //    _arrpara[23].Value = hnorderid.Value;
+            //}
+            //else
+            //{
+                _arrpara[23].Value = DDitemdescription.SelectedValue;
+           // }
             _arrpara[24].Value = txtremarks.Text;
             _arrpara[25].Value = txtitemremark.Text;
             _arrpara[26].Value = DDsizetype.Visible == true ? DDsizetype.SelectedValue : "0";
