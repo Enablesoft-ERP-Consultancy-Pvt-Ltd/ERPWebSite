@@ -165,11 +165,11 @@ public partial class Home : BasePage
     /// <param name="OrderId">The Order No</param>
     /// <returns>true if login successful</returns>
     [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public static string GetFinishDetail(int OrderId)
+    public static string GetFinishDetail(int OrderId, int ProcessId)
     {
         //OrderId = 8;
         string resultString = "";
-        var obj = OrdSrv.GetFinishedItem(OrderId).ToList();
+        var obj = OrdSrv.GetFinishedItem(OrderId, ProcessId).ToList();
         var result = new { data = obj };
         resultString = JsonConvert.SerializeObject(result);
         return resultString;

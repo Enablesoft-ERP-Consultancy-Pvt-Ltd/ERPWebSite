@@ -12,6 +12,6 @@ namespace IExpro.Core.Interfaces.Service
         IEnumerable<PurchaseRawMaterialModel> GetPurchaseList(int OrderId);
         IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId);
         IEnumerable<IssueMaterialModel> GetOrderByIssueId(int OrderId, int ProcessId);
-        IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId);
+        IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId, int ProcessId);
     }
 }
