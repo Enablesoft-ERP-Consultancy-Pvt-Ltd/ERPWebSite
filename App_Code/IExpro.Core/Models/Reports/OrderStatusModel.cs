@@ -312,7 +312,7 @@ namespace IExpro.Core.Models.Reports
 
         public decimal PendingQty
         {
-            get { return (IssueQuantity - (RecQuantity - ReturnQty)); }
+            get { return (Quantity - (RecQuantity - ReturnQty)); }
         }
 
 
