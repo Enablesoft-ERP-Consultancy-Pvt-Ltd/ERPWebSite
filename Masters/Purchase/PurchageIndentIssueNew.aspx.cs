@@ -3701,17 +3701,27 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
 //                    Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
 //                    Order By VF.Category_Name + '  ' + VF.ITEM_NAME + '  ' + VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + VF.ShadeColorName + '  ' + VF.ShapeName";
 
+//                     strsql = @"SELECT VF.Category_Name + '  ' + VF.ITEM_NAME + '  ' + VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + case when isnull(min(vc.oshadeid),0)>0 then (select top 1 ShadeColorName from V_FinishedItemDetail where ShadecolorId=min(vc.oshadeid)) else  min(VF.ShadeColorName) end  + '  ' + VF.ShapeName Description,
+//                     Sum(VC.ConsumptionQty) Qty, Sum(VC.PurchaseQty) PurchaseQty, VC.UnitID, VF.Qualityid, VF.Colorid, VF.designid, VF.shapeid, min(VF.shadecolorid) as shadecolorid,VF.category_id, VF.item_id, VF.sizeid , '0' thanlength, max(VC.Isizeflag) flagsize,
+//                    '' Remark, '' ItemRemark, 0 IRate, 0 Iweight,max(VF.ITEM_FINISHED_ID) FinishedID , VC.finished_type_id I_FINISHED_Type_ID,vc.finishedid
+//                    FROM V_ConsumptionQtyAndPurchaseQtyAgni VC
+//                    JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = vc.finishedid 
+//                    --LEFT JOIN DefinePurchaseItemUserWise b(Nolock) ON b.ITEM_FINISHED_ID = vc.finishedid And b.OrderID = VC.OrderID 
+//                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @" --And b.UserID = " + Session["varuserid"] + @"
+//                    Group by  VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName,VF.ShapeName, VF.Qualityid,
+//                    VF.Colorid, VF.designid, VF.shapeid,  VF.category_id, VF.item_id, VF.sizeid, VC.Unitid ,vf.MasterCompanyId, VC.finished_type_id,vc.finishedid
+//                    Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
+
                     strsql = @"SELECT VF.Category_Name + '  ' + VF.ITEM_NAME + '  ' + VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + case when isnull(min(vc.oshadeid),0)>0 then (select top 1 ShadeColorName from V_FinishedItemDetail where ShadecolorId=min(vc.oshadeid)) else  min(VF.ShadeColorName) end  + '  ' + VF.ShapeName Description,
-                     Sum(VC.ConsumptionQty) Qty, Sum(VC.PurchaseQty) PurchaseQty, VC.UnitID, VF.Qualityid, VF.Colorid, VF.designid, VF.shapeid, min(VF.shadecolorid) as shadecolorid,VF.category_id, VF.item_id, VF.sizeid , '0' thanlength, max(VC.Isizeflag) flagsize,
-                    '' Remark, '' ItemRemark, 0 IRate, 0 Iweight,max(VF.ITEM_FINISHED_ID) FinishedID , VC.finished_type_id I_FINISHED_Type_ID,vc.finishedid
+                     Sum(VC.ConsumptionQty) Qty, Sum(VC.PurchaseQty) PurchaseQty, VC.UnitID, VF.Qualityid, VF.Colorid, VF.designid, VF.shapeid,  min(VF.shadecolorid) as shadecolorid,VF.category_id, VF.item_id, VF.sizeid , '0' thanlength, max(VC.Isizeflag) flagsize,
+                    '' Remark, '' ItemRemark, 0 IRate, 0 Iweight,max(VF.ITEM_FINISHED_ID) FinishedID , VC.finished_type_id I_FINISHED_Type_ID,MIN(vc.finishedid) AS finishedid
                     FROM V_ConsumptionQtyAndPurchaseQtyAgni VC
                     JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = vc.finishedid 
                     --LEFT JOIN DefinePurchaseItemUserWise b(Nolock) ON b.ITEM_FINISHED_ID = vc.finishedid And b.OrderID = VC.OrderID 
                     Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @" --And b.UserID = " + Session["varuserid"] + @"
                     Group by  VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName,VF.ShapeName, VF.Qualityid,
-                    VF.Colorid, VF.designid, VF.shapeid,  VF.category_id, VF.item_id, VF.sizeid, VC.Unitid ,vf.MasterCompanyId, VC.finished_type_id,vc.finishedid
-                    Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
-                    ";
+                    VF.Colorid, VF.designid, VF.shapeid,  VF.category_id, VF.item_id, VF.sizeid, VC.Unitid ,vf.MasterCompanyId, VC.finished_type_id
+                    Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0)";
                 }
                 else if (Session["varcompanyno"].ToString() == "16" && chkcustomervise.Checked == true)
                 {
