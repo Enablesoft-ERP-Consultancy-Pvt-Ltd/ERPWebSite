@@ -74,6 +74,18 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
 
             }
             DDUnit.SelectedIndex = 1;
+
+            if (Session["VarCompanyNo"].ToString() == "21")
+            {
+                TxtIssueDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+                //CalendarExtender1.StartDate = DateTime.Now;
+                CalendarExtender1.EndDate = DateTime.Now;
+            }
+            else
+            {
+                TxtIssueDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+            }
+
             TxtIssueDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtReqDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
 
