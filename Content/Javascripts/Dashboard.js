@@ -621,7 +621,7 @@ function ProcessReport(_orderId, _processId) {
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
             bodyHtml += "<th>Indent No.</th><th>Indent Date</th>";
-            bodyHtml += "<th>Req. Date</th><th>Indent Qty.</th>";
+            bodyHtml += "<th>Req. Date</th>";
             bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Return Qty.</th>";
             bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
 
@@ -631,13 +631,13 @@ function ProcessReport(_orderId, _processId) {
 
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
                     bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.IndentDate + "</td><td>" + item.RequestDate + "</td>";
-                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
+                    bodyHtml += "<td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
                     bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
+                bodyHtml += "<tr><td colspan='11'>Data not found</td></tr></tbody>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
