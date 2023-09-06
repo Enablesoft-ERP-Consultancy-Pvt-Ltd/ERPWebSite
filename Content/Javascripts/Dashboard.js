@@ -2,19 +2,20 @@
 
 
 
-var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report" ,Type:1},
-    { ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
-    { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
-    { ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report", Type: 1 },
-    { ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report", Type: 1 },
-    { ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report", Type: 1 },
-    { ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report", Type: 1 },
-    { ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 },
-    { ProcessId: 1, Process: "CUTTING", Title: "CUTTING", Type: 2 },
-    { ProcessId: 2, Process: "MANUAL EMBROIDERY(PCS)", Title: "MANUAL EMBROIDERY(PCS)", Type: 2 },
-    { ProcessId: 42, Process: "PANNEL WEAVING", Title: "PANNEL WEAVING", Type: 2 },
-    { ProcessId: 4, Process: "PATCH STITCHING", Title: "PATCH STITCHING", Type: 2 },
-    { ProcessId: 38, Process: "TABLE TUFTING", Title: "TABLE TUFTING", Type: 2 },
+var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
+{ ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
+{ ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
+{ ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report", Type: 1 },
+{ ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report", Type: 1 },
+{ ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report", Type: 1 },
+{ ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report", Type: 1 },
+{ ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 },
+{ ProcessId: 1, Process: "CUTTING", Title: "CUTTING", Type: 2 },
+{ ProcessId: 2, Process: "MANUAL EMBROIDERY(PCS)", Title: "MANUAL EMBROIDERY(PCS)", Type: 2 },
+{ ProcessId: 42, Process: "PANNEL WEAVING", Title: "PANNEL WEAVING", Type: 2 },
+{ ProcessId: 4, Process: "PATCH STITCHING", Title: "PATCH STITCHING", Type: 2 },
+{ ProcessId: 38, Process: "TABLE TUFTING", Title: "TABLE TUFTING", Type: 2 },
+{ ProcessId: 13, Process: "STITCHING", Title: "STITCHING", Type: 3 },
     { ProcessId: 7, Process: "Finishing", Title: "Finishing", Type: 3 }
 ];
 
