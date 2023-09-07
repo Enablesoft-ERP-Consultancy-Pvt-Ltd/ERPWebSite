@@ -14,6 +14,7 @@ using AjaxControlToolkit;
 using DocumentFormat.OpenXml.Bibliography;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.Diagnostics;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace IExpro.Infrastructure.Repository
 {
@@ -138,32 +139,28 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
 
 
 
+                var result = conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }).GroupBy(n => new { n.OrderId}).
+                   Select(x => new OrderStatusModel
+                   {
+                       OrderId = x.Key.OrderId,
+                       PackingId = x.FirstOrDefault().PackingId,
+                       ShortName = x.FirstOrDefault().ShortName,
+                       CustomerCode = x.FirstOrDefault().CustomerCode,
+                       CustomerOrderNo = x.FirstOrDefault().CustomerOrderNo,
+                       OrderDate = x.FirstOrDefault().OrderDate,
+                       Quantity = x.FirstOrDefault().Quantity,
+                       DispatchDate = x.FirstOrDefault().DispatchDate,
+                       PackingDate = x.FirstOrDefault().PackingDate,
+                       DelayDays = x.FirstOrDefault().DelayDays,
+                       ProcessList = x.Select(n=>new ProcessItem {SeqNo=n.SeqNo ,ProcessId=n.ProcessId ,ProcessName=n.ProcessName }).ToList(),
+
+                   });
 
 
 
+                return result;
 
 
-
-                var result = conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }).
-
-                    Select(x => new OrderStatusModel
-                    {
-                        Category = x.Category,
-                        SupplierName = x.SupplierName,
-                        BillNo = x.BillNo,
-                        ItemName = x.ItemName,
-                        PONo = x.PONo,
-                        IssueDate = x.IssueDate,
-                        Rate = x.Rate,
-                        POQty = x.POQty,
-                        RetQty = x.RetQty,
-                        RecQty = x.RecQty,
-                        DeliveryDate = x.DeliveryDate,
-                        ReceiveDate = x.ReceiveDate,
-                        RetDate = x.RetDate,
-
-
-                    });
 
 
             }
