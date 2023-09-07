@@ -57,25 +57,6 @@ Where p.OrderId=@OrderId";
 
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                //                string sqlQuery = @"Select p.CompanyId,r.OrderId,q.ShortName,t.CustomerCode,r.CustomerOrderNo,CONVERT(NVARCHAR(11), r.OrderDate, 106) OrderDate,
-                //CONVERT(NVARCHAR(11), r.DispatchDate, 106) DispatchDate,CONVERT(NVARCHAR(11), r.PackingDate, 106) PackingDate,
-                //r.PackingId,r.ItemQuantity Quantity,r.DelayDays
-                //from Master_Company p inner join CompanyInfo q on p.CompanyId=q.MasterCompanyid
-                //inner join (
-                //Select p.CompanyId,p.CustomerId,p.OrderId,--q.Item_Finished_Id as FinishedId,
-                //p.CustomerOrderNo,p.OrderDate,p.DispatchDate,sum(q.QtyRequired) ItemQuantity,
-                //DATEDIFF(day,CAST(p.DispatchDate as date),IsNULL(CAST(s.PackingDate as date),GetDate())) DelayDays ,IsNULL(s.PackingId,0) PackingId,s.PackingDate
-                //from OrderMaster p inner join OrderDetail q on p.OrderId=q.OrderId
-                //Left join PackingInformation r on p.OrderId=r.OrderId
-                //Left join PACKING s on r.PackingId=s.PackingId
-                //group By p.CompanyId,p.CustomerId,p.OrderId,
-                //--q.Item_Finished_Id ,
-                //p.CustomerOrderNo,p.OrderDate,p.DispatchDate,DATEDIFF(day,CAST(p.DispatchDate as date),IsNULL(CAST(s.PackingDate as date),GetDate())),s.PackingId,s.PackingDate
-                //Having s.PackingDate is null
-                //) as r on q.CompanyId=r.CompanyId
-                //inner join customerinfo t on r.CustomerId=t.CustomerId
-                //Where (r.OrderDate >= DATEADD(month, -6, GetDate())) AND  p.CompanyId=@CompanyId
-                //";
                 string sqlQuery = @"With OrderItem(CompanyId,CustomerId,OrderId,CustomerOrderNo,LocalOrder,OrderDate,DispatchDate,
 DueDate,Remarks,OrderQty,ExtraQty,CancelQty,HoldQty,RowNo)
 AS (Select p.CompanyId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
@@ -85,24 +66,69 @@ SUM(IsNULL(q.extraqty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) ExtraQty,
 SUM(IsNULL(q.CancelQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) CancelQty,
 SUM(IsNULL(q.HoldQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) HoldQty,
 ROW_NUMBER() OVER(PARTITION BY p.CompanyId,p.OrderId ORDER BY p.CompanyId,p.OrderId) RowNo
-from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId),
+from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId
+Where (p.OrderDate >= DATEADD(month, -6, GetDate()))
+),
+ ProcessItem(OrderId,SeqNo,ProcessId,ProcessName,RowNo) AS 
+(
+Select xx.OrderId,x.SeqNo,x.processId,y.PROCESS_NAME ,
+ROW_NUMBER() OVER(PARTITION BY xx.OrderId,x.SeqNo,x.processId ORDER BY xx.OrderId,x.SeqNo,x.processId) RowNo
+from ITEM_PROCESS x Inner join PROCESS_NAME_MASTER y on x.processId=y.PROCESS_NAME_ID 
+inner join ITEM_PARAMETER_MASTER zz on x.QualityId=zz.QUALITY_ID and x.Itemid=zz.ITEM_ID  
+and x.DESIGNID=zz.DESIGN_ID inner join ITEM_MASTER z on zz.ITEM_ID=z.ITEM_ID  
+inner join OrderDetail xx on zz.ITEM_FINISHED_ID=xx.Item_Finished_Id
+inner join OrderMaster xy on xy.OrderId=xx.OrderId
+Where (xy.OrderDate >= DATEADD(month, -6, GetDate()))
+),
 PackItem(PackingId,OrderId,PackingDate,RowNo)
 AS (Select r.PackingId ,r.OrderId,Max(s.PackingDate) OVER (PARTITION BY r.OrderId,r.PackingId) PackingDate,
 ROW_NUMBER() OVER(PARTITION BY r.OrderId,r.PackingId ORDER BY r.OrderId,r.PackingId) RowNo
 from PackingInformation r WITH (NOLOCK)  
-Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId)
+Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId
+inner join OrderMaster xy on xy.OrderId=r.OrderId
+Where (xy.OrderDate >= DATEADD(month, -6, GetDate()))
+)
 Select p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
 CONVERT(NVARCHAR(11), x.OrderDate, 106) OrderDate,
 CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
 IsNULL(y.PackingId,0) PackingId,
 CONVERT(NVARCHAR(11), y.PackingDate, 106) PackingDate,
-DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays 
+DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays ,
+z.SeqNo,z.ProcessId,z.ProcessName
 from OrderItem x  Left Join PackItem y  
 ON x.OrderId=y.OrderId and x.RowNo=y.RowNo
 Inner Join  CompanyInfo q WITH (NOLOCK) ON x.CompanyId=q.CompanyId
 inner join Master_Company p WITH (NOLOCK)  ON  p.CompanyId=q.MasterCompanyId
 inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
-Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId";
+inner join  ProcessItem z on x.OrderId=z.OrderId and x.RowNo=z.RowNo
+Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId ";
+//                string sqlQuery = @"With OrderItem(CompanyId,CustomerId,OrderId,CustomerOrderNo,LocalOrder,OrderDate,DispatchDate,
+//DueDate,Remarks,OrderQty,ExtraQty,CancelQty,HoldQty,RowNo)
+//AS (Select p.CompanyId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
+//p.LocalOrder,p.OrderDate,p.DispatchDate,p.DueDate,p.Remarks,
+//SUM(IsNULL(q.QtyRequired,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) Quantity,
+//SUM(IsNULL(q.extraqty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) ExtraQty,
+//SUM(IsNULL(q.CancelQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) CancelQty,
+//SUM(IsNULL(q.HoldQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) HoldQty,
+//ROW_NUMBER() OVER(PARTITION BY p.CompanyId,p.OrderId ORDER BY p.CompanyId,p.OrderId) RowNo
+//from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId),
+//PackItem(PackingId,OrderId,PackingDate,RowNo)
+//AS (Select r.PackingId ,r.OrderId,Max(s.PackingDate) OVER (PARTITION BY r.OrderId,r.PackingId) PackingDate,
+//ROW_NUMBER() OVER(PARTITION BY r.OrderId,r.PackingId ORDER BY r.OrderId,r.PackingId) RowNo
+//from PackingInformation r WITH (NOLOCK)  
+//Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId)
+//Select p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
+//CONVERT(NVARCHAR(11), x.OrderDate, 106) OrderDate,
+//CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
+//IsNULL(y.PackingId,0) PackingId,
+//CONVERT(NVARCHAR(11), y.PackingDate, 106) PackingDate,
+//DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays 
+//from OrderItem x  Left Join PackItem y  
+//ON x.OrderId=y.OrderId and x.RowNo=y.RowNo
+//Inner Join  CompanyInfo q WITH (NOLOCK) ON x.CompanyId=q.CompanyId
+//inner join Master_Company p WITH (NOLOCK)  ON  p.CompanyId=q.MasterCompanyId
+//inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
+//Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId";
 
                 return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
             }

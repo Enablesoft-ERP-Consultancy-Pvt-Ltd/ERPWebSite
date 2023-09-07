@@ -19,7 +19,13 @@ namespace IExpro.Core.Models.Reports
         public string PackingDate { get; set; }
         public string DelayDays { get; set; }
         public int OrderStatus { get { return PackingDate != null ? 1 : 0; } }
+        public int SeqNo { get; set; }
+        public int ProcessId { get; set; }
+        public string ProcessName { get; set; }
+
     }
+
+
 
     public class PurchaseRawMaterialModel
     {
