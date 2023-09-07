@@ -90,6 +90,9 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     //RDStockRecQithwt.Visible = false;
                     ////TRQualityWiseSummary.Visible = true;
                     break;
+                case 37:
+                    RDWeaverRawMaterialIssueDetail.Visible = true;
+                    break;
                 case 39:
                     RDWeaverRawMaterialIssueDetail.Visible = true;
                     break;
