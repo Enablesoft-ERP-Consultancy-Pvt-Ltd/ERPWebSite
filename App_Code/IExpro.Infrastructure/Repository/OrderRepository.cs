@@ -102,35 +102,70 @@ inner join Master_Company p WITH (NOLOCK)  ON  p.CompanyId=q.MasterCompanyId
 inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
 inner join  ProcessItem z on x.OrderId=z.OrderId and x.RowNo=z.RowNo
 Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId ";
-//                string sqlQuery = @"With OrderItem(CompanyId,CustomerId,OrderId,CustomerOrderNo,LocalOrder,OrderDate,DispatchDate,
-//DueDate,Remarks,OrderQty,ExtraQty,CancelQty,HoldQty,RowNo)
-//AS (Select p.CompanyId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
-//p.LocalOrder,p.OrderDate,p.DispatchDate,p.DueDate,p.Remarks,
-//SUM(IsNULL(q.QtyRequired,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) Quantity,
-//SUM(IsNULL(q.extraqty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) ExtraQty,
-//SUM(IsNULL(q.CancelQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) CancelQty,
-//SUM(IsNULL(q.HoldQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) HoldQty,
-//ROW_NUMBER() OVER(PARTITION BY p.CompanyId,p.OrderId ORDER BY p.CompanyId,p.OrderId) RowNo
-//from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId),
-//PackItem(PackingId,OrderId,PackingDate,RowNo)
-//AS (Select r.PackingId ,r.OrderId,Max(s.PackingDate) OVER (PARTITION BY r.OrderId,r.PackingId) PackingDate,
-//ROW_NUMBER() OVER(PARTITION BY r.OrderId,r.PackingId ORDER BY r.OrderId,r.PackingId) RowNo
-//from PackingInformation r WITH (NOLOCK)  
-//Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId)
-//Select p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
-//CONVERT(NVARCHAR(11), x.OrderDate, 106) OrderDate,
-//CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
-//IsNULL(y.PackingId,0) PackingId,
-//CONVERT(NVARCHAR(11), y.PackingDate, 106) PackingDate,
-//DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays 
-//from OrderItem x  Left Join PackItem y  
-//ON x.OrderId=y.OrderId and x.RowNo=y.RowNo
-//Inner Join  CompanyInfo q WITH (NOLOCK) ON x.CompanyId=q.CompanyId
-//inner join Master_Company p WITH (NOLOCK)  ON  p.CompanyId=q.MasterCompanyId
-//inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
-//Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId";
+                //                string sqlQuery = @"With OrderItem(CompanyId,CustomerId,OrderId,CustomerOrderNo,LocalOrder,OrderDate,DispatchDate,
+                //DueDate,Remarks,OrderQty,ExtraQty,CancelQty,HoldQty,RowNo)
+                //AS (Select p.CompanyId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
+                //p.LocalOrder,p.OrderDate,p.DispatchDate,p.DueDate,p.Remarks,
+                //SUM(IsNULL(q.QtyRequired,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) Quantity,
+                //SUM(IsNULL(q.extraqty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) ExtraQty,
+                //SUM(IsNULL(q.CancelQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) CancelQty,
+                //SUM(IsNULL(q.HoldQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) HoldQty,
+                //ROW_NUMBER() OVER(PARTITION BY p.CompanyId,p.OrderId ORDER BY p.CompanyId,p.OrderId) RowNo
+                //from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId),
+                //PackItem(PackingId,OrderId,PackingDate,RowNo)
+                //AS (Select r.PackingId ,r.OrderId,Max(s.PackingDate) OVER (PARTITION BY r.OrderId,r.PackingId) PackingDate,
+                //ROW_NUMBER() OVER(PARTITION BY r.OrderId,r.PackingId ORDER BY r.OrderId,r.PackingId) RowNo
+                //from PackingInformation r WITH (NOLOCK)  
+                //Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId)
+                //Select p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
+                //CONVERT(NVARCHAR(11), x.OrderDate, 106) OrderDate,
+                //CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
+                //IsNULL(y.PackingId,0) PackingId,
+                //CONVERT(NVARCHAR(11), y.PackingDate, 106) PackingDate,
+                //DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays 
+                //from OrderItem x  Left Join PackItem y  
+                //ON x.OrderId=y.OrderId and x.RowNo=y.RowNo
+                //Inner Join  CompanyInfo q WITH (NOLOCK) ON x.CompanyId=q.CompanyId
+                //inner join Master_Company p WITH (NOLOCK)  ON  p.CompanyId=q.MasterCompanyId
+                //inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
+                //Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId";
 
-                return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
+                //return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
+
+
+
+
+
+
+
+
+
+
+
+
+
+                var result = conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }).
+
+                    Select(x => new OrderStatusModel
+                    {
+                        Category = x.Category,
+                        SupplierName = x.SupplierName,
+                        BillNo = x.BillNo,
+                        ItemName = x.ItemName,
+                        PONo = x.PONo,
+                        IssueDate = x.IssueDate,
+                        Rate = x.Rate,
+                        POQty = x.POQty,
+                        RetQty = x.RetQty,
+                        RecQty = x.RecQty,
+                        DeliveryDate = x.DeliveryDate,
+                        ReceiveDate = x.ReceiveDate,
+                        RetDate = x.RetDate,
+
+
+                    });
+
+
             }
         }
         public IEnumerable<VendorPOStatusModel> GetVendorPOStatus(int CompanyId)
@@ -673,7 +708,7 @@ EXEC(@SQL) ";
                 try
                 {
 
-                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId,@ProcessId=ProcessId }).
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId }).
                         Select(x => new IssueMaterialModel
                         {
                             IssueId = x.IssueId,
