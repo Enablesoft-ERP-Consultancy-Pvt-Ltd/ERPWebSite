@@ -133,12 +133,6 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
 
                 //return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
 
-
-
-
-
-
-
                 var result = conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }).GroupBy(n => new { n.OrderId}).
                    Select(x => new OrderStatusModel
                    {
@@ -155,14 +149,7 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
                        ProcessList = x.Select(n=>new ProcessItem {SeqNo=n.SeqNo ,ProcessId=n.ProcessId ,ProcessName=n.ProcessName }).ToList(),
 
                    });
-
-
-
                 return result;
-
-
-
-
             }
         }
         public IEnumerable<VendorPOStatusModel> GetVendorPOStatus(int CompanyId)
