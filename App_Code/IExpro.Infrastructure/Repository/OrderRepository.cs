@@ -567,7 +567,7 @@ SET @SQL=
 'With IssueItem(IssueId,DetailId,EmpId,OrderId,FinishedId,AssignDate,RequestDate,
 IssueDate,Rate,IssueQty,PQty,CancelQty,RowNo)
 AS
-(select x.IssueOrderId,y.Issue_Detail_Id,x.UserId,y.Orderid,y.Item_Finished_Id,
+(select x.IssueOrderId,y.Issue_Detail_Id,x.EMPID,y.Orderid,y.Item_Finished_Id,
 x.AssignDate,y.ReqByDate, 
 Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueDate,
 AVg(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
