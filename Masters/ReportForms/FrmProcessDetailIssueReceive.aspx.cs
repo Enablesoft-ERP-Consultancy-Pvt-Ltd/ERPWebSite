@@ -90,6 +90,9 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     //RDStockRecQithwt.Visible = false;
                     ////TRQualityWiseSummary.Visible = true;
                     break;
+                case 37:
+                    RDWeaverRawMaterialIssueDetail.Visible = true;
+                    break;
                 case 39:
                     RDWeaverRawMaterialIssueDetail.Visible = true;
                     break;
@@ -117,6 +120,8 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     ChkForProcessIssRecSummary.Visible = false;
                     ChkSummary.Visible = false;
                     RDPerday.Visible = false;
+                    chksumm.Visible = true;	
+                    chkall.Visible = true;
                    
                     break;
                 case 247:
@@ -1352,42 +1357,17 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         {
             ReportType = 2;
         }
+        SqlParameter[] param = new SqlParameter[20];
+        param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
+        param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
+        param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
+        param[3] = new SqlParameter("@Todate", TxtToDate.Text);
+        param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
+        param[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
+        param[6] = new SqlParameter("@Where", strCondition);
+        param[7] = new SqlParameter("@ReportType", ReportType);
 
-
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        if (con.State == ConnectionState.Closed)
-        {
-            con.Open();
-        }
-        
-        SqlCommand cmd = new SqlCommand("FinishinghissabchallanWise", con);
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.CommandTimeout = 30000;
-
-        cmd.Parameters.AddWithValue("@processid", DDProcessName.SelectedValue);
-        cmd.Parameters.AddWithValue("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
-        cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
-        cmd.Parameters.AddWithValue("@Todate", TxtToDate.Text);
-        cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
-        cmd.Parameters.AddWithValue("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
-        cmd.Parameters.AddWithValue("@Where", strCondition);
-        cmd.Parameters.AddWithValue("@ReportType", ReportType);
-
-        SqlDataAdapter ad = new SqlDataAdapter(cmd);
-        cmd.ExecuteNonQuery();
-        ad.Fill(ds);
-
-        //SqlParameter[] param = new SqlParameter[20];
-        //param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
-        //param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
-        //param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
-        //param[3] = new SqlParameter("@Todate", TxtToDate.Text);
-        //param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
-        //param[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
-        //param[6] = new SqlParameter("@Where", strCondition);
-        //param[7] = new SqlParameter("@ReportType", ReportType);
-
-        //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FinishinghissabchallanWise", param);
+        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FinishinghissabchallanWise", param);
 
         Session["dsFileName"] = "~\\ReportSchema\\RptProcessDetailNEW.xsd";
 
@@ -1428,7 +1408,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 {
                     sht.Range("A" + row).SetValue(dr["width"] + "x" + dr["Length"] + "  (" + dr["ShapeName"] + ")");
                     var qty = ds.Tables[0].Compute("sum(qty)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
-                    var Area = ds.Tables[0].Compute("sum(Area)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
+                    var Area = ds.Tables[0].Compute("sum(ARea)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
                     sht.Range("B" + row).SetValue(qty == DBNull.Value ? 0 : qty);
                     sht.Range("C" + row).SetValue(Area == DBNull.Value ? 0 : Area);
                     row = row + 1;
@@ -6066,6 +6046,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     private void FinishingIssueReceiveSummaryagni(SqlTransaction tran)
     {
         DataSet ds = new DataSet();
+        string st = string.Empty;
         string strCondition = "And IM.CompanyId=" + DDCompany.SelectedValue;
         //Check Conditions
         if (ChkForDate.Checked == true)
@@ -6118,6 +6099,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         }
         //End Conditions
         SqlParameter[] param = new SqlParameter[20];
+        string sp = string.Empty;
         param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
         param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
         param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
@@ -6125,8 +6107,18 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         param[5] = new SqlParameter("@Issueorderid", txtissueno.Text);
         param[6] = new SqlParameter("@Where", strCondition);
+        if (chksumm.Checked)
+        {
+            sp = "PRO_FINISHINGISSUERECEIVESUMMARYAGNI";
 
-        ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "PRO_FINISHINGISSUERECEIVESUMMARYREPORTAGNI", param);
+        }
+        else if (chkall.Checked)
+        {
+            sp = "PRO_FINISHINGISSUERECEIVESUMMARYALLAGNI";
+        }
+        else { sp = "PRO_FINISHINGISSUERECEIVESUMMARYREPORTAGNI"; }
+        ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, sp, param);
+       // ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "PRO_FINISHINGISSUERECEIVESUMMARYREPORTAGNI", param);
 
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -6135,9 +6127,22 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 ProcessIssueReceiveSummaryReportDiamondExport(ds);
             }
+
+            if (chksumm.Checked)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummaryonlyagni.rpt";
+            }
+            else if (chkall.Checked)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummaryallagni.rpt";
+            }
+            else
+            {
+                Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummaryagni.rpt";
+            }
             // if (Session["VarCompanyNo"].ToString() == "44")
             //{
-            Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummaryagni.rpt";
+        //    Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummaryagni.rpt";
             // }
             //else
             // {

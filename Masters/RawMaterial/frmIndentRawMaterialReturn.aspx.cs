@@ -254,7 +254,22 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
             }
             else if (ViewState["IsEdit"].ToString() == "0")
             {
-                str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0," + ViewState["GatePassNo"] + ")";
+                if (Session["varCompanyNo"].ToString() == "44")
+                {
+                    if (string.IsNullOrEmpty(ViewState["GatePassNo"].ToString()))
+                    {
+                        str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0,0)";
+                    }
+                    else
+                    {
+                        str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0," + ViewState["GatePassNo"] + ")";
+                    }
+                }
+                else
+                {
+                    str = @"select  [dbo].[Get_RawReceiveBalQty] (" + lblprtid.Text + ", " + lblFinishedid.Text + ",0," + ViewState["GatePassNo"] + ")";
+                
+                }
             }
             varbal = Convert.ToDouble(SqlHelper.ExecuteScalar(tran, CommandType.Text, str));
             Double varQty = Convert.ToDouble(Server.HtmlDecode(row.Cells[5].Text));
