@@ -119,7 +119,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] array = new SqlParameter[7];
+            SqlParameter[] array = new SqlParameter[8];
             array[0] = new SqlParameter("@Itemid", SqlDbType.Int);
             array[1] = new SqlParameter("@UserId", SqlDbType.Int);
             array[2] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);

@@ -23,15 +23,18 @@ namespace IExpro.Core.Models.Reports
         public int SeqNo { get; set; }
         public int ProcessId { get; set; }
         public string ProcessName { get; set; }
+        public short ProcessType { get; set; }
         public IList<ProcessItem> ProcessList { get; set; }
 
-
+        
     }
     public class ProcessItem
     {
 
         public int SeqNo { get; set; }
         public int ProcessId { get; set; }
+        public short ProcessType { get; set; }
+        
         public string ProcessName { get; set; }
     }
 

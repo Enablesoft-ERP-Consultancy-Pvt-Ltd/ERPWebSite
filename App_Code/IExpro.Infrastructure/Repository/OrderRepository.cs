@@ -70,9 +70,9 @@ ROW_NUMBER() OVER(PARTITION BY p.CompanyId,p.OrderId ORDER BY p.CompanyId,p.Orde
 from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId
 Where (p.OrderDate >= DATEADD(month, -6, GetDate()))
 ),
- ProcessItem(OrderId,SeqNo,ProcessId,ProcessName,RowNo) AS 
+ ProcessItem(OrderId,SeqNo,ProcessId,ProcessName,ProcessType,RowNo) AS 
 (
-Select xx.OrderId,x.SeqNo,x.processId,y.PROCESS_NAME ,
+Select xx.OrderId,x.SeqNo,x.processId,y.PROCESS_NAME,x.ProcessType,
 ROW_NUMBER() OVER(PARTITION BY xx.OrderId,x.SeqNo,x.processId ORDER BY xx.OrderId,x.SeqNo,x.processId) RowNo
 from ITEM_PROCESS x Inner join PROCESS_NAME_MASTER y on x.processId=y.PROCESS_NAME_ID 
 inner join ITEM_PARAMETER_MASTER zz on x.QualityId=zz.QUALITY_ID and x.Itemid=zz.ITEM_ID  
@@ -95,7 +95,7 @@ CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
 IsNULL(y.PackingId,0) PackingId,
 CONVERT(NVARCHAR(11), y.PackingDate, 106) PackingDate,
 DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays ,
-z.SeqNo,z.ProcessId,z.ProcessName
+z.SeqNo,z.ProcessId,z.ProcessName,z.ProcessType
 from OrderItem x  Left Join PackItem y  
 ON x.OrderId=y.OrderId and x.RowNo=y.RowNo
 Inner Join  CompanyInfo q WITH (NOLOCK) ON x.CompanyId=q.CompanyId
@@ -133,7 +133,7 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
 
                 //return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
 
-                var result = conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }).GroupBy(n => new { n.OrderId}).
+                var result = conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }).GroupBy(n => new { n.OrderId }).
                    Select(x => new OrderStatusModel
                    {
                        OrderId = x.Key.OrderId,
@@ -146,7 +146,13 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
                        DispatchDate = x.FirstOrDefault().DispatchDate,
                        PackingDate = x.FirstOrDefault().PackingDate,
                        DelayDays = x.FirstOrDefault().DelayDays,
-                       ProcessList = x.Select(n=>new ProcessItem {SeqNo=n.SeqNo ,ProcessId=n.ProcessId ,ProcessName=n.ProcessName }).ToList(),
+                       ProcessList = x.Select(n => new ProcessItem
+                       {
+                           SeqNo = n.SeqNo,
+                           ProcessId = n.ProcessId,
+                           ProcessType = n.ProcessType,
+                           ProcessName = n.ProcessName
+                       }).ToList(),
 
                    });
                 return result;

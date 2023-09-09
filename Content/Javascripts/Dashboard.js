@@ -161,27 +161,25 @@ $(function () {
 
                             $.each(data.ProcessList, function (index, item) {
                                 console.log(item);
-                                var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
-                                if (_item != undefined) {
-
-                                    console.log(_item.Type);
-                                    var className;
-                                    switch (_item.Type) {
-                                        case 1:
-                                            className = "btnProcess";
-                                            break;
-                                        case 2:
-                                            className = "btnIssueProcess";
-                                            break;
-                                        case 3:
-                                            className = "btnFinish";
-                                            break;
-                                    }
-                                    btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
-
+                                // var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
+                                if (item.ProcessType == 0) {
+                                    item.ProcessType = 1;
                                 }
 
-
+                                console.log(item.ProcessType);
+                                var className;
+                                switch (item.ProcessType) {
+                                    case 1:
+                                        className = "btnProcess";
+                                        break;
+                                    case 2:
+                                        className = "btnIssueProcess";
+                                        break;
+                                    case 3:
+                                        className = "btnFinish";
+                                        break;
+                                }
+                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
 
                             });
 
