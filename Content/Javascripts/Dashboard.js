@@ -179,7 +179,7 @@ $(function () {
                                         className = "btnFinish";
                                         break;
                                 }
-                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " prName=" + item.ProcessName + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
+                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " prName='" + item.ProcessName + "' exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
 
                             });
 

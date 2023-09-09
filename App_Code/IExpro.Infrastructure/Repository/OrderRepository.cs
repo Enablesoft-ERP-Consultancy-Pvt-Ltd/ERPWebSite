@@ -638,12 +638,12 @@ ROW_NUMBER() OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER
 from '+@ProcessReceiveMaster+' x WITH (NOLOCK) Inner Join '+@ProcessReceiveDetail+' y WITH (NOLOCK)
 ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId='+CAST(@OrderId AS NVARCHAR)+'
 )
-Select emp.EMPNAME VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' ''+VF.DESIGNNAME+'' ''+VF.COLORNAME+'' ''+VF.SHAPENAME+'' ''+VF.ShadeColorName MaterialName, 
+Select IsNULL(emp.EMPNAME,'') VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' ''+VF.DESIGNNAME+'' ''+VF.COLORNAME+'' ''+VF.SHAPENAME+'' ''+VF.ShadeColorName MaterialName, 
 x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
 x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
 On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
-Inner JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
-Inner JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
+Left JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
+Left JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
 Where x.OrderId='+CAST(@OrderId AS NVARCHAR)+' and x.RowNo=1
 Order BY  x.IssueId'
 EXEC(@SQL) ";
