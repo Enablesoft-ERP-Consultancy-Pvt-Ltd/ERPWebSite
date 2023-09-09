@@ -38,6 +38,12 @@ namespace IExpro.Core.Common
         Completed = 1,
  
     }
-
+    public enum ProcessType
+    {
+        [Description("For Raw Material")]
+        RawMaterial = 1,
+        HomeFurnishing = 2,
+        Finishing=3
+    }
 }
 
