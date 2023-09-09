@@ -618,7 +618,7 @@ SET @SQL=
 'With IssueItem(IssueId,DetailId,EmpId,OrderId,FinishedId,AssignDate,RequestDate,
 IssueDate,Rate,IssueQty,PQty,CancelQty,RowNo)
 AS
-(select x.IssueOrderId,y.Issue_Detail_Id,x.EMPID,y.Orderid,y.Item_Finished_Id,
+(select x.IssueOrderId,y.Issue_Detail_Id,z.EMPID,y.Orderid,y.Item_Finished_Id,
 x.AssignDate,y.ReqByDate, 
 Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueDate,
 AVg(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
@@ -627,7 +627,10 @@ SUM(y.PQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER 
 SUM(y.CancelQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) CancelQty,
 ROW_NUMBER() OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) RowNo
 from '+@ProcessIssueMaster+' x WITH (NOLOCK) Inner Join '+@ProcessIssueDetail+' y WITH (NOLOCK)
-on x.IssueOrderId=y.IssueOrderId and y.OrderId='+ CAST(@OrderId AS NVARCHAR)+'),
+on x.IssueOrderId=y.IssueOrderId and y.OrderId='+ CAST(@OrderId AS NVARCHAR)+'
+inner Join Employee_ProcessOrderNo z on z.IssueOrderId=x.IssueOrderId and z.IssueDetailId=y.Issue_Detail_Id
+
+),
 ReceiveItem(ReceiveId,DetailId,OrderId,IssueId,EmpId,FinishedId,ReceiveQty,ReceiveDate,RowNo)
 AS
 (select x.Process_Rec_Id,y.Process_Rec_Detail_Id,y.OrderId,y.IssueOrderId,x.UserId,
@@ -642,8 +645,8 @@ Select IsNULL(emp.EMPNAME,'''') VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' 
 x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
 x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
 On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
-Left JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
-Left JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
+inner JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
+inner JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
 Where x.OrderId='+CAST(@OrderId AS NVARCHAR)+' and x.RowNo=1
 Order BY  x.IssueId'
 EXEC(@SQL) ";
