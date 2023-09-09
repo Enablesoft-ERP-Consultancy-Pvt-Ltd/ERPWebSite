@@ -10,11 +10,8 @@
     <%--<script type="text/javascript" src="../../Scripts/Fixfocus.js"></script>--%>
     <script type="text/javascript">
         function CloseForm() {
-
             window.location.href = "../../main.aspx";
         }
-
-
     </script>
     <%--<script runat="server">    
         protected void RadioButton_CheckedChanged(object sender, System.EventArgs e)

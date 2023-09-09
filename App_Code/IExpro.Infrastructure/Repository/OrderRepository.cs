@@ -14,6 +14,7 @@ using AjaxControlToolkit;
 using DocumentFormat.OpenXml.Bibliography;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using System.Diagnostics;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace IExpro.Infrastructure.Repository
 {
@@ -57,25 +58,6 @@ Where p.OrderId=@OrderId";
 
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                //                string sqlQuery = @"Select p.CompanyId,r.OrderId,q.ShortName,t.CustomerCode,r.CustomerOrderNo,CONVERT(NVARCHAR(11), r.OrderDate, 106) OrderDate,
-                //CONVERT(NVARCHAR(11), r.DispatchDate, 106) DispatchDate,CONVERT(NVARCHAR(11), r.PackingDate, 106) PackingDate,
-                //r.PackingId,r.ItemQuantity Quantity,r.DelayDays
-                //from Master_Company p inner join CompanyInfo q on p.CompanyId=q.MasterCompanyid
-                //inner join (
-                //Select p.CompanyId,p.CustomerId,p.OrderId,--q.Item_Finished_Id as FinishedId,
-                //p.CustomerOrderNo,p.OrderDate,p.DispatchDate,sum(q.QtyRequired) ItemQuantity,
-                //DATEDIFF(day,CAST(p.DispatchDate as date),IsNULL(CAST(s.PackingDate as date),GetDate())) DelayDays ,IsNULL(s.PackingId,0) PackingId,s.PackingDate
-                //from OrderMaster p inner join OrderDetail q on p.OrderId=q.OrderId
-                //Left join PackingInformation r on p.OrderId=r.OrderId
-                //Left join PACKING s on r.PackingId=s.PackingId
-                //group By p.CompanyId,p.CustomerId,p.OrderId,
-                //--q.Item_Finished_Id ,
-                //p.CustomerOrderNo,p.OrderDate,p.DispatchDate,DATEDIFF(day,CAST(p.DispatchDate as date),IsNULL(CAST(s.PackingDate as date),GetDate())),s.PackingId,s.PackingDate
-                //Having s.PackingDate is null
-                //) as r on q.CompanyId=r.CompanyId
-                //inner join customerinfo t on r.CustomerId=t.CustomerId
-                //Where (r.OrderDate >= DATEADD(month, -6, GetDate())) AND  p.CompanyId=@CompanyId
-                //";
                 string sqlQuery = @"With OrderItem(CompanyId,CustomerId,OrderId,CustomerOrderNo,LocalOrder,OrderDate,DispatchDate,
 DueDate,Remarks,OrderQty,ExtraQty,CancelQty,HoldQty,RowNo)
 AS (Select p.CompanyId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
@@ -85,26 +67,95 @@ SUM(IsNULL(q.extraqty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) ExtraQty,
 SUM(IsNULL(q.CancelQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) CancelQty,
 SUM(IsNULL(q.HoldQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) HoldQty,
 ROW_NUMBER() OVER(PARTITION BY p.CompanyId,p.OrderId ORDER BY p.CompanyId,p.OrderId) RowNo
-from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId),
+from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId
+Where (p.OrderDate >= DATEADD(month, -6, GetDate()))
+),
+ ProcessItem(OrderId,SeqNo,ProcessId,ProcessName,ProcessType,RowNo) AS 
+(
+Select xx.OrderId,x.SeqNo,x.processId,y.PROCESS_NAME,x.ProcessType,
+ROW_NUMBER() OVER(PARTITION BY xx.OrderId,x.SeqNo,x.processId ORDER BY xx.OrderId,x.SeqNo,x.processId) RowNo
+from ITEM_PROCESS x Inner join PROCESS_NAME_MASTER y on x.processId=y.PROCESS_NAME_ID 
+inner join ITEM_PARAMETER_MASTER zz on x.QualityId=zz.QUALITY_ID and x.Itemid=zz.ITEM_ID  
+and x.DESIGNID=zz.DESIGN_ID inner join ITEM_MASTER z on zz.ITEM_ID=z.ITEM_ID  
+inner join OrderDetail xx on zz.ITEM_FINISHED_ID=xx.Item_Finished_Id
+inner join OrderMaster xy on xy.OrderId=xx.OrderId
+Where (xy.OrderDate >= DATEADD(month, -6, GetDate()))
+),
 PackItem(PackingId,OrderId,PackingDate,RowNo)
 AS (Select r.PackingId ,r.OrderId,Max(s.PackingDate) OVER (PARTITION BY r.OrderId,r.PackingId) PackingDate,
 ROW_NUMBER() OVER(PARTITION BY r.OrderId,r.PackingId ORDER BY r.OrderId,r.PackingId) RowNo
 from PackingInformation r WITH (NOLOCK)  
-Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId)
+Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId
+inner join OrderMaster xy on xy.OrderId=r.OrderId
+Where (xy.OrderDate >= DATEADD(month, -6, GetDate()))
+)
 Select p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
 CONVERT(NVARCHAR(11), x.OrderDate, 106) OrderDate,
 CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
 IsNULL(y.PackingId,0) PackingId,
 CONVERT(NVARCHAR(11), y.PackingDate, 106) PackingDate,
-DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays 
+DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays ,
+z.SeqNo,z.ProcessId,z.ProcessName,z.ProcessType
 from OrderItem x  Left Join PackItem y  
 ON x.OrderId=y.OrderId and x.RowNo=y.RowNo
 Inner Join  CompanyInfo q WITH (NOLOCK) ON x.CompanyId=q.CompanyId
 inner join Master_Company p WITH (NOLOCK)  ON  p.CompanyId=q.MasterCompanyId
 inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
-Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId";
+inner join  ProcessItem z on x.OrderId=z.OrderId and x.RowNo=z.RowNo
+Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId ";
+                //                string sqlQuery = @"With OrderItem(CompanyId,CustomerId,OrderId,CustomerOrderNo,LocalOrder,OrderDate,DispatchDate,
+                //DueDate,Remarks,OrderQty,ExtraQty,CancelQty,HoldQty,RowNo)
+                //AS (Select p.CompanyId,p.CustomerId,p.OrderId,p.CustomerOrderNo,
+                //p.LocalOrder,p.OrderDate,p.DispatchDate,p.DueDate,p.Remarks,
+                //SUM(IsNULL(q.QtyRequired,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) Quantity,
+                //SUM(IsNULL(q.extraqty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) ExtraQty,
+                //SUM(IsNULL(q.CancelQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) CancelQty,
+                //SUM(IsNULL(q.HoldQty,0.0)) OVER (PARTITION BY p.CompanyId,p.OrderId) HoldQty,
+                //ROW_NUMBER() OVER(PARTITION BY p.CompanyId,p.OrderId ORDER BY p.CompanyId,p.OrderId) RowNo
+                //from OrderMaster p WITH (NOLOCK) inner join OrderDetail q WITH (NOLOCK) on p.OrderId=q.OrderId),
+                //PackItem(PackingId,OrderId,PackingDate,RowNo)
+                //AS (Select r.PackingId ,r.OrderId,Max(s.PackingDate) OVER (PARTITION BY r.OrderId,r.PackingId) PackingDate,
+                //ROW_NUMBER() OVER(PARTITION BY r.OrderId,r.PackingId ORDER BY r.OrderId,r.PackingId) RowNo
+                //from PackingInformation r WITH (NOLOCK)  
+                //Inner join PACKING s WITH (NOLOCK) on r.PackingId=s.PackingId)
+                //Select p.CompanyId IExproId,q.CompanyId,p.CompanyName,q.ShortName,t.CustomerCode,x.OrderId,x.CustomerOrderNo,
+                //CONVERT(NVARCHAR(11), x.OrderDate, 106) OrderDate,
+                //CONVERT(NVARCHAR(11), x.DispatchDate, 106) DispatchDate,
+                //IsNULL(y.PackingId,0) PackingId,
+                //CONVERT(NVARCHAR(11), y.PackingDate, 106) PackingDate,
+                //DATEDIFF(day,CAST(x.DispatchDate as date),IsNULL(CAST(y.PackingDate as date),GetDate())) DelayDays 
+                //from OrderItem x  Left Join PackItem y  
+                //ON x.OrderId=y.OrderId and x.RowNo=y.RowNo
+                //Inner Join  CompanyInfo q WITH (NOLOCK) ON x.CompanyId=q.CompanyId
+                //inner join Master_Company p WITH (NOLOCK)  ON  p.CompanyId=q.MasterCompanyId
+                //inner join customerinfo t WITH (NOLOCK) on x.CustomerId=t.CustomerId
+                //Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.CompanyId=@CompanyId";
 
-                return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
+                //return (conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }));
+
+                var result = conn.Query<OrderStatusModel>(sqlQuery, new { @CompanyId = CompanyId, }).GroupBy(n => new { n.OrderId }).
+                   Select(x => new OrderStatusModel
+                   {
+                       OrderId = x.Key.OrderId,
+                       PackingId = x.FirstOrDefault().PackingId,
+                       ShortName = x.FirstOrDefault().ShortName,
+                       CustomerCode = x.FirstOrDefault().CustomerCode,
+                       CustomerOrderNo = x.FirstOrDefault().CustomerOrderNo,
+                       OrderDate = x.FirstOrDefault().OrderDate,
+                       Quantity = x.FirstOrDefault().Quantity,
+                       DispatchDate = x.FirstOrDefault().DispatchDate,
+                       PackingDate = x.FirstOrDefault().PackingDate,
+                       DelayDays = x.FirstOrDefault().DelayDays,
+                       ProcessList = x.Select(n => new ProcessItem
+                       {
+                           SeqNo = n.SeqNo,
+                           ProcessId = n.ProcessId,
+                           ProcessType = n.ProcessType,
+                           ProcessName = n.ProcessName
+                       }).ToList(),
+
+                   });
+                return result;
             }
         }
         public IEnumerable<VendorPOStatusModel> GetVendorPOStatus(int CompanyId)
@@ -282,16 +333,24 @@ SUM(IsNull(ID.CancelQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderde
 SUM(IsNull(ID.Quantity,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) Quantity,Id.FLAGSIZE,
 ROW_NUMBER() OVER(PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId ORDER BY IM.ReqDate DESC) RowNo
 FROM  INDENTDETAIL ID WITH (NOLOCK)  Inner Join INDENTMASTER IM WITH (NOLOCK)   on IM.IndentId=ID.IndentId 
+Where ID.ORDERID=@OrderId and IM.ProcessID=@ProcessId
 ),
- ReceiveItem(IssueId,IndentId,EmpId,GodownId,IFinishedid,OFinishedId,ReceiveDate,RecQuantity,Moisture,IssueQuantity,RowNo) AS 
-(Select PREMT.IssPrtId,PREMT.IndentId,PREM.EmpId,PREMT.GodownId,PRT.Finishedid IFinishedid,PREMT.FinishedId OFinishedId, 
-PREMT.AddedDate as ReceiveDate,SUM(IsNull(PREMT.RecQuantity,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId,PRT.Finishedid) RecQuantity,
-SUM(IsNull(PREMT.Moisture,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId,PRT.Finishedid) Moisture,
-PRT.IssueQuantity,
-ROW_NUMBER() OVER(PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId,PRT.Finishedid ORDER BY PREMT.AddedDate DESC) RowNo
+IssueItem(IndentId,IssueId,ProcessId,EmpId,GodownId,IFinishedId,IssueQuantity,IssueDate,RowNo) 
+AS (
+Select PRT.IndentId,Prm.PRMid IssueId,PRM.ProcessId,PRM.EmpId,PRT.GodownId,PRT.FinishedId, 
+SUM(IsNull(PRT.IssueQuantity,0.00)) OVER (PARTITION BY PRT.IndentId,PRT.FinishedId) IssueQuantity,PRM.Date as IssueDate ,
+ROW_NUMBER() OVER(PARTITION BY PRT.IndentId,PRT.FinishedId ORDER BY PRT.IndentId DESC) RowNo
+from PP_PROCESSRAWTRAN PRT inner join PP_ProcessRawMaster PRM   on PRM.PRMid=PRT.PRMid 
+Where PRM.ProcessId=@ProcessId
+),
+ ReceiveItem(IssueId,IndentId,EmpId,GodownId,OFinishedId,ReceiveDate,RecQuantity,Moisture,RowNo) AS 
+(
+Select PREMT.IssPrmID,PREMT.IndentId,PREM.EmpId,PREMT.GodownId,PREMT.FinishedId OFinishedId, 
+PREMT.AddedDate as ReceiveDate,SUM(IsNull(PREMT.RecQuantity,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId) RecQuantity,
+SUM(IsNull(PREMT.Moisture,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId) Moisture,
+ROW_NUMBER() OVER(PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.FinishedId ORDER BY PREMT.AddedDate DESC) RowNo
 from  PP_ProcessRecMaster PREM WITH (NOLOCK)   inner join PP_ProcessRecTran  PREMT WITH (NOLOCK)  on PREM.PRMid=PREMT.PRMid 
-inner join PP_PROCESSRAWTRAN PRT WITH (NOLOCK)   ON PREMT.IssPrtId=PRT.PRTid
---Where PRT.Indentid=44
+Where PREM.ProcessId=@ProcessId
 ),
  ConsumeItem(PPID,ProcessId,CompanyId,OrderId,OrderDetailId,IFinishedId,OFinishedId,ConsmpQty,LossQty, RequiredQty,RowNo) 
 AS 
@@ -301,7 +360,7 @@ SUM(IsNull(PPC.LossQty,0.00)) OVER (PARTITION BY PP.PPID,PP.Process_ID,PP.Master
 SUM(IsNull(PPC.Qty+PPC.ExtraQty,0.00)) OVER (PARTITION BY PP.PPID,PP.Process_ID,PP.MasterCompanyid,PP.Order_ID,PPC.OrderDetailId,PPC.IFinishedId,PPC.FinishedId) RequiredQty,
 ROW_NUMBER() OVER(PARTITION BY PP.PPID,PP.Process_ID,PP.MasterCompanyid,PP.Order_ID,PPC.IFinishedId,PPC.FinishedId ORDER BY PPC.OrderDetailId DESC) RowNo
 FROM ProcessProgram PP WITH (NOLOCK)  INNER JOIN PP_Consumption PPC WITH (NOLOCK)  ON PP.PPID=PPC.PPID 
---Where  PPC.PPId=2
+Where PP.Order_ID=@OrderId and PP.Process_ID=@ProcessId
 ),
 ReturnItem (ReturnId,IssueId,IndentId,PartyId,IFinishedId,OFinishedId,GodownId,ReturnQty,TagRemarks,ReturnDate,RowNo) 
 AS 
@@ -319,11 +378,12 @@ emp.EMPNAME VendorName, VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF
 ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName, 
 VF.QUALITYNAME, VF.COLORNAME,VF.SHAPENAME,VF.SHADECOLORNAME,VF.CATEGORY_NAME Category,
 z.OrderId,z.OrderDetailId,z.ConsmpQty,z.LossQty,z.ProcessId,z.RequiredQty,x.IndentId,x.IndentNo,x.IFinishedId,x.OFinishedId,
-x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.ReceiveDate,y.RecQuantity,y.Moisture,y.IssueId,y.IssueQuantity,
+x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.ReceiveDate,y.RecQuantity,y.Moisture,y.IssueId,p.IssueQuantity,
 zz.ReturnId,zz.ReturnDate,IsNull(zz.ReturnQty,0.00) ReturnQty,zz.TagRemarks
-from IndentItem x Left join ReceiveItem y on x.Indentid=y.Indentid and x.IFinishedId=y.IFinishedId and x.OFinishedId=y.OFinishedId and x.RowNo=y.RowNo --and x.OrderDetailId=y.OrderDetailId
+from IndentItem x Left Join IssueItem p  On x.IndentId=p.IndentId and x.IFinishedId=p.IFinishedId and x.RowNo=p.RowNo 
+Left join ReceiveItem y on p.Indentid=y.Indentid and p.IssueId=y.IssueId and  x.OFinishedId=y.OFinishedId  and x.RowNo=y.RowNo --and x.OrderDetailId=y.OrderDetailId
 inner join ConsumeItem z on x.PPNo=z.PPID and x.IFinishedId=z.IFinishedId  and  x.OFinishedId=z.OFinishedId and x.RowNo=z.RowNo
-Left join ReturnItem zz on y.Indentid=zz.Indentid and  y.IFinishedid=zz.IFinishedid and y.OFinishedid=zz.OFinishedid and y.RowNo=zz.RowNo 
+Left join ReturnItem zz on y.Indentid=zz.Indentid and  y.OFinishedid=zz.OFinishedid and y.RowNo=zz.RowNo 
 INNER JOIN V_FINISHEDITEMDETAIL VF ON x.OFinishedId=VF.ITEM_FINISHED_ID   
 INNER JOIN EMPINFO emp WITH (NOLOCK)  ON x.PartyId=emp.EmpId    
 LEFT JOIN SIZETYPE ST WITH (NOLOCK)  ON x.FLAGSIZE=ST.VAL    
@@ -537,17 +597,28 @@ Order BY  x.IssueId";
             }
         }
 
-        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId)
+        public IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId, int ProcessId)
         {
             //int ProcessId = 7;
 
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
 
-                string sqlQuery = @"With IssueItem(IssueId,DetailId,EmpId,OrderId,FinishedId,AssignDate,RequestDate,
+
+
+
+                string sqlQuery = @"DECLARE @SQL NVARCHAR(MAX),
+@ProcessIssueDetail NVARCHAR(250),@ProcessIssueMaster NVARCHAR(250),
+@ProcessReceiveDetail NVARCHAR(250),@ProcessReceiveMaster NVARCHAR(250) 
+SET @ProcessIssueMaster = 'PROCESS_ISSUE_MASTER_' + CAST(@ProcessId AS NVARCHAR) + ''    
+SET @ProcessIssueDetail='PROCESS_ISSUE_DETAIL_' + CAST(@ProcessId AS NVARCHAR) + '' 
+SET @ProcessReceiveMaster = 'PROCESS_RECEIVE_MASTER_' + CAST(@ProcessId AS NVARCHAR) + ''    
+SET @ProcessReceiveDetail='PROCESS_RECEIVE_DETAIL_' + CAST(@ProcessId AS NVARCHAR) + '' 
+SET @SQL=
+'With IssueItem(IssueId,DetailId,EmpId,OrderId,FinishedId,AssignDate,RequestDate,
 IssueDate,Rate,IssueQty,PQty,CancelQty,RowNo)
 AS
-(select x.IssueOrderId,y.Issue_Detail_Id,x.UserId,y.Orderid,y.Item_Finished_Id,
+(select x.IssueOrderId,y.Issue_Detail_Id,x.EMPID,y.Orderid,y.Item_Finished_Id,
 x.AssignDate,y.ReqByDate, 
 Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueDate,
 AVg(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
@@ -555,31 +626,79 @@ SUM(y.Qty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER B
 SUM(y.PQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) PQty,
 SUM(y.CancelQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) CancelQty,
 ROW_NUMBER() OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) RowNo
-from PROCESS_ISSUE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_ISSUE_DETAIL_7 y WITH (NOLOCK)
-on x.IssueOrderId=y.IssueOrderId and y.OrderId=@OrderId),
+from '+@ProcessIssueMaster+' x WITH (NOLOCK) Inner Join '+@ProcessIssueDetail+' y WITH (NOLOCK)
+on x.IssueOrderId=y.IssueOrderId and y.OrderId='+ CAST(@OrderId AS NVARCHAR)+'),
 ReceiveItem(ReceiveId,DetailId,OrderId,IssueId,EmpId,FinishedId,ReceiveQty,ReceiveDate,RowNo)
 AS
 (select x.Process_Rec_Id,y.Process_Rec_Detail_Id,y.OrderId,y.IssueOrderId,x.UserId,
 y.Item_Finished_Id,
-SUM(y.Qty) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
+SUM(y.Qty) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId),
 Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
 ROW_NUMBER() OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) RowNo 
-from PROCESS_RECEIVE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_RECEIVE_DETAIL_7 y WITH (NOLOCK)
-ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId=@OrderId
+from '+@ProcessReceiveMaster+' x WITH (NOLOCK) Inner Join '+@ProcessReceiveDetail+' y WITH (NOLOCK)
+ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId='+CAST(@OrderId AS NVARCHAR)+'
 )
-Select emp.EMPNAME VendorName,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName MaterialName, 
+Select emp.EMPNAME VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' ''+VF.DESIGNNAME+'' ''+VF.COLORNAME+'' ''+VF.SHAPENAME+'' ''+VF.ShadeColorName MaterialName, 
 x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
 x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
 On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
 Inner JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
 Inner JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
-Where x.OrderId=@OrderId and x.RowNo=1
-Order BY  x.IssueId";
+Where x.OrderId='+CAST(@OrderId AS NVARCHAR)+' and x.RowNo=1
+Order BY  x.IssueId'
+EXEC(@SQL) ";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                //                string sqlQuery = @"With IssueItem(IssueId,DetailId,EmpId,OrderId,FinishedId,AssignDate,RequestDate,
+                //IssueDate,Rate,IssueQty,PQty,CancelQty,RowNo)
+                //AS
+                //(select x.IssueOrderId,y.Issue_Detail_Id,x.UserId,y.Orderid,y.Item_Finished_Id,
+                //x.AssignDate,y.ReqByDate, 
+                //Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueDate,
+                //AVg(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
+                //SUM(y.Qty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueQty,
+                //SUM(y.PQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) PQty,
+                //SUM(y.CancelQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) CancelQty,
+                //ROW_NUMBER() OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) RowNo
+                //from PROCESS_ISSUE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_ISSUE_DETAIL_7 y WITH (NOLOCK)
+                //on x.IssueOrderId=y.IssueOrderId and y.OrderId=@OrderId),
+                //ReceiveItem(ReceiveId,DetailId,OrderId,IssueId,EmpId,FinishedId,ReceiveQty,ReceiveDate,RowNo)
+                //AS
+                //(select x.Process_Rec_Id,y.Process_Rec_Detail_Id,y.OrderId,y.IssueOrderId,x.UserId,
+                //y.Item_Finished_Id,
+                //SUM(y.Qty) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
+                //Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
+                //ROW_NUMBER() OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) RowNo 
+                //from PROCESS_RECEIVE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_RECEIVE_DETAIL_7 y WITH (NOLOCK)
+                //ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId=@OrderId
+                //)
+                //Select emp.EMPNAME VendorName,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName MaterialName, 
+                //x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
+                //x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
+                //On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
+                //Inner JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
+                //Inner JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
+                //Where x.OrderId=@OrderId and x.RowNo=1
+                //Order BY  x.IssueId";
 
                 try
                 {
 
-                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId }).
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId }).
                         Select(x => new IssueMaterialModel
                         {
                             IssueId = x.IssueId,

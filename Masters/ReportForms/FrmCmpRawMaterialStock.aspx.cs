@@ -274,17 +274,23 @@ public partial class Masters_ReportForms_FrmCmpRawMaterialStock : System.Web.UI.
                     break;
                 default:
                     sQry = @"select  g.godownname,Round(Sum(case when St.trantype=1 Then St.quantity else 0 End)-Sum(case when St.trantype=0 Then St.quantity else 0 End),3) qtyinhand,
-                                        v.category_name,v.item_name,v.qualityname,'" + shadecolor + @"' AS Description
-                                        From stock s inner join stockTran St on s.StockID=st.Stockid
-                                        inner join GodownMaster g on s.Godownid=g.GoDownID
-                                        inner join V_FinishedItemDetail v on s.ITEM_FINISHED_ID=v.ITEM_FINISHED_ID
-                                        Where s.companyid = " + DDCompany.SelectedValue + "  And V.MasterCompanyId=" + Session["varCompanyId"] + "";
+                            v.category_name,v.item_name,v.qualityname,'" + shadecolor + @"' AS Description
+                            From Stock s(Nolock) 
+                            JOIN StockTran St(Nolock) on s.StockID=st.Stockid
+                            JOIN GodownMaster g(Nolock) on s.Godownid=g.GoDownID ";
+                    
+                    if (Session["varCompanyId"].ToString() == "16")
+                    {
+                        sQry = sQry + @" JOIN Godown_Authentication GA(NoLock) ON GA.GoDownID = g.GodownID And GA.UserId=" + Session["VarUserId"];
+                    }
 
+                    sQry = sQry + @" JOIN V_FinishedItemDetail v(NoLock) on s.ITEM_FINISHED_ID=v.ITEM_FINISHED_ID 
+                            Where s.companyid = " + DDCompany.SelectedValue + "  And V.MasterCompanyId=" + Session["varCompanyId"];
 
                     if (TDstockupto.Visible == true)
                     {
-                        sQry = sQry + " and St.TranDate<='" + txtstockupto.Text + "'";
-                        FilterBy = FilterBy + ",Stock Up to - " + txtstockupto.Text;
+                        sQry = sQry + " And St.TranDate <= '" + txtstockupto.Text + "'";
+                        FilterBy = FilterBy + ", Stock Up to - " + txtstockupto.Text;
                     }
                     break;
             }

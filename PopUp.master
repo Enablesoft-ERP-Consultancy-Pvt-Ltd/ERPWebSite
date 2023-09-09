@@ -1,0 +1,27 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="PopUp.master.cs" Inherits="PopUp" %>
+
+<!DOCTYPE html>
+<html>
+<head runat="server">
+    <title>IEXPRO</title>
+    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
+    <!--Loading style-->
+    <link type="text/css" rel="stylesheet" href="~/Content/css/style.css">
+    <link type="text/css" rel="stylesheet" href="~/Content/css/style-responsive.css">
+    <asp:ContentPlaceHolder ID="ContentStyles" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <asp:ContentPlaceHolder ID="ContentBody" runat="server">
+        </asp:ContentPlaceHolder>
+    </form>
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/jquery/dist/jquery.min.js")%>"></script>
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/bootstrap/js/bootstrap.bundle.min.js")%>"></script>
+    <script type="text/javascript" src="<%= Page.ResolveUrl("~/lib/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js")%>"></script>
+    <asp:ContentPlaceHolder ID="ContentScripts" runat="server">
+    </asp:ContentPlaceHolder>
+</body>
+</html>

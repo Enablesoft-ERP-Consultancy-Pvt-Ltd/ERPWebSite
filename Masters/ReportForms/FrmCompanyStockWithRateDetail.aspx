@@ -141,10 +141,23 @@
                                             <asp:Label ID="lblMessage" runat="server" CssClass="labelbold" ForeColor="Red"></asp:Label>
                                         </td>
                                     </tr>
+                                </table>
+                                <table>
                                     <tr>
                                         <td align="right" colspan="2" style="border-style: dotted">
                                             <table>
                                                 <tr>
+                                                    <td>
+                                                        <asp:CheckBox ID="chkRawMaterialDetail" CssClass="checkboxbold" Text="Raw Material as on date"
+                                                            runat="server" AutoPostBack="true" OnCheckedChanged="chkallstockno_CheckedChanged" />
+                                                    </td>
+                                                    <td id="TDstockupto" runat="server" visible="false">
+                                                        <asp:Label ID="lblstockupto" Text="Stock up to" CssClass="labelbold" runat="server" /><br />
+                                                        <asp:TextBox ID="txtstockupto" CssClass="textb" Width="100px" runat="server" />
+                                                        <asp:CalendarExtender ID="CalendarExtender4" runat="server" Format="dd-MMM-yyyy"
+                                                            TargetControlID="txtstockupto">
+                                                        </asp:CalendarExtender>
+                                                    </td>
                                                     <td>
                                                         <asp:Button ID="BtnPreview" runat="server" CssClass="buttonnorm" OnClick="BtnPreview_Click"
                                                             Text="Preview" />

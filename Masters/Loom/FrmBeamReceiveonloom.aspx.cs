@@ -36,7 +36,7 @@ public partial class Masters_Loom_FrmBeamReceiveonloom : System.Web.UI.Page
             if (Session["VarCompanyNo"].ToString() == "21")
             {
                 str2 = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  
-                Where  GM.GodownName in('SPARE TANA','YARN OPENING TANA','TANA HOUSE') and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName ";
+                Where  GM.GodownName in('SPARE TANA','YARN OPENING TANA','TANA HOUSE','HOUSE NO-12','KE RUNAKTA TANA') and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName ";
             }
             else
             {

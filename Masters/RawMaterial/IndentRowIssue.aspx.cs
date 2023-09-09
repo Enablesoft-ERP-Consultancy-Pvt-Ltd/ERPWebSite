@@ -2267,13 +2267,14 @@ public partial class Masters_RawMaterial_IndentRowIssue : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] param = new SqlParameter[5];
+            SqlParameter[] param = new SqlParameter[6];
             param[0] = new SqlParameter("@ChampoPrmID", ViewState["Prmid"]);
             param[1] = new SqlParameter("@USERID", 1);
             param[2] = new SqlParameter("@MASTERCOMPANYID", 28);
             param[3] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@TYPEFLAG", 0);
+            param[4] = new SqlParameter("@TranType", 1);
+            param[5] = new SqlParameter("@TYPEFLAG", 0);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Save_ChampoIndentRawIssueToOtherCompany", param);
             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + param[3].Value + "')", true);

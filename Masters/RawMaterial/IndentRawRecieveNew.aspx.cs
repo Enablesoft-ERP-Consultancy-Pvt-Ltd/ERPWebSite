@@ -363,8 +363,8 @@ public partial class Masters_RawMaterial_IndentRawRecieveNew : System.Web.UI.Pag
     {
         string stritems = @"select OD.OrderDetailId,Vf.ITEM_NAME+' '+VF.QualityName+' '+Vf.designName+' '+Vf.ColorName+' '+vf.ShapeName+' '+case when OD.flagsize=1 Then Vf.SizeMtr When OD.flagsize=2 Then
                     vf.sizeinch ELse vf.sizeft End+' '+case when Vf.SizeId>0 Then Sz.Type Else '' ENd as ItemDescription
-                    From OrderMaster Om inner join OrderDetail OD on Om.OrderId=Od.OrderId
-                    inner join IndentDetail pp on pp.ORDERID=od.orderid --and pp.OrderDetailId=od.OrderDetailId
+                    From PP_ProcessRawTran pp  inner join OrderDetail OD on pp.Orderdetailid=od.OrderDetailId INNER JOIN OrderMaster Om  on Om.OrderId=Od.OrderId
+                  --  inner join IndentDetail pp on pp.ORDERID=od.orderid --and pp.OrderDetailId=od.OrderDetailId
                     inner Join V_FinishedItemDetail vf on OD.Item_Finished_Id=vf.ITEM_FINISHED_ID
                     Left join SizeType Sz on Od.flagsize=Sz.val Where OM.Companyid=" + ddCompName.SelectedValue + "and pp.IndentId=" + ddindent.SelectedValue + @" 
                      group by OD.OrderDetailId,Vf.ITEM_NAME,VF.QualityName,Vf.designName,Vf.ColorName,
@@ -1753,6 +1753,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveNew : System.Web.UI.Pag
                     if (ddChallanNo.Items.Count > 0)
                     {
                         ddChallanNo.SelectedIndex = 1;
+                        ddChallanNo_SelectedIndexChanged(sender, e);
                         ChallanNoSelectedChange();
                         if (ChkEdit.Checked == true)
                         {
@@ -1911,7 +1912,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveNew : System.Web.UI.Pag
             V.EmpName, V.CompanyName, V.gatepassno, V.indentno, V.EmpAddress, V.EmpPhoneNo, V.EmpMobile, V.CompanyAddress, V.CompanyPhoneNo, V.CompanyFaxNo, 
             V.TinNo, V.PRMid, V.Date, V.CHALLANNO, V.MastercompanyId, V.DyingMatch, V.DyeingType, V.Dyeing,  V.CustomerOrderNo, V.Buyercode, V.PROCESS_NAME, 
             V.Rec_Iss_ItemFlag, V.RRRemark, V.Lshort, V.Shrinkage, V.TagNo, V.GateInNo, V.GSTIN, V.EMPGSTIN, V.CheckedBy, V.ApprovedBy, od.customercode, 
-            OD.OrderNo, OD.Localorder, OD.Merchantname, V.LossQty, V.BILLNo, V.UserName, V.UnitName, V.LossQty 
+            OD.OrderNo, OD.Localorder, OD.Merchantname, V.LossQty, V.BILLNo, V.UserName, V.UnitName, V.LossQty ,isnull(dyingdesc,'') as dyingdesc
             FROM V_IndentRawRec V(Nolock) 
             LEFT JOIN V_IndentRawReturnQty VR(Nolock) ON VR.PRMid = V.PRMID AND VR.PRTid = V.PRTID 
             CROSS APPLY (Select * From dbo.F_GetPPNo_OrderNo(V.PPNo)) OD 

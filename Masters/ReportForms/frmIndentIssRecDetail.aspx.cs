@@ -3911,117 +3911,237 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 var xapp = new XLWorkbook();
                 var sht = xapp.Worksheets.Add("sheet1");
                 int row = 0;
-
-                sht.Column("A").Width = 35.22;
-                sht.Column("B").Width = 20.22;
-                sht.Column("C").Width = 25.22;
-                sht.Column("D").Width = 25.33;
-                sht.Column("E").Width = 15.00;
-                sht.Column("F").Width = 18.00;
-                sht.Column("G").Width = 18.00;
-                sht.Column("H").Width = 18.00;
-                sht.Column("I").Width = 18.00;
-                sht.Column("J").Width = 9.00;
-                sht.Column("K").Width = 9.00;
-                sht.Column("L").Width = 9.00;
-                sht.Column("M").Width = 9.00;
-
-                sht.Range("A1:N1").Merge();
-                sht.Range("A1").Value = DDCompany.SelectedItem.Text;
-                sht.Range("A2:N2").Merge();
-                sht.Range("A2").Value = ds.Tables[0].Rows[0]["CompAddr1"] + " " + ds.Tables[0].Rows[0]["CompAddr2"] + " " + ds.Tables[0].Rows[0]["CompAddr3"];
-                sht.Range("A3:N3").Merge();
-                sht.Range("A3").Value = "Tel No:" + ds.Tables[0].Rows[0]["comptel"] + " " + "Email:" + ds.Tables[0].Rows[0]["companyemail"];
-                sht.Range("A4:N4").Merge();
-                sht.Range("A4").Value = "GSTIN No:" + ds.Tables[0].Rows[0]["GSTNo"];
-                sht.Row(4).Height = 30;
-                sht.Range("A1:N1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A2:N2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A3:N3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A4:N4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A4:N4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                sht.Range("A1:N1").Style.Alignment.SetWrapText();
-                sht.Range("A2:N2").Style.Alignment.SetWrapText();
-                sht.Range("A3:N3").Style.Alignment.SetWrapText();
-                sht.Range("A4:N4").Style.Alignment.SetWrapText();
-                sht.Range("A1:N4").Style.Font.FontName = "Arial Unicode MS";
-                sht.Range("A1:N4").Style.Font.FontSize = 10;
-                sht.Range("A1:N4").Style.Font.Bold = true;
-
-                //*******Header
-                sht.Range("A5").Value = "DyerName";
-                sht.Range("B5").Value = "Indent Date";
-                sht.Range("C5").Value = "Delay Days";
-                sht.Range("D5").Value = "Indent No";
-                sht.Range("E5").Value = "Buyer Code";
-                sht.Range("F5").Value = "Customer OrderNO";
-                sht.Range("G5").Value = "Item Name";
-                sht.Range("H5").Value = "Sub ItemName";
-                sht.Range("I5").Value = "Color Name";
-                sht.Range("J5").Value = "Order Qty";
-                sht.Range("K5").Value = "Rec Qty";
-                sht.Range("L5").Value = "Loss Qty";
-                sht.Range("M5").Value = "Return Qty";
-                sht.Range("N5").Value = "Pending Qty";
-
-
-                sht.Range("A5:N5").Style.Font.FontName = "Arial Unicode MS";
-                sht.Range("A5:N5").Style.Font.FontSize = 10;
-                sht.Range("A5:N5").Style.Font.Bold = true;
-                //sht.Range("O3:T3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                sht.Range("A5:N5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A5:N5").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                sht.Range("A5:N5").Style.Alignment.SetWrapText();
-
-                row = 6;
-                int rowfrom = 6;
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                if (Session["VarCompanyNo"].ToString() == "44")
                 {
-                    sht.Range("A" + row + ":N" + row).Style.Font.FontName = "Arial Unicode MS";
-                    sht.Range("A" + row + ":N" + row).Style.Font.FontSize = 10;
-                    //sht.Range("A" + row + ":C" + row).Style.Font.Bold = true;
+                    sht.Column("A").Width = 35.22;
+                    sht.Column("B").Width = 20.22;
+                    sht.Column("C").Width = 25.22;
+                    sht.Column("D").Width = 25.33;
+                    sht.Column("E").Width = 15.00;
+                    sht.Column("F").Width = 18.00;
+                    sht.Column("G").Width = 18.00;
+                    sht.Column("H").Width = 18.00;
+                    sht.Column("I").Width = 18.00;
+                    sht.Column("J").Width = 18.00;
+                    sht.Column("K").Width = 18.00;
+                    sht.Column("L").Width = 9.00;
+                    sht.Column("M").Width = 9.00;
+                    sht.Column("N").Width = 9.00;
+                    sht.Column("O").Width = 9.00;
+                    sht.Column("P").Width = 9.00;
 
-                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
-                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["IndentDate"]);
-                    //sht.Range("B" + row).Style.Alignment.SetWrapText();
-                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["NoOfDelayDays"]);
-                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["IndentNo"]);
-                    //sht.Range("D" + row).Style.Alignment.SetWrapText();
-                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["CUSTOMERCODE"]);
-                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["CUSTOMERORDERNO"]);
-                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["ITEM_NAME"]);
-                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
-                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["SHADECOLORNAME"]);
-                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["OQTY"]);
-                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["DYEDQTY"]);
-                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["LOSSQTY"]);
-                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["RETQTY"]);
-                    decimal PendingQty = 0;
-                    PendingQty = (Convert.ToDecimal(ds.Tables[0].Rows[i]["OQTY"]) - (Convert.ToDecimal(ds.Tables[0].Rows[i]["DYEDQTY"]) + Convert.ToDecimal(ds.Tables[0].Rows[i]["LOSSQTY"]))) + Convert.ToDecimal(ds.Tables[0].Rows[i]["RETQTY"]);
-                    sht.Range("N" + row).SetValue(PendingQty);
+                    sht.Range("A1:P1").Merge();
+                    sht.Range("A1").Value = DDCompany.SelectedItem.Text;
+                    sht.Range("A2:P2").Merge();
+                    sht.Range("A2").Value = ds.Tables[0].Rows[0]["CompAddr1"] + " " + ds.Tables[0].Rows[0]["CompAddr2"] + " " + ds.Tables[0].Rows[0]["CompAddr3"];
+                    sht.Range("A3:P3").Merge();
+                    sht.Range("A3").Value = "Tel No:" + ds.Tables[0].Rows[0]["comptel"] + " " + "Email:" + ds.Tables[0].Rows[0]["companyemail"];
+                    sht.Range("A4:P4").Merge();
+                    sht.Range("A4").Value = "GSTIN No:" + ds.Tables[0].Rows[0]["GSTNo"];
+                    sht.Row(4).Height = 30;
+                    sht.Range("A1:P1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A2:P2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A3:P3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A4:P4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A4:P4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                    sht.Range("A1:P1").Style.Alignment.SetWrapText();
+                    sht.Range("A2:P2").Style.Alignment.SetWrapText();
+                    sht.Range("A3:P3").Style.Alignment.SetWrapText();
+                    sht.Range("A4:P4").Style.Alignment.SetWrapText();
+                    sht.Range("A1:P4").Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A1:P4").Style.Font.FontSize = 10;
+                    sht.Range("A1:P4").Style.Font.Bold = true;
 
+                    //*******Header
+                    sht.Range("A5").Value = "DyerName";
+                    sht.Range("B5").Value = "Indent Date";
+                    sht.Range("C5").Value = "Delay Days";
+                    sht.Range("D5").Value = "Indent No";
+                    sht.Range("E5").Value = "Buyer Code";
+                    sht.Range("F5").Value = "Customer OrderNO";
+                    sht.Range("G5").Value = "Category";
+                    sht.Range("H5").Value = "Design";
+                    sht.Range("I5").Value = "Item Name";
+                    sht.Range("J5").Value = "Sub ItemName";
+                    sht.Range("K5").Value = "Color Name";
+                    sht.Range("L5").Value = "Order Qty";
+                    sht.Range("M5").Value = "Rec Qty";
+                    sht.Range("N5").Value = "Loss Qty";
+                    sht.Range("O5").Value = "Return Qty";
+                    sht.Range("P5").Value = "Pending Qty";
+
+
+                    sht.Range("A5:P5").Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A5:P5").Style.Font.FontSize = 10;
+                    sht.Range("A5:P5").Style.Font.Bold = true;
+                    //sht.Range("O3:T3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    sht.Range("A5:P5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A5:P5").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                    sht.Range("A5:P5").Style.Alignment.SetWrapText();
+
+                    row = 6;
+                    int rowfrom = 6;
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        sht.Range("A" + row + ":N" + row).Style.Font.FontName = "Arial Unicode MS";
+                        sht.Range("A" + row + ":N" + row).Style.Font.FontSize = 10;
+                        //sht.Range("A" + row + ":C" + row).Style.Font.Bold = true;
+
+                        sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
+                        sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["IndentDate"]);
+                        //sht.Range("B" + row).Style.Alignment.SetWrapText();
+                        sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["NoOfDelayDays"]);
+                        sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["IndentNo"]);
+                        //sht.Range("D" + row).Style.Alignment.SetWrapText();
+                        sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["CUSTOMERCODE"]);
+                        sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["CUSTOMERORDERNO"]);
+                        sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["CATEGORY_NAME"]);
+                        sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["DesignName"]);
+                        sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["ITEM_NAME"]);
+                        sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
+                        sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["SHADECOLORNAME"]);
+                        sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["OQTY"]);
+                        sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["DYEDQTY"]);
+                        sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["LOSSQTY"]);
+                        sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["RETQTY"]);
+                        decimal PendingQty = 0;
+                        PendingQty = (Convert.ToDecimal(ds.Tables[0].Rows[i]["OQTY"]) - (Convert.ToDecimal(ds.Tables[0].Rows[i]["DYEDQTY"]) + Convert.ToDecimal(ds.Tables[0].Rows[i]["LOSSQTY"]))) + Convert.ToDecimal(ds.Tables[0].Rows[i]["RETQTY"]);
+                        sht.Range("P" + row).SetValue(PendingQty);
+
+                        row = row + 1;
+                    }
+                    sht.Range("L" + row).FormulaA1 = "=SUM(L" + (rowfrom) + ":L" + (row - 1) + ")";
+                    sht.Range("M" + row).FormulaA1 = "=SUM(M" + (rowfrom) + ":M" + (row - 1) + ")";
+                    sht.Range("N" + row).FormulaA1 = "=SUM(N" + (rowfrom) + ":N" + (row - 1) + ")";
+                    sht.Range("O" + row).FormulaA1 = "=SUM(O" + (rowfrom) + ":O" + (row - 1) + ")";
+                    sht.Range("P" + row).FormulaA1 = "=SUM(P" + (rowfrom) + ":P" + (row - 1) + ")";
+                    sht.Range("L" + row + ":P" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("L" + row + ":P" + row).Style.Font.FontSize = 9;
+                    sht.Range("L" + row + ":P" + row).Style.Font.Bold = true;
                     row = row + 1;
+
+
+                    //*************
+                    using (var a = sht.Range("A1:P" + row))
+                    {
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    }
                 }
-                sht.Range("J" + row).FormulaA1 = "=SUM(J" + (rowfrom) + ":J" + (row - 1) + ")";
-                sht.Range("K" + row).FormulaA1 = "=SUM(K" + (rowfrom) + ":K" + (row - 1) + ")";
-                sht.Range("L" + row).FormulaA1 = "=SUM(L" + (rowfrom) + ":L" + (row - 1) + ")";
-                sht.Range("M" + row).FormulaA1 = "=SUM(M" + (rowfrom) + ":M" + (row - 1) + ")";
-                sht.Range("N" + row).FormulaA1 = "=SUM(N" + (rowfrom) + ":N" + (row - 1) + ")";
-                sht.Range("J" + row + ":N" + row).Style.Font.FontName = "Arial Unicode MS";
-                sht.Range("J" + row + ":N" + row).Style.Font.FontSize = 9;
-                sht.Range("J" + row + ":N" + row).Style.Font.Bold = true;
-                row = row + 1;
-
-
-                //*************
-                using (var a = sht.Range("A1:N" + row))
+                else
                 {
-                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                }
+                    sht.Column("A").Width = 35.22;
+                    sht.Column("B").Width = 20.22;
+                    sht.Column("C").Width = 25.22;
+                    sht.Column("D").Width = 25.33;
+                    sht.Column("E").Width = 15.00;
+                    sht.Column("F").Width = 18.00;
+                    sht.Column("G").Width = 18.00;
+                    sht.Column("H").Width = 18.00;
+                    sht.Column("I").Width = 18.00;
+                    sht.Column("J").Width = 9.00;
+                    sht.Column("K").Width = 9.00;
+                    sht.Column("L").Width = 9.00;
+                    sht.Column("M").Width = 9.00;
 
+                    sht.Range("A1:N1").Merge();
+                    sht.Range("A1").Value = DDCompany.SelectedItem.Text;
+                    sht.Range("A2:N2").Merge();
+                    sht.Range("A2").Value = ds.Tables[0].Rows[0]["CompAddr1"] + " " + ds.Tables[0].Rows[0]["CompAddr2"] + " " + ds.Tables[0].Rows[0]["CompAddr3"];
+                    sht.Range("A3:N3").Merge();
+                    sht.Range("A3").Value = "Tel No:" + ds.Tables[0].Rows[0]["comptel"] + " " + "Email:" + ds.Tables[0].Rows[0]["companyemail"];
+                    sht.Range("A4:N4").Merge();
+                    sht.Range("A4").Value = "GSTIN No:" + ds.Tables[0].Rows[0]["GSTNo"];
+                    sht.Row(4).Height = 30;
+                    sht.Range("A1:N1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A2:N2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A3:N3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A4:N4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A4:N4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                    sht.Range("A1:N1").Style.Alignment.SetWrapText();
+                    sht.Range("A2:N2").Style.Alignment.SetWrapText();
+                    sht.Range("A3:N3").Style.Alignment.SetWrapText();
+                    sht.Range("A4:N4").Style.Alignment.SetWrapText();
+                    sht.Range("A1:N4").Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A1:N4").Style.Font.FontSize = 10;
+                    sht.Range("A1:N4").Style.Font.Bold = true;
+
+                    //*******Header
+                    sht.Range("A5").Value = "DyerName";
+                    sht.Range("B5").Value = "Indent Date";
+                    sht.Range("C5").Value = "Delay Days";
+                    sht.Range("D5").Value = "Indent No";
+                    sht.Range("E5").Value = "Buyer Code";
+                    sht.Range("F5").Value = "Customer OrderNO";
+                    sht.Range("G5").Value = "Item Name";
+                    sht.Range("H5").Value = "Sub ItemName";
+                    sht.Range("I5").Value = "Color Name";
+                    sht.Range("J5").Value = "Order Qty";
+                    sht.Range("K5").Value = "Rec Qty";
+                    sht.Range("L5").Value = "Loss Qty";
+                    sht.Range("M5").Value = "Return Qty";
+                    sht.Range("N5").Value = "Pending Qty";
+
+
+                    sht.Range("A5:N5").Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("A5:N5").Style.Font.FontSize = 10;
+                    sht.Range("A5:N5").Style.Font.Bold = true;
+                    //sht.Range("O3:T3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    sht.Range("A5:N5").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A5:N5").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                    sht.Range("A5:N5").Style.Alignment.SetWrapText();
+
+                    row = 6;
+                    int rowfrom = 6;
+                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                    {
+                        sht.Range("A" + row + ":N" + row).Style.Font.FontName = "Arial Unicode MS";
+                        sht.Range("A" + row + ":N" + row).Style.Font.FontSize = 10;
+                        //sht.Range("A" + row + ":C" + row).Style.Font.Bold = true;
+
+                        sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
+                        sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["IndentDate"]);
+                        //sht.Range("B" + row).Style.Alignment.SetWrapText();
+                        sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["NoOfDelayDays"]);
+                        sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["IndentNo"]);
+                        //sht.Range("D" + row).Style.Alignment.SetWrapText();
+                        sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["CUSTOMERCODE"]);
+                        sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["CUSTOMERORDERNO"]);
+                        sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["ITEM_NAME"]);
+                        sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["QUALITYNAME"]);
+                        sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["SHADECOLORNAME"]);
+                        sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["OQTY"]);
+                        sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["DYEDQTY"]);
+                        sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["LOSSQTY"]);
+                        sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["RETQTY"]);
+                        decimal PendingQty = 0;
+                        PendingQty = (Convert.ToDecimal(ds.Tables[0].Rows[i]["OQTY"]) - (Convert.ToDecimal(ds.Tables[0].Rows[i]["DYEDQTY"]) + Convert.ToDecimal(ds.Tables[0].Rows[i]["LOSSQTY"]))) + Convert.ToDecimal(ds.Tables[0].Rows[i]["RETQTY"]);
+                        sht.Range("N" + row).SetValue(PendingQty);
+
+                        row = row + 1;
+                    }
+                    sht.Range("J" + row).FormulaA1 = "=SUM(J" + (rowfrom) + ":J" + (row - 1) + ")";
+                    sht.Range("K" + row).FormulaA1 = "=SUM(K" + (rowfrom) + ":K" + (row - 1) + ")";
+                    sht.Range("L" + row).FormulaA1 = "=SUM(L" + (rowfrom) + ":L" + (row - 1) + ")";
+                    sht.Range("M" + row).FormulaA1 = "=SUM(M" + (rowfrom) + ":M" + (row - 1) + ")";
+                    sht.Range("N" + row).FormulaA1 = "=SUM(N" + (rowfrom) + ":N" + (row - 1) + ")";
+                    sht.Range("J" + row + ":N" + row).Style.Font.FontName = "Arial Unicode MS";
+                    sht.Range("J" + row + ":N" + row).Style.Font.FontSize = 9;
+                    sht.Range("J" + row + ":N" + row).Style.Font.Bold = true;
+                    row = row + 1;
+
+
+                    //*************
+                    using (var a = sht.Range("A1:N" + row))
+                    {
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    }
+                }
                 //sht.Columns(1, 30).AdjustToContents();
 
                 string Fileextension = "xlsx";

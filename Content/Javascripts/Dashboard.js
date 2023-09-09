@@ -2,25 +2,90 @@
 
 
 
-var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report" ,Type:1},
-    { ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
-    { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
-    { ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report", Type: 1 },
-    { ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report", Type: 1 },
-    { ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report", Type: 1 },
-    { ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report", Type: 1 },
-    { ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 },
-    { ProcessId: 1, Process: "CUTTING", Title: "CUTTING", Type: 2 },
-    { ProcessId: 2, Process: "MANUAL EMBROIDERY(PCS)", Title: "MANUAL EMBROIDERY(PCS)", Type: 2 },
-    { ProcessId: 42, Process: "PANNEL WEAVING", Title: "PANNEL WEAVING", Type: 2 },
-    { ProcessId: 4, Process: "PATCH STITCHING", Title: "PATCH STITCHING", Type: 2 },
-    { ProcessId: 38, Process: "TABLE TUFTING", Title: "TABLE TUFTING", Type: 2 },
-    { ProcessId: 7, Process: "Finishing", Title: "Finishing", Type: 3 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
+
+{ ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
+{ ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
+{ ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report", Type: 1 },
+{ ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report", Type: 1 },
+{ ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report", Type: 1 },
+{ ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report", Type: 1 },
+
+{ ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 },
+{ ProcessId: 1, Process: "CUTTING", Title: "CUTTING", Type: 2 },
+{ ProcessId: 2, Process: "MANUAL EMBROIDERY(PCS)", Title: "MANUAL EMBROIDERY(PCS)", Type: 2 },
+{ ProcessId: 42, Process: "PANNEL WEAVING", Title: "PANNEL WEAVING", Type: 2 },
+{ ProcessId: 4, Process: "PATCH STITCHING", Title: "PATCH STITCHING", Type: 2 },
+{ ProcessId: 38, Process: "TABLE TUFTING", Title: "TABLE TUFTING", Type: 2 },
+
+
+{ ProcessId: 10, Process: ' ', Title: "Finishing COMPUTER EMBROIDERY(PCS)", Type: 3 },
+{ ProcessId: 42, Process: ' ', Title: "Finishing PANNEL WEAVING", Type: 3 },
+{ ProcessId: 2, Process: ' ', Title: "Finishing MANUAL EMBROIDERY(PCS)", Type: 3 },
+{ ProcessId: 4, Process: ' ', Title: "Finishing PATCH STITCHING", Type: 3 },
+
+
+
+
+{ ProcessId: 13, Process: "STITCHING", Title: "STITCHING", Type: 3 },
+{ ProcessId: 21, Process: 'Finishing BLOCK PRINTING', Title: "Finishing BLOCK PRINTING", Type: 3 },
+{ ProcessId: 30, Process: ' ', Title: "Finishing COLOUR CUT", Type: 3 },
+
+{ ProcessId: 26, Process: ' ', Title: "Finishing DIGITAL PRINTING (PCS)", Type: 3 },
+{ ProcessId: 6, Process: ' ', Title: "Finishing DYEING(PCS)", Type: 3 },
+{ ProcessId: 3, Process: ' ', Title: "Finishing FILLING", Type: 3 },
+{ ProcessId: 7, Process: ' ', Title: "Finishing FINAL FINISHING", Type: 3 },
+{ ProcessId: 27, Process: ' ', Title: "Finishing FOLD &amp; THREAD CUTTING ", Type: 3 },
+{ ProcessId: 47, Process: ' ', Title: "Finishing HAND STITCHING", Type: 3 },
+{ ProcessId: 28, Process: ' ', Title: "Finishing HEMMING STICHING ", Type: 3 },
+{ ProcessId: 41, Process: ' ', Title: "Finishing KANTHA HANDWORK", Type: 3 },
+{ ProcessId: 31, Process: ' ', Title: "Finishing KNOTTING", Type: 3 },
+{ ProcessId: 20, Process: ' ', Title: "Finishing KNOWTING &amp; WRAPPING", Type: 3 },
+{ ProcessId: 23, Process: ' ', Title: "Finishing LABEL STITCHING", Type: 3 },
+{ ProcessId: 43, Process: ' ', Title: "Finishing LACE STITCHING", Type: 3 },
+
+{ ProcessId: 17, Process: ' ', Title: "Finishing PACKING", Type: 3 },
+{ ProcessId: 39, Process: ' ', Title: "Finishing PANEL MAKING", Type: 3 },
+
+
+{ ProcessId: 14, Process: ' ', Title: "Finishing PRESING", Type: 3 },
+{ ProcessId: 44, Process: ' ', Title: "Finishing QUILTING", Type: 3 },
+{ ProcessId: 40, Process: ' ', Title: "Finishing RE-WORK", Type: 3 },
+{ ProcessId: 49, Process: ' ', Title: "Finishing SAMPLING", Type: 3 },
+{ ProcessId: 24, Process: ' ', Title: "Finishing SCREEN PRINTING", Type: 3 },
+
+{ ProcessId: 22, Process: ' ', Title: "Finishing STONE WASH", Type: 3 },
+{ ProcessId: 38, Process: ' ', Title: "Finishing TABLE TUFTING", Type: 3 },
+{ ProcessId: 16, Process: ' ', Title: "Finishing TASSEL STITCHING", Type: 3 },
+{ ProcessId: 19, Process: ' ', Title: "Finishing THREAD CUTTING", Type: 3 },
+{ ProcessId: 32, Process: ' ', Title: "Finishing THREAD CUTTING &amp; TASSLING ", Type: 3 },
+{ ProcessId: 37, Process: ' ', Title: "Finishing TUFTING", Type: 3 },
+{ ProcessId: 46, Process: ' ', Title: "Finishing UPHOLSTERY", Type: 3 },
+{ ProcessId: 25, Process: ' ', Title: "Finishing VACUUM", Type: 3 },
+{ ProcessId: 33, Process: ' ', Title: "Finishing WASHING", Type: 3 },
+{ ProcessId: 48, Process: ' ', Title: "Finishing WEAVING", Type: 3 },
+{ ProcessId: 35, Process: ' ', Title: "Finishing WRAPPING", Type: 3 },
+
 ];
 
 
 
-	
+
 
 
 
@@ -87,41 +152,110 @@ $(function () {
                         data: null,
                         render: function (data, type, row, meta) {
 
-
-
                             var btnHtml = "<a title='Order Detail' class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mediumtxt mrm'></i></a>";
                             btnHtml += "<div class='btn-group'><button type='button' data-bs-toggle='dropdown' class='btn btn-dark dropdown-toggle  ptx pbx'>";
                             btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion'>";
-
-
                             btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
 
+                            //console.log(data);
+
+                            $.each(data.ProcessList, function (index, item) {
+                                console.log(item);
+                                // var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
+                                if (item.ProcessType == 0) {
+                                    item.ProcessType = 1;
+                                }
+
+                                console.log(item.ProcessType);
+                                var className;
+                                switch (item.ProcessType) {
+                                    case 1:
+                                        className = "btnProcess";
+                                        break;
+                                    case 2:
+                                        className = "btnIssueProcess";
+                                        break;
+                                    case 3:
+                                        className = "btnFinish";
+                                        break;
+                                }
+                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
+
+                            });
 
 
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 5 + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing(DY)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 8 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>BLOCK PRINTING(MTR)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 11 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 12 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>COMPUTER EMBROIDERY(MTR)</strong></a></li>";
-
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 18 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>WASHING(MTR)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 34 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>STONE WASH(MTR)</strong></a></li>";
-                            btnHtml += "<li><a class='btnProcess mrm' prhref=" + 29 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>SCREEN PRINTING (MTR)</strong></a></li>";
-
-                            
-
-
-
-                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>COMPUTER EMBROIDERY(PCS)</strong></a></li>";
-                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 1 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>CUTTING</strong></a></li>";
-                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 2 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>MANUAL EMBROIDERY(PCS)</strong></a></li>";
-                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 42 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>PANNEL WEAVING</strong></a></li>";
-                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 4 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>PATCH STITCHING</strong></a></li>";
-                            btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 38 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>TABLE TUFTING</strong></a></li>";
 
 
 
 
-                            btnHtml += "<li><a class='btnFinish mrm' prhref=" + 7 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing</strong></a></li>";
+
+
+                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 5 + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing(DY)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 8 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>BLOCK PRINTING(MTR)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 11 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 12 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>COMPUTER EMBROIDERY(MTR)</strong></a></li>";
+
+                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 18 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>WASHING(MTR)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 34 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>STONE WASH(MTR)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 29 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>SCREEN PRINTING (MTR)</strong></a></li>";
+
+
+
+
+
+                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>COMPUTER EMBROIDERY(PCS)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 1 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>CUTTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 2 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>MANUAL EMBROIDERY(PCS)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 42 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>PANNEL WEAVING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 4 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>PATCH STITCHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 38 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>TABLE TUFTING</strong></a></li>";
+
+
+
+
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 13 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>STITCHING</strong></a></li>";
+
+
+
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 21 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  BLOCK PRINTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 30 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  COLOUR CUT </strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  COMPUTER EMBROIDERY(PCS)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 26 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  DIGITAL PRINTING (PCS)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 6 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  DYEING(PCS)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 3 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  FILLING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 7 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  FINAL FINISHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 27 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  FOLD &amp; THREAD CUTTING </strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 47 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  HAND STITCHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 28 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  HEMMING STICHING </strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 41 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  KANTHA HANDWORK</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 31 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  KNOTTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 20 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  KNOWTING &amp; WRAPPING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 23 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  LABEL STITCHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 43 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  LACE STITCHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 2 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  MANUAL EMBROIDERY(PCS)</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 17 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PACKING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 39 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PANEL MAKING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 42 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PANNEL WEAVING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 4 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PATCH STITCHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 14 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PRESING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 44 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  QUILTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 40 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  RE-WORK</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 49 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  SAMPLING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 24 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  SCREEN PRINTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 13 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  STITCHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 22 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  STONE WASH</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 38 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  TABLE TUFTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 16 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  TASSEL STITCHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 19 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  THREAD CUTTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 32 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  THREAD CUTTING &amp; TASSLING </strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 37 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  TUFTING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 46 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  UPHOLSTERY</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 25 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  VACUUM</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 33 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  WASHING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 48 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  WEAVING</strong></a></li>";
+                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 35 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  WRAPPING</strong></a></li>";
+
+
 
 
 
@@ -195,7 +329,7 @@ $(function () {
                 ProcessIssueReport(_orderId, _processId);
             });
 
-            
+
 
             table.on('click', 'a.btnFinish', function (e) {
                 var elem = $(this);
@@ -466,7 +600,7 @@ function PurchaseReport(_orderId) {
             bodyHtml += " <tr><th>Supplier Name</th><th>PO No</th><th>PO Date</th><th>Delv. Date</th>";
             bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Rec. Qty.</th><th>Pending Qty.</th><th>Delay Days</th><th>PO Status</th></tr></thead><tbody>";
             if (result.data.length > 0) {
-                
+
                 $.each(result.data, function (index, item) {
 
                     bodyHtml += "<tr><td>" + item.SupplierName + "</td><td>" + item.PONo + "</td><td>" + item.PODate + "</td ><td>" + item.DelvDate + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.RecQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.POStatus + "</td></tr>"
@@ -520,8 +654,8 @@ function ProcessReport(_orderId, _processId) {
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
             bodyHtml += "<th>Indent No.</th><th>Indent Date</th>";
-            bodyHtml += "<th>Req. Date</th><th>Indent Qty.</th>";
-            bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Return Qty.</th>";
+            bodyHtml += "<th>Req. Date</th>";
+            bodyHtml += "<th> Qty.</th><th>Rec. Qty.</th><th>Return Qty.</th>";
             bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
 
             if (result.data.length > 0) {
@@ -530,13 +664,13 @@ function ProcessReport(_orderId, _processId) {
 
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
                     bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.IndentDate + "</td><td>" + item.RequestDate + "</td>";
-                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
+                    bodyHtml += "<td>" + item.Quantity + "</td><td>" + item.RecQuantity + "</td>";
                     bodyHtml += "<td>" + item.ReturnQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
+                bodyHtml += "<tr><td colspan='11'>Data not found</td></tr></tbody>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
@@ -574,7 +708,7 @@ function FinishItemReport(_orderId, _processId) {
 
 
 
-    const obj = { OrderId: _orderId };
+    const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
         url: "Home.aspx/GetFinishDetail",
         contentType: "application/json; charset=utf-8",

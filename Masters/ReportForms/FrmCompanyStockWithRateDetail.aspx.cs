@@ -49,6 +49,7 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 2, true, " Select ");
             FillGodownMaster();
+            txtstockupto.Text = DateTime.Now.ToString("dd-MMM-yyyy");
         }
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -154,6 +155,17 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
         }
     }
     protected void BtnPreview_Click(object sender, EventArgs e)
+    {
+        if (chkRawMaterialDetail.Checked == true)
+        {
+            RawMaterialStockUpTo();
+        }
+        else
+        {
+            RawDetail();
+        }
+    }
+    private void RawDetail()
     {
         lblMessage.Text = "";
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
@@ -340,6 +352,152 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
             lblMessage.Text = ex.Message;
         }
     }
+    protected void RawMaterialStockUpTo()
+    {
+        lblMessage.Text = "";
+        int Row;
+        DataSet DS = new DataSet();
+        String sQry = " ";
+        string shadecolor = "";
+        string FilterBy = "Filter By-" + DDCompany.SelectedItem.Text;
+        try
+        {
+            sQry = @"select g.godownname, Round(Sum(case when St.trantype = 1 Then St.quantity else 0 End) - Sum(case when St.trantype = 0 Then St.quantity else 0 End),3) qtyinhand,
+                    v.category_name,v.item_name,v.qualityname,'" + shadecolor + @"' AS Description
+                    From stock s(Nolock) 
+                    join stockTran St(Nolock) on s.StockID=st.Stockid
+                    join GodownMaster g(Nolock) on s.Godownid = g.GoDownID And G.BranchID = " + DDBranchName.SelectedValue + @" 
+                    join V_FinishedItemDetail v(Nolock) on s.ITEM_FINISHED_ID=v.ITEM_FINISHED_ID
+                    Where s.companyid = " + DDCompany.SelectedValue + "  And V.MasterCompanyId=" + Session["varCompanyId"] + "";
+
+                sQry = sQry + " and St.TranDate<='" + txtstockupto.Text + "'";
+                FilterBy = FilterBy + ",Stock Up to - " + txtstockupto.Text;
+
+            if (DDGodownName.SelectedIndex > 0)
+            {
+                sQry = sQry + "AND g.godownid =" + DDGodownName.SelectedValue;
+                FilterBy = FilterBy + ",Godown - " + DDGodownName.SelectedItem.Text;
+            }
+            if (DDCategory.SelectedIndex > 0)
+            {
+                sQry = sQry + " AND v.CATEGORY_ID = " + DDCategory.SelectedValue;
+            }
+            if (ddItemName.SelectedIndex > 0)
+            {
+                sQry = sQry + " AND v.ITEM_ID = " + ddItemName.SelectedValue;
+                FilterBy = FilterBy + ",Item - " + ddItemName.SelectedItem.Text;
+            }
+            if (DDQuality.SelectedIndex > 0)
+            {
+                sQry = sQry + " AND v.QUALITYID = " + DDQuality.SelectedValue;
+                FilterBy = FilterBy + ",Quality - " + DDQuality.SelectedItem.Text;
+            }
+            if (DDDesign.SelectedIndex > 0)
+            {
+                sQry = sQry + " AND v.DESIGNID = " + DDDesign.SelectedValue;
+            }
+            if (DDColor.SelectedIndex > 0)
+            {
+                sQry = sQry + " AND v.COLORID = " + DDColor.SelectedValue;
+            }
+            if (DDShadeColor.SelectedIndex > 0)
+            {
+                sQry = sQry + " AND v.SHADECOLORID = " + DDShadeColor.SelectedValue;
+                FilterBy = FilterBy + ",Shadecolor - " + DDShadeColor.SelectedItem.Text;
+            }
+            if (DDSize.SelectedIndex > 0)
+            {
+                sQry = sQry + " AND v.Sizeid = " + DDSize.SelectedValue;
+            }
+
+            sQry = sQry + " group by g.godownname,v.category_name,v.item_name,v.qualityname, G.BranchID order by qualityname";
+
+            DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sQry);
+            if (DS.Tables[0].Rows.Count > 0)
+            {
+                string Path = "";
+
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("Stock Summary");
+                //*************
+                sht.Range("A1:D1").Merge();
+                sht.Range("A1:D1").Style.Font.FontSize = 11;
+                sht.Range("A1:D1").Style.Font.Bold = true;
+                sht.Range("A1:D1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:D1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                sht.Range("A1").SetValue("STOCK SUMMARY(" + shadecolor + ")");
+                sht.Row(1).Height = 21.75;
+                //
+                sht.Range("A2:D2").Merge();
+                sht.Range("A2:D2").Style.Font.FontSize = 11;
+                sht.Range("A2:D2").Style.Font.Bold = true;
+                sht.Range("A2:D2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:D2").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                sht.Range("A2").SetValue(FilterBy.TrimStart(','));
+                sht.Row(2).Height = 21.75;
+                //Header
+                sht.Range("A3:D3").Style.Font.FontSize = 11;
+                sht.Range("A3:D3").Style.Font.Bold = true;
+                sht.Range("A3:D3").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                sht.Range("D3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Row(3).Height = 18.00;
+                //
+                sht.Range("A3").SetValue("Item Name");
+                sht.Range("B3").SetValue("Colour");
+                sht.Range("C3").SetValue("Godown Name");
+                sht.Range("D3").SetValue("Stock Qty(Kgs.)");
+                Row = 4;
+                Decimal Tqty = 0;
+                for (int i = 0; i < DS.Tables[0].Rows.Count; i++)
+                {
+                    sht.Range("A" + Row + ":D" + Row).Style.Font.FontSize = 11;
+
+                    sht.Range("A" + Row).SetValue(DS.Tables[0].Rows[i]["Qualityname"]);
+                    sht.Range("B" + Row).SetValue(DS.Tables[0].Rows[i]["Description"]);
+                    sht.Range("C" + Row).SetValue(DS.Tables[0].Rows[i]["Godownname"]);
+                    sht.Range("D" + Row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                    sht.Range("D" + Row).Style.NumberFormat.Format = "#,##0.000";
+                    sht.Range("D" + Row).SetValue(Convert.ToDecimal(DS.Tables[0].Rows[i]["qtyinhand"]));
+                    Tqty = Tqty + Convert.ToDecimal(DS.Tables[0].Rows[i]["qtyinhand"]);
+                    Row = Row + 1;
+                }
+                // Total
+                sht.Range("D" + Row).Style.Font.FontSize = 11;
+                sht.Range("D" + Row).Style.Font.Bold = true;
+                sht.Range("D" + Row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("D" + Row).Style.NumberFormat.Format = "#,##0.000";
+                sht.Range("D" + Row).SetValue(Tqty);
+                //**********
+                sht.Columns(1, 10).AdjustToContents();
+                //**************Save
+                //******SAVE FILE
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("StockSummary(" + shadecolor + ")" + DateTime.Now + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn2", "alert('No Record Found!');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            lblMessage.Text = ex.Message;
+        }
+    }
+
     protected void BtnClose_Click(object sender, EventArgs e)
     {
         Response.Redirect("~/main.aspx");
@@ -353,6 +511,14 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
         UtilityModule.ConditionalComboFill(ref DDGodownName, @"Select GodownID, GodownName 
         From GodownMaster(Nolock) Where BranchID = " + DDBranchName.SelectedValue + " And MasterCompanyID = " + Session["varCompanyId"] + @" 
         Order By GodownName ", true, "--Plz Select--");
+    }
+    protected void chkallstockno_CheckedChanged(object sender, EventArgs e)
+    {
+        TDstockupto.Visible = false;
+        if(chkRawMaterialDetail.Checked ==true )
+        {
+            TDstockupto.Visible = true;
+        }
     }
 }
 

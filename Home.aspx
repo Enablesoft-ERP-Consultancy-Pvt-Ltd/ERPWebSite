@@ -187,6 +187,5 @@
     <script src="<%= Page.ResolveUrl("~/lib/datatables-tabletools/js/dataTables.tableTools.min.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/datatables.net-bs5/js/dataTables.bootstrap5.min.js")%>"></script>
 
-    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.6")%>"></script>
-</asp:Content>
+    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.5")%>"></script></asp:Content>
 
