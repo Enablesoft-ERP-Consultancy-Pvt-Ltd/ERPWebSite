@@ -387,6 +387,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
             From V_ORDERSHADEWISEINDENTDETAIL_VIKRAMMIRZAPUR Where Companyid=" + DDCompany.SelectedValue;
         }
+        else if (Session["varCompanyId"].ToString() == "43")
+        {
+            str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
+            From V_ORDERSHADEWISEINDENTDETAIL_CarpetInternational Where Companyid=" + DDCompany.SelectedValue;
+        }
         else
         {
             str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
@@ -475,8 +480,14 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             else
             {
                 Session["dsFilename"] = "~\\ReportSchema\\rptindentordershadewiseDetail.xsd";
-
-                Session["rptFilename"] = "Reports/rptindentordershadewiseDetail.rpt";
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Session["rptFilename"] = "Reports/rptindentordershadewiseDetailCI.rpt";
+                }
+                else
+                {
+                    Session["rptFilename"] = "Reports/rptindentordershadewiseDetail.rpt";
+                }                  
 
                 Session["GetDataset"] = ds;
                 StringBuilder stb = new StringBuilder();
@@ -1153,6 +1164,235 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     }
                     str = str + " Order by  Indentno";
                 }
+                else if(Session["VarCompanyNo"].ToString()=="43")
+                {
+                    if (variable.JoborderNewModule == "1")
+                    {
+                        str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End as CompanyName,Empname,IndentNo,
+                            '' as IssueChallanNo,PM.ChallanNo As RecChallanNo,
+                            Case When CI.MasterCompanyid=14 Then PM.Date Else Replace(convert(varchar(11),PM.Date,106),' ','-') End as Date,Finishedid,PT.LotNo,
+                            ITEM_NAME,QualityName,ShadeColorName,
+                            CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
+                            case When PT.flagsize=1 Then vf.Sizemtr When PT.flagsize=0 Then Sizeft When Pt.flagsize=2 Then vf.Sizeinch Else vf.Sizeft  End As Description,Sum(RecQuantity) As RecQty,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty,
+                            '" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + @"' As ToDate," + VarDateflag + @" As dateflag,OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid
+                            ,case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process ,PT.TagNo,'' as CustomerCode,isnull(sum(PT.Moisture),0) as Moisture,isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks
+                            ,sum(isnull(PT.IssueQtyOnMachine,0)) as IssueQtyOnMachine
+                            ,Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
+	                            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+	                            Where OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,GM.GodownName
+                            From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
+                            inner join IndentMaster Im on PT.IndentId=IM.IndentID
+                            inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
+                            inner join EmpInfo E on PM.Empid=E.EmpId
+                            inner join PROCESS_NAME_MASTER PNM on PM.processid=PNM.PROCESS_NAME_ID
+                            inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
+                            inner join V_FinishedItemDetail vf on PT.Finishedid=vf.ITEM_FINISHED_ID                           
+                            left join OrderDetail OD on PT.Orderdetailid=OD.OrderDetailId
+                            left join OrderMaster OM on OD.OrderId=OM.OrderId
+                            left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
+                            INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
+                            JOIN GodownMaster GM ON PT.Godownid=GM.GoDownID
+                            Where IM.MasterCompanyId=" + Session["varCompanyId"];
+
+                    }
+                    else
+                    {
+                        ////                    str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
+                        ////                      PRM.ChallanNo as IssueChallanNo,PM.ChallanNo As RecChallanNo,PM.Date,Finishedid,PT.LotNo,
+                        ////                      CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
+                        ////                      case When PT.unitId=1 Then Sizemtr Else Case When PT.UnitId=2 Then Sizeft Else case When PT.UnitId=6 Then Sizeinch 
+                        ////                      Else Sizemtr End End End As Description,SUM(CASE WHEN REC_ISS_ITEMFLAG=0 THEN RECQUANTITY ELSE 0 END) AS RECQTY,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty
+                        ////                      ,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,
+                        ////                       OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid,
+                        ////                       case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process,SUM(CASE WHEN REC_ISS_ITEMFLAG=1 THEN RECQUANTITY ELSE 0 END) AS UNDYEDQTY,pT.TagNo
+                        ////                        From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
+                        ////                        inner join IndentMaster Im on PT.IndentId=IM.IndentID
+                        ////                        inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
+                        ////                        inner join EmpInfo E on PM.Empid=E.EmpId
+                        ////                        inner join PROCESS_NAME_MASTER PNM on PM.processid=PNM.PROCESS_NAME_ID
+                        ////                        inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
+                        ////                        inner join V_FinishedItemDetail vf on PT.Finishedid=vf.ITEM_FINISHED_ID
+                        ////                        left join OrderDetail OD on PT.Orderdetailid=OD.OrderDetailId
+                        ////                        left join OrderMaster OM on OD.OrderId=OM.OrderId
+                        ////                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
+                        ////                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
+                        ////                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+
+
+                        str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
+                      PRM.ChallanNo as IssueChallanNo,PM.ChallanNo As RecChallanNo,
+                      Case When CI.MasterCompanyid=14 Then PM.Date Else Replace(convert(varchar(11),PM.Date,106),' ','-') End as Date,Finishedid,PT.LotNo,
+                      ITEM_NAME,QualityName,ShadeColorName,
+                       CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+
+                      case When PT.unitId=1 Then Sizemtr Else Case When PT.UnitId=2 Then Sizeft Else case When PT.UnitId=6 Then Sizeinch 
+                      Else Sizemtr End End End As Description,SUM(CASE WHEN REC_ISS_ITEMFLAG=0 THEN RECQUANTITY ELSE 0 END) AS RECQTY,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty
+                      ,'" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,
+                       OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid,
+                       case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process,
+                        SUM(CASE WHEN REC_ISS_ITEMFLAG=1 THEN RECQUANTITY ELSE 0 END) AS UNDYEDQTY,pT.TagNo,isnull(CustInfo.CustomerCode,'') as CustomerCode,isnull(sum(PT.Moisture),0) as Moisture,
+                        isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks ,sum(isnull(PT.IssueQtyOnMachine,0)) as IssueQtyOnMachine
+                        ,Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
+	                            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+	                            Where OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,GM.GodownName
+                        From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
+                        inner join IndentMaster Im on PT.IndentId=IM.IndentID
+                        inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
+                        inner join EmpInfo E on PM.Empid=E.EmpId
+                        inner join PROCESS_NAME_MASTER PNM on PM.processid=PNM.PROCESS_NAME_ID
+                        inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
+                        inner join V_FinishedItemDetail vf on PT.Finishedid=vf.ITEM_FINISHED_ID
+                        LEFT JOIN OrderMaster OM ON OM.OrderId in(Select ID.OrderID From IndentDetail ID JOIN OrderMaster OM3 ON ID.OrderID=OM3.OrderID  Where ID.IndentId=IM.IndentId)
+                        LEFT JOIN CustomerInfo CustInfo ON OM.CustomerID=CustInfo.CustomerID
+                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
+                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
+                        JOIN GodownMaster GM ON PT.Godownid=GM.GoDownID
+                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        switch (Session["varcompanyNo"].ToString())
+                        {
+                            case "16":
+                                str = str + " and PT.Rec_Iss_ItemFlag=0";
+                                break;
+                            default:
+                                break;
+                        }
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = @"select pnm.process_name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,ei.EmpName,case When CHARINDEX('s',sm.indentNo)=0 then 'S-'+sm.indentNo else Sm.indentNo End as Indentno
+                                ,Sm.indentno as Issuechallanno,srm.ChallanNo as RecChallanNo,
+                                Case When CI.MasterCompanyid=14 Then Srm.ReceiveDate Else Replace(convert(varchar(11),Srm.ReceiveDate,106),' ','-') End as Date,Srd.Rfinishedid as Finishedid,srd.LotNo,
+                                Vf.ITEM_NAME,Vf.QualityName,Vf.ShadeColorName,
+                                Vf.CATEGORY_NAME+' '+Vf.ITEM_NAME+' '+Vf.QualityName+' '+Vf.designName+' '+Vf.ColorName+' '+Vf.ShadeColorName+' '+Vf.ShapeName+' '+
+                                case When vf.SizeId>0 then vf.SizeFt else '' End As Description,Sum(Srd.recqty) as Recqty,sum(srd.lossqty) as Lossqty,0 as retqty,
+                                '" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @"  As dateflag,'' as Localorder,'' as Customerorderno,0 as Lshort,0 as shrinkage,sm.id as prmid,pnm.process_name as Re_process,
+                                SUM(SRD.UNDYEDQTY) AS UNDYEDQTY,Srd.TagNo,'' as CustomerCode,0 as Moisture,'' as CheckedBy,'' as IndentRecRemarks 
+                                ,sum(isnull(srd.IssQtyOnMachine,0)) as IssueQtyOnMachine,'' as OrderQuality,GM.GodownName
+                                From SampleDyeingReceivemaster Srm inner join SampleDyeingReceiveDetail srd on srm.ID=srd.Masterid
+                                inner join SampleDyeingmaster sm on srd.issueid=sm.ID
+                                inner join companyinfo ci on srm.companyid=ci.companyid
+                                inner join EmpInfo ei on srm.empid=ei.EmpId
+                                inner join PROCESS_NAME_MASTER pnm on sm.processid=pnm.PROCESS_NAME_ID
+                                inner join V_FinishedItemDetail vf on srd.Rfinishedid=vf.ITEM_FINISHED_ID 
+                                JOIN GodownMaster GM ON srd.Godownid=GM.GoDownID
+                                Where 1=1 and (Recqty+lossqty+undyedqty)>0";
+                        }
+
+                    }
+                    if (DDCompany.SelectedIndex > 0)
+                    {
+                        if (variable.JoborderNewModule == "1")
+                        {
+                            str = str + " And IM.CompanyId=" + DDCompany.SelectedValue;
+                        }
+                        else
+                        {
+                            str = str + " And PRM.CompanyId=" + DDCompany.SelectedValue;
+                            if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                            {
+                                strsample = strsample + " And SRM.CompanyId=" + DDCompany.SelectedValue;
+                            }
+                        }
+                    }
+                    if (DDCustCode.SelectedIndex > 0)
+                    {
+                        str = str + " And OM.CustomerId=" + DDCustCode.SelectedValue;
+                    }
+                    if (DDOrderNo.SelectedIndex > 0)
+                    {
+                        str = str + " And OM.OrderId=" + DDOrderNo.SelectedValue;
+                    }
+                    if (DDProcessName.SelectedIndex > 0)
+                    {
+                        str = str + " And PM.Processid=" + DDProcessName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + " And Sm.Processid=" + DDProcessName.SelectedValue;
+                        }
+                    }
+                    if (DDEmpName.SelectedIndex > 0)
+                    {
+                        str = str + " And PM.EmpId=" + DDEmpName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + " And Srm.EmpId=" + DDEmpName.SelectedValue;
+                        }
+
+                    }
+                    if (DDIndentNo.SelectedIndex > 0)
+                    {
+                        if (chksample.Checked == true)
+                        {
+                            strsample = strsample + "  And sm.id=" + DDIndentNo.SelectedValue;
+                            str = str + "  And IM.IndentId=0";
+                        }
+                        else
+                        {
+                            str = str + "  And IM.IndentId=" + DDIndentNo.SelectedValue;
+                            if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                            {
+                                strsample = strsample + "  And sm.id=0";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (chksample.Checked == true)
+                        {
+                            str = str + "  And IM.IndentId=0";
+                        }
+                    }
+                    if (TRPartyChallanNo.Visible == true)
+                    {
+                        if (txtPartyChallanNo.Text != "")
+                        {
+                            str = str + "  And PM.ChallanNo='" + txtPartyChallanNo.Text + "'";
+                            strsample = strsample + "  And SRM.ChallanNo='" + txtPartyChallanNo.Text + "'";
+                        }
+                    }
+                    if (ddItemName.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.Item_id=" + ddItemName.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.Item_id=" + ddItemName.SelectedValue;
+                        }
+                    }
+                    if (DDQuality.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.Qualityid=" + DDQuality.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.Qualityid=" + DDQuality.SelectedValue;
+                        }
+                    }
+                    if (DDShadeColor.SelectedIndex > 0)
+                    {
+                        str = str + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            strsample = strsample + "  and VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+                        }
+                    }
+                    if (ChkForDate.Checked == true)
+                    {
+                        str = str + "  And PM.Date>='" + TxtFromDate.Text + "' And PM.Date<='" + TxtToDate.Text + "'";
+                        strsample = strsample + "  And Srm.Receivedate>='" + TxtFromDate.Text + "' And srm.Receivedate<='" + TxtToDate.Text + "'";
+                    }
+                    if (variable.JoborderNewModule == "1")
+                    {
+                        str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,Pt.flagsize,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid,OM.OrderID ,GM.GodownName";
+                    }
+                    else
+                    {
+                        str = str + "  group by Process_Name,CI.CompanyName,Empname,IndentNo,PRM.ChallanNo,PM.ChallanNo,PM.Date,Finishedid,PT.Lotno,PT.TagNo,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,PT.unitId,Sizemtr,Sizeft,Sizeinch,OM.LocalOrder,OM.CustomerOrderNo,PM.PRMid,ID.Re_Process,CustInfo.CustomerCode,PM.CheckedBy,PM.RRRemark,CI.MasterCompanyid,OM.OrderID,GM.GodownName ";
+                        strsample = strsample + "  group by pnm.process_name,CI.CompanyName,ei.EmpName,sm.indentNo,srm.ChallanNo,Srm.ReceiveDate,Srd.Rfinishedid,srd.LotNo,Srd.TagNo,Vf.CATEGORY_NAME,Vf.ITEM_NAME,Vf.QualityName,Vf.designName,Vf.ColorName,Vf.ShadeColorName,Vf.ShapeName,vf.SizeId,vf.SizeFt,sm.ID,CI.MasterCompanyid,GM.GodownName  ";
+
+                        if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
+                        {
+                            str = str + " UNION ALL " + strsample;
+                        }
+                    }
+                    str = str + " Order by  Indentno";
+                }
                 else
                 {
                     if (variable.JoborderNewModule == "1")
@@ -1212,7 +1452,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                        OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid,
                        case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process,
                         SUM(CASE WHEN REC_ISS_ITEMFLAG=1 THEN RECQUANTITY ELSE 0 END) AS UNDYEDQTY,pT.TagNo,isnull(CustInfo.CustomerCode,'') as CustomerCode,isnull(sum(PT.Moisture),0) as Moisture,
-                        isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks
+                        isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks 
                         From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
                         inner join IndentMaster Im on PT.IndentId=IM.IndentID
                         inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
@@ -1395,6 +1635,16 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         case "6":
                         case "12":
                             Session["rptFilename"] = "Reports/RptIndentRawRecDetailIndentWiseArtindia.rpt";
+                            break;
+                        case "43":
+                            if (ChkForIndentRecMachineIssQtyWise.Checked == true)
+                            {
+                                Session["rptFilename"] = "Reports/RptIndentRawRecDetailMachineIssQtyWiseCI.rpt";
+                            }
+                            else
+                            {
+                                Session["rptFilename"] = "Reports/RptIndentRawRecDetailIndentWise.rpt";
+                            }
                             break;
                         default:
                             Session["rptFilename"] = "Reports/RptIndentRawRecDetailIndentWise.rpt";
@@ -2258,6 +2508,12 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 From OrderMaster OM 
                 Where OM.Status=0";
         }
+        else if (Session["varcompanyid"].ToString() == "43")
+        {
+            str = @"Select distinct OM.OrderId, CustomerOrderNo+ ' / ' +LocalOrder as CustomerOrderNo 
+                From OrderMaster OM 
+                join V_Indent_OredrId VO ON Om.OrderId=VO.Orderid Where OM.Status=0";
+        }
         else
         {
             str = @"Select distinct OM.OrderId, LocalOrder+ ' / ' +CustomerOrderNo as CustomerOrderNo 
@@ -2740,9 +2996,25 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     sht.Range("B1").Value = "BPO";
                     sht.Range("C1").Value = "DELV DT.";
                     sht.Range("D1").Value = "COUNT";
-                    sht.Range("E1").Value = "ORDER AREA(SQYD)";
+                    if (Session["VarCompanyNo"].ToString() == "14")
+                    {
+                        sht.Range("E1").Value = "ORDER AREA(SQM)";
+                    }
+                    else
+                    {
+                        sht.Range("E1").Value = "ORDER AREA(SQYD)";
+                    }                   
                     sht.Range("F1").Value = "SHADE NO";
-                    sht.Range("G1").Value = "LAGAT(SQYD)";
+
+                    if (Session["VarCompanyNo"].ToString() == "14")
+                    {
+                        sht.Range("G1").Value = "LAGAT(SQM)";
+                    }
+                    else
+                    {
+                        sht.Range("G1").Value = "LAGAT(SQYD)";
+                    } 
+                    
                     sht.Range("H1").Value = "REQ QTY";
                     sht.Range("I1").Value = "INDENT QTY";
                     sht.Range("J1").Value = "REC QTY";
@@ -3760,7 +4032,6 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 }
                 else
                 {
-
                     sht.Column("A").Width = 35.22;
                     sht.Column("B").Width = 20.22;
                     sht.Column("C").Width = 25.22;
@@ -3870,8 +4141,6 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
                         a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                     }
-                
-                
                 }
                 //sht.Columns(1, 30).AdjustToContents();
 

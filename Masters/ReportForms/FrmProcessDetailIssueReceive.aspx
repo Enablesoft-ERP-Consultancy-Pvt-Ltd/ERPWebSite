@@ -449,6 +449,16 @@
                                             <asp:CheckBox ID="ChkForDate" runat="server" Text="Check For Date" CssClass="checkboxbold" />
                                         </td>
                                     </tr>
+                                     <tr>
+                                        <td colspan="2" align="left">
+                                            <asp:CheckBox ID="chksumm" runat="server" Text="Summary" Visible="false" CssClass="checkboxbold" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" align="left">
+                                            <asp:CheckBox ID="chkall" runat="server" Text="ALL" Visible="false" CssClass="checkboxbold" />
+                                        </td>
+                                    </tr>
                                     <tr id="trDates" runat="server">
                                         <td>
                                             <asp:Label ID="Label5" runat="server" CssClass="labelbold" Text="From Date"></asp:Label>

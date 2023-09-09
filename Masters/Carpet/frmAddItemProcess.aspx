@@ -36,6 +36,9 @@
                 </tr>
                 <tr>
                     <td>
+
+                        <asp:RadioButtonList ID="rdbtnLst" runat="server" RepeatDirection="Horizontal" DataValueField="ItemId" DataTextField="ItemName"></asp:RadioButtonList>
+
                     </td>
                     <td id="TDDesign" runat="server" visible="false">
                         <asp:Label ID="Label1" runat="server" Text="DESIGN NAME" CssClass="labelbold"></asp:Label>

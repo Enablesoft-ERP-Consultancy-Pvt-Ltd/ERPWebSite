@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Services.Description;
 using System.Windows;
 using IExpro.Core.Common;
@@ -19,9 +20,26 @@ namespace IExpro.Core.Models.Reports
         public string PackingDate { get; set; }
         public string DelayDays { get; set; }
         public int OrderStatus { get { return PackingDate != null ? 1 : 0; } }
+        public int SeqNo { get; set; }
+        public int ProcessId { get; set; }
+        public string ProcessName { get; set; }
+        public short ProcessType { get; set; }
+        public IList<ProcessItem> ProcessList { get; set; }
+
+        
+    }
+    public class ProcessItem
+    {
+
+        public int SeqNo { get; set; }
+        public int ProcessId { get; set; }
+        public short ProcessType { get; set; }
+        
+        public string ProcessName { get; set; }
     }
 
-    public class PurchaseRawMaterialModel
+
+        public class PurchaseRawMaterialModel
     {
         public string Category { get; set; }
         public string PONo { get; set; }

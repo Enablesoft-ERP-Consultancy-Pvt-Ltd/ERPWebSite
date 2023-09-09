@@ -11,7 +11,6 @@
               <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
               <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
               <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
-              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
               <xs:element name="ShadeColorName" type="xs:string" minOccurs="0" />
               <xs:element name="LotNo" type="xs:string" minOccurs="0" />
               <xs:element name="TagNo" type="xs:string" minOccurs="0" />

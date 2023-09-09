@@ -6,6 +6,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
+using IExpro.Core.Common;
+using IExpro.Web.Models;
 
 public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 {
@@ -17,6 +19,17 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
+
+
+            var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
+
+            rdbtnLst.DataSource= result;
+            rdbtnLst.DataBind();
+            rdbtnLst.SelectedIndex= 0;
+
+
+
+
             UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
             lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
             switch (Session["varcompanyid"].ToString())
@@ -29,6 +42,11 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
                     TDquality.Visible = true;
                     TDDesign.Visible = true;
                     break;
+
+
+
+
+
             }
             //
             if (TDquality.Visible == true)
@@ -101,7 +119,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] array = new SqlParameter[7];
+            SqlParameter[] array = new SqlParameter[8];
             array[0] = new SqlParameter("@Itemid", SqlDbType.Int);
             array[1] = new SqlParameter("@UserId", SqlDbType.Int);
             array[2] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
@@ -109,11 +127,11 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
             array[4] = new SqlParameter("@Msg", SqlDbType.VarChar, 50);
             array[5] = new SqlParameter("@QualityId", SqlDbType.Int);
             array[6] = new SqlParameter("@DesignId", SqlDbType.Int);
-
+            array[7] = new SqlParameter("@ProcessType", SqlDbType.TinyInt);
             array[0].Value = Request.QueryString["a"];
             array[1].Value = Session["varuserid"];
             array[2].Value = Session["varcompanyId"];
-
+            array[7].Value = rdbtnLst.SelectedValue;
             string str = "";
             string strnew = "";
             // find ProcessId And SeqNo

@@ -40,8 +40,6 @@ public partial class Home : BasePage
         string resultString = "";
         try
         {
-    
-
             var obj = OrdSrv.GetOrderList(Home.CompanyId).OrderByDescending(x => x.OrderId);
             var objdata = obj.GroupBy(x => x.OrderStatus).Select(y => new
             {
@@ -50,14 +48,10 @@ public partial class Home : BasePage
             });
             var result = new { data = obj, chartData = objdata.ToList(), totalSum = objdata.Sum(x => x.OrderCount) };
             resultString = JsonConvert.SerializeObject(result);
-
-
         }
         catch (Exception ex)
         {
-
             throw ex;
-
         }
         return resultString;
     }
