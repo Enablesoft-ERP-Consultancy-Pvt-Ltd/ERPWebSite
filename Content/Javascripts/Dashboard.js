@@ -179,7 +179,7 @@ $(function () {
                                         className = "btnFinish";
                                         break;
                                 }
-                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
+                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " prName=" + item.ProcessName + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
 
                             });
 
@@ -311,6 +311,8 @@ $(function () {
             table.on('click', 'a.btnPurchase', function (e) {
                 var elem = $(this);
                 var id = elem.attr('exthref');
+                
+                
                 var _orderId = parseInt(id);
                 PurchaseReport(_orderId);
             });
@@ -319,14 +321,16 @@ $(function () {
                 var elem = $(this);
                 var _orderId = parseInt(elem.attr('exthref'));
                 var _processId = parseInt(elem.attr('prhref'));
-                ProcessReport(_orderId, _processId);
+                var name = elem.attr('prName');
+                ProcessReport(_orderId, _processId, name);
             });
 
             table.on('click', 'a.btnIssueProcess', function (e) {
                 var elem = $(this);
                 var _orderId = parseInt(elem.attr('exthref'));
                 var _processId = parseInt(elem.attr('prhref'));
-                ProcessIssueReport(_orderId, _processId);
+                var name = elem.attr('prName');
+                ProcessIssueReport(_orderId, _processId, name);
             });
 
 
@@ -335,7 +339,8 @@ $(function () {
                 var elem = $(this);
                 var _orderId = parseInt(elem.attr('exthref'));
                 var _processId = parseInt(elem.attr('prhref'));
-                FinishItemReport(_orderId, _processId);
+                var name = elem.attr('prName');
+                FinishItemReport(_orderId, _processId, name);
             });
 
 
@@ -630,13 +635,12 @@ function PurchaseReport(_orderId) {
 }
 
 
-function ProcessReport(_orderId, _processId) {
+function ProcessReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
 
-    $('h4.modal-title').empty();
-    var item = ProcessList.find(S => S.ProcessId == _processId);
-    $('h4.modal-title').html(item.Title);
+    $('h4.modal-title').empty();    
+    $('h4.modal-title').html(name);
 
 
 
@@ -692,19 +696,12 @@ function ProcessReport(_orderId, _processId) {
 }
 
 
-
-
-
-
-
-
-function FinishItemReport(_orderId, _processId) {
+function FinishItemReport(_orderId, _processId,name) {
 
     var bodyHtml = "";
 
     $('h4.modal-title').empty();
-    var item = ProcessList.find(S => S.ProcessId == _processId);
-    $('h4.modal-title').html(item.Title);
+    $('h4.modal-title').html(name);
 
 
 
@@ -760,31 +757,12 @@ function FinishItemReport(_orderId, _processId) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function ProcessIssueReport(_orderId, _processId) {
+function ProcessIssueReport(_orderId, _processId,name) {
 
     var bodyHtml = "";
 
-    $('h4.modal-title').empty();
-    var item = ProcessList.find(S => S.ProcessId == _processId);
-    $('h4.modal-title').html(item.Title);
+    $('h4.modal-title').empty();    
+    $('h4.modal-title').html(name);
 
 
 
