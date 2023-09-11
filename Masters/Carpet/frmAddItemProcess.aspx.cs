@@ -22,15 +22,17 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 
 
             var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
-
-            rdbtnLst.DataSource= result;
+            rdbtnLst.DataSource = result;
             rdbtnLst.DataBind();
-            rdbtnLst.SelectedIndex= 0;
+            rdbtnLst.SelectedIndex = 0;
 
 
 
 
             UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
+
+
+
             lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
             switch (Session["varcompanyid"].ToString())
             {
@@ -83,7 +85,11 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
                 //Check if process Already Exists
                 if (!lstSelectProcess.Items.Contains(lstProcess.Items[i]))
                 {
-                    lstSelectProcess.Items.Add(new ListItem(lstProcess.Items[i].Text, lstProcess.Items[i].Value));
+
+                    string ProcessName = lstProcess.Items[i].Text + "(" + rdbtnLst.SelectedText + ")";
+                    var item = new ListItem(ProcessName, lstProcess.Items[i].Value);
+                    item.Attributes("ProcessType") = rdbtnLst.SelectedValue;
+                    lstSelectProcess.Items.Add(item);
                 }
             }
         }
