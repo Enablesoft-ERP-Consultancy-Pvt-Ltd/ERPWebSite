@@ -23,9 +23,9 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 
             var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
 
-            rdbtnLst.DataSource= result;
+            rdbtnLst.DataSource = result;
             rdbtnLst.DataBind();
-            rdbtnLst.SelectedIndex= 0;
+            rdbtnLst.SelectedIndex = 0;
 
 
 
@@ -83,7 +83,13 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
                 //Check if process Already Exists
                 if (!lstSelectProcess.Items.Contains(lstProcess.Items[i]))
                 {
-                    lstSelectProcess.Items.Add(new ListItem(lstProcess.Items[i].Text, lstProcess.Items[i].Value));
+
+                    string ProcessName = lstProcess.Items[i].Text + "(" + rdbtnLst.SelectedItem.Text + ")";
+                    var item = new ListItem(ProcessName, lstProcess.Items[i].Value);
+                    item.Attributes.Add("data-processType", rdbtnLst.SelectedValue);
+                    lstSelectProcess.Items.Add(item);
+
+
                 }
             }
         }
