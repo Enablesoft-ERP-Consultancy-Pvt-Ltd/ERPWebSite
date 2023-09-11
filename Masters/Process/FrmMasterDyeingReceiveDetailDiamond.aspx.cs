@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.UI.Page
+public partial class Masters_Process_FrmMasterDyeingReceiveDetailDiamond : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -46,7 +46,7 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
     {
         if (chkEdit.Checked == true)
         {
-            string str = @"select Distinct MIM.DEID,MIM.ChallanNo from DyeingExcludeDetailDiamond MIM 
+            string str = @"select Distinct MIM.DRID,MIM.RecChallanNo from MasterDyeingReceiveDetailDiamond MIM 
                            Where MIM.CompanyId=" + DDCompany.SelectedValue + " ";
 
             UtilityModule.ConditionalComboFill(ref DDissueno, str, true, "--Plz Select--");
@@ -78,7 +78,11 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
         if (UtilityModule.VALIDTEXTBOX(txtLotNo) == false)
         {
             goto a;
-        }      
+        }
+        if (UtilityModule.VALIDTEXTBOX(txtRecQty) == false)
+        {
+            goto a;
+        } 
         else
         {
             goto B;
@@ -102,37 +106,38 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-                SqlParameter[] param = new SqlParameter[12];
-                param[0] = new SqlParameter("@DEID", SqlDbType.Int);
+                SqlParameter[] param = new SqlParameter[13];
+                param[0] = new SqlParameter("@DRID", SqlDbType.Int);
                 param[0].Value = hnRecId.Value;
                 param[0].Direction = ParameterDirection.InputOutput;
                 param[1] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
-                param[2] = new SqlParameter("@ChallanNo", SqlDbType.VarChar, 50);
+                param[2] = new SqlParameter("@RecChallanNo", SqlDbType.VarChar, 50);
                 param[2].Value = "";
                 param[2].Direction = ParameterDirection.InputOutput;
-                param[3] = new SqlParameter("@AssignDate", txtRecDate.Text);
+                param[3] = new SqlParameter("@RecDate", txtRecDate.Text);
                 param[4] = new SqlParameter("@IndentNo", txtIndentNo.Text);
                 param[5] = new SqlParameter("@ItemName", txtItemName.Text);
 
                 param[6] = new SqlParameter("@QualityName", txtQualityName.Text);
                 param[7] = new SqlParameter("@ShadeColorName", txtColorName.Text);
-                param[8] = new SqlParameter("@LotNo", txtLotNo.Text);               
-                param[9] = new SqlParameter("@userid", Session["varuserid"]);
-                param[10] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
-                param[11] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-                param[11].Direction = ParameterDirection.Output;
+                param[8] = new SqlParameter("@LotNo", txtLotNo.Text);
+                param[9] = new SqlParameter("@RecQty", txtRecQty.Text); 
+                param[10] = new SqlParameter("@userid", Session["varuserid"]);
+                param[11] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[12] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+                param[12].Direction = ParameterDirection.Output;
 
 
                 ///**********
-                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveDyeingExcludeDetailDiamond", param);
+                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveMasterDyeingReceiveDetailDiamond", param);
                 //*******************
                 //ViewState["reportid"] = param[0].Value.ToString();
                 txtRecNo.Text = param[2].Value.ToString();
                 hnRecId.Value = param[0].Value.ToString();
                 Tran.Commit();
-                if (param[11].Value.ToString() != "")
+                if (param[12].Value.ToString() != "")
                 {
-                    lblmessage.Text = param[11].Value.ToString();
+                    lblmessage.Text = param[12].Value.ToString();
                 }
                 else
                 {
@@ -143,7 +148,8 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
                     txtItemName.Text = "";
                     txtQualityName.Text = "";
                     txtColorName.Text = "";
-                    txtLotNo.Text = "";                    
+                    txtLotNo.Text = "";
+                    txtRecQty.Text = "";
                 }
 
             }
@@ -163,8 +169,8 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
     }
     protected void FillissueGrid()
     {
-        string str = @"Select MPR.DEID,MPR.CompanyId,MPR.ChallanNo,MPR.AssignDate,MPR.IndentNo,MPR.ItemName, MPR.QualityName,MPR.ShadeColorName,MPR.LotNo
-                        From DyeingExcludeDetailDiamond MPR(NoLock)                      
+        string str = @"Select MPR.DRID,MPR.CompanyId,MPR.RecChallanNo,MPR.RecDate,MPR.IndentNo,MPR.ItemName, MPR.QualityName,MPR.ShadeColorName,MPR.LotNo,isnull(MPR.RecQty,0) as RecQty
+                        From MasterDyeingReceiveDetailDiamond MPR(NoLock)                      
                         Where MPR.CompanyId = " + DDCompany.SelectedValue;
 
         //if (txtEditIssueNo.Text != "")
@@ -176,7 +182,7 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
         //    str = str + " and MPR.PRID=" + hnRecId.Value + "";
         //}
 
-        str = str + " Order by MPR.DEID desc";
+        str = str + " Order by MPR.DRID desc";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -192,10 +198,10 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
         {
             if (ds.Tables[0].Rows.Count > 0)
             {
-                txtRecNo.Text = ds.Tables[0].Rows[0]["ChallanNo"].ToString();
-                txtRecDate.Text = ds.Tables[0].Rows[0]["AssignDate"].ToString();
+                txtRecNo.Text = ds.Tables[0].Rows[0]["RecChallanNo"].ToString();
+                txtRecDate.Text = ds.Tables[0].Rows[0]["RecDate"].ToString();
                 FillIssueNo();
-                DDissueno.SelectedValue = ds.Tables[0].Rows[0]["DEID"].ToString();
+                DDissueno.SelectedValue = ds.Tables[0].Rows[0]["DRID"].ToString();
 
             }
             else
@@ -356,17 +362,17 @@ public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            Label lblDEID = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblDEID");           
+            Label lblDRID = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblDRID");           
 
             SqlParameter[] param = new SqlParameter[5];
-            param[0] = new SqlParameter("@DEID", lblDEID.Text);
+            param[0] = new SqlParameter("@DRID", lblDRID.Text);
             param[1] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
             param[2] = new SqlParameter("@UserID", Session["varuserid"]);
             param[3] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             //****************
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DeleteDyeingExcludeDetailDiamond", param);
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DeleteMasterDyeingReceiveDetailDiamond", param);
             lblmessage.Text = param[4].Value.ToString();
             Tran.Commit();
             FillissueGrid();           
