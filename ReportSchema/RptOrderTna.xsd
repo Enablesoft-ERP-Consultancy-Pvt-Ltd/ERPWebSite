@@ -1,0 +1,74 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
+              <xs:element name="localorder" type="xs:string" minOccurs="0" />
+              <xs:element name="customerorderno" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="OrderDetailId" type="xs:int" minOccurs="0" />
+              <xs:element name="ItemDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="designName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShadeColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="QtyRequired" type="xs:int" minOccurs="0" />
+              <xs:element name="DispatchDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="UnitRate" type="xs:double" minOccurs="0" />
+              <xs:element name="CurrencyName" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalOrderArea" type="xs:double" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="orderid" type="xs:int" minOccurs="0" />
+              <xs:element name="orderdetailid" type="xs:int" minOccurs="0" />
+              <xs:element name="ItemDescription" type="xs:string" minOccurs="0" />
+              <xs:element name="TargetDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="RevisedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ActualDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="orderid" type="xs:int" minOccurs="0" />
+              <xs:element name="orderdetailid" type="xs:int" minOccurs="0" />
+              <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="Targetdate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="RevisedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ActualDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="orderid" type="xs:int" minOccurs="0" />
+              <xs:element name="orderdetailid" type="xs:int" minOccurs="0" />
+              <xs:element name="DateName" type="xs:string" minOccurs="0" />
+              <xs:element name="TargetDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="RevisedDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ActualDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

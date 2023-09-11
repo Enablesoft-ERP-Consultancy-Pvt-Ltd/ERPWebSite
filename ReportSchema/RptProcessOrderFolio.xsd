@@ -1,0 +1,103 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="IssueOrderid" type="xs:int" minOccurs="0" />
+              <xs:element name="Item_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="qualityname" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:int" minOccurs="0" />
+              <xs:element name="ProcessName" type="xs:string" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="IssueOrderid" type="xs:int" minOccurs="0" />
+              <xs:element name="ReceiveDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Item_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="qualityname" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="PRemarks" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:int" minOccurs="0" />
+              <xs:element name="Weight" type="xs:double" minOccurs="0" />
+              <xs:element name="ProcessName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="IssueOrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="Item_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShadeColorname" type="xs:string" minOccurs="0" />
+              <xs:element name="LotNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Quantity" type="xs:double" minOccurs="0" />
+              <xs:element name="RecQuantity" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="Photo" type="xs:string" minOccurs="0" />
+              <xs:element name="Image" type="xs:base64Binary" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table4">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IssueOrderid" type="xs:int" minOccurs="0" />
+              <xs:element name="Item_Name" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="TConsmp" type="xs:double" minOccurs="0" />
+              <xs:element name="TLoss" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table5">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="EmpId" type="xs:int" minOccurs="0" />
+              <xs:element name="Empname" type="xs:string" minOccurs="0" />
+              <xs:element name="Unitname" type="xs:string" minOccurs="0" />
+              <xs:element name="FolioNo" type="xs:int" minOccurs="0" />
+              <xs:element name="AssignDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="EmpCode" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table6">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="IssueOrderId" type="xs:int" minOccurs="0" />
+              <xs:element name="IssQty" type="xs:double" minOccurs="0" />
+              <xs:element name="Recqty" type="xs:double" minOccurs="0" />
+              <xs:element name="Consumedqty" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

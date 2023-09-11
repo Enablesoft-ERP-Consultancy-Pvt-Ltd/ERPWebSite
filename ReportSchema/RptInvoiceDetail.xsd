@@ -1,0 +1,31 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompTel" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerName" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
+              <xs:element name="TInvoiceNo" type="xs:string" minOccurs="0" />
+              <xs:element name="InvoiceDate" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="CurrencyName" type="xs:string" minOccurs="0" />
+              <xs:element name="InvoiceAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="RecAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="DBKAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="License_Commission" type="xs:double" minOccurs="0" />
+              <xs:element name="Agent_Commission" type="xs:double" minOccurs="0" />
+              <xs:element name="Bldt" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="FromDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

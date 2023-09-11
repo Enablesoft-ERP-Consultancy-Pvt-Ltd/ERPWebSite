@@ -1,0 +1,61 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ID" type="xs:int" minOccurs="0" />
+              <xs:element name="SAMPLECODE" type="xs:string" minOccurs="0" />
+              <xs:element name="MONTH_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SAMPLEYEAR" type="xs:int" minOccurs="0" />
+              <xs:element name="PURPOSE" type="xs:string" minOccurs="0" />
+              <xs:element name="PURPOSEVAL" type="xs:string" minOccurs="0" />
+              <xs:element name="CATEGORY_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHAPENAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="REMARK" type="xs:string" minOccurs="0" />
+              <xs:element name="WEIGHTGSM" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TOTALGSM" type="xs:decimal" minOccurs="0" />
+              <xs:element name="IMGPATH" type="xs:string" minOccurs="0" />
+              <xs:element name="CADIMGPATH" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="image" type="xs:base64Binary" minOccurs="0" />
+              <xs:element name="cadimage" type="xs:base64Binary" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SAMPLECODE" type="xs:string" minOccurs="0" />
+              <xs:element name="RAWDESC" type="xs:string" minOccurs="0" />
+              <xs:element name="ANTICIPATEDWT" type="xs:double" minOccurs="0" />
+              <xs:element name="ACTUALWT" type="xs:double" minOccurs="0" />
+              <xs:element name="LOTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="DYEINGTYPE" type="xs:string" minOccurs="0" />
+              <xs:element name="VENDORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ProcessName" type="xs:string" minOccurs="0" />
+              <xs:element name="CALTYPE" type="xs:string" minOccurs="0" />
+              <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SAMPLECODE" type="xs:string" minOccurs="0" />
+              <xs:element name="DEPARTMENTNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

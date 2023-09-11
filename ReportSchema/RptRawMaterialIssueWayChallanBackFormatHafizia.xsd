@@ -1,0 +1,61 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="TranType" type="xs:int" minOccurs="0" />
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
+              <xs:element name="CompPhoneNo" type="xs:string" minOccurs="0" />
+              <xs:element name="CompGSTNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Prorderid" type="xs:int" minOccurs="0" />
+              <xs:element name="LocalOrder" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="SRNo" type="xs:string" minOccurs="0" />
+              <xs:element name="DesignNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Particular" type="xs:string" minOccurs="0" />
+              <xs:element name="HSNCode" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="Piece" type="xs:string" minOccurs="0" />
+              <xs:element name="JobRatePerPiece" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTPercentage" type="xs:string" minOccurs="0" />
+              <xs:element name="JobWorkAmt" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="TranType" type="xs:int" minOccurs="0" />
+              <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
+              <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
+              <xs:element name="CompPhoneNo" type="xs:string" minOccurs="0" />
+              <xs:element name="CompGSTNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Prorderid" type="xs:int" minOccurs="0" />
+              <xs:element name="LocalOrder" type="xs:string" minOccurs="0" />
+              <xs:element name="Date" type="xs:string" minOccurs="0" />
+              <xs:element name="SRNo" type="xs:string" minOccurs="0" />
+              <xs:element name="DesignNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Particular" type="xs:string" minOccurs="0" />
+              <xs:element name="HSNCode" type="xs:string" minOccurs="0" />
+              <xs:element name="Size" type="xs:string" minOccurs="0" />
+              <xs:element name="Piece" type="xs:string" minOccurs="0" />
+              <xs:element name="JobRatePerPiece" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTPercentage" type="xs:string" minOccurs="0" />
+              <xs:element name="JobWorkAmt" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
