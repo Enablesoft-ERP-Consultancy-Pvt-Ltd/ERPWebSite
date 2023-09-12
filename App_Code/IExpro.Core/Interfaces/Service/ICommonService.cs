@@ -12,6 +12,11 @@ namespace IExpro.Core.Interfaces.Service
 
         IEnumerable<SelectList> GetCustomerList(int clientId);
         IEnumerable<SelectList> GetDocTypeList(int clientId);
+        IEnumerable<SelectList> GetItemList(int CompanyId);
+
+        IEnumerable<SelectList> GetQualityList(int ItemId);
+
+        IEnumerable<SelectList> GetDesignList(int QualityId);
         //List<MenuModel> GetCompanyList();
         //List<MenuModel> GetCustomerList();
         //List<MenuModel> GetSessionList();

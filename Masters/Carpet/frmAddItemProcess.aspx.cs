@@ -11,6 +11,34 @@ using IExpro.Web.Models;
 
 public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 {
+    const string itemProcessList = "ProcessList";
+    public ListBox ProcessList
+    {
+        get
+        {
+            // check if not exist to make new (normally before the post back)
+            // and at the same time check that you did not use the same viewstate for other object
+            if (!(ViewState[itemProcessList] is ListBox))
+            {
+                // need to fix the memory and added to viewstate
+                ViewState[itemProcessList] = new ListBox();
+            }
+
+            return (ListBox)ViewState[itemProcessList];
+        }
+    }
+
+
+    void BindProcessType(int index)
+    {
+        var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
+        rdbtnLst.DataSource = result;
+        rdbtnLst.DataBind();
+        rdbtnLst.SelectedIndex = index;
+    }
+
+
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["varcompanyId"] == null)
@@ -19,19 +47,10 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
-
-
-            var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
-
-            rdbtnLst.DataSource = result;
-            rdbtnLst.DataBind();
-            rdbtnLst.SelectedIndex = 0;
-
-
-
-
+            BindProcessType(0);
             UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
             lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
+
             switch (Session["varcompanyid"].ToString())
             {
                 case "8":
@@ -43,11 +62,9 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
                     TDDesign.Visible = true;
                     break;
 
-
-
-
-
             }
+
+
             //
             if (TDquality.Visible == true)
             {
@@ -64,14 +81,22 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 
         }
     }
+    
     protected void Fillselectprocess()
     {
+        string sqlQuery = @"Select PNM.process_Name_id,PNM.Process_Name,IP.ProcessType,IP.SeqNo,IP.Itemid,IP.DESIGNID,IP.QualityId from 
+Process_name_Master PNM Inner Join Item_Process IP on PNM.PROCESS_NAME_ID=IP.processId 
+Where IP.MasterCompanyId=@MasterId and IP.Itemid=@Itemid and IP.DESIGNID=IsNUll(@DESIGNID,IP.DESIGNID) and IP.QualityId= IsNUll(@QualityId,IP.QualityId)
+order by IP.SeqNo";
+
         string str = @"select PNM.process_Name_id,PNM.Process_Name from Process_name_Master PNM,Item_Process IP
                       Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varcompanyid"] + "";
+
         if (DDQuality.SelectedIndex > 0)
         {
             str = str + " and IP.QualityId=" + DDQuality.SelectedValue;
         }
+
         if (DDDesign.SelectedIndex > 0)
         {
             str = str + " and IP.DesignId=" + DDDesign.SelectedValue;
@@ -82,9 +107,6 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         }
         str = str + "  order by IP.SeqNo";
         UtilityModule.ConditonalListFill(ref lstSelectProcess, str);
-
-
-
     }
     protected void btngo_Click(object sender, EventArgs e)
     {
@@ -104,7 +126,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
             }
         }
     }
-    
+
     protected void btnDelete_Click(object sender, EventArgs e)
     {
         foreach (ListItem liItems in lstSelectProcess.Items)
@@ -115,7 +137,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
             }
         }
     }
-    
+
     protected void btnsave_Click(object sender, EventArgs e)
     {
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
