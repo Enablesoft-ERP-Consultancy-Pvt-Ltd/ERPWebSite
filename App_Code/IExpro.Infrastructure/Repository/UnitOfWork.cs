@@ -132,7 +132,7 @@ namespace IExpro.Infrastructure.Repository
                 if (_ProcRepo != null)
                     return _ProcRepo;
                 else
-                    return _ProcRepo = new IProcessRepository(entities);
+                    return _ProcRepo = new ProcessRepository(entities);
 
             }
 
