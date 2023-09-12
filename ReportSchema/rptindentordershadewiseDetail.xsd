@@ -30,7 +30,6 @@
               <xs:element name="SHADECOLORNAME" type="xs:string" minOccurs="0" />
               <xs:element name="OFINISHEDID" type="xs:int" minOccurs="0" />
               <xs:element name="LOTNO" type="xs:string" minOccurs="0" />
-              <xs:element name="TagNo" type="xs:string" minOccurs="0" />
               <xs:element name="OQTY" type="xs:double" minOccurs="0" />
               <xs:element name="DYEDQTY" type="xs:double" minOccurs="0" />
               <xs:element name="UNDYEDQTY" type="xs:double" minOccurs="0" />

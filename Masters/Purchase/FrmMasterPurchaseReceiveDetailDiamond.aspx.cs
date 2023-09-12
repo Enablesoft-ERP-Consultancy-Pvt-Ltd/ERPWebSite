@@ -132,7 +132,8 @@ public partial class Masters_Purchase_FrmMasterPurchaseReceiveDetailDiamond : Sy
                 //*******************
                 //ViewState["reportid"] = param[0].Value.ToString();
                 txtRecNo.Text = param[2].Value.ToString();
-                hnRecId.Value = param[0].Value.ToString();
+               // hnRecId.Value = param[0].Value.ToString();
+                hnRecId.Value = "0";
                 Tran.Commit();
                 if (param[11].Value.ToString() != "")
                 {
