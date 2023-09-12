@@ -1,5 +1,5 @@
-﻿<%@ Page Title="Dyeing Exclude Detail" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="FrmDyeingExcludeDetailDiamond.aspx.cs" Inherits="Masters_Process_FrmDyeingExcludeDetailDiamond" %>
+﻿<%@ Page Title="Master Dyeing Rec Detail" Language="C#" MasterPageFile="~/ERPmaster.master"
+    AutoEventWireup="true" CodeFile="FrmMasterDyeingReceiveDetailDiamond.aspx.cs" Inherits="Masters_Process_FrmMasterDyeingReceiveDetailDiamond" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
@@ -8,7 +8,7 @@
     <%--<script src="../../Scripts/Fixfocus.js" type="text/javascript"></script>--%>
     <script type="text/javascript">
         function NewForm() {
-            window.location.href = "FrmDyeingExcludeDetailDiamond.aspx";
+            window.location.href = "FrmMasterDyeingReceiveDetailDiamond.aspx";
         }
         function CloseForm() {
             window.location.href = "../../main.aspx";
@@ -100,7 +100,10 @@
                                 <asp:Label ID="Label5" runat="server" Text="LotNo" CssClass="labelbold"></asp:Label><br />
                                 <asp:TextBox ID="txtLotNo" CssClass="textb" Width="120px" runat="server" Enabled="true" />
                             </td>                          
-                           
+                            <td>
+                                <asp:Label ID="Label8" runat="server" Text="RecQty" CssClass="labelbold"></asp:Label><br />
+                                <asp:TextBox ID="txtRecQty" CssClass="textb" Width="120px" runat="server" Enabled="true" />
+                            </td>
                              <td>
                                 <asp:Label ID="Label3" runat="server" Text="Assign Date" CssClass="labelbold" Visible="false"></asp:Label><br />
                                 <asp:TextBox ID="txtRecDate" CssClass="textb" Width="80px" runat="server" Visible="false" />
@@ -181,9 +184,15 @@
                                 </ItemTemplate>
                                 <ItemStyle HorizontalAlign="Center" Width="150px" />
                             </asp:TemplateField> 
+                            <asp:TemplateField HeaderText="RecQty">
+                                <ItemTemplate>
+                                    <asp:Label ID="lblRecQty" Text='<%#Bind("RecQty")%>' runat="server" />
+                                </ItemTemplate>
+                                <ItemStyle HorizontalAlign="Center" Width="150px" />
+                            </asp:TemplateField>
                             <asp:TemplateField Visible="false">
                                 <ItemTemplate>                                   
-                                    <asp:Label ID="lblDEID" Text='<%#Bind("DEID") %>' runat="server" />                                                                   
+                                    <asp:Label ID="lblDRID" Text='<%#Bind("DRID") %>' runat="server" />                                                                   
                                     
                                 </ItemTemplate>
                             </asp:TemplateField>

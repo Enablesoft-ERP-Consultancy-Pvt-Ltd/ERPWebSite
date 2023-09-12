@@ -15,24 +15,26 @@
                         left: 0px; height: 150px; padding-top: 10px; padding-left: 10px">
                         <table style="height: 130px; background-color: #DEB887;">
                             <tr>
-                                <td>                                   
+                                <td>
                                     <asp:Label ID="lblLotno" runat="server" Text="Enter Lot No." CssClass="labelbold"></asp:Label>
                                 </td>
                                 <td>
                                     <asp:TextBox ID="txtLotno" runat="server" BackColor="Beige" Width="100px" CssClass="textb"></asp:TextBox>
                                 </td>
-
                             </tr>
-                            
-                                 <tr id="TRTagNo" runat="server" visible="true">
+                            <tr id="TRTagNo" runat="server" visible="true">
                                 <td>
-                                     <asp:Label ID="Label1" runat="server" Text="Enter Tag No." CssClass="labelbold"></asp:Label>
+                                    <asp:Label ID="Label1" runat="server" Text="Enter Tag No." CssClass="labelbold"></asp:Label>
                                 </td>
                                 <td>
                                     <asp:TextBox ID="txtTagNo" runat="server" BackColor="Beige" Width="100px" CssClass="textb"></asp:TextBox>
                                 </td>
-                                </tr>
-                            <tr>                           
+                            </tr>
+                            <td>
+                                <asp:CheckBox ID="ChkForDyeingIssue" Text="For Dyeing" CssClass="checkboxbold" runat="server"
+                                    OnCheckedChanged="ChkForDyeingIssue_CheckedChanged" AutoPostBack="true" Visible="true" />
+                            </td>
+                            <tr>
                                 <td colspan="3" align="right">
                                     <asp:Button ID="btnPrint" Text="Print" runat="server" Width="100px" CssClass="buttonnorm"
                                         OnClick="btnPrint_Click" />
@@ -44,8 +46,7 @@
             </div>
         </ContentTemplate>
         <Triggers>
-                 <asp:PostBackTrigger ControlID="btnPrint" />                         
+            <asp:PostBackTrigger ControlID="btnPrint" />
         </Triggers>
-
     </asp:UpdatePanel>
 </asp:Content>
