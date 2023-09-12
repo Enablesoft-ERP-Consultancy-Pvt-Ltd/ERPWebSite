@@ -53,6 +53,15 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
             {
                 UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName From Quality Where Item_Id=" + Request.QueryString["a"] + " order by QualityName", true, "--Plz Select--");
             }
+
+
+
+
+
+
+
+
+
         }
     }
     protected void Fillselectprocess()
@@ -73,48 +82,40 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         }
         str = str + "  order by IP.SeqNo";
         UtilityModule.ConditonalListFill(ref lstSelectProcess, str);
+
+
+
     }
     protected void btngo_Click(object sender, EventArgs e)
     {
-        for (int i = 0; i < lstProcess.Items.Count; i++)
+
+        foreach (ListItem liItems in lstProcess.Items)
         {
-            if (lstProcess.Items[i].Selected)
+            if (liItems.Selected)
             {
+                string ProcessName = liItems.Text + "(" + rdbtnLst.SelectedItem.Text + ")";
+                var item = new ListItem(ProcessName, liItems.Value);
+                item.Attributes.Add("data-processType", rdbtnLst.SelectedValue);
                 //Check if process Already Exists
-                if (!lstSelectProcess.Items.Contains(lstProcess.Items[i]))
+                if (!lstSelectProcess.Items.Contains(item))
                 {
-
-                    string ProcessName = lstProcess.Items[i].Text + "(" + rdbtnLst.SelectedItem.Text + ")";
-                    var item = new ListItem(ProcessName, lstProcess.Items[i].Value);
-                    item.Attributes.Add("data-processType", rdbtnLst.SelectedValue);
                     lstSelectProcess.Items.Add(item);
-
-
                 }
             }
         }
     }
+    
     protected void btnDelete_Click(object sender, EventArgs e)
     {
-        List<ListItem> lstselected = new List<ListItem>();
-
         foreach (ListItem liItems in lstSelectProcess.Items)
         {
-            if (liItems.Selected == true)
+            if (liItems.Selected)
             {
-                lstselected.Add(liItems);
+                lstSelectProcess.Items.Remove(liItems);
             }
         }
-
-        //3. Loop through the List "lstSelected" and
-        // remove ListItems from ListBox "lstSelectProcess" that are in 
-        // lstSelected List
-        foreach (ListItem liSelected in lstselected)
-        {
-            lstSelectProcess.Items.Remove(liSelected);
-        }
-
     }
+    
     protected void btnsave_Click(object sender, EventArgs e)
     {
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
@@ -142,11 +143,11 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
             string strnew = "";
             // find ProcessId And SeqNo
             int seqNo = 0;
-            for (int i = 0; i < lstSelectProcess.Items.Count; i++)
-            {
 
+            foreach (ListItem items in lstSelectProcess.Items)
+            {
                 seqNo += 1;
-                str = lstSelectProcess.Items[i].Value + "," + seqNo;
+                str = items.Value + "," + seqNo + "," + items.Attributes["data-processType"];
                 if (strnew == "")
                 {
                     strnew = str;
@@ -156,8 +157,12 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
                     strnew = strnew + "|" + str;
 
                 }
-
             }
+
+
+
+
+
             array[3].Value = strnew;
             array[4].Direction = ParameterDirection.Output;
             array[5].Value = TDquality.Visible == false ? "0" : DDQuality.SelectedValue;
