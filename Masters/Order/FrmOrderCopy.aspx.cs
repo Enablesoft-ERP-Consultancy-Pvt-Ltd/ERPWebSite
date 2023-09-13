@@ -122,7 +122,8 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
             string strsql = @"select OD.OrderDetailId,VF.ITEM_NAME AS ITEM_NAME,QualityName+'--' +DesignName+'--'+ColorName+'--'+ShapeName+'--'+
             CASE WHEN OD.ORDERUnitId=1 Then SizeMtr Else SizeFt End Description,OD.TotalArea Area,OD.QtyRequired Qty,OD.UnitRate Rate,
             Round(Od.Amount,2) Amount,OD.Remark,'" + TxtOrderDate.Text + @"' As DispatchDate,OrderCaltype From OrderDetail OD,V_FinishedItemDetail VF
-            Where OD.Item_Finished_Id=VF.Item_Finished_Id And OrderId=" + DDFromOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+            Where OD.Item_Finished_Id=VF.Item_Finished_Id And OrderId=" + DDFromOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"]+@"
+            Order by QualityName ";
 
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             int n = ds.Tables[0].Rows.Count;
