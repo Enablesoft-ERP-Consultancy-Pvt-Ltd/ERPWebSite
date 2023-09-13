@@ -30,12 +30,37 @@
                                     <asp:TextBox ID="txtTagNo" runat="server" BackColor="Beige" Width="100px" CssClass="textb"></asp:TextBox>
                                 </td>
                             </tr>
-                            <td>
-                                <asp:CheckBox ID="ChkForDyeingIssue" Text="For Dyeing" CssClass="checkboxbold" runat="server"
-                                    OnCheckedChanged="ChkForDyeingIssue_CheckedChanged" AutoPostBack="true" Visible="true" />
-                            </td>
+                           
+                            <tr id="TRcheckdate" runat="server" visible="false">
+                                    <td colspan="2" align="left">
+                                        <asp:CheckBox ID="ChkForDate" runat="server" Text="Check For Date" CssClass="checkboxbold"
+                                            OnCheckedChanged="ChkForDate_CheckedChanged" AutoPostBack="true" />
+                                    </td>
+                                </tr>
+                                <tr id="trDates" runat="server" visible="true">
+                                    <td>
+                                        <asp:Label ID="Label5" runat="server" CssClass="labelbold" Text="From Date"></asp:Label>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="TxtFromDate" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
+                                        <asp:CalendarExtender ID="CalendarExtender1" runat="server" Format="dd-MMM-yyyy"
+                                            TargetControlID="TxtFromDate">
+                                        </asp:CalendarExtender>
+                                    </td>
+                                    <td align="right">
+                                        <asp:Label ID="Label6" runat="server" CssClass="labelbold" Text="To Date" Width="80px"></asp:Label>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="TxtToDate" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
+                                        <asp:CalendarExtender ID="CalendarExtender2" runat="server" Format="dd-MMM-yyyy"
+                                            TargetControlID="TxtToDate">
+                                        </asp:CalendarExtender>
+                                    </td>
+                                </tr>
                             <tr>
                                 <td colspan="3" align="right">
+                                <asp:CheckBox ID="ChkForDyeingIssue" Text="For Dyeing" CssClass="checkboxbold" runat="server"
+                                    OnCheckedChanged="ChkForDyeingIssue_CheckedChanged" AutoPostBack="true" Visible="true" />
                                     <asp:Button ID="btnPrint" Text="Print" runat="server" Width="100px" CssClass="buttonnorm"
                                         OnClick="btnPrint_Click" />
                                 </td>
