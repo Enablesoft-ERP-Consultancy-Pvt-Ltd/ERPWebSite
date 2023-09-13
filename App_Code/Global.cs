@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Timers;
 using System.Configuration;
+using System.Web.Routing;
+using System.Web.Http;
 
 /// <summary>
 /// Summary description for Global
@@ -19,6 +21,12 @@ public class Global : System.Web.HttpApplication
     }
     void Application_Start(object sender, EventArgs e)
     {
+        RouteTable.Routes.MapHttpRoute(
+                 name: "DefaultApiRoute",
+                 routeTemplate: "api/{controller}/{id}",
+                 defaults: new { id = RouteParameter.Optional });
+
+
 
         //UnityConfig.RegisterComponents();
 

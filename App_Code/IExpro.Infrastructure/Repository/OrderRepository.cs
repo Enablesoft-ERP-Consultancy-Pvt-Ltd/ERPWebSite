@@ -152,7 +152,7 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
                            ProcessId = n.ProcessId,
                            ProcessType = n.ProcessType,
                            ProcessName = n.ProcessName
-                       }).ToList(),
+                       }).OrderBy(m=> new { m.ProcessType,m.SeqNo}).ToList(),
 
                    });
                 return result;
