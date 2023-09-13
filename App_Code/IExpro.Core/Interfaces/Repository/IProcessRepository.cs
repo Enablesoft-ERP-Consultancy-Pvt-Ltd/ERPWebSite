@@ -4,12 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-
-/// <summary>
-/// Summary description for IProcessRepository
-/// </summary>
-public interface IProcessRepository : IGenericRepository<FormName>
+namespace IExpro.Core.Interfaces.Repository
 {
-    IEnumerable<ProcessModel> GetProcessList(int CompanyId);
-    IEnumerable<ItemProcessModel> GetItemProcessList(int CompanyId, int ItemId, int? DesignId, int? QualityId);
+    /// <summary>
+    /// Summary description for IProcessRepository
+    /// </summary>
+    public interface IProcessRepository : IGenericRepository<FormName>
+    {
+        IEnumerable<ProcessModel> GetProcessList(int CompanyId);
+        IEnumerable<ItemProcessModel> GetItemProcessList(int CompanyId, int ItemId, int? DesignId, int? QualityId);
+    }
 }

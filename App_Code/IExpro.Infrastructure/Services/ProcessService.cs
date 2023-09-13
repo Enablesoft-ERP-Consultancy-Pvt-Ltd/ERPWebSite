@@ -1,4 +1,5 @@
 ﻿using IExpro.Core.Interfaces.Repository;
+using IExpro.Core.Interfaces.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ public class ProcessService: IProcessService
         return this.IU.ProcRepo.GetProcessList(CompanyId);
     }
 
-     public IEnumerable<ItemProcessModel> GetItemProcessList(int CompanyId, int ItemId, int? DesignId, int? QualityId)
+     public IEnumerable<ItemProcessModel> GetItemProcessList(int CompanyId, int ItemId, int DesignId, int QualityId)
     {
         return this.IU.ProcRepo.GetItemProcessList(CompanyId, ItemId, DesignId, QualityId);
     }

@@ -8,27 +8,83 @@ using System.Data;
 using System.Data.SqlClient;
 using IExpro.Core.Common;
 using IExpro.Web.Models;
-
-public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
+using IExpro.Core.Interfaces.Service;
+using IExpro.Infrastructure.Repository;
+using IExpro.Infrastructure.Services;
+using IExpro.Web.Pages;
+using IExpro.Web.Helper;
+using IExpro.Core.Models;
+public partial class Masters_Process_frmAddItemProcess : BasePopUpPage
 {
     const string itemProcessList = "ProcessList";
-    public ListBox ProcessList
+    public List<ItemProcessModel> ProcessList
     {
         get
         {
             // check if not exist to make new (normally before the post back)
             // and at the same time check that you did not use the same viewstate for other object
-            if (!(ViewState[itemProcessList] is ListBox))
+            if (!(ViewState[itemProcessList] is List<ItemProcessModel>))
             {
                 // need to fix the memory and added to viewstate
-                ViewState[itemProcessList] = new ListBox();
+                ViewState[itemProcessList] = new List<ItemProcessModel>();
             }
-
-            return (ListBox)ViewState[itemProcessList];
+            return (List<ItemProcessModel>)ViewState[itemProcessList];
         }
+    }
+    public static int IExproId { get; set; }
+    public static int CompanyId { get; set; }
+    public static long UserId { get; set; }
+    public static int ItemId { get; set; }
+    static ICommonService comnSrv;
+    static IProcessService procSrv;
+    public Masters_Process_frmAddItemProcess()
+    {
+        comnSrv = new CommonService(new UnitOfWork());
+        procSrv = new ProcessService(new UnitOfWork());
     }
 
 
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            Masters_Process_frmAddItemProcess.IExproId = User.IExproId;
+            Masters_Process_frmAddItemProcess.CompanyId = User.CompanyId;
+            Masters_Process_frmAddItemProcess.UserId = User.UserId;
+            Masters_Process_frmAddItemProcess.ItemId = string.IsNullOrEmpty(Request.QueryString["a"]) ? 0 : Convert.ToInt32(Request.QueryString["a"]);
+            BindProcessType(0);
+            BindProcessList(Masters_Process_frmAddItemProcess.ItemId);
+            BindItemProcessList(this.ProcessList);
+        }
+    }
+    void BindProcessList(int itemId)
+    {
+        var result = procSrv.GetProcessList(Masters_Process_frmAddItemProcess.IExproId).Select(x => new SelectList
+        {
+            ItemId = x.ProcessId,
+            ItemName = x.ProcessName + "(" + x.ShortName + ")"
+        });
+        lstProcess.BindList(result);
+        ddlItemList.BindList(comnSrv.GetItemList(Masters_Process_frmAddItemProcess.IExproId));
+        ddlItemList.SelectedValue = itemId.ToString();
+        ddlItemList.Enabled = false;
+        ddlQuality.BindList(comnSrv.GetQualityList(itemId));
+        int qualityId = string.IsNullOrEmpty(ddlQuality.SelectedValue) ? 0 : Convert.ToInt32(ddlQuality.SelectedValue);
+        ddlDesign.BindList(comnSrv.GetDesignList(qualityId));
+        int designId = string.IsNullOrEmpty(ddlDesign.SelectedValue) ? 0 : Convert.ToInt32(ddlDesign.SelectedValue);
+        var itemResult = procSrv.GetItemProcessList(Masters_Process_frmAddItemProcess.IExproId, itemId, qualityId, designId);
+        ViewState[itemProcessList] = itemResult.ToList();
+
+    }
+    void BindItemProcessList(List<ItemProcessModel> lst)
+    {
+        var items = lst.Select(x => new SelectList
+        {
+            ItemId = x.ProcessId,
+            ItemName = x.ProcessName + "(" + x.ProcessType + ")"
+        });
+        lstSelectProcess.BindList(items);
+    }
     void BindProcessType(int index)
     {
         var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
@@ -37,96 +93,108 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         rdbtnLst.SelectedIndex = index;
     }
 
-
-
-    protected void Page_Load(object sender, EventArgs e)
+    protected void ddlItemList_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
-        {
-            Response.Redirect("~/Login.aspx");
-        }
-        if (!IsPostBack)
-        {
-            BindProcessType(0);
-            UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
-            lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
-
-            switch (Session["varcompanyid"].ToString())
-            {
-                case "8":
-                    TDquality.Visible = false;
-                    Fillselectprocess();
-                    break;
-                default:
-                    TDquality.Visible = true;
-                    TDDesign.Visible = true;
-                    break;
-
-            }
-
-
-            //
-            if (TDquality.Visible == true)
-            {
-                UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName From Quality Where Item_Id=" + Request.QueryString["a"] + " order by QualityName", true, "--Plz Select--");
-            }
-
-
-
-
-
-
-
-
-
-        }
+        int itemId = string.IsNullOrEmpty(ddlItemList.SelectedValue) ? 0 : Convert.ToInt32(ddlItemList.SelectedValue);
+        ddlQuality.BindList(comnSrv.GetQualityList(itemId));
+        int qualityId = string.IsNullOrEmpty(ddlQuality.SelectedValue) ? 0 : Convert.ToInt32(ddlQuality.SelectedValue);
+        ddlDesign.BindList(comnSrv.GetDesignList(qualityId));
+        BindItemProcessList(this.ProcessList);
     }
-    
-    protected void Fillselectprocess()
+
+    protected void ddlQuality_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string sqlQuery = @"Select PNM.process_Name_id,PNM.Process_Name,IP.ProcessType,IP.SeqNo,IP.Itemid,IP.DESIGNID,IP.QualityId from 
-Process_name_Master PNM Inner Join Item_Process IP on PNM.PROCESS_NAME_ID=IP.processId 
-Where IP.MasterCompanyId=@MasterId and IP.Itemid=@Itemid and IP.DESIGNID=IsNUll(@DESIGNID,IP.DESIGNID) and IP.QualityId= IsNUll(@QualityId,IP.QualityId)
-order by IP.SeqNo";
-
-        string str = @"select PNM.process_Name_id,PNM.Process_Name from Process_name_Master PNM,Item_Process IP
-                      Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varcompanyid"] + "";
-
-        if (DDQuality.SelectedIndex > 0)
-        {
-            str = str + " and IP.QualityId=" + DDQuality.SelectedValue;
-        }
-
-        if (DDDesign.SelectedIndex > 0)
-        {
-            str = str + " and IP.DesignId=" + DDDesign.SelectedValue;
-        }
-        else
-        {
-            str = str + " and IP.DesignId=0";
-        }
-        str = str + "  order by IP.SeqNo";
-        UtilityModule.ConditonalListFill(ref lstSelectProcess, str);
+        int qualityId = string.IsNullOrEmpty(ddlQuality.SelectedValue) ? 0 : Convert.ToInt32(ddlQuality.SelectedValue);
+        ddlDesign.BindList(comnSrv.GetDesignList(qualityId));
+        BindItemProcessList(this.ProcessList);
     }
+    protected void ddlDesign_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindItemProcessList(this.ProcessList);
+    }
+
+    //protected void Page_Load(object sender, EventArgs e)
+    //{
+    //    if (Session["varcompanyId"] == null)
+    //    {
+    //        Response.Redirect("~/Login.aspx");
+    //    }
+    //    if (!IsPostBack)
+    //    {
+    //        BindProcessType(0);
+    //        UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
+    //        lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
+
+    //        switch (Session["varcompanyid"].ToString())
+    //        {
+    //            case "8":
+    //                TDquality.Visible = false;
+    //                Fillselectprocess();
+    //                break;
+    //            default:
+    //                TDquality.Visible = true;
+    //                TDDesign.Visible = true;
+    //                break;
+    //        }
+    //        //
+    //        if (TDquality.Visible == true)
+    //        {
+    //            UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName From Quality Where Item_Id=" + Request.QueryString["a"] + " order by QualityName", true, "--Plz Select--");
+    //        }
+    //    }
+    //}
+
+    //    protected void Fillselectprocess()
+    //    {
+    //        string sqlQuery = @"Select PNM.process_Name_id,PNM.Process_Name,IP.ProcessType,IP.SeqNo,IP.Itemid,IP.DESIGNID,IP.QualityId from 
+    //Process_name_Master PNM Inner Join Item_Process IP on PNM.PROCESS_NAME_ID=IP.processId 
+    //Where IP.MasterCompanyId=@MasterId and IP.Itemid=@Itemid and IP.DESIGNID=IsNUll(@DESIGNID,IP.DESIGNID) and IP.QualityId= IsNUll(@QualityId,IP.QualityId)
+    //order by IP.SeqNo";
+
+    //        string str = @"select PNM.process_Name_id,PNM.Process_Name from Process_name_Master PNM,Item_Process IP
+    //                      Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varcompanyid"] + "";
+
+    //        if (DDQuality.SelectedIndex > 0)
+    //        {
+    //            str = str + " and IP.QualityId=" + DDQuality.SelectedValue;
+    //        }
+
+    //        if (DDDesign.SelectedIndex > 0)
+    //        {
+    //            str = str + " and IP.DesignId=" + DDDesign.SelectedValue;
+    //        }
+    //        else
+    //        {
+    //            str = str + " and IP.DesignId=0";
+    //        }
+    //        str = str + "  order by IP.SeqNo";
+    //        UtilityModule.ConditonalListFill(ref lstSelectProcess, str);
+    //    }
     protected void btngo_Click(object sender, EventArgs e)
     {
-
+        var lst = this.ProcessList;
         foreach (ListItem liItems in lstProcess.Items)
         {
             if (liItems.Selected)
             {
-                string ProcessName = liItems.Text + "(" + rdbtnLst.SelectedItem.Text + ")";
-                var item = new ListItem(ProcessName, liItems.Value);
-                item.Attributes.Add("data-processType", rdbtnLst.SelectedValue);
-                //Check if process Already Exists
-                if (!lstSelectProcess.Items.Contains(item))
+                var item = new ItemProcessModel()
                 {
-                    lstSelectProcess.Items.Add(item);
+                    ProcessId = liItems.Value.ToInt(),
+                    ProcessName = liItems.Text,
+                    ProcessType = (short)rdbtnLst.SelectedItem.Value.ToInt()
+                };
+                string ProcessName = liItems.Text + "(" + rdbtnLst.SelectedItem.Text + ")";
+                //item.Attributes.Add("data-processType", rdbtnLst.SelectedValue);
+                //Check if process Already Exists
+                if (!lst.Contains(item))
+                {
+                    lst.Add(item);
                 }
             }
         }
+        ViewState[itemProcessList] = lst;
+        BindItemProcessList(this.ProcessList);
     }
-
     protected void btnDelete_Click(object sender, EventArgs e)
     {
         foreach (ListItem liItems in lstSelectProcess.Items)
@@ -136,6 +204,7 @@ order by IP.SeqNo";
                 lstSelectProcess.Items.Remove(liItems);
             }
         }
+        BindItemProcessList(this.ProcessList);
     }
 
     protected void btnsave_Click(object sender, EventArgs e)
@@ -185,10 +254,12 @@ order by IP.SeqNo";
 
 
 
-            array[3].Value = strnew;
-            array[4].Direction = ParameterDirection.Output;
-            array[5].Value = TDquality.Visible == false ? "0" : DDQuality.SelectedValue;
-            array[6].Value = TDDesign.Visible == false ? "0" : (DDDesign.SelectedIndex > 0 ? DDDesign.SelectedValue : "0");
+            //array[3].Value = strnew;
+            //array[4].Direction = ParameterDirection.Output;
+            //array[5].Value = TDquality.Visible == false ? "0" : DDQuality.SelectedValue;
+            //array[6].Value = TDDesign.Visible == false ? "0" : (DDDesign.SelectedIndex > 0 ? DDDesign.SelectedValue : "0");
+
+
             //Save Data
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveItem_Process", array);
             Tran.Commit();
@@ -205,24 +276,26 @@ order by IP.SeqNo";
             con.Close();
         }
     }
-    protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (TDDesign.Visible == true)
-        {
-            FillDesign();
-        }
+    //protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+    //    if (TDDesign.Visible == true)
+    //    {
+    //     /*   FillDesign();*/
+    //    }
 
-        Fillselectprocess();
-    }
+    //    Fillselectprocess();
+    //}
 
-    private void FillDesign()
-    {
-        string str = "select Distinct designId,designName From V_FinisheditemDetail  Where QualityId=" + DDQuality.SelectedValue + " order by designName";
-        UtilityModule.ConditionalComboFill(ref DDDesign, str, true, "--Plz Select--");
-    }
+    //private void FillDesign()
+    //{
+    //    string str = "select Distinct designId,designName From V_FinisheditemDetail  Where QualityId=" + DDQuality.SelectedValue + " order by designName";
+    //    UtilityModule.ConditionalComboFill(ref DDDesign, str, true, "--Plz Select--");
+    //}
 
-    protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        Fillselectprocess();
-    }
+    //protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+    //    Fillselectprocess();
+    //}
+
+
 }
