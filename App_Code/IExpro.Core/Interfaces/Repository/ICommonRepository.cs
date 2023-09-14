@@ -15,5 +15,8 @@ namespace IExpro.Core.Interfaces.Repository
     {
         IEnumerable<SelectList> GetCustomerList(int clientId);
         IEnumerable<SelectList> GetDocTypeList(int clientId);
+        IEnumerable<SelectList> GetItemList(int CompanyId);
+        IEnumerable<SelectList> GetQualityList(int ItemId);
+        IEnumerable<SelectList> GetDesignList(int QualityId);
     }
 }

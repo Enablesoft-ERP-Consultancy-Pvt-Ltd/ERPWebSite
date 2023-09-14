@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Principal;
 
 
-namespace IExproERP.UI.Models
+namespace IExpro.Web.Models
 {
     public class CustomPrincipal : IPrincipal
     {

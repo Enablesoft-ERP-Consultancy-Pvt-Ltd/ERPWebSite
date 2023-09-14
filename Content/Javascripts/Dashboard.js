@@ -154,7 +154,7 @@ $(function () {
 
                             var btnHtml = "<a title='Order Detail' class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mediumtxt mrm'></i></a>";
                             btnHtml += "<div class='btn-group'><button type='button' data-bs-toggle='dropdown' class='btn btn-dark dropdown-toggle  ptx pbx'>";
-                            btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion'>";
+                            btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion' style='max-height:400px;overflow:auto;'>";
                             btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
 
                             //console.log(data);

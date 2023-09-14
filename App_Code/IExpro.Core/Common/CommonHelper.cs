@@ -28,6 +28,16 @@ namespace IExpro.Core.Common
 
     public static class CommonHelper
     {
+        public static int ToInt(this string str)
+        {
+            int result = 0;
+            if (!string.IsNullOrEmpty(str))
+            {
+                result = Convert.ToInt32(str);
+            }
+            return result;
+
+        }
 
         public static string IsString(this string str)
         {

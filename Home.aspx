@@ -69,7 +69,7 @@
                         <div class="accordion-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <div class="table-responsive">
+                          
                                         <table id="tblOrder" class="table table-hover table-striped table-bordered table-advanced tablesorter display">
                                             <thead>
                                                 <tr>
@@ -84,7 +84,7 @@
                                             </thead>
                                         </table>
                                     </div>
-                                </div>
+                           
                             </div>
                         </div>
                     </div>
