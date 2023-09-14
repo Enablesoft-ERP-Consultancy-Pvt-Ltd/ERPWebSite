@@ -14,9 +14,6 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using System.Net;
 using System.Web.Services.Description;
 
-
-
-
 public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -24,62 +21,132 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
         if (Session["VarcompanyId"] == null)
         {
             Response.Redirect("~/Login.aspx");
+           
         }
-       
+        if (!IsPostBack)
+        {
+            TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+            TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+        }
     }
-    protected void btnPrint_Click(object sender, EventArgs e)
+    protected void ChkForDyeingIssue_CheckedChanged(object sender, EventArgs e)
     {
-
-        ////********For Diamond Export Only*********************////
-
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        if (con.State == ConnectionState.Closed)
+        if (ChkForDyeingIssue.Checked == true)
         {
-            con.Open();
-        }
-        SqlCommand cmd = new SqlCommand("Pro_GetStockNoTransactionDetailLotNoWiseDiamond", con);
-        cmd.CommandType = CommandType.StoredProcedure;
-        cmd.CommandTimeout = 3000;
-
-        cmd.Parameters.AddWithValue("@CompanyId", Session["CurrentWorkingCompanyID"]);
-        cmd.Parameters.AddWithValue("@Lotno", txtLotno.Text);
-        cmd.Parameters.AddWithValue("@TagNo", txtTagNo.Text);
-        cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);        
-
-        DataSet ds = new DataSet();
-        SqlDataAdapter ad = new SqlDataAdapter(cmd);
-        cmd.ExecuteNonQuery();
-        ad.Fill(ds);
-        //*************
-
-        con.Close();
-        con.Dispose();
-
-        if (ds.Tables[0].Rows.Count > 0)
-        {
-            Session["rptFileName"] = "~\\Reports\\RptStockNoTransactionDetailByLotNoTagNoDiamond.rpt";
-            Session["Getdataset"] = ds;
-            Session["dsFileName"] = "~\\ReportSchema\\RptStockNoTransactionDetailByLotNoTagNoDiamond.xsd";
-            StringBuilder stb = new StringBuilder();
-            stb.Append("<script>");
-            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
-
-            //Session["GetDataset"] = ds;
-            //Session["rptFileName"] = "~\\Reports\\rptorderweavingconsumptiondetail.rpt";
-            //Session["dsFileName"] = "~\\ReportSchema\\rptorderweavingconsumptiondetail.xsd";
-            //StringBuilder stb = new StringBuilder();
-            //stb.Append("<script>");
-            //stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-            //ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
-
+            TRTagNo.Visible = false;
         }
         else
         {
-            ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
-        }       
+            TRTagNo.Visible = true;
+        }
+    }
+    protected void ChkForDate_CheckedChanged(object sender, EventArgs e)
+    {
+        if (ChkForDate.Checked == true)
+        {
+            trDates.Visible = true;
+        }
+        else
+        {
+            trDates.Visible = false;
+        }
+    }
+    protected void btnPrint_Click(object sender, EventArgs e)
+    {
+        if (ChkForDyeingIssue.Checked == true)
+        {
+            ////********For Diamond Export Only*********************////
 
-    }   
-    
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("Pro_GetIndentOrderWiseShadeDetailLotNoWiseDiamond", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@CompanyId", Session["CurrentWorkingCompanyID"]);
+            cmd.Parameters.AddWithValue("@Lotno", txtLotno.Text);           
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked==true ? "1" : "0");
+            cmd.Parameters.AddWithValue("FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptDyeingIndentDetailByLotNoDiamond.rpt";
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptDyeingIndentDetailByLotNoDiamond.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
+            }       
+        }
+        else
+        {
+            ////********For Diamond Export Only*********************////
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("Pro_GetStockNoTransactionDetailLotNoWiseDiamond", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@CompanyId", Session["CurrentWorkingCompanyID"]);
+            cmd.Parameters.AddWithValue("@Lotno", txtLotno.Text);
+            cmd.Parameters.AddWithValue("@TagNo", txtTagNo.Text);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked == true ? "1" : "0");
+            cmd.Parameters.AddWithValue("FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptStockNoTransactionDetailByLotNoTagNoDiamond.rpt";
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptStockNoTransactionDetailByLotNoTagNoDiamond.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+                
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
+            }       
+
+        }
+       
+    }
 }

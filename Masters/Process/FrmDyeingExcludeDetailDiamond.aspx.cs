@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
 using System.Text;
-public partial class Masters_Purchase_FrmDyeingExcludeDetailDiamond : System.Web.UI.Page
+public partial class Masters_Process_FrmDyeingExcludeDetailDiamond : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -128,7 +128,8 @@ public partial class Masters_Purchase_FrmDyeingExcludeDetailDiamond : System.Web
                 //*******************
                 //ViewState["reportid"] = param[0].Value.ToString();
                 txtRecNo.Text = param[2].Value.ToString();
-                hnRecId.Value = param[0].Value.ToString();
+                //hnRecId.Value = param[0].Value.ToString();
+                hnRecId.Value = "0";
                 Tran.Commit();
                 if (param[11].Value.ToString() != "")
                 {
