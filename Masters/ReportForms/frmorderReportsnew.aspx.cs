@@ -2345,6 +2345,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                                        UNIT = gift.Field<string>("UNITNAME"),
                                        RECQTY = gift.Field<int>("RECEIVEQTY"),
                                        ISSUEQTY = gift.Field<int>("ISSUEQTY"),
+                                       REQQTY= gift.Field<int>("ORDERQTY"),
 
 
                                    });
@@ -2357,12 +2358,12 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                       sht.Range("A" + row + ":D" + row).Style.Font.Bold = true;
                       sht.Range("A" + row + ":D" + row).Merge();
                       row += 3;
-                      sht.Range("A" + row + ":K" + row).Style.Font.Bold = true;
+                      sht.Range("A" + row + ":M" + row).Style.Font.Bold = true;
                       //sht.Range("G1:H1").Merge();
-                      sht.Range("A" + row + ":K" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                      sht.Range("A" + row + ":K" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                      sht.Range("A" + row + ":K" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                      sht.Range("A" + row + ":K" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":M" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":M" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":M" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                      sht.Range("A" + row + ":M" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                       sht.Range("A" + row).Value = "Category";
                       sht.Range("B" + row).Value = "Technique";
                       sht.Range("C" + row).Value = "Quality";
@@ -2371,10 +2372,11 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                       sht.Range("F" + row).Value = "Shape";
                       sht.Range("G" + row).Value = "Size";
                       sht.Range("H" + row).Value = "Unit";
-                      sht.Range("I" + row).Value = "Issue Qty";
-                      sht.Range("J" + row).Value = "Recv  Qty";
-                       sht.Range("K" + row).Value = "Pending Qty";
-                      //sht.Range("L" + row).Value = "ChallanNo";
+                    sht.Range("I" + row).Value = "Req Qty";
+                    sht.Range("J" + row).Value = "Issue Qty";
+                      sht.Range("K" + row).Value = "Recv  Qty";
+                       sht.Range("L" + row).Value = "Pending Qty";
+                      sht.Range("M" + row).Value = "Req Bal to Issue";
                       //sht.Range("M" + row).Value = "LotNo";
                       //sht.Range("N" + row).Value = "Bill No";
 
@@ -2384,11 +2386,11 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                       //sht.Range("R" + row).Value = "Pending Qty";
                       //sht.Range("S" + row).Value = "Receive Remark";
                       //sht.Range("T" + row).Value = "Order Remark";
-                      sht.Range("A" + row + ":K" + row).Style.Font.Bold = true;
+                      sht.Range("A" + row + ":M" + row).Style.Font.Bold = true;
                       row += 1;
                       if (query.Count() > 0)
                       {
-                          int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0, sumissueqty = 0, sumrecqty = 0, sumpendinqty = 0;
+                          int pendingqty = 0, balqty = 0, qty = 0, recqty = 0, orderqty = 0, sumissueqty = 0, sumrecqty = 0, sumpendinqty = 0,sumissuebal = 0;
 
                           foreach (var data in query)
                           {
@@ -2400,7 +2402,8 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                               sumissueqty += Convert.ToInt16(data.ISSUEQTY);
                               sumrecqty += Convert.ToInt16(data.RECQTY);
                               sumpendinqty += Convert.ToInt16(data.ISSUEQTY) - Convert.ToInt16(data.RECQTY);
-                              sht.Range("A" + row).SetValue(data.cateogoryname); //"BUYER CODE";
+                            sumissuebal += Convert.ToInt16(data.REQQTY) - Convert.ToInt16(data.ISSUEQTY);
+                            sht.Range("A" + row).SetValue(data.cateogoryname); //"BUYER CODE";
                               sht.Range("B" + row).SetValue(data.itemname); // = "PO TYPE";
                               sht.Range("C" + row).SetValue(data.qualityname);  //"LPO";
                               sht.Range("D" + row).SetValue(data.designname);  //"BPO";
@@ -2408,41 +2411,44 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                               sht.Range("F" + row).SetValue(data.shapename);
                               sht.Range("G" + row).SetValue(data.width + "x" + data.length);
                               sht.Range("H" + row).SetValue(data.UNIT);
-                              sht.Range("I" + row).SetValue(data.ISSUEQTY);
-                              sht.Range("J" + row).SetValue(data.RECQTY);
-                              sht.Range("K" + row).SetValue(Convert.ToInt16(data.ISSUEQTY) - Convert.ToInt16(data.RECQTY));
-                              //sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
-                              //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
-                              //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
-                              //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
-                              //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
-                              //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
-                              //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
-                              //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
-                              //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
+                              sht.Range("I" + row).SetValue(data.REQQTY);
+                              sht.Range("J" + row).SetValue(data.ISSUEQTY);
+                              sht.Range("K" + row).SetValue(data.RECQTY);
+                              sht.Range("L" + row).SetValue(Convert.ToInt16(data.ISSUEQTY) - Convert.ToInt16(data.RECQTY));
+                            sht.Range("M" + row).SetValue(Convert.ToInt16(data.REQQTY) - Convert.ToInt16(data.ISSUEQTY));
+                            //sht.Range("L" + row).SetValue(ds.Tables[1].Rows[i]["CHALLANNO"]);
+                            //sht.Range("M" + row).SetValue(ds.Tables[1].Rows[i]["LOTNO"]);
+                            //sht.Range("N" + row).SetValue(ds.Tables[1].Rows[i]["BILLNO1"]);
+                            //sht.Range("O" + row).SetValue(ds.Tables[1].Rows[i]["RECQTY"]);
+                            //sht.Range("P" + row).SetValue(ds.Tables[1].Rows[i]["RETURNDATE"]);
+                            //sht.Range("Q" + row).SetValue(ds.Tables[1].Rows[i]["QTYRETURN"]);
+                            //sht.Range("R" + row).SetValue(ds.Tables[1].Rows[i]["PENDINGQTY"]);
+                            //sht.Range("S" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASERECEIVEITEMREMARK"]);
+                            //sht.Range("T" + row).SetValue(ds.Tables[1].Rows[i]["PURCHASEORDERMASTERREMARK"]);
 
 
-                              sht.Range("A" + row + ":K" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                              sht.Range("A" + row + ":K" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                              sht.Range("A" + row + ":K" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                              sht.Range("A" + row + ":K" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                            sht.Range("A" + row + ":M" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":M" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":M" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                              sht.Range("A" + row + ":M" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
 
                               row = row + 1;
                           }
 
                         //  row += 1;
                           sht.Range("H" + row).Value = "Total";
-                          sht.Range("I" + row).Value = sumissueqty;
-                          sht.Range("J" + row).Value = sumrecqty;
-                          sht.Range("k" + row).Value = sumpendinqty;
-                          sht.Range("H" + row + ":K" + row).Style.Font.FontName = "Arial Unicode MS";
-                          sht.Range("H" + row + ":K" + row).Style.Font.FontSize = 11;
-                          sht.Range("H" + row + ":K" + row).Style.Font.Bold = true;
+                          sht.Range("J" + row).Value = sumissueqty;
+                          sht.Range("K" + row).Value = sumrecqty;
+                          sht.Range("L" + row).Value = sumpendinqty;
+                          sht.Range("M" + row).Value = sumissuebal;
+                          sht.Range("H" + row + ":M" + row).Style.Font.FontName = "Arial Unicode MS";
+                          sht.Range("H" + row + ":M" + row).Style.Font.FontSize = 11;
+                          sht.Range("H" + row + ":M" + row).Style.Font.Bold = true;
                          // sht.Range("H" + row + ":J" + row).Merge();
-                          sht.Range("H" + row + ":K" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                          sht.Range("H" + row + ":K" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                          sht.Range("H" + row + ":K" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                          sht.Range("H" + row + ":K" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                          sht.Range("H" + row + ":M" + row).Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                          sht.Range("H" + row + ":M" + row).Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                          sht.Range("H" + row + ":M" + row).Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                          sht.Range("H" + row + ":M" + row).Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                       }
                   
                   }

@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.IO;
 
-public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI.Page
+public partial class Masters_Loom_frmproductionorderonLoomAgni : System.Web.UI.Page
 {
     static string ChkUpdateRateFlag = "";
     static int hnEmpId = 0;
@@ -50,7 +50,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 str = str + @" Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" order by CI.Customercode 
 
                 select UnitsId,UnitName from Units order by UnitName
-                select UnitId,UnitName From Unit Where Unitid in(1,2)
+                select UnitId,UnitName From Unit Where Unitid in(1,2,6)
                 Select ID, BranchName 
                 From BRANCHMASTER BM(nolock) 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
@@ -488,20 +488,38 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         hn100_PROCESS_REC_ID.Value = "0";
         if (chkEdit.Checked == false)
         {
-            strf = @"select distinct CustomerId,pd.Orderid,pm.CalType from OrderMaster om join PROCESS_ISSUE_DETAIL_1 pd
-                    on om.OrderId=pd.Orderid join PROCESS_ISSUE_MASTER_1 pm on pm.IssueOrderId=pd.IssueOrderId where pd.IssueOrderId=" + ddlprorder.SelectedValue;
+            
+//            strf = @"select distinct CustomerId,pd.Orderid,pm.CalType from OrderMaster om join PROCESS_ISSUE_DETAIL_1 pd
+//                    on om.OrderId=pd.Orderid join PROCESS_ISSUE_MASTER_1 pm on pm.IssueOrderId=pd.IssueOrderId where pd.IssueOrderId=" + ddlprorder.SelectedValue;
+            strf = @"select distinct CustomerId,pd.Orderid,pm.CalType from PROCESS_ISSUE_DETAIL_1 pd
+                     join PROCESS_ISSUE_MASTER_1 pm on pm.IssueOrderId=pd.IssueOrderId left join OrderMaster om  on om.OrderId=pd.Orderid where pd.IssueOrderId=" + ddlprorder.SelectedValue;
 
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strf);
             if (ds.Tables[0].Rows.Count > 0)
             {
+
                 if (DDcustcode.Items.FindByValue(ds.Tables[0].Rows[0]["CustomerId"].ToString()) != null)
                 {
                     DDcustcode.SelectedValue = ds.Tables[0].Rows[0]["CustomerId"].ToString();
                     DDcustcode_SelectedIndexChanged(sender, new EventArgs());
                     ViewState["orderid"] = Convert.ToString(ds.Tables[0].Rows[0]["Orderid"]);
                     hnordercaltype.Value = Convert.ToString(ds.Tables[0].Rows[0]["caltype"]);
+                    hnorderid.Value = Convert.ToString(ds.Tables[0].Rows[0]["Orderid"]);
                 }
+                else
+                {
+                    if (ds.Tables[0].Rows[0]["Orderid"].ToString() == "0")
+                    {
+                        ViewState["orderid"] = Convert.ToString(ds.Tables[0].Rows[0]["Orderid"]);
+                        hnordercaltype.Value = Convert.ToString(ds.Tables[0].Rows[0]["caltype"]);
+                        hnorderid.Value = Convert.ToString(ds.Tables[0].Rows[0]["Orderid"]);
+                    
+                    }
+                
+                
+                }
+                
                 //lblCustomerCode.Text = ds.Tables[0].Rows[0]["CustomerCode"].ToString();
                 //lblCustomerOrderNo.Text = ds.Tables[0].Rows[0]["CustomerOrderNo"].ToString();
             }
@@ -1025,10 +1043,17 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 //                            CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(OD.item_finished_id,1," + DDProdunit.SelectedValue + @"," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE
 //                            Where Om.orderid=" + DDorderNo.SelectedValue + " and " + Qtyrequired + " - IsNull(PIDD.Qty, 0) > 0  order by OD.orderdetailid";
 
-                                str = "SELECT PD.IssueOrderId AS ORDERID,PD.Issue_Detail_Id AS OrderDetailId ,PD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,0 AS flagsize,case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when 2=1 Then Vf.Sizemtr Else vf.sizeft end ELse  dbo.F_getItemDescription(PD.Item_Finished_Id,Case when 2=1  Then 1 ELse case when 2=2 Then 0 ENd ENd) END as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,PD.Qty OrderedQty,isnull(dbo.F_getqtyreceive(PD.Issueorderid,PD.issue_detail_id," + Session["varcompanyId"].ToString() + "),0) as recqty,PD.RATE,PD.Amount,vj.preprodassignedqty QtyRequired, JOBRATE.COMMRATE, JOBRATE.BONUS, JOBRATE.FinisherRate,vf.CATEGORY_ID,vf.ITEM_ID,vf.QualityId,vf.shapeid,LENGTH=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(vf." + length + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(vf." + length + " as varchar(20)) ELSE cast(vf." + length + @" as varchar(20)) END)  Else 
-                            (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(" + length + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(" + length + " as varchar(20)) ELSE cast(" + length + @" as varchar(20)) END) END,
-                            Width=case when " + hnordercaltype.Value + @"=1 Then  (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(vf." + Width + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(vf." + Width + " as varchar(20)) ELSE cast(vf." + Width + @" as varchar(20)) END) Else
-                            (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(" + Width + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(" + Width + " as varchar(20)) ELSE cast(" + Width + @" as varchar(20)) END) END,Area=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN " + ddunit.SelectedValue + "=1 THEN vf." + Area + " WHEN " + ddunit.SelectedValue + @"=2 THEN vf." + Area + " ELSE vf." + Area + @" END) else (CASE WHEN " + ddunit.SelectedValue + "=1 THEN " + Area + " WHEN " + ddunit.SelectedValue + @"=2 THEN " + Area + " ELSE " + Area + @" END) END FROM PROCESS_ISSUE_MASTER_1 PM JOIN PROCESS_ISSUE_DETAIL_1 PD ON PM.IssueOrderId=PD.IssueOrderId inner join V_finisheditemdetail vf on PD.Item_finished_id=vf.item_finished_id inner join V_JOBASSIGNSQTY VJ on PD.orderid=VJ.orderid and PD.item_finished_id=VJ.Item_finished_id LEFT JOIN V_ProcessIssueToDepartmentDetail PIDD ON PIDD.orderid=PD.orderid and PIDD.item_finished_id=PD.Item_finished_id CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(PD.item_finished_id,1," + DDProdunit.SelectedValue + @"," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",1)) JOBRATE WHERE PD.IssueOrderId=" + ddlprorder.SelectedValue ;
+//                                str = "SELECT PD.IssueOrderId AS ORDERID,PD.Issue_Detail_Id AS OrderDetailId ,PD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,0 AS flagsize,case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when 2=1 Then Vf.Sizemtr Else vf.sizeft end ELse  dbo.F_getItemDescription(PD.Item_Finished_Id,Case when 2=1  Then 1 ELse case when 2=2 Then 0 ENd ENd) END as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,PD.Qty OrderedQty,isnull(dbo.F_getqtyreceive(PD.Issueorderid,PD.issue_detail_id," + Session["varcompanyId"].ToString() + "),0) as recqty,PD.RATE,PD.Amount,vj.preprodassignedqty QtyRequired, JOBRATE.COMMRATE, JOBRATE.BONUS, JOBRATE.FinisherRate,vf.CATEGORY_ID,vf.ITEM_ID,vf.QualityId,vf.shapeid,LENGTH=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(vf." + length + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(vf." + length + " as varchar(20)) ELSE cast(vf." + length + @" as varchar(20)) END)  Else 
+//                            (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(" + length + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(" + length + " as varchar(20)) ELSE cast(" + length + @" as varchar(20)) END) END,
+//                            Width=case when " + hnordercaltype.Value + @"=1 Then  (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(vf." + Width + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(vf." + Width + " as varchar(20)) ELSE cast(vf." + Width + @" as varchar(20)) END) Else
+//                            (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(" + Width + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(" + Width + " as varchar(20)) ELSE cast(" + Width + @" as varchar(20)) END) END,Area=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN " + ddunit.SelectedValue + "=1 THEN vf." + Area + " WHEN " + ddunit.SelectedValue + @"=2 THEN vf." + Area + " ELSE vf." + Area + @" END) else (CASE WHEN " + ddunit.SelectedValue + "=1 THEN " + Area + " WHEN " + ddunit.SelectedValue + @"=2 THEN " + Area + " ELSE " + Area + @" END) END FROM PROCESS_ISSUE_MASTER_1 PM JOIN PROCESS_ISSUE_DETAIL_1 PD ON PM.IssueOrderId=PD.IssueOrderId inner join V_finisheditemdetail vf on PD.Item_finished_id=vf.item_finished_id left join V_JOBASSIGNSQTY VJ on PD.orderid=VJ.orderid and PD.item_finished_id=VJ.Item_finished_id LEFT JOIN V_ProcessIssueToDepartmentDetail PIDD ON PIDD.orderid=PD.orderid and PIDD.item_finished_id=PD.Item_finished_id CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(PD.item_finished_id,1," + DDProdunit.SelectedValue + @"," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",1)) JOBRATE WHERE PD.IssueOrderId=" + ddlprorder.SelectedValue ;
+                               str = "SELECT PD.IssueOrderId AS ORDERID,PD.Issue_Detail_Id AS OrderDetailId ,PD.Item_Finished_Id,pm.UnitId as OrderUnitId,0 AS flagsize, VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case When PM.Unitid=1 Then SizeMtr  When PM.unitid=6 Then Sizeinch  Else  SizeFt End  as ItemDescription,u.unitname UnitName,PD.Qty OrderedQty,isnull(dbo.F_getqtyreceive(PD.Issueorderid,PD.issue_detail_id," + Session["varcompanyId"].ToString() + "),0) as recqty,PD.RATE,PD.Amount,vj.preprodassignedqty QtyRequired, JOBRATE.COMMRATE, JOBRATE.BONUS, JOBRATE.FinisherRate,vf.CATEGORY_ID,vf.ITEM_ID,vf.QualityId,vf.shapeid,LENGTH=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN pm.UnitId=1 THEN cast(vf.lengthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.lengthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.lengthInch as varchar(20)) ELSE cast(vf.lengthFt as varchar(20)) END)  Else 
+                            (CASE WHEN pm.UnitId=1 THEN cast(vf.lengthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.lengthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.lengthInch as varchar(20)) ELSE cast(vf.lengthFt as varchar(20)) END) END,
+                            Width=case when " + hnordercaltype.Value + @"=1 Then  (CASE WHEN pm.UnitId=1 THEN cast(vf.WidthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.WidthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.WidthInch as varchar(20)) ELSE cast(vf.WidthFt as varchar(20)) END) Else
+                            (CASE WHEN pm.UnitId=1 THEN cast(vf.WidthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.WidthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.WidthInch as varchar(20)) ELSE cast(vf.WidthFt as varchar(20)) END) END,Area=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN pm.UnitId=1 THEN cast(vf.AreaMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.AreaFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.AreaInch as varchar(20)) ELSE cast(vf.AreaFt as varchar(20)) END) else (CASE WHEN pm.UnitId=1 THEN cast(vf.AreaMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.AreaFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.AreaInch as varchar(20)) ELSE cast(vf.AreaFt as varchar(20)) END) END FROM PROCESS_ISSUE_MASTER_1 PM JOIN PROCESS_ISSUE_DETAIL_1 PD ON PM.IssueOrderId=PD.IssueOrderId inner join V_finisheditemdetail vf on PD.Item_finished_id=vf.item_finished_id left join V_JOBASSIGNSQTY VJ on PD.orderid=VJ.orderid and PD.item_finished_id=VJ.Item_finished_id left join Unit U on pm.UnitId=U.Unitid LEFT JOIN V_ProcessIssueToDepartmentDetail PIDD ON PIDD.orderid=PD.orderid and PIDD.item_finished_id=PD.Item_finished_id  CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(PD.item_finished_id,1," + DDProdunit.SelectedValue + @"," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",1)) JOBRATE WHERE PD.IssueOrderId=" + ddlprorder.SelectedValue;
+                            
+
+
                             }
                             break;
                         default:
@@ -1234,7 +1259,24 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                     lblmessage.Text = "Plz Select Weaver ";
                     return;
                 }
-                SqlCommand cmd = new SqlCommand("PRO_PURCHASEPRODUCTIONRECEIVES", con, Tran);
+                string sp = string.Empty;
+                if (ViewState["orderid"] != null)
+                {
+                    if (ViewState["orderid"].ToString() == "0")
+                    {
+                        sp = "PRO_PURCHASEPRODUCTIONRECEIVES_NEW";
+
+                    }
+                    else
+                    {
+                        sp = "PRO_PURCHASEPRODUCTIONRECEIVES";
+                    
+                    }
+
+                }
+               
+
+                SqlCommand cmd = new SqlCommand(sp, con, Tran);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.CommandTimeout = 30000;
 
@@ -1634,9 +1676,20 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
     {
         
           SqlParameter[] array = new SqlParameter[1];
+          string sp = string.Empty;
         array[0] = new SqlParameter("@Process_Rec_Id", hnprocessrecid.Value);
 
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FORPRODUCTIONRECEIVEREPORT_LOOMREPORT", array);
+        if (string.IsNullOrEmpty(hnorderid.Value) || hnorderid.Value == "0" )
+        {
+            sp = "PRO_FORPRODUCTIONRECEIVEREPORT_LOOMREPORT_NEW";
+
+        }
+        else
+        {
+            sp = "PRO_FORPRODUCTIONRECEIVEREPORT_LOOMREPORT";
+
+        }
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure,sp, array);
 
         if (ds.Tables[0].Rows.Count > 0)
         {

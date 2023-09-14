@@ -2952,6 +2952,10 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             }
             if (Session["usertype"].ToString() == "1")
             {
+                if (Session["varcompanyid"].ToString() == "44")
+                {
+                    TDCheckForComplete.Visible = true;
+                }
                 TDPoNoNew.Visible = true;
             }
 
