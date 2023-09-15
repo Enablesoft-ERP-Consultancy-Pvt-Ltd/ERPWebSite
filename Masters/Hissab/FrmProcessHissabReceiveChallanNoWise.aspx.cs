@@ -10,6 +10,7 @@ using System.Text;
 
 public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : System.Web.UI.Page
 {
+    static string btnclickflag = "";
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["varCompanyId"] == null)
@@ -41,19 +42,19 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             ViewState["Hissab_No"] = 0;
             switch (Convert.ToInt16(Session["varcompanyId"]))
             {
-                
+
                 case 43: //for Carpet International
                     TDPoOrderNo.Visible = true;
                     TDsrno.Visible = false;
                     TDAdditionAmt.Visible = false;
-                    TDDeductionAmt.Visible = false;                   
+                    TDDeductionAmt.Visible = false;
                     TDBonusAmt.Visible = false;
                     break;
                 default:
                     TDPoOrderNo.Visible = true;
                     TDsrno.Visible = false;
                     TDAdditionAmt.Visible = false;
-                    TDDeductionAmt.Visible = false;                   
+                    TDDeductionAmt.Visible = false;
                     TDBonusAmt.Visible = false;
                     break;
             }
@@ -77,7 +78,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         else
         {
             Str = "Select Process_Name_Id, Process_Name from PROCESS_NAME_MASTER(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name";
-            
+
         }
         UtilityModule.ConditionalComboFill(ref DDProcessName, Str, true, "--SELECT--");
         ViewState["Hissab_No"] = 0;
@@ -154,7 +155,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
 
             }
             UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
-           
+
         }
         ViewState["Hissab_No"] = 0;
         ShowButton();
@@ -170,12 +171,12 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
     {
         if (DDProcessName.SelectedIndex > 0 && ChkForEdit.Checked == true)
         {
-            
-                UtilityModule.ConditionalComboFill(ref DDSlipNo, @"Select Distinct HissabNo, HissabNo HissabNo1 
+
+            UtilityModule.ConditionalComboFill(ref DDSlipNo, @"Select Distinct HissabNo, HissabNo HissabNo1 
                 From PROCESS_HISSAB(NoLock) 
                 Where CommPaymentFlag = 0 And CompanyId=" + DDCompanyName.SelectedValue + @" And YearID = " + DDYear.SelectedValue + @" And 
                 ProcessID=" + DDProcessName.SelectedValue + " And Empid=" + DDEmployerName.SelectedValue + " Order by HissabNo1", true, "--SELECT--");
-            
+
         }
         if (DDProcessName.SelectedIndex > 0)
         {
@@ -221,21 +222,21 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         ViewState["Hissab_No"] = 0;
     }
     private void ShowButton()
-    {        
-            if (DDCompanyName.SelectedIndex > 0 && DDProcessName.SelectedIndex > 0 && DDEmployerName.SelectedIndex > 0 && ChkForEdit.Checked == false)
-            {
-                BtnShowData.Visible = true;
-                //if (Convert.ToInt16(Session["varcompanyId"]) == 16)
-                //{
-                //    BtnShowData.Visible = false;
-                //}
-            }
-            else
-            {
-                BtnShowData.Visible = false;
-            }
-        
-        
+    {
+        if (DDCompanyName.SelectedIndex > 0 && DDProcessName.SelectedIndex > 0 && DDEmployerName.SelectedIndex > 0 && ChkForEdit.Checked == false)
+        {
+            BtnShowData.Visible = true;
+            //if (Convert.ToInt16(Session["varcompanyId"]) == 16)
+            //{
+            //    BtnShowData.Visible = false;
+            //}
+        }
+        else
+        {
+            BtnShowData.Visible = false;
+        }
+
+
     }
     protected void DGDetail_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -257,7 +258,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     {
                         DGDetail.Columns[i].Visible = false;
                     }
-                }               
+                }
 
             }
 
@@ -266,7 +267,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
     protected void BtnShowData_Click(object sender, EventArgs e)
     {
         lblMessage.Text = "";
-        selectall.Visible = true;      
+        selectall.Visible = true;
 
         if (Session["VarCompanyNo"].ToString() != "9")
         {
@@ -282,9 +283,9 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         //    lblMessage.Text = "Please Select Folio No for hissab";
         //    return;
         //}
-        
+
         ShowDataInGrid();
-        
+
     }
     private void ShowDataInGrid()
     {
@@ -343,7 +344,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     cmd.Parameters.AddWithValue("@Issueorderid", DDPOOrderNo.SelectedIndex > 0 ? DDPOOrderNo.SelectedValue : "0");
                     cmd.Parameters.AddWithValue("@orderid", DDsrno.SelectedIndex > 0 ? DDsrno.SelectedValue : "0");
                     //cmd.Parameters.AddWithValue("@Item_Finished_Id", DDItemDescription.SelectedIndex > 0 ? DDItemDescription.SelectedValue : "0");
-                    cmd.Parameters.AddWithValue("@Process_Rec_ID", DDReceiveChallanNo.SelectedIndex > 0 ? DDReceiveChallanNo.SelectedValue : "0");                    
+                    cmd.Parameters.AddWithValue("@Process_Rec_ID", DDReceiveChallanNo.SelectedIndex > 0 ? DDReceiveChallanNo.SelectedValue : "0");
 
 
                     DataSet Ds = new DataSet();
@@ -365,11 +366,11 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     if (Ds.Tables[0].Rows.Count > 0)
                     {
                         txttotalpcs.Text = Ds.Tables[0].Compute("Sum(Qty)", "").ToString();
-                        txttotalarea.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(Area)", "")), 3).ToString();                       
-                        txtamount.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(TAmount)", "")), 2).ToString(); 
+                        txttotalarea.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(Area)", "")), 3).ToString();
+                        txtamount.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(TAmount)", "")), 2).ToString();
                         txttotalcommission.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(commamount)", "")), 2).ToString();
                         txttotalpenality.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(Penality)", "")), 2).ToString();
-                        
+
                         if (Session["VarCompanyNo"].ToString() == "42")
                         {
                             txtTotalBonusAmt.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(BonusAmt)", "")), 2).ToString();
@@ -379,7 +380,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                         }
                         else
                         {
-                            txtTotalBonusAmt.Text = "0";                          
+                            txtTotalBonusAmt.Text = "0";
                         }
                     }
                     else
@@ -402,7 +403,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         catch (Exception ex)
         {
             lblMessage.Visible = true;
-            lblMessage.Text = ex.Message;            
+            lblMessage.Text = ex.Message;
         }
     }
     private void ForCheckAllRows()
@@ -487,7 +488,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                 TextBox txtBonusAmt = (TextBox)DGDetail.Rows[i].FindControl("txtBonusAmt");
                 TextBox txtMaterialAmt = (TextBox)DGDetail.Rows[i].FindControl("txtMaterialAmt");
                 Label lblFRRate2 = (Label)DGDetail.Rows[i].FindControl("lblFRRate2");
-                
+
 
                 string VarRate = TxtRate.Text == "" ? "0" : TxtRate.Text;
                 string VarWeight = TxtWeight.Text == "" ? "0" : TxtWeight.Text;
@@ -498,7 +499,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                 string VarBonusAmt = txtBonusAmt.Text == "" ? "0" : txtBonusAmt.Text;
                 string VarMaterialAmtCarpetNoWise = txtMaterialAmt.Text == "" ? "0" : txtMaterialAmt.Text;
                 string VarFRRate2 = lblFRRate2.Text == "" ? "0" : lblFRRate2.Text;
-                
+
 
                 //Str = DGDetail.DataKeys[i].Value + "," + DGDetail.Rows[i].Cells[4].Text + "," + DGDetail.Rows[i].Cells[5].Text + "," + VarRate + "," + DGDetail.Rows[i].Cells[8].Text + "," + VarWeight + "," + VarPenality + "," + VarPRemark + "," + Varunitid + "," + VarCaltype;
                 Str = "" + VarRate + "," + lblreqweight.Text + "," + VarWeight + "," + VarPenality + "," + VarPRemark + "," + Varunitid + "," + VarCaltype + "," + VarBonusAmt + "," + VarMaterialAmtCarpetNoWise + "," + VarFRRate2;
@@ -568,7 +569,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                 cmd.Parameters["@MSG"].Direction = ParameterDirection.Output;
                 cmd.Parameters.AddWithValue("@MaterialDeductionAmt", TDMaterialDeductionAmt.Visible == true ? txtMaterialDeductionAmt.Text == "" ? "0" : txtMaterialDeductionAmt.Text : "0");
                 cmd.Parameters.AddWithValue("@ProcessHissabGST", TDGST.Visible == true ? txtGST.Text == "" ? "0" : txtGST.Text : "0");
-                cmd.Parameters.AddWithValue("@Process_Rec_Id", DDReceiveChallanNo.SelectedIndex>0 ? DDReceiveChallanNo.SelectedValue : "0");
+                cmd.Parameters.AddWithValue("@Process_Rec_Id", DDReceiveChallanNo.SelectedIndex > 0 ? DDReceiveChallanNo.SelectedValue : "0");
 
                 cmd.ExecuteNonQuery();
 
@@ -582,7 +583,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
 
                 ViewState["Hissab_No"] = cmd.Parameters["@HissabNo"].Value.ToString();
                 Tran.Commit();
-                lblMessage.Visible = true;                
+                lblMessage.Visible = true;
                 lblMessage.Text = "Data Inserted Successfully !";
                 ShowDataInGrid();
                 TxtHissabNo.Text = ViewState["Hissab_No"].ToString();
@@ -621,7 +622,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             TDSlipNoForEdit.Visible = true;
             TDDDSlipNo.Visible = true;
             BtnDelete.Visible = true;
-            TDPoOrderNo.Visible = false;           
+            TDPoOrderNo.Visible = false;
             TDDDYear.Visible = true;
         }
         else
@@ -636,7 +637,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             {
                 DDEmployerName.SelectedIndex = 0;
             }
-           
+
             TDDDYear.Visible = false;
         }
         //ButtonBtnSaveAllProcessWise();
@@ -647,7 +648,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         lblMessage.Visible = false;
         if (TxtSlipNo.Text != "")
         {
-            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, 
+            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,
                 @"Select CompanyId,ProcessID,EmpId,ProcessOrderNo,HissabNo,replace(convert(varchar(11),Date,106), ' ','-') as Date,ChallanNo 
                     From PROCESS_HISSAB Where CommPaymentFlag=0 And CompanyID = " + DDCompanyName.SelectedValue + " And HissabNo=" + TxtSlipNo.Text + "");
             if (Ds.Tables[0].Rows.Count > 0)
@@ -726,7 +727,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     {
                         Session["ReportPath"] = "Reports/RptProcessHissabSummaryVikramMirzapurForNextProcess.rpt";
                     }
-                    break;               
+                    break;
                 default:
                     Session["ReportPath"] = "Reports/RptProcessHissabSummary.rpt";
                     break;
@@ -740,7 +741,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
     protected void StockNowiseReport()
     {
         ////string str = "select * from VIEW_PROCESS_HISSAB_StockNo Where HissabNo=" + ViewState["Hissab_No"];
-       /// DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        /// DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
         string str = @"select * from VIEW_PROCESS_HISSAB_StockNo Where HissabNo=" + ViewState["Hissab_No"];
         //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -788,7 +789,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     }
                     else if (ChkForRateWise.Checked == true)
                     {
-                            Session["rptFileName"] = "Reports/rptProcesshissabstocknowise_otherjob_WithRateWithPenality.rpt";
+                        Session["rptFileName"] = "Reports/rptProcesshissabstocknowise_otherjob_WithRateWithPenality.rpt";
                     }
                     else
                     {
@@ -816,8 +817,9 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
     {
         DGDetail.PageIndex = e.NewPageIndex;
         ShowDataInGrid();
-    }
-    protected void BtnDelete_Click(object sender, EventArgs e)
+    }   
+    
+    protected void DeleteHissabData()
     {
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         con.Open();
@@ -874,8 +876,51 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             con.Close();
             con.Dispose();
         }
-    }
 
+    }
+    protected void btnCheck_Click(object sender, EventArgs e)
+    {
+        lblMessage.Text = "";
+        if (variable.VarPAYMENTDEL_PWD == txtpwd.Text)
+        {
+            if (btnclickflag == "BtnDeleteHissab")
+            {
+                DeleteHissabData();
+            }
+           
+            Popup(false);
+        }
+        else
+        {
+            lblMessage.Visible = true;
+            lblMessage.Text = "Please Enter Correct Password..";
+        }
+    }
+    protected void BtnDelete_Click(object sender, EventArgs e)
+    {
+        btnclickflag = "";
+        btnclickflag = "BtnDeleteHissab";
+        Popup(true);
+        txtpwd.Focus();      
+
+    }
+    void Popup(bool isDisplay)
+    {
+        StringBuilder builder = new StringBuilder();
+        if (isDisplay)
+        {
+            builder.Append("<script>");
+            builder.Append("ShowPopup();</script>");
+            //Page.ClientScript.RegisterStartupScript(this.GetType(), "ShowPopup", builder.ToString());
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "ShowPopup", builder.ToString(), false);
+        }
+        else
+        {
+            builder.Append("<script>");
+            builder.Append("HidePopup();</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "HidePopup", builder.ToString(), false);
+        }
+    }
 
     protected void DDPOOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -888,42 +933,42 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         //TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);
         FillSrno();
         //FillReceiveChallanNo();
-        
+
     }
     private void FillReceiveChallanNo()
     {
-//        string str = @"select Distinct PRM.PROCESS_REC_ID,PRM.CHALLANNO
-//                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PRM(NoLock) inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
-//                    Where PRD.IssueOrderId=" + DDPOOrderNo.SelectedValue + "";
-//        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        //        string str = @"select Distinct PRM.PROCESS_REC_ID,PRM.CHALLANNO
+        //                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PRM(NoLock) inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
+        //                    Where PRD.IssueOrderId=" + DDPOOrderNo.SelectedValue + "";
+        //        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
         string str = @"select Distinct PRM.PROCESS_REC_ID,PRM.CHALLANNO
                     From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PRM(NoLock) 
                     inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
                     inner join Process_Stock_Detail psd(NoLock)  on PRD.Process_Rec_Detail_Id=Psd.ReceiveDetailId and psd.ToProcessId=" + DDProcessName.SelectedValue + @" And Psd.HissabFlag=0 
-                    JOIN Employee_ProcessReceiveNo EPO(nolock) ON EPO.ProcessID = " + DDProcessName.SelectedValue + @" And EPO.Process_Rec_id = PRM.PROCESS_REC_ID And EPO.Process_Rec_Detail_id = PRD.PROCESS_REC_DETAIL_ID AND EPO.Empid = " + DDEmployerName.SelectedValue+@"
+                    JOIN Employee_ProcessReceiveNo EPO(nolock) ON EPO.ProcessID = " + DDProcessName.SelectedValue + @" And EPO.Process_Rec_id = PRM.PROCESS_REC_ID And EPO.Process_Rec_Detail_id = PRD.PROCESS_REC_DETAIL_ID AND EPO.Empid = " + DDEmployerName.SelectedValue + @"
                     Where PRM.CompanyId=" + DDCompanyName.SelectedValue + " Order by PRM.PROCESS_REC_ID desc";
 
         UtilityModule.ConditionalComboFill(ref DDReceiveChallanNo, str, true, "--Select--");
     }
     protected void DDReceiveChallanNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-       
+
     }
     protected void DDsrno_SelectedIndexChanged(object sender, EventArgs e)
     {
-//        if (Session["VarCompanyNo"].ToString() == "9")
-//        {
-//            string str = @"select Replace(convert(nvarchar(11),isnull(MIN(PRM.ReceiveDate),Getdate()),106),' ','-') As FromDate,Replace(convert(nvarchar(11),
-//                    isnull(MAX(PRM.ReceiveDate),getdate()),106),' ','-') as ToDate
-//                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PRM(NoLock) inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
-//                    Where PRD.OrderID=" + DDsrno.SelectedValue + " and PRM.EmpId=" + DDEmployerName.SelectedValue;
-//            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-//            //TxtFromDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["FromDate"]);
-//            //TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);      
-//        }        
+        //        if (Session["VarCompanyNo"].ToString() == "9")
+        //        {
+        //            string str = @"select Replace(convert(nvarchar(11),isnull(MIN(PRM.ReceiveDate),Getdate()),106),' ','-') As FromDate,Replace(convert(nvarchar(11),
+        //                    isnull(MAX(PRM.ReceiveDate),getdate()),106),' ','-') as ToDate
+        //                    From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PRM(NoLock) inner Join PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD(NoLock) on PRM.Process_Rec_Id=PRD.Process_Rec_Id
+        //                    Where PRD.OrderID=" + DDsrno.SelectedValue + " and PRM.EmpId=" + DDEmployerName.SelectedValue;
+        //            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        //            //TxtFromDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["FromDate"]);
+        //            //TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);      
+        //        }        
 
-       
+
     }
     protected void btnprintvoucher_Click(object sender, EventArgs e)
     {
@@ -951,7 +996,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                 {
                     view = "V_PRINTVOUCHER_FORNEXRPROCESS";
                     Session["rptFileName"] = "Reports/RptVoucher_VikramMirzapurForNextProcess.rpt";
-                }                
+                }
                 break;
             default:
                 Session["rptFileName"] = "Reports/rptvoucher.rpt";
@@ -1000,11 +1045,11 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
     //{
     //    TxtDate.Text = TxtToDate.Text;
     //}
-    
+
     protected void FillMaterialDeductionCharge()
     {
         if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex > 0 && DDProcessName.SelectedItem.Text.ToUpper() == "WEAVING")
-        { 
+        {
 
             string str = "";
             str = "Select isnull(sum(AA.AdvanceAmt),0) as AdvanceAmt From AdvanceAmountByFolioNoWise AA(NoLock) Where AA.PaymentType=2 And AA.CompanyID = " + DDCompanyName.SelectedValue + @" 
@@ -1015,7 +1060,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             {
                 txtMaterialDeductionAmt.Text = Ds.Tables[0].Rows[0]["AdvanceAmt"].ToString();
             }
-        }       
+        }
     }
     protected void DDYear_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -1031,7 +1076,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         array[3] = new SqlParameter("@UserId", Session["VarUserId"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_HissabReportReceiveChallanNoWise", array);
-        
+
         if (ds.Tables[0].Rows.Count > 0)
         {
             switch (Session["varcompanyNo"].ToString())
@@ -1039,7 +1084,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                 case "43":
                     Session["rptFileName"] = "Reports/RptProcessHissabReceiveChallanNoWise.rpt";
                     break;
-                default:                    
+                default:
                     break;
             }
 
