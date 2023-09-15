@@ -146,13 +146,13 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
                        DispatchDate = x.FirstOrDefault().DispatchDate,
                        PackingDate = x.FirstOrDefault().PackingDate,
                        DelayDays = x.FirstOrDefault().DelayDays,
-                       ProcessList = x.GroupBy(y => new {y.ProcessId,y.ProcessName,y.ProcessType }).Select(n => new ProcessItem
+                       ProcessList = x.GroupBy(y => new { y.ProcessId, y.ProcessName, y.ProcessType }).Select(z => new ProcessItem
                        {
-                           SeqNo = n.Min(n=>n.SeqNo),
-                           ProcessId = n.Key.ProcessId,
-                           ProcessType = n.Key.ProcessType,
-                           ProcessName = n.Key.ProcessName
-                       }).OrderBy(m=> m.ProcessType).OrderBy(n=>n.SeqNo).ToList(),
+                           SeqNo = z.Min(zx => zx.SeqNo),
+                           ProcessId = z.Key.ProcessId,
+                           ProcessType = z.Key.ProcessType,
+                           ProcessName = z.Key.ProcessName
+                       }).OrderBy(m => m.ProcessType).OrderBy(n => n.SeqNo).ToList(),
 
                    });
                 return result;
