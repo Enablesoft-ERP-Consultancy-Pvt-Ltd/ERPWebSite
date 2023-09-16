@@ -226,15 +226,21 @@ public partial class Masters_Rawmaterial_FrmPNMRowIssueDetail : System.Web.UI.Pa
         }
         if (shd.Visible == true)
         {
+//            UtilityModule.ConditionalComboFill(ref ddlshade, @"Select Distinct VF.ShadeColorID, VF.ShadeColorName 
+//            From PP_ProcessDirectRawMaster a(Nolock) 
+//            JOIN PP_ProcessDirectRawTran b(Nolock) on b.PRMID = a.PRMID And b.CHAMPOINDENTID = " + ddChampoIndentNo.SelectedValue + @" 
+//            JOIN V_FinishedItemDetail VF(Nolock) on VF.ITEM_FINISHED_ID = b.FINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + @" 
+//                     And VF.ITEM_ID = " + dditemname.SelectedValue + " And VF.QualityID = " + dquality.SelectedValue + @" 
+//            Where a.CompanyID = " + ddCompName.SelectedValue + " And a.BRANCHID = " + DDBranchName.SelectedValue + @" And 
+//            a.PROCESSID = " + ddProcessName.SelectedValue + " And a.PRMID = " + DDChallanNo.SelectedValue + @" 
+//            And a.MASTERCOMPANYID = " + Session["varCompanyId"] + @" 
+//            Order By VF.ShadeColorName ", true, "Select ShadeColor");
+
             UtilityModule.ConditionalComboFill(ref ddlshade, @"Select Distinct VF.ShadeColorID, VF.ShadeColorName 
-            From PP_ProcessDirectRawMaster a(Nolock) 
-            JOIN PP_ProcessDirectRawTran b(Nolock) on b.PRMID = a.PRMID And b.CHAMPOINDENTID = " + ddChampoIndentNo.SelectedValue + @" 
-            JOIN V_FinishedItemDetail VF(Nolock) on VF.ITEM_FINISHED_ID = b.FINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + @" 
-                     And VF.ITEM_ID = " + dditemname.SelectedValue + " And VF.QualityID = " + dquality.SelectedValue + @" 
-            Where a.CompanyID = " + ddCompName.SelectedValue + " And a.BRANCHID = " + DDBranchName.SelectedValue + @" And 
-            a.PROCESSID = " + ddProcessName.SelectedValue + " And a.PRMID = " + DDChallanNo.SelectedValue + @" 
-            And a.MASTERCOMPANYID = " + Session["varCompanyId"] + @" 
-            Order By VF.ShadeColorName ", true, "Select ShadeColor");
+                From ExportERP.dbo.IndentDetail ID(Nolock) 
+                JOIN ExportERP.dbo.V_FinishedItemDetail VF(Nolock) on VF.ITEM_FINISHED_ID = ID.OFinishedId  
+                Where ID.IndentID = " + ddChampoIndentNo.SelectedValue + @" 
+                Order By VF.ShadeColorName ", true, "Select ShadeColor");
         }
     }
     protected void ddshape_SelectedIndexChanged(object sender, EventArgs e)

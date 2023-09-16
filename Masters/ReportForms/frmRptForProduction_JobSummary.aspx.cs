@@ -46,6 +46,9 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                     TRcategoty.Visible = false;
                     TRddItemName.Visible = false;
                     TDempwise.Visible = true;
+                    break;
+                case "16":
+                    TRForProcessWiseSummary.Visible = true;
                     break;  
                 case "21":
                     TRForWithoutWeavingProcess.Visible = true;
@@ -234,6 +237,11 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
 
             if (ds.Tables[0].Rows.Count > 0)
             {
+                if (ChkForProcessWiseSummary.Checked == true)
+                {
+                    ForProcessWiseSummary(ds, FilterBy);
+                    return;
+                }
                 if (chkexport.Checked == true && chkwithstockdetail.Checked == false)
                 {
                     JobwiseissueExcelExport(ds, FilterBy);
@@ -834,6 +842,96 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
     protected void DDsizetype_SelectedIndexChanged(object sender, EventArgs e)
     {
         FillSize();
+    }
+    protected void ForProcessWiseSummary(DataSet ds, string FilterBy)
+    {
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("Production_JOB SUMMARY");
+
+            //*************
+            //***********
+            sht.Row(1).Height = 24;
+            sht.Range("A1:G1").Merge();
+            sht.Range("A1:G1").Style.Font.FontSize = 10;
+            sht.Range("A1:G1").Style.Font.Bold = true;
+            sht.Range("A1:G1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:G1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:G1").Style.Alignment.WrapText = true;
+            //************
+            sht.Range("A1").SetValue("PRODUCTION/JOB SUMMARY (From -" + txtFromdate.Text + " To-" + txtToDate.Text + ") " + FilterBy);
+
+            sht.Range("A2:G2").Style.Font.FontSize = 10;
+            sht.Range("A2:G2").Style.Font.Bold = true;
+            sht.Range("F2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("G2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+            sht.Range("A2").Value = "UNIT NAME";
+            sht.Range("B2").Value = "JOB NAME";
+            sht.Range("C2").Value = "ITEM NAME";
+            sht.Range("D2").Value = "QUALITY";
+            sht.Range("E2").Value = "SIZE";
+            sht.Range("F2").Value = "QTY";
+            sht.Range("G2").Value = "AREA";
+
+            int row = 3;
+            DataView dv = ds.Tables[0].DefaultView;
+            dv.Sort = "ReceiveDate,challanNo";
+            DataSet ds1 = new DataSet();
+            ds1.Tables.Add(dv.ToTable());
+            for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
+            {
+                sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Unitname"]);
+                sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Job"]);
+                sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["ItemNameNew"]);
+                sht.Range("D" + row).SetValue(ds1.Tables[0].Rows[i]["ItemName"]);
+                sht.Range("E" + row).SetValue(ds1.Tables[0].Rows[i]["Size"]);
+                sht.Range("F" + row).SetValue(ds1.Tables[0].Rows[i]["Recqty"]);
+                sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Area"]);
+
+                row = row + 1;
+            }
+            ds.Dispose();
+            ds1.Dispose();
+            //**************grand Totalp
+            var sum = sht.Evaluate("SUM(F3:F" + (row - 1) + ")");
+            sht.Range("F" + row).SetValue(sum);
+            sht.Range("F" + row).Style.Font.Bold = true;
+
+            var Area = sht.Evaluate("SUM(G3:G" + (row - 1) + ")");
+            sht.Range("G" + row).SetValue(Area);
+            sht.Range("G" + row).Style.Font.Bold = true;
+
+            using (var a = sht.Range("A1:G" + row))
+            {
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            }
+
+            String Path;
+            sht.Columns(1, 18).AdjustToContents();
+            string Fileextension = "xlsx";
+            string filename = UtilityModule.validateFilename("PRODUCTION_JOB SUMMARY_" + DateTime.Now + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "JobPendalt", "alert('No records found..')", true);
+        }
     }
     protected void JobwiseissueExcelExport(DataSet ds, string FilterBy)
     {

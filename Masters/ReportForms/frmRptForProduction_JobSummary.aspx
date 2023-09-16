@@ -33,9 +33,13 @@
             ChkForWithoutWeavingProcess.Visible = false;
             chkwithstockdetail.Visible = false;
             chkwithstockdetail.Checked = false;
+            TRForProcessWiseSummary.Visible = false;
+            ChkForProcessWiseSummary.Checked = false;
+            
             if (chkexport.Checked == true)
             {
                 chkwithstockdetail.Visible = true;
+                TRForProcessWiseSummary.Visible = true;
             }
         }
     </script>
@@ -225,6 +229,14 @@
                                                 runat="server" />
                                         </td>
                                     </tr>
+                                    
+                                     <tr id="TRForProcessWiseSummary" runat="server" visible="false">
+                                        <td colspan="2">
+                                            <asp:CheckBox ID="ChkForProcessWiseSummary" Text="For Process Wise Summary" CssClass="checkboxbold"
+                                                runat="server" />
+                                        </td>
+                                    </tr>
+
                                     <tr>
                                         <td align="right" colspan="3">
                                             <asp:Button ID="btnprint" runat="server" CssClass="buttonnorm" Text="Print" Width="50px"

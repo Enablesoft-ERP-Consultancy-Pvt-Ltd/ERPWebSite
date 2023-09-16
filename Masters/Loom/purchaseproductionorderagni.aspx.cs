@@ -8,8 +8,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 using System.IO;
+using DocumentFormat.OpenXml.Office.Word;
 
-public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
+public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Page
 {
     static string ChkUpdateRateFlag = "";
     static int hnEmpId = 0;
@@ -59,7 +60,11 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
                 Order By D.DepartmentName
 Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
-";
+select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
+			union all
+			select 2 as id,isnull(CompAddr2,'') as compaddr from CompanyInfo
+			union all
+			select 3 as id,isnull(CompAddr3,'') as compaddr from CompanyInfo";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -76,7 +81,7 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
             UtilityModule.ConditionalComboFillWithDS(ref ddunit, ds, 3, true, "--Plz Select--");
 
             UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 4, false, "");
-            UtilityModule.ConditionalComboFillWithDS(ref ddlshipto, ds, 4, false, "");
+            UtilityModule.ConditionalComboFillWithDS(ref ddlshipto, ds, 7, false, "");
             UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 6, true, "--Plz Select--");
             DDBranchName.Enabled = false;
             if (DDBranchName.Items.Count == 0)
@@ -249,6 +254,7 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
                   //  TDgetstockdetail.Visible = false;
                      tdColor1.Visible = true;
                      tdsize1.Visible = true;
+                    // TDUNIT.Visible = true;
                     break;
                 default:
                     TDTanaCottonLotNo.Visible = false;
@@ -1644,7 +1650,7 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
                      int Item_finished_id = UtilityModule.getItemFinishedId(DDLItem, DDQuality, DDDesign, DDColor, ddlshape, DDSize, TxtItemCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
                 saverawdetailcarpet(Item_finished_id);
                 
-                SqlParameter[] param = new SqlParameter[29];
+                SqlParameter[] param = new SqlParameter[36];
                 param[0] = new SqlParameter("@issueorderid", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.InputOutput;
                 param[0].Value = hnissueorderid.Value;
@@ -1662,8 +1668,10 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
                 param[10] = new SqlParameter("@Remarks", TxtRemarks.Text);
                
                 param[11] = new SqlParameter("@Item_finished_id", Item_finished_id);
-                param[12] = new SqlParameter("@Width", "0");
-                param[13] = new SqlParameter("@Length", "0");
+                    string[] size= DDSize.SelectedItem.Text.Split('x');
+                  
+                        param[12] = new SqlParameter("@Width",size.Count()>0?size[1]:"0");
+                        param[13] = new SqlParameter("@Length", size.Count() > 0 ? size[0] : "0");
                 param[14] = new SqlParameter("@Area", "0");
                 param[15] = new SqlParameter("@Rate", txtmainrate.Text == "" ? "0" : txtmainrate.Text);
                 param[16] = new SqlParameter("@Commrate",  "0");
@@ -1682,11 +1690,28 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
                 param[26] = new SqlParameter("@Colorid", DDColor.SelectedValue);
                 param[27] = new SqlParameter("@varcarpetcompany", variable.Carpetcompany);
                 param[28] = new SqlParameter("@Itemid", DDItemName.SelectedValue);
+                param[29] = new SqlParameter("@FOLIONO", SqlDbType.VarChar, 50);
+                param[29].Direction = ParameterDirection.Output;
+                param[30] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
+                param[31] = new SqlParameter("@SHIPTO", ddlshipto.SelectedValue);
+                    param[32] = new SqlParameter("@SGST", txtmainSGST.Text);
+                    param[33] = new SqlParameter("@CGST", txtmainCGST.Text);
+                    param[34] = new SqlParameter("@IGST", txtmainIGST.Text);
+                    param[35] = new SqlParameter("@GSTTYPE", gstmaintype.SelectedValue);
+                    //  cmd.Parameters.AddWithValue("@SHIPTO", ddlshipto.SelectedValue);
+                    //  cmd.Parameters.AddWithValue("@BranchID", DDBranchName.SelectedValue);
+                    // param[29] = new SqlParameter("@FOLIONO", DDItemName.SelectedValue);
 
-                //*********************
-                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SAVESPPSTOCKORDER", param);
+                    //*********************
+                    SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SAVESPPSTOCKORDER_AGNI", param);
                 lblmessage.Text = param[18].Value.ToString();
                 Tran.Commit();
+                txtfoliono.Text = param[29].Value.ToString(); //param[5].Value.ToString();
+                hnissueorderid.Value = param[0].Value.ToString();// param[0].Value.ToString();
+                FillGrid();
+                //FillConsumptionQty();
+                Refreshcontrol();
+                disablecontrols();
                 }
                 catch (Exception ex)
                 {
@@ -1994,11 +2019,21 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
         //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
 
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        string sp = string.Empty;
         if (con.State == ConnectionState.Closed)
         {
             con.Open();
         }
-        SqlCommand cmd = new SqlCommand("Pro_ForProductionOrder", con);
+        if (DDCategory.SelectedIndex > 0)
+        {
+
+            sp = "Pro_ForProductionOrder_NEW";
+        }
+        else {
+            sp = "Pro_ForProductionOrder";
+        
+        }
+        SqlCommand cmd = new SqlCommand(sp, con);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.CommandTimeout = 300;
 
@@ -3163,7 +3198,7 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
         //*******Chages For Scanning Tagging Stock No
         if (variable.VarGENERATESTOCKNOONTAGGING == "1" && hnEmployeeType.Value == "0")
         {
-            if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+            if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28" || Session["varcompanyNo"].ToString() == "44")
             {
                 if (chkEdit.Checked == true)
                 {
@@ -3534,8 +3569,42 @@ Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner joi
     //}
     protected void ddunit_SelectedIndexChanged(object sender, EventArgs e)
     {
-        DG.DataSource = null;
-        DG.DataBind();
+        string str = string.Empty;
+        switch (ddunit.SelectedValue.ToString())
+        {
+            case "0":
+                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
+                //str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                break;
+            case "1":
+                str = "Select Distinct S.Sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
+                //str = " Select Distinct S.sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr from Size S Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+
+                break;
+            case "2":
+                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
+               
+                //str = "Select Distinct S.sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                break;
+            case "6":
+                str = "Select Distinct S.Sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
+                break;
+
+            default:
+                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
+                //str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                break;
+        }
+        if (ddlshape.SelectedIndex > 0)
+        {
+            //if (Convert.ToInt32(DDOrderUnit.SelectedValue) == 6)
+            //{
+            //    UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,Sizeinch Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Sizeinch", true, "--SELECT--");
+            //}
+            //else
+            //{
+            UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");
+        }
     }
     protected void Txtwidthlength_TextChanged(object sender, EventArgs e)
     {

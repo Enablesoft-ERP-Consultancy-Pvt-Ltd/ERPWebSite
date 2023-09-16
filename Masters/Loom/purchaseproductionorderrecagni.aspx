@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="PURCHASE PRODUCTION RECEIVE" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="purchaseproductionorderrecagni.aspx.cs" Inherits="Masters_Loom_frmproductionorderonLoom" %>
+    AutoEventWireup="true" CodeFile="purchaseproductionorderrecagni.aspx.cs" Inherits="Masters_Loom_frmproductionorderonLoomAgni" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
@@ -397,7 +397,7 @@
                             <td id="TDUNIT" runat="server">
                                 <asp:Label ID="lblunit" CssClass="labelbold" Text="Unit" runat="server" />
                                 <br />
-                                <asp:DropDownList ID="ddunit" runat="server" CssClass="dropdown" AutoPostBack="true"
+                                <asp:DropDownList ID="ddunit" Enabled="false" runat="server" CssClass="dropdown" AutoPostBack="true"
                                     OnSelectedIndexChanged="ddunit_SelectedIndexChanged">
                                 </asp:DropDownList>
                             </td>
@@ -787,6 +787,7 @@
                         </tr>
                     </table>
                     <asp:HiddenField ID="hnissueorderid" runat="server" />
+                    <asp:HiddenField ID="hnorderid" runat="server" />
                       <asp:HiddenField ID="hnprocessrecid" runat="server" Value="0" />
                 <asp:HiddenField ID="hn100_ISSUEORDERID" runat="server" Value="0" />
                 <asp:HiddenField ID="hn100_PROCESS_REC_ID" runat="server" Value="0" />
