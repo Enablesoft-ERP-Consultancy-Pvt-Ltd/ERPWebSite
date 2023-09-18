@@ -104,6 +104,38 @@ $(function () {
 
 
 
+
+    $('#myModal').on('click', 'a.sorting', function (e) {
+
+
+        var $sorted_items,
+            getSorted = function (selector, attrName) {
+                return $(
+                    $(selector).toArray().sort(function (a, b) {
+                        var aVal = parseInt(a.getAttribute(attrName)),
+                            bVal = parseInt(b.getAttribute(attrName));
+                        return aVal - bVal;
+                    })
+                );
+            };
+
+        $sorted_items = getSorted('#bodyItem .row', 'data-order').clone();
+        $('#bodyItem').empty();
+        $('#bodyItem').html($sorted_items);
+
+
+    });
+
+
+
+
+
+
+
+
+
+
+
     $.ajax({
         type: "POST",
         url: "Home.aspx/OrderList",
@@ -152,20 +184,21 @@ $(function () {
                         data: null,
                         render: function (data, type, row, meta) {
 
-                            var btnHtml = "<a title='Order Detail' class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mediumtxt mrm'></i></a>";
+                            var btnHtml = "<a title='Order Detail' class='btnOrder' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle text-red mediumtxt mrm'></i>Order Summary</a>";
+
+                            btnHtml += "<a class='btnSummary mrm' exthref=" + data.OrderId + "><i class='fa fa fa-info-circle mrs text-green'></i><strong>Process Summary</strong></a>";
                             btnHtml += "<div class='btn-group'><button type='button' data-bs-toggle='dropdown' class='btn btn-dark dropdown-toggle  ptx pbx'>";
                             btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion' style='max-height:400px;overflow:auto;'>";
-                            btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
+                            btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "' extType='0' title='PURCHASE' extSeq='0'><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
+
 
                             //console.log(data);
-
                             $.each(data.ProcessList, function (index, item) {
                                 console.log(item);
                                 // var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
                                 if (item.ProcessType == 0) {
                                     item.ProcessType = 1;
                                 }
-
                                 console.log(item.ProcessType);
                                 var className;
                                 switch (item.ProcessType) {
@@ -179,104 +212,9 @@ $(function () {
                                         className = "btnFinish";
                                         break;
                                 }
-                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " prName='" + item.ProcessName + "' exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
-
+                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " prName='" + item.ProcessName + "' exthref=" + data.OrderId + "' extType=" + item.ProcessType + "' title=" + item.ProcessName + "' extSeq=" + item.SeqNo + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
                             });
-
-
-
-
-
-
-
-
-                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 5 + " exthref=" + data.OrderId + "><i class='fa fa-pencil mrs text-green'></i><strong>Dyeing(DY)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 8 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>BLOCK PRINTING(MTR)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 11 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>DIGITAL PRINTING(MTR)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 12 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>COMPUTER EMBROIDERY(MTR)</strong></a></li>";
-
-                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 18 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>WASHING(MTR)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 34 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>STONE WASH(MTR)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnProcess mrm' prhref=" + 29 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>SCREEN PRINTING (MTR)</strong></a></li>";
-
-
-
-
-
-                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>COMPUTER EMBROIDERY(PCS)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 1 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>CUTTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 2 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>MANUAL EMBROIDERY(PCS)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 42 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>PANNEL WEAVING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 4 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>PATCH STITCHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnIssueProcess mrm' prhref=" + 38 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>TABLE TUFTING</strong></a></li>";
-
-
-
-
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 13 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>STITCHING</strong></a></li>";
-
-
-
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 21 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  BLOCK PRINTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 30 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  COLOUR CUT </strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 10 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  COMPUTER EMBROIDERY(PCS)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 26 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  DIGITAL PRINTING (PCS)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 6 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  DYEING(PCS)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 3 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  FILLING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 7 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  FINAL FINISHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 27 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  FOLD &amp; THREAD CUTTING </strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 47 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  HAND STITCHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 28 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  HEMMING STICHING </strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 41 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  KANTHA HANDWORK</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 31 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  KNOTTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 20 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  KNOWTING &amp; WRAPPING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 23 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  LABEL STITCHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 43 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  LACE STITCHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 2 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  MANUAL EMBROIDERY(PCS)</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 17 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PACKING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 39 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PANEL MAKING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 42 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PANNEL WEAVING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 4 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PATCH STITCHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 14 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  PRESING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 44 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  QUILTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 40 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  RE-WORK</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 49 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  SAMPLING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 24 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  SCREEN PRINTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 13 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  STITCHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 22 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  STONE WASH</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 38 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  TABLE TUFTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 16 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  TASSEL STITCHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 19 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  THREAD CUTTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 32 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  THREAD CUTTING &amp; TASSLING </strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 37 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  TUFTING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 46 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  UPHOLSTERY</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 25 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  VACUUM</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 33 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  WASHING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 48 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  WEAVING</strong></a></li>";
-                            //btnHtml += "<li><a class='btnFinish mrm' prhref=" + 35 + "  exthref=" + data.OrderId + "><i class='fa fa-cogs mrs text-green'></i><strong>Finishing  WRAPPING</strong></a></li>";
-
-
-
-
-
-
-
-
-
                             btnHtml += "</ul></div>";
-
-
-
-
-
-
-
-
-
-
-
-
-
                             return btnHtml;
                         },
                     },
@@ -299,7 +237,11 @@ $(function () {
 
             });
 
-
+            table.on('click', 'a.btnSummary', function (e) {
+                var elem = $(this);
+                var orderId = parseInt(elem.attr('exthref'));
+                SummaryReport(elem, orderId)
+            });
 
             table.on('click', 'a.btnOrder', function (e) {
                 var elem = $(this);
@@ -311,8 +253,6 @@ $(function () {
             table.on('click', 'a.btnPurchase', function (e) {
                 var elem = $(this);
                 var id = elem.attr('exthref');
-                
-                
                 var _orderId = parseInt(id);
                 PurchaseReport(_orderId);
             });
@@ -523,9 +463,6 @@ function BindChart(orderlist) {
     });
 }
 
-
-
-
 function OrderDetail(_orderId) {
 
 
@@ -583,63 +520,22 @@ function OrderDetail(_orderId) {
 }
 
 
-function PurchaseReport(_orderId) {
+async function PurchaseReport(_orderId) {
 
-    var bodyHtml = "";
     $('h4.modal-title').empty();
-    $('h4.modal-title').html("Purchase Report");
-    const obj = { OrderId: _orderId };
-    $.ajax({
-        url: "Home.aspx/GetPurchaseList",
-        contentType: "application/json; charset=utf-8",
-        type: "POST",
-        data: JSON.stringify(obj),
-        success: function (data) {
+    $('div.modal-body').empty();
+    PurchaseHtml(_orderId, "Purchase Report");
 
-            console.log(data.d)
 
-            var result = $.parseJSON(data.d);
-
-            bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
-            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += " <tr><th>Supplier Name</th><th>PO No</th><th>PO Date</th><th>Delv. Date</th>";
-            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Rec. Qty.</th><th>Pending Qty.</th><th>Delay Days</th><th>PO Status</th></tr></thead><tbody>";
-            if (result.data.length > 0) {
-
-                $.each(result.data, function (index, item) {
-
-                    bodyHtml += "<tr><td>" + item.SupplierName + "</td><td>" + item.PONo + "</td><td>" + item.PODate + "</td ><td>" + item.DelvDate + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.RecQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.POStatus + "</td></tr>"
-
-                });
-            }
-            else {
-                bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
-            }
-
-            bodyHtml += "</tbody></table></div></div></div>"
-
-        },
-        error: function (xhr, status, error) {
-            var msg = "Response failed with status: " + status + "</br>"
-                + " Error: " + error;
-            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
-        },
-        complete: function (xhr, status) {
-            $('div.modal-body').empty();
-            $('div.modal-body').html(bodyHtml);
-            $('#myModal').modal('show');
-        }
-    });
 
 
 }
-
 
 function ProcessReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
 
-    $('h4.modal-title').empty();    
+    $('h4.modal-title').empty();
     $('h4.modal-title').html(name);
 
 
@@ -695,8 +591,7 @@ function ProcessReport(_orderId, _processId, name) {
 
 }
 
-
-function FinishItemReport(_orderId, _processId,name) {
+function FinishItemReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
 
@@ -756,16 +651,11 @@ function FinishItemReport(_orderId, _processId,name) {
 
 }
 
-
-function ProcessIssueReport(_orderId, _processId,name) {
+function ProcessIssueReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
-
-    $('h4.modal-title').empty();    
+    $('h4.modal-title').empty();
     $('h4.modal-title').html(name);
-
-
-
     const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
         url: "Home.aspx/GetIssueDetail",
@@ -813,6 +703,141 @@ function ProcessIssueReport(_orderId, _processId,name) {
             $('#myModal').modal('show');
         }
     });
+}
 
 
+
+
+
+
+
+function PurchaseHtml(_orderId, _title, _seq) {
+
+    var bodyHtml = "";
+    const obj = { OrderId: _orderId };
+    $.ajax({
+        url: "Home.aspx/GetPurchaseList",
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(obj),
+        success: function (data) {
+
+            console.log(data.d)
+            var result = $.parseJSON(data.d);
+            bodyHtml += "<div class='row' data-order=" + _seq + "><div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
+            bodyHtml += " <tr><th>Supplier Name</th><th>PO No</th><th>PO Date</th><th>Delv. Date</th>";
+            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Rec. Qty.</th><th>Pending Qty.</th><th>Delay Days</th><th>PO Status</th></tr></thead><tbody>";
+            if (result.data.length > 0) {
+
+                $.each(result.data, function (index, item) {
+
+                    bodyHtml += "<tr><td>" + item.SupplierName + "</td><td>" + item.PONo + "</td><td>" + item.PODate + "</td ><td>" + item.DelvDate + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.RecQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.POStatus + "</td></tr>"
+
+                });
+            }
+            else {
+                bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
+            }
+
+            bodyHtml += "</tbody></table></div></div></div>"
+
+        },
+        error: function (xhr, status, error) {
+            var msg = "Response failed with status: " + status + "</br>"
+                + " Error: " + error;
+            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+        },
+        complete: function (xhr, status) {
+            $('div.modal-body').append(bodyHtml);
+            $('#myModal').modal('show');
+        }
+    });
+}
+
+
+function SummaryReport(elem, orderId) {
+
+    $('h4.modal-title').empty();
+    $('h4.modal-title').html("Summary Report");
+    $('div.modal-body').empty();
+    elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
+        var item = $(this).find("a");
+        var _type = parseInt(item.attr('extType'));
+
+        var seq = parseInt(item.attr('extSeq'));
+
+        var _title = item.attr('title') + " SUMMARY";
+        var url;
+        if (_type == 0) {
+
+            PurchaseHtml(orderId, _title, seq);
+        }
+        else {
+            var _processId = parseInt(item.attr('prhref'));
+            switch (_type) {
+                case 1:
+                    url = "Home.aspx/GetIndentDetail";
+                    break;
+                case 2:
+                    url = "Home.aspx/GetIssueDetail";
+                    break;
+                case 3:
+                    url = "Home.aspx/GetFinishDetail";
+                    break;
+            }
+            const obj = { OrderId: orderId, ProcessId: _processId };
+            ReqHtml(url, obj, _title, seq);
+
+        }
+    });
+
+
+
+}
+function ReqHtml(_url, _Req, _title, _seq) {
+
+
+    var bodyHtml = "";
+    $.ajax({
+        url: _url,
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(_Req),
+        success: function (data) {
+            console.log(data.d)
+            var result = $.parseJSON(data.d);
+            bodyHtml += "<div class='row' data-order=" + _seq + "><div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
+            bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
+            bodyHtml += "<th>Issue No.</th><th>Issue Date</th>";
+            bodyHtml += "<th>Req. Date</th><th>Rec. Date</th>";
+            bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Rate</th>";
+            bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
+            if (result.data.length > 0) {
+                $.each(result.data, function (index, item) {
+                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
+                    bodyHtml += "<td>" + item.IssueNo + "</td><td>" + item.IssueDate + "</td><td>" + item.ReqDate + "</td>";
+                    bodyHtml += "<td>" + item.RecDate + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
+                    bodyHtml += "<td>" + item.Rate + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
+                });
+            }
+            else {
+                bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
+            }
+            bodyHtml += "</tbody></table></div></div></div>"
+        },
+        error: function (xhr, status, error) {
+            var msg = "Response failed with status: " + status + "</br>"
+                + " Error: " + error;
+            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+        },
+        complete: function (xhr, status) {
+
+
+            $('div.modal-body').append(bodyHtml);
+            $('#myModal').modal('show');
+        }
+    });
+    return bodyHtml;
 }

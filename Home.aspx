@@ -148,13 +148,15 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Purchase</h4>
+                            <h4 class="modal-title"></h4>
+
+                            <a class="sorting"><i class='fa fa-sort mrs text-green'></i><strong></strong></a>
                             <button type="button" data-bs-dismiss="modal" aria-hidden="true"
                                 class="close">
                                 &times;
                             </button>
                         </div>
-                        <div class="modal-body">
+                        <div id="bodyItem" class="modal-body">
                         </div>
                         <div class="modal-footer">
                             <button type="button" data-bs-dismiss="modal" class="btn btn-lg btn-red">
@@ -186,6 +188,5 @@
     <script src="<%= Page.ResolveUrl("~/lib/datatables.net/js/jquery.dataTables.min.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/datatables-tabletools/js/dataTables.tableTools.min.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/datatables.net-bs5/js/dataTables.bootstrap5.min.js")%>"></script>
-
-    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.6")%>"></script></asp:Content>
+    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.97")%>"></script></asp:Content>
 
