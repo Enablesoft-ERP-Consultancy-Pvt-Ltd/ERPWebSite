@@ -69,22 +69,22 @@
                         <div class="accordion-body">
                             <div class="row">
                                 <div class="col-lg-12">
-                          
-                                        <table id="tblOrder" class="table table-hover table-striped table-bordered table-advanced tablesorter display">
-                                            <thead>
-                                                <tr>
-                                                    <th>Customer Code</th>
-                                                    <th>Order No</th>
-                                                    <th>Order Date</th>
-                                                    <th>Dispatch Date</th>
-                                                    <th>Delay Days</th>
-                                                    <th>Order Status</th>
-                                                    <th></th>
-                                                </tr>
-                                            </thead>
-                                        </table>
-                                    </div>
-                           
+
+                                    <table id="tblOrder" class="table table-hover table-striped table-bordered table-advanced tablesorter display">
+                                        <thead>
+                                            <tr>
+                                                <th>Customer Code</th>
+                                                <th>Order No</th>
+                                                <th>Order Date</th>
+                                                <th>Dispatch Date</th>
+                                                <th>Delay Days</th>
+                                                <th>Order Status</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -148,19 +148,16 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title"></h4>
 
-                            <a class="sorting"><i class='fa fa-sort mrs text-green'></i><strong></strong></a>
-                            <button type="button" data-bs-dismiss="modal" aria-hidden="true"
-                                class="close">
-                                &times;
-                            </button>
+                            
+
+
                         </div>
                         <div id="bodyItem" class="modal-body">
                         </div>
                         <div class="modal-footer">
                             <button type="button" data-bs-dismiss="modal" class="btn btn-lg btn-red">
-                                <i class="fa fa-times"></i>Close</button>
+                                <i class="fa fa-times mrs"></i>Close</button>
                         </div>
 
                     </div>
@@ -188,5 +185,6 @@
     <script src="<%= Page.ResolveUrl("~/lib/datatables.net/js/jquery.dataTables.min.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/datatables-tabletools/js/dataTables.tableTools.min.js")%>"></script>
     <script src="<%= Page.ResolveUrl("~/lib/datatables.net-bs5/js/dataTables.bootstrap5.min.js")%>"></script>
-    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.97")%>"></script></asp:Content>
+    <script src="<%= Page.ResolveUrl("~/Content/Javascripts/Dashboard.js?1.20")%>"></script>
+</asp:Content>
 

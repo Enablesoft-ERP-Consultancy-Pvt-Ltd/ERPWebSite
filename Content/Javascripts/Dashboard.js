@@ -184,9 +184,9 @@ $(function () {
                         data: null,
                         render: function (data, type, row, meta) {
 
-                            var btnHtml = "<a title='Order Detail' class='btnOrder btn btn-default btn-xs mrm' exthref=" + data.OrderId + "><i class='fa fa-info-circle'></i>Order Summary</a>";
+                            var btnHtml = "<a title='Order Detail' class='btnOrder text-red btn btn-default btn-xs mrm' exthref=" + data.OrderId + "><i class='fa fa-info-circle mrs'></i>Order Summary</a>";
 
-                            btnHtml += "<a class='btnSummary btn btn-default btn-xs mrm' exthref=" + data.OrderId + "><i class='fa fa-pencil'></i><strong>Process Summary</strong></a>";
+                            btnHtml += "<a class='btnSummary text-green btn btn-default btn-xs mrm' exthref=" + data.OrderId + "><i class='fa fa-pencil mrs'></i><strong>Process Summary</strong></a>";
                             btnHtml += "<div class='btn-group'><button type='button' data-bs-toggle='dropdown' class='btn btn-dark dropdown-toggle  ptx pbx'>";
                             btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion' style='max-height:400px;overflow:auto;'>";
                             btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "' extType='0' title='PURCHASE' extSeq='0'><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
@@ -212,7 +212,7 @@ $(function () {
                                         className = "btnFinish";
                                         break;
                                 }
-                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " prName='" + item.ProcessName + "' exthref=" + data.OrderId + "' extType=" + item.ProcessType + "' title=" + item.ProcessName + "' extSeq=" + item.SeqNo + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
+                                btnHtml += "<li><a class='" + className + " mrm' prhref=" + item.ProcessId + " prName='" + item.ProcessName + "' exthref=" + data.OrderId + " extType=" + item.ProcessType + "  title='" + item.ProcessName + "' extSeq=" + item.SeqNo + "><i class='fa fa-pencil mrs text-green'></i><strong>" + item.ProcessName + "</strong></a></li>";
                             });
                             btnHtml += "</ul></div>";
                             return btnHtml;
@@ -468,10 +468,9 @@ function OrderDetail(_orderId) {
 
     var bodyHtml = "";
 
-    $('#myModal').find('h4.modal-title').empty();
+    $('#myModal').find('div.modal-header').empty();
+    $('#myModal').find('div.modal-header').append("<h4 class='modal-title'>Order Info</h4>");
 
-
-    $('#myModal').find('h4.modal-title').html("Order Info");
     const obj = { OrderId: _orderId };
     $.ajax({
         url: "Home.aspx/GetOrderDetail",
@@ -522,7 +521,7 @@ function OrderDetail(_orderId) {
 
 async function PurchaseReport(_orderId) {
 
-    $('h4.modal-title').empty();
+    $('div.modal-header').empty();
     $('div.modal-body').empty();
     PurchaseHtml(_orderId, "Purchase Report");
 
@@ -535,8 +534,12 @@ function ProcessReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
 
-    $('h4.modal-title').empty();
-    $('h4.modal-title').html(name);
+
+
+    $('div.modal-header').empty();
+    $('div.modal-header').append("<h4 class='modal-title'>" + name + "</h4>");
+
+
 
 
 
@@ -595,8 +598,12 @@ function FinishItemReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
 
-    $('h4.modal-title').empty();
-    $('h4.modal-title').html(name);
+
+
+    $('div.modal-header').empty();
+    $('div.modal-header').append("<h4 class='modal-title'>" + name + "</h4>");
+
+
 
 
 
@@ -654,8 +661,25 @@ function FinishItemReport(_orderId, _processId, name) {
 function ProcessIssueReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
-    $('h4.modal-title').empty();
-    $('h4.modal-title').html(name);
+
+
+
+
+    $('div.modal-header').empty();
+    $('div.modal-header').append("<h4 class='modal-title'>" + name +"</h4>");
+
+
+
+
+
+
+
+
+
+
+
+
+
     const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
         url: "Home.aspx/GetIssueDetail",
@@ -758,8 +782,11 @@ function PurchaseHtml(_orderId, _title, _seq) {
 
 function SummaryReport(elem, orderId) {
 
-    $('h4.modal-title').empty();
-    $('h4.modal-title').html("Summary Report");
+    $('div.modal-header').empty();
+    $('div.modal-header').append("<h4 class='modal-title'>Summary Report</h4>");
+    $('div.modal-header').append("<a class='sorting close text-green btn btn-default btn-xs mrm'><i class='fa fa-sort mrs'></i><strong>Sequencing</strong></a>");
+
+    
     $('div.modal-body').empty();
     elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
         var item = $(this).find("a");
