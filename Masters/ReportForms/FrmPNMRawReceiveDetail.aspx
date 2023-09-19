@@ -1,5 +1,5 @@
-﻿<%@ Page Title="Indent Detail" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="FrmPNMChampoIndentDetail.aspx.cs" Inherits="Masters_ReportForms_FrmPNMChampoIndentDetail" %>
+﻿<%@ Page Title="Indent Raw Issue Detail" Language="C#" MasterPageFile="~/ERPmaster.master"
+    AutoEventWireup="true" CodeFile="FrmPNMRawReceiveDetail.aspx.cs" Inherits="Masters_ReportForms_FrmPNMRawReceiveDetail" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
@@ -40,7 +40,7 @@
                         <tr>
                             <td>
                                 <div style="width: 100%; max-height: 300px; overflow: auto">
-                                    <asp:GridView ID="DGIndentDetail" runat="server" Width="100%" Style="margin-left: 10px"
+                                    <asp:GridView ID="DGIndentRawIssueDetail" runat="server" Width="100%" Style="margin-left: 10px"
                                         ForeColor="#333333" AutoGenerateColumns="False" CssClass="grid-view">
                                         <HeaderStyle CssClass="gvheader" Height="20px" />
                                         <AlternatingRowStyle CssClass="gvalt" />
@@ -50,49 +50,27 @@
                                         <Columns>
                                             <asp:TemplateField Visible="false">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblIndentID" runat="server" Text='<%#Bind("IndentID") %>'></asp:Label>
+                                                    <asp:Label ID="lblPRMID" runat="server" Text='<%#Bind("PRMID") %>'></asp:Label>
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Branch Name">
+                                            <asp:TemplateField HeaderText="Challan No">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblBranchName" runat="server" Text='<%#Bind("BranchName") %>'></asp:Label>
-                                                </ItemTemplate>
-                                                <HeaderStyle Width="125px" />
-                                                <ItemStyle Width="125px" />
-                                            </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="PP No">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblPPNo" runat="server" Text='<%#Bind("PPNo") %>'></asp:Label>
+                                                    <asp:Label ID="lblChallanNo" runat="server" Text='<%#Bind("ChallanNo") %>'></asp:Label>
                                                 </ItemTemplate>
                                                 <HeaderStyle Width="100px" />
                                                 <ItemStyle Width="100px" />
                                             </asp:TemplateField>
-                                            
-                                            <asp:TemplateField HeaderText="Indent No">
+                                            <asp:TemplateField HeaderText="Challan Date">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblIndentNo" runat="server" Text='<%#Bind("IndentNo") %>'></asp:Label>
-                                                </ItemTemplate>
-                                                <HeaderStyle Width="100px" />
-                                                <ItemStyle Width="100px" />
-                                            </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Indent Date">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblIndentDate" runat="server" Text='<%#Bind("IndentDate") %>'></asp:Label>
-                                                </ItemTemplate>
-                                                <HeaderStyle Width="100px" />
-                                                <ItemStyle Width="100px" />
-                                            </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Indent Qty">
-                                                <ItemTemplate>
-                                                    <asp:Label ID="lblIndentQty" runat="server" Text='<%#Bind("IndentQty") %>'></asp:Label>
+                                                    <asp:Label ID="lblChallanDate" runat="server" Text='<%#Bind("ChallanDate") %>'></asp:Label>
                                                 </ItemTemplate>
                                                 <HeaderStyle Width="100px" />
                                                 <ItemStyle Width="100px" />
                                             </asp:TemplateField>
                                             <asp:TemplateField>
                                                 <ItemTemplate>
-                                                    <asp:LinkButton ID="LinkForOpenIndentDetail" runat="server" CommandName="" Text="Indent Detail"
-                                                        OnClick="lnkbtnToOpenIndentDetail_Click" Font-Size="12px">
+                                                    <asp:LinkButton ID="LinkForOpenPRMDetail" runat="server" CommandName="" Text="Receive Detail"
+                                                        OnClick="lnkbtnToOpenPRMDetail_Click" Font-Size="12px">
                                                     </asp:LinkButton>
                                                 </ItemTemplate>
                                                 <HeaderStyle Width="100px" />
