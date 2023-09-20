@@ -12,7 +12,7 @@ using System.IO;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 
-public partial class PurchageIndentIssue : System.Web.UI.Page
+public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Page
 {
     static int MasterCompanyId;
     string msg = "";
@@ -2952,6 +2952,10 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             }
             if (Session["usertype"].ToString() == "1")
             {
+                if (Session["varcompanyid"].ToString() == "44")
+                {
+                    TDCheckForComplete.Visible = true;
+                }
                 TDPoNoNew.Visible = true;
             }
 

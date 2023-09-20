@@ -132,6 +132,11 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     TxtReceiveQty.Text = "200";
                     DGStockDetail.PageSize = 200;
                     break;
+                case 43:
+                    DDUnit.SelectedValue = "1";
+                    TDTotalPcsNew.Visible = true;
+                    Tr4.Visible = true;
+                    break;
                 default:
                     DDUnit.SelectedValue = "1";
                     break;
@@ -429,6 +434,16 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     private void save_carpet_wise(int FlagType, string EmpId)
     {
         string Str = "";
+
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            if (lstWeaverName.Items.Count == 0)
+            {
+                LblErrorMessage.Text = "Plz Enter ID No...";
+                return;
+            }
+        }
+
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         con.Open();
         SqlTransaction Tran = con.BeginTransaction();
@@ -536,7 +551,15 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     _arrpara[5].Direction = ParameterDirection.InputOutput;
                     _arrpara[5].Value = TxtChallanNo.Text;
                     _arrpara[6].Value = companyid;
-                    _arrpara[7].Value = remarks;
+
+                    if(Session["VarCompanyNo"].ToString()=="43")
+                    {
+                        _arrpara[7].Value = TxtRemarks.Text;
+                    }
+                    else
+                    {
+                        _arrpara[7].Value = remarks;
+                    }                    
                     _arrpara[8].Direction = ParameterDirection.InputOutput;
                     _arrpara[8].Value = 0;
                     _arrpara[9].Value = hn_finished.Value;
@@ -1006,6 +1029,11 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
         TxtTotalPcs.Text = varTotalPcs.ToString();
         TxtArea.Text = varTotalArea.ToString();
         TxtAmount.Text = varTotalAmount.ToString();
+
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            txtTotalPcsNew.Text = varTotalPcs.ToString();
+        }
     }
     protected void btnQcPreview_Click(object sender, EventArgs e)
     {
@@ -1275,6 +1303,11 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 TxtTotalPcs.Text = ds.Tables[0].Compute("Sum(Qty)", "").ToString();
                 TxtArea.Text = ds.Tables[0].Compute("Sum(Area)", "").ToString();
                 TxtAmount.Text = ds.Tables[0].Compute("Sum(Amount)", "").ToString();
+
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    txtTotalPcsNew.Text = ds.Tables[0].Compute("Sum(Qty)", "").ToString();
+                }
             }
             else
             {

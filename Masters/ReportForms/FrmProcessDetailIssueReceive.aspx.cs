@@ -100,6 +100,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     RDWeaverRawMaterialIssueDetail.Visible = true;
                     break;
                 case 44:
+                    RDTasselIssueReceiveSummary.Visible = true;
                     RDProcessIssRecDetail.Visible = true;
                     RDFinishingpending.Visible = true;
                     RDFinishingIssueDetail.Visible = true;
