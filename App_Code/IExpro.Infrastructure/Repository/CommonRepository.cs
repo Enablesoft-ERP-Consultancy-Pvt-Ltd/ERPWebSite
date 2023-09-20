@@ -12,6 +12,8 @@ using System.Data.Entity.Infrastructure;
 using IExpro.Infrastructure.Repository;
 using IExpro.Core.Interfaces.Repository;
 using IExpro.Core.Models;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using Dapper;
 
 namespace IExpro.Infrastructure.Repository
 {
@@ -65,6 +67,39 @@ Order By DocumentType";
                 });
             }
             return result;
+        }
+
+
+        public IEnumerable<SelectList> GetItemList(int CompanyId)
+        {
+
+            using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                string sqlQuery = @"Select x.ITEM_ID ItemId, x.Item_Name ItemName from Item_master x Where x.MasterCompanyId = @CompanyId";
+                return (conn.Query<SelectList>(sqlQuery, new { @CompanyId = CompanyId }));
+            }
+        }
+        public IEnumerable<SelectList> GetQualityList(int ItemId)
+        {
+            using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                string sqlQuery = @"Select x.QualityId ItemId, x.QualityName ItemName From Quality x Where x.Item_Id= @ItemId order by QualityName";
+                return (conn.Query<SelectList>(sqlQuery, new { @ItemId = ItemId }));
+            }
+
+        }
+
+        public IEnumerable<SelectList> GetDesignList(int QualityId)
+        {
+
+            using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                string sqlQuery = @"SELECT distinct D.designId ItemId,D.DesignName ItemName FROM ITEM_PARAMETER_MASTER IPM(Nolock) 
+Inner JOIN Design D(Nolock) ON D.DesignId = IPM.DESIGN_ID   
+Where IPM.QUALITY_ID=@QualityId";
+
+                return (conn.Query<SelectList>(sqlQuery, new { @QualityId = QualityId }));
+            }
         }
 
 

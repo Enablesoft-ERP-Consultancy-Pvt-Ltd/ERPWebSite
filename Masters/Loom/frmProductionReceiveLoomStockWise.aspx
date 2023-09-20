@@ -253,11 +253,10 @@
                                         <td id="TDbatch" runat="server" visible="false">
                                             <asp:Label ID="Label26" runat="server" Text="Batch ChallanNo" CssClass="labelbold"></asp:Label><br />
                                             <asp:TextBox ID="txtBatchChallanNo" CssClass="textb" Width="100px" runat="server" />
-                             </td>
+                                        </td>
                                     </tr>
                                 </table>
                             </td>
-                              
                             <td style="width: 20%" valign="top">
                                 <table width="100%">
                                     <tr>
@@ -351,6 +350,18 @@
                                         <td colspan="2">
                                             <asp:Label ID="LblPcsType" Text="" CssClass="labelbold" runat="server" ForeColor="Red"
                                                 Visible="false" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <table width="100%">
+                                    <tr id="TRShowTotalReceivePcs" runat="server" visible="false">
+                                        <td>
+                                            <asp:Label ID="Label27" runat="server" CssClass="labelbold" Text="Total Pcs" />
+                                            <br />
+                                            <asp:TextBox ID="txtTotalPcsNew" runat="server" BackColor="LightYellow" CssClass="textb"
+                                                Enabled="false" Width="70px" />
                                         </td>
                                     </tr>
                                 </table>
@@ -1008,7 +1019,8 @@
                     <table width="100%">
                         <tr>
                             <td align="right">
-                            <asp:CheckBox ID="ChkForSummaryReport" Text="For Summary" CssClass="labelbold" runat="server" Visible="false" />
+                                <asp:CheckBox ID="ChkForSummaryReport" Text="For Summary" CssClass="labelbold" runat="server"
+                                    Visible="false" />
                                 <asp:Button ID="btnnew" runat="server" Text="New" CssClass="buttonnorm" OnClientClick="return NewForm();" />
                                 <asp:Button ID="btnsave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="btnsave_Click"
                                     Visible="false" UseSubmitBehavior="false" OnClientClick="if (!confirm('Do you want to save Data?')) return; this.disabled=true;this.value = 'wait ...';" />

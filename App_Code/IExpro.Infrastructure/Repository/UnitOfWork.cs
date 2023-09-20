@@ -124,8 +124,21 @@ namespace IExpro.Infrastructure.Repository
         }
 
 
+        IProcessRepository _ProcRepo;
+        public IProcessRepository ProcRepo
+        {
+            get
+            {
+                if (_ProcRepo != null)
+                    return _ProcRepo;
+                else
+                    return _ProcRepo = new ProcessRepository(entities);
 
+            }
 
+        }
+
+        
 
 
 

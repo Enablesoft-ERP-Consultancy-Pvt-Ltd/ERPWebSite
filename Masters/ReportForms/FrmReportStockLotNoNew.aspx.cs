@@ -14,9 +14,6 @@ using DocumentFormat.OpenXml.Office2010.Excel;
 using System.Net;
 using System.Web.Services.Description;
 
-
-
-
 public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -24,8 +21,13 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
         if (Session["VarcompanyId"] == null)
         {
             Response.Redirect("~/Login.aspx");
+           
         }
-       
+        if (!IsPostBack)
+        {
+            TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+            TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+        }
     }
     protected void ChkForDyeingIssue_CheckedChanged(object sender, EventArgs e)
     {
@@ -36,6 +38,17 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
         else
         {
             TRTagNo.Visible = true;
+        }
+    }
+    protected void ChkForDate_CheckedChanged(object sender, EventArgs e)
+    {
+        if (ChkForDate.Checked == true)
+        {
+            trDates.Visible = true;
+        }
+        else
+        {
+            trDates.Visible = false;
         }
     }
     protected void btnPrint_Click(object sender, EventArgs e)
@@ -57,6 +70,9 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
             cmd.Parameters.AddWithValue("@Lotno", txtLotno.Text);           
             cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
             cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked==true ? "1" : "0");
+            cmd.Parameters.AddWithValue("FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -101,6 +117,9 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
             cmd.Parameters.AddWithValue("@TagNo", txtTagNo.Text);
             cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
             cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked == true ? "1" : "0");
+            cmd.Parameters.AddWithValue("FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);

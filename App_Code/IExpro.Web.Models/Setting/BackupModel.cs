@@ -6,11 +6,15 @@ using System.Web;
 /// <summary>
 /// Summary description for BackupModel
 /// </summary>
-public class BackupModel
+/// 
+namespace IExpro.Web.Pages
 {
-    public int BackupId { get; set; }
-    public string DatabaseName { get; set; }
-    public string BackupPath { get; set; }
+    public class BackupModel
+    {
+        public int BackupId { get; set; }
+        public string DatabaseName { get; set; }
+        public string BackupPath { get; set; }
 
 
+    }
 }

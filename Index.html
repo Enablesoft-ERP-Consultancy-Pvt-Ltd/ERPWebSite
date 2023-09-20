@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
+    <!--Loading bootstrap css-->
+    <link type="text/css" rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,400,300,700" />
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald:400,700,300" />
+
+    <link href="/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.css"
+          rel="stylesheet" />
+    <link href="/lib/font-awesome/css/font-awesome.min.css"
+          rel="stylesheet" />
+    <!--Loading style-->
+    <link type="text/css" rel="stylesheet" href="/Content/css/style.css" />
+    <link type="text/css" rel="stylesheet" href="/Content/css/style-responsive.css" />
+
+
+
+
+
+
+
+
+    <link href="/lib/datatables-tabletools/css/dataTables.tableTools.min.css"
+          rel="stylesheet" />
+    <link href="/lib/datatables.net-bs5/css/dataTables.bootstrap5.min.css"
+          rel="stylesheet" />
+</head>
+<body>
+    <table id="tblOrder" class="table table-hover table-striped table-bordered table-advanced tablesorter display dataTable no-footer" aria-describedby="tblOrder_info" style="width: 1601px;">
+        <thead>
+            <tr><th class="sorting sorting_asc" tabindex="0" aria-controls="tblOrder" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Customer Code: activate to sort column descending" style="width: 188px;">Customer Code</th><th class="sorting" tabindex="0" aria-controls="tblOrder" rowspan="1" colspan="1" aria-label="Order No: activate to sort column ascending" style="width: 151px;">Order No</th><th class="sorting" tabindex="0" aria-controls="tblOrder" rowspan="1" colspan="1" aria-label="Order Date: activate to sort column ascending" style="width: 142px;">Order Date</th><th class="sorting" tabindex="0" aria-controls="tblOrder" rowspan="1" colspan="1" aria-label="Dispatch Date: activate to sort column ascending" style="width: 173px;">Dispatch Date</th><th class="sorting" tabindex="0" aria-controls="tblOrder" rowspan="1" colspan="1" aria-label="Delay Days: activate to sort column ascending" style="width: 141px;">Delay Days</th><th class="sorting" tabindex="0" aria-controls="tblOrder" rowspan="1" colspan="1" aria-label="Order Status: activate to sort column ascending" style="width: 249px;">Order Status</th><th class="sorting" tabindex="0" aria-controls="tblOrder" rowspan="1" colspan="1" aria-label=": activate to sort column ascending" style="width: 332px;"></th></tr>
+        </thead>
+        <tbody>
+            <tr class="odd">
+                <td class="sorting_1">AG-01</td>
+                <td>326802</td>
+                <td>17 Jun  2023</td>
+                <td>19 Aug 2023</td>
+                <td>30 Days</td>
+                <td><span class="label label-sm label-danger">Open</span></td>
+                <td>
+                    <a title="Order Detail" class="btnOrder" exthref="154"><i class="fa fa fa-info-circle text-red mediumtxt mrm"></i></a>
+                    <a class="btnSummary mrm" exthref="154"><i class="fa fa-hourglass-end mrs text-green"></i><strong>Summary</strong></a>
+                    <div class="btn-group" id="namedel1"><button type="button" data-bs-toggle="dropdown" class="btn btn-dark dropdown-toggle  ptx pbx">Choose Process<span class="caret"></span></button><ul role="menu" class="dropdown-menu dropdown-left-posotion" style="max-height:400px;overflow:auto;"><li><a class="btnPurchase mrm" exthref="154"><i class="fa fa-shopping-cart mrs text-green"></i><strong>Purchase</strong></a></li><li><a class="btnProcess mrm" prhref="5" prname="DYEING" exthref="154'" exttype="1"><i class="fa fa-pencil mrs text-green"></i><strong>DYEING</strong></a></li><li><a class="btnIssueProcess mrm" prhref="1" prname="CUTTING" exthref="154'" exttype="2"><i class="fa fa-pencil mrs text-green"></i><strong>CUTTING</strong></a></li><li><a class="btnFinish mrm" prhref="13" prname="STITCHING" exthref="154'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>STITCHING</strong></a></li><li><a class="btnProcess mrm" prhref="18" prname="WASHING(MTR)" exthref="154'" exttype="1"><i class="fa fa-pencil mrs text-green"></i><strong>WASHING(MTR)</strong></a></li><li><a class="btnIssueProcess mrm" prhref="2" prname="MANUAL EMBROIDERY(PCS)" exthref="154'" exttype="2"><i class="fa fa-pencil mrs text-green"></i><strong>MANUAL EMBROIDERY(PCS)</strong></a></li><li><a class="btnFinish mrm" prhref="19" prname="THREAD CUTTING" exthref="154'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>THREAD CUTTING</strong></a></li><li><a class="btnFinish mrm" prhref="7" prname="FINAL FINISHING" exthref="154'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>FINAL FINISHING</strong></a></li><li><a class="btnFinish mrm" prhref="16" prname="TASSEL STITCHING" exthref="154'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>TASSEL STITCHING</strong></a></li><li><a class="btnFinish mrm" prhref="17" prname="PACKING" exthref="154'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>PACKING</strong></a></li></ul></div>
+                </td>
+            </tr>
+
+            <tr class="even">
+                <td class="sorting_1">AG-01</td>
+                <td>TBC-23/08/2023</td>
+                <td>22 Jun  2023</td>
+                <td>23 Aug 2023</td>
+                <td>26 Days</td>
+                <td><span class="label label-sm label-danger">Open</span></td>
+                <td>
+                    <a title="Order Detail" class="btnOrder" exthref="147"><i class="fa fa fa-info-circle text-red mediumtxt mrm"></i></a>
+                    <a class="btnSummary mrm" exthref="147"><i class="fa fa-hourglass mrs text-green"></i><strong>Summary</strong></a>
+                    <div class="btn-group" id="namedel2"><button type="button" data-bs-toggle="dropdown" class="btn btn-dark dropdown-toggle ptx pbx" aria-expanded="false">Choose Process<span class="caret"></span></button><ul role="menu" class="dropdown-menu dropdown-left-posotion" style="max-height: 400px; overflow: auto;"><li><a class="btnPurchase mrm" exthref="147"><i class="fa fa-shopping-cart mrs text-green"></i><strong>Purchase</strong></a></li><li><a class="btnProcess mrm" prhref="5" prname="DYEING" exthref="147'" exttype="1"><i class="fa fa-pencil mrs text-green"></i><strong>DYEING</strong></a></li><li><a class="btnIssueProcess mrm" prhref="1" prname="CUTTING" exthref="147'" exttype="2"><i class="fa fa-pencil mrs text-green"></i><strong>CUTTING</strong></a></li><li><a class="btnFinish mrm" prhref="13" prname="STITCHING" exthref="147'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>STITCHING</strong></a></li><li><a class="btnProcess mrm" prhref="18" prname="WASHING(MTR)" exthref="147'" exttype="1"><i class="fa fa-pencil mrs text-green"></i><strong>WASHING(MTR)</strong></a></li><li><a class="btnIssueProcess mrm" prhref="2" prname="MANUAL EMBROIDERY(PCS)" exthref="147'" exttype="2"><i class="fa fa-pencil mrs text-green"></i><strong>MANUAL EMBROIDERY(PCS)</strong></a></li><li><a class="btnFinish mrm" prhref="19" prname="THREAD CUTTING" exthref="147'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>THREAD CUTTING</strong></a></li><li><a class="btnFinish mrm" prhref="7" prname="FINAL FINISHING" exthref="147'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>FINAL FINISHING</strong></a></li><li><a class="btnFinish mrm" prhref="17" prname="PACKING" exthref="147'" exttype="3"><i class="fa fa-pencil mrs text-green"></i><strong>PACKING</strong></a></li></ul></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="modal-default-label" aria-hidden="true" class="modal fade">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Purchase</h4>
+                    <button type="button" data-bs-dismiss="modal" aria-hidden="true" class="close">
+                        ×
+                    </button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-bs-dismiss="modal" class="btn btn-lg btn-red">
+                        <i class="fa fa-times"></i>Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="/lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="/lib/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js"></script>
+    <script type="text/javascript" src="/lib/metisMenu/jquery.metisMenu.js"></script>
+    <script type="text/javascript" src="/lib/jquery-cookie/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/Content/Javascripts/main.js"></script>
+    <script language="javascript" type="text/javascript">
+        function GetSiteRoot() {
+            var rootPath = window.location.protocol + "//" + window.location.host + "/";
+            if (window.location.hostname == "localhost") {
+                var path = window.location.pathname;
+                if (path.indexOf("/") == 0) {
+                    path = path.substring(1);
+                }
+                path = path.split("/", 1);
+                if (path != "") {
+                    rootPath = rootPath + path + "/";
+                }
+            }
+            alert(rootPath);
+            return rootPath;
+        }
+    </script>
+
+
+    <script src="/lib/moment.js/moment.min.js"></script>
+    <!--LOADING SCRIPTS FOR PAGE-->
+    <script src="/lib/jquery-highcharts/highcharts.js"></script>
+    <script src="/lib/jquery-highcharts/data.js"></script>
+    <script src="/lib/jquery-highcharts/drilldown.js"></script>
+    <script src="/lib/jquery-highcharts/exporting.js"></script>
+    <script src="/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/lib/datatables-tabletools/js/dataTables.tableTools.min.js"></script>
+    <script src="/lib/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+
+    <script src="/Content/Javascripts/Dashboard.js?12"></script>
+</body>
+</html>

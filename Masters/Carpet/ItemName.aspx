@@ -31,7 +31,7 @@
         function AddJobs() {
             var answer = confirm("Do you want to ADD?");
             if (answer) {
-                var a = document.getElementById('CPH_Form_txtid').value;
+                var a = document.getElementById('<%=txtid.ClientID %>').value;
 
                 if (a == "" || a == "0") {
                     alert('Plz Select or Insert Item');
@@ -45,6 +45,9 @@
             }
         }
     </script>
+
+
+
     <asp:UpdatePanel ID="updatepanel1" runat="server">
         <ContentTemplate>
             <div style="height: 500px">

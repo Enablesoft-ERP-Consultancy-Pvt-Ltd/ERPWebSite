@@ -1176,10 +1176,18 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             case When PT.flagsize=1 Then vf.Sizemtr When PT.flagsize=0 Then Sizeft When Pt.flagsize=2 Then vf.Sizeinch Else vf.Sizeft  End As Description,Sum(RecQuantity) As RecQty,Sum(LossQty) As LossQty,isnull(Sum(RetQty),0) As RetQty,
                             '" + TxtFromDate.Text + "' As FromDate,'" + TxtToDate.Text + @"' As ToDate," + VarDateflag + @" As dateflag,OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid
                             ,case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process ,PT.TagNo,'' as CustomerCode,isnull(sum(PT.Moisture),0) as Moisture,isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks
-                            ,sum(isnull(PT.IssueQtyOnMachine,0)) as IssueQtyOnMachine
-                            ,Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
-	                            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
-	                            Where OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,GM.GodownName
+                            ,sum(isnull(PT.IssueQtyOnMachine,0)) as IssueQtyOnMachine,
+                            
+                            ----,Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
+	                            ----JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+	                            ----Where OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,
+                            
+                            Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From PP_Consumption PP(NoLock) 
+                            JOIN OrderMaster OM2(NoLock) on PP.OrderId=OM2.OrderId  
+                            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId and PP.OrderDetailId=OD2.OrderDetailId
+                            JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+                            Where PP.FinishedId=PT.FinishedId and OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,                            
+                            GM.GodownName
                             From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
                             inner join IndentMaster Im on PT.IndentId=IM.IndentID
                             inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId
@@ -1230,10 +1238,18 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                        OM.LocalOrder,OM.CustomerOrderNo,isnull(sum(Lshort),0) as Lshort,isnull(sum(shrinkage),0) as Shrinkage,PM.PRMid,
                        case when ID.Re_Process=1 then 'Re-Dyeing' else 'Dyeing' end as Re_Process,
                         SUM(CASE WHEN REC_ISS_ITEMFLAG=1 THEN RECQUANTITY ELSE 0 END) AS UNDYEDQTY,pT.TagNo,isnull(CustInfo.CustomerCode,'') as CustomerCode,isnull(sum(PT.Moisture),0) as Moisture,
-                        isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks ,sum(isnull(PT.IssueQtyOnMachine,0)) as IssueQtyOnMachine
-                        ,Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
-	                            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
-	                            Where OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,GM.GodownName
+                        isnull(PM.CheckedBy,'') as CheckedBy,isnull(PM.RRRemark,'') as IndentRecRemarks ,sum(isnull(PT.IssueQtyOnMachine,0)) as IssueQtyOnMachine,
+                        
+                        ----,Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From ProcessProgram PP(NoLock) JOIN OrderMaster OM2(NoLock) on PP.Order_ID=OM2.OrderId  
+	                            ----JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+	                            ----Where OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,
+
+                        Case When CI.MasterCompanyid=43 Then isnull((select Distinct VF2.QualityName+',' From PP_Consumption PP(NoLock) 
+                            JOIN OrderMaster OM2(NoLock) on PP.OrderId=OM2.OrderId  
+                            JOIN OrderDetail OD2 ON OM2.OrderId=OD2.OrderId and PP.OrderDetailId=OD2.OrderDetailId
+                            JOIN V_FinishedItemDetail VF2(NoLock) ON OD2.Item_Finished_Id=VF2.ITEM_FINISHED_ID
+                            Where PP.FinishedId=PT.FinishedId and OM2.OrderId=OM.OrderId for xml path('')),'') Else '' End as OrderQuality,
+                        GM.GodownName
                         From PP_ProcessRecMaster PM inner join PP_ProcessRecTran PT on PM.PRMid=PT.PRMid
                         inner join IndentMaster Im on PT.IndentId=IM.IndentID
                         inner join CompanyInfo CI on Im.CompanyId=CI.CompanyId

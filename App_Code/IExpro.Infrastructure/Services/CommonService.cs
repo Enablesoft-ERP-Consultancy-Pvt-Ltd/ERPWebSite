@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace IExpro.Infrastructure.Services
 {
     public class CommonService : ICommonService
-    {     
+    {
         private ICommonRepository CommRepo { get; set; }
         private IUnitOfWork IU { get; set; }
         public CommonService(IUnitOfWork _IU)
@@ -30,7 +30,18 @@ namespace IExpro.Infrastructure.Services
         {
             return this.CommRepo.GetDocTypeList(clientId);
         }
-
+        public IEnumerable<SelectList> GetItemList(int CompanyId)
+        {
+            return this.CommRepo.GetItemList(CompanyId);
+        }
+        public IEnumerable<SelectList> GetQualityList(int ItemId)
+        {
+            return this.CommRepo.GetQualityList(ItemId);
+        }
+        public IEnumerable<SelectList> GetDesignList(int QualityId)
+        {
+            return this.CommRepo.GetDesignList(QualityId);
+        }
 
     }
 }

@@ -164,6 +164,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         DGStockDetail.PageSize = 200;
                     }
                     ChkForSummaryReport.Visible = true;
+                    TRShowTotalReceivePcs.Visible = true;
                     break;
                 case "44":
                     TxtReceiveQty.Enabled = true;
@@ -610,10 +611,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         DGRecDetail.DataSource = ds.Tables[0];
         DGRecDetail.DataBind();
         txttotalpcs.Text = "";
+        txtTotalPcsNew.Text = "";
         if (ds.Tables[0].Rows.Count > 0)
         {
             tdtotalwt.Visible = true;
             txttotalpcs.Text = ds.Tables[0].Compute("Sum(recqty)", "").ToString();
+            txtTotalPcsNew.Text = ds.Tables[0].Compute("Sum(recqty)", "").ToString(); ////For Carpet International Show With Carpet Scan TextBox
 
             if (TDPartyChallanNo.Visible == true)
             {
@@ -1914,6 +1917,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             {
                 lblmessage.Text = "Stock No. does not exists or Pending.";
                 TRItemdetail.Visible = false;
+
+                if (Session["varCompanyNo"].ToString() == "43")
+                {
+                    txtstockno.Text = "";
+                    txtstockno.Focus();
+                }
                 return;
             }
 

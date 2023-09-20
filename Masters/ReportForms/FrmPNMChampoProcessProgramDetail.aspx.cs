@@ -77,7 +77,7 @@ public partial class Masters_ReportForms_FrmPNMChampoProcessProgramDetail : Syst
         {
             con.Open();
         }
-        SqlCommand cmd = new SqlCommand("Pro_Processprogramreport", con);
+        SqlCommand cmd = new SqlCommand("ExportERP.dbo.Pro_Processprogramreport", con);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.CommandTimeout = 300;
 

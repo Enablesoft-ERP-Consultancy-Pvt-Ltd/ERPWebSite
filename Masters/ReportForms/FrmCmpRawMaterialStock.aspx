@@ -495,12 +495,12 @@
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
-                                <tr id="TR1" runat="server">
+                               <%-- <tr id="TR1" runat="server">
                                         <td class="style2" colspan="3" style="border-style: dotted">
                                             <asp:DropDownList ID="DDBranchName" runat="server" CssClass="dropdown" Width="250px">
                                             </asp:DropDownList>
                                         </td>
-                                        </tr> 
+                                        </tr> --%>
                                 <tr id="TRDDCustName" runat="server" visible="true">
                                     <td style="border-style: dotted">
                                         <asp:Label ID="lblCustname" runat="server" CssClass="labelbold" Text="Customer"></asp:Label>
