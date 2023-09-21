@@ -335,6 +335,7 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
             if (Session["varCompanyId"].ToString() == "46")
             {
                 DDCalType.SelectedValue = "0";
+                hnordercaltype.Value = "0";
             }
             //if (Session["varCompanyId"].ToString() == "43")
             //{
