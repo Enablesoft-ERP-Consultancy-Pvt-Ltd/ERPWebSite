@@ -715,6 +715,12 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
     {
         string where = "";
         string sizeColumn = "SizeFt";
+
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            sizeColumn = "SizeMtr";
+        }
+
         if (variable.VarNewQualitySize == "1")
         {
             sizeColumn = "Finishing_Mt_Size";

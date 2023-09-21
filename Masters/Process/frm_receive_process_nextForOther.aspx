@@ -405,6 +405,10 @@
                                                     <asp:Label ID="LblErrorMessage" runat="server" Text="" CssClass="labelbold" ForeColor="Red"
                                                         Font-Bold="true" Font-Size="Small"></asp:Label>
                                                 </td>
+                                                <td id="TDTotalPcsNew" runat="server"  class="tdstyle" visible="false">
+                                                <span class="labelbold">Total Pcs</span>
+                                                <asp:TextBox CssClass="textb" ID="txtTotalPcsNew" runat="server" Width="100px"></asp:TextBox>
+                                            </td>
                                             </tr>
                                         </table>
                                     </fieldset>

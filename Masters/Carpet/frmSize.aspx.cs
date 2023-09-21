@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_Carpet_frmSize : CustomPage
+public partial class frmSize : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -709,8 +709,8 @@ public partial class Masters_Carpet_frmSize : CustomPage
             _arrPara[29].Value = Convert.ToDouble(TxtAreaProdSqYD.Text);
             _arrPara[30].Value = Convert.ToDouble(TxtAreaProdSqMtr.Text);
             _arrPara[31].Value = txtSizeCode.Text;
-            _arrPara[32].Value = Convert.ToDouble(string.IsNullOrEmpty(TxtRoundOvelSqYDArea.Text)?"0": TxtRoundOvelSqYDArea.Text);
-            _arrPara[33].Value = Convert.ToDouble(string.IsNullOrEmpty(TxtRoundOvelAreaProdSqMtr.Text)?"0": TxtRoundOvelAreaProdSqMtr.Text);
+            _arrPara[32].Value = Convert.ToDouble(string.IsNullOrEmpty(TxtRoundOvelSqYDArea.Text) ? "0" : TxtRoundOvelSqYDArea.Text);
+            _arrPara[33].Value = Convert.ToDouble(string.IsNullOrEmpty(TxtRoundOvelAreaProdSqMtr.Text) ? "0" : TxtRoundOvelAreaProdSqMtr.Text);
 
             SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_SIZE", _arrPara);
             UnitDependControls();
