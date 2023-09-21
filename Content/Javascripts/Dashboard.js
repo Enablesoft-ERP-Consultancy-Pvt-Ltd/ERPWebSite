@@ -240,6 +240,17 @@ $(function () {
             table.on('click', 'a.btnSummary', function (e) {
                 var elem = $(this);
                 var orderId = parseInt(elem.attr('exthref'));
+
+
+
+             
+
+                
+
+                
+
+
+
                 SummaryReport(elem, orderId)
             });
 
@@ -481,13 +492,20 @@ function OrderDetail(_orderId) {
 
             var result = $.parseJSON(data.d);
             console.log(data.d)
+            bodyHtml += "<div class='row'><div class='col-lg-4'><p><strong>Customer Code:</strong>" + result.data[0].CustomerCode + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong>Order No:</strong>" + result.data[0].CustomerOrderNo + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong>ORDER DATE:</strong>" + result.data[0].OrderDate + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong>DISPATCHED DATE:</strong>" + result.data[0].DispatchDate + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong>DUE DATE:</strong>" + result.data[0].DueDate + "</p></div></div>";
+
+
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Due Date</th>";
             bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
             bodyHtml += "<th>Color</th><th>Shape</th><th>Shade</th><th>Size</th>";
-            bodyHtml += "<th>Unit</th><th>Ouantity</th><th>Filler</th></tr></thead><tbody>";
+            bodyHtml += "<th>Unit</th><th>Quantity</th><th>Filler</th></tr></thead><tbody>";
             if (result.data.length > 0) {
                 $.each(result.data, function (index, item) {
                     bodyHtml += "<tr><td>" + item.DueDate + "</td>";
@@ -666,7 +684,7 @@ function ProcessIssueReport(_orderId, _processId, name) {
 
 
     $('div.modal-header').empty();
-    $('div.modal-header').append("<h4 class='modal-title'>" + name +"</h4>");
+    $('div.modal-header').append("<h4 class='modal-title'>" + name + "</h4>");
 
 
 
@@ -780,14 +798,110 @@ function PurchaseHtml(_orderId, _title, _seq) {
 }
 
 
+
+
+function OrderSummary(_orderId, index,cust) {
+
+
+    var bodyHtml = "";
+
+    const obj = { OrderId: _orderId };
+    $.ajax({
+        url: "Home.aspx/GetOrderDetail",
+        contentType: "application/json; charset=utf-8",
+        type: "POST",
+        data: JSON.stringify(obj),
+        success: function (data) {
+
+            var result = $.parseJSON(data.d);
+            console.log(data.d)
+
+
+            bodyHtml += "<div class='row'><div class='col-lg-12'><h4 class='box-heading'>ORDER  SUMMARY</h4></div><div class='col-lg-4'><p><strong class='mrm'>Customer Code:</strong>" + cust + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order No:</strong>" + result.data[0].CustomerOrderNo + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order Date:</strong>" + result.data[0].OrderDate + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Dispatched Date:</strong>" + result.data[0].DispatchDate + "</p></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Due Date:</strong>" + result.data[0].DueDate + "</p></div></div>";
+
+            bodyHtml += "<div class='row'><div class='col-lg-12'>";
+            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
+            bodyHtml += "<tr>";
+            bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
+            bodyHtml += "<th>Color</th><th>Shape</th><th>Shade</th><th>Size</th>";
+            bodyHtml += "<th>Unit</th><th>Quantity</th><th>Filler</th></tr></thead><tbody>";
+            if (result.data.length > 0) {
+                $.each(result.data, function (index, item) {
+                    bodyHtml += "<tr>";
+                    bodyHtml += "<td>" + item.Technique + "</td><td>" + item.Quality + "</td><td>" + item.Design + "</td>";
+                    bodyHtml += "<td>" + item.Color + "</td><td>" + item.Shape + "</td><td>" + item.Shade + "</td><td>" + item.Size + "</td>";
+                    bodyHtml += "<td>" + item.Unit + "</td><td>" + item.OrderQty + "</td><td>" + item.Filler + "</td></tr>";
+                });
+            }
+            else {
+                bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
+            }
+
+            bodyHtml += "</tbody></table></div>"
+
+        },
+        error: function (xhr, status, error) {
+            var msg = "Response failed with status: " + status + "</br>"
+                + " Error: " + error;
+            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+        },
+        complete: function (xhr, status) {
+
+            $('#myModal').find('div.modal-body').find('div[data-order="' + index + '"]').each(function () {
+                $(this).html(bodyHtml);
+            })
+
+
+        }
+    });
+
+    return bodyHtml;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function SummaryReport(elem, orderId) {
+
+
+
 
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>Summary Report</h4>");
     $('div.modal-header').append("<a class='sorting close text-green btn btn-default btn-xs mrm'><i class='fa fa-sort mrs'></i><strong>Sequencing</strong></a>");
-
-    
     $('div.modal-body').empty();
+
+    var panelhtml = "<div class='row' data-order='0'></div>";
+    elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
+        ++index;
+        panelhtml += "<div class='row' data-order=" + index + "></div>";
+    });
+    $('div.modal-body').html(panelhtml);
+
+
+    OrderSummary(orderId, 0, elem.closest("tr").find("td:nth-child(1)").html());
+
+
+
+
     elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
         var item = $(this).find("a");
         var _type = parseInt(item.attr('extType'));
