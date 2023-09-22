@@ -69,20 +69,21 @@
                         <div class="accordion-body">
                             <div class="row">
                                 <div class="col-lg-12">
-
-                                    <table id="tblOrder" class="table table-hover table-striped table-bordered table-advanced tablesorter display">
-                                        <thead>
-                                            <tr>
-                                                <th>Customer Code</th>
-                                                <th>Order No</th>
-                                                <th>Order Date</th>
-                                                <th>Dispatch Date</th>
-                                                <th>Delay Days</th>
-                                                <th>Order Status</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                    </table>
+                                    <div class="table-responsive-sm">
+                                        <table id="tblOrder" class="table table-hover table-striped table-bordered table-advanced tablesorter display">
+                                            <thead>
+                                                <tr>
+                                                    <th>Customer Code</th>
+                                                    <th>Order No</th>
+                                                    <th>Order Date</th>
+                                                    <th>Dispatch Date</th>
+                                                    <th>Delay Days</th>
+                                                    <th>Order Status</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
                                 </div>
 
                             </div>
@@ -148,10 +149,6 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-
-                            
-
-
                         </div>
                         <div id="bodyItem" class="modal-body">
                         </div>
