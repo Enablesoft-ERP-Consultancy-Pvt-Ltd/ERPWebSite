@@ -312,8 +312,18 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
             str = @"SELECT PRORDERID,ISSUEORDERID FROM 
                         (SELECT DISTINCT PM.PRORDERID,PM.FolioChallanNo AS ISSUEORDERID 
                         FROM PROCESSRAWMASTER PM INNER JOIN PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PIM ON PM.PRORDERID=PIM.ISSUEORDERID 
-                        INNER JOIN EMPLOYEE_PROCESSORDERNO EMP ON PM.PRORDERID=EMP.ISSUEORDERID AND PM.PROCESSID=EMP.PROCESSID and pim.Empid=0
-                        Where PM.TypeFlag = 0 And PM.CompanyId=" + ddCompName.SelectedValue + " And PM.Processid=" + ddProcessName.SelectedValue + @"  and isnull(pim.FOLIOSTATUS,0)=0";
+                        INNER JOIN EMPLOYEE_PROCESSORDERNO EMP ON PM.PRORDERID=EMP.ISSUEORDERID AND PM.PROCESSID=EMP.PROCESSID";
+            if (Session["varcompanyId"].ToString() == "45")
+            {
+                str = str + " and pim.Empid=" + ddempname.SelectedValue;
+                
+            }
+            else
+            {
+                str = str + " and pim.Empid=0";
+            }
+
+     str=str+"  Where PM.TypeFlag = 0 And PM.CompanyId=" + ddCompName.SelectedValue + " And PM.Processid=" + ddProcessName.SelectedValue + @"  and isnull(pim.FOLIOSTATUS,0)=0";
             if (TDProductionunit.Visible == true)
             {
                 if (DDProdunit.SelectedIndex > 0)

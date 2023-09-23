@@ -302,7 +302,8 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
             string STR;
             STR = @"Select ID, ChallanNo 
                 From RapierOrderMaster(Nolock) 
-                Where MasterCompanyID = " + Session["varCompanyId"] + " And CompanyID = " + DDCompanyName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + " And EmpID = " + DDEmployeeName.SelectedValue;
+                Where MasterCompanyID = " + Session["varCompanyId"] + " And CompanyID = " + DDCompanyName.SelectedValue + @" 
+                And ProcessID = " + DDProcessName.SelectedValue + " And EmpID = " + DDEmployeeName.SelectedValue + " Order By ID desc";
 
             UtilityModule.ConditionalComboFill(ref DDChallanNo, STR, true, "--Select--");
 
