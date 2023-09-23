@@ -663,6 +663,8 @@
                                 runat="server" Text="Close" />
                             &nbsp;<asp:Button ID="Btnorder" runat="server" Text="OrderDetail" Visible="false"
                                 CssClass="buttonnorm" OnClientClick="return OrderDetail()" />
+                                <asp:Button CssClass="buttonnorm" ID="BtnMaterialIssueOnIndent" runat="server" Text="Material IssueOnDyeing"
+                                                OnClick="BtnMaterialIssueOnIndent_Click" Visible="false" />
                         </td>
                     </tr>
                 </table>
