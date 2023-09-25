@@ -214,8 +214,7 @@
                             <asp:Label ID="Label6" runat="server" Text="Weaving Emp" CssClass="labelbold"></asp:Label>
                         </div>
                         <div style="height: 25px">
-                            <asp:DropDownList ID="DDWeavingEmp" runat="server" CssClass="dropdown" AutoPostBack="true"
-                                OnSelectedIndexChanged="DDWeavingEmp_SelectedIndexChanged">
+                            <asp:DropDownList ID="DDWeavingEmp" runat="server" CssClass="dropdown">
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -227,7 +226,7 @@
                             <asp:TextBox ID="txtrate" runat="server" CssClass="textb"></asp:TextBox>&nbsp
                         </div>
                     </div>
-                    <div style="margin-top: 1%">
+                    <div id="DivCommRate" runat="server" visible="false" style="margin-top: 1%">
                         <div style="width: 150px; float: left; text-align: right; padding-right: 10px">
                             <asp:Label ID="Label4" runat="server" Text="COMM. RATE" CssClass="labelbold"></asp:Label>
                         </div>
@@ -237,7 +236,7 @@
                     </div> 
                     <div id="DivDateRange" runat="server" visible="false" style="margin-top: 1%">
                         <div style="width: 150px; float: left; text-align: right; padding-right: 10px">
-                            <asp:CheckBox ID="ChkForDate" CssClass="checkboxbold" Text="Chk For Date" runat="server" />
+                            <asp:CheckBox ID="ChkForDate" CssClass="checkboxbold" Text="Chk For Date" runat="server" Visible="false" />
                             &nbsp;
                             <asp:Label ID="Label9" runat="server" Text="From" CssClass="labelbold"></asp:Label>
                         </div>
@@ -280,82 +279,7 @@
                     </div>
                 </div>
                 <div style="width: 650px; margin: 0px auto; overflow: auto; max-height: 400px">
-                    <asp:GridView ID="DGRateDetail" runat="server" AutoGenerateColumns="False" CssClass="grid-view"
-                        Width="600px" OnRowDataBound="DGRateDetail_RowDataBound">
-                        <HeaderStyle CssClass="gvheaders" />
-                        <AlternatingRowStyle CssClass="gvalts" />
-                        <RowStyle CssClass="gvrow" />
-                        <Columns>
-                            <asp:BoundField DataField="Articles" HeaderText="ARTICLE NAME">
-                                <HeaderStyle HorizontalAlign="Left" />
-                                <ItemStyle HorizontalAlign="Left" Width="100px" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="JobName" HeaderText="JOB NAME">
-                                <HeaderStyle HorizontalAlign="Left" />
-                                <ItemStyle HorizontalAlign="Left" Width="100px" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="Colour" HeaderText="COLOUR">
-                                <HeaderStyle HorizontalAlign="Left" />
-                                <ItemStyle HorizontalAlign="Left" Width="100px" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="Shape" HeaderText="Shape">
-                                <HeaderStyle HorizontalAlign="Left" />
-                                <ItemStyle HorizontalAlign="Left" Width="60px" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="Size" HeaderText="SIZE">
-                                <HeaderStyle HorizontalAlign="Left" />
-                                <ItemStyle HorizontalAlign="Left" Width="60px" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="Ratetype" HeaderText="RATE TYPE">
-                                <HeaderStyle HorizontalAlign="Left" />
-                                <ItemStyle HorizontalAlign="Left" Width="60px" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="UNITRATE" HeaderText="UNIT RATE">
-                                <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Center" Width="50px" BackColor="Yellow" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="Commrate" HeaderText="COMM. RATE">
-                                <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Center" Width="50px" BackColor="Yellow" />
-                            </asp:BoundField>
-                            <asp:BoundField DataField="Date" HeaderText="DATE">
-                                <HeaderStyle HorizontalAlign="Center" />
-                                <ItemStyle HorizontalAlign="Center" Width="50px" BackColor="Yellow" />
-                            </asp:BoundField>
-                            <asp:TemplateField HeaderText="Rate Location">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblratelocation" runat="server" Text='<%# Bind("Ratelocation") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Emp Name">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblEmpName" runat="server" Text='<%# Bind("EmpName") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Bonus">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblBonus" runat="server" Text='<%# Bind("Bonus") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Finisher Rate" Visible="false">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblFinisherRare" runat="server" Text='<%# Bind("FinisherRate") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Order Type" Visible="false">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblOrderType" runat="server" Text='<%# Bind("OrderType") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Remark">
-                                <ItemTemplate>
-                                    <asp:Label ID="lblRemark" runat="server" Text='<%# Bind("Remark") %>'></asp:Label>
-                                </ItemTemplate>
-                            </asp:TemplateField>
-                            
-                        </Columns>
-                        <EmptyDataRowStyle CssClass="gvemptytext" />
-                    </asp:GridView>
+                    
                 </div>
             </div>
         </ContentTemplate>
