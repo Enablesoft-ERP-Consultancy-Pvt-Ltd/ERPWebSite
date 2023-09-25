@@ -507,7 +507,11 @@ async function PurchaseReport(_orderId) {
 
     $('div.modal-header').empty();
     $('div.modal-body').empty();
-    PurchaseHtml(_orderId, "Purchase Report");
+    var panelhtml = "<div class='row' data-order='0'></div>";
+    $('div.modal-body').html(panelhtml);
+
+
+    PurchaseHtml(_orderId, "Purchase Report",0);
 
 }
 
@@ -700,7 +704,7 @@ function PurchaseHtml(_orderId, _title, _seq) {
 
             console.log(data.d)
             var result = $.parseJSON(data.d);
-            bodyHtml += "<div class='row' data-order=" + _seq + "><div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += " <tr><th>Supplier Name</th><th>PO No</th><th>PO Date</th><th>Delv. Date</th>";
             bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Rec. Qty.</th><th>Pending Qty.</th><th>Delay Days</th><th>PO Status</th></tr></thead><tbody>";
@@ -716,16 +720,16 @@ function PurchaseHtml(_orderId, _title, _seq) {
                 bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
             }
 
-            bodyHtml += "</tbody></table></div></div></div>"
+            bodyHtml += "</tbody></table></div></div>"
 
         },
         error: function (xhr, status, error) {
             var msg = "Response failed with status: " + status + "</br>"
                 + " Error: " + error;
-            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+            bodyHtml = "<div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div>";
         },
         complete: function (xhr, status) {
-            $('div.modal-body').append(bodyHtml);
+            $('#bodyItem').find('div[data-order="' + _seq + '"]').html(bodyHtml);
             $('#myModal').modal('show');
         }
     });
@@ -746,7 +750,7 @@ function OrderSummary(_orderId, index, cust) {
             console.log(data.d)
 
 
-            bodyHtml += "<div class='row' data-order=" + index + "><div class='col-lg-12'><h4 class='box-heading'>ORDER  SUMMARY</h4></div><div class='col-lg-4'><p><strong class='mrm'>Customer Code:</strong>" + cust + "</p></div>";
+            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>ORDER  SUMMARY</h4></div><div class='col-lg-4'><p><strong class='mrm'>Customer Code:</strong>" + cust + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order No:</strong>" + result.data[0].CustomerOrderNo + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order Date:</strong>" + result.data[0].OrderDate + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Dispatched Date:</strong>" + result.data[0].DispatchDate + "</p></div>";
@@ -776,12 +780,18 @@ function OrderSummary(_orderId, index, cust) {
         error: function (xhr, status, error) {
             var msg = "Response failed with status: " + status + "</br>"
                 + " Error: " + error;
-            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+            bodyHtml = "<div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div>";
         },
         complete: function (xhr, status) {
 
 
-            $('div.modal-body').append(bodyHtml);
+
+
+
+            $('#bodyItem').find('div[data-order="' + index + '"]').html(bodyHtml);
+
+
+            //$('div.modal-body').append(bodyHtml);
             //$('#myModal').find('div.modal-body').find('div[data-order="' + index + '"]').each(function () {
             //    $(this).html(bodyHtml);
             //})
@@ -806,6 +816,7 @@ function SummaryReport(elem, orderId) {
         panelhtml += "<div class='row' data-order=" + index + "></div>";
     });
     $('div.modal-body').html(panelhtml);
+
     OrderSummary(orderId, 0, elem.closest("tr").find("td:nth-child(1)").html());
     elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
         var item = $(this).find("a");
@@ -851,7 +862,7 @@ function ReqHtml(_url, _Req, _title, _seq) {
         success: function (data) {
             console.log(data.d)
             var result = $.parseJSON(data.d);
-            bodyHtml += "<div class='row' data-order=" + _seq + "><div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
             bodyHtml += "<th>Issue No.</th><th>Issue Date</th>";
@@ -869,20 +880,20 @@ function ReqHtml(_url, _Req, _title, _seq) {
             else {
                 bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
             }
-            bodyHtml += "</tbody></table></div></div></div>"
+            bodyHtml += "</tbody></table></div></div>"
         },
         error: function (xhr, status, error) {
             var msg = "Response failed with status: " + status + "</br>"
                 + " Error: " + error;
-            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+            bodyHtml = "<div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div>";
         },
         complete: function (xhr, status) {
 
 
 
+            $('#bodyItem').find('div[data-order="' + _seq + '"]').html(bodyHtml);
 
-
-            $('div.modal-body').append(bodyHtml);
+      /*      $('div.modal-body').append(bodyHtml);*/
 
 
             $('#myModal').modal('show');
