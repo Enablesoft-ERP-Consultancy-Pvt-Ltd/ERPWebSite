@@ -61,7 +61,6 @@
 { ProcessId: 33, Process: ' ', Title: "Finishing WASHING", Type: 3 },
 { ProcessId: 48, Process: ' ', Title: "Finishing WEAVING", Type: 3 },
 { ProcessId: 35, Process: ' ', Title: "Finishing WRAPPING", Type: 3 },
-
 ];
 
 
