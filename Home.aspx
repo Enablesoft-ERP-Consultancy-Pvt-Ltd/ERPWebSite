@@ -148,10 +148,6 @@
                 <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
-
-                            
-
-
                         </div>
                         <div id="bodyItem" class="modal-body">
                         </div>
