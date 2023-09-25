@@ -137,6 +137,7 @@ public partial class Masters_Process_EditGenrateInDent : System.Web.UI.Page
                 case 43:
                     //TDGodownName.Visible = true;
                     TDDDTagNo.Visible = true;
+                    BtnMaterialIssueOnIndent.Visible = true;
                     break;
                 default:
                     if (ChkForOrder.Checked == true)
@@ -2391,5 +2392,46 @@ public partial class Masters_Process_EditGenrateInDent : System.Web.UI.Page
     protected void DDTagNo_SelectedIndexChanged(object sender, EventArgs e)
     {
         LotNoSelectedChange();
+    }
+    protected void BtnMaterialIssueOnIndent_Click(object sender, EventArgs e)
+    {
+        lblMessage.Text = "";
+        if (lblMessage.Text == "")
+        {
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            con.Open();
+            SqlTransaction tran = con.BeginTransaction();
+            try
+            {
+                SqlParameter[] arr = new SqlParameter[29];
+                arr[0] = new SqlParameter("@IndentId", SqlDbType.Int);
+                arr[1] = new SqlParameter("@CompanyID", SqlDbType.Int);
+                arr[2] = new SqlParameter("@UserId", SqlDbType.Int);
+                arr[3] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
+                arr[4] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);                
+
+                arr[0].Value = DDIndentNo.SelectedValue; 
+                arr[1].Value = DDCompanyName.SelectedValue;
+                arr[2].Value = Session["VarUserId"];
+                arr[3].Value = Session["VarCompanyNo"];
+                arr[4].Direction = ParameterDirection.Output;                
+
+                SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[PRO_MaterialIssueOnIndentAutomatically]", arr);
+                lblMessage.Visible = true;
+                lblMessage.Text = arr[4].Value.ToString();
+                tran.Commit();
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Visible = true;
+                lblMessage.Text = ex.Message;
+                tran.Rollback();
+            }
+            finally
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
     }
 }

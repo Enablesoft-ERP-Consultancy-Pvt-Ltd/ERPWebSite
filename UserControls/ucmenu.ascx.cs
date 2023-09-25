@@ -15,29 +15,32 @@ public partial class UserControls_ucmenu : System.Web.UI.UserControl
         {
             DataSet ds = new DataSet();
             string connStr = ErpGlobal.DBCONNECTIONSTRING;
-            string sql=string.Empty;
+            string sql = string.Empty;
             using (SqlConnection conn = new SqlConnection(connStr))
             {
-                //string sql = @"select MenuID,DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname ";//inner join UserRights UR on UR.MenuId=formname.MenuId";
                 if (Session["VarCompanyNo"].ToString() == "44")
                 {
                     if (Session["varUserId"].ToString() == "1")
                     {
-                        sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname inner join UserRights UR on UR.MenuId=formname.MenuId where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1 order By UR.Menuid ";
+                        sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable 
+                        From formname(nolock) 
+                        join UserRights UR(nolock) on UR.MenuId=formname.MenuId 
+                        Where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1 order By UR.Menuid ";
                     }
                     else
                     {
-                        //sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname inner join UserRights UR on UR.MenuId=formname.MenuId where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1 and ur.MenuId not in(48,49) order By UR.Menuid ";
-                        sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname inner join UserRights UR on UR.MenuId=formname.MenuId where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1  order By UR.Menuid ";
-                        //            string sql = @"select MenuID,DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname WHERE (MenuID IN (SELECT Menuid FROM UserRights WHERE (UserId=" + Session["varuserid"] + @")))
-                        //                            UNION select MenuID,DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname WHERE (ParentId IN (SELECT U.Menuid FROM UserRights AS U INNER JOIN FormName AS F ON U.Menuid = F.MenuID WHERE (F.ParentId IS NOT NULL) AND (U.UserId=" + Session["varuserid"] + @")))";
+                        sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable 
+                        From formname(nolock) 
+                        join UserRights UR(nolock) on UR.MenuId=formname.MenuId 
+                        Where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1  order By UR.Menuid ";
                     }
                 }
                 else
                 {
-                    sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname inner join UserRights UR on UR.MenuId=formname.MenuId where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1 order By UR.Menuid ";
-                    //            string sql = @"select MenuID,DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname WHERE (MenuID IN (SELECT Menuid FROM UserRights WHERE (UserId=" + Session["varuserid"] + @")))
-                    //                            UNION select MenuID,DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable from formname WHERE (ParentId IN (SELECT U.Menuid FROM UserRights AS U INNER JOIN FormName AS F ON U.Menuid = F.MenuID WHERE (F.ParentId IS NOT NULL) AND (U.UserId=" + Session["varuserid"] + @")))";
+                    sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable 
+                    From Formname(nolock) 
+                    join UserRights UR(nolock) on UR.MenuId=formname.MenuId 
+                    where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1 order By UR.Menuid ";
                 }
                 SqlDataAdapter da = new SqlDataAdapter(sql, conn);
                 da.Fill(ds);
@@ -46,13 +49,11 @@ public partial class UserControls_ucmenu : System.Web.UI.UserControl
             ds.DataSetName = "Menus";
             ds.Tables[0].TableName = "Menu";
             DataRelation relation = null;
-           
-                relation = new DataRelation("ParentChild",
-                 ds.Tables["Menu"].Columns["MenuID"],
 
-                 ds.Tables["Menu"].Columns["parentid"], true);
-            
-            
+            relation = new DataRelation("ParentChild",
+            ds.Tables["Menu"].Columns["MenuID"],
+            ds.Tables["Menu"].Columns["parentid"], true);
+
             relation.Nested = true;
             ds.Relations.Add(relation);
             xmlDataSource.Data = ds.GetXml();
