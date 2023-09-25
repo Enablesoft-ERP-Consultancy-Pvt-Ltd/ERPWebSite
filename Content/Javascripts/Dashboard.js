@@ -65,7 +65,11 @@
 ];
 
 
-
+$(document).bind("ajaxStart", function () {
+    $("#ldrdiv").show();
+}).bind("ajaxStop", function () {
+    $("#ldrdiv").hide();
+});
 
 
 
@@ -73,7 +77,7 @@
 
 
 $(function () {
-
+  
     const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS';
     const TO_PATTERN = 'DD/MM/YYYY';
 
