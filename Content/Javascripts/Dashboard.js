@@ -1,23 +1,4 @@
-﻿
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
+﻿var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
 
 { ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
 { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
@@ -80,11 +61,14 @@ var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) R
 { ProcessId: 33, Process: ' ', Title: "Finishing WASHING", Type: 3 },
 { ProcessId: 48, Process: ' ', Title: "Finishing WEAVING", Type: 3 },
 { ProcessId: 35, Process: ' ', Title: "Finishing WRAPPING", Type: 3 },
-
 ];
 
 
-
+$(document).bind("ajaxStart", function () {
+    $("#ldrdiv").show();
+}).bind("ajaxStop", function () {
+    $("#ldrdiv").hide();
+});
 
 
 
@@ -92,7 +76,7 @@ var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) R
 
 
 $(function () {
-
+  
     const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS';
     const TO_PATTERN = 'DD/MM/YYYY';
 
@@ -125,15 +109,6 @@ $(function () {
 
 
     });
-
-
-
-
-
-
-
-
-
 
 
     $.ajax({
@@ -194,6 +169,8 @@ $(function () {
 
                             //console.log(data);
                             $.each(data.ProcessList, function (index, item) {
+
+                                item.SeqNo = index + 1;
                                 console.log(item);
                                 // var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
                                 if (item.ProcessType == 0) {
@@ -240,17 +217,6 @@ $(function () {
             table.on('click', 'a.btnSummary', function (e) {
                 var elem = $(this);
                 var orderId = parseInt(elem.attr('exthref'));
-
-
-
-             
-
-                
-
-                
-
-
-
                 SummaryReport(elem, orderId)
             });
 
@@ -541,10 +507,11 @@ async function PurchaseReport(_orderId) {
 
     $('div.modal-header').empty();
     $('div.modal-body').empty();
-    PurchaseHtml(_orderId, "Purchase Report");
+    var panelhtml = "<div class='row' data-order='0'></div>";
+    $('div.modal-body').html(panelhtml);
 
 
-
+    PurchaseHtml(_orderId, "Purchase Report",0);
 
 }
 
@@ -615,15 +582,8 @@ function ProcessReport(_orderId, _processId, name) {
 function FinishItemReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
-
-
-
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>" + name + "</h4>");
-
-
-
-
 
     const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
@@ -679,24 +639,8 @@ function FinishItemReport(_orderId, _processId, name) {
 function ProcessIssueReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
-
-
-
-
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>" + name + "</h4>");
-
-
-
-
-
-
-
-
-
-
-
-
 
     const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
@@ -747,12 +691,6 @@ function ProcessIssueReport(_orderId, _processId, name) {
     });
 }
 
-
-
-
-
-
-
 function PurchaseHtml(_orderId, _title, _seq) {
 
     var bodyHtml = "";
@@ -766,7 +704,7 @@ function PurchaseHtml(_orderId, _title, _seq) {
 
             console.log(data.d)
             var result = $.parseJSON(data.d);
-            bodyHtml += "<div class='row' data-order=" + _seq + "><div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += " <tr><th>Supplier Name</th><th>PO No</th><th>PO Date</th><th>Delv. Date</th>";
             bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Rec. Qty.</th><th>Pending Qty.</th><th>Delay Days</th><th>PO Status</th></tr></thead><tbody>";
@@ -782,29 +720,24 @@ function PurchaseHtml(_orderId, _title, _seq) {
                 bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
             }
 
-            bodyHtml += "</tbody></table></div></div></div>"
+            bodyHtml += "</tbody></table></div></div>"
 
         },
         error: function (xhr, status, error) {
             var msg = "Response failed with status: " + status + "</br>"
                 + " Error: " + error;
-            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+            bodyHtml = "<div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div>";
         },
         complete: function (xhr, status) {
-            $('div.modal-body').append(bodyHtml);
+            $('#bodyItem').find('div[data-order="' + _seq + '"]').html(bodyHtml);
             $('#myModal').modal('show');
         }
     });
 }
 
-
-
-
-function OrderSummary(_orderId, index,cust) {
-
+function OrderSummary(_orderId, index, cust) {
 
     var bodyHtml = "";
-
     const obj = { OrderId: _orderId };
     $.ajax({
         url: "Home.aspx/GetOrderDetail",
@@ -817,20 +750,20 @@ function OrderSummary(_orderId, index,cust) {
             console.log(data.d)
 
 
-            bodyHtml += "<div class='row'><div class='col-lg-12'><h4 class='box-heading'>ORDER  SUMMARY</h4></div><div class='col-lg-4'><p><strong class='mrm'>Customer Code:</strong>" + cust + "</p></div>";
+            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>ORDER  SUMMARY</h4></div><div class='col-lg-4'><p><strong class='mrm'>Customer Code:</strong>" + cust + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order No:</strong>" + result.data[0].CustomerOrderNo + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order Date:</strong>" + result.data[0].OrderDate + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Dispatched Date:</strong>" + result.data[0].DispatchDate + "</p></div>";
-            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Due Date:</strong>" + result.data[0].DueDate + "</p></div></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Due Date:</strong>" + result.data[0].DueDate + "</p></div>";
 
-            bodyHtml += "<div class='row'><div class='col-lg-12'>";
+            bodyHtml += "<div class='col-lg-12'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr>";
             bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
             bodyHtml += "<th>Color</th><th>Shape</th><th>Shade</th><th>Size</th>";
             bodyHtml += "<th>Unit</th><th>Quantity</th><th>Filler</th></tr></thead><tbody>";
             if (result.data.length > 0) {
-                $.each(result.data, function (index, item) {
+                $.each(result.data, function (i, item) {
                     bodyHtml += "<tr>";
                     bodyHtml += "<td>" + item.Technique + "</td><td>" + item.Quality + "</td><td>" + item.Design + "</td>";
                     bodyHtml += "<td>" + item.Color + "</td><td>" + item.Shape + "</td><td>" + item.Shade + "</td><td>" + item.Size + "</td>";
@@ -847,13 +780,21 @@ function OrderSummary(_orderId, index,cust) {
         error: function (xhr, status, error) {
             var msg = "Response failed with status: " + status + "</br>"
                 + " Error: " + error;
-            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+            bodyHtml = "<div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div>";
         },
         complete: function (xhr, status) {
 
-            $('#myModal').find('div.modal-body').find('div[data-order="' + index + '"]').each(function () {
-                $(this).html(bodyHtml);
-            })
+
+
+
+
+            $('#bodyItem').find('div[data-order="' + index + '"]').html(bodyHtml);
+
+
+            //$('div.modal-body').append(bodyHtml);
+            //$('#myModal').find('div.modal-body').find('div[data-order="' + index + '"]').each(function () {
+            //    $(this).html(bodyHtml);
+            //})
 
 
         }
@@ -862,27 +803,7 @@ function OrderSummary(_orderId, index,cust) {
     return bodyHtml;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function SummaryReport(elem, orderId) {
-
-
-
 
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>Summary Report</h4>");
@@ -896,22 +817,14 @@ function SummaryReport(elem, orderId) {
     });
     $('div.modal-body').html(panelhtml);
 
-
     OrderSummary(orderId, 0, elem.closest("tr").find("td:nth-child(1)").html());
-
-
-
-
     elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
         var item = $(this).find("a");
         var _type = parseInt(item.attr('extType'));
-
-        var seq = parseInt(item.attr('extSeq'));
-
+        var seq = parseInt(item.attr('extSeq')) + 1;
         var _title = item.attr('title') + " SUMMARY";
         var url;
         if (_type == 0) {
-
             PurchaseHtml(orderId, _title, seq);
         }
         else {
@@ -936,6 +849,7 @@ function SummaryReport(elem, orderId) {
 
 
 }
+
 function ReqHtml(_url, _Req, _title, _seq) {
 
 
@@ -948,7 +862,7 @@ function ReqHtml(_url, _Req, _title, _seq) {
         success: function (data) {
             console.log(data.d)
             var result = $.parseJSON(data.d);
-            bodyHtml += "<div class='row' data-order=" + _seq + "><div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
             bodyHtml += "<th>Issue No.</th><th>Issue Date</th>";
@@ -966,18 +880,26 @@ function ReqHtml(_url, _Req, _title, _seq) {
             else {
                 bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
             }
-            bodyHtml += "</tbody></table></div></div></div>"
+            bodyHtml += "</tbody></table></div></div>"
         },
         error: function (xhr, status, error) {
             var msg = "Response failed with status: " + status + "</br>"
                 + " Error: " + error;
-            bodyHtml = "<div class='row'><div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div></div>";
+            bodyHtml = "<div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div>";
         },
         complete: function (xhr, status) {
 
 
-            $('div.modal-body').append(bodyHtml);
+
+            $('#bodyItem').find('div[data-order="' + _seq + '"]').html(bodyHtml);
+
+      /*      $('div.modal-body').append(bodyHtml);*/
+
+
             $('#myModal').modal('show');
+
+
+
         }
     });
     return bodyHtml;

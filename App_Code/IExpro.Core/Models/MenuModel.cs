@@ -17,5 +17,8 @@ namespace IExpro.Core.Models
         public float OrderNo { get; set; }
         public IEnumerable<MenuModel> MenuList { get; set; }
 
+        public bool IsChild { get { return (this.MenuList.Count() > 0 ? true : false); } }
+
+
     }
 }
