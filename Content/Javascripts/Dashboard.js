@@ -166,6 +166,8 @@ $(function () {
 
                             //console.log(data);
                             $.each(data.ProcessList, function (index, item) {
+
+                                item.SeqNo = index + 1;
                                 console.log(item);
                                 // var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
                                 if (item.ProcessType == 0) {
@@ -726,7 +728,7 @@ function PurchaseHtml(_orderId, _title, _seq) {
     });
 }
 
-function OrderSummary(_orderId, index,cust) {
+function OrderSummary(_orderId, index, cust) {
 
     var bodyHtml = "";
     const obj = { OrderId: _orderId };
@@ -741,13 +743,13 @@ function OrderSummary(_orderId, index,cust) {
             console.log(data.d)
 
 
-            bodyHtml += "<div class='row'><div class='col-lg-12'><h4 class='box-heading'>ORDER  SUMMARY</h4></div><div class='col-lg-4'><p><strong class='mrm'>Customer Code:</strong>" + cust + "</p></div>";
+            bodyHtml += "<div class='row' data-order=" + index + "><div class='col-lg-12'><h4 class='box-heading'>ORDER  SUMMARY</h4></div><div class='col-lg-4'><p><strong class='mrm'>Customer Code:</strong>" + cust + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order No:</strong>" + result.data[0].CustomerOrderNo + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Order Date:</strong>" + result.data[0].OrderDate + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Dispatched Date:</strong>" + result.data[0].DispatchDate + "</p></div>";
-            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Due Date:</strong>" + result.data[0].DueDate + "</p></div></div>";
+            bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Due Date:</strong>" + result.data[0].DueDate + "</p></div>";
 
-            bodyHtml += "<div class='row' data-order=" + index + "><div class='col-lg-12'>";
+            bodyHtml += "<div class='col-lg-12'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr>";
             bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
@@ -775,9 +777,11 @@ function OrderSummary(_orderId, index,cust) {
         },
         complete: function (xhr, status) {
 
-            $('#myModal').find('div.modal-body').find('div[data-order="' + index + '"]').each(function () {
-                $(this).html(bodyHtml);
-            })
+
+            $('div.modal-body').append(bodyHtml);
+            //$('#myModal').find('div.modal-body').find('div[data-order="' + index + '"]').each(function () {
+            //    $(this).html(bodyHtml);
+            //})
 
 
         }
@@ -803,7 +807,7 @@ function SummaryReport(elem, orderId) {
     elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
         var item = $(this).find("a");
         var _type = parseInt(item.attr('extType'));
-        var seq = parseInt(item.attr('extSeq'));
+        var seq = parseInt(item.attr('extSeq')) + 1;
         var _title = item.attr('title') + " SUMMARY";
         var url;
         if (_type == 0) {
@@ -872,8 +876,16 @@ function ReqHtml(_url, _Req, _title, _seq) {
         complete: function (xhr, status) {
 
 
+
+
+
             $('div.modal-body').append(bodyHtml);
+
+
             $('#myModal').modal('show');
+
+
+
         }
     });
     return bodyHtml;
