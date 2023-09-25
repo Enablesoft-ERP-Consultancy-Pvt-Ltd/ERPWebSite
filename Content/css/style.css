@@ -8751,7 +8751,7 @@ a.list-group-item.active > .badge,
         top: 7px;
         font-family: FontAwesome;
         height: auto;
-        content: "\f105";
+ 
         font-weight: 300;
     }
 

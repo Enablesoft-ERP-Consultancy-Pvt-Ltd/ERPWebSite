@@ -532,6 +532,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             cmd.Parameters.AddWithValue("@ProcessId", DDProcessName.SelectedValue);            
             cmd.Parameters.AddWithValue("@Fromdate", TxtFromDate.Text);
             cmd.Parameters.AddWithValue("@TOdate", TxtToDate.Text);
+            cmd.Parameters.AddWithValue("@Where", Where);
 
 
             DataSet ds = new DataSet();

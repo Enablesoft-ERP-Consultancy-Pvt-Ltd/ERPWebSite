@@ -375,6 +375,9 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                     LblDispatchDate.Text = "Ex-Factory Date";
                     ChkForPerformaInvoiceType2.Visible = true;
                     break;
+                case 43:
+                    TDUpdateConsumptionFolioAndReceive.Visible = true;
+                    break;
                 default:
 
                     lblCurrency.Visible = true;
@@ -7897,7 +7900,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
         {
             TDSampleCode.Visible = false;
             TDRugIdNo.Visible = false;
-        
+
         }
         TDRugIdNo.Visible = false;
 
@@ -9870,18 +9873,57 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             Response.AddHeader("content-disposition", "attachment;filename=" + filename);
             Response.WriteFile(Path);
             Response.End();
-
-            //Session["rptFileName"] = "~\\Reports\\Rptorderperformainvoice.rpt";                   
-            //Session["GetDataset"] = ds;
-            //Session["dsFileName"] = "~\\ReportSchema\\Rptorderperformainvoice.xsd";
-            //StringBuilder stb = new StringBuilder();
-            //stb.Append("<script>");
-            //stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-            //ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
         }
         else
         {
             ScriptManager.RegisterStartupScript(Page, GetType(), "opn2", "alert('No Record Found!');", true);
+        }
+    }
+    protected void btnUpdateFolioReceiveCons_Click(object sender, EventArgs e)
+    {
+        LblErrorMessage.Text = "";
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        SqlTransaction tran = con.BeginTransaction();
+        try
+        {
+            SqlParameter[] _arrPara = new SqlParameter[5];
+            _arrPara[0] = new SqlParameter("@OrderID", SqlDbType.Int);
+            _arrPara[1] = new SqlParameter("@MasterCompanyID", SqlDbType.Int);
+            _arrPara[2] = new SqlParameter("@UserID", SqlDbType.Int);
+            _arrPara[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
+
+            _arrPara[0].Value = ViewState["order_id"];
+            _arrPara[1].Value = Session["varuserid"].ToString();
+            _arrPara[2].Value = Session["varCompanyId"].ToString();
+            _arrPara[3].Direction = ParameterDirection.Output;
+
+            SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "UpdateOrderWiseProcessReceiveConsumption", _arrPara);
+
+            if (_arrPara[3].Value.ToString() == "consumption updated successfully.")
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Data Successfully Updated');", true);
+                tran.Commit();
+            }
+            else
+            {
+                LblErrorMessage.Text = _arrPara[3].Value.ToString();
+                tran.Rollback();
+            }
+        }
+        catch (Exception ex)
+        {
+
+            Logs.WriteErrorLog("Master|Order||" + ex.Message);
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
         }
     }
 }

@@ -545,6 +545,8 @@
                                                 runat="server" Text="Close" Width="50px" />
                                             <asp:Button ID="Btnorder" runat="server" Text="WorkLoad" Visible="false" CssClass="buttonnorm"
                                                 OnClientClick="return OrderDetail()" />
+                                            <asp:Button CssClass="buttonnorm" ID="BtnMaterialIssueOnIndent" runat="server" Text="Material IssueOnDyeing"
+                                                OnClick="BtnMaterialIssueOnIndent_Click" Visible="false" />
                                         </td>
                                     </tr>
                                     <tr>

@@ -1407,7 +1407,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             str = str + " UNION ALL " + strsample;
                         }
                     }
-                    str = str + " Order by  Indentno";
+                    str = str + " Order by  RecChallanNo";
                 }
                 else
                 {

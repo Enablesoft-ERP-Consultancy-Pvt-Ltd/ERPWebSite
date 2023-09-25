@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class frmSize : CustomPage
+public partial class Masters_Carpet_frmSize : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
