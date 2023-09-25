@@ -64,7 +64,7 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
         string str = @"Select ROM.ID, ROM.ID 
                     From RapierOrderMaster ROM(Nolock) 
                     Where ROM.MasterCompanyid = " + Session["varcompanyid"] + " And ROM.CompanyID = " + DDcompany.SelectedValue + @" And 
-                        ROM.ProcessID = " + DDprocess.SelectedValue + " And ROM.EmpID = " + DDVendorName.SelectedValue;
+                        ROM.ProcessID = " + DDprocess.SelectedValue + " And ROM.EmpID = " + DDVendorName.SelectedValue + " Order By ROM.ID Desc";
 
         UtilityModule.ConditionalComboFill(ref DDChallanNo, str, true, "--Plz Select--");
     }
@@ -80,7 +80,8 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
             string str = @"Select ID, Cast(IssueNo as Nvarchar) + '  /  ' + REPLACE(CONVERT(NVARCHAR(11), IssueDate, 106), ' ', '-') IssueDate 
                     From RapierRawIssueMaster (Nolock) 
                     Where MasterCompanyID = " + Session["varcompanyid"] + " And TranType = 0 And CompanyID = " + DDcompany.SelectedValue + @" And 
-                        ProcessID = " + DDprocess.SelectedValue + " And EmpID = " + DDVendorName.SelectedValue;
+                        ProcessID = " + DDprocess.SelectedValue + " And EmpID = " + DDVendorName.SelectedValue + @" 
+                        And ROM.RapierOrderMasterID = " + DDChallanNo.SelectedValue + " Order By ID Desc";
             UtilityModule.ConditionalComboFill(ref DDIssueNo, str, true, "--Plz Select--");
         }
         Fillgrid();

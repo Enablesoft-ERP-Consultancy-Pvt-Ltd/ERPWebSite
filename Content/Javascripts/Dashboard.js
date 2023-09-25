@@ -1,23 +1,4 @@
-﻿
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
+﻿var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
 
 { ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
 { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
@@ -127,15 +108,6 @@ $(function () {
     });
 
 
-
-
-
-
-
-
-
-
-
     $.ajax({
         type: "POST",
         url: "Home.aspx/OrderList",
@@ -240,17 +212,6 @@ $(function () {
             table.on('click', 'a.btnSummary', function (e) {
                 var elem = $(this);
                 var orderId = parseInt(elem.attr('exthref'));
-
-
-
-             
-
-                
-
-                
-
-
-
                 SummaryReport(elem, orderId)
             });
 
@@ -543,9 +504,6 @@ async function PurchaseReport(_orderId) {
     $('div.modal-body').empty();
     PurchaseHtml(_orderId, "Purchase Report");
 
-
-
-
 }
 
 function ProcessReport(_orderId, _processId, name) {
@@ -615,15 +573,8 @@ function ProcessReport(_orderId, _processId, name) {
 function FinishItemReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
-
-
-
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>" + name + "</h4>");
-
-
-
-
 
     const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
@@ -679,24 +630,8 @@ function FinishItemReport(_orderId, _processId, name) {
 function ProcessIssueReport(_orderId, _processId, name) {
 
     var bodyHtml = "";
-
-
-
-
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>" + name + "</h4>");
-
-
-
-
-
-
-
-
-
-
-
-
 
     const obj = { OrderId: _orderId, ProcessId: _processId };
     $.ajax({
@@ -747,12 +682,6 @@ function ProcessIssueReport(_orderId, _processId, name) {
     });
 }
 
-
-
-
-
-
-
 function PurchaseHtml(_orderId, _title, _seq) {
 
     var bodyHtml = "";
@@ -797,14 +726,9 @@ function PurchaseHtml(_orderId, _title, _seq) {
     });
 }
 
-
-
-
 function OrderSummary(_orderId, index,cust) {
 
-
     var bodyHtml = "";
-
     const obj = { OrderId: _orderId };
     $.ajax({
         url: "Home.aspx/GetOrderDetail",
@@ -823,14 +747,14 @@ function OrderSummary(_orderId, index,cust) {
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Dispatched Date:</strong>" + result.data[0].DispatchDate + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Due Date:</strong>" + result.data[0].DueDate + "</p></div></div>";
 
-            bodyHtml += "<div class='row'><div class='col-lg-12'>";
+            bodyHtml += "<div class='row' data-order=" + index + "><div class='col-lg-12'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr>";
             bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
             bodyHtml += "<th>Color</th><th>Shape</th><th>Shade</th><th>Size</th>";
             bodyHtml += "<th>Unit</th><th>Quantity</th><th>Filler</th></tr></thead><tbody>";
             if (result.data.length > 0) {
-                $.each(result.data, function (index, item) {
+                $.each(result.data, function (i, item) {
                     bodyHtml += "<tr>";
                     bodyHtml += "<td>" + item.Technique + "</td><td>" + item.Quality + "</td><td>" + item.Design + "</td>";
                     bodyHtml += "<td>" + item.Color + "</td><td>" + item.Shape + "</td><td>" + item.Shade + "</td><td>" + item.Size + "</td>";
@@ -862,27 +786,7 @@ function OrderSummary(_orderId, index,cust) {
     return bodyHtml;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function SummaryReport(elem, orderId) {
-
-
-
 
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>Summary Report</h4>");
@@ -895,23 +799,14 @@ function SummaryReport(elem, orderId) {
         panelhtml += "<div class='row' data-order=" + index + "></div>";
     });
     $('div.modal-body').html(panelhtml);
-
-
     OrderSummary(orderId, 0, elem.closest("tr").find("td:nth-child(1)").html());
-
-
-
-
     elem.next("div.btn-group").find("ul.dropdown-menu li").each(function (index) {
         var item = $(this).find("a");
         var _type = parseInt(item.attr('extType'));
-
         var seq = parseInt(item.attr('extSeq'));
-
         var _title = item.attr('title') + " SUMMARY";
         var url;
         if (_type == 0) {
-
             PurchaseHtml(orderId, _title, seq);
         }
         else {
@@ -936,6 +831,7 @@ function SummaryReport(elem, orderId) {
 
 
 }
+
 function ReqHtml(_url, _Req, _title, _seq) {
 
 

@@ -1149,6 +1149,11 @@
                                     UseSubmitBehavior="false" CssClass="buttonnorm" OnClick="btnupdateallconsmp_Click"
                                     OnClientClick="if (!confirm('Do you want update all item consumption?')) return ;this.disabled=true;this.value = 'wait ...';" />
                             </td>
+                            <td id="TDUpdateConsumptionFolioAndReceive" runat="server" visible ="false">
+                                <asp:Button ID="Button1" Text="Update Folio & Receive Cons" runat="server"
+                                    UseSubmitBehavior="false" CssClass="buttonnorm" OnClick="btnUpdateFolioReceiveCons_Click"
+                                    OnClientClick="if (!confirm('Do you want update item consumption?')) return ;this.disabled=true;this.value = 'wait ...';" />
+                            </td>
                             <td>
                                 <asp:Button ID="btnchngorderno" CssClass="buttonnorm" Text="Change Cust. Order No."
                                     runat="server" OnClick="btnchngorderno_Click" Visible="false" />
