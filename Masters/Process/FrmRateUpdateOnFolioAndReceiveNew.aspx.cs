@@ -72,53 +72,16 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
                         DDCategory_SelectedIndexChanged(DDCategory, new EventArgs());
                     }
                     break;
-            }
-            if (Session["varcompanyId"].ToString() == "16")
-            {
-                DivWeavingEmployee.Visible = true;
-                BindWeavingEmp();
-            }
-            if (Session["varcompanyId"].ToString() == "28")
-            {                
-                DivWeavingEmployee.Visible = true;
-                BindWeavingEmp();
-            }
-            if (Session["varcompanyId"].ToString() == "27")
-            {
-                if (DDRateLocation.SelectedValue == "1")
-                {
-                    DivWeavingEmployee.Visible = true;
-                    BindWeavingEmp();
-                }
-                else
-                {
-                    DivWeavingEmployee.Visible = false;
-                    DDWeavingEmp.SelectedIndex = 0;
-                }
-            }
-            if (Session["varcompanyId"].ToString() == "42")
-            {
-              
-                DivDateRange.Visible = true;               
-                if (DDRateLocation.SelectedValue == "1")
-                {
-                    DivWeavingEmployee.Visible = true;
-                    BindWeavingEmp();
-                }
-                else
-                {
-                    DivWeavingEmployee.Visible = false;
-                    DDWeavingEmp.SelectedIndex = 0;
-                }
-            }
+            }           
+           
             if (variable.VarDEFINEPROCESSRATE_LOCATIONWISE == "1")
             {
                 DivRateLocation.Visible = true;
 
             }
-
-            txtFromDate.Text = "";
-            txtToDate.Text = "";
+            txtFromDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+            txtToDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+           
         }
     }
     protected void BindWeavingEmp()
@@ -154,7 +117,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
         }
         UtilityModule.ConditionalComboFill(ref DDColor, @"select Distinct vf.ColorId,vf.ColorName from V_FinishedItemDetail vf with(nolock)
                                            inner join CategorySeparate cs with(nolock) on vf.CATEGORY_ID=cs.Categoryid and cs.id=0 And ITEM_ID=" + DDArticleName.SelectedValue + " And ColorId<>0 order by ColorName", true, "--Plz Select--");
-        fillGrid();
+        
     }
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -227,151 +190,115 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
     protected void btnsave_Click(object sender, EventArgs e)
     {
         lblMessage.Text = "";
-        if (Session["VarCompanyNo"].ToString() == "22")
-        {           
-            CHECKVALIDCONTROL();            
-        }
-        if (lblMessage.Text == "")
+        string str = "";
+
+        if (DDCategory.SelectedIndex > 0)
         {
-            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-            if (con.State == ConnectionState.Closed)
-            {
-                con.Open();
-            }
-
-            SqlTransaction Tran = con.BeginTransaction();
-            try
-            {
-                //int finishedid = 0;
-                //finishedid = UtilityModule.getItemFinishedId(DDArticleName, ddquality, DDDesign, DDColor, DDShape, ddSize, TxtProductCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
-                //SqlParameter[] param = new SqlParameter[16];
-                //param[0] = new SqlParameter("@CompanyId", DDCompanyName.SelectedValue);
-                //param[1] = new SqlParameter("@UnitsId", Divuniname.Visible == true ? DDUnitName.SelectedValue : "0");
-                //param[2] = new SqlParameter("@Finishedid", finishedid);
-                //param[3] = new SqlParameter("@Unitrate", txtrate.Text);
-                //param[4] = new SqlParameter("@UserId", Session["varuserid"]);
-                //param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
-                //param[6] = new SqlParameter("@JobId", ddJob.SelectedValue);
-                //param[7] = new SqlParameter("@Ratetype", DDRatetype.SelectedValue);
-                //param[8] = new SqlParameter("@CommRate", txtcommrate.Text == "" ? "0" : txtcommrate.Text);
-                //param[9] = new SqlParameter("@RateLocation", DivRateLocation.Visible == false ? "0" : DDRateLocation.SelectedValue);
-                //param[10] = new SqlParameter("@flagsize", DDsizeType.SelectedValue);
-                //param[11] = new SqlParameter("@EmpId", DivWeavingEmployee.Visible == false ? "0" : DDWeavingEmp.SelectedValue);
-                //param[12] = new SqlParameter("@Bonus", DivBonus.Visible == false ? "0" : TxtBouns.Text == "" ? "0" : TxtBouns.Text);
-                //param[13] = new SqlParameter("@FinisherRate", DivFinisherRate.Visible == false ? "0" : TxtFinisherRate.Text == "" ? "0" : TxtFinisherRate.Text);
-                //param[14] = new SqlParameter("@OrderTypeId", DivOrderType.Visible == false ? "0" : DDOrderType.SelectedValue);
-                //param[15] = new SqlParameter("@Remark", TxtRemark.Text);
-                ////Save data
-                //SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveJobRate", param);
-                ////
-                //Tran.Commit();
-                //lblMessage.Text = "Unit Price entered successfully....";
-                //txtrate.Text = "";
-                //txtcommrate.Text = "";
-                //TxtBouns.Text = "";
-                //TxtFinisherRate.Text = "";
-                //TxtRemark.Text = "";
-                //fillGrid();
-            }
-            catch (Exception ex)
-            {
-                lblMessage.Text = ex.Message;
-                Tran.Rollback();
-            }
-            finally
-            {
-                con.Dispose();
-                con.Close();
-            }
+            str = str + " and Vf.Category_id=" + DDCategory.SelectedValue;
         }
-        
-        
-    }
-    protected void fillGrid()
-    {
-//        DataSet ds = null;
-//        string str = @"select  vf.item_id,vf.ITEM_NAME+'  '+vf.QualityName+'  '+vf.designName as Articles,PNM.Process_name as JobName,vf.ColorName as Colour,case when tj.flagsize=1 then vf.SizeMtr else vf.sizeft end as Size,
-//                    Tj.Unitrate,Tj.Date,Vf.shapeName as Shape,Ratetype=case when tj.ratetype=1 then 'Pcs Wise' else 'Area Wise' End,tj.Commrate,
-//                    case when Tj.RateLocation=0 then 'InHouse' else 'OutSide' end as RateLocation,isnull(EI.EmpName,'') as EmpName, Tj.Bonus
-//                    ,isnull(TJ.FinisherRate,0) as FinisherRate,isnull(TJ.OrderTypeId,0) as OrderTypeId ,isnull(OC.Ordercategory,'') as OrderType, Tj.Remark 
-//                    from tbjobrate Tj(Nolock) 
-//                    inner join V_FinishedItemDetail vf(Nolock) on Tj.finishedid=vf.ITEM_FINISHED_ID  
-//                    LEFT JOIN EmpInfo EI(Nolock) ON TJ.EmpId=EI.EmpID                 
-//                    inner join PROCESS_NAME_MASTER PNM(Nolock) on PNM.PROCESS_NAME_ID=Tj.jobid 
-//                    LEFT JOIN OrderCategory OC(NoLock) ON TJ.OrderTypeId=OC.OrderCategoryId
-//                    Where Tj.mastercompanyId=" + Session["varcompanyId"] + " And Tj.companyId=" + DDCompanyName.SelectedValue;
+        if (DDArticleName.SelectedIndex > 0)
+        {
+            str = str + " and Vf.Item_id=" + DDArticleName.SelectedValue;
+        }
+        if (ddquality.SelectedIndex > 0)
+        {
+            str = str + " and Vf.Qualityid=" + ddquality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0)
+        {
+            str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+        }
+        if (DDColor.SelectedIndex > 0)
+        {
+            str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+        }
+        if (DDShape.SelectedIndex > 0)
+        {
+            str = str + " and vf.shapeId=" + DDShape.SelectedValue;
+        }
+        if (ddSize.SelectedIndex > 0)
+        {
+            str = str + " and vf.Sizeid=" + ddSize.SelectedValue;
+        }
 
-       
-//        if (ddJob.SelectedIndex > 0)
-//        {
-//            str = str + "  And Tj.Jobid= " + ddJob.SelectedValue;
-//        }
-//        if (DDArticleName.SelectedIndex > 0)
-//        {
-//            str = str + "  And vf.Item_Id= " + DDArticleName.SelectedValue;
-//        }
-//        if (ddquality.SelectedIndex > 0)
-//        {
-//            str = str + "  And vf.QualityId= " + ddquality.SelectedValue;
-//        }
-//        if (DDDesign.SelectedIndex > 0)
-//        {
-//            str = str + "  And vf.DesignId= " + DDDesign.SelectedValue;
-//        }
-//        if (divratetype.Visible == true)
-//        {
-//            if (DDRatetype.SelectedIndex != -1)
-//            {
-//                str = str + "  And TJ.Ratetype = " + DDRatetype.SelectedValue;
-//            }
-//        }
-//        if (DDRateLocation.SelectedIndex != -1)
-//        {
-//            str = str + "  And TJ.RateLocation = " + DDRateLocation.SelectedValue;
-//        }
-//        if (DivWeavingEmployee.Visible == true)
-//        {
-//            if (DDWeavingEmp.SelectedIndex > 0)
-//            {
-//                str = str + "  And Tj.EmpId = " + DDWeavingEmp.SelectedValue;
-//            }
-//        }
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            SqlParameter[] array = new SqlParameter[11];
+            array[0] = new SqlParameter("@CompanyId", SqlDbType.Int);
+            array[1] = new SqlParameter("@ProcessId", SqlDbType.Int);
+            array[2] = new SqlParameter("@RateType", SqlDbType.Int);
+            array[3] = new SqlParameter("@RateLocation", SqlDbType.Int);
+            array[4] = new SqlParameter("@Rate", SqlDbType.VarChar, 10);
+            array[5] = new SqlParameter("@FromDate", SqlDbType.SmallDateTime);
+            array[6] = new SqlParameter("@ToDate", SqlDbType.SmallDateTime); 
+            array[7] = new SqlParameter("@Mastercompanyid", SqlDbType.Int);
+            array[8] = new SqlParameter("@Userid", SqlDbType.Int);
+            array[9] = new SqlParameter("@where", SqlDbType.VarChar, 500);
+            array[10] = new SqlParameter("@msg", SqlDbType.VarChar, 200);
+            array[10].Direction = ParameterDirection.Output;
 
-//        str = str + " order by tj.id desc";
-//        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            array[0].Value = DDCompanyName.SelectedValue;
+            array[1].Value = ddJob.SelectedValue;
+            array[2].Value = DDRatetype.SelectedValue;
+            array[3].Value = DDRateLocation.SelectedValue;
+            array[4].Value = txtrate.Text == "" ? "0" : txtrate.Text;
+            array[5].Value = txtFromDate.Text;
+            array[6].Value = txtToDate.Text;
+            array[7].Value = Session["varcompanyId"].ToString();
+            array[8].Value = Session["varuserid"].ToString(); 
+            array[9].Value = str;
 
-//        DGRateDetail.DataSource = ds;
-//        DGRateDetail.DataBind();
-    }
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_RateUpdateOnFolioAndReceiveNew", array);
+            //Tran.Commit();
+            //ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('Rates Updated Successfully!');", true);
+
+            if (array[10].Value.ToString() != "")
+            {
+                Tran.Rollback();
+                lblMessage.Text = array[10].Value.ToString();                
+            }
+            else
+            {
+                Tran.Commit();
+                ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('Rates Updated Successfully...!!!');", true);                
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Tran.Rollback();
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn", "alert('" + ex.Message + "');", true);
+        }
+        finally
+        {
+            con.Dispose();
+            con.Close();
+        }
+
+    }   
     protected void ddJob_SelectedIndexChanged(object sender, EventArgs e)
     {
         switch (ddJob.SelectedItem.Text.ToUpper())
         {
             case "WEAVING":
                 divratetype.Visible = true;
-                break;
-            case "PANEL MAKING":
-                divratetype.Visible = true;
-                break;
-            case "FILLER MAKING":
-                divratetype.Visible = true;
-                break;
+                break;           
             default:
                 divratetype.Visible = false;
                 break;
-        }
-        fillGrid();
-    }
-    protected void DDUnitName_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        fillGrid();
-    }
-
+        }       
+    }   
     protected void ddquality_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref DDDesign, @"select Distinct designId,designName from V_FinishedItemDetail vf with(nolock)
                                            inner join CategorySeparate cs with(nolock) on vf.CATEGORY_ID=cs.Categoryid and cs.id=0 And ITEM_ID=" + DDArticleName.SelectedValue + " and QualityId=" + ddquality.SelectedValue + " And Designid<>0 order by designName", true, "--Plz Select--");
-        fillGrid();
+        
     }
     protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -381,7 +308,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
         {
             DDColor_SelectedIndexChanged(sender, new EventArgs());
         }
-        fillGrid();
+        
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -441,7 +368,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
     }
     protected void DDRatetype_SelectedIndexChanged(object sender, EventArgs e)
     {
-        fillGrid();
+        
     }
     protected void DDRateLocation_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -463,48 +390,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
             DivWeavingEmployee.Visible = true;
             BindWeavingEmp();
         }
-        fillGrid();
-    }
-    protected void DDWeavingEmp_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        fillGrid();
-    }
-    protected void DGRateDetail_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
-            e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
-            //e.Row.Attributes["onclick"] = ClientScript.GetPostBackClientHyperlink(this.GVFinisherJobRate, "select$" + e.Row.RowIndex);
-
-            for (int i = 0; i < DGRateDetail.Columns.Count; i++)
-            {
-                if (DGRateDetail.Columns[i].HeaderText == "Rate Location")
-                {
-                    if (variable.VarDEFINEPROCESSRATE_LOCATIONWISE == "1")
-                    {
-                        DGRateDetail.Columns[i].Visible = true;
-                    }
-                    else
-                    {
-                        DGRateDetail.Columns[i].Visible = false;
-                    }
-                }
-                if (DGRateDetail.Columns[i].HeaderText == "Bonus" || DGRateDetail.Columns[i].HeaderText == "Finisher Rate" || DGRateDetail.Columns[i].HeaderText == "Order Type")
-                {
-                    if (Convert.ToInt32(Session["varcompanyId"]) == 42)
-                    {
-                        DGRateDetail.Columns[i].Visible = true;
-                    }
-                    else
-                    {
-                        DGRateDetail.Columns[i].Visible = false;
-                    }
-                }
-               
-            }
-        }
-    }
-   
+        
+    }   
     
 }
