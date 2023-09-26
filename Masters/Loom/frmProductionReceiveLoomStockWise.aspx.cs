@@ -1836,7 +1836,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     //lblmessage.Text = "Stock No. Quality does match with last scan carpet quality. Please scan same quality carpet!.";
                     ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('" + ds.Tables[0].Rows[0]["Msg"] + "');", true);
                     return;                   
-                }
+                }               
 
                 if (DDcompany.SelectedValue.ToString() != ds.Tables[0].Rows[0]["CompanyId"].ToString())
                 {
@@ -1936,7 +1936,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
     protected void btnconfirm_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "42" || Session["varcompanyId"].ToString() == "43" || Session["varcompanyId"].ToString() == "45")
+        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "42" || Session["varcompanyId"].ToString() == "45")
         {
             if (txtactualwidth.Text == "")
             {
