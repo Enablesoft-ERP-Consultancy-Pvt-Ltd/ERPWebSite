@@ -51,6 +51,7 @@
               <xs:element name="Units" type="xs:int" minOccurs="0" />
               <xs:element name="PendingAREA" type="xs:double" minOccurs="0" />
               <xs:element name="FolioChallaNo" type="xs:string" minOccurs="0" />
+              <xs:element name="LocalOrder" type="xs:string" minOccurs="0" />
               <xs:element name="FromDate" type="xs:string" minOccurs="0" />
               <xs:element name="Todate" type="xs:string" minOccurs="0" />
               <xs:element name="Dateflag" type="xs:int" minOccurs="0" />

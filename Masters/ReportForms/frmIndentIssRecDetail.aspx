@@ -39,6 +39,7 @@
     <script runat="server">
         protected void RadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
+            TRProcessName.Visible = true;
             TRIndentRecMachineIssQtyWise.Visible = false;
             Trorderstatus.Visible = false;
             TRItemName.Visible = false;
@@ -52,6 +53,7 @@
             TRExportExcel.Visible = false;
             TRProcessProgram.Visible = false;
             TRLocalOrderNo.Visible = false;
+            TRTagNo.Visible = false;
             if (RDShadewiseDetail.Checked == true || RDSubitemwiseBalance.Checked == true || RDorderwiseshadedetail.Checked == true)
             {
                 TRIndentRecMachineIssQtyWise.Visible = false;
@@ -182,6 +184,22 @@
                 TRIndentRecMachineIssQtyWise.Visible = false;
                 
             }
+            if (RDIndentMaterialIssueDetail.Checked == true)
+            {
+                TRCustomerCode.Visible = false;
+                TRorderNo.Visible = false;
+                TRProcessName.Visible = false;
+                TRemployee.Visible = false;
+                TRRecChallan.Visible = false;
+                TRcheckdate.Visible = false;
+                TRIndentRecMachineIssQtyWise.Visible = false;
+                TRItemName.Visible = false;
+                TRQuality.Visible = false;
+                TRShadeColor.Visible = false;
+                TRIndentStatus.Visible = false;
+                TRExportExcel.Visible = false;
+                TRTagNo.Visible = true;
+            }
         }
     </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -244,6 +262,9 @@
                                 Visible="false" /><br />
                                 &nbsp;&nbsp;
                             <asp:RadioButton ID="RDGenerateIndentDetail" Text="GENERATE INDENT DETAIL" runat="server"
+                                AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
+                                Visible="false" /><br />
+                                &nbsp;&nbsp;  <asp:RadioButton ID="RDIndentMaterialIssueDetail" Text="INDENT MATERIAL ISSUE DETAIL" runat="server"
                                 AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
                                 Visible="false" /><br />
                                
@@ -341,7 +362,7 @@
                                         </asp:DropDownList>
                                     </td>
                                 </tr>
-                                <tr id="TRRecChallan" runat="server">
+                                <tr id="TRRecChallan" runat="server" visible="true">
                                     <td>
                                         <asp:Label ID="Label4" runat="server" CssClass="labelbold" Text="Indent No"></asp:Label>
                                     </td>
@@ -430,6 +451,14 @@
                                     </td>
                                     <td colspan="3">
                                         <asp:TextBox ID="txtLocalOrderNo" runat="server" CssClass="textb" Width="100px" onkeydown="return (event.keyCode!=13);"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                 <tr id="TRTagNo" runat="server" visible="false">
+                                    <td>
+                                        <asp:Label ID="Label12" runat="server" CssClass="labelbold" Text="UCN No"></asp:Label>
+                                    </td>
+                                    <td colspan="3">
+                                        <asp:TextBox ID="txtTagNo" runat="server" CssClass="textb" Width="100px" onkeydown="return (event.keyCode!=13);"></asp:TextBox>
                                     </td>
                                 </tr>
                                 <tr id="TRcheckdate" runat="server">

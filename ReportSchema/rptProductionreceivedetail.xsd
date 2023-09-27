@@ -55,6 +55,7 @@
               <xs:element name="WIDTH" type="xs:string" minOccurs="0" />
               <xs:element name="LENGTH" type="xs:string" minOccurs="0" />
               <xs:element name="UNITNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="Comm" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
