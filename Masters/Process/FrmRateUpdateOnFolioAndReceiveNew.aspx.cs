@@ -391,6 +391,79 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
             BindWeavingEmp();
         }
         
-    }   
-    
+    }
+    protected void BtnGetRate_Click(object sender, EventArgs e)
+    {
+         lblMessage.Text = "";
+         try
+         {
+             string str = "";
+
+             if (ddJob.SelectedIndex > 0)
+             {
+                 str = str + "  And Tj.Jobid= " + ddJob.SelectedValue;
+             }
+             if (DDCategory.SelectedIndex > 0)
+             {
+                 str = str + "  And vf.Category_Id= " + DDCategory.SelectedValue;
+             }
+             if (DDArticleName.SelectedIndex > 0)
+             {
+                 str = str + "  And vf.Item_Id= " + DDArticleName.SelectedValue;
+             }
+             if (ddquality.SelectedIndex > 0)
+             {
+                 str = str + "  And vf.QualityId= " + ddquality.SelectedValue;
+             }
+             if (DDDesign.SelectedIndex > 0)
+             {
+                 str = str + "  And vf.DesignId= " + DDDesign.SelectedValue;
+             }
+             if (DDColor.SelectedIndex > 0)
+             {
+                 str = str + "  And vf.ColorId= " + DDColor.SelectedValue;
+             }
+             if (DDShape.SelectedIndex > 0)
+             {
+                 str = str + "  And vf.ShapeId= " + DDShape.SelectedValue;
+             }
+             if (ddSize.SelectedIndex > 0)
+             {
+                 str = str + "  And vf.SizeId= " + ddSize.SelectedValue;
+             }
+
+             if (divratetype.Visible == true)
+             {
+                 if (DDRatetype.SelectedIndex != -1)
+                 {
+                     str = str + "  And TJ.Ratetype= " + DDRatetype.SelectedValue;
+                 }
+             }
+             if (DivRateLocation.Visible == true)
+             {
+                 str = str + "  And TJ.RateLocation = " + DDRateLocation.SelectedValue;
+             }
+
+             SqlParameter[] param = new SqlParameter[4];
+             param[0] = new SqlParameter("@companyid", DDCompanyName.SelectedValue);
+             param[1] = new SqlParameter("@where", str);
+             param[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyNo"]);
+             param[3] = new SqlParameter("@UserId", Session["VarUserId"]);
+
+             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GetLatestDefineWeavingJobRate", param);
+             if (ds.Tables[0].Rows.Count > 0)
+             {
+                 txtrate.Text = ds.Tables[0].Rows[0]["UNITRATE"].ToString();
+             }
+             else
+             {
+                 txtrate.Text = "";
+                 lblMessage.Text = "Rate Not Define Please Define Rate For Update";
+             }
+         }
+         catch (Exception ex)
+         {
+             lblMessage.Text = ex.Message;
+         }
+    }
 }

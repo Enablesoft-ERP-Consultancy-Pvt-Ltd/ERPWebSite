@@ -223,7 +223,9 @@
                             <asp:Label ID="lblPrice" runat="server" Text="UNIT PRICE" CssClass="labelbold"></asp:Label>
                         </div>
                         <div>
-                            <asp:TextBox ID="txtrate" runat="server" CssClass="textb"></asp:TextBox>&nbsp
+                            <asp:TextBox ID="txtrate" runat="server" CssClass="textb" Enabled="false"></asp:TextBox>&nbsp  &nbsp;
+                            <asp:Button ID="BtnGetRate" Text="Get Rate" runat="server" CssClass="buttonnorm" Width="75px"
+                                        OnClick="BtnGetRate_Click" />
                         </div>
                     </div>
                     <div id="DivCommRate" runat="server" visible="false" style="margin-top: 1%">
