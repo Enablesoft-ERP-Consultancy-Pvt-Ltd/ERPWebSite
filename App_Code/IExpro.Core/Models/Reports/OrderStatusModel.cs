@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Services.Description;
 using System.Windows;
+using DocumentFormat.OpenXml.Drawing;
 using IExpro.Core.Common;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 
@@ -26,7 +27,7 @@ namespace IExpro.Core.Models.Reports
         public short ProcessType { get; set; }
         public IList<ProcessItem> ProcessList { get; set; }
 
-        
+
     }
     public class ProcessItem
     {
@@ -34,12 +35,12 @@ namespace IExpro.Core.Models.Reports
         public int SeqNo { get; set; }
         public int ProcessId { get; set; }
         public short ProcessType { get; set; }
-        
+
         public string ProcessName { get; set; }
     }
 
 
-        public class PurchaseRawMaterialModel
+    public class PurchaseRawMaterialModel
     {
         public string Category { get; set; }
         public string PONo { get; set; }
@@ -60,7 +61,7 @@ namespace IExpro.Core.Models.Reports
         public DateTime? ReceiveDate { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime DueDate { get; set; }
-        
+
         public string DelvDate { get { return DeliveryDate.ToString("dd MMM yyyy"); } }
         public string PODate { get { return IssueDate.ToString("dd MMM yyyy"); } }
 
@@ -237,8 +238,10 @@ namespace IExpro.Core.Models.Reports
 
     public class IndentRawMaterialModel
     {
+        public int FinishedId { get; set; }
         public string VendorName { get; set; }
         public string Category { get; set; }
+        public string DesignName { get; set; }
         public string MaterialName { get; set; }
         public string QualityName { get; set; }
         public string ColorName { get; set; }
@@ -263,28 +266,24 @@ namespace IExpro.Core.Models.Reports
         public decimal CancelQty { get; set; }
         public decimal Quantity { get; set; }
         public int IssueId { get; set; }
-
         public decimal Moisture { get; set; }
-
         public decimal ConsmpQty { get; set; }
         public decimal LossQty { get; set; }
-
         public int ReturnId { get; set; }
-
         public string TagRemarks { get; set; }
         public DateTime ReqDate { get; set; }
         public DateTime IssueDate { get; set; }
         public DateTime? ReceiveDate { get; set; }
         public DateTime ReturnDate { get; set; }
-
-
-
-
         public string RequestDate { get { return ReqDate.ToString("dd MMM yyyy"); } }
         public string IndentDate { get { return IssueDate.ToString("dd MMM yyyy"); } }
-
-
-
+        public string IssuedDate
+        {
+            get
+            {
+                return IssueDate.ToString("dd MMM yyyy");
+            }
+        }
         public string RecDate
         {
             get
@@ -333,6 +332,12 @@ namespace IExpro.Core.Models.Reports
             get { return (Quantity - (RecQuantity - ReturnQty)); }
         }
 
+        public decimal ReqdBalQty
+        {
+            get { return (RequiredQty - (RecQuantity - ReturnQty)); }
+        }
+
+        
 
 
         public ProcessStatus ItemStatus
