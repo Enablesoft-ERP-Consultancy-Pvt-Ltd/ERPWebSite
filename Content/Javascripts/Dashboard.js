@@ -658,14 +658,6 @@ function ProcessIssueReport(_orderId, _processId, name) {
 
 
 
-
-
-
-
-
-
-
-
             if (result.data.length > 0) {
 
                 $.each(result.data, function (index, item) {
@@ -673,7 +665,7 @@ function ProcessIssueReport(_orderId, _processId, name) {
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.DesignName + "</td><td>" + item.MaterialName + "</td>";
                     bodyHtml += "<td>" + item.IssueNo + "</td><td>" + item.ReqDate + "</td><td>" + item.IssueDate + "</td>";
                     bodyHtml += "<td>" + item.RecDate + "</td><td>" + item.RequiredQty + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
-                    bodyHtml += "<td>" + item.Rate + "</td><td>" + item.PendingQty + "</td><td>" + item.ReqdBalQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
+                    bodyHtml += "<td>N/A</td><td>N/A</td><td>" + item.PendingQty + "</td><td>" + item.ReqdBalQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
 
                 });
             }
