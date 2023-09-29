@@ -293,7 +293,7 @@ public partial class Masters_YarnOpening_frmyarnopeningreturn : System.Web.UI.Pa
     protected void FillReturnDetails()
     {
         string str = @"select YM.ReturnNo,dbo.F_getItemDescription(YT.Item_Finished_id,YT.flagsize) as ItemDescription,
-                        U.UnitName,Gm.GodownName,YT.Lotno,YT.Tagno,yt.Retqty as Returnqty
+                        U.UnitName,Gm.GodownName,YT.Lotno,YT.Tagno,yt.Retqty as Returnqty,YM.ID,yt.Detailid
                         from YarnOpeningReturnMaster YM inner join YarnOpeningReturnDetail YT on 
                         YM.ID=YT.MasterId
                         inner join Unit U on YT.Unitid=U.UnitId
@@ -343,5 +343,35 @@ public partial class Masters_YarnOpening_frmyarnopeningreturn : System.Web.UI.Pa
     {
         ViewState["reportid"] = DDChallanNo.SelectedValue;
         FillReturnDetails();
+    }
+    protected void DGReturnedDetail_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            string masterid = ((Label)DGReturnedDetail.Rows[e.RowIndex].FindControl("lblissuemasterid")).Text;
+            string Detailid = ((Label)DGReturnedDetail.Rows[e.RowIndex].FindControl("lblissuemasterdetailid")).Text;
+            SqlParameter[] param = new SqlParameter[7];
+            param[0] = new SqlParameter("@Id", masterid);
+            param[1] = new SqlParameter("@Detailid", Detailid);
+            param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            param[2].Direction = ParameterDirection.Output;
+            //************
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DELETEYARNOPENINGRETURN", param);
+            Tran.Commit();
+            lblmessage.Text = param[2].Value.ToString();
+            FillReturnDetails();
+
+        }
+        catch (Exception ex)
+        {
+            lblmessage.Text = ex.Message;
+            Tran.Rollback();
+        }
     }
 }

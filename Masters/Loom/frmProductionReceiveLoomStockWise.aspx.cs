@@ -49,7 +49,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     select UnitsId,UnitName from Units order by UnitName
                     select Ei.EmpId,EI.EmpName From Empinfo Ei inner join Department D on Ei.Departmentid=D.DepartmentId And EI.Blacklist = 0 And 
                     D.DepartmentName='QC Department' order by Ei.EmpName 
-                    Select * From NewUserDetail Where canedit = 1 And UserType = 1 And UserId = " + Session["varuserId"]+@"
+                    Select * From NewUserDetail Where canedit = 1 And UserType = 1 And UserId = " + Session["varuserId"] + @"
                     Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -57,7 +57,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
             UtilityModule.ConditionalComboFillWithDS(ref DDProdunit, ds, 1, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDQaname, ds, 2, true, "--Plz Select--");
-            UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 4, false, "");           
+            UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 4, false, "");
             DDBranchName.Enabled = false;
             if (DDBranchName.Items.Count == 0)
             {
@@ -94,7 +94,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     TDstockno.Visible = true;
                 }
             }
-            
+
             TxtUserType.Text = "0";
             if (Convert.ToInt16(Request.QueryString["UserType"]) == 1)
             {
@@ -108,7 +108,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     DGStockDetail.PageSize = 1000;
                     TDstockno.Visible = true;
                     TDbatch.Visible = true;
-                    
+
                     break;
                 case "16":
                 case "28":
@@ -127,7 +127,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     TDstockno.Visible = true;
                     LblPcsType.Visible = true;
                     TDPartyChallanNo.Visible = true;
-                    
+
                     break;
                 case "27":
                     if (Convert.ToInt16(Request.QueryString["UserType"]) == 1)
@@ -147,7 +147,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 case "22":
                     DDCarpetGrade.Visible = true;
                     Label34.Visible = true;
-                     Label10.Text = "Amt.";
+                    Label10.Text = "Amt.";
                     Label11.Text = "Remarks";
                     break;
                 case "42":
@@ -325,7 +325,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             UtilityModule.ConditionalComboFill(ref DDreceiveNo, str, true, "--Plz Select--");
             if (DDreceiveNo.Items.Count > 0)
             {
-                
+
                 if (txtEditReceiveNoForCI.Text.Trim() != "")
                 {
                     DDreceiveNo.SelectedValue = TempProcessRecId;
@@ -426,7 +426,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 listWeaverName.Items.Add(new ListItem(ds.Tables[0].Rows[i]["Empname"].ToString(), ds.Tables[0].Rows[i]["Empid"].ToString()));
             }
         }
-       
+
         if (hnlastempids.Value == "")
         {
             hnlastempids.Value = empids;
@@ -560,7 +560,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 {
                     Tran.Commit();
                     txtreceiveno.Text = param[5].Value.ToString();
-                 //   txtBatchChallanNo.Text = param[16].Value.ToString();
+                    //   txtBatchChallanNo.Text = param[16].Value.ToString();
                     hnprocessrecid.Value = param[0].Value.ToString();
                     lblmessage.Text = "Data saved successfully...";
                     FillRecDetails();
@@ -684,7 +684,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     else
                     {
                         Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailCarpetInternational.rpt";
-                    }                    
+                    }
                     break;
                 case "14":
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetaileastern.rpt";
@@ -727,13 +727,13 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     protected void chkedit_CheckedChanged(object sender, EventArgs e)
     {
         if (chkedit.Checked == true)
-        {                   
+        {
             TDreceiveNo.Visible = true;
             btnsave.Visible = false;
-            TDFolioNotext.Visible = true;          
+            TDFolioNotext.Visible = true;
 
             switch (Session["varcompanyid"].ToString())
-            {               
+            {
                 case "16":
                 case "28":
                     if (Session["usertype"].ToString() == "1")
@@ -753,7 +753,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     TDEditReceiveNoForCI.Visible = false;
                     break;
             }
-            
+
 
             if (Session["usertype"].ToString() != "1" && variable.VarOnlyPreviewButtonShowOnAllEditForm == "1")
             {
@@ -765,7 +765,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
         }
         else
-        {           
+        {
             TDEditReceiveNoForCI.Visible = false;
             TDreceiveNo.Visible = false;
             btnsave.Visible = true;
@@ -940,7 +940,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             FillRecDetails();
             if (Session["VarCompanyNo"].ToString() == "43")
             {
-                TableIssueDetail.Visible = false;                
+                TableIssueDetail.Visible = false;
             }
             else
             {
@@ -964,10 +964,10 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         Label lblprocessrecid = (Label)DGRecDetail.Rows[e.RowIndex].FindControl("lblprocessrecid");
         Label lblprocessrecdetailid = (Label)DGRecDetail.Rows[e.RowIndex].FindControl("lblprocessrecdetailid");
 
-        VarProcess_Rec_Detail_Id =Convert.ToInt32(lblprocessrecdetailid.Text);
+        VarProcess_Rec_Detail_Id = Convert.ToInt32(lblprocessrecdetailid.Text);
         VarProcess_Rec_Id = Convert.ToInt32(lblprocessrecid.Text);
         if (Session["VarCompanyNo"].ToString() == "21")
-        {           
+        {
             btnclickflag = "";
 
             btnclickflag = "BtnDeleteRow";
@@ -977,8 +977,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         else
         {
             DeleteRow(VarProcess_Rec_Detail_Id, VarProcess_Rec_Id);
-        }  
-        
+        }
+
     }
     protected void DGRecDetail_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -988,6 +988,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             TextBox txtcommrategrid = (TextBox)e.Row.FindControl("txtcommrategrid");
             Label lblDefectStatus = (Label)e.Row.FindControl("lblDefectStatus");
             LinkButton lnkRemoveDefect = (LinkButton)e.Row.FindControl("lnkRemoveQccheck");
+            TextBox txtqanamegrid = (TextBox)e.Row.FindControl("txtqanamegrid");
 
             if (Convert.ToInt32(lblDefectStatus.Text) > 0)
             {
@@ -1005,11 +1006,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     {
                         txtrategrid.Enabled = false;
                     }
-                    //if (txtcommrategrid != null)
-                    //{
-                    //    txtcommrategrid.Enabled = false;
-                    //}
-
+                    break;
+                case "16":
+                    if (txtqanamegrid != null)
+                    {
+                        txtqanamegrid.Enabled = false;
+                    }
                     break;
                 default:
                     break;
@@ -1049,7 +1051,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             }
             //*****************
         }
-       
+
     }
 
     protected void lnkqcparameter_Click(object sender, EventArgs e)
@@ -1259,7 +1261,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             --inner join LoomStockNo LS(Nolock) on Pm.issueorderid=Ls.issueorderid AND LS.ProcessID = 1 
             INNER JOIN Process_issue_detail_1 PID ON PM.IssueOrderId=PID.IssueOrderId
             where PM.Status<>'Canceled' and PM.status='Pending' and  PM.Companyid=" + DDcompany.SelectedValue + @" 
-            and PM.Units=" + DDProdunit.SelectedValue + " and PM.LoomId=" + txtloomid.Text+" and PID.PQty>0";
+            and PM.Units=" + DDProdunit.SelectedValue + " and PM.LoomId=" + txtloomid.Text + " and PID.PQty>0";
             if (FolioNo > 0)
             {
                 str = str + " And PM.IssueOrderID = " + FolioNo;
@@ -1287,20 +1289,20 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             case "16":
                 if (Session["varcompanyId"].ToString() == "16")
                 {
-//                    string Str = @"Select StockNo, TStockNo 
-//                        From LoomStockNo CN(Nolock) 
-//                        JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = CN.Item_Finished_Id And VF.ITEM_NAME <> 'CUSHION'
-//                        Where CN.TStockNo = '" + txtstockno.Text + "'";
+                    //                    string Str = @"Select StockNo, TStockNo 
+                    //                        From LoomStockNo CN(Nolock) 
+                    //                        JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = CN.Item_Finished_Id And VF.ITEM_NAME <> 'CUSHION'
+                    //                        Where CN.TStockNo = '" + txtstockno.Text + "'";
 
-//                    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
-//                    if (ds.Tables[0].Rows.Count > 0)
-//                    {
-//                        txtactualwidth.Focus();
-//                    }
-//                    else
-//                    {
-//                        btnconfirm_Click(sender, new EventArgs());
-//                    }
+                    //                    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+                    //                    if (ds.Tables[0].Rows.Count > 0)
+                    //                    {
+                    //                        txtactualwidth.Focus();
+                    //                    }
+                    //                    else
+                    //                    {
+                    //                        btnconfirm_Click(sender, new EventArgs());
+                    //                    }
                     txtactualwidth.Focus();
                 }
                 break;
@@ -1466,7 +1468,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     cmd.Parameters["@100_PROCESS_REC_ID"].Value = hn100_PROCESS_REC_ID.Value;
 
                     cmd.Parameters.AddWithValue("@username", Session["UserName"]);
-                    cmd.Parameters.AddWithValue("@CarpetGrade", (DDCarpetGrade.SelectedIndex > 0 ? DDCarpetGrade.SelectedValue: "0"));
+                    cmd.Parameters.AddWithValue("@CarpetGrade", (DDCarpetGrade.SelectedIndex > 0 ? DDCarpetGrade.SelectedValue : "0"));
                     cmd.Parameters.AddWithValue("@BranchId", DDBranchName.SelectedValue);
                     cmd.Parameters.AddWithValue("@PartyChallanNo", txtPartyChallanNo.Text);
                     cmd.Parameters.AddWithValue("@StockStatus", TDStockStatus.Visible == true ? DDStockStatus.SelectedValue : "0");
@@ -1715,7 +1717,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 else
                 {
                     sp = "PRO_PRODUCTIONLOOMRECEIVE_BULK_STOCKNO_WISE";
-                
+
                 }
 
 
@@ -1835,8 +1837,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     btnconfirm.Visible = false;
                     //lblmessage.Text = "Stock No. Quality does match with last scan carpet quality. Please scan same quality carpet!.";
                     ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('" + ds.Tables[0].Rows[0]["Msg"] + "');", true);
-                    return;                   
-                }               
+                    return;
+                }
 
                 if (DDcompany.SelectedValue.ToString() != ds.Tables[0].Rows[0]["CompanyId"].ToString())
                 {
@@ -1883,7 +1885,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 {
                     txtactualwidth.Text = "";
                     txtactuallength.Text = "";
-                }                
+                }
 
                 if (DDFolioNo.Items.FindByValue(ds.Tables[0].Rows[0]["issueorderid"].ToString()) != null)
                 {
@@ -1899,16 +1901,16 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     lblmessage.Text = "Please select Folio No.";
                     return;
                 }
-               
+
                 if (Convert.ToInt32(hnlastfoliono.Value) != Convert.ToInt32(DDFolioNo.SelectedValue))
-                {                   
-                   if (Session["VarCompanyNo"].ToString()!= "43")
-                   {
-                        hnprocessrecid.Value = "0";                   
+                {
+                    if (Session["VarCompanyNo"].ToString() != "43")
+                    {
+                        hnprocessrecid.Value = "0";
                         hn100_ISSUEORDERID.Value = "0";
                         hn100_PROCESS_REC_ID.Value = "0";
-                   }                        
-                    
+                    }
+
                 }
                 DGEmployee.DataSource = ds.Tables[1];
                 DGEmployee.DataBind();
@@ -1951,14 +1953,14 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 return;
             }
         }
-        
+
         if (Session["varcompanyId"].ToString() == "22")
         {
-            if (DDCarpetGrade.SelectedIndex==0)
+            if (DDCarpetGrade.SelectedIndex == 0)
             {
-                ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('Please select carpet grade');", true);                
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('Please select carpet grade');", true);
                 return;
-            }           
+            }
         }
         Savedetail(sender);
         if (Session["varCompanyNo"].ToString() == "43")
@@ -2441,14 +2443,14 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-           
+
             SqlParameter[] param = new SqlParameter[10];
-            param[0] = new SqlParameter("@issueorderid", DDFolioNo.SelectedValue);  
+            param[0] = new SqlParameter("@issueorderid", DDFolioNo.SelectedValue);
             param[1] = new SqlParameter("@Userid", Session["varuserid"]);
             param[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyNo"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-           
+
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_UPDATEBAZAARRATEFOLIONOWISE", param);
             //*************
@@ -2503,7 +2505,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_UPDATEBAZAARCONSUMPTION", param);
             //*************
             lblmessage.Text = param[3].Value.ToString();
-            Tran.Commit();            
+            Tran.Commit();
 
         }
         catch (Exception ex)
@@ -2557,22 +2559,22 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 string str2 = "";
                 str2 = @"select PenalityId,1 as flag from WeaverCarpetReceivePenality where Process_Rec_Id=" + Processrecid.Text + " and Process_Rec_Detail_Id=" + processrecdetailid.Text + "";
                 DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
-                 if (ds2.Tables[0].Rows.Count > 0)
-                 {
-                     for (int j = 0; j < ds2.Tables[0].Rows.Count; j++)
-                     {
-                         int PId = Convert.ToInt32(ds2.Tables[0].Rows[j]["PenalityId"]);
-                         foreach (GridViewRow row in GVPenalty.Rows)
-                         {                             
-                             CheckBox Chkboxitem = row.FindControl("Chkboxitem") as CheckBox;
-                             Label lblPenalityId = row.FindControl("lblPenalityId") as Label;
-                             if (PId == Convert.ToInt32(lblPenalityId.Text))
-                             {
-                                 Chkboxitem.Checked = true;
-                             }                             
-                         }
-                     }                     
-                 }
+                if (ds2.Tables[0].Rows.Count > 0)
+                {
+                    for (int j = 0; j < ds2.Tables[0].Rows.Count; j++)
+                    {
+                        int PId = Convert.ToInt32(ds2.Tables[0].Rows[j]["PenalityId"]);
+                        foreach (GridViewRow row in GVPenalty.Rows)
+                        {
+                            CheckBox Chkboxitem = row.FindControl("Chkboxitem") as CheckBox;
+                            Label lblPenalityId = row.FindControl("lblPenalityId") as Label;
+                            if (PId == Convert.ToInt32(lblPenalityId.Text))
+                            {
+                                Chkboxitem.Checked = true;
+                            }
+                        }
+                    }
+                }
 
             }
             else
@@ -2582,7 +2584,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             }
 
         }
-        
+
     }
     protected void GVPenalty_RowDataBound(object sender, GridViewRowEventArgs e)
     {
@@ -2595,7 +2597,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     }
     protected void btnSavePenality_Click(object sender, EventArgs e)
     {
-        string PenalityDetailData = "";       
+        string PenalityDetailData = "";
 
         for (int i = 0; i < GVPenalty.Rows.Count; i++)
         {
@@ -2637,7 +2639,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             arr[0] = new SqlParameter("@WPenalityId", SqlDbType.Int);
             arr[1] = new SqlParameter("@Process_Rec_Id", SqlDbType.Int);
             arr[2] = new SqlParameter("@Process_Rec_Detail_Id", SqlDbType.Int);
-            arr[3] = new SqlParameter("@PenalityDetailData", SqlDbType.NVarChar);   
+            arr[3] = new SqlParameter("@PenalityDetailData", SqlDbType.NVarChar);
             arr[4] = new SqlParameter("@UserID", SqlDbType.Int);
             arr[5] = new SqlParameter("@MasterCompanyID", SqlDbType.Int);
             arr[6] = new SqlParameter("@Msg", SqlDbType.VarChar, 200);
@@ -2647,8 +2649,8 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             arr[0].Value = HnWPenalityId.Value;
             arr[1].Value = lblPenalityProcessRecId.Text;
             arr[2].Value = lblPenalityProcessRecDetailId.Text;
-            arr[3].Value = PenalityDetailData;   
-            arr[4].Value = Session["varuserid"];          
+            arr[3].Value = PenalityDetailData;
+            arr[4].Value = Session["varuserid"];
             arr[5].Value = Session["varCompanyId"];
             arr[6].Direction = ParameterDirection.Output;
             arr[7].Value = 1;
@@ -2662,12 +2664,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             }
             else
             {
-                HnWPenalityId.Value = arr[0].Value.ToString();                
+                HnWPenalityId.Value = arr[0].Value.ToString();
                 tran.Commit();
             }
             fillGrid();
             FillRecDetails();
-            
+
         }
         catch (Exception ex)
         {
@@ -2687,7 +2689,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         {
             if (btnclickflag == "BtnDeleteRow")
             {
-                DeleteRow(VarProcess_Rec_Detail_Id,VarProcess_Rec_Id);
+                DeleteRow(VarProcess_Rec_Detail_Id, VarProcess_Rec_Id);
             }
             Popup(false);
         }
@@ -2721,30 +2723,30 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
     protected void txtEditReceiveNoForCI_TextChanged(object sender, EventArgs e)
     {
-        string str="",str2="";       
+        string str = "", str2 = "";
 
         str = @"Select Distinct PRD.ISSUEORDERID,isnull(PRM.Process_Rec_Id,0) as Process_Rec_Id From PROCESS_RECEIVE_MASTER_1 PRM(NoLock) JOIN PROCESS_RECEIVE_DETAIL_1 PRD(NoLock) ON PRM.PROCESS_REC_ID=PRD.PROCESS_REC_ID
-                       Where PRM.CHALLANNO='" +txtEditReceiveNoForCI.Text+"'";
-         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-         if (ds.Tables[0].Rows.Count > 0)
-         {
-             int issueorderid = 0;
-             issueorderid =Convert.ToInt32(ds.Tables[0].Rows[0]["ISSUEORDERID"].ToString());
-             TempProcessRecId = ds.Tables[0].Rows[0]["Process_Rec_Id"].ToString();
+                       Where PRM.CHALLANNO='" + txtEditReceiveNoForCI.Text + "'";
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            int issueorderid = 0;
+            issueorderid = Convert.ToInt32(ds.Tables[0].Rows[0]["ISSUEORDERID"].ToString());
+            TempProcessRecId = ds.Tables[0].Rows[0]["Process_Rec_Id"].ToString();
 
-             str2 = @" Select distinct isnull(PIM.ChallanNo,PIM.ISSUEORDERID) as FolioChallanNo from PROCESS_ISSUE_MASTER_1 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PID(NoLock) ON PIM.ISSUEORDERID=PID.ISSUEORDERID
-                    Where PIM.ISSUEORDERID="+issueorderid+"";
-             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
-             if (ds2.Tables[0].Rows.Count > 0)
-             {
-                 txtfolionoedit.Text = ds2.Tables[0].Rows[0]["FolioChallanNo"].ToString();
-                 txtfolionoedit_TextChanged(sender, new EventArgs());
-             }
-         }
-         else
-         {           
-             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
-         }        
-        
+            str2 = @" Select distinct isnull(PIM.ChallanNo,PIM.ISSUEORDERID) as FolioChallanNo from PROCESS_ISSUE_MASTER_1 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PID(NoLock) ON PIM.ISSUEORDERID=PID.ISSUEORDERID
+                    Where PIM.ISSUEORDERID=" + issueorderid + "";
+            DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+            if (ds2.Tables[0].Rows.Count > 0)
+            {
+                txtfolionoedit.Text = ds2.Tables[0].Rows[0]["FolioChallanNo"].ToString();
+                txtfolionoedit_TextChanged(sender, new EventArgs());
+            }
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+
     }
 }

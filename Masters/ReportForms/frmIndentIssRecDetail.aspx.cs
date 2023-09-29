@@ -135,6 +135,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             {
                 RDGenerateIndentDetail.Visible = true;
                 RDIndentMaterialIssueDetail.Visible = true;
+                RDIndentRecPending.Visible = true;
             }
         }
     }
