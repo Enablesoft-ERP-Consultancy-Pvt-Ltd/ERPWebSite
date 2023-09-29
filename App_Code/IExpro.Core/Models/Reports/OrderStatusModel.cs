@@ -161,6 +161,7 @@ namespace IExpro.Core.Models.Reports
 
     public class IssueMaterialModel
     {
+
         public int IssueId { get; set; }
         public string IssueNo { get; set; }
         public int ProcessId { get; set; }
@@ -171,9 +172,14 @@ namespace IExpro.Core.Models.Reports
         public DateTime AssignDate { get; set; }
         public DateTime RequestDate { get; set; }
         public DateTime? ReceiveDate { get; set; }
+
+
+        public string DesignName { get; set; }
         public string VendorName { get; set; }
         public string MaterialName { get; set; }
         public decimal Rate { get; set; }
+
+        public decimal RequiredQty { get; set; }
         public decimal IssueQuantity { get; set; }
         public decimal RecQuantity { get; set; }
         public string IssueDate { get { return AssignDate.ToString("dd MMM yyyy"); } }
@@ -229,6 +235,13 @@ namespace IExpro.Core.Models.Reports
             }
         }
         public string IStatus { get { return this.ItemStatus.ToString(); } }
+
+
+        public decimal ReqdBalQty
+        {
+            get { return (RequiredQty - (RecQuantity)); }
+        }
+
 
     }
 
@@ -337,7 +350,7 @@ namespace IExpro.Core.Models.Reports
             get { return (RequiredQty - (RecQuantity - ReturnQty)); }
         }
 
-        
+
 
 
         public ProcessStatus ItemStatus

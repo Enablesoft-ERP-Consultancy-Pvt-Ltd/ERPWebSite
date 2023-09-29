@@ -46,9 +46,7 @@ IsNULL(q.filler,'') Filler from OrderMaster p  WITH (NOLOCK) inner join OrderDet
 on p.OrderId=q.OrderId inner join V_FINISHEDITEMDETAIL VF 
 ON Q.Item_Finished_Id=VF.ITEM_FINISHED_ID LEFT JOIN SIZETYPE ST  WITH (NOLOCK) ON q.FLAGSIZE=ST.VAL  
 Where p.OrderId=@OrderId";
-
                 return (conn.Query<OrderDetailModel>(sqlQuery, new { @OrderId = OrderId }));
-
             }
 
         }
@@ -436,7 +434,7 @@ Order By  x.IFinishedId,x.OFinishedId";
                             ReceiveDate = x.ReceiveDate,
                             ReturnDate = x.ReturnDate,
                         });
-         
+
                     return (result);
                 }
                 catch (Exception ex)
@@ -451,10 +449,12 @@ Order By  x.IFinishedId,x.OFinishedId";
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
 
-                string sqlQuery = @"With IssueItem(IssueId,DetailId,IssueNo,ProcessId,EmpId,OrderId,Finishedid,MaterialId,Rate,IssueQuantity,
+                string sqlQuery = @"
+With IssueItem(IssueId,DetailId,IssueNo,ProcessId,EmpId,OrderId,Finishedid,MaterialId,Rate,QtyRequired,IssueQuantity,
 AssignDate,RequestDate,FlagSize,RowNo)
 AS(Select HFOM.ISSUEORDERID,HFOD.IssueDetailId,HFOM.CHALLANNO,EMP1.ProcessId,EMP1.EmpID,HFOD.OrderID,
 HFOD.Order_FinishedID,HFOD.OrderDetailDetail_FinishedID,HFOD.Rate,
+(J.INTERNALPRODASSIGNEDQTY + J.PreProdAssignedQty) QtyRequired,
 SUM(IsNull((HFOD.Qty-HFOD.CancelQty),0.00)) OVER (PARTITION BY HFOD.OrderID,HFOD.Order_FinishedID,HFOM.ISSUEORDERID,HFOD.OrderDetailDetail_FinishedID) IssueQuantity,
 HFOM.ASSIGNDATE,HFOD.ReqByDate,HFOD.Exportsizeflag,
 ROW_NUMBER() OVER(PARTITION BY  HFOD.OrderID,HFOD.Order_FinishedID,HFOM.ISSUEORDERID,HFOD.OrderDetailDetail_FinishedID ORDER BY HFOM.ISSUEORDERID) RowNo
@@ -463,6 +463,8 @@ Inner JOIN HomeFurnishingOrderDetail HFOD(NoLock)
 ON HFOM.IssueOrderId=HFOD.IssueOrderId
 Inner JOIN Employee_HomeFurnishingOrderMaster EMP1(nolock) ON 
 EMP1.IssueDetailID =HFOD.IssueDetailId 
+Inner JOIN JobAssigns J on HFOD.OrderID=J.OrderId and HFOD.Order_FinishedID=J.ITEM_FINISHED_ID
+Where HFOD.OrderID=@OrderId and HFOM.ProcessId=@ProcessId
 ),
 ReceiveItem(IssueId,ReceiveId,ProcessId,OrderId,Finishedid,MaterialId,
 Rate,RecQuantity,ReceiveDate,RowNo)
@@ -475,21 +477,23 @@ Max(HFRM.ReceiveDate) OVER (PARTITION BY  HFRD.OrderId,HFRD.Order_FinishedID,HFR
 ROW_NUMBER() OVER(PARTITION BY  HFRD.OrderId,HFRD.Order_FinishedID,HFRD.OrderDetailDetail_FinishedID,HFRD.ISSUEORDERID ORDER BY HFRD.ISSUEORDERID) RowNo
 From HomeFurnishingReceiveMaster HFRM(NoLock)   
 Inner JOIN HomeFurnishingReceiveDetail HFRD(NoLock) ON HFRM.ProcessRecId=HFRD.ProcessRecId 
+Where HFRD.OrderID=@OrderId and HFRM.ProcessId=@ProcessId
 )
 Select 
-emp.EMPNAME VendorName,
-VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
-ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName, 
-
+emp.EMPNAME VendorName,D.designName,
+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
+ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName,
 x.IssueId,x.IssueNo,x.ProcessId,x.EmpId,x.OrderId,x.Finishedid,x.MaterialId,
-x.AssignDate,x.RequestDate,y.ReceiveDate,x.Rate,x.IssueQuantity,
+x.AssignDate,x.RequestDate,y.ReceiveDate,x.Rate,x.QtyRequired RequiredQty,x.IssueQuantity,
 IsNUll(y.RecQuantity,0.00) RecQuantity
 from IssueItem x 
 Left Join ReceiveItem y on  x.OrderId=y.OrderId and x.Finishedid=y.Finishedid 
 and x.MaterialId=y.MaterialId and x.IssueId=y.IssueId and x.RowNo=y.RowNo
 INNER JOIN V_FINISHEDITEMDETAIL VF ON x.MaterialId=VF.ITEM_FINISHED_ID  
 LEFT JOIN SIZETYPE ST WITH (NOLOCK)  ON x.FLAGSIZE=ST.VAL  
-INNER JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId    
+INNER JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
+INNER JOIN ITEM_PARAMETER_MASTER I On x.Finishedid=I.ITEM_FINISHED_ID
+INNER JOIN Design D WITH (NOLOCK)  ON D.designId=I.DESIGN_ID  
 Where  x.OrderId= @OrderId  and x.RowNo=1 and  x.ProcessId=@ProcessId 
 Order BY  x.IssueId";
 
@@ -500,6 +504,7 @@ Order BY  x.IssueId";
                         Select(x => new IssueMaterialModel
                         {
                             IssueId = x.Key.IssueId,
+                            DesignName = x.FirstOrDefault().DesignName,
                             IssueNo = x.FirstOrDefault().IssueNo,
                             ProcessId = x.FirstOrDefault().ProcessId,
                             EmpId = x.FirstOrDefault().EmpId,
@@ -512,6 +517,7 @@ Order BY  x.IssueId";
                             VendorName = x.FirstOrDefault().VendorName,
                             MaterialName = x.FirstOrDefault().MaterialName,
                             Rate = x.Average(y => y.Rate),
+                            RequiredQty = x.FirstOrDefault().RequiredQty,
                             IssueQuantity = x.Sum(y => y.IssueQuantity),
                             RecQuantity = x.Sum(y => y.RecQuantity),
                         });

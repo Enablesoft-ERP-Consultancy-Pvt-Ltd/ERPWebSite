@@ -645,27 +645,40 @@ function ProcessIssueReport(_orderId, _processId, name) {
             console.log(data.d)
             var result = $.parseJSON(data.d);
 
+        
+
+
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += "<tr><th>Supplier</th><th>Item Description</th>";
-            bodyHtml += "<th>Issue No.</th><th>Issue Date</th>";
-            bodyHtml += "<th>Req. Date</th><th>Rec. Date</th>";
-            bodyHtml += "<th>Issue Qty.</th><th>Rec. Qty.</th><th>Rate</th>";
-            bodyHtml += "<th>Pen. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
+            bodyHtml += "<tr><th>Supplier</th><th>Design No.</th><th>Item Description</th>";
+            bodyHtml += "<th>Indent No.</th>";
+            bodyHtml += "<th>Req. Date</th><th>Issue Date</th><th>Rec. Date</th>";
+            bodyHtml += "<th>Reqd Qty.</th><th> Issued Qty.</th><th>Rec. Qty.</th><th>Loss Qty.</th><th>Return Qty.</th>";
+            bodyHtml += "<th>Pen. Qty.</th><th>Reqd Bal. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
+
+
+
+
+
+
+
+
+
+
 
             if (result.data.length > 0) {
 
                 $.each(result.data, function (index, item) {
 
-                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.MaterialName + "</td>";
-                    bodyHtml += "<td>" + item.IssueNo + "</td><td>" + item.IssueDate + "</td><td>" + item.ReqDate + "</td>";
-                    bodyHtml += "<td>" + item.RecDate + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
-                    bodyHtml += "<td>" + item.Rate + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
+                    bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.DesignName + "</td><td>" + item.MaterialName + "</td>";
+                    bodyHtml += "<td>" + item.IssueNo + "</td><td>" + item.ReqDate + "</td><td>" + item.IssueDate + "</td>";
+                    bodyHtml += "<td>" + item.RecDate + "</td><td>" + item.RequiredQty + "</td><td>" + item.IssueQuantity + "</td><td>" + item.RecQuantity + "</td>";
+                    bodyHtml += "<td>" + item.Rate + "</td><td>" + item.PendingQty + "</td><td>" + item.ReqdBalQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
 
                 });
             }
             else {
-                bodyHtml += "<tr><td colspan='12'>Data not found</td></tr></tbody>";
+                bodyHtml += "<tr><td colspan='16'>Data not found</td></tr></tbody>";
             }
 
             bodyHtml += "</tbody></table></div></div></div>"
