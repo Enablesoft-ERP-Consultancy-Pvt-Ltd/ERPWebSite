@@ -17,6 +17,7 @@
               <xs:element name="Date" type="xs:dateTime" minOccurs="0" />
               <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="EmpName" type="xs:string" minOccurs="0" />
+              <xs:element name="LotNo" type="xs:string" minOccurs="0" />
               <xs:element name="TagNo" type="xs:string" minOccurs="0" />
               <xs:element name="TableName" type="xs:string" minOccurs="0" />
               <xs:element name="TranType" type="xs:int" minOccurs="0" />

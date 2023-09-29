@@ -32,7 +32,6 @@
               <xs:element name="IndentNo" type="xs:string" minOccurs="0" />
               <xs:element name="customercode" type="xs:string" minOccurs="0" />
               <xs:element name="TagNo" type="xs:string" minOccurs="0" />
-              <xs:element name="MasterCompanyID" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
