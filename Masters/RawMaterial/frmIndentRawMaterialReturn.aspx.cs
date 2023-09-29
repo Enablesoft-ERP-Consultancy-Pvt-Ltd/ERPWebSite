@@ -96,13 +96,28 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
         //                                        Processid=" + ddProcessName.SelectedValue + " And PartyId=" + DDPartyName.SelectedValue + @")  
         //                Order by challanno";
 
-        str = @"select Distinct PM.PRMID, GatePassNo + ' | ' + ChallanNo + ' | ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') ChallanNo 
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            str = @"select Distinct PM.PRMID, ChallanNo + ' | ' + GatePassNo + ' | ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') ChallanNo 
                 From PP_ProcessRECMaster PM JOIN PP_ProcessRecTran PT ON PM.prmid=Pt.Prmid               
                 Where PM.CompanyId=" + DDCompany.SelectedValue + "  And  PM.EmpID=" + DDPartyName.SelectedValue + @" 
                 And PM.PrmId Not in(select Distinct ProcessRec_PrmId from RawMaterialPreprationHissab RMH,RawMaterialPreprationHissabDetail RHD 
                                         Where RMH.HissabId=RHD.HissabId And RMH.Hissabtype = 0 And CompanyId=" + DDCompany.SelectedValue + @" And 
                                         Processid=" + ddProcessName.SelectedValue + " And PartyId=" + DDPartyName.SelectedValue + @")  
                 Order by PM.PRMID Desc";
+        }
+        else
+        {
+            str = @"select Distinct PM.PRMID, GatePassNo + ' | ' + ChallanNo + ' | ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') ChallanNo 
+                From PP_ProcessRECMaster PM JOIN PP_ProcessRecTran PT ON PM.prmid=Pt.Prmid               
+                Where PM.CompanyId=" + DDCompany.SelectedValue + "  And  PM.EmpID=" + DDPartyName.SelectedValue + @" 
+                And PM.PrmId Not in(select Distinct ProcessRec_PrmId from RawMaterialPreprationHissab RMH,RawMaterialPreprationHissabDetail RHD 
+                                        Where RMH.HissabId=RHD.HissabId And RMH.Hissabtype = 0 And CompanyId=" + DDCompany.SelectedValue + @" And 
+                                        Processid=" + ddProcessName.SelectedValue + " And PartyId=" + DDPartyName.SelectedValue + @")  
+                Order by PM.PRMID Desc";
+        }
+
+       
 
         UtilityModule.ConditionalComboFill(ref DDChallanNo, str, true, "-Select-");
     }
@@ -127,7 +142,7 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
 					And PM.prmid= " + DDChallanNo.SelectedValue + " And PM.Companyid=" + DDCompany.SelectedValue + " And EmpID=" + DDPartyName.SelectedValue + " AND ProcessID=" + ddProcessName.SelectedValue + @" 
                     UNION
                     Select Distinct  1 as ID,1 As DetailID, Item_Name,QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName+' '+SizeFt As ItemDescription,
-                    GodownName,PD.LotNo,PRD.RecQuantity,PRD.RecQuantity -[dbo].[Get_RawReceiveBalQty] (PD.PRTID,PD.Finishedid,0,0)  As BalQty, [dbo].[Get_IndentRawReturnQty] (PD.DetailID,PD.Finishedid,0," + DDGatePass.SelectedValue + @") As ReturnQty,Isnull(PD.Indentid,0) Indentid,
+                    GodownName,PD.LotNo,PRD.RecQuantity,PRD.RecQuantity -[dbo].[Get_RawReceiveBalQty] (PD.PRTID,PD.Finishedid,0,0)  As BalQty, [dbo].[Get_IndentRawReturnQty] (PD.DetailID,PD.Finishedid,0,'" + DDGatePass.SelectedValue + @"') As ReturnQty,Isnull(PD.Indentid,0) Indentid,
                     PD.PRMID,PD.PRTID,PD.Finishedid,GM.GodownId,PM.PartyId,PD.Remarks As Remark,PD.Unitid,PD.TagNo
                     from IndentRawReturnMaster PM,IndentRawReturnDetail PD,GodownMaster GM,V_FinishedItemDetail V ,PP_ProcessRECTran PRD
                     Where PM.ID=PD.ID and PRD.PRTID=PD.PRTID
@@ -404,7 +419,7 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
                 JOIN OrderMaster OM ON OM.OrderId=VI.Orderid
                 JOIN customerinfo CI ON om.customerid=CI.customerid
                 JOIN BRANCHMASTER BM ON BM.ID = PM.BranchID 
-                Where PM.GatePassNo=" + ViewState["GatePassNo"];
+                Where PM.GatePassNo='" + ViewState["GatePassNo"]+"'";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Qry);
             if (ds.Tables[0].Rows.Count > 0)

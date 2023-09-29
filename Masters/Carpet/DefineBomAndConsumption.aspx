@@ -949,6 +949,9 @@
                             <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Text="...."></asp:Label>
                         </td>
                         <td align="right">
+                            <asp:CheckBox ID="ChkForInputConsmpQtyIntoOutputConsmpQty" runat="server" Text="One Time Input Qty To Output Qty"
+                                Visible="false" />
+                            &nbsp;
                             <asp:Button ID="BtnSave" runat="server" Text="Save" CssClass="buttonnorm" OnClick="BtnSave_Click"
                                 OnClientClick="return validationsave();" />
                             &nbsp;<asp:Button ID="BtnNew" runat="server" Text="New" CssClass="buttonnorm" OnClick="BtnNew_Click" />

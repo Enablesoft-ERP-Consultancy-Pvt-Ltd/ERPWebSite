@@ -253,6 +253,7 @@
                                                     <asp:TextBox ID="txtretqty" Width="70px" BackColor="Yellow" runat="server" onkeypress="return isNumberKey(event);" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                              
                                             <asp:TemplateField Visible="false">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblissuemasterid" Text='<%#Bind("Id") %>' runat="server" />
@@ -294,7 +295,7 @@
                         <tr>
                             <td>
                                 <div id="Div1" runat="server" style="max-height: 300px">
-                                    <asp:GridView ID="DGReturnedDetail" AutoGenerateColumns="False" runat="server" CssClass="grid-views">
+                                    <asp:GridView ID="DGReturnedDetail" AutoGenerateColumns="False" runat="server" CssClass="grid-views"  OnRowDeleting="DGReturnedDetail_RowDeleting">
                                         <HeaderStyle CssClass="gvheaders" />
                                         <AlternatingRowStyle CssClass="gvalts" />
                                         <RowStyle CssClass="gvrow" />
@@ -335,6 +336,23 @@
                                                     <asp:Label ID="lblretqty" Text='<%#Bind("Returnqty") %>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                              <asp:TemplateField Visible="false">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblissuemasterid" Text='<%#Bind("Id") %>' runat="server" />
+                                                   <%-- <asp:Label ID="lblitemfinishedid" Text='<%#Bind("item_finished_id") %>' runat="server" />
+                                                    <asp:Label ID="lblunitid" Text='<%#Bind("unitid") %>' runat="server" />
+                                                    <asp:Label ID="lblflagsize" Text='<%#Bind("flagsize") %>' runat="server" />--%>
+                                                    <asp:Label ID="lblissuemasterdetailid" Text='<%#Bind("Detailid") %>' runat="server" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField ShowHeader="False">
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"
+                                        Text="Del" OnClientClick="return confirm('Do you want to Delete data?')"></asp:LinkButton>
+                                </ItemTemplate>
+                                <HeaderStyle HorizontalAlign="Center" Width="20px" />
+                                <ItemStyle HorizontalAlign="Center" Width="20px" />
+                            </asp:TemplateField>
                                         </Columns>
                                     </asp:GridView>
                                 </div>

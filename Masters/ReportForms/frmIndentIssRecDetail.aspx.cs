@@ -134,6 +134,8 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             if (Session["VarCompanyNo"].ToString() == "43")
             {
                 RDGenerateIndentDetail.Visible = true;
+                RDIndentMaterialIssueDetail.Visible = true;
+                RDIndentRecPending.Visible = true;
             }
         }
     }
@@ -704,6 +706,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
         if (RDorderwiseshadedetail.Checked == true || RDProcessProgramWiseShadeDetail.Checked == true)
         {
             OrderShadewiseDetail();
+            return;
+        }
+        if (RDIndentMaterialIssueDetail.Checked == true)
+        {
+            PurchaseandIndentIssueDetailReportData();
             return;
         }
         if (RDorderwiseindentdetail.Checked == true)
@@ -5910,6 +5917,95 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
 
     #endregion
 
+    #region
+    protected void PurchaseandIndentIssueDetailReportData()
+    {
+        try
+        {
+            
+            //string str = "", strsample = ""; ;
+            //if (DDCompany.SelectedIndex > 0)
+            //{
+            //    str = str + " And IM.CompanyId=" + DDCompany.SelectedValue;               
+            //}
+            //if (DDCustCode.SelectedIndex > 0)
+            //{                
+            //    str = str + " and OD.CustomerCode='" + hnCustomerCode.Value + "'";
+            //}           
+            //if (DDProcessName.SelectedIndex > 0)
+            //{
+            //    str = str + " And IM.Processid=" + DDProcessName.SelectedValue;
+                
+            //}
+            //if (DDEmpName.SelectedIndex > 0)
+            //{
+            //    str = str + " And EI.EmpId=" + DDEmpName.SelectedValue;               
+            //}
+            //if (DDIndentNo.SelectedIndex > 0)
+            //{
+            //    if (chksample.Checked == true)
+            //    {
+            //        str = str + "  and Indentid=" + DDIndentNo.SelectedValue + " and IndentNo='Sample-" + DDIndentNo.SelectedItem.Text + "'";
+            //    }
+            //    else
+            //    {
+            //        str = str + "  and IM.Indentid=" + DDIndentNo.SelectedValue + " and IM.IndentNo='" + DDIndentNo.SelectedItem.Text + "'";
+            //    }
+            //}
+           
+            //if (ChkForDate.Checked == true)
+            //{
+            //    str = str + "  And IM.Date>='" + TxtFromDate.Text + "' And IM.Date<='" + TxtToDate.Text + "'";
+                
+            //}
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_GETPURCHASEINDENTISSUEDETAILREPORTDATA", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 300;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@TagNo", txtTagNo.Text);            
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+
+            //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptPurchaseIndentIssueMaterialDetailReportCI.rpt";
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptPurchaseIndentIssueMaterialDetailReportCI.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altre", "alert('No data fetched.')", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
+
+    #endregion
     //protected void IndentWiseDetailExportExcelNew()
     //{
     //    try
