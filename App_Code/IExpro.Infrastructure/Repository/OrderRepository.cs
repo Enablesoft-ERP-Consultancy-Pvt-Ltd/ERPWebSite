@@ -322,7 +322,8 @@ Having OM.OrderID=@OrderId";
         {
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                string sqlQuery = @"WITH IndentItem(PPNo,ProcessId,OrderId,OrderDetailId,IndentNo,IndentId,PartyId,IFinishedId,OFinishedId,IssueDate,ReqDate,IndentQty,ExtraQty,CancelQty,Quantity,FLAGSIZE,RowNo) AS 
+                string sqlQuery = @"--Declare @OrderId int=204 , @ProcessId int=18;
+WITH IndentItem(PPNo,ProcessId,OrderId,OrderDetailId,IndentNo,IndentId,PartyId,IFinishedId,OFinishedId,IssueDate,ReqDate,IndentQty,ExtraQty,CancelQty,Quantity,FLAGSIZE,RowNo) AS 
 (SELECT ID.PPNo,IM.ProcessID,ID.ORDERID,ID.Orderdetailid,IM.IndentNo,IM.IndentId,IM.PartyId,Id.IFinishedId,Id.OFinishedId,IM.Date IssueDate,IM.ReqDate,
 SUM(IsNull(ID.IndentQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) IndentQty,
 SUM(IsNull(ID.ExtraQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) ExtraQty,
@@ -332,18 +333,17 @@ ROW_NUMBER() OVER(PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinished
 FROM  INDENTDETAIL ID WITH (NOLOCK)  Inner Join INDENTMASTER IM WITH (NOLOCK)   on IM.IndentId=ID.IndentId 
 Where ID.ORDERID=@OrderId and IM.ProcessID=@ProcessId
 ),
-IssueItem(IndentId,IssueId,PRTid,ProcessId,EmpId,GodownId,IFinishedId,IssueQuantity,IssueDate,RowNo) 
+IssueItem(IndentId,IssueId,OrderDetailId,PRTid,ProcessId,EmpId,GodownId,IFinishedId,IssueQuantity,IssueDate,RowNo) 
 AS (
-Select PRT.IndentId,Prm.PRMid IssueId,PRT.PRTid,PRM.ProcessId,PRM.EmpId,PRT.GodownId,PRT.FinishedId, 
-SUM(IsNull(PRT.IssueQuantity,0.00)) OVER (PARTITION BY PRT.IndentId,PRT.FinishedId) IssueQuantity,PRM.Date as IssueDate ,
-ROW_NUMBER() OVER(PARTITION BY PRT.IndentId,PRT.FinishedId ORDER BY PRT.IndentId DESC) RowNo
+Select PRT.IndentId,Prm.PRMid IssueId,PRT.Orderdetailid,PRT.PRTid,PRM.ProcessId,PRM.EmpId,PRT.GodownId,PRT.FinishedId, 
+SUM(IsNull(PRT.IssueQuantity,0.00)) OVER (PARTITION BY PRT.IndentId,PRT.Orderdetailid,PRT.FinishedId) IssueQuantity,PRM.Date as IssueDate ,
+ROW_NUMBER() OVER(PARTITION BY PRT.IndentId,PRT.Orderdetailid,PRT.FinishedId ORDER BY PRT.IndentId DESC) RowNo
 from PP_PROCESSRAWTRAN PRT inner join PP_ProcessRawMaster PRM   on PRM.PRMid=PRT.PRMid 
 Where PRM.ProcessId=@ProcessId and  PRT.IndentId IN (Select distinct ID.IndentId FROM  INDENTDETAIL ID Where ID.ORDERID=@OrderId))
-,ReceiveItem(PRTid,PRMid,IssueId,IndentId,EmpId,GodownId,OFinishedId,ReceiveDate,RecQuantity,Moisture,RowNo) AS 
-(
-Select PREMT.PRTid,PREM.PRMid,PREMT.IssPrmID,PREMT.IndentId,PREM.EmpId,PREMT.GodownId,PREMT.FinishedId OFinishedId, 
+,ReceiveItem(PRTid,OrderDetailId,PRMid,IssueId,IndentId,EmpId,GodownId,OFinishedId,ReceiveDate,RecQuantity,Moisture,RowNo) AS 
+(Select PREMT.PRTid,PREMT.Orderdetailid,PREM.PRMid,PREMT.IssPrmID,PREMT.IndentId,PREM.EmpId,PREMT.GodownId,PREMT.FinishedId OFinishedId, 
 PREMT.AddedDate as ReceiveDate,SUM(IsNull(PREMT.RecQuantity,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.IssPrmID,PREMT.Orderdetailid,PREMT.FinishedId) RecQuantity,
-SUM(IsNull(PREMT.Moisture,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.IssPrmID,PREMT.Orderdetailid,PREMT.FinishedId) Moisture,
+SUM(IsNull(PREMT.Moisture,0.00)) OVER (PARTITION BY PREMT.IndentId,PREMT.Orderdetailid,PREMT.IssPrmID,PREMT.Orderdetailid,PREMT.FinishedId) Moisture,
 ROW_NUMBER() OVER(PARTITION BY PREMT.IndentId,PREMT.IssPrmID,PREMT.Orderdetailid,PREMT.FinishedId ORDER BY PREMT.AddedDate DESC) RowNo
 from  PP_ProcessRecMaster PREM WITH (NOLOCK)   inner join PP_ProcessRecTran  PREMT WITH (NOLOCK)  on PREM.PRMid=PREMT.PRMid 
 Where PREM.ProcessId=@ProcessId and PREM.OrderId=@OrderId
@@ -379,8 +379,8 @@ x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.
 zz.ReturnId,zz.ReturnDate,IsNull(zz.ReturnQty,0.00) ReturnQty,zz.TagRemarks
 from IndentItem x inner join ConsumeItem z on x.PPNo=z.PPID and x.IFinishedId=z.IFinishedId  
 and  x.OFinishedId=z.OFinishedId and x.OrderDetailId=z.OrderDetailId and x.RowNo=z.RowNo
-Left join ReceiveItem y on x.Indentid=y.Indentid and x.OFinishedId=y.OFinishedId  and x.RowNo=y.RowNo --and x.OrderDetailId=y.OrderDetailId
-Left Join IssueItem p  On y.IndentId=p.IndentId and x.IFinishedId=p.IFinishedId and y.RowNo=p.RowNo and y.IssueId=p.IssueId
+Left join ReceiveItem y on x.Indentid=y.Indentid and x.OFinishedId=y.OFinishedId  and x.RowNo=y.RowNo and x.OrderDetailId=y.OrderDetailId
+Left Join IssueItem p  On y.IndentId=p.IndentId and x.IFinishedId=p.IFinishedId and y.RowNo=p.RowNo and y.IssueId=p.IssueId and p.OrderDetailId=y.OrderDetailId
 Left join ReturnItem zz on y.Indentid=zz.Indentid and  y.OFinishedid=zz.OFinishedid and y.RowNo=zz.RowNo 
 INNER JOIN V_FINISHEDITEMDETAIL VF ON x.OFinishedId=VF.ITEM_FINISHED_ID   
 INNER JOIN EMPINFO emp WITH (NOLOCK)  ON x.PartyId=emp.EmpId    

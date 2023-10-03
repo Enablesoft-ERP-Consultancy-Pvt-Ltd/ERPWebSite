@@ -840,7 +840,6 @@ function SummaryReport(elem, orderId) {
             }
             const obj = { OrderId: orderId, ProcessId: _processId };
             ReqHtml(url, obj, _title, seq);
-
         }
     });
 
