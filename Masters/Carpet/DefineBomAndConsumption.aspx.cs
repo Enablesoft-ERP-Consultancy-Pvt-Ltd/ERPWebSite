@@ -1143,8 +1143,43 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            // int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select VarCompanyNo From MasterSetting"));
-            if (Session["varCompanyId"].ToString() == "2")
+            if (BtnSave.Text == "UpDate" && ChkForInputConsmpQtyIntoOutputConsmpQty.Checked == true)
+            {
+                int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
+                int VarInfinishedid = UtilityModule.getItemFinishedId(ddInItemName, ddInQuality, ddInDesign, ddInColor, ddInShape, ddInSize, TxtOutProdCode, Tran, ddInShade, "", Convert.ToInt32(Session["varCompanyId"]));
+                int VarOutfinishedid = UtilityModule.getItemFinishedId(ddOutItemName, ddOutQuality, ddOutDesign, ddOutColor, ddOutShape, ddOutSize, TxtOutProdCode, Tran, ddOutShade, "", Convert.ToInt32(Session["varCompanyId"]));
+
+                SqlParameter[] _arrpara = new SqlParameter[8];
+                _arrpara[0] = new SqlParameter("@ProcessID", SqlDbType.Int);
+                _arrpara[1] = new SqlParameter("@FinishedID", SqlDbType.Int);
+                _arrpara[2] = new SqlParameter("@IFinishedID", SqlDbType.Int);
+                _arrpara[3] = new SqlParameter("@OFinishedID", SqlDbType.Int);
+                _arrpara[4] = new SqlParameter("@InputConsumptionQty", SqlDbType.Float);
+                _arrpara[5] = new SqlParameter("@varuserid", SqlDbType.Int);
+                _arrpara[6] = new SqlParameter("@varCompanyId", SqlDbType.Int);
+                _arrpara[7] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
+
+                _arrpara[0].Value = ddProcessName.SelectedValue;
+                _arrpara[1].Value = Varfinishedid;
+                _arrpara[2].Value = VarInfinishedid;
+                _arrpara[3].Value = VarOutfinishedid;
+                _arrpara[4].Value = TxtInPutQty.Text;
+                _arrpara[5].Value = Session["varuserid"];
+                _arrpara[6].Value = Session["varCompanyId"];
+                _arrpara[7].Direction = ParameterDirection.InputOutput;
+
+                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Prp_Update_ProcessConsumptionInputToOutputQty]", _arrpara);
+
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('" + _arrpara[7].Value.ToString() + "');", true);
+                Tran.Commit();
+                Save_Refresh();
+                FILLGRID();
+                lblMessage.Visible = true;
+                lblMessage.Text = "DATA SUCCESSFULLY SAVED.....";
+                BtnSave.Text = "Save";
+                
+            }
+            else if (Session["varCompanyId"].ToString() == "2")
             {
                 Save_ProcessInPut_Not_Check(Tran);
             }
@@ -1160,6 +1195,8 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 }
             }
             chksamereceiveitem.Checked = false;
+            ChkForInputConsmpQtyIntoOutputConsmpQty.Checked = false;
+            ChkForInputConsmpQtyIntoOutputConsmpQty.Visible = false;
         }
         catch (Exception ex)
         {
@@ -1426,7 +1463,8 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
 
                 int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
 
-                Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "SELECT PCMID FROM PROCESSCONSUMPTIONMASTER WHERE PROCESSID=" + ddProcessName.SelectedValue + " AND FINISHEDID=" + Varfinishedid + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+                Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, @"SELECT PCMID FROM PROCESSCONSUMPTIONMASTER 
+                WHERE PROCESSID=" + ddProcessName.SelectedValue + " AND FINISHEDID=" + Varfinishedid + " And MasterCompanyId=" + Session["varCompanyId"] + "");
                 if (Ds.Tables[0].Rows.Count > 0)
                 {
                     Session["PCMID"] = Ds.Tables[0].Rows[0]["PCMID"];
@@ -3234,6 +3272,10 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                         }
 
                     }
+                }
+                else if (Session["varcompanyId"].ToString() == "43")
+                {
+                    ChkForInputConsmpQtyIntoOutputConsmpQty.Visible = true;
                 }
                 //Purchase_Include Process
                 if (variable.BOM_PurchaseIncludeProcess == "1")

@@ -9901,7 +9901,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "UpdateOrderWiseProcessReceiveConsumption", _arrPara);
 
-            if (_arrPara[3].Value.ToString() == "consumption updated successfully.")
+            if (_arrPara[3].Value.ToString().ToUpper() == "CONSUMPTION UPDATED SUCCESSFULLY.")
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Data Successfully Updated');", true);
                 tran.Commit();

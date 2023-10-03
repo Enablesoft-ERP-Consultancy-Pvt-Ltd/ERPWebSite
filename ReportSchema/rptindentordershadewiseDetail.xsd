@@ -1,0 +1,64 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYID" type="xs:int" minOccurs="0" />
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR2" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR3" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPANYEMAIL" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPTEL" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPID" type="xs:int" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ADDRESS" type="xs:string" minOccurs="0" />
+              <xs:element name="ADDRESS2" type="xs:string" minOccurs="0" />
+              <xs:element name="ADDRESS3" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPGSTIN" type="xs:string" minOccurs="0" />
+              <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERNO" type="xs:string" minOccurs="0" />
+              <xs:element name="INDENTID" type="xs:int" minOccurs="0" />
+              <xs:element name="INDENTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="INDENTDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHADECOLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="OFINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="LOTNO" type="xs:string" minOccurs="0" />
+              <xs:element name="TagNo" type="xs:string" minOccurs="0" />
+              <xs:element name="OQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="DYEDQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="UNDYEDQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="LOSSQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="RETQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="PROCESSID" type="xs:int" minOccurs="0" />
+              <xs:element name="ITEM_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="QUALITYID" type="xs:int" minOccurs="0" />
+              <xs:element name="SHADECOLORID" type="xs:int" minOccurs="0" />
+              <xs:element name="STATUS" type="xs:string" minOccurs="0" />
+              <xs:element name="CUSTOMERID" type="xs:int" minOccurs="0" />
+              <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="CUSTOMERCODE" type="xs:string" minOccurs="0" />
+              <xs:element name="CUSTOMERORDERNO" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERDESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERSTATUS" type="xs:int" minOccurs="0" />
+              <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="OrderSampleFlag" type="xs:int" minOccurs="0" />
+              <xs:element name="OrderCategoryId" type="xs:int" minOccurs="0" />
+              <xs:element name="PPNO" type="xs:string" minOccurs="0" />
+              <xs:element name="Remark" type="xs:string" minOccurs="0" />
+              <xs:element name="FromDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+              <xs:element name="Dateflag" type="xs:int" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

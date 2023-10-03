@@ -175,6 +175,12 @@
                                 <asp:DropDownList ID="ddsize" runat="server" Width="150px" CssClass="dropdown">
                                 </asp:DropDownList>
                             </td>
+                            <td id="shdInput" runat="server" visible="false" class="tdstyle">
+                                <asp:Label ID="Label10" runat="server" Text="Input ShadeColor" CssClass="labelbold"></asp:Label>
+                                &nbsp;<br />
+                                <asp:DropDownList ID="ddlInPutshade" runat="server" Width="150px" CssClass="dropdown" >
+                                </asp:DropDownList>
+                            </td>
                             <td id="shd" runat="server" visible="false" class="tdstyle">
                                 <asp:Label ID="lblshadecolor" runat="server" Text="ShadeColor" CssClass="labelbold"></asp:Label>
                                 &nbsp;<br />
@@ -193,13 +199,6 @@
                                     Width="88px">
                                 </asp:DropDownList>
                             </td>
-                            <td class="tdstyle">
-                                <asp:Label ID="Label9" Text=" Godown Name" runat="server" CssClass="labelbold" />
-                                <br />
-                                <asp:DropDownList ID="ddgodown" runat="server" Width="150px" CssClass="dropdown"
-                                    AutoPostBack="True" OnSelectedIndexChanged="ddgodown_SelectedIndexChanged">
-                                </asp:DropDownList>
-                            </td>
                             <td id="TDLotNo" runat="server" class="tdstyle">
                                 <asp:Label ID="Label13" Text="  LotNo." runat="server" CssClass="labelbold" />
                                 <br />
@@ -212,6 +211,13 @@
                                 <br />
                                 <asp:DropDownList ID="DDTagNo" runat="server" Width="150px" AutoPostBack="True" CssClass="dropdown"
                                     OnSelectedIndexChanged="DDTagNo_SelectedIndexChanged">
+                                </asp:DropDownList>
+                            </td>
+                            <td class="tdstyle">
+                                <asp:Label ID="Label9" Text=" Godown Name" runat="server" CssClass="labelbold" />
+                                <br />
+                                <asp:DropDownList ID="ddgodown" runat="server" Width="150px" CssClass="dropdown"
+                                    AutoPostBack="True" OnSelectedIndexChanged="ddgodown_SelectedIndexChanged">
                                 </asp:DropDownList>
                             </td>
                             <td id="TDBinNo" runat="server" visible="false">

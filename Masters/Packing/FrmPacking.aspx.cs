@@ -1265,8 +1265,12 @@ public partial class Masters_Packing_FrmPacking : System.Web.UI.Page
             }
             else
             {
-                Str = @"SELECT CN.STOCKNO AS SR_NO,CN.TSTOCKNO as STOCKNO,CN.PACK FROM CARPETNUMBER CN INNER JOIN PROCESS_RECEIVE_DETAIL_1 PRD ON CN.PROCESS_REC_DETAIL_ID=PRD.PROCESS_REC_DETAIL_ID
-                        WHERE CN.PACK=0 AND CN.ISSRECSTATUS=0 AND CN.COMPANYID=" + DDCompanyName.SelectedValue + " AND CN.ITEM_FINISHED_ID=" + VarFinishedID + @" AND PRD.QUALITYTYPE=1";
+                Str = @"SELECT CN.STOCKNO AS SR_NO,CN.TSTOCKNO as STOCKNO,CN.PACK 
+                    FROM CARPETNUMBER CN(Nolock) 
+                    JOIN PROCESS_RECEIVE_DETAIL_1 PRD(Nolock) ON CN.PROCESS_REC_DETAIL_ID=PRD.PROCESS_REC_DETAIL_ID
+                    WHERE CN.PACK=0 AND CN.ISSRECSTATUS=0 AND CN.COMPANYID=" + DDCompanyName.SelectedValue + @" AND 
+                    CN.ITEM_FINISHED_ID=" + VarFinishedID + @" AND PRD.QUALITYTYPE=1";
+
                 if (ChkForWithoutOrder.Checked == false)
                 {
                     if (DDCustomerOrderNo.SelectedIndex > 0)
@@ -1274,14 +1278,26 @@ public partial class Masters_Packing_FrmPacking : System.Web.UI.Page
                         Str = Str + " And CN.OrderId=" + DDCustomerOrderNo.SelectedValue;
                     }
                 }
+                if (Session["varcompanyId"].ToString() == "38")
+                {
+                    Str = Str + " And CN.CurrentProStatus = 15";
+                }
                 Str = Str + "   UNION ";
-                Str = Str + "  SELECT CN.STOCKNO AS SR_NO,CN.TSTOCKNO as STOCKNO,CN.PACK FROM CARPETNUMBER CN WHERE CN.PACK=0 AND CN.ISSRECSTATUS=0 AND CN.COMPANYID=" + DDCompanyName.SelectedValue + " AND CN.ITEM_FINISHED_ID=" + VarFinishedID + " AND CN.PROCESS_REC_DETAIL_ID=0";
+                Str = Str + @"  SELECT CN.STOCKNO AS SR_NO,CN.TSTOCKNO as STOCKNO,CN.PACK 
+                FROM CARPETNUMBER CN(Nolock) 
+                WHERE CN.PACK=0 AND CN.ISSRECSTATUS=0 AND CN.COMPANYID=" + DDCompanyName.SelectedValue + @" AND 
+                CN.ITEM_FINISHED_ID=" + VarFinishedID + " AND CN.PROCESS_REC_DETAIL_ID=0";
+
                 if (ChkForWithoutOrder.Checked == false)
                 {
                     if (DDCustomerOrderNo.SelectedIndex > 0)
                     {
                         Str = Str + " And CN.OrderId=" + DDCustomerOrderNo.SelectedValue;
                     }
+                }
+                if (Session["varcompanyId"].ToString() == "38")
+                {
+                    Str = Str + " And CN.CurrentProStatus = 15";
                 }
             }
         }
