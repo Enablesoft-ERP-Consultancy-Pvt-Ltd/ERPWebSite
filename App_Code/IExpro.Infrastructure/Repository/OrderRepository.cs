@@ -18,7 +18,6 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace IExpro.Infrastructure.Repository
 {
-
     public class OrderRepository : GenericRepository<FormName>, IOrderRepository
     {
         public OrderRepository(IDataContext context)
@@ -318,11 +317,11 @@ Having OM.OrderID=@OrderId";
             }
         }
 
-        public IEnumerable<IndentRawMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId)
+        public IEnumerable<IssueMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId)
         {
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                string sqlQuery = @"--Declare @OrderId int=204 , @ProcessId int=18;
+                string sqlQuery = @"--Declare @OrderId int=204 , @ProcessId int=5;
 WITH IndentItem(PPNo,ProcessId,OrderId,OrderDetailId,IndentNo,IndentId,PartyId,IFinishedId,OFinishedId,IssueDate,ReqDate,IndentQty,ExtraQty,CancelQty,Quantity,FLAGSIZE,RowNo) AS 
 (SELECT ID.PPNo,IM.ProcessID,ID.ORDERID,ID.Orderdetailid,IM.IndentNo,IM.IndentId,IM.PartyId,Id.IFinishedId,Id.OFinishedId,IM.Date IssueDate,IM.ReqDate,
 SUM(IsNull(ID.IndentQty,0.00)) OVER (PARTITION BY ID.PPNo,ID.IndentId,ID.Orderdetailid,Id.IFinishedId,Id.OFinishedId) IndentQty,
@@ -371,11 +370,12 @@ inner join PP_PROCESSRAWTRAN PRT WITH (NOLOCK) ON PREMT.IssPrtId=PRT.PRTid
 where  IRRM.ProcessID=@ProcessId and  IPRRD.INDENTID IN (Select distinct ID.IndentId FROM  INDENTDETAIL ID Where ID.ORDERID=@OrderId)
 ) 
 Select IPM.ITEM_FINISHED_ID FinishedId,ISNULL(D.DesignName, '') DesignName, 
+x.PartyId VendorId,
 emp.EMPNAME VendorName, VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
 ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName, 
 VF.QUALITYNAME, VF.COLORNAME,VF.SHAPENAME,VF.SHADECOLORNAME,VF.CATEGORY_NAME Category,
-z.OrderId,z.OrderDetailId,z.ConsmpQty,z.LossQty,z.ProcessId,z.RequiredQty,x.IndentId,x.IndentNo,x.IFinishedId,x.OFinishedId,
-x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.ReceiveDate,y.RecQuantity,y.Moisture,y.IssueId,p.IssueQuantity,
+z.OrderId,z.OrderDetailId,z.ConsmpQty ConsumeQty,z.LossQty,z.ProcessId,z.RequiredQty,x.IndentId,x.IndentNo ChallanNo,x.IFinishedId,x.OFinishedId,
+x.IndentQty,x.ExtraQty,x.CancelQty,x.Quantity,x.IssueDate,x.ReqDate,x.PartyId,y.ReceiveDate,y.RecQuantity ReceiveQty,y.Moisture,y.IssueId,p.IssueQuantity IssueQty,
 zz.ReturnId,zz.ReturnDate,IsNull(zz.ReturnQty,0.00) ReturnQty,zz.TagRemarks
 from IndentItem x inner join ConsumeItem z on x.PPNo=z.PPID and x.IFinishedId=z.IFinishedId  
 and  x.OFinishedId=z.OFinishedId and x.OrderDetailId=z.OrderDetailId and x.RowNo=z.RowNo
@@ -394,46 +394,62 @@ Order By  x.IFinishedId,x.OFinishedId";
                 try
                 {
 
-                    var result = conn.Query<IndentRawMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, }).
-                        Select(x => new IndentRawMaterialModel
-                        {
-                            IndentId = x.IndentId,
-                            FinishedId = x.FinishedId,
-                            IFinishedId = x.IFinishedId,
-                            OFinishedId = x.OFinishedId,
-                            Category = x.Category,
-                            DesignName = x.DesignName,
-                            VendorName = x.VendorName,
-                            MaterialName = x.MaterialName,
-                            QualityName = x.QualityName,
-                            ColorName = x.ColorName,
-                            ShadeName = x.ShadeName,
-                            PPNo = x.PPNo,
-                            ProcessId = x.ProcessId,
-                            CompanyId = x.CompanyId,
-                            OrderId = x.OrderId,
-                            OrderDetailId = x.OrderDetailId,
-                            IndentNo = x.IndentNo,
-                            PartyId = x.PartyId,
-                            IndentQty = x.IndentQty,
-                            ExtraQty = x.ExtraQty,
-                            CancelQty = x.CancelQty,
-                            IssueId = x.IssueId,
-                            Quantity = x.Quantity,//(indent + Extra)
-                            IssueQuantity = x.IssueQuantity,
-                            RecQuantity = x.RecQuantity,
-                            ConsmpQty = x.ConsmpQty,
-                            Moisture = x.Moisture,
-                            LossQty = x.LossQty,
-                            ReturnQty = x.ReturnQty,
-                            RequiredQty = x.RequiredQty,
-                            ReturnId = x.ReturnId,
-                            TagRemarks = x.TagRemarks,
-                            ReqDate = x.ReqDate,
-                            IssueDate = x.IssueDate,
-                            ReceiveDate = x.ReceiveDate,
-                            ReturnDate = x.ReturnDate,
-                        });
+
+
+
+
+                    //Select(x => new IssueMaterialModel
+                    //{
+                    //    IndentId = x.IndentId,
+                    //    FinishedId = x.FinishedId,
+                    //    IFinishedId = x.IFinishedId,
+                    //    OFinishedId = x.OFinishedId,
+                    //    Category = x.Category,
+                    //    DesignName = x.DesignName,
+                    //    VendorName = x.VendorName,
+                    //    MaterialName = x.MaterialName,
+                    //    QualityName = x.QualityName,
+                    //    ColorName = x.ColorName,
+                    //    ShadeName = x.ShadeName,
+                    //    PPNo = x.PPNo,
+                    //    ProcessId = x.ProcessId,
+                    //    CompanyId = x.CompanyId,
+                    //    OrderId = x.OrderId,
+                    //    OrderDetailId = x.OrderDetailId,
+                    //    IndentNo = x.IndentNo,
+                    //    PartyId = x.PartyId,
+                    //    IndentQty = x.IndentQty,
+                    //    ExtraQty = x.ExtraQty,
+                    //    CancelQty = x.CancelQty,
+                    //    IssueId = x.IssueId,
+                    //    Quantity = x.Quantity,//(indent + Extra)
+                    //    IssueQuantity = x.IssueQuantity,
+                    //    RecQuantity = x.RecQuantity,
+                    //    ConsmpQty = x.ConsmpQty,
+                    //    Moisture = x.Moisture,
+                    //    LossQty = x.LossQty,
+                    //    ReturnQty = x.ReturnQty,
+                    //    RequiredQty = x.RequiredQty,
+                    //    ReturnId = x.ReturnId,
+                    //    TagRemarks = x.TagRemarks,
+                    //    ReqDate = x.ReqDate,
+                    //    IssueDate = x.IssueDate,
+                    //    ReceiveDate = x.ReceiveDate,
+                    //    ReturnDate = x.ReturnDate,
+                    //})
+
+
+
+
+
+
+
+
+
+
+
+
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId, });
 
                     return (result);
                 }
@@ -449,7 +465,7 @@ Order By  x.IFinishedId,x.OFinishedId";
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
 
-                string sqlQuery = @"
+                string sqlQuery = @"--Declare @OrderId int=204 , @ProcessId int=1;
 With IssueItem(IssueId,DetailId,IssueNo,ProcessId,EmpId,OrderId,Finishedid,MaterialId,Rate,QtyRequired,IssueQuantity,
 AssignDate,RequestDate,FlagSize,RowNo)
 AS(Select HFOM.ISSUEORDERID,HFOD.IssueDetailId,HFOM.CHALLANNO,EMP1.ProcessId,EMP1.EmpID,HFOD.OrderID,
@@ -480,12 +496,12 @@ Inner JOIN HomeFurnishingReceiveDetail HFRD(NoLock) ON HFRM.ProcessRecId=HFRD.Pr
 Where HFRD.OrderID=@OrderId and HFRM.ProcessId=@ProcessId
 )
 Select 
-emp.EMPNAME VendorName,D.designName,
+emp.EMPNAME VendorName,x.EmpId VendorId,D.designName DesignName,
 VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
 ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName,
-x.IssueId,x.IssueNo,x.ProcessId,x.EmpId,x.OrderId,x.Finishedid,x.MaterialId,
-x.AssignDate,x.RequestDate,y.ReceiveDate,x.Rate,x.QtyRequired RequiredQty,x.IssueQuantity,
-IsNUll(y.RecQuantity,0.00) RecQuantity
+x.IssueId,x.IssueNo ChallanNo,x.ProcessId,x.EmpId,x.OrderId,x.FinishedId,x.MaterialId,
+x.AssignDate,x.RequestDate ReqDate,y.ReceiveDate RecDate,x.Rate ItemRate,x.QtyRequired RequiredQty,x.IssueQuantity IssueQty,
+IsNUll(y.RecQuantity,0.00) ReceiveQty
 from IssueItem x 
 Left Join ReceiveItem y on  x.OrderId=y.OrderId and x.Finishedid=y.Finishedid 
 and x.MaterialId=y.MaterialId and x.IssueId=y.IssueId and x.RowNo=y.RowNo
@@ -507,19 +523,23 @@ Order BY  x.IssueId";
                             DesignName = x.FirstOrDefault().DesignName,
                             IssueNo = x.FirstOrDefault().IssueNo,
                             ProcessId = x.FirstOrDefault().ProcessId,
-                            EmpId = x.FirstOrDefault().EmpId,
+                            VendorId = x.FirstOrDefault().VendorId,
+
                             OrderId = x.FirstOrDefault().OrderId,
                             FinishedId = x.Key.FinishedId,
                             MaterialId = x.Key.MaterialId,
                             AssignDate = x.Max(y => y.AssignDate),
-                            RequestDate = x.Max(y => y.RequestDate),
-                            ReceiveDate = x.Max(y => y.ReceiveDate),
+
+                            ReqDate = x.Max(y => y.ReqDate),
+                            RecDate = x.Max(y => y.RecDate),
                             VendorName = x.FirstOrDefault().VendorName,
                             MaterialName = x.FirstOrDefault().MaterialName,
-                            Rate = x.Average(y => y.Rate),
+
+                            ItemRate = x.Average(y => y.ItemRate),
                             RequiredQty = x.FirstOrDefault().RequiredQty,
-                            IssueQuantity = x.Sum(y => y.IssueQuantity),
-                            RecQuantity = x.Sum(y => y.RecQuantity),
+
+                            IssueQty = x.Sum(y => y.IssueQty),
+                            ReceiveQty = x.Sum(y => y.ReceiveQty),
                         });
 
 
@@ -537,7 +557,8 @@ Order BY  x.IssueId";
             //int ProcessId = 7;
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                string sqlQuery = @"DECLARE @SQL NVARCHAR(MAX),
+                string sqlQuery = @"--DEclare @OrderId int=204,@ProcessId int=13;
+DECLARE @SQL NVARCHAR(MAX),
 @ProcessIssueDetail NVARCHAR(250),@ProcessIssueMaster NVARCHAR(250),
 @ProcessReceiveDetail NVARCHAR(250),@ProcessReceiveMaster NVARCHAR(250) 
 SET @ProcessIssueMaster = 'PROCESS_ISSUE_MASTER_' + CAST(@ProcessId AS NVARCHAR) + ''    
@@ -551,7 +572,7 @@ AS
 (select x.IssueOrderId,y.Issue_Detail_Id,z.EMPID,y.Orderid,y.Item_Finished_Id,
 x.AssignDate,y.ReqByDate, 
 Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueDate,
-AVg(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
+AVG(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
 SUM(y.Qty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueQty,
 SUM(y.PQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) PQty,
 SUM(y.CancelQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) CancelQty,
@@ -571,85 +592,19 @@ ROW_NUMBER() OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER
 from '+@ProcessReceiveMaster+' x WITH (NOLOCK) Inner Join '+@ProcessReceiveDetail+' y WITH (NOLOCK)
 ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId='+CAST(@OrderId AS NVARCHAR)+'
 )
-Select VF.DESIGNNAME,IsNULL(emp.EMPNAME,'''') VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' ''+VF.DESIGNNAME+'' ''+VF.COLORNAME+'' ''+VF.SHAPENAME+'' ''+VF.ShadeColorName MaterialName, 
-x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
-x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
+Select VF.DESIGNNAME,x.EmpId VendorId,IsNULL(emp.EMPNAME,'''') VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' ''+VF.DESIGNNAME+'' ''+VF.COLORNAME+'' ''+VF.SHAPENAME+'' ''+VF.ShadeColorName MaterialName, 
+x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate ReqDate,x.IssueDate,y.ReceiveDate RecDate,
+x.Rate ItemRate,x.IssueQty,x.PQty RequiredQty,x.CancelQty,y.ReceiveQty From IssueItem x Left Join ReceiveItem y 
 On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
 inner JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
 inner JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
 Where x.OrderId='+CAST(@OrderId AS NVARCHAR)+' and x.RowNo=1
 Order BY  x.IssueId'
 EXEC(@SQL) ";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                //                string sqlQuery = @"With IssueItem(IssueId,DetailId,EmpId,OrderId,FinishedId,AssignDate,RequestDate,
-                //IssueDate,Rate,IssueQty,PQty,CancelQty,RowNo)
-                //AS
-                //(select x.IssueOrderId,y.Issue_Detail_Id,x.UserId,y.Orderid,y.Item_Finished_Id,
-                //x.AssignDate,y.ReqByDate, 
-                //Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueDate,
-                //AVg(y.Rate) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) Rate,
-                //SUM(y.Qty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) IssueQty,
-                //SUM(y.PQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) PQty,
-                //SUM(y.CancelQty) OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) CancelQty,
-                //ROW_NUMBER() OVER(PARTITION BY y.Orderid,x.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,x.IssueOrderId) RowNo
-                //from PROCESS_ISSUE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_ISSUE_DETAIL_7 y WITH (NOLOCK)
-                //on x.IssueOrderId=y.IssueOrderId and y.OrderId=@OrderId),
-                //ReceiveItem(ReceiveId,DetailId,OrderId,IssueId,EmpId,FinishedId,ReceiveQty,ReceiveDate,RowNo)
-                //AS
-                //(select x.Process_Rec_Id,y.Process_Rec_Detail_Id,y.OrderId,y.IssueOrderId,x.UserId,
-                //y.Item_Finished_Id,
-                //SUM(y.Qty) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
-                //Max(y.DATEADDED) OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) ReceiveDate,
-                //ROW_NUMBER() OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER BY y.Orderid,y.IssueOrderId) RowNo 
-                //from PROCESS_RECEIVE_MASTER_7 x WITH (NOLOCK) Inner Join PROCESS_RECEIVE_DETAIL_7 y WITH (NOLOCK)
-                //ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId=@OrderId
-                //)
-                //Select emp.EMPNAME VendorName,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName MaterialName, 
-                //x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
-                //x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
-                //On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
-                //Inner JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID
-                //Inner JOIN EMPINFO emp WITH (NOLOCK)  ON x.EmpId=emp.EmpId   
-                //Where x.OrderId=@OrderId and x.RowNo=1
-                //Order BY  x.IssueId";
-
                 try
                 {
 
-                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId }).
-                        Select(x => new IssueMaterialModel
-                        {
-                            IssueId = x.IssueId,
-                            EmpId = x.EmpId,
-                            OrderId = x.OrderId,
-                            FinishedId = x.FinishedId,
-                            MaterialId = x.MaterialId,
-                            AssignDate = x.AssignDate,
-                            RequestDate = x.RequestDate,
-                            ReceiveDate = x.ReceiveDate,
-                            VendorName = x.VendorName,
-                            MaterialName = x.MaterialName,
-                            Rate = x.Rate,
-                            IssueQuantity = x.IssueQuantity,
-                            RecQuantity = x.RecQuantity,
-                        });
-
-
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId, @ProcessId = ProcessId });
                     return (result);
                 }
                 catch (Exception ex)
@@ -663,27 +618,23 @@ EXEC(@SQL) ";
         {
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                string sqlQuery = @"WITH IssueItem(IssueId,IssueTranId,PONo,DueDate,BranchId,OrderId,PartyId,FlagSize,DeliveryDate,IssueDate,FinishedId,IssueRate,IssueQuantity,CancelQty,RowNo) 
-AS (
-Select PII.PINDENTISSUEID,PIIT.PINDENTISSUETRANID,PII.CHALLANNO,PII.DUEDATE, pii.Companyid,PIIT.ORDERID,PII.Partyid,PIIT.flagsize,
-PIIT.DELIVERY_DATE,PII.DATE,PIIT.Finishedid,
-PIIT.RATE,
+                string sqlQuery = @"--Declare @OrderId int=204;
+WITH IssueItem(IssueId,IssueTranId,PONo,DueDate,BranchId,OrderId,PartyId,FlagSize,DeliveryDate,IssueDate,FinishedId,IssueRate,IssueQuantity,CancelQty,RowNo) 
+AS (Select PII.PINDENTISSUEID,PIIT.PINDENTISSUETRANID,PII.CHALLANNO,PII.DUEDATE, pii.Companyid,PIIT.ORDERID,PII.Partyid,PIIT.flagsize,
+PIIT.DELIVERY_DATE,PII.DATE,PIIT.Finishedid,PIIT.RATE,
 SUM(IsNull(PIIT.QUANTITY,0.00)) OVER (PARTITION BY  PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid) IssueQuantity,
 SUM(IsNull(PIIT.CANQTY,0.00)) OVER (PARTITION BY  PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid) CancelQty,
 ROW_NUMBER() OVER(PARTITION BY PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid ORDER BY PIIT.ORDERID DESC) RowNo
 from PURCHASEINDENTISSUE PII INNER JOIN PURCHASEINDENTISSUETRAN PIIT ON PIIT.PINDENTISSUEID=PII.PINDENTISSUEID   
-where  PIIT.ORDERID=@OrderId
-),
+where  PIIT.ORDERID=@OrderId),
 ReceiveItem(ReceiveId,DetailId,IssueId,RecDate,BillNo,BranchId,PartyId,GodownId,OrderId,FinishedId,RecQuantity,RowNo) 
-AS (
-SELECT PRM.PurchaseReceiveId,PIIR.PurchaseReceiveDetailId,PIIR.PIndentIssueId,PRM.ReceiveDate,
+AS (SELECT PRM.PurchaseReceiveId,PIIR.PurchaseReceiveDetailId,PIIR.PIndentIssueId,PRM.ReceiveDate,
 PRM.BILLNO,PRM.CompanyId,PRM.PartyId,PIIR.GodownId,PIIR.OrderID,PIIR.FinishedId,
 SUM(IsNull(PIIR.QTY,0.00)+IsNull(PIIR.BELLWT,0.00)+IsNull(PIIR.Moisture,0.00)) OVER (PARTITION BY  PIIR.OrderID,PIIR.PIndentIssueId,PRM.PurchaseReceiveId,PIIR.Finishedid) RecQuantity,
 ROW_NUMBER() OVER(PARTITION BY PIIR.OrderID,PIIR.PIndentIssueId,PRM.PurchaseReceiveId,PIIR.Finishedid ORDER BY PIIR.ORDERID DESC) RowNo
 FROM   PURCHASERECEIVEDETAIL PIIR 
 LEFT JOIN PURCHASERECEIVEMASTER PRM ON PRM.PURCHASERECEIVEID=PIIR.PURCHASERECEIVEID    
-where PIIR.OrderID=@OrderId
-),
+where PIIR.OrderID=@OrderId),
 ReturnItem (ReturnId,ReceiveId,DetailId,PartyId,FinishedId,GodownId,ChallanNo,ReturnQty,ReturnDate,RowNo) 
 AS 
 (Select PRD.ID, PRD.PurchaseReceiveID,PRD.PurchaseReceiveDetailID,PRM.PartyID,PRD.FinishedID,  
@@ -693,11 +644,10 @@ Max(PRM.Date) OVER (PARTITION BY PRM.PartyID,PRM.CompanyID,PRM.MasterCompanyID,P
 ROW_NUMBER() OVER(PARTITION BY PRM.PartyID,PRM.CompanyID,PRM.MasterCompanyID,PRD.PurchaseReceiveID,PRD.PurchaseReceiveDetailID,PRD.FinishedID,PRD.GodownID ORDER BY PRD.ID DESC) RowNo
 from purchasereturnMaster PRM INNER JOIN purchasereturndetail PRD  
 On PRM.ID=PRD.ID) 
-Select emp.EMPNAME VendorName,
-VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
+Select x.PartyId VendorId,emp.EMPNAME VendorName,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
 ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName,
-x.IssueId,x.PONo,x.DueDate RequestDate,x.DeliveryDate,x.IssueDate AssignDate,x.OrderId,x.Finishedid,
-x.IssueQuantity,x.CancelQty,y.BillNo,y.RecDate ReceiveDate,y.RecQuantity,z.ReturnDate,z.ReturnQty
+x.IssueId,x.PONo ChallanNo,x.DueDate ReqDate,x.DeliveryDate,x.IssueDate AssignDate,x.OrderId,x.FinishedId,
+x.IssueQuantity IssueQty,x.CancelQty,y.BillNo,y.RecDate,y.RecQuantity ReceiveQty,z.ReturnDate,z.ReturnQty
 from IssueItem x Left Join ReceiveItem y on x.OrderId=y.OrderId and 
 x.FinishedId=y.FinishedId and x.IssueId=y.IssueId and x.RowNo=y.RowNo 
 Left Join ReturnItem z on y.GodownId=z.GodownId and y.ReceiveId=z.ReceiveId 
@@ -714,18 +664,17 @@ Where  x.OrderId= @OrderId  and x.RowNo=1 ";
                         Select(x => new IssueMaterialModel
                         {
                             IssueId = x.IssueId,
-                            EmpId = x.EmpId,
                             OrderId = x.OrderId,
                             FinishedId = x.FinishedId,
+                            VendorId = x.VendorId,
                             VendorName = x.VendorName,
                             MaterialName = x.MaterialName,
+                            ReqDate = x.ReqDate,
                             AssignDate = x.AssignDate,
-                            RequestDate = x.RequestDate,
-                            ReceiveDate = x.ReceiveDate,
-                            IssueQuantity = x.IssueQuantity,
-                            RecQuantity = x.RecQuantity,
-
-
+                            RecDate = x.RecDate,
+                            ChallanNo = x.ChallanNo,
+                            IssueQty = x.IssueQty,
+                            ReceiveQty = x.ReceiveQty,
                         });
 
 
@@ -737,30 +686,6 @@ Where  x.OrderId= @OrderId  and x.RowNo=1 ";
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-
 
 
     }

@@ -161,55 +161,55 @@ namespace IExpro.Core.Models.Reports
 
     public class IssueMaterialModel
     {
-
         public int IssueId { get; set; }
         public string IssueNo { get; set; }
         public int ProcessId { get; set; }
-        public int EmpId { get; set; }
+        public int VendorId { get; set; }
+        public string VendorName { get; set; }
         public int OrderId { get; set; }
         public int FinishedId { get; set; }
-        public int MaterialId { get; set; }
-        public DateTime AssignDate { get; set; }
-        public DateTime RequestDate { get; set; }
-        public DateTime? ReceiveDate { get; set; }
-
-
         public string DesignName { get; set; }
-        public string VendorName { get; set; }
+        public int MaterialId { get; set; }
         public string MaterialName { get; set; }
-        public decimal Rate { get; set; }
-
+        public string ChallanNo { get; set; }
+        public decimal ItemRate { get; set; }
         public decimal RequiredQty { get; set; }
-        public decimal IssueQuantity { get; set; }
-        public decimal RecQuantity { get; set; }
+        public decimal IssueQty { get; set; }
+        public decimal ReceiveQty { get; set; }
         public decimal ReturnQty { get; set; }
-        public string IssueDate { get { return AssignDate.ToString("dd MMM yyyy"); } }
-        public string ReqDate { get { return RequestDate.ToString("dd MMM yyyy"); } }
+        public DateTime AssignDate { get; set; }
+        public DateTime ReqDate { get; set; }
+        public DateTime? RecDate { get; set; }
 
-        public decimal PendingQty
-        {
-            get { return (IssueQuantity - RecQuantity); }
-        }
-        public string RecDate
+        public string RequestDate { get { return ReqDate.ToString("dd MMM yyyy"); } }
+        public string IssueDate { get { return AssignDate.ToString("dd MMM yyyy"); } }
+
+        public string ReceiveDate
         {
             get
             {
-                return ReceiveDate.HasValue ? ReceiveDate.Value.ToString("dd MMM yyyy") : "---";
+                return RecDate.HasValue ? RecDate.Value.ToString("dd MMM yyyy") : "---";
             }
         }
+
+        public decimal PendingQty
+        {
+            get { return (IssueQty - ReceiveQty); }
+        }
+
         public int DelayDays
         {
             get
             {
                 int result = 0;
-                if (ReceiveDate.HasValue)
+                if (RecDate.HasValue)
                 {
-                    result = (ReceiveDate.Value.Date - RequestDate.Date).Days;
+                    result = (RecDate.Value.Date - ReqDate.Date).Days;
 
                 }
                 else
                 {
-                    result = (RequestDate.Date - DateTime.Now.Date).Days;
+                    result = (ReqDate.Date - DateTime.Now.Date).Days;
 
                     if (result < 0)
                     {
@@ -225,7 +225,7 @@ namespace IExpro.Core.Models.Reports
         {
             get
             {
-                if (IssueQuantity == 0)
+                if (IssueQty == 0)
                 {
                     return ProcessStatus.Pending;
                 }
@@ -240,7 +240,7 @@ namespace IExpro.Core.Models.Reports
 
         public decimal ReqdBalQty
         {
-            get { return (RequiredQty - (RecQuantity)); }
+            get { return (RequiredQty - (ReceiveQty)); }
         }
 
 
