@@ -182,6 +182,7 @@ namespace IExpro.Core.Models.Reports
         public decimal RequiredQty { get; set; }
         public decimal IssueQuantity { get; set; }
         public decimal RecQuantity { get; set; }
+        public decimal ReturnQty { get; set; }
         public string IssueDate { get { return AssignDate.ToString("dd MMM yyyy"); } }
         public string ReqDate { get { return RequestDate.ToString("dd MMM yyyy"); } }
 

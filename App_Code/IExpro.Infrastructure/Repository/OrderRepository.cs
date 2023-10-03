@@ -571,7 +571,7 @@ ROW_NUMBER() OVER(PARTITION BY y.Orderid,y.IssueOrderId,y.Item_Finished_Id ORDER
 from '+@ProcessReceiveMaster+' x WITH (NOLOCK) Inner Join '+@ProcessReceiveDetail+' y WITH (NOLOCK)
 ON x.Process_Rec_Id=y.Process_Rec_Id and y.OrderId='+CAST(@OrderId AS NVARCHAR)+'
 )
-Select IsNULL(emp.EMPNAME,'''') VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' ''+VF.DESIGNNAME+'' ''+VF.COLORNAME+'' ''+VF.SHAPENAME+'' ''+VF.ShadeColorName MaterialName, 
+Select VF.DESIGNNAME,IsNULL(emp.EMPNAME,'''') VendorName,VF.ITEM_NAME+'' ''+VF.QUALITYNAME+'' ''+VF.DESIGNNAME+'' ''+VF.COLORNAME+'' ''+VF.SHAPENAME+'' ''+VF.ShadeColorName MaterialName, 
 x.IssueId,x.EmpId,x.OrderId,x.FinishedId,x.AssignDate,x.RequestDate,x.IssueDate,y.ReceiveDate,
 x.Rate,x.IssueQty IssueQuantity,x.PQty,x.CancelQty,y.ReceiveQty RecQuantity From IssueItem x Left Join ReceiveItem y 
 On x.OrderId=y.OrderId and x.IssueId=y.IssueId and x.FinishedId=y.FinishedId and x.RowNo=y.RowNo
@@ -658,6 +658,110 @@ EXEC(@SQL) ";
                 }
             }
         }
+
+        public IEnumerable<IssueMaterialModel> GetPurchaseItem(int OrderId)
+        {
+            using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
+            {
+                string sqlQuery = @"WITH IssueItem(IssueId,IssueTranId,PONo,DueDate,BranchId,OrderId,PartyId,FlagSize,DeliveryDate,IssueDate,FinishedId,IssueRate,IssueQuantity,CancelQty,RowNo) 
+AS (
+Select PII.PINDENTISSUEID,PIIT.PINDENTISSUETRANID,PII.CHALLANNO,PII.DUEDATE, pii.Companyid,PIIT.ORDERID,PII.Partyid,PIIT.flagsize,
+PIIT.DELIVERY_DATE,PII.DATE,PIIT.Finishedid,
+PIIT.RATE,
+SUM(IsNull(PIIT.QUANTITY,0.00)) OVER (PARTITION BY  PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid) IssueQuantity,
+SUM(IsNull(PIIT.CANQTY,0.00)) OVER (PARTITION BY  PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid) CancelQty,
+ROW_NUMBER() OVER(PARTITION BY PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid ORDER BY PIIT.ORDERID DESC) RowNo
+from PURCHASEINDENTISSUE PII INNER JOIN PURCHASEINDENTISSUETRAN PIIT ON PIIT.PINDENTISSUEID=PII.PINDENTISSUEID   
+where  PIIT.ORDERID=@OrderId
+),
+ReceiveItem(ReceiveId,DetailId,IssueId,RecDate,BillNo,BranchId,PartyId,GodownId,OrderId,FinishedId,RecQuantity,RowNo) 
+AS (
+SELECT PRM.PurchaseReceiveId,PIIR.PurchaseReceiveDetailId,PIIR.PIndentIssueId,PRM.ReceiveDate,
+PRM.BILLNO,PRM.CompanyId,PRM.PartyId,PIIR.GodownId,PIIR.OrderID,PIIR.FinishedId,
+SUM(IsNull(PIIR.QTY,0.00)+IsNull(PIIR.BELLWT,0.00)+IsNull(PIIR.Moisture,0.00)) OVER (PARTITION BY  PIIR.OrderID,PIIR.PIndentIssueId,PRM.PurchaseReceiveId,PIIR.Finishedid) RecQuantity,
+ROW_NUMBER() OVER(PARTITION BY PIIR.OrderID,PIIR.PIndentIssueId,PRM.PurchaseReceiveId,PIIR.Finishedid ORDER BY PIIR.ORDERID DESC) RowNo
+FROM   PURCHASERECEIVEDETAIL PIIR 
+LEFT JOIN PURCHASERECEIVEMASTER PRM ON PRM.PURCHASERECEIVEID=PIIR.PURCHASERECEIVEID    
+where PIIR.OrderID=@OrderId
+),
+ReturnItem (ReturnId,ReceiveId,DetailId,PartyId,FinishedId,GodownId,ChallanNo,ReturnQty,ReturnDate,RowNo) 
+AS 
+(Select PRD.ID, PRD.PurchaseReceiveID,PRD.PurchaseReceiveDetailID,PRM.PartyID,PRD.FinishedID,  
+PRD.GodownID, dbo.F_GetCommaSepReturnChallan(prd.PurchaseReceiveID,prd.PurchaseReceiveDetailID) as ChallanNo,
+SUM(IsNull(PRD.Qty,0.00)) OVER (PARTITION BY PRM.PartyID,PRM.CompanyID,PRM.MasterCompanyID,PRD.PurchaseReceiveID,PRD.PurchaseReceiveDetailID,PRD.FinishedID,PRD.GodownID ) ReturnQty,
+Max(PRM.Date) OVER (PARTITION BY PRM.PartyID,PRM.CompanyID,PRM.MasterCompanyID,PRD.PurchaseReceiveID,PRD.PurchaseReceiveDetailID,PRD.FinishedID,PRD.GodownID) ReturnDate,
+ROW_NUMBER() OVER(PARTITION BY PRM.PartyID,PRM.CompanyID,PRM.MasterCompanyID,PRD.PurchaseReceiveID,PRD.PurchaseReceiveDetailID,PRD.FinishedID,PRD.GodownID ORDER BY PRD.ID DESC) RowNo
+from purchasereturnMaster PRM INNER JOIN purchasereturndetail PRD  
+On PRM.ID=PRD.ID) 
+Select emp.EMPNAME VendorName,
+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
+ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName,
+x.IssueId,x.PONo,x.DueDate RequestDate,x.DeliveryDate,x.IssueDate AssignDate,x.OrderId,x.Finishedid,
+x.IssueQuantity,x.CancelQty,y.BillNo,y.RecDate ReceiveDate,y.RecQuantity,z.ReturnDate,z.ReturnQty
+from IssueItem x Left Join ReceiveItem y on x.OrderId=y.OrderId and 
+x.FinishedId=y.FinishedId and x.IssueId=y.IssueId and x.RowNo=y.RowNo 
+Left Join ReturnItem z on y.GodownId=z.GodownId and y.ReceiveId=z.ReceiveId 
+and y.FinishedId=z.FinishedId and y.RowNo=z.RowNo
+LEFT JOIN V_FINISHEDITEMDETAIL VF ON x.FinishedId=VF.ITEM_FINISHED_ID  
+LEFT JOIN SIZETYPE ST WITH (NOLOCK)  ON x.FLAGSIZE=ST.VAL  
+LEFT JOIN EMPINFO emp WITH (NOLOCK)  ON x.PartyId=emp.EmpId   
+Where  x.OrderId= @OrderId  and x.RowNo=1 ";
+
+                try
+                {
+
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId }).
+                        Select(x => new IssueMaterialModel
+                        {
+                            IssueId = x.IssueId,
+                            EmpId = x.EmpId,
+                            OrderId = x.OrderId,
+                            FinishedId = x.FinishedId,
+                            VendorName = x.VendorName,
+                            MaterialName = x.MaterialName,
+                            AssignDate = x.AssignDate,
+                            RequestDate = x.RequestDate,
+                            ReceiveDate = x.ReceiveDate,
+                            IssueQuantity = x.IssueQuantity,
+                            RecQuantity = x.RecQuantity,
+
+
+                        });
+
+
+                    return (result);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+
+
 
     }
 }

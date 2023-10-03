@@ -509,8 +509,6 @@ async function PurchaseReport(_orderId) {
     $('div.modal-body').empty();
     var panelhtml = "<div class='row' data-order='0'></div>";
     $('div.modal-body').html(panelhtml);
-
-
     PurchaseHtml(_orderId, "Purchase Report", 0);
 
 }
@@ -643,9 +641,7 @@ function ProcessIssueReport(_orderId, _processId, name) {
         data: JSON.stringify(obj),
         success: function (data) {
             console.log(data.d)
-            var result = $.parseJSON(data.d);
-
-        
+            var result = $.parseJSON(data.d);        
 
 
             bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
