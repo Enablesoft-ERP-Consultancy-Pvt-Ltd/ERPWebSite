@@ -113,8 +113,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     RDCommDetail.Visible = false;
                     RDStockNoTobeIssued.Visible = false;
                     RDPendingQty.Visible = false;
-                    RDStockRecQithwt.Visible = false;
-                     
+                    RDStockRecQithwt.Visible = false;                     
                     RDGatePass.Visible = false;
                     RDDailyfinreport.Visible = false;
                     RDProcessIssRecDetailWithConsumpton.Visible = false;
