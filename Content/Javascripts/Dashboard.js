@@ -160,7 +160,7 @@ $(function () {
                             btnHtml += "<a class='btnSummary text-green btn btn-default btn-xs mrm' exthref=" + data.OrderId + "><i class='fa fa-pencil mrs'></i><strong>Process Summary</strong></a>";
                             btnHtml += "<div class='btn-group'><button type='button' data-bs-toggle='dropdown' class='btn btn-dark dropdown-toggle  ptx pbx'>";
                             btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion' style='max-height:400px;overflow:auto;'>";
-                            btnHtml += "<li><a class='btnPurchase mrm' exthref=" + data.OrderId + "' extType='0' title='PURCHASE' extSeq='0'><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
+                            btnHtml += "<li><a class='btnPurchase mrm' prName='PURCHASE' exthref=" + data.OrderId + "' extType='0' title='PURCHASE' extSeq='0'><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
 
 
                             //console.log(data);
@@ -225,9 +225,11 @@ $(function () {
 
             table.on('click', 'a.btnPurchase', function (e) {
                 var elem = $(this);
-                var id = elem.attr('exthref');
-                var _orderId = parseInt(id);
-                PurchaseReport(_orderId);
+                var _orderId = parseInt(elem.attr('exthref'));
+                var _processId = parseInt(elem.attr('prhref'));
+                var name = elem.attr('prName');
+                var _type = parseInt(elem.attr('extType'));
+                ProcessReport(_orderId, _processId, name, _type);
             });
 
             table.on('click', 'a.btnProcess', function (e) {
@@ -502,18 +504,6 @@ function OrderDetail(_orderId) {
 
 }
 
-
-async function PurchaseReport(_orderId) {
-
-    $('div.modal-header').empty();
-    $('div.modal-body').empty();
-
-    var panelhtml = "<div class='row' data-order='0'></div>";
-    $('div.modal-body').html(panelhtml);
-    PurchaseHtml(_orderId, "Purchase Report", 0);
-
-}
-
 function ProcessReport(_orderId, _processId, _title, _type) {
     $('div.modal-header').empty();
     $('div.modal-header').append("<h4 class='modal-title'>Process Report</h4>");
@@ -522,6 +512,9 @@ function ProcessReport(_orderId, _processId, _title, _type) {
     $('div.modal-body').html(panelhtml);
 
     switch (_type) {
+        case 0:
+            url = "Home.aspx/GetPurchaseList";
+            break;
         case 1:
             url = "Home.aspx/GetIndentDetail";
             break;
@@ -534,50 +527,6 @@ function ProcessReport(_orderId, _processId, _title, _type) {
     }
     const obj = { OrderId: _orderId, ProcessId: _processId };
     ReqHtml(url, obj, _title, 0);
-}
-
-function PurchaseHtml(_orderId, _title, _seq) {
-
-    var bodyHtml = "";
-    const obj = { OrderId: _orderId };
-    $.ajax({
-        url: "Home.aspx/GetPurchaseList",
-        contentType: "application/json; charset=utf-8",
-        type: "POST",
-        data: JSON.stringify(obj),
-        success: function (data) {
-
-            console.log(data.d)
-            var result = $.parseJSON(data.d);
-            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
-            bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
-            bodyHtml += " <tr><th>Supplier Name</th><th>PO No</th><th>PO Date</th><th>Delv. Date</th>";
-            bodyHtml += " <th>Item Name</th><th>Rate</th><th>PO Qty</th><th>Rec. Qty.</th><th>Pending Qty.</th><th>Delay Days</th><th>PO Status</th></tr></thead><tbody>";
-            if (result.data.length > 0) {
-
-                $.each(result.data, function (index, item) {
-
-                    bodyHtml += "<tr><td>" + item.SupplierName + "</td><td>" + item.PONo + "</td><td>" + item.PODate + "</td ><td>" + item.DelvDate + "</td><td>" + item.ItemName + "</td><td>" + item.Rate + "</td><td>" + item.POQty + "</td><td>" + item.RecQty + "</td><td>" + item.PendingQty + "</td><td>" + item.DelayDays + "</td><td>" + item.POStatus + "</td></tr>"
-
-                });
-            }
-            else {
-                bodyHtml += "<tr><td colspan='10'>Data not found</td></tr>";
-            }
-
-            bodyHtml += "</tbody></table></div></div>"
-
-        },
-        error: function (xhr, status, error) {
-            var msg = "Response failed with status: " + status + "</br>"
-                + " Error: " + error;
-            bodyHtml = "<div class='col-lg-12'><h1 class='largetxt text-red mtn'><strong>" + msg + "</strong></h1></div>";
-        },
-        complete: function (xhr, status) {
-            $('#bodyItem').find('div[data-order="' + _seq + '"]').html(bodyHtml);
-            $('#myModal').modal('show');
-        }
-    });
 }
 
 function OrderSummary(_orderId, index, cust) {
@@ -669,25 +618,24 @@ function SummaryReport(elem, orderId) {
         var seq = parseInt(item.attr('extSeq')) + 1;
         var _title = item.attr('title') + " SUMMARY";
         var url;
-        if (_type == 0) {
-            PurchaseHtml(orderId, _title, seq);
+        var _processId = parseInt(item.attr('prhref'));
+        switch (_type) {
+            case 0:
+                url = "Home.aspx/GetPurchaseList";
+                break;
+            case 1:
+                url = "Home.aspx/GetIndentDetail";
+                break;
+            case 2:
+                url = "Home.aspx/GetIssueDetail";
+                break;
+            case 3:
+                url = "Home.aspx/GetFinishDetail";
+                break;
         }
-        else {
-            var _processId = parseInt(item.attr('prhref'));
-            switch (_type) {
-                case 1:
-                    url = "Home.aspx/GetIndentDetail";
-                    break;
-                case 2:
-                    url = "Home.aspx/GetIssueDetail";
-                    break;
-                case 3:
-                    url = "Home.aspx/GetFinishDetail";
-                    break;
-            }
-            const obj = { OrderId: orderId, ProcessId: _processId };
-            ReqHtml(url, obj, _title, seq);
-        }
+        const obj = { OrderId: orderId, ProcessId: _processId };
+        ReqHtml(url, obj, _title, seq);
+
     });
 
 
@@ -718,6 +666,9 @@ function ReqHtml(_url, _Req, _title, _seq) {
 
                     if (item.ChallanNo == undefined || item.ChallanNo == null)
                         item.ChallanNo = "----";
+                    if (item.DesignName == undefined || item.DesignName == null)
+                        item.DesignName = "----";
+
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.DesignName + "</td><td>" + item.MaterialName + "</td>";
                     bodyHtml += "<td>" + item.ChallanNo + "</td><td>" + item.RequestDate + "</td><td>" + item.IssueDate + "</td><td>" + item.ReceiveDate + "</td>";
                     bodyHtml += "<td>" + item.RequiredQty + "</td><td>" + item.IssueQty + "</td><td>" + item.ReceiveQty + "</td><td>" + item.LossQty + "</td><td>" + item.ReturnQty + "</td>";

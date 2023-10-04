@@ -13,5 +13,6 @@ namespace IExpro.Core.Interfaces.Service
         IEnumerable<IssueMaterialModel> GetOrderByIndentDetail(int OrderId, int ProcessId);
         IEnumerable<IssueMaterialModel> GetOrderByIssueId(int OrderId, int ProcessId);
         IEnumerable<IssueMaterialModel> GetFinishedItem(int OrderId, int ProcessId);
+        IEnumerable<IssueMaterialModel> GetPurchaseItem(int OrderId);
     }
 }

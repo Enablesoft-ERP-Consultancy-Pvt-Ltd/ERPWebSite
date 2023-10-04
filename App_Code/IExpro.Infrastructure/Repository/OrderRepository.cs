@@ -605,10 +605,10 @@ EXEC(@SQL) ";
             using (IDbConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
                 string sqlQuery = @"--Declare @OrderId int=204;
-WITH IssueItem(IssueId,IssueTranId,PONo,DueDate,BranchId,OrderId,PartyId,FlagSize,DeliveryDate,IssueDate,FinishedId,IssueRate,IssueQuantity,CancelQty,RowNo) 
+WITH IssueItem(IssueId,IssueTranId,CHALLANNO,DueDate,BranchId,OrderId,PartyId,FlagSize,DeliveryDate,IssueDate,FinishedId,IssueRate,IssueQty,CancelQty,RowNo) 
 AS (Select PII.PINDENTISSUEID,PIIT.PINDENTISSUETRANID,PII.CHALLANNO,PII.DUEDATE, pii.Companyid,PIIT.ORDERID,PII.Partyid,PIIT.flagsize,
 PIIT.DELIVERY_DATE,PII.DATE,PIIT.Finishedid,PIIT.RATE,
-SUM(IsNull(PIIT.QUANTITY,0.00)) OVER (PARTITION BY  PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid) IssueQuantity,
+SUM(IsNull(PIIT.QUANTITY,0.00)) OVER (PARTITION BY  PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid) IssueQty,
 SUM(IsNull(PIIT.CANQTY,0.00)) OVER (PARTITION BY  PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid) CancelQty,
 ROW_NUMBER() OVER(PARTITION BY PIIT.ORDERID,PII.PINDENTISSUEID,PIIT.Finishedid ORDER BY PIIT.ORDERID DESC) RowNo
 from PURCHASEINDENTISSUE PII INNER JOIN PURCHASEINDENTISSUETRAN PIIT ON PIIT.PINDENTISSUEID=PII.PINDENTISSUEID   
@@ -632,8 +632,8 @@ from purchasereturnMaster PRM INNER JOIN purchasereturndetail PRD
 On PRM.ID=PRD.ID) 
 Select x.PartyId VendorId,emp.EMPNAME VendorName,VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.COLORNAME+' '+VF.SHAPENAME+' '+VF.ShadeColorName+' '+CASE WHEN x.FLAGSIZE=0 THEN VF.SIZEFT    
 ELSE CASE WHEN x.FLAGSIZE=1 THEN VF.SIZEMTR ELSE VF.SIZEINCH END END + ' '+CASE WHEN VF.SIZEID>0 THEN ST.TYPE ELSE '' END MaterialName,
-x.IssueId,x.PONo ChallanNo,x.DueDate ReqDate,x.DeliveryDate,x.IssueDate IssDate,x.OrderId,x.FinishedId,
-x.IssueQuantity IssueQty,x.CancelQty,y.BillNo,y.RecDate,y.RecQuantity ReceiveQty,z.ReturnDate,z.ReturnQty
+x.IssueId,x.ChallanNo,x.DueDate ReqDate,x.DeliveryDate,x.IssueDate IssDate,x.OrderId,x.FinishedId,x.IssueQty RequiredQty,
+x.IssueQty,x.CancelQty,y.BillNo,y.RecDate,y.RecQuantity ReceiveQty,z.ReturnDate,z.ReturnQty
 from IssueItem x Left Join ReceiveItem y on x.OrderId=y.OrderId and 
 x.FinishedId=y.FinishedId and x.IssueId=y.IssueId and x.RowNo=y.RowNo 
 Left Join ReturnItem z on y.GodownId=z.GodownId and y.ReceiveId=z.ReceiveId 
@@ -646,22 +646,22 @@ Where  x.OrderId= @OrderId  and x.RowNo=1 ";
                 try
                 {
 
-                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId }).
-                        Select(x => new IssueMaterialModel
-                        {
-                            IssueId = x.IssueId,
-                            OrderId = x.OrderId,
-                            FinishedId = x.FinishedId,
-                            VendorId = x.VendorId,
-                            VendorName = x.VendorName,
-                            MaterialName = x.MaterialName,
-                            ReqDate = x.ReqDate,
-                            IssDate = x.IssDate,
-                            RecDate = x.RecDate,
-                            ChallanNo = x.ChallanNo,
-                            IssueQty = x.IssueQty,
-                            ReceiveQty = x.ReceiveQty,
-                        });
+                    var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId });
+                        //Select(x => new IssueMaterialModel
+                        //{
+                        //    IssueId = x.IssueId,
+                        //    OrderId = x.OrderId,
+                        //    FinishedId = x.FinishedId,
+                        //    VendorId = x.VendorId,
+                        //    VendorName = x.VendorName,
+                        //    MaterialName = x.MaterialName,
+                        //    ReqDate = x.ReqDate,
+                        //    IssDate = x.IssDate,
+                        //    RecDate = x.RecDate,
+                        //    ChallanNo = x.ChallanNo,
+                        //    IssueQty = x.IssueQty,
+                        //    ReceiveQty = x.ReceiveQty,
+                        //});
 
 
                     return (result);

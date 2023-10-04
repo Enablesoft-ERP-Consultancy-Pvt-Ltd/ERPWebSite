@@ -2,6 +2,7 @@
 using IExpro.Core.Interfaces.Service;
 using IExpro.Core.Models.Reports;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace IExpro.Infrastructure.Services
 {
@@ -53,7 +54,10 @@ namespace IExpro.Infrastructure.Services
             return this.IU.OrdRepo.GetFinishedItem(OrderId,ProcessId);
         }
 
-
+        public IEnumerable<IssueMaterialModel> GetPurchaseItem(int OrderId)
+        {
+            return this.IU.OrdRepo.GetPurchaseItem(OrderId);
+        }
 
     }
 }

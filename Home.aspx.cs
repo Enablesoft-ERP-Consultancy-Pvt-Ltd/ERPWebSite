@@ -114,7 +114,8 @@ public partial class Home : BasePage
     public static string GetPurchaseList(int OrderId)
     {
         string resultString = "";
-        var obj = OrdSrv.GetPurchaseList(OrderId).ToList();
+        //var obj = OrdSrv.GetPurchaseList(OrderId).ToList();
+        var obj = OrdSrv.GetPurchaseItem(OrderId).ToList();
         var result = new { data = obj };
         resultString = JsonConvert.SerializeObject(result);
         return resultString;
@@ -169,6 +170,6 @@ public partial class Home : BasePage
         resultString = JsonConvert.SerializeObject(result);
         return resultString;
     }
-    
+
 
 }
