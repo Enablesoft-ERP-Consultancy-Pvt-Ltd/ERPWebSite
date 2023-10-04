@@ -75,6 +75,7 @@
               <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="UnitType" type="xs:string" minOccurs="0" />
               <xs:element name="UnitName" type="xs:string" minOccurs="0" />
+              <xs:element name="DateAdded" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

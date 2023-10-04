@@ -803,7 +803,7 @@ public partial class GenrateInDent : System.Web.UI.Page
                     JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OSA.FinishedID And VF.ITEM_ID = " + DDItem.SelectedValue + " And VF.QualityId = " + DDQuality.SelectedValue + @" 
                     Where PP.PPID = " + DDProcessProgramNo.SelectedValue + " Order By VF.ShadeColorName";
         }
-        else if (Session["varcompanyNo"].ToString() == "9")
+        else if (Session["varcompanyNo"].ToString() == "9" || Session["varcompanyNo"].ToString() == "46")
         {
             str = @"Select Distinct VF1.ShadeColorID, VF1.ShadeColorName 
                     From PP_Consumption a
@@ -843,7 +843,9 @@ public partial class GenrateInDent : System.Web.UI.Page
                 }
                 else
                 {
-                    str = str + " and ShadeColorName like 'Undyed%'";
+                   
+                        str = str + " and ShadeColorName like 'Undyed%'";
+                   
                }
                 
             }

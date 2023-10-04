@@ -150,9 +150,20 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
                 param[4] = new SqlParameter("@userid", Session["varuserid"]);
                 param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyNo"]);                
                 //****
-                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetOrderWiseDyingConsumptionReport", param);
-                if (ds.Tables[0].Rows.Count > 0)
+
+                DataSet ds = new DataSet();
+                if (Session["VarCompanyNo"].ToString() == "46")
                 {
+                    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetOrderWiseDyingConsumptionReport_WithItemName", param);
+                }
+                else
+                {
+                    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetOrderWiseDyingConsumptionReport", param);
+                }
+                
+                if (ds.Tables[0].Rows.Count > 0)
+                {                    
+
                     var xapp = new XLWorkbook();
                     var sht = xapp.Worksheets.Add("DyeingConsumptionDetail_");
 
@@ -168,7 +179,6 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
                     sht.PageSetup.Margins.Header = 1.20;
                     sht.PageSetup.Margins.Footer = 0.3;
                     sht.PageSetup.SetScaleHFWithDocument();
-
 
                     //Export to excel
                     GridView GridView1 = new GridView();
@@ -193,27 +203,26 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
 
                     if (GridView1.Rows.Count > 0)
                     {
-
-                        string StrHeaderText = "";
-                        for (int i = 0; i < GridView1.HeaderRow.Cells.Count; i++)
-                        {
-                            if (GridView1.HeaderRow.Cells[i].Text == "FinishedId" || GridView1.HeaderRow.Cells[i].Text == "PK1" || GridView1.HeaderRow.Cells[i].Text == "RowType")
-                            {
-                                StrHeaderText = GridView1.HeaderRow.Cells[i].Text;
-
-                                GridView1.HeaderRow.Cells[i].Visible = false;
-                                //GridView1.Columns[i].Visible = false;
-                            }
-                        }
-
-                        for (int i = 0; i < GridView1.Rows.Count; i++)
-                        {
-                            GridView1.Rows[i].Cells[0].Visible = false;
-                            GridView1.Rows[i].Cells[columncount - 1].Visible = false;
-                            GridView1.Rows[i].Cells[columncount - 2].Visible = false;
-                           
+                        string StrHeaderText = "";                       
                             
-                        }
+                            for (int i = 0; i < GridView1.HeaderRow.Cells.Count; i++)
+                            {
+                                if (GridView1.HeaderRow.Cells[i].Text == "FinishedId" || GridView1.HeaderRow.Cells[i].Text == "PK1" || GridView1.HeaderRow.Cells[i].Text == "RowType")
+                                {
+                                    StrHeaderText = GridView1.HeaderRow.Cells[i].Text;
+
+                                    GridView1.HeaderRow.Cells[i].Visible = false;
+                                    //GridView1.Columns[i].Visible = false;
+                                }
+                            }
+
+                            for (int i = 0; i < GridView1.Rows.Count; i++)
+                            {
+                                GridView1.Rows[i].Cells[0].Visible = false;
+                                GridView1.Rows[i].Cells[columncount - 1].Visible = false;
+                                GridView1.Rows[i].Cells[columncount - 2].Visible = false;
+
+                            }  
                        
                     }
                     //GridView1.Caption = "OrderWise Consumption Detail";
