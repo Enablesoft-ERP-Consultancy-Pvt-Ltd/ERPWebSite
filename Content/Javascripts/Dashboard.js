@@ -1,32 +1,23 @@
 ﻿var ProcessList = [{ ProcessId: 5, Process: "DYEING(PCS)", Title: "DYEING(PCS) Report", Type: 1 },
-
 { ProcessId: 8, Process: "BLOCK PRINTING(MTR)", Title: "BLOCK PRINTING(MTR) Report", Type: 1 },
 { ProcessId: 11, Process: "DIGITAL PRINTING(MTR)", Title: "DIGITAL PRINTING(MTR) Report", Type: 1 },
 { ProcessId: 12, Process: "COMPUTER EMBROIDERY(MTR)", Title: "COMPUTER EMBROIDERY(MTR) Report", Type: 1 },
 { ProcessId: 18, Process: "WASHING(MTR)", Title: "WASHING(MTR) Report", Type: 1 },
 { ProcessId: 34, Process: "STONE WASH(MTR)", Title: "STONE WASH(MTR) Report", Type: 1 },
 { ProcessId: 29, Process: "SCREEN PRINTING (MTR)", Title: "SCREEN PRINTING (MTR) Report", Type: 1 },
-
 { ProcessId: 10, Process: "COMPUTER EMBROIDERY(PCS)", Title: "COMPUTER EMBROIDERY(PCS)", Type: 2 },
 { ProcessId: 1, Process: "CUTTING", Title: "CUTTING", Type: 2 },
 { ProcessId: 2, Process: "MANUAL EMBROIDERY(PCS)", Title: "MANUAL EMBROIDERY(PCS)", Type: 2 },
 { ProcessId: 42, Process: "PANNEL WEAVING", Title: "PANNEL WEAVING", Type: 2 },
 { ProcessId: 4, Process: "PATCH STITCHING", Title: "PATCH STITCHING", Type: 2 },
 { ProcessId: 38, Process: "TABLE TUFTING", Title: "TABLE TUFTING", Type: 2 },
-
-
 { ProcessId: 10, Process: ' ', Title: "Finishing COMPUTER EMBROIDERY(PCS)", Type: 3 },
 { ProcessId: 42, Process: ' ', Title: "Finishing PANNEL WEAVING", Type: 3 },
 { ProcessId: 2, Process: ' ', Title: "Finishing MANUAL EMBROIDERY(PCS)", Type: 3 },
 { ProcessId: 4, Process: ' ', Title: "Finishing PATCH STITCHING", Type: 3 },
-
-
-
-
 { ProcessId: 13, Process: "STITCHING", Title: "STITCHING", Type: 3 },
 { ProcessId: 21, Process: 'Finishing BLOCK PRINTING', Title: "Finishing BLOCK PRINTING", Type: 3 },
 { ProcessId: 30, Process: ' ', Title: "Finishing COLOUR CUT", Type: 3 },
-
 { ProcessId: 26, Process: ' ', Title: "Finishing DIGITAL PRINTING (PCS)", Type: 3 },
 { ProcessId: 6, Process: ' ', Title: "Finishing DYEING(PCS)", Type: 3 },
 { ProcessId: 3, Process: ' ', Title: "Finishing FILLING", Type: 3 },
@@ -39,17 +30,13 @@
 { ProcessId: 20, Process: ' ', Title: "Finishing KNOWTING &amp; WRAPPING", Type: 3 },
 { ProcessId: 23, Process: ' ', Title: "Finishing LABEL STITCHING", Type: 3 },
 { ProcessId: 43, Process: ' ', Title: "Finishing LACE STITCHING", Type: 3 },
-
 { ProcessId: 17, Process: ' ', Title: "Finishing PACKING", Type: 3 },
 { ProcessId: 39, Process: ' ', Title: "Finishing PANEL MAKING", Type: 3 },
-
-
 { ProcessId: 14, Process: ' ', Title: "Finishing PRESING", Type: 3 },
 { ProcessId: 44, Process: ' ', Title: "Finishing QUILTING", Type: 3 },
 { ProcessId: 40, Process: ' ', Title: "Finishing RE-WORK", Type: 3 },
 { ProcessId: 49, Process: ' ', Title: "Finishing SAMPLING", Type: 3 },
 { ProcessId: 24, Process: ' ', Title: "Finishing SCREEN PRINTING", Type: 3 },
-
 { ProcessId: 22, Process: ' ', Title: "Finishing STONE WASH", Type: 3 },
 { ProcessId: 38, Process: ' ', Title: "Finishing TABLE TUFTING", Type: 3 },
 { ProcessId: 16, Process: ' ', Title: "Finishing TASSEL STITCHING", Type: 3 },
@@ -63,7 +50,6 @@
 { ProcessId: 35, Process: ' ', Title: "Finishing WRAPPING", Type: 3 },
 ];
 
-
 $(document).bind("ajaxStart", function () {
     $("#ldrdiv").show();
 }).bind("ajaxStop", function () {
@@ -75,15 +61,10 @@ $(function () {
 
     const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS';
     const TO_PATTERN = 'DD/MM/YYYY';
-
     var orderlist = null;
-
     $('#myModal').on('hidden.bs.modal', function (evt) {
         $('.modal .modal-body').empty();
     });
-
-
-
 
     $('#myModal').on('click', 'a.sorting', function (e) {
 
@@ -106,7 +87,6 @@ $(function () {
 
     });
 
-
     $.ajax({
         type: "POST",
         url: "Home.aspx/OrderList",
@@ -114,7 +94,6 @@ $(function () {
         dataType: "json",
         data: {},
         success: function (data) {
-
             orderlist = $.parseJSON(data.d);
             //BindChart(orderlist);
             /* alert(orderlist.chartData[0].OrderCount);*/
@@ -139,7 +118,6 @@ $(function () {
                     },
                     {
                         data: 'OrderStatus',
-
                         render: function (data, type) {
                             if (data === 1) {
                                 return '<span class="label label-sm label-success">Close</span>';
@@ -150,7 +128,6 @@ $(function () {
                             }
                         },
                     },
-
                     {
                         data: null,
                         render: function (data, type, row, meta) {
@@ -162,12 +139,11 @@ $(function () {
                             btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion' style='max-height:400px;overflow:auto;'>";
                             btnHtml += "<li><a class='btnPurchase mrm' prName='PURCHASE' exthref=" + data.OrderId + "' extType='0' title='PURCHASE' extSeq='0'><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
 
-
                             //console.log(data);
                             $.each(data.ProcessList, function (index, item) {
 
                                 item.SeqNo = index + 1;
-                                console.log(item);
+                            /*    console.log(item);*/
                                 // var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
                                 if (item.ProcessType == 0) {
                                     item.ProcessType = 1;
