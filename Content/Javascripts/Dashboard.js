@@ -71,10 +71,6 @@ $(document).bind("ajaxStart", function () {
 });
 
 
-
-
-
-
 $(function () {
 
     const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSS';
@@ -536,7 +532,7 @@ function ProcessReport(_orderId, _processId, _title, _type) {
             url = "Home.aspx/GetFinishDetail";
             break;
     }
-    const obj = { OrderId: orderId, ProcessId: _processId };
+    const obj = { OrderId: _orderId, ProcessId: _processId };
     ReqHtml(url, obj, _title, 0);
 }
 
@@ -708,35 +704,30 @@ function ReqHtml(_url, _Req, _title, _seq) {
         type: "POST",
         data: JSON.stringify(_Req),
         success: function (data) {
-
             console.log(data.d)
             var result = $.parseJSON(data.d);
-
             bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Supplier</th><th>Design No.</th><th>Item Description</th>";
-            bodyHtml += "<th>Indent No.</th><th>Indent Date</th>";
-            bodyHtml += "<th>Req. Date</th><th>Issue Date</th>";
+            bodyHtml += "<th>Indent No.</th><th>Req. Date</th>";
+            bodyHtml += "<th>Issue Date</th><th>Rec. Date</th>";
             bodyHtml += "<th>Reqd Qty.</th><th> Issued Qty.</th><th>Rec. Qty.</th><th>Loss Qty.</th><th>Return Qty.</th>";
             bodyHtml += "<th>Pen. Qty.</th><th>Reqd Bal. Qty.</th><th>Delay Days</th><th>Status</th></tr></thead><tbody>";
-
             if (result.data.length > 0) {
-
                 $.each(result.data, function (index, item) {
 
+                    if (item.ChallanNo == undefined || item.ChallanNo == null)
+                        item.ChallanNo = "----";
                     bodyHtml += "<tr><td>" + item.VendorName + "</td><td>" + item.DesignName + "</td><td>" + item.MaterialName + "</td>";
-                    bodyHtml += "<td>" + item.IndentNo + "</td><td>" + item.IndentDate + "</td><td>" + item.RequestDate + "</td><td>" + item.IssuedDate + "</td>";
-                    bodyHtml += "<td>" + item.RequiredQty + "</td><td>" + item.Quantity + "</td><td>" + item.RecQuantity + "</td><td>" + item.LossQty + "</td><td>" + item.ReturnQty + "</td>";
+                    bodyHtml += "<td>" + item.ChallanNo + "</td><td>" + item.RequestDate + "</td><td>" + item.IssueDate + "</td><td>" + item.ReceiveDate + "</td>";
+                    bodyHtml += "<td>" + item.RequiredQty + "</td><td>" + item.IssueQty + "</td><td>" + item.ReceiveQty + "</td><td>" + item.LossQty + "</td><td>" + item.ReturnQty + "</td>";
                     bodyHtml += "<td>" + item.PendingQty + "</td><td>" + item.ReqdBalQty + "</td><td>" + item.DelayDays + "</td><td>" + item.IStatus + "</td></tr>";
-
                 });
             }
             else {
                 bodyHtml += "<tr><td colspan='16'>Data not found</td></tr></tbody>";
             }
-
             bodyHtml += "</tbody></table></div></div>"
-
         },
         error: function (xhr, status, error) {
             var msg = "Response failed with status: " + status + "</br>"

@@ -174,15 +174,18 @@ namespace IExpro.Core.Models.Reports
         public string ChallanNo { get; set; }
         public decimal ItemRate { get; set; }
         public decimal RequiredQty { get; set; }
+        public decimal Moisture { get; set; }
+        public decimal ConsmeQty { get; set; }
+        public decimal LossQty { get; set; }
         public decimal IssueQty { get; set; }
         public decimal ReceiveQty { get; set; }
         public decimal ReturnQty { get; set; }
-        public DateTime AssignDate { get; set; }
+        public DateTime IssDate { get; set; }
         public DateTime ReqDate { get; set; }
         public DateTime? RecDate { get; set; }
 
         public string RequestDate { get { return ReqDate.ToString("dd MMM yyyy"); } }
-        public string IssueDate { get { return AssignDate.ToString("dd MMM yyyy"); } }
+        public string IssueDate { get { return IssDate.ToString("dd MMM yyyy"); } }
 
         public string ReceiveDate
         {
