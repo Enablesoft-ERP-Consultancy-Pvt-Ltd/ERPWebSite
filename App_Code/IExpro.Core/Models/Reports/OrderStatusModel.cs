@@ -243,7 +243,7 @@ namespace IExpro.Core.Models.Reports
 
         public decimal ReqdBalQty
         {
-            get { return (RequiredQty - (ReceiveQty)); }
+            get { return (RequiredQty - (IssueQty)); }
         }
 
 
