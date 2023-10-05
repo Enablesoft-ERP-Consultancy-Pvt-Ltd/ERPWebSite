@@ -88,37 +88,6 @@ public partial class Home : BasePage
         return resultString;
     }
 
-    /// <summary>
-    /// Logs in the user
-    /// </summary>
-    /// <param name="Username">The username</param>
-    /// <param name="Password">The password</param>
-    /// <returns>true if login successful</returns>
-    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public static string GetPurchaseList(int OrderId)
-    {
-        string resultString = "";
-        var obj = OrdSrv.GetPurchaseList(OrderId).ToList();
-        var result = new { data = obj };
-        resultString = JsonConvert.SerializeObject(result);
-        return resultString;
-    }
-
-    /// <summary>
-    /// Get Indent detail According to Process and Order
-    /// </summary>
-    /// <param name="OrderId">The Order No</param>
-    /// <param name="ProcessId">The Process No</param>
-    /// <returns>true if login successful</returns>
-    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
-    public static string GetIndentDetail(int OrderId, int ProcessId)
-    {
-        string resultString = "";
-        var obj = OrdSrv.GetOrderByIndentDetail(OrderId, ProcessId).ToList();
-        var result = new { data = obj };
-        resultString = JsonConvert.SerializeObject(result);
-        return resultString;
-    }
 
     /// <summary>
     /// Get Order Deatil
@@ -135,6 +104,39 @@ public partial class Home : BasePage
         return resultString;
     }
 
+    /// <summary>
+    /// Logs in the user
+    /// </summary>
+    /// <param name="Username">The username</param>
+    /// <param name="Password">The password</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetPurchaseList(int OrderId)
+    {
+        string resultString = "";
+        //var obj = OrdSrv.GetPurchaseList(OrderId).ToList();
+        var obj = OrdSrv.GetPurchaseItem(OrderId).ToList();
+        var result = new { data = obj };
+        resultString = JsonConvert.SerializeObject(result);
+        return resultString;
+    }
+
+
+    /// <summary>
+    /// Get Indent detail According to Process and Order
+    /// </summary>
+    /// <param name="OrderId">The Order No</param>
+    /// <param name="ProcessId">The Process No</param>
+    /// <returns>true if login successful</returns>
+    [WebMethod, ScriptMethod(ResponseFormat = ResponseFormat.Json)]
+    public static string GetIndentDetail(int OrderId, int ProcessId)
+    {
+        string resultString = "";
+        var obj = OrdSrv.GetOrderByIndentDetail(OrderId, ProcessId).ToList();
+        var result = new { data = obj };
+        resultString = JsonConvert.SerializeObject(result);
+        return resultString;
+    }
 
     /// <summary>
     /// Get Home furnishing Issue detail According to Process and Order
@@ -168,6 +170,6 @@ public partial class Home : BasePage
         resultString = JsonConvert.SerializeObject(result);
         return resultString;
     }
-    
+
 
 }
