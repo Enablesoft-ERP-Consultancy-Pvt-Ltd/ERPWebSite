@@ -146,9 +146,11 @@
 
             <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="modal-default-label"
                 aria-hidden="true" class="modal fade">
-                <div class="modal-dialog modal-xl">
+                <div class="modal-dialog modal-fullscreen">
                     <div class="modal-content">
                         <div class="modal-header">
+                            <h4 class='modal-title'></h4>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div id="bodyItem" class="modal-body">
                         </div>
