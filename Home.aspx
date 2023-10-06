@@ -146,7 +146,7 @@
 
             <div id="myModal" tabindex="-1" role="dialog" aria-labelledby="modal-default-label"
                 aria-hidden="true" class="modal fade">
-                <div class="modal-dialog modal-fullscreen">
+                <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h4 class='modal-title'></h4>
