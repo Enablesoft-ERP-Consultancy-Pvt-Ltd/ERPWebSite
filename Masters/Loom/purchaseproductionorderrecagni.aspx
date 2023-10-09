@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="PURCHASE PRODUCTION RECEIVE" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="purchaseproductionorderrecagni.aspx.cs" Inherits="Masters_Loom_frmproductionorderonLoomAgni" %>
+    AutoEventWireup="true" CodeFile="purchaseproductionorderrecagni.aspx.cs" Inherits="Masters_Loom_purchaseproductionorderrecagni" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
@@ -617,13 +617,6 @@
                                                     <asp:Label ID="lblunit" Text='<%#Bind("UnitName")%>' runat="server" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField HeaderText="Width">
-                                                <ItemTemplate>
-                                                    <asp:TextBox ID="txtwidth" Text='<%#Bind("Width") %>' Width="80px" runat="server"
-                                                        AutoPostBack="true" OnTextChanged="Txtwidthlength_TextChanged" Enabled="false" Font-Size="Small"
-                                                        Font-Bold="true" />
-                                                </ItemTemplate>
-                                            </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Length">
                                                 <ItemTemplate>
                                                     <asp:TextBox ID="txtlength" Text='<%#Bind("Length") %>' Width="80px" runat="server"
@@ -631,6 +624,14 @@
                                                         Font-Bold="true" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
+                                            <asp:TemplateField HeaderText="Width">
+                                                <ItemTemplate>
+                                                    <asp:TextBox ID="txtwidth" Text='<%#Bind("Width") %>' Width="80px" runat="server"
+                                                        AutoPostBack="true" OnTextChanged="Txtwidthlength_TextChanged" Enabled="false" Font-Size="Small"
+                                                        Font-Bold="true" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            
                                             <asp:TemplateField HeaderText="Area">
                                                 <ItemTemplate>
                                                     <asp:Label ID="lblarea" Text='<%#Bind("area") %>' runat="server" />

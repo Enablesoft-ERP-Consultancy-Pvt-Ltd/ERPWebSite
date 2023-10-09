@@ -30,12 +30,14 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 str = "select pnm.PROCESS_NAME_ID,pnm.PROCESS_NAME from PROCESS_NAME_MASTER(Nolock) PNM left join V_PRODUCTIONPROCESSIDFORHAFIZIA VP(Nolock) on PNM.Process_name_id=vp.process_name_id WHERE MasterCompanyId=" + Session["varCompanyId"] + "  and vp.process_name_id is  null order by PROCESS_NAME";
             }
             str = str + " select CustomerId,CustomerCode from customerinfo(Nolock) order by CustomerCode";
+            str = str + " Select ID, BranchName From BRANCHMASTER(Nolock) Order By ID "; 
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDJobType, ds, 0, true, "--Select--");
 
             UtilityModule.ConditionalComboFillWithDS(ref DDCustomerCode, ds, 1, true, "--Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 2, false, "");
 
             TDRate2.Visible = false;
             txtEffectiveDate.Attributes.Add("readonly", "readonly");
@@ -86,6 +88,13 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             }
         }
     }
+
+    protected void DDBranchName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DDJobType.SelectedIndex = 0;
+        GVFinisherJobRate.DataSource = null;
+        GVFinisherJobRate.DataBind();
+    }
     private void BindQualityType()
     {
         if (DDCustomerCode.SelectedIndex > 0)
@@ -97,7 +106,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         {
             UtilityModule.ConditionalComboFill(ref DDQualityType, @"select IM.ITEM_ID,ITEM_NAME From Item_master IM inner Join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and Cs.id=0 order by Item_Name ", true, "--Select--");
         }
-
     }
     private void BindQuality()
     {
@@ -117,18 +125,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             str = "Select Qualityid,QualityName From Quality Where item_id=" + DDQualityType.SelectedValue + " Order By QualityName";
         }
         UtilityModule.ConditionalComboFill(ref DDQuality, str, true, "--Select--");
-
-        //        if (DDCustomerCode.SelectedIndex > 0 && DDQualityType.SelectedIndex > 0)
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDQuality, @"select distinct CQ.QualityId,Q.QualityName as Quality from CustomerQuality CQ INNER JOIN OrderMaster OM ON OM.CustomerId=CQ.CustomerId
-        //                                                INNER JOIN OrderDetail OD ON OM.OrderId=OD.OrderId  INNER JOIN Quality Q ON Q.QualityId=CQ.QualityId
-        //                                                INNER JOIN OrderDetail OD2 ON OD.CQID=CQ.SrNo WHERE Q.Item_Id=" + DDQualityType.SelectedValue + @" 
-        //                                                and CQ.CustomerId=" + DDCustomerCode.SelectedValue + " ", true, "--Select--");
-        //        }
-        //        else if (DDQualityType.SelectedIndex > 0)
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDQuality, @"Select Qualityid,QualityName From Quality Where item_id=" + DDQualityType.SelectedValue + " Order By QualityName", true, "--Select--");
-        //        }
     }
     private void BindDesign()
     {
@@ -159,21 +155,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         }
 
         UtilityModule.ConditionalComboFill(ref DDDesign, str, true, "--Select--");
-
-
-        //        if (DDCustomerCode.SelectedIndex > 0 && DDQualityType.SelectedIndex > 0 && DDQuality.SelectedIndex > 0)
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDDesign, @"select distinct D.designId,D.designName as Design from CustomerDesign CD INNER JOIN OrderMaster OM ON OM.CustomerId=CD.CustomerId
-        //                                                INNER JOIN OrderDetail OD ON OM.OrderId=OD.OrderId INNER JOIN Design D ON D.designId=CD.DesignId
-        //                                                INNER JOIN OrderDetail OD2 ON OD2.DSRNO=CD.SrNo INNER JOIN ITEM_PARAMETER_MASTER IPM ON IPM.DESIGN_ID=CD.DesignId
-        //                                                WHERE IPM.QUALITY_ID=" + DDQuality.SelectedValue + @" 
-        //                                                and CD.CustomerId=" + DDCustomerCode.SelectedValue + " ", true, "--Select--");
-        //        }
-        //        else if (DDQuality.SelectedIndex > 0)
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDDesign, @"select distinct D.designId,D.designName from Design D INNER JOIN ITEM_PARAMETER_MASTER IPM ON IPM.DESIGN_ID=D.designId 
-        //                                                Where IPM.QUALITY_ID=" + DDQuality.SelectedValue + " Order By designName", true, "--Select--");
-        //        }
     }
     private void BindColor()
     {
@@ -209,21 +190,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         }
 
         UtilityModule.ConditionalComboFill(ref DDColor, str, true, "--Select--");
-
-
-        //        if (DDCustomerCode.SelectedIndex > 0 && DDDesign.SelectedIndex > 0)
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDColor, @"select Distinct C.ColorId,C.ColorName from CustomerColor CC INNER JOIN color C ON CC.ColorId=C.ColorId
-        //                                                INNER JOIN OrderMaster OM ON OM.CustomerId=CC.CustomerId INNER JOIN OrderDetail OD ON OM.OrderId=OD.OrderId
-        //                                                INNER JOIN OrderDetail OD2 ON OD2.CSRNO=CC.SrNo INNER JOIN ITEM_PARAMETER_MASTER IPM ON IPM.COLOR_ID=CC.ColorId
-        //                                                WHERE IPM.DESIGN_ID=" + DDDesign.SelectedValue + @" 
-        //                                                and CC.CustomerId=" + DDCustomerCode.SelectedValue + " ", true, "--Select--");
-        //        }
-        //        else if (DDDesign.SelectedIndex > 0)
-        //        {
-        //            UtilityModule.ConditionalComboFill(ref DDColor, @"select distinct C.ColorId,C.ColorName from color C INNER JOIN ITEM_PARAMETER_MASTER IPM ON IPM.COLOR_ID=C.ColorId 
-        //                                                Where IPM.Item_id=" + DDQualityType.SelectedValue + " and IPM.Quality_Id=" + DDQuality.SelectedValue + " and  IPM.DESIGN_ID=" + DDDesign.SelectedValue + " Order by ColorName", true, "--Select--");
-        //        }
     }
     private void BindSize()
     {
@@ -266,7 +232,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         }
         else
         {
-
             if (variable.VarNewQualitySize == "1")
             {
 
@@ -284,12 +249,10 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                     ColumnName = "SizeMtr";
                 }
             }
-
         }
 
         if (variable.VarNewQualitySize == "1")
         {
-
             if (DDCustomerCode.SelectedIndex > 0)
             {
                 str = @"select Distinct CS.Sizeid,QSN." + ColumnName + @"+'['+cast(QSN.SizeId as nvarchar)+']'+SPACE(5)+S.ShapeName as Size from QualitySizeNew QSN INNER JOIN CustomerSize CS  ON QSN.SizeId=CS.Sizeid
@@ -306,7 +269,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                     str = str + " and S.ShapeId=" + DDShape.SelectedValue;
                 }
                 str = str + " order by Size";
-
             }
             else
             {
@@ -379,11 +341,8 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 }
                 str = str + " order by Size";
             }
-
         }
-
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--Select--");
-
     }
     private void BindCalc()
     {
@@ -429,7 +388,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
     }
     protected void DDCustomerCode_SelectedIndexChanged(object sender, EventArgs e)
     {
-
         DDShape.SelectedIndex = -1;
         DDCalcOption.SelectedIndex = -1;
         DDQualityType.Items.Clear();
@@ -438,24 +396,15 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         DDColor.Items.Clear();
         DDSize.Items.Clear();
 
-        //UtilityModule.ConditionalComboFill(ref DDQualityType, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDQuality, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDDesign, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDColor, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDSize, " ", true, "--Select--");
-
         txtRate.Text = "";
         txtRate2.Text = "";
         txtReIssRate.Text = "";
         txtBonusRate.Text = "";
-        //txtEffectiveDate.Text = "";
-
         BindQualityType();
         BindGrid(0);
     }
     protected void DDQualityType_SelectedIndexChanged(object sender, EventArgs e)
     {
-
         DDShape.SelectedIndex = -1;
         DDCalcOption.SelectedIndex = -1;
 
@@ -463,16 +412,10 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         DDDesign.Items.Clear();
         DDColor.Items.Clear();
         DDSize.Items.Clear();
-        //UtilityModule.ConditionalComboFill(ref DDQuality, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDDesign, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDColor, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDSize, " ", true, "--Select--");
-
         txtRate.Text = "";
         txtRate2.Text = "";
         txtReIssRate.Text = "";
         txtBonusRate.Text = "";
-        //txtEffectiveDate.Text = "";
 
         BindQuality();
         BindGrid(0);
@@ -482,10 +425,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         DDDesign.Items.Clear();
         DDColor.Items.Clear();
         DDSize.Items.Clear();
-        //UtilityModule.ConditionalComboFill(ref DDDesign, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDColor, " ", true, "--Select--");
-        //UtilityModule.ConditionalComboFill(ref DDSize, " ", true, "--Select--");
-
+        
         BindDesign();
         if (DDQuality.SelectedIndex > 0)
         {
@@ -632,7 +572,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] _arrpara = new SqlParameter[20];
+            SqlParameter[] _arrpara = new SqlParameter[21];
             if (ViewState["RateId"] == null)
             {
                 ViewState["RateId"] = 0;
@@ -660,12 +600,12 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             _arrpara[17] = new SqlParameter("@Remark", TxtRemark.Text);
             _arrpara[18] = new SqlParameter("@EmpID", TDEmployeeName.Visible == true ? DDEmployeeName.SelectedValue : "0");
             _arrpara[19] = new SqlParameter("@Bonus", TDBonusRate.Visible == true ? txtBonusRate.Text=="" ? "0" : txtBonusRate.Text : "0");
+            _arrpara[20] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_SaveFinisherJobRate]", _arrpara);
 
             llMessageBox.Visible = true;
             llMessageBox.Text = _arrpara[13].Value.ToString();
-            //llMessageBox.Text = "Data Successfully Saved.......";
 
             ViewState["RateId"] = 0;
             Tran.Commit();
@@ -696,18 +636,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
     }
     private void ClearAfterSave()
     {
-        //DDJobType.SelectedIndex = -1;
-        //DDCustomerCode.SelectedIndex = -1;
-        //DDQualityType.SelectedIndex = -1;
-        //DDQuality.SelectedIndex = -1;
-        //DDDesign.SelectedIndex = -1;
-        //DDColor.SelectedIndex = -1;
-        //DDSize.SelectedIndex = -1;
-        //DDCalcOption.SelectedIndex = -1;
-        //txtRate.Text = "";
-        //txtRate2.Text = "";
-        //txtReIssRate.Text = "";
-        //txtEffectiveDate.Text = "";
         VarBool = false;
         TxtRemark.Text = "";
     }
@@ -724,7 +652,11 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         if (variable.VarNewQualitySize == "1")
         {
             sizeColumn = "Finishing_Mt_Size";
-        }        
+        }
+        if (DDBranchName.SelectedIndex > 0)
+        {
+            where = where + " and RD.BranchID = " + DDBranchName.SelectedValue;
+        }
         if (DDJobType.SelectedIndex > 0)
         {
             where = where + " and RD.JobTypeId=" + DDJobType.SelectedValue;
@@ -768,7 +700,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             {
                 where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + @"
                         Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + ",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
-
             }
             else if (DDJobType.SelectedIndex > 0 && DDQualityType.SelectedIndex > 0 && DDQuality.SelectedIndex > 0 && DDSize.SelectedIndex < 0)
             {
@@ -786,18 +717,12 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                         Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
             }
         }
-        where = where + @" Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,
-                            IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,ReIssRate,ToDate,RD.CustomerId,RD.Shapeid,S.Shapename,CI.customercode,RD.Shapeid,RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus ";
+        where = where + @" Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,
+                    RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,ReIssRate,ToDate,
+                    RD.CustomerId,RD.Shapeid,S.Shapename,CI.customercode,RD.Shapeid,RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, 
+                    EI.EmpName,RD.Bonus, RD.BranchID, BM.BranchName ";
 
         where = where + @" Order by QualityName";
-
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        if (con.State == ConnectionState.Closed)
-        {
-            con.Open();
-        }
-
-        SqlTransaction Tran = con.BeginTransaction();
         try
         {
             SqlParameter[] param = new SqlParameter[5];
@@ -805,7 +730,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             param[1] = new SqlParameter("@Where", where);
 
             //**********
-            DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.StoredProcedure, "Pro_GetFinisherJobRate", param);
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetFinisherJobRate", param);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -817,14 +742,10 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 GVFinisherJobRate.DataSource = null;
                 GVFinisherJobRate.DataBind();
             }
-
-            Tran.Commit();
         }
         catch (Exception ex)
         {
-            Tran.Rollback();
             llMessageBox.Text = ex.Message;
-            con.Close();
         }
     }
     protected void GVFinisherJobRate_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -899,26 +820,18 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
 
         ViewState["RateId"] = id;
 
-        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        if (con.State == ConnectionState.Closed)
-        {
-            con.Open();
-        }
-        SqlTransaction Tran = con.BeginTransaction();
         try
         {
             SqlParameter[] param = new SqlParameter[1];
             param[0] = new SqlParameter("@RateId", id);
 
             //**********
-            DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.StoredProcedure, "Pro_GetFinisherJobRate", param);
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetFinisherJobRate", param);
 
             if (ds.Tables[0].Rows.Count == 1)
             {
                 DDJobType.SelectedValue = ds.Tables[0].Rows[0]["JobTypeId"].ToString();
-                //BindJobType();
                 DDCustomerCode.SelectedValue = ds.Tables[0].Rows[0]["CustomerId"].ToString();
-                // BindCustomerCode();
 
                 BindQualityType();
                 DDQualityType.SelectedValue = ds.Tables[0].Rows[0]["Item_Id"].ToString();
@@ -935,7 +848,6 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 {
                     DDShape.SelectedValue = ds.Tables[0].Rows[0]["shapeid"].ToString();
                 }
-
 
                 if (Session["varCompanyId"].ToString() == "9")
                 {
@@ -971,8 +883,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 if (DDUnit.Items.FindByValue(ds.Tables[0].Rows[0]["Unitid"].ToString()) != null)
                 {
                     DDUnit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
-                }
-             
+                }             
 
                 DDJobType.Enabled = false;
                 DDQualityType.Enabled = false;
@@ -981,25 +892,14 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 DDColor.Enabled = false;
                 DDSize.Enabled = false;
                 DDCalcOption.Enabled = false;
-
             }
-            //BindGrid();            
-
-            Tran.Commit();
         }
         catch (Exception ex)
         {
             llMessageBox.Text = ex.Message;
-            Tran.Rollback();
-        }
-        finally
-        {
-            con.Close();
-            con.Dispose();
         }
         BtnSave.Text = "Update";
     }
-
 
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
     {
