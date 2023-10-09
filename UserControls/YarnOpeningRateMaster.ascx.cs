@@ -307,4 +307,8 @@ public partial class UserControls_YarnOpeningRateMaster : System.Web.UI.UserCont
     {
         Fillgrid();
     }
+    protected void DDBranchName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+    }
 }

@@ -14,7 +14,6 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
         if (Session["varcompanyNo"] == null)
         {
             Response.Redirect("~/Login.aspx");
@@ -28,21 +27,22 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
                     Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
 
-                    select  UnitsId,UnitName from Units with(nolock) Where Mastercompanyid = " + Session["varcompanyid"] + @" 
-                    select ITEM_ID,ITEM_NAME from ITEM_MASTER IM with(nolock) Inner Join CategorySeparate CS with(nolock) on 
-                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varcompanyid"] + @" 
-                    select  ShapeId,ShapeName from Shape with(nolock) 
-                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" Order By PROCESS_NAME 
-                    select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME 
-                    select val,Type From Sizetype
-                    select OrderCategoryId,OrderCategory from OrderCategory order by OrderCategory";
+                    Select UnitsId,UnitName from Units with(nolock) Where Mastercompanyid = " + Session["varcompanyid"] + @" 
+                    Select ITEM_ID,ITEM_NAME from ITEM_MASTER IM with(nolock) Inner Join CategorySeparate CS with(nolock) on 
+                        cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varcompanyid"] + @" 
+                    Select ShapeId,ShapeName from Shape with(nolock) 
+                    Select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" Order By PROCESS_NAME 
+                    Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME 
+                    Select val,Type From Sizetype
+                    Select OrderCategoryId,OrderCategory from OrderCategory order by OrderCategory"; 
+
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
 
             if (DDCompanyName.Items.Count > 0)
             {
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
-                DDCompanyName.Enabled = false;
+                //DDCompanyName.Enabled = false;
             }
 
             UtilityModule.ConditionalComboFillWithDS(ref DDUnitName, ds, 1, false, "");
@@ -53,6 +53,7 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
             UtilityModule.ConditionalComboFillWithDS(ref DDsizeType, ds, 6, false, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDOrderType, ds, 7, false, "");
 
+            FillBranchName();
             if (DDsizeType.Items.FindByValue(variable.VarDefaultSizeId) != null)
             {
                 DDsizeType.SelectedValue = variable.VarDefaultSizeId;
@@ -123,9 +124,27 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
             if (variable.VarDEFINEPROCESSRATE_LOCATIONWISE == "1")
             {
                 DivRateLocation.Visible = true;
-
             }
         }
+    }
+
+    protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        FillBranchName();
+    }
+    private void FillBranchName()
+    {
+        string str2 = @" Select ID, BranchName From BRANCHMASTER(Nolock) Where CompanyID = " + Session["CurrentWorkingCompanyID"] + " Order By ID ";
+        DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+
+        UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds2, 0, false, "");
+    }
+
+    protected void DDBranchName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ddJob.SelectedIndex = 0;
+        DGRateDetail.DataSource = null;
+        DGRateDetail.DataBind();
     }
     protected void BindWeavingEmp()
     {
@@ -250,7 +269,8 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
             {
                 int finishedid = 0;
                 finishedid = UtilityModule.getItemFinishedId(DDArticleName, ddquality, DDDesign, DDColor, DDShape, ddSize, TxtProductCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
-                SqlParameter[] param = new SqlParameter[16];
+                
+                SqlParameter[] param = new SqlParameter[17];
                 param[0] = new SqlParameter("@CompanyId", DDCompanyName.SelectedValue);
                 param[1] = new SqlParameter("@UnitsId", Divuniname.Visible == true ? DDUnitName.SelectedValue : "0");
                 param[2] = new SqlParameter("@Finishedid", finishedid);
@@ -267,6 +287,8 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
                 param[13] = new SqlParameter("@FinisherRate", DivFinisherRate.Visible == false ? "0" : TxtFinisherRate.Text == "" ? "0" : TxtFinisherRate.Text);
                 param[14] = new SqlParameter("@OrderTypeId", DivOrderType.Visible == false ? "0" : DDOrderType.SelectedValue);
                 param[15] = new SqlParameter("@Remark", TxtRemark.Text);
+                param[16] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
+
                 //Save data
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveJobRate", param);
                 //
@@ -305,7 +327,8 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
                     LEFT JOIN EmpInfo EI(Nolock) ON TJ.EmpId=EI.EmpID                 
                     inner join PROCESS_NAME_MASTER PNM(Nolock) on PNM.PROCESS_NAME_ID=Tj.jobid 
                     LEFT JOIN OrderCategory OC(NoLock) ON TJ.OrderTypeId=OC.OrderCategoryId
-                    Where Tj.mastercompanyId=" + Session["varcompanyId"] + " And Tj.companyId=" + DDCompanyName.SelectedValue;
+                    Where Tj.mastercompanyId=" + Session["varcompanyId"] + " And Tj.companyId=" + DDCompanyName.SelectedValue + @"
+                    And Tj.BranchID = " + DDBranchName.SelectedValue;
 
         if (Divuniname.Visible == true)
         {
