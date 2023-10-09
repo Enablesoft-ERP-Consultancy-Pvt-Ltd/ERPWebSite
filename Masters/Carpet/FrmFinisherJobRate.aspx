@@ -26,6 +26,14 @@
                     <table>
                         <tr>
                             <td class="tdstyle">
+                                <asp:Label ID="Label21" Text="Branch Name" runat="server" CssClass="labelbold" /><span
+                                    style="color: Red">*</span>
+                                <br />
+                                <asp:DropDownList ID="DDBranchName" AutoPostBack="true" runat="server" Width="150px"
+                                    CssClass="dropdown" OnSelectedIndexChanged="DDBranchName_SelectedIndexChanged">
+                                </asp:DropDownList>
+                            </td>
+                            <td class="tdstyle">
                                 <asp:Label ID="Label9" Text="Job Type" runat="server" CssClass="labelbold" /><span
                                     style="color: Red">*</span>
                                 <br />

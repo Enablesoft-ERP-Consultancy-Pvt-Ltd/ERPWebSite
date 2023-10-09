@@ -166,6 +166,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
     private DataSet GetDetail()
     {
         DataSet ds = null;
+        string sp = string.Empty;   
         try
         {
             SqlParameter[] para = new SqlParameter[4];
@@ -178,7 +179,16 @@ public partial class Masters_Order_FrmTagging : CustomPage
             para[1].Value = ChkForEdit.Checked == true ? 1 : 0;
             para[2].Value = variable.Withbuyercode;
             para[3].Value = variable.VarNewQualitySize;
-            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_Get_Tag_Stock", para);
+            if (Convert.ToInt16(Session["varcompanyid"]) == 44)
+            {
+                sp = "Pro_Get_Tag_Stock_New";
+            }
+            else
+            {
+                sp = "Pro_Get_Tag_Stock";
+            }
+
+                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, sp, para);
         }
         catch (Exception ex)
         {
@@ -200,6 +210,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
         lblErrorMessage.Text = "";
         string msg = "";
         int savecnt = 0;
+        string sp = string.Empty;
         Check_Qty();
         if (lblErrorMessage.Text == "")
         {
@@ -216,7 +227,15 @@ public partial class Masters_Order_FrmTagging : CustomPage
                     CheckBox Chkboxitem = ((CheckBox)DGOrderDetail.Rows[i].FindControl("Chkboxitem"));
                     if (Chkboxitem.Checked == true)
                     {
-                        SqlCommand cmd = new SqlCommand("Pro_Update_Tag_Stock", con, Tran);
+                        if (Convert.ToInt16(Session["varcompanyid"]) == 44)
+                        {
+                            sp = "Pro_Update_Tag_Stock_new";
+                        }
+                        else
+                        {
+                            sp = "Pro_Update_Tag_Stock";
+                        }
+                            SqlCommand cmd = new SqlCommand(sp, con, Tran);
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.CommandTimeout = 3000;
 

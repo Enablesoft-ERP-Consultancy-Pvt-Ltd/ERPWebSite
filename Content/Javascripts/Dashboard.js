@@ -143,7 +143,7 @@ $(function () {
                             $.each(data.ProcessList, function (index, item) {
 
                                 item.SeqNo = index + 1;
-                            /*    console.log(item);*/
+                                /*    console.log(item);*/
                                 // var _item = ProcessList.find(S => S.ProcessId == item.ProcessId);
                                 if (item.ProcessType == 0) {
                                     item.ProcessType = 1;
@@ -423,8 +423,9 @@ function OrderDetail(_orderId) {
 
     var bodyHtml = "";
 
-    $('#myModal').find('div.modal-header').empty();
-    $('#myModal').find('div.modal-header').append("<h4 class='modal-title'>Order Info</h4>");
+
+    $('#myModal').find('h4.modal-title').empty();
+    $('#myModal').find('h4.modal-title').append("Order Info");
 
     const obj = { OrderId: _orderId };
     $.ajax({
@@ -481,8 +482,8 @@ function OrderDetail(_orderId) {
 }
 
 function ProcessReport(_orderId, _processId, _title, _type) {
-    $('div.modal-header').empty();
-    $('div.modal-header').append("<h4 class='modal-title'>Process Report</h4>");
+    $('h4.modal-title').empty();
+    $('h4.modal-title').append("Process Report");
     $('div.modal-body').empty();
     var panelhtml = "<div class='row' data-order='0'></div>";
     $('div.modal-body').html(panelhtml);
@@ -575,9 +576,12 @@ function OrderSummary(_orderId, index, cust) {
 
 function SummaryReport(elem, orderId) {
 
-    $('div.modal-header').empty();
-    $('div.modal-header').append("<h4 class='modal-title'>Summary Report</h4>");
-    $('div.modal-header').append("<a class='sorting close text-green btn btn-default btn-xs mrm'><i class='fa fa-sort mrs'></i><strong>Sequencing</strong></a>");
+
+
+    $('h4.modal-title').empty();
+    $('h4.modal-title').append("Summary Report");
+    $('h4.modal-title').append("<a class='sorting close text-green btn btn-default btn-xs mrm'><i class='fa fa-sort mrs'></i><strong>Sequencing</strong></a>");
+
     $('div.modal-body').empty();
 
     var panelhtml = "<div class='row' data-order='0'></div>";

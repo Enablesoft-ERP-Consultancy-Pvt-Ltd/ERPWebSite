@@ -124,6 +124,7 @@
                                 <asp:RadioButton ID="RDProcessWiseAdvancePayment" Text="Process Wise Advance Payment"
                                     runat="server" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
                                     OnCheckedChanged="RDProcessWiseAdvancePayment_CheckedChanged" />
+                                    <br>
                                     </br>
                                 &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDGatePass" Text="Gate In OR Gate Pass Detail" runat="server"
@@ -190,7 +191,10 @@
                                 <asp:RadioButton ID="RDTasselMakingRawIssueDetail" runat="server" Text="Tassal RawMaterial Issue Detail"
                                     GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True" OnCheckedChanged="RDTasselMakingRawIssueDetail_CheckedChanged" />
                                 <br />
-                                
+                                  &nbsp;&nbsp;
+                                <asp:RadioButton ID="RDFinishingBalance" runat="server" Text="Finishing Balance"
+                                    GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingBalance_CheckedChanged" />
+                                <br />
                                 &nbsp;&nbsp;
                             </div>
                         </td>
@@ -551,6 +555,25 @@
                                                 <asp:CheckBox ID="ChkBuyerItemSizeWiseSummary" runat="server" CssClass="checkboxbold" Text="Buyer Item Size Wise Summary" />
                                             </td>
                                         </tr>
+
+                                         <tr id="TRAsOnDate" runat="server" visible="false">
+                                        <td>
+                                            <asp:Label ID="Label12" runat="server" CssClass="labelbold" Text="As ON Date"></asp:Label>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="txtAsOnDate" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
+                                            <asp:CalendarExtender ID="CalendarExtender5" runat="server" Format="dd-MMM-yyyy"
+                                                TargetControlID="txtAsOnDate">
+                                            </asp:CalendarExtender>
+                                        </td>
+                                        <td align="right">
+                                            &nbsp;
+                                        </td>
+                                        <td>
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+
                                         <tr>
                                             <td align="right" colspan="4">
                                                 &nbsp;<asp:CheckBox ID="ChkSummary" runat="server" CssClass="checkboxnormal" Text="For Summary" />

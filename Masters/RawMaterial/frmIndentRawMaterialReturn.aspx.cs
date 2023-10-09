@@ -428,6 +428,10 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
                 {
                     Session["rptFileName"] = "Reports/RptIndentRawReturnDuplicateKaysons.rpt";
                 }
+                else if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Session["rptFileName"] = "Reports/RptIndentRawReturnDuplicateCI.rpt";
+                }
                 else
                 {
                     Session["rptFileName"] = "Reports/RptIndentRawReturnDuplicate.rpt";

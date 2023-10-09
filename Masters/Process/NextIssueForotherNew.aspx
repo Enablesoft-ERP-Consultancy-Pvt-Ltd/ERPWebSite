@@ -16,7 +16,7 @@
             document.getElementById('txtgetvalue').value = eventArgs.get_value();
         }
         function NewForm() {
-            window.location.href = "NextIssueForOther.aspx";
+            window.location.href = "NextIssueForOthernew.aspx";
         }
         function CloseForm() {
             window.location.href = "../../main.aspx";

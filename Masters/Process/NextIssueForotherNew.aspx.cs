@@ -55,12 +55,18 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
             str = str + @" Select UnitId,unitName from Unit where UnitId in(1,2,6) order by UnitId
                         Select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId
                         Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
-                        Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                        Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"]+@"
+select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf.designid<>0 order by vf.designName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDTOProcess, ds, 0, true, "--Plz Select Process--");
             UtilityModule.ConditionalComboFillWithDS(ref DDUnit, ds, 1, true, "--Plz Select Unit--");
             UtilityModule.ConditionalComboFillWithDS(ref ddUnits, ds, 2, true, "");
+            UtilityModule.ConditionalComboFillWithDS(ref DDDesign, ds, 5, true, "--Plz Select--");
+            string strdesign = "";
+
+           
+            //DataSet dsdesign = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strdesign);
            // UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 3, true, "--Plz Select--");
             //if (DDCategory.Items.Count > 0)
             //{
@@ -749,7 +755,7 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
         //                Order BY vf.designName";
         //        }
 
-        string str = "select Distinct vf.ColorId,vf.ColorName From V_FinishedItemDetail vf where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid<>0 order by vf.colorname";
+        string str = string.Empty;
         if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
         {
             str = @"Select Distinct vf.ColorId,vf.ColorName 
@@ -757,6 +763,11 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + " And vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + @" 
                 Where OD.OrderId = " + DDorderNo.SelectedValue + @"
                 Order BY vf.ColorName";
+        }
+        else
+        {
+           str= "select Distinct vf.ColorId,vf.ColorName From V_FinishedItemDetail vf where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid<>0 order by vf.colorname";
+        
         }
 
         UtilityModule.ConditionalComboFill(ref DDColor, str, true, "--Plz Select--");
@@ -1847,9 +1858,20 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
     }
     protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = @"select distinct b.CATEGORY_ID ,b.CATEGORY_NAME from OrderDetail a join V_FinishedItemDetail b on a.Item_Finished_Id=b.ITEM_FINISHED_ID
+        string str = string.Empty;
+        if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+        {
+            str = @"select distinct b.CATEGORY_ID ,b.CATEGORY_NAME from OrderDetail a join V_FinishedItemDetail b on a.Item_Finished_Id=b.ITEM_FINISHED_ID
 	join ITEM_CATEGORY_MASTER ICM on icm.CATEGORY_ID=b.CATEGORY_ID inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0
 	where orderid=" + DDorderNo.SelectedValue;
+        }
+        else
+        {
+
+            str = @"select distinct b.CATEGORY_ID ,b.CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 LEFT JOIN V_FinishedItemDetail b on ICM.CATEGORY_ID=b.CATEGORY_ID
+
+	where b.designId=" + DDDesign.SelectedValue;
+        }
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         

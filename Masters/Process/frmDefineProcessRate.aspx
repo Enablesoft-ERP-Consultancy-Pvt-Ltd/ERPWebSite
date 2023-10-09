@@ -95,7 +95,18 @@
                             <asp:Label ID="lblCompanyName" runat="server" CssClass="labelbold" Text="COMPANY NAME"></asp:Label>
                         </div>
                         <div style="height: 25px">
-                            <asp:DropDownList ID="DDCompanyName" runat="server" Width="250px" CssClass="dropdown">
+                            <asp:DropDownList ID="DDCompanyName" runat="server" Width="250px" CssClass="dropdown"
+                                AutoPostBack="true" OnSelectedIndexChanged="DDCompanyName_SelectedIndexChanged">
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="width: 150px; float: left; text-align: right; padding-right: 10px">
+                            <asp:Label ID="LblBranchName" runat="server" CssClass="labelbold" Text="BRANCH NAME"></asp:Label>
+                        </div>
+                        <div style="height: 25px">
+                            <asp:DropDownList ID="DDBranchName" runat="server" Width="250px" CssClass="dropdown"
+                                AutoPostBack="true" OnSelectedIndexChanged="DDBranchName_SelectedIndexChanged">
                             </asp:DropDownList>
                         </div>
                     </div>
@@ -266,7 +277,7 @@
                         <div>
                             <asp:TextBox ID="txtcommrate" runat="server" CssClass="textb"></asp:TextBox>&nbsp
                         </div>
-                    </div>                    
+                    </div>
                     <div style="margin-top: 1%">
                         <div style="width: 150px; float: left; text-align: right; padding-right: 10px">
                             <asp:Label ID="Label12" runat="server" Text="Remark" CssClass="labelbold"></asp:Label>
@@ -275,7 +286,6 @@
                             <asp:TextBox ID="TxtRemark" runat="server" Width="250px" CssClass="textb"></asp:TextBox>&nbsp
                         </div>
                     </div>
-
                     <div id="DivBonus" runat="server" visible="false" style="margin-top: 1%">
                         <div style="width: 150px; float: left; text-align: right; padding-right: 10px">
                             <asp:Label ID="Label7" runat="server" Text="Bouns" CssClass="labelbold"></asp:Label>
@@ -409,7 +419,6 @@
                                     <asp:Label ID="lblRemark" runat="server" Text='<%# Bind("Remark") %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            
                         </Columns>
                         <EmptyDataRowStyle CssClass="gvemptytext" />
                     </asp:GridView>

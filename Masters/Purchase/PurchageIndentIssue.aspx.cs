@@ -274,7 +274,10 @@ public partial class Masters_Purchase_PurchageIndentIssue : System.Web.UI.Page
                     trrevisedremark.Visible = true;
                     ddlDeliveryAddress.Visible = true;
                     txtDeliveryAddress.Visible = false;
-                    break;               
+                    break;
+                case 46:  // Neman Carpet
+                    btnaddquality.Visible = false;                    
+                    break;
             }
             OnCheckedChange();
             if (ddcustomercode.Items.Count > 0)
