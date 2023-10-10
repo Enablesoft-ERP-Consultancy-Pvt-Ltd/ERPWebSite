@@ -38,6 +38,9 @@
               <xs:element name="WOOL" type="xs:decimal" minOccurs="0" />
               <xs:element name="COTTONYARN" type="xs:decimal" minOccurs="0" />
               <xs:element name="VISCOSE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="JUTE" type="xs:decimal" minOccurs="0" />
+              <xs:element name="POLYSTERYARN" type="xs:decimal" minOccurs="0" />
+              <xs:element name="SILK" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
