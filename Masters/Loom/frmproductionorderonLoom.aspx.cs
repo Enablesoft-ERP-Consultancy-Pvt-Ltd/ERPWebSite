@@ -1286,7 +1286,7 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
         }
 
         //Employeedetail
-        str = str + @" select Distinct Ei.Empid,EI.EmpCode+'-'+EI.EmpName as Empname,activestatus from Employee_ProcessOrderNo EMP 
+        str = str + @" select Distinct Ei.Empid,EI.EmpCode+'-'+EI.EmpName as Empname,activestatus,EI.EmployeeType from Employee_ProcessOrderNo EMP 
                     inner Join EmpInfo EI on EMP.Empid=EI.EmpId 
                     Where Emp.ProcessId=1 and Emp.IssueOrderId=" + hnissueorderid.Value;
         if (hnEmployeeType.Value == "0")
@@ -1400,6 +1400,11 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                     {
                         listWeaverName.Items[i].Attributes.Add("style", "background-color:white;");
                     }
+                }
+
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    hnEmployeeType.Value = ds.Tables[1].Rows[0]["EmployeeType"].ToString();
                 }
             }
         }
