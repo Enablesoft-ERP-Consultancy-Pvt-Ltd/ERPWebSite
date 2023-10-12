@@ -227,8 +227,6 @@ $(function () {
                 ProcessReport(_orderId, _processId, name, _type);
             });
 
-
-
             table.on('click', 'a.btnFinish', function (e) {
                 var elem = $(this);
                 var _orderId = parseInt(elem.attr('exthref'));
@@ -445,7 +443,7 @@ function OrderDetail(_orderId) {
 
 
 
-            bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += "<div class='row'><div class='col-lg-12'><div class='table-responsive-sm'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Due Date</th>";
             bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
@@ -527,7 +525,7 @@ function OrderSummary(_orderId, index, cust) {
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Dispatched Date:</strong>" + result.data[0].DispatchDate + "</p></div>";
             bodyHtml += "<div class='col-lg-4'><p><strong class='mrm'>Due Date:</strong>" + result.data[0].DueDate + "</p></div>";
 
-            bodyHtml += "<div class='col-lg-12'>";
+            bodyHtml += "<div class='col-lg-12 table-responsive-sm'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr>";
             bodyHtml += "<th>Technique</th><th>Quality</th><th>Design</th>";
@@ -634,7 +632,7 @@ function ReqHtml(_url, _Req, _title, _seq) {
         success: function (data) {
             console.log(data.d)
             var result = $.parseJSON(data.d);
-            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive'>";
+            bodyHtml += "<div class='col-lg-12'><h4 class='box-heading'>" + _title + "</h4></div><div class='col-lg-12'><div class='table-responsive-sm'>";
             bodyHtml += " <table class='table table-hover table-bordered table-striped'><thead>";
             bodyHtml += "<tr><th>Supplier</th><th>Design No.</th><th>Item Description</th>";
             bodyHtml += "<th>Indent No.</th><th>Req. Date</th>";
