@@ -295,6 +295,21 @@
                                                             </table>
                                                         </td>
                                                     </tr>
+                                                    <tr>
+                                                        <td style="width: 50%">
+                                                            <table style="width: 100%">
+                                                                <tr>
+                                                                    <td id="TDQaname" runat="server">
+                                                                        <asp:Label ID="Label29" Text="QA NAME" runat="server" CssClass="labelbold" /><br />
+                                                                    </td>
+                                                                    <td style="width: 70%">
+                                                                        <asp:DropDownList ID="DDQaname" runat="server" CssClass="dropdown" Width="50%">
+                                                                        </asp:DropDownList>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+                                                    </tr>
                                                 </table>
                                             </td>
                                             <td style="width: 30%">
@@ -317,7 +332,6 @@
                                                                         <asp:TextBox ID="txtWeaverIdNoscan" CssClass="textb" runat="server" Width="90%" Height="20px"
                                                                             AutoPostBack="true" Visible="false" OnTextChanged="txtWeaverIdNoscan_TextChanged" />
                                                                         <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
-
                                                                         <asp:AutoCompleteExtender ID="txtWeaverIdNo_AutoCompleteExtender" runat="server"
                                                                             BehaviorID="SrchAutoComplete" CompletionInterval="20" Enabled="True" ServiceMethod="GetEmployeeForJobNew"
                                                                             EnableCaching="true" CompletionSetCount="20" OnClientItemSelected="EmpSelected"
@@ -405,10 +419,10 @@
                                                     <asp:Label ID="LblErrorMessage" runat="server" Text="" CssClass="labelbold" ForeColor="Red"
                                                         Font-Bold="true" Font-Size="Small"></asp:Label>
                                                 </td>
-                                                <td id="TDTotalPcsNew" runat="server"  class="tdstyle" visible="false">
-                                                <span class="labelbold">Total Pcs</span>
-                                                <asp:TextBox CssClass="textb" ID="txtTotalPcsNew" runat="server" Width="100px"></asp:TextBox>
-                                            </td>
+                                                <td id="TDTotalPcsNew" runat="server" class="tdstyle" visible="false">
+                                                    <span class="labelbold">Total Pcs</span>
+                                                    <asp:TextBox CssClass="textb" ID="txtTotalPcsNew" runat="server" Width="100px"></asp:TextBox>
+                                                </td>
                                             </tr>
                                         </table>
                                     </fieldset>
@@ -504,7 +518,8 @@
                                             <td>
                                                 <div style="max-height: 300px; background-color: Gray; overflow: scroll; width: 100%">
                                                     <asp:GridView ID="DGDetail" runat="server" AutoGenerateColumns="False" DataKeyNames="process_rec_Detail_Id"
-                                                        OnRowDeleting="DGDetail_RowDeleting" OnRowDataBound="DGDetail_RowDataBound" CssClass="grid-view" Width="100%">
+                                                        OnRowDeleting="DGDetail_RowDeleting" OnRowDataBound="DGDetail_RowDataBound" CssClass="grid-view"
+                                                        Width="100%">
                                                         <HeaderStyle CssClass="gvheaders" />
                                                         <AlternatingRowStyle CssClass="gvalts" />
                                                         <RowStyle CssClass="gvrow" />
@@ -559,13 +574,11 @@
                                                                     <asp:Label ID="lblamount" Text='<%#Bind("Amount") %>' runat="server" />
                                                                 </ItemTemplate>
                                                             </asp:TemplateField>
-
                                                             <asp:TemplateField HeaderText="Bonus" Visible="false">
                                                                 <ItemTemplate>
                                                                     <asp:Label ID="lblBonus" Text='<%#Bind("Bonus") %>' runat="server" />
                                                                 </ItemTemplate>
                                                             </asp:TemplateField>
-
                                                             <asp:TemplateField ShowHeader="False">
                                                                 <ItemTemplate>
                                                                     <asp:LinkButton ID="LinkButton1" runat="server" CausesValidation="False" CommandName="Delete"

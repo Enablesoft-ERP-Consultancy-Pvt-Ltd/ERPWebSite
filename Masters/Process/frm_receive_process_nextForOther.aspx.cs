@@ -148,31 +148,31 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 btnqcreport.Visible = true;
             }
         }
-
-
     }
     private void Fill_Temp_OrderNo()
     {
         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "DELETE TEMP_PROCESS_RECEIVE_MASTER_NEW");
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER Where Process_Name_Id<>1 And MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name_Id");
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER(nolock) Where Process_Name_Id<>1 And MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name_Id");
         if (Ds.Tables[0].Rows.Count > 0)
         {
             for (int i = 0; i < Ds.Tables[0].Rows.Count; i++)
             {
-                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Insert into TEMP_PROCESS_RECEIVE_MASTER_NEW SELECT CompanyId,EmpId,Process_Rec_Id," + Ds.Tables[0].Rows[i]["Process_Name_Id"] + " ProcessId FROM PROCESS_RECEIVE_MASTER_" + Ds.Tables[0].Rows[i]["Process_Name_Id"] + "");
+                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Insert into TEMP_PROCESS_RECEIVE_MASTER_NEW SELECT CompanyId,EmpId,Process_Rec_Id," + Ds.Tables[0].Rows[i]["Process_Name_Id"] + " ProcessId FROM PROCESS_RECEIVE_MASTER_" + Ds.Tables[0].Rows[i]["Process_Name_Id"] + "(Nolock)");
             }
         }
     }
+
     protected void ddprocess_SelectedIndexChanged(object sender, EventArgs e)
     {
         ProcessSelectedChanges();
     }
+
     private void ProcessSelectedChanges()
     {
         ViewState["recid"] = 0;
-        UtilityModule.ConditionalComboFill(ref ddemp, "Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + ddprocess.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddemp, "Select Distinct EI.Empid,EI.EmpName From Empinfo EI(nolock),process_issue_master_" + ddprocess.SelectedValue + " PM(nolock) Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
 
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT DISTINCT OCALTYPE FROM PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD WHERE PM.PCMID=PD.PCMID And PROCESSID=" + ddprocess.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT DISTINCT OCALTYPE FROM PROCESSCONSUMPTIONMASTER PM(nolock),PROCESSCONSUMPTIONDETAIL PD(nolock) WHERE PM.PCMID=PD.PCMID And PROCESSID=" + ddprocess.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"] + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
             DDcaltype.SelectedValue = Ds.Tables[0].Rows[0]["OCALTYPE"].ToString();
@@ -537,6 +537,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     _arrpara[32] = new SqlParameter("@PartyChallanNo", SqlDbType.VarChar, 50);
                     _arrpara[33] = new SqlParameter("@Bonus", SqlDbType.Float);
                     _arrpara[34] = new SqlParameter("@BonusAmt", SqlDbType.Float);
+                    _arrpara[35] = new SqlParameter("@QAPersonname", SqlDbType.Int);
 
                     if (ViewState["recid"] == null)
                     {
@@ -612,6 +613,15 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     {
                         _arrpara[33].Value = 0;
                         _arrpara[34].Value = 0;
+                    }
+                    
+                    if (DDQaname.Items.Count > 0)
+                    {
+                        _arrpara[35].Value = (DDQaname.SelectedIndex > 0 ? DDQaname.SelectedItem.Text : "0");
+                    }
+                    else
+                    {
+                        _arrpara[35].Value = 0;
                     }
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_NextProcessReceiveForOther]", _arrpara);
@@ -990,11 +1000,6 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     {
         ViewState["recid"] = 0;
         Fill_Temp_OrderNo();
-
-        //if (ddCompName.SelectedIndex > 0 && ddprocess.SelectedIndex > 0)
-        //{
-        //    fill_DetailGride();
-        //}
     }
     protected void DDChallanNo_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -1003,7 +1008,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     private void ChallanNoSelectedChange()
     {
         ViewState["recid"] = DDChallanNo.SelectedValue;
-        string Str = "Select Process_Rec_Id,EmpId,Replace(convert(varchar(11),ReceiveDate,106), ' ','-') ReceiveDate,UnitId,Remarks From PROCESS_RECEIVE_MASTER_" + ddprocess.SelectedValue + " Where Process_Rec_Id=" + DDChallanNo.SelectedValue + " And CompanyId=" + ddCompName.SelectedValue;
+        string Str = "Select Process_Rec_Id,EmpId,Replace(convert(varchar(11),ReceiveDate,106), ' ','-') ReceiveDate,UnitId,Remarks From PROCESS_RECEIVE_MASTER_" + ddprocess.SelectedValue + "(Nolock) Where Process_Rec_Id=" + DDChallanNo.SelectedValue + " And CompanyId=" + ddCompName.SelectedValue;
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -1607,6 +1612,15 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 btnShowDetail.Visible = true;
             }
         }
+        FillQAName();
+    }
+    private void FillQAName()
+    {
+        UtilityModule.ConditionalComboFill(ref ddldesig, @"Select EI.EmpId, EI.EmpName 
+            From Empinfo EI(Nolock) 
+            JOIN Department D(Nolock) ON EI.Departmentid = D.DepartmentId And EI.Blacklist = 0 And D.DepartmentName = 'QC Department' 
+            JOIN EmpProcess EP(Nolock) ON EP.EmpId = EI.EmpId And EP.ProcessId = " + ddprocess.SelectedValue + @" 
+            Order by EI.EmpName ", true, "--Plz select--");
     }
     protected void ddUnits_SelectedIndexChanged(object sender, EventArgs e)
     {

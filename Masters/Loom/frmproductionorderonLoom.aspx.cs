@@ -35,7 +35,8 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
             }
 
             hnEmpWagescalculation.Value = "";
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI(Nolock),Company_Authentication CA(Nolock) 
+                Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
                 Select CI.CustomerId, CI.CustomerCode 
                 From Customerinfo CI(Nolock)";
                 if (Convert.ToInt32(Session["varcompanyNo"]) == 42)
@@ -45,8 +46,8 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
 
                 str = str + @" Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" order by CI.Customercode 
 
-                select UnitsId,UnitName from Units order by UnitName
-                select UnitId,UnitName From Unit Where Unitid in(1,2)
+                select UnitsId,UnitName from Units(Nolock) order by UnitName
+                select UnitId,UnitName From Unit(Nolock) Where Unitid in(1,2)
                 Select ID, BranchName 
                 From BRANCHMASTER BM(nolock) 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
@@ -57,7 +58,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
                 Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
                 Order By D.DepartmentName
-select isnull(masterunitid,0) as masterunitid from mastersetting";
+                select isnull(masterunitid,0) as masterunitid From mastersetting(Nolock)";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -380,15 +381,15 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
             if (chkEdit.Checked == true)
             {
                 string str = @"select Distinct PLM.UID,PLM.LoomNo+'/'+isnull(IM.ITEM_NAME,'') as LoomNo,case when ISNUMERIC(loomno)=1 Then CONVERT(int,replace(loomno, '.', '')) Else 9999999 End as Loom 
-                            from Process_issue_master_1 PIM inner join ProductionLoomMaster PLM on PIM.LoomId=PLM.UID
-                            Left join ITEM_MASTER Im on PLm.Itemid=IM.ITEM_ID 
-                            left join Employee_ProcessOrderNo EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1
+                            from Process_issue_master_1 PIM(Nolock) inner join ProductionLoomMaster PLM(Nolock) on PIM.LoomId=PLM.UID
+                            Left join ITEM_MASTER Im(Nolock) on PLm.Itemid=IM.ITEM_ID 
+                            left join Employee_ProcessOrderNo EMP(Nolock) on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1
                             Where Plm.CompanyId=" + DDcompany.SelectedValue + " and PLm.UnitId=" + DDProdunit.SelectedValue + "";
 
                 string str1 = @"select Top 1 PIM.IssueOrderID, PIM.LoomId 
-                            from Process_issue_master_1 PIM inner join ProductionLoomMaster PLM on PIM.LoomId=PLM.UID
-                            join Employee_ProcessOrderNo EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1
-                            JOIN Empinfo EI ON EI.EmpID = EMP.EMPID 
+                            from Process_issue_master_1 PIM(Nolock) inner join ProductionLoomMaster PLM(Nolock) on PIM.LoomId=PLM.UID
+                            join Employee_ProcessOrderNo EMP(Nolock) on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1
+                            JOIN Empinfo EI(Nolock) ON EI.EmpID = EMP.EMPID 
                             Where Plm.CompanyId=" + DDcompany.SelectedValue + " and PLm.UnitId=" + DDProdunit.SelectedValue + "";
 
                 if (chkcomplete.Checked == true)
@@ -440,7 +441,7 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                 }
                 if (TDTanaLotNo.Visible == true)
                 {
-                    string str2 = @"select IsNull(PIM.TanaLotNo,'') as TanaLotNo From Process_issue_master_1 PIM  Where 1=1";
+                    string str2 = @"select IsNull(PIM.TanaLotNo,'') as TanaLotNo From Process_issue_master_1 PIM(Nolock)  Where 1=1";
                     if (txtfolionoedit.Text != "")
                     {
                         str2 = str2 + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
@@ -462,8 +463,8 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                 //                                            on PM.UID=PL.LoomId
                 //                                            inner join ITEM_MASTER IM on PM.Itemid=IM.ITEM_ID                                            
                 //                                            Where PL.LoomId is null and PM.CompanyId=" + DDcompany.SelectedValue + " and PM.UnitId=" + DDProdunit.SelectedValue + " order by LoomNo", true, "--Plz Select--");
-                UtilityModule.ConditionalComboFill(ref DDLoomNo, @"select  PM.UID,PM.LoomNo+'/'+isnull(IM.ITEM_NAME,'') as LoomNo from ProductionLoomMaster PM 
-                                            Left join ITEM_MASTER IM on PM.Itemid=IM.ITEM_ID                                            
+                UtilityModule.ConditionalComboFill(ref DDLoomNo, @"select  PM.UID,PM.LoomNo+'/'+isnull(IM.ITEM_NAME,'') as LoomNo from ProductionLoomMaster PM(Nolock) 
+                                            Left join ITEM_MASTER IM(Nolock) on PM.Itemid=IM.ITEM_ID                                            
                                             Where  PM.CompanyId=" + DDcompany.SelectedValue + " and PM.UnitId=" + DDProdunit.SelectedValue + " order by case when ISNUMERIC(PM.loomno)=1 Then CONVERT(int,replace(loomno, '.', '')) Else 9999999 End,PM.loomno", true, "--Plz Select--");
             }
         }
@@ -509,21 +510,18 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                             view = "V_OrderBalItemtobeordered";
                         }
 
-                        str = @"select Distinct OM.OrderId,OM.CustomerOrderNo as OrderNo from OrderDetail OD  inner join  OrderMaster OM on  OM.OrderId=OD.OrderId
+                        str = @"select Distinct OM.OrderId,OM.CustomerOrderNo as OrderNo from OrderDetail OD(Nolock)  inner join  OrderMaster OM(Nolock) on  OM.OrderId=OD.OrderId
                     and OM.ORDERFROMSAMPLE=0
-                    inner join JobAssigns JB on OD.Orderid=JB.OrderId
-                    and OD.Item_Finished_Id=JB.ITEM_FINISHED_ID
-                    inner join  " + view + @" VB on OD.OrderId=VB.OrderId 
-                    and OD.Item_Finished_Id=VB.ITEM_FINISHED_ID
+                    inner join JobAssigns JB(Nolock) on OD.Orderid=JB.OrderId and OD.Item_Finished_Id=JB.ITEM_FINISHED_ID
+                    inner join  " + view + @" VB(Nolock) on OD.OrderId=VB.OrderId and OD.Item_Finished_Id=VB.ITEM_FINISHED_ID
                     Where OM.CompanyId=" + DDcompany.SelectedValue + " and OM.status='0' and OM.CustomerId=" + DDcustcode.SelectedValue + " order by OM.OrderId";
                         break;
                     default:
-                        str = @"select Distinct OM.OrderId,OM.CustomerOrderNo as OrderNo from OrderDetail OD  inner join  OrderMaster OM on  OM.OrderId=OD.OrderId
-                    and OM.ORDERFROMSAMPLE=0
-                    inner join JobAssigns JB on OD.Orderid=JB.OrderId
-                    and OD.Item_Finished_Id=JB.ITEM_FINISHED_ID
-                    inner join V_ORDERBALITEMTOBEORDERED_TAGGINGWITHINTERALPROD VB on OD.OrderId=VB.OrderId 
-                    and OD.Item_Finished_Id=VB.ITEM_FINISHED_ID
+                        str = @"select Distinct OM.OrderId,OM.CustomerOrderNo as OrderNo 
+                    from OrderDetail OD(Nolock)  
+                    inner join  OrderMaster OM(Nolock) on  OM.OrderId=OD.OrderId and OM.ORDERFROMSAMPLE=0
+                    inner join JobAssigns JB(Nolock) on OD.Orderid=JB.OrderId and OD.Item_Finished_Id=JB.ITEM_FINISHED_ID
+                    inner join V_ORDERBALITEMTOBEORDERED_TAGGINGWITHINTERALPROD VB(Nolock) on OD.OrderId=VB.OrderId  and OD.Item_Finished_Id=VB.ITEM_FINISHED_ID
                     Where OM.CompanyId=" + DDcompany.SelectedValue + " and OM.status='0' and OM.CustomerId=" + DDcustcode.SelectedValue + " order by OM.OrderId";
                         break;
                 }
@@ -531,12 +529,11 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
             }
             else
             {
-                str = @"select Distinct OM.OrderId,OM.CustomerOrderNo as OrderNo from OrderDetail OD  inner join  OrderMaster OM on  OM.OrderId=OD.OrderId
-                    And Om.ORDERFROMSAMPLE=0
-                    inner join JobAssigns JB on OD.Orderid=JB.OrderId
-                    and OD.Item_Finished_Id=JB.ITEM_FINISHED_ID
-                    inner join V_OrderBalItemtobeordered VB on OD.OrderId=VB.OrderId 
-                    and OD.Item_Finished_Id=VB.ITEM_FINISHED_ID
+                str = @"select Distinct OM.OrderId,OM.CustomerOrderNo as OrderNo 
+                    from OrderDetail OD(Nolock)
+                    inner join  OrderMaster OM(Nolock) on  OM.OrderId=OD.OrderId And Om.ORDERFROMSAMPLE=0
+                    inner join JobAssigns JB(Nolock) on OD.Orderid=JB.OrderId and OD.Item_Finished_Id=JB.ITEM_FINISHED_ID
+                    inner join V_OrderBalItemtobeordered VB(Nolock) on OD.OrderId=VB.OrderId and OD.Item_Finished_Id=VB.ITEM_FINISHED_ID
                     Where OM.CompanyId=" + DDcompany.SelectedValue + " and OM.status='0' and OM.CustomerId=" + DDcustcode.SelectedValue + " order by OM.OrderId";
             }
             UtilityModule.ConditionalComboFill(ref DDorderNo, str, true, "--Plz Select--");
@@ -1266,10 +1263,10 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                         isnull(PM.Remarks,'') as Remarks,isnull(Pm.instruction,'') as Instruction,pm.FlagFixOrWeight,isnull(PM.ChallanNo,'') as ChallanNo, 
                         IsNull(PM.FlagStockNoAttachWithoutRawMaterialIssue, 0) FlagStockNoAttachWithoutRawMaterialIssue, 
                         IsNull(PM.DEPARTMENTTYPE, 0) DEPARTMENTTYPE, IsNull(PM.DepartmentIssueOrderID, 0) DepartmentIssueOrderID, PD.Bonus,isnull(PD.Rate2,0) as FinisherRate 
-                        From PROCESS_ISSUE_MASTER_1 PM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PD ON PM.IssueOrderid=PD.IssueOrderid
-                        JOIN V_FinishedItemDetail VF ON PD.Item_Finished_Id=Vf.Item_Finished_ID
-                        JOIN OrderMaster OM ON PD.ORDERID=OM.OrderId
-                        JOIN CustomerSize CS ON OM.CustomerId=CS.CustomerId and VF.SizeId=CS.Sizeid
+                        From PROCESS_ISSUE_MASTER_1 PM(NoLock) JOIN PROCESS_ISSUE_DETAIL_1 PD(NoLock) ON PM.IssueOrderid=PD.IssueOrderid
+                        JOIN V_FinishedItemDetail VF(NoLock) ON PD.Item_Finished_Id=Vf.Item_Finished_ID
+                        JOIN OrderMaster OM(NoLock) ON PD.ORDERID=OM.OrderId
+                        JOIN CustomerSize CS(NoLock) ON OM.CustomerId=CS.CustomerId and VF.SizeId=CS.Sizeid
                         Where PM.IssueOrderid=" + hnissueorderid.Value + " And VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
         }
         else
@@ -1279,8 +1276,8 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
                         isnull(PM.Remarks,'') as Remarks,isnull(Pm.instruction,'') as Instruction,pm.FlagFixOrWeight,isnull(PM.ChallanNo,'') as ChallanNo, 
                         IsNull(PM.FlagStockNoAttachWithoutRawMaterialIssue, 0) FlagStockNoAttachWithoutRawMaterialIssue, 
                         IsNull(PM.DEPARTMENTTYPE, 0) DEPARTMENTTYPE, IsNull(PM.DepartmentIssueOrderID, 0) DepartmentIssueOrderID, PD.Bonus,isnull(PD.Rate2,0) as FinisherRate 
-                        From PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,
-                        ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
+                        From PROCESS_ISSUE_MASTER_1 PM(NoLock),PROCESS_ISSUE_DETAIL_1 PD(NoLock),
+                        ViewFindFinishedidItemidQDCSS IPM(NoLock),Item_Master IM(NoLock),ITEM_CATEGORY_MASTER ICM(NoLock) 
                         Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
                         PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
         }
@@ -1294,10 +1291,10 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
             str = str + @" Select Issue_Detail_Id,PM.issueorderid, VF.Category_Name + '  ' + VF.Item_Name + '  ' + VF.QualityName + '  ' + 
                     VF.DesignName + '  ' + VF.ColorName + '  ' + VF.ShapeName + '  ' + 
                     Case When PM.Unitid=1 Then VF.SizeMtr Else Case When PM.UnitID = 6 Then VF.Sizeinch Else VF.SizeFt End End ItemDescription, LS.StockNo, LS.TstockNo 
-                    From PROCESS_ISSUE_MASTER_1 PM 
-                    JOIN PROCESS_ISSUE_DETAIL_1 PD ON PD.IssueOrderID = PM.IssueOrderID 
-                    JOIN LoomStockNo LS ON LS.IssueOrderID = PD.IssueOrderID And LS.IssueDetailID = PD.Issue_Detail_ID And LS.ProcessID = 1 
-                    JOIN V_FinishedItemDetail VF ON VF.Item_Finished_ID = PD.Item_Finished_ID 
+                    From PROCESS_ISSUE_MASTER_1 PM(NoLock) 
+                    JOIN PROCESS_ISSUE_DETAIL_1 PD(NoLock) ON PD.IssueOrderID = PM.IssueOrderID 
+                    JOIN LoomStockNo LS(NoLock) ON LS.IssueOrderID = PD.IssueOrderID And LS.IssueDetailID = PD.Issue_Detail_ID And LS.ProcessID = 1 
+                    JOIN V_FinishedItemDetail VF(NoLock) ON VF.Item_Finished_ID = PD.Item_Finished_ID 
                     Where PM.IssueOrderid = " + hnissueorderid.Value + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
         }
         //
@@ -1814,8 +1811,8 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
         if (chkEdit.Checked == true)
         {
             str = @"select Distinct PIM.IssueOrderId,PIM.ChallanNo 
-                From Process_issue_master_1 PIM
-                LEFT JOIN Employee_ProcessOrderNo EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1   
+                From Process_issue_master_1 PIM(nolock)
+                LEFT JOIN Employee_ProcessOrderNo EMP(nolock) on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1   
                 Where PIM.CompanyId=" + DDcompany.SelectedValue + " and PIM.Units=" + DDProdunit.SelectedValue + " and PIM.LoomId=" + DDLoomNo.SelectedValue + @"
                 And IsNull(PIM.BranchID, 0) = " + DDBranchName.SelectedValue;
 
@@ -1846,16 +1843,20 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
             }
         }
         //employee
-        str = @"select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' as Empname from EmpInfo EI inner join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION'
-        and EI.Status='P' and EI.Blacklist=0 order by Empname";
+        str = @"select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' as Empname 
+            from EmpInfo EI(nolock) 
+            inner join Department D(nolock) on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION'
+            and EI.Status='P' and EI.Blacklist=0 order by Empname";
         UtilityModule.ConditionalComboFill(ref DDemployee, str, true, "--Plz select--");
     }
     protected void ShowCustomerCodeAndOrderNo()
     {
         string str = "";
-        str = @"select OM.CustomerOrderNo,CI.CustomerCode from Process_issue_Detail_1 PID JOIN OrderMaster OM ON PID.OrderId=OM.OrderId
-                JOIN customerinfo CI ON OM.CustomerId=CI.CustomerId                   
-                 Where PID.IssueOrderId=" + DDFolioNo.SelectedValue;
+        str = @"select OM.CustomerOrderNo,CI.CustomerCode 
+            from Process_issue_Detail_1 PID(nolock) 
+            JOIN OrderMaster OM(nolock) ON PID.OrderId=OM.OrderId
+            JOIN customerinfo CI(nolock) ON OM.CustomerId=CI.CustomerId                   
+            Where PID.IssueOrderId=" + DDFolioNo.SelectedValue;
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
@@ -2143,12 +2144,11 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
         {
             if (DDemployee.SelectedIndex > 0)
             {
-                str = @"select EMp.Empid,Pm.IssueOrderId  from dbo.PROCESS_ISSUE_MASTER_1 PM inner join dbo.PROCESS_ISSUE_DETAIL_1 PD
-                        on PM.IssueOrderId=Pd.IssueOrderId  and Pd.PQty>0
-                        inner join  dbo.Employee_ProcessOrderNo EMP on EMP.IssueOrderId=PM.IssueOrderId and EMP.ProcessId=1
-                        inner join EmpInfo EI on Ei.EmpId=EMP.Empid
-                        And EI.empid=" + DDemployee.SelectedValue;
-
+                str = @"select EMp.Empid,Pm.IssueOrderId  
+                from dbo.PROCESS_ISSUE_MASTER_1 PM(Nolock) 
+                inner join dbo.PROCESS_ISSUE_DETAIL_1 PD(Nolock) on PM.IssueOrderId=Pd.IssueOrderId  and Pd.PQty>0
+                inner join  dbo.Employee_ProcessOrderNo EMP(Nolock) on EMP.IssueOrderId=PM.IssueOrderId and EMP.ProcessId=1
+                inner join EmpInfo EI(Nolock) on Ei.EmpId=EMP.Empid And EI.empid=" + DDemployee.SelectedValue;
 
                 DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                 if (ds.Tables[0].Rows.Count > 0)
@@ -2204,14 +2204,18 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
     }
     protected void FIllProdUnit(object sender = null)
     {
-        string str = @"select Distinct U.UnitsId,U.UnitName,PIm.CompanyId From Process_issue_master_1 PIM inner Join  Units U on PIM.Units=U.UnitsId
-                        inner join Employee_ProcessOrderNo EMP on PIM.Issueorderid=EMP.IssueOrderId and EMP.ProcessId=1
-                        Where PIM.Companyid=" + DDcompany.SelectedValue;
+        string str = @"select Distinct U.UnitsId,U.UnitName,PIm.CompanyId 
+                    From Process_issue_master_1 PIM(Nolock) 
+                    inner Join  Units U(Nolock) on PIM.Units=U.UnitsId
+                    inner join Employee_ProcessOrderNo EMP(Nolock) on PIM.Issueorderid=EMP.IssueOrderId and EMP.ProcessId=1
+                    Where PIM.Companyid=" + DDcompany.SelectedValue;
 
-        string str1 = @" Select Top 1 PIM.CompanyID, PIM.Units, PIM.IssueOrderID From Process_issue_master_1 PIM inner Join  Units U on PIM.Units=U.UnitsId
-                        inner join Employee_ProcessOrderNo EMP on PIM.Issueorderid=EMP.IssueOrderId and EMP.ProcessId=1
-                        JOIN Empinfo EI(Nolock) ON EI.EmpID = EMP.EmpID 
-                        Where PIM.Companyid=" + DDcompany.SelectedValue;
+        string str1 = @" Select Top 1 PIM.CompanyID, PIM.Units, PIM.IssueOrderID 
+                    From Process_issue_master_1 PIM(Nolock) 
+                    inner Join  Units U(Nolock) on PIM.Units=U.UnitsId
+                    inner join Employee_ProcessOrderNo EMP(Nolock) on PIM.Issueorderid=EMP.IssueOrderId and EMP.ProcessId=1
+                    JOIN Empinfo EI(Nolock) ON EI.EmpID = EMP.EmpID 
+                    Where PIM.Companyid=" + DDcompany.SelectedValue;
 
         if (txteditempid.Text != "")
         {
@@ -2774,8 +2778,9 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
     }
     protected void FillEmployeeForDeactive()
     {
-        string str = @"select Distinct EI.EmpName+'('+EI.EmpCode+')' as Employee,EMP.IssueOrderId,Emp.ActiveStatus,Ei.Empid From Employee_ProcessOrderNo EMP inner Join EmpInfo EI on Emp.Empid=Ei.EmpId
-                   and EMP.ProcessId=1 and EMP.IssueOrderId=" + DDFolioNo.SelectedValue;
+        string str = @"select Distinct EI.EmpName+'('+EI.EmpCode+')' as Employee,EMP.IssueOrderId,Emp.ActiveStatus,Ei.Empid 
+                From Employee_ProcessOrderNo EMP(Nolock) inner Join EmpInfo EI(Nolock) on Emp.Empid=Ei.EmpId 
+                And EMP.ProcessId=1 and EMP.IssueOrderId=" + DDFolioNo.SelectedValue;
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
         GVDetail.DataSource = ds.Tables[0];
@@ -3281,10 +3286,10 @@ select isnull(masterunitid,0) as masterunitid from mastersetting";
         switch (Session["varcompanyid"].ToString())
         {
             case "16":
-            case "28":            
-                string str = @"SELECT V.EMPID,V.issueorderid FROM V_FOLIOEMPID V INNER JOIN EMPINFO EI ON V.EMPID=EI.EMPID 
+            case "28":
+                string str = @"SELECT V.EMPID,V.issueorderid FROM V_FOLIOEMPID V(Nolock) INNER JOIN EMPINFO EI(Nolock) ON V.EMPID=EI.EMPID 
                             WHERE V.ACTIVESTATUS=1 AND V.FOLIO_STATUS='PENDING' and V.empcode='" + txtWeaverIdNoscan.Text + @"'
-                            Select UserType From NewUserDetail Where UserID = " + Session["varuserid"];
+                            Select UserType From NewUserDetail(Nolock) Where UserID = " + Session["varuserid"];
 
                 DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                 if (ds.Tables[0].Rows.Count > 0)
