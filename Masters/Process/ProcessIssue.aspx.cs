@@ -1035,7 +1035,7 @@ public partial class Masters_ProcessIssue_ProcessIssue : System.Web.UI.Page
     private void ChkDuplicateData()
     {
         DataSet Ds;
-        if (Session["VarCompanyNo"].ToString() == "40" || Session["VarCompanyNo"].ToString() == "30")
+        if (Session["VarCompanyNo"].ToString() == "40" || Session["VarCompanyNo"].ToString() == "30" || Session["VarCompanyNo"].ToString() == "38")
         {
             Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select issueorderid from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " Where IssueOrderId=" + ViewState["IssueOrderid"] + " And Item_Finished_id=" + DDDescription.SelectedValue + " and OrderId=" + DDCustomerOrderNumber.SelectedValue + " ");
         }
