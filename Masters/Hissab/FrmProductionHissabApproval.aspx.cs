@@ -306,7 +306,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                 if (ChkEdit.Checked == true && DDApprovalNo.SelectedIndex > 0)
                 {
                     str = str + @" Union Select Distinct HissabNo HissabId,Replace(Str(ChallanNo)+' / '+IsNull(replace(convert(varchar(11),Date,106), ' ','-'),''),'  ','') BillNo,isnull(ROUND(ROUND(SUM(amount),0)+ROUND(SUM(isnull(BonusAmt,0)),0)-ROUND(SUM(Penality),0),0),0) amt ,1 Flag,TDS ,0 as gst
-                    ,0 as AdvanceAmountFolioWise,isnull(AdditionAmt,0) as AdditionAmt,isnull(DeductionAmt,0) as DeductionAmt,ISNULL(PH.MaterialDeductionAmt,0) as MaterialDeductionAmt
+                    ,0 as AdvanceAmountFolioWise,isnull(AdditionAmt,0) as AdditionAmt,isnull(DeductionAmt,0) as DeductionAmt,ISNULL(MaterialDeductionAmt,0) as MaterialDeductionAmt
                     From Process_Hissab where companyid=" + DDCompanyName.SelectedValue + " and processid=" + DDProcessName.SelectedValue + " and EmpId=" + DDEmployerName.SelectedValue + @" and 
                     HissabNo in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And HissabType=0 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And PHA.ID=" + DDApprovalNo.SelectedValue + ") Group By HissabNo,ChallanNo,Date,TDS,AdditionAmt,DeductionAmt,MaterialDeductionAmt";
                 }
