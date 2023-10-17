@@ -227,6 +227,15 @@
                             <asp:Button Text="employee" ID="btnsearchemp" CssClass="buttonnorm" runat="server"
                                 OnClick="btnsearchemp_Click" Style="display: none" />
                         </td>
+
+                        <td id="TDEditRecChallanNo" runat="server" visible="false">
+                            <asp:Label ID="Label17" Text="Rec ChallanNo" runat="server" CssClass="labelbold" />
+                            <br />
+                            <asp:TextBox ID="txtEditRecChallanNo" CssClass="textb" runat="server" Width="150px" AutoPostBack="true"
+                            OnTextChanged="txtEditRecChallanNo_TextChanged"/>
+                            
+                        </td>
+
                     </tr>
                     <tr>
                         <td id="TDSlipNoForEdit" runat="server">
