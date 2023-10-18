@@ -39,7 +39,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 ddUnits.SelectedIndex = 1;
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDTOProcess, ds, 2, true, "---Plz Select---");
-            if (Convert.ToInt32(Session["varCompanyId"]) == 16 || Convert.ToInt32(Session["varCompanyId"]) == 28 || Convert.ToInt32(Session["varCompanyId"]) == 44)
+            if (Convert.ToInt32(Session["varCompanyId"]) == 16 || Convert.ToInt32(Session["varCompanyId"]) == 28 || Convert.ToInt32(Session["varCompanyId"]) == 44 || Convert.ToInt32(Session["varCompanyId"]) == 43)
             {
                 TDupdateemp.Visible = true;
                 TDactiveemployee.Visible = true;
@@ -106,7 +106,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                      BtnStockNoToPNM.Visible = false;
                      BtnPanipatPNM1.Visible = false;
                      BtnPanipatPNM2.Visible = false;
-                     BtnChampoHome.Visible = true;
+                     BtnChampoHome.Visible = false;
                     break;
             }
             

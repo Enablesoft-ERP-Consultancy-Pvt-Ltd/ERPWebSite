@@ -425,6 +425,19 @@
                                                 </td>
                                             </tr>
                                         </table>
+                                        <table>
+
+                                         <tr id="Tr4" runat="server" visible="false">
+                                            <td class="tdstyle" style="width: 15%">
+                                             <asp:Label ID="Label4" runat="server" Text="Remarks" class="labelbold"></asp:Label>                                                
+                                            </td>
+                                            <td colspan="3" style="width: 45%">
+                                                <asp:TextBox CssClass="textb" ID="TxtRemarks" runat="server" Width="100%"></asp:TextBox>
+                                            </td>
+                                        </tr>                                            
+                                        
+                                        </table>
+
                                     </fieldset>
                                     <div style="margin-top: 10px" runat="server">
                                         <asp:Panel ID="panelMaster" runat="server">
@@ -645,14 +658,7 @@
                                                     OnClick="btnShowdata_Click" />
                                             </td>
                                         </tr>
-                                        <tr id="Tr4" runat="server" visible="false">
-                                            <td class="tdstyle">
-                                                Remarks
-                                            </td>
-                                            <td colspan="3">
-                                                <asp:TextBox CssClass="textb" ID="TxtRemarks" runat="server" Width="100%"></asp:TextBox>
-                                            </td>
-                                        </tr>
+                                       
                                         <tr>
                                             <td colspan="4">
                                                 <asp:HiddenField ID="hn_finished" runat="server" />

@@ -136,6 +136,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     DDUnit.SelectedValue = "1";
                     TDTotalPcsNew.Visible = true;
                     Tr4.Visible = true;
+                    Label4.Text = "Group No";
                     break;
                 default:
                     DDUnit.SelectedValue = "1";
