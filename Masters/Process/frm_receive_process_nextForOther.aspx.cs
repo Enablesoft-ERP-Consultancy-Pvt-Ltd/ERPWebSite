@@ -449,7 +449,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] _arrpara = new SqlParameter[35];
+            SqlParameter[] _arrpara = new SqlParameter[36];
             DataSet ds3 = new DataSet(); 
             Str = @"Select CalType,UnitId,PM.IssueOrderId,PD.issue_Detail_id,length,width,area,rate,Round(Amount/Qty, 2) Amount,PD.Item_Finished_id,PD.orderid,PM.remarks,Cn.Companyid,isnull(PD.Bonus,0) as Bonus,isnull(PD.BonusAmt,0) as BonusAmt 
                     From CarpetNumber CN,Process_Stock_Detail PSD,Process_Issue_Master_" + Hn_ProcessId.Value + " PM,Process_Issue_Detail_" + Hn_ProcessId.Value + @" PD 
@@ -537,7 +537,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     _arrpara[32] = new SqlParameter("@PartyChallanNo", SqlDbType.VarChar, 50);
                     _arrpara[33] = new SqlParameter("@Bonus", SqlDbType.Float);
                     _arrpara[34] = new SqlParameter("@BonusAmt", SqlDbType.Float);
-                    _arrpara[35] = new SqlParameter("@QAPersonname", SqlDbType.Int);
+                    _arrpara[35] = new SqlParameter("@QAPersonname", SqlDbType.VarChar,50);
 
                     if (ViewState["recid"] == null)
                     {
@@ -617,11 +617,11 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     
                     if (DDQaname.Items.Count > 0)
                     {
-                        _arrpara[35].Value = (DDQaname.SelectedIndex > 0 ? DDQaname.SelectedItem.Text : "0");
+                        _arrpara[35].Value = (DDQaname.SelectedIndex > 0 ? DDQaname.SelectedItem.Text : "");
                     }
                     else
                     {
-                        _arrpara[35].Value = 0;
+                        _arrpara[35].Value = "";
                     }
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_NextProcessReceiveForOther]", _arrpara);
