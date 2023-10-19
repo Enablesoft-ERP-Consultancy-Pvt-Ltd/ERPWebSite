@@ -613,6 +613,14 @@
                 trFolioType.Visible = false;
                 TRCustomerCode.Visible = false;
                 TROrderNo.Visible = false;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Trproductiontype.Visible = true;
+                }
+                else
+                {
+                    Trproductiontype.Visible = false;
+                }
             }
             if (RDWeaverRawMaterialIssueSummary.Checked == true)
             {
