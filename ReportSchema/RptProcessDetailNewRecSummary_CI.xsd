@@ -28,6 +28,7 @@
               <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
               <xs:element name="DECPLACE" type="xs:int" minOccurs="0" />
               <xs:element name="PartyChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Remarks" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
