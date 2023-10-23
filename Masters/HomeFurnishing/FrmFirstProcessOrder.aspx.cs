@@ -481,9 +481,6 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             JOIN Unit U(Nolock) on OD.OrderUnitId=U.UnitId 
             CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(OD.item_finished_id, " + DDProcessName.SelectedValue + "," + ddunit.SelectedValue + "," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE
             Where Om.orderid=" + DDorderNo.SelectedValue + " and " + Qtyrequired + ">0  order by OD.orderdetailid";
-
-
-
             }
             else
             {

@@ -2324,6 +2324,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             Trsize.Visible = false;
             Trshadecolor.Visible = false;
         }
+        if (RDQualityWiseProductionHissabSummary.Checked == true)
+        {
+            Trdesign.Visible = false;
+            Trcolor.Visible = false;
+            Trsize.Visible = false;
+            Trshadecolor.Visible = false;
+        }
 
     }
 
@@ -7439,31 +7446,31 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
                 FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
             }
-            if (DDDesign.SelectedIndex > 0)
-            {
-                str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
-                FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
-            }
-            if (DDColor.SelectedIndex > 0)
-            {
-                str = str + " and vf.Colorid=" + DDColor.SelectedValue;
-                FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
-            }
-            if (DDSize.SelectedIndex > 0)
-            {
-                str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
-                FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
-            }
+            //if (DDDesign.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+            //    FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            //}
+            //if (DDColor.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+            //    FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            //}
+            //if (DDSize.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+            //    FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            //}
             if (ChkselectDate.Checked == true)
             {
                 str = str + " and PH.Date>='" + txtfromDate.Text + "' and PH.Date<='" + txttodate.Text + "'";
                 FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
             }
-            //if (DDUnitname.SelectedIndex > 0)
-            //{
-            //    str = str + " and PIM.Units=" + DDUnitname.SelectedValue;
-            //    FilterBy = FilterBy + ", Unitname -" + DDUnitname.SelectedItem.Text;
-            //}
+            ////if (DDUnitname.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and PIM.Units=" + DDUnitname.SelectedValue;
+            ////    FilterBy = FilterBy + ", Unitname -" + DDUnitname.SelectedItem.Text;
+            ////}
 
             ////if (DDFoliotype.SelectedIndex > 0)
             ////{

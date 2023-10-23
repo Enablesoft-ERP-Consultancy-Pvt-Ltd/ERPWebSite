@@ -100,12 +100,12 @@
                 </tr>
                 <tr>
                     <td>
-                        <asp:DropDownList ID="DDLInCompanyName" runat="server" Width="300px" CssClass="dropdown"
+                        <asp:DropDownList ID="DDLInCompanyName" runat="server" Width="200px" CssClass="dropdown"
                             AutoPostBack="True" OnSelectedIndexChanged="DDLInCompanyName_SelectedIndexChanged">
                         </asp:DropDownList>
                     </td>
                     <td>
-                        <asp:DropDownList ID="DDLCustomerCode" runat="server" Width="250px" CssClass="dropdown"
+                        <asp:DropDownList ID="DDLCustomerCode" runat="server" Width="200px" CssClass="dropdown"
                             AutoPostBack="True" OnSelectedIndexChanged="DDLCustomerCode_SelectedIndexChanged">
                         </asp:DropDownList>
                     </td>
@@ -113,6 +113,42 @@
                         <asp:DropDownList ID="DDLOrderNo" runat="server" Width="200px" CssClass="dropdown"
                             AutoPostBack="True" OnSelectedIndexChanged="DDLOrderNo_SelectedIndexChanged">
                         </asp:DropDownList>
+                    </td>
+                </tr>
+            </table>
+            <table>
+                <tr id="trItemDescription" runat ="server"  visible ="false" >
+                    <td class="tdstyle">
+                        <asp:Label ID="Label6" Text=" Item Name" runat="server" CssClass="labelbold" />
+                        <br />
+                        <asp:DropDownList ID="DDItemName" runat="server" Width="200px" CssClass="dropdown"
+                            AutoPostBack="True" OnSelectedIndexChanged="DDItemName_SelectedIndexChanged">
+                        </asp:DropDownList>
+                    </td>
+                    <td class="tdstyle">
+                        <asp:Label ID="Label7" Text=" Quality Name" runat="server" CssClass="labelbold" />
+                        <br />
+                        <asp:DropDownList ID="DDQualityName" runat="server" Width="200px" CssClass="dropdown"
+                            AutoPostBack="True" OnSelectedIndexChanged="DDQualityName_SelectedIndexChanged">
+                        </asp:DropDownList>
+                    </td>
+                    <td class="tdstyle">
+                        <asp:Label ID="Label8" Text=" Design Name" runat="server" CssClass="labelbold" />
+                        <br />
+                        <asp:DropDownList ID="DDDesignName" runat="server" Width="200px" CssClass="dropdown"
+                            AutoPostBack="True" OnSelectedIndexChanged="DDDesignName_SelectedIndexChanged">
+                        </asp:DropDownList>
+                    </td>
+                    <td class="tdstyle">
+                        <asp:Label ID="Label9" Text=" Color Name" runat="server" CssClass="labelbold" />
+                        <br />
+                        <asp:DropDownList ID="DDColorName" runat="server" Width="200px" CssClass="dropdown">
+                        </asp:DropDownList>
+                    </td>
+                    <td>
+                        <br />
+                        <asp:Button ID="BtnShowData" CssClass="buttonnorm" Text="Show Data" runat="server"
+                            OnClick="BtnShowData_Click" />
                     </td>
                 </tr>
             </table>
@@ -210,7 +246,7 @@
                                         </ItemTemplate>
                                         <ItemStyle HorizontalAlign="Center" />
                                     </asp:TemplateField>
-                                     <asp:TemplateField HeaderText="Extra Qty.">
+                                    <asp:TemplateField HeaderText="Extra Qty.">
                                         <ItemTemplate>
                                             <asp:Label ID="lblextraqty" Text='<%#Bind("extraqty") %>' runat="server" />
                                         </ItemTemplate>

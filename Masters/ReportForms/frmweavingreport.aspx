@@ -615,11 +615,11 @@
                 TROrderNo.Visible = false;
                 if (Session["VarCompanyNo"].ToString() == "43")
                 {
-                    Trproductiontype.Visible = true;
+                    Trproductiontype.Visible = true;                    
                 }
                 else
                 {
-                    Trproductiontype.Visible = false;
+                    Trproductiontype.Visible = false;                   
                 }
             }
             if (RDWeaverRawMaterialIssueSummary.Checked == true)
