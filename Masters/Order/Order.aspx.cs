@@ -9884,46 +9884,90 @@ public partial class Masters_Order_Order : System.Web.UI.Page
         LblErrorMessage.Text = "";
 
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        con.Open();
-        SqlTransaction tran = con.BeginTransaction();
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] _arrPara = new SqlParameter[5];
-            _arrPara[0] = new SqlParameter("@OrderID", SqlDbType.Int);
-            _arrPara[1] = new SqlParameter("@MasterCompanyID", SqlDbType.Int);
-            _arrPara[2] = new SqlParameter("@UserID", SqlDbType.Int);
-            _arrPara[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
 
-            _arrPara[0].Value = ViewState["order_id"];
-            _arrPara[1].Value = Session["varuserid"].ToString();
-            _arrPara[2].Value = Session["varCompanyId"].ToString();
-            _arrPara[3].Direction = ParameterDirection.Output;
+            SqlCommand cmd = new SqlCommand("UpdateOrderWiseProcessReceiveConsumption", con, Tran);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
 
-            SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "UpdateOrderWiseProcessReceiveConsumption", _arrPara);
+            cmd.Parameters.AddWithValue("@OrderID", ViewState["order_id"]); 
+            cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
+            cmd.Parameters.AddWithValue("@mastercompanyid", Session["varcompanyNo"]);
+            cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
+            cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
+          
+            cmd.ExecuteNonQuery();
 
-            if (_arrPara[3].Value.ToString().ToUpper() == "CONSUMPTION UPDATED SUCCESSFULLY.")
+            if (cmd.Parameters["@msg"].Value.ToString().ToUpper() == "CONSUMPTION UPDATED SUCCESSFULLY.")
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Data Successfully Updated');", true);
-                tran.Commit();
+                Tran.Commit();
             }
             else
             {
-                LblErrorMessage.Text = _arrPara[3].Value.ToString();
-                tran.Rollback();
+                LblErrorMessage.Text = cmd.Parameters["@msg"].Value.ToString();
+                Tran.Rollback();
             }
+           
         }
         catch (Exception ex)
         {
-
-            Logs.WriteErrorLog("Master|Order||" + ex.Message);
+            LblErrorMessage.Text = ex.Message;
+            Tran.Rollback();
         }
         finally
         {
-            if (con.State == ConnectionState.Open)
-            {
-                con.Close();
-                con.Dispose();
-            }
+            con.Close();
+            con.Dispose();
         }
+
+        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        //con.Open();
+        //SqlTransaction tran = con.BeginTransaction();
+        //try
+        //{
+        //    SqlParameter[] _arrPara = new SqlParameter[5];
+        //    _arrPara[0] = new SqlParameter("@OrderID", SqlDbType.Int);
+        //    _arrPara[1] = new SqlParameter("@MasterCompanyID", SqlDbType.Int);
+        //    _arrPara[2] = new SqlParameter("@UserID", SqlDbType.Int);
+        //    _arrPara[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
+
+        //    _arrPara[0].Value = ViewState["order_id"];
+        //    _arrPara[1].Value = Session["varuserid"].ToString();
+        //    _arrPara[2].Value = Session["varCompanyId"].ToString();
+        //    _arrPara[3].Direction = ParameterDirection.Output;
+
+        //    SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "UpdateOrderWiseProcessReceiveConsumption", _arrPara);
+
+        //    if (_arrPara[3].Value.ToString().ToUpper() == "CONSUMPTION UPDATED SUCCESSFULLY.")
+        //    {
+        //        ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Data Successfully Updated');", true);
+        //        tran.Commit();
+        //    }
+        //    else
+        //    {
+        //        LblErrorMessage.Text = _arrPara[3].Value.ToString();
+        //        tran.Rollback();
+        //    }
+        //}
+        //catch (Exception ex)
+        //{
+
+        //    Logs.WriteErrorLog("Master|Order||" + ex.Message);
+        //}
+        //finally
+        //{
+        //    if (con.State == ConnectionState.Open)
+        //    {
+        //        con.Close();
+        //        con.Dispose();
+        //    }
+        //}
     }
 }
