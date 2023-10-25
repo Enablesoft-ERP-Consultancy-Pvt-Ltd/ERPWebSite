@@ -510,6 +510,7 @@ public partial class Masters_Packing_FrmPackingNewByGrid : System.Web.UI.Page
             case 41:
             case 39:
             case 42:
+            case 46:
                 if (DGOrderDetail.Rows.Count == 0)
                 {
                     string VarUnitID = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,
@@ -1035,6 +1036,7 @@ public partial class Masters_Packing_FrmPackingNewByGrid : System.Web.UI.Page
             case 41:
             case 39:
             case 42:
+            case 46:
                 GetFinishedIdRatePackQty();
                 break;
             default:
@@ -1149,7 +1151,7 @@ public partial class Masters_Packing_FrmPackingNewByGrid : System.Web.UI.Page
     }
     private void Fill_Price()
     {
-        if ((Session["varCompanyNo"].ToString() == "16" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "28" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "40" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "41" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "39" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "42" && ChkForWithoutOrder.Checked == false))
+        if ((Session["varCompanyNo"].ToString() == "16" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "28" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "40" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "41" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "39" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "42" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "46" && ChkForWithoutOrder.Checked == false))
         {
             TxtPackQty.Text = TxtTotalPcs.Text;            
           //  Fill_StockGrid(ItemFinishedId);
@@ -1361,7 +1363,7 @@ public partial class Masters_Packing_FrmPackingNewByGrid : System.Web.UI.Page
         DGStock.DataSource = ds;
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if ((Session["varCompanyNo"].ToString() == "16" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "28" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "40" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "41" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "39" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "42" && ChkForWithoutOrder.Checked == false))
+            if ((Session["varCompanyNo"].ToString() == "16" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "28" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "40" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "41" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "39" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "42" && ChkForWithoutOrder.Checked == false) || (Session["varCompanyNo"].ToString() == "46" && ChkForWithoutOrder.Checked == false))
             {
                 int balancestockqty=0;
                 int totalqty = 0;
@@ -2021,7 +2023,7 @@ public partial class Masters_Packing_FrmPackingNewByGrid : System.Web.UI.Page
                     DGStock.DataBind();
                     TxtStockNo.Focus();
 
-                    if ((ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "16") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "28") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "40") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "41") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "39") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "42"))
+                    if ((ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "16") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "28") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "40") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "41") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "39") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "42") || (ChkForWithoutOrder.Checked == false && Session["VarCompanyNo"].ToString() == "46"))
                     {
                         BindPackingOrderDetail();
                     }
