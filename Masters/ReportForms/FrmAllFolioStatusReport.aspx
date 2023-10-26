@@ -51,6 +51,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="right">  
+                                    <asp:CheckBox ID="ChkForPendingFolio" Text="For PendingFolio" runat="server" CssClass="checkboxbold" Visible="true" />
                                     <asp:CheckBox ID="ChkselectDate" Text="ByDate Wise" runat="server" CssClass="checkboxbold" Visible="true" />
                                     &nbsp;                                     
                                         &nbsp;<asp:Button ID="BtnPreview" runat="server" CssClass="buttonnorm" Text="Preview"
