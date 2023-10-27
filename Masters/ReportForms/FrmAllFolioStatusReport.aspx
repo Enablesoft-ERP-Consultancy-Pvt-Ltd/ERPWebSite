@@ -41,7 +41,7 @@
                                 </tr>
                                 <tr id="TRToDate" runat="server" visible="true">
                                     <td>
-                                        <asp:Label ID="lblToMonthyear" runat="server" Text="To Dater" CssClass="labelbold"></asp:Label>
+                                        <asp:Label ID="lblToMonthyear" runat="server" Text="To Date" CssClass="labelbold"></asp:Label>
                                     </td>
                                     <td>
                                         <asp:TextBox ID="txttodate" CssClass="textb" runat="server" Width="100px" />
