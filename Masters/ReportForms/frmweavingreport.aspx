@@ -80,6 +80,14 @@
             TDChkForStockDetail.Visible = false;
             TDChkForDepartmentRawDetail.Visible = false;
             TRReceiveHoldDetail.Visible = false;
+            if (Session["varcompanyId"].ToString() == "42")
+            {
+                TDDouraReport.Visible = true;
+            }
+            else
+            {
+                TDDouraReport.Visible = false;
+            }
 
             if (RDAll.Checked == true)
             {
@@ -613,6 +621,14 @@
                 trFolioType.Visible = false;
                 TRCustomerCode.Visible = false;
                 TROrderNo.Visible = false;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Trproductiontype.Visible = true;                    
+                }
+                else
+                {
+                    Trproductiontype.Visible = false;                   
+                }
             }
             if (RDWeaverRawMaterialIssueSummary.Checked == true)
             {
@@ -643,6 +659,36 @@
                 TRChkWeavingReport.Visible = false;
                 ChkselectDate.Checked = true;              
 
+            }
+            if (RDDouraReport.Checked == true)
+            {
+                TRCompanyName.Visible = true;
+                TRCustomerCode.Visible = true;
+                TROrderNo.Visible = true;
+                trWeaver.Visible = true;
+                trFolioNo.Visible = true;
+                Trunitname.Visible = false;
+                trReportType.Visible = false;
+                trProductionStatus.Visible = false;
+                trFolioType.Visible = false;
+                Trproductiontype.Visible = false;
+                trCategoryName.Visible = true;
+                trItemName.Visible = true;
+                Trquality.Visible = true;
+                Trdesign.Visible = true;
+                Trcolor.Visible = true;
+                Trsize.Visible = true;
+                Trshadecolor.Visible = false;
+                Trorderstatus.Visible = false;
+                TRReturnGatePassNo.Visible = false;
+                TRTagNo.Visible = false;
+                TDchksummary.Visible = false;
+                TDchkpbarcode.Visible = false;
+                TRchkforshadewise.Visible = false;
+                TRChkUnpaidApprovalNo.Visible = false;
+                TRChkWeavingReport.Visible = false;
+                ChkselectDate.Checked = true;
+               
             }
         }        
     </script>
@@ -827,6 +873,15 @@
                                             OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>
                                 </tr>
+
+                                 <tr>
+                                    <td id="TDDouraReport" runat="server" visible="false">
+                                        <asp:RadioButton ID="RDDouraReport" Text="Doura Report"
+                                            runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
+                                            OnCheckedChanged="RadioButton_CheckedChanged" />
+                                    </td>
+                                </tr>
+
                             </table>
                         </asp:Panel>
                     </div>

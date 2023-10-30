@@ -1754,6 +1754,7 @@
                         <asp:Button ID="btnsave" CssClass="buttonnorm" Text="Save" runat="server" OnClick="btnsave_Click" />
                         <asp:Button ID="btnclose" CssClass="buttonnorm" Text="Close" runat="server" OnClientClick="return CloseForm();" />
                         <asp:Button ID="btnnew" CssClass="buttonnorm" Text="New" runat="server" OnClientClick="return ClickNew();" />
+                        <asp:Button ID="btnRemoveResign" CssClass="buttonnorm" Text="RemoveResign" runat="server" Visible ="false" OnClick="btnRemoveResign_Click" />
                     </td>
                 </tr>
                 <tr>

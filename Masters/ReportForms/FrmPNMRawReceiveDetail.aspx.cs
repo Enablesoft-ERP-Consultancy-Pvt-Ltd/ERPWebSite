@@ -48,12 +48,13 @@ public partial class Masters_ReportForms_FrmPNMRawReceiveDetail : System.Web.UI.
 
         string qry = @"Select Distinct '' EmpName, '' Address, '' PhoneNo, '' Mobile, '' EmailAdd, vc.companyid, Vc.CompanyName, BM.BranchAddress CompanyAddress, 
             BM.PhoneNo ComPanyPhoneNo, CompanyFaxNo, VC.TinNo, IPM.Category_Name, IPM.Item_Name, IPM.QualityName, IPM.DesignName, IPM.ColorName, IPM.ShapeName, 
-            IPM.ShadeColorName, IPM.SizeMtr, IPM.SizeFt, PRM.ChallanNo, PNM.ShortName, 0 Indentid, GatepassNo, PRT.PRMid, PRTid, PRT.QTY IssueQuantity, 
+            IPM.ShadeColorName, IPM.SizeMtr, IPM.SizeFt, PRM.CHALLANNO + ' / ' + PRM.ChampoChallanNo + ' / ' + PRT.ChampoIndentNo ChallanNo, 
+            PNM.ShortName, 0 Indentid, GatepassNo, PRT.PRMid, PRTid, PRT.QTY IssueQuantity, 
             prt.LotNo, GM.GodownNAme, PRT.FinishedId, 0 Finish_Type_Id, '' IndentNo, PRM.PROCESSID, u.unitname, PRM.Date, 0 orderid, '' localorder, 
             '' customerorderno,'' reqdate,prt.remark,replace(convert(varchar(11),prm.date,106),' ','-') Issuedate, 0 O_FINISHED_TYPE_ID, prt.GoDownID, 
             0 CanQty,0 flagsize, PRM.MASTERCOMPANYID, PNM.Process_Name, '' Buyercode, Prt.TagNo, BM.GSTNo GSTIN, '' EmpGStno, ISNULL(PRT.BINNO,0) BinNo, 0 ManualRate, 
             0 GSTType, 0 CGST, 0 SGST, 0 IGST, isnull(IPM.HSNCode,'') HSNCode, '' VehicleNo, '' DriverName, '' EWayBillNo, 0 PurchaseRate, 0 PurchaseAmt, 
-            0 CGSTAmt, 0 SGSTAmt, 0 IGSTAmt , isnull(NU.UserName,'') as UserName 
+            0 CGSTAmt, 0 SGSTAmt, 0 IGSTAmt , isnull(NU.UserName,'') as UserName, PRM.ChampoChallanNo, PRT.ChampoIndentNo 
             From PP_ProcessDirectRawMaster PRM(Nolock)   
             JOIN PP_ProcessDirectRawTran PRT(Nolock) on PRT.PRMid = PRM.PRMid  
             JOIN V_FinishedItemDetail IPM(Nolock) on IPM.Item_Finished_Id = PRT.FinishedId  

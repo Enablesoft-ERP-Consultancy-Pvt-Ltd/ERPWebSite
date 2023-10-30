@@ -31,6 +31,9 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
 
             txtBazaarDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             txtBazaarDate_TextChanged(sender, new EventArgs());
+
+            txtFromDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+            txtToDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
         }
     }
     protected void txtBazaarDate_TextChanged(object sender, EventArgs e)
@@ -313,5 +316,30 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
         }      
     
+    }
+    protected void BtnPreviewNew_Click(object sender, EventArgs e)
+    {
+        SqlParameter[] array = new SqlParameter[4];
+        array[0] = new SqlParameter("@FromDate", txtFromDate.Text);
+        array[1] = new SqlParameter("@ToDate", txtToDate.Text);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyNo"]);
+        array[3] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_PRODUCTIONRECEIVEDETAIL_FORWEIGHTUPDATEREPORTNEW", array);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\RptBazaarWeightDetailReport.rpt";
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptBazaarWeightDetailReport.xsd";
+
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }      
     }
 }

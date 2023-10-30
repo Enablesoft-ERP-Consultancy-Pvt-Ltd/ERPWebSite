@@ -9,6 +9,24 @@
         function CloseForm() {
             window.location.href = "../../main.aspx";
         }
+        function AddColon(txt) {
+            if (txt.value.length == 2) {
+                txt.value += ":";
+            }
+        }
+
+        function validatetime(id) {
+            var time = id.value;
+            //alert(time);
+            var re = /^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
+
+            if (re.test(time)) {
+                //alert(re.test(time));               
+
+            } else {
+                id.value = "";
+            }
+        }
         function validateDec(key, id) {
             //getting key code of pressed key
 
@@ -450,14 +468,14 @@
                         <td style="border-style: dotted">
                             <table style="width: 100%">
                                 <tr>
-                                    <td style="width: 40%">
+                                    <td style="width: 20%">
                                         <asp:TextBox ID="txtoutstart" CssClass="textb" Width="60%" runat="server" MaxLength="5"
                                             onkeypress="return validateDec(event,this)" />
                                     </td>
-                                    <td style="width: 20%">
+                                    <td style="width: 25%">
                                         <asp:Label ID="Label27" Text="Out End :" CssClass="labelbold" runat="server" />
                                     </td>
-                                    <td style="width: 40%">
+                                    <td style="width: 20%">
                                         <asp:TextBox ID="txtoutend" CssClass="textb" Width="60%" runat="server" MaxLength="5"
                                             onkeypress="return validateDec(event,this)" />
                                     </td>
@@ -556,6 +574,35 @@
                                     <td style="width: 40%">
                                         <asp:TextBox ID="txtdinnerbreakdeductafterhour" CssClass="textb" Width="60%" runat="server"
                                             MaxLength="5" onkeypress="return validateDec(event,this)" />
+                                    </td>
+                                </tr>
+                            </table>
+                            .
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border-style: dotted">
+                            <asp:Label ID="Label39" Text="Min In time" CssClass="labelbold" runat="server" />
+                        </td>
+                        <td style="border-style: dotted">
+                            <table style="width: 100%">
+                                <tr>
+                                    <td style="width: 20%">
+                                        <asp:TextBox ID="TxtShiftMinIntime" CssClass="textboxm" Width="95%" runat="server"
+                                            placeholder="hh:mm" Style="text-align: center" onblur="validatetime(this);" onkeypress="AddColon(this)" />
+                                    </td>
+                                    <td style="width: 25%">
+                                        <asp:Label ID="Label40" Text="Max Out time :" CssClass="labelbold" runat="server" />
+                                    </td>
+                                    <td style="width: 20%">
+                                        <asp:TextBox ID="TxtShiftMaxIntime" CssClass="textboxm" Width="95%" runat="server"
+                                            placeholder="hh:mm" Style="text-align: center" onblur="validatetime(this);" onkeypress="AddColon(this)" />
+                                    </td>
+                                    <td style="width: 15%">
+                                        <asp:Label ID="Label41" Text="Next Day :" CssClass="labelbold" runat="server" />
+                                    </td>
+                                    <td style="width: 20%">
+                                        <asp:TextBox ID="TxtNextDay" CssClass="textboxm" Width="95%" runat="server" Style="text-align: center" />
                                     </td>
                                 </tr>
                             </table>

@@ -41,7 +41,7 @@
                                 </tr>
                                 <tr id="TRToDate" runat="server" visible="true">
                                     <td>
-                                        <asp:Label ID="lblToMonthyear" runat="server" Text="To Dater" CssClass="labelbold"></asp:Label>
+                                        <asp:Label ID="lblToMonthyear" runat="server" Text="To Date" CssClass="labelbold"></asp:Label>
                                     </td>
                                     <td>
                                         <asp:TextBox ID="txttodate" CssClass="textb" runat="server" Width="100px" />
@@ -51,6 +51,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="right">  
+                                    <asp:CheckBox ID="ChkForPendingFolio" Text="For PendingFolio" runat="server" CssClass="checkboxbold" Visible="true" />
                                     <asp:CheckBox ID="ChkselectDate" Text="ByDate Wise" runat="server" CssClass="checkboxbold" Visible="true" />
                                     &nbsp;                                     
                                         &nbsp;<asp:Button ID="BtnPreview" runat="server" CssClass="buttonnorm" Text="Preview"

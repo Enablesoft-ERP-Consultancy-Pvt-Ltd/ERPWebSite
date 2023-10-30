@@ -36,6 +36,11 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 ChkForEdit.Checked = true;
                 BtnForProductionItem.Visible = false;
             }
+
+            if (Convert.ToInt32(Session["varcompanyno"]) == 43)
+            {
+                trItemDescription.Visible = true;
+            }
             CompanyNameSelectedIndexChanged();
             if (DDLCustomerCode.Items.Count > 0)
             {
@@ -53,7 +58,10 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 {
                     DDLOrderNo.SelectedValue = Request.QueryString["orderid"];
                     GetOrderDetail();
-                    Fill_Grid();
+                    if (DDLOrderNo.SelectedIndex > 0)
+                    {
+                        Fill_Grid();
+                    }
                 }
             }
             if (variable.VarTAGGINGWITHINTERNALPRODUCTION == "1" && variable.VarGENERATESTOCKNOONTAGGING == "1")
@@ -136,7 +144,18 @@ public partial class Masters_Order_FrmTagging : CustomPage
         DataSet ds = null;
         try
         {
-            string strsql = @"Select customerorderno,orderid,replace(convert(varchar(11),OrderDate,106), ' ','-') as OrderDate,IsNull(replace(convert(varchar(11),prodreqdate,106), ' ','-'),0)  as prodreqdate,replace(convert(varchar(11),duedate,106), ' ','-') as duedate,remarks,replace(convert(varchar(11),DispatchDate,106), ' ','-') as DispatchDate from ordermaster where orderid=" + DDLOrderNo.SelectedValue;
+            string strsql = @"Select customerorderno,orderid,replace(convert(varchar(11),OrderDate,106), ' ','-') as OrderDate,
+            IsNull(replace(convert(varchar(11),prodreqdate,106), ' ','-'),0)  as prodreqdate,
+            replace(convert(varchar(11),duedate,106), ' ','-') as duedate,remarks,
+            replace(convert(varchar(11),DispatchDate,106), ' ','-') as DispatchDate 
+            from ordermaster where orderid=" + DDLOrderNo.SelectedValue + @"
+
+            Select Distinct VF.ITEM_ID, VF.ITEM_NAME + ' ( ' + VF.CATEGORY_NAME + ' ) '
+            From OrderMaster OM(Nolock) 
+            JOIN OrderDetail OD(Nolock) ON OD.OrderId = OM.OrderId 
+            JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id 
+            Where OM.OrderId = " + DDLOrderNo.SelectedValue + " Order By VF.ITEM_NAME + ' ( ' + VF.CATEGORY_NAME + ' ) ' ";
+
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -144,6 +163,10 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 TxtDeliveryDate.Text = ds.Tables[0].Rows[0]["DispatchDate"].ToString();
                 TxtReqDate.Text = ds.Tables[0].Rows[0]["DispatchDate"].ToString();
                 BtnForProductionItem.Enabled = true;
+            }
+            if (trItemDescription.Visible == true)
+            {
+                UtilityModule.ConditionalComboFillWithDS(ref DDItemName, ds, 1, true, "--SELECT--");
             }
         }
         catch (Exception ex)
@@ -166,19 +189,49 @@ public partial class Masters_Order_FrmTagging : CustomPage
     private DataSet GetDetail()
     {
         DataSet ds = null;
-        string sp = string.Empty;   
+        string sp = string.Empty;
         try
         {
-            SqlParameter[] para = new SqlParameter[4];
+            SqlParameter[] para = new SqlParameter[8];
             para[0] = new SqlParameter("@OrderId", SqlDbType.Int);
             para[1] = new SqlParameter("@EditFlag", SqlDbType.Int);
             para[2] = new SqlParameter("@withbuyercode", SqlDbType.Int);
             para[3] = new SqlParameter("@VarNewQualitySize", SqlDbType.Int);
 
+            para[4] = new SqlParameter("@ItemID", SqlDbType.Int);
+            para[5] = new SqlParameter("@QualityID", SqlDbType.Int);
+            para[6] = new SqlParameter("@DesignID", SqlDbType.Int);
+            para[7] = new SqlParameter("@ColorID", SqlDbType.Int);
+
             para[0].Value = DDLOrderNo.SelectedValue;
             para[1].Value = ChkForEdit.Checked == true ? 1 : 0;
             para[2].Value = variable.Withbuyercode;
             para[3].Value = variable.VarNewQualitySize;
+
+            para[4].Value = 0;
+            para[5].Value = 0;
+            para[6].Value = 0;
+            para[7].Value = 0;
+            if (trItemDescription.Visible == true)
+            {
+                if (DDItemName.SelectedIndex > 0)
+                {
+                    para[4].Value = DDItemName.SelectedValue;
+                }
+                if (DDQualityName.Items.Count > 0 && DDQualityName.SelectedIndex > 0)
+                {
+                    para[5].Value = DDQualityName.SelectedValue;
+                }
+                if (DDDesignName.Items.Count > 0 && DDDesignName.SelectedIndex > 0)
+                {
+                    para[6].Value = DDDesignName.SelectedValue;
+                }
+                if (DDColorName.Items.Count > 0 && DDColorName.SelectedIndex > 0)
+                {
+                    para[7].Value = DDColorName.SelectedValue;
+                }
+            }
+
             if (Convert.ToInt16(Session["varcompanyid"]) == 44)
             {
                 sp = "Pro_Get_Tag_Stock_New";
@@ -188,7 +241,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 sp = "Pro_Get_Tag_Stock";
             }
 
-                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, sp, para);
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, sp, para);
         }
         catch (Exception ex)
         {
@@ -1002,5 +1055,35 @@ public partial class Masters_Order_FrmTagging : CustomPage
             con.Close();
             con.Dispose();
         }
+    }
+    protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref DDQualityName, @"Select Distinct VF.QualityId, VF.QualityName 
+            From OrderMaster OM(Nolock) 
+            JOIN OrderDetail OD(Nolock) ON OD.OrderId = OM.OrderId 
+            JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.ITEM_ID = " + DDItemName.SelectedValue + @" 
+            Where OM.OrderId = " + DDLOrderNo.SelectedValue + " Order By VF.QualityName ", true, "--Select--");
+    }
+    protected void DDQualityName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref DDDesignName, @"Select Distinct VF.DesignID, VF.DesignName 
+            From OrderMaster OM(Nolock) 
+            JOIN OrderDetail OD(Nolock) ON OD.OrderId = OM.OrderId 
+            JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.ITEM_ID = " + DDItemName.SelectedValue + @" 
+                 And VF.QualityId = " + DDQualityName.SelectedValue + @" 
+            Where OM.OrderId = " + DDLOrderNo.SelectedValue + " Order By VF.DesignName ", true, "--Select--");
+    }
+    protected void DDDesignName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref DDColorName, @"Select Distinct VF.ColorID, VF.ColorName 
+            From OrderMaster OM(Nolock) 
+            JOIN OrderDetail OD(Nolock) ON OD.OrderId = OM.OrderId 
+            JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.ITEM_ID = " + DDItemName.SelectedValue + @" 
+                 And VF.QualityId = " + DDQualityName.SelectedValue + @" And VF.DesignID = " + DDDesignName.SelectedValue + @" 
+            Where OM.OrderId = " + DDLOrderNo.SelectedValue + " Order By VF.ColorName ", true, "--Select--");
+    }
+    protected void BtnShowData_Click(object sender, EventArgs e)
+    {
+        Fill_Grid();
     }
 }
