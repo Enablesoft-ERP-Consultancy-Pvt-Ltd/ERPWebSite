@@ -43,7 +43,7 @@
                 TDWeaverOrderStatus.Visible = true;
             }
 
-
+            TROpenIssRecConDetail.Visible = false;
             TDChkForWeavingPendingQtyWithAreaSize.Visible = false;
             TDChkForWeavingPendingQtyWithExcelReport.Visible = false;
             TDWeaverRawMaterialIssRecWithConsumption.Visible = true;
@@ -558,7 +558,16 @@
                     ChkselectDate.Checked = false;
                     TDchksummary.Visible = true;
                 }
-
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    trFolioNo.Visible = false;
+                    trCategoryName.Visible = false;
+                    trItemName.Visible = false;
+                    Trquality.Visible = false;
+                    Trshadecolor.Visible = false;
+                    TDchksummary.Visible = true;
+                    TROpenIssRecConDetail.Visible = true;
+                }
             }
             if (RDWeaverReceivePaymentSummary.Checked == true)
             {
@@ -1215,6 +1224,11 @@
                                 <tr id="TRReceiveHoldDetail" runat="server" visible="false">
                                     <td colspan="3">
                                         <asp:CheckBox ID="ChkReceiveHoldDetail" runat="server" CssClass="checkboxbold" Text="Receive Hold Detail" />
+                                    </td>
+                                </tr>
+                                <tr id="TROpenIssRecConDetail" runat="server" visible="false">
+                                    <td colspan="3">
+                                        <asp:CheckBox ID="ChkOpenIssRecConDetail" runat="server" CssClass="checkboxbold" Text="Opening Iss Rec Consmp Detail" />
                                     </td>
                                 </tr>
                                 <tr>
