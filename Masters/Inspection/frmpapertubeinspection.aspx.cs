@@ -63,6 +63,29 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                     btnApprove.Visible = false;
                     break;
             }
+            CompanyWiseGridViewChange();
+        }
+    }
+    private void CompanyWiseGridViewChange()
+    {
+        if (Convert.ToInt32(Session["varcompanyid"]) == 45)
+        {
+            Dgdetail.HeaderRow.Cells[3].Text = "Sample Size";
+            Dgdetail.HeaderRow.Cells[4].Text = "Length in cm";
+            Dgdetail.HeaderRow.Cells[5].Text = "Thickness in mm";
+            Dgdetail.HeaderRow.Cells[6].Text = "Inner Dia in mm";
+
+            Dgdetail.Columns[10].Visible = false;
+            Dgdetail.Columns[11].Visible = false;
+            Dgdetail.Columns[12].Visible = false;
+        }
+        else
+        {
+            Dgdetail.Columns[7].Visible = false;
+            Dgdetail.Columns[8].Visible = false;
+            Dgdetail.Columns[13].Visible = false;
+            Dgdetail.Columns[14].Visible = false;
+            Dgdetail.Columns[15].Visible = false;
         }
     }
     protected void Changeapprovebuttoncolor(int approvestatus = 0)
@@ -88,10 +111,15 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
         dt.Columns.Add(new DataColumn("Length", typeof(string)));
         dt.Columns.Add(new DataColumn("Thickness", typeof(string)));
         dt.Columns.Add(new DataColumn("Innerdia", typeof(string)));
+        dt.Columns.Add(new DataColumn("Externaldia", typeof(string)));
+        dt.Columns.Add(new DataColumn("SymbleOnPaperTube", typeof(string)));
         dt.Columns.Add(new DataColumn("Moisture", typeof(string)));
         dt.Columns.Add(new DataColumn("Weight", typeof(string)));
         dt.Columns.Add(new DataColumn("Found", typeof(string)));
         dt.Columns.Add(new DataColumn("Acceptance", typeof(string)));
+        dt.Columns.Add(new DataColumn("OilStain", typeof(string)));
+        dt.Columns.Add(new DataColumn("Smell", typeof(string)));
+        dt.Columns.Add(new DataColumn("Others", typeof(string)));
         dt.Columns.Add(new DataColumn("Lotresult", typeof(string)));
 
         dr = dt.NewRow();
@@ -102,10 +130,15 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
         dr["Length"] = string.Empty;
         dr["Thickness"] = string.Empty;
         dr["Innerdia"] = string.Empty;
+        dr["Externaldia"] = string.Empty;
+        dr["SymbleOnPaperTube"] = string.Empty;
         dr["Moisture"] = string.Empty;
         dr["Weight"] = string.Empty;
         dr["Found"] = string.Empty;
         dr["Acceptance"] = string.Empty;
+        dr["OilStain"] = string.Empty;
+        dr["Smell"] = string.Empty;
+        dr["Others"] = string.Empty;
         dr["Lotresult"] = string.Empty;
         dt.Rows.Add(dr);
         //dr = dt.NewRow();
@@ -136,12 +169,20 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                     TextBox txtlength = (TextBox)Dgdetail.Rows[rowIndex].Cells[4].FindControl("txtlength");
                     TextBox txtthickness = (TextBox)Dgdetail.Rows[rowIndex].Cells[5].FindControl("txtthickness");
                     TextBox txtinnerdia = (TextBox)Dgdetail.Rows[rowIndex].Cells[6].FindControl("txtinnerdia");
-                    TextBox txtmoisture = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txtmoisture");
-                    TextBox txtweight = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txtweight");
-                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtfound");
-                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtacceptance");
-                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtlotresult");
 
+                    TextBox txtExternaldia = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txtExternaldia");
+                    TextBox txtSymbleOnPapertube = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txtSymbleOnPapertube");
+
+                    TextBox txtmoisture = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtmoisture");
+                    TextBox txtweight = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtweight");
+                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtfound");
+                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[12].FindControl("txtacceptance");
+
+                    TextBox txtOilStain = (TextBox)Dgdetail.Rows[rowIndex].Cells[13].FindControl("txtOilStain");
+                    TextBox txtSmell = (TextBox)Dgdetail.Rows[rowIndex].Cells[14].FindControl("txtSmell");
+                    TextBox txtOthers = (TextBox)Dgdetail.Rows[rowIndex].Cells[15].FindControl("txtOthers");
+
+                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[16].FindControl("txtlotresult");
 
                     drCurrentRow = dtCurrentTable.NewRow();
                     drCurrentRow["srno"] = i + 1;
@@ -152,10 +193,15 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                     dtCurrentTable.Rows[i - 1]["length"] = txtlength.Text;
                     dtCurrentTable.Rows[i - 1]["thickness"] = txtthickness.Text;
                     dtCurrentTable.Rows[i - 1]["innerdia"] = txtinnerdia.Text;
+                    dtCurrentTable.Rows[i - 1]["Externaldia"] = txtExternaldia.Text;
+                    dtCurrentTable.Rows[i - 1]["SymbleOnPaperTube"] = txtSymbleOnPapertube.Text;
                     dtCurrentTable.Rows[i - 1]["Moisture"] = txtmoisture.Text;
                     dtCurrentTable.Rows[i - 1]["Weight"] = txtweight.Text;
                     dtCurrentTable.Rows[i - 1]["Found"] = txtfound.Text;
                     dtCurrentTable.Rows[i - 1]["Acceptance"] = txtacceptance.Text;
+                    dtCurrentTable.Rows[i - 1]["OilStain"] = txtOilStain.Text;
+                    dtCurrentTable.Rows[i - 1]["Smell"] = txtSmell.Text;
+                    dtCurrentTable.Rows[i - 1]["Others"] = txtOthers.Text;
                     dtCurrentTable.Rows[i - 1]["Lotresult"] = txtlotresult.Text;
 
 
@@ -166,6 +212,8 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
 
                 Dgdetail.DataSource = dtCurrentTable;
                 Dgdetail.DataBind();
+
+                CompanyWiseGridViewChange();
             }
         }
         else
@@ -194,11 +242,20 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                     TextBox txtlength = (TextBox)Dgdetail.Rows[rowIndex].Cells[4].FindControl("txtlength");
                     TextBox txtthickness = (TextBox)Dgdetail.Rows[rowIndex].Cells[5].FindControl("txtthickness");
                     TextBox txtinnerdia = (TextBox)Dgdetail.Rows[rowIndex].Cells[6].FindControl("txtinnerdia");
-                    TextBox txtmoisture = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txtmoisture");
-                    TextBox txtweight = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txtweight");
-                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtfound");
-                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtacceptance");
-                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtlotresult");
+
+                    TextBox txtExternaldia = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txtExternaldia");
+                    TextBox txtSymbleOnPapertube = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txtSymbleOnPapertube");
+
+                    TextBox txtmoisture = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtmoisture");
+                    TextBox txtweight = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtweight");
+                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtfound");
+                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[12].FindControl("txtacceptance");
+
+                    TextBox txtOilStain = (TextBox)Dgdetail.Rows[rowIndex].Cells[13].FindControl("txtOilStain");
+                    TextBox txtSmell = (TextBox)Dgdetail.Rows[rowIndex].Cells[14].FindControl("txtSmell");
+                    TextBox txtOthers = (TextBox)Dgdetail.Rows[rowIndex].Cells[15].FindControl("txtOthers");
+
+                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[16].FindControl("txtlotresult");
 
                     txtsrno.Text = dt.Rows[i]["srno"].ToString();
                     txtdescription.Text = dt.Rows[i]["Description"].ToString();
@@ -207,24 +264,24 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                     txtlength.Text = dt.Rows[i]["length"].ToString();
                     txtthickness.Text = dt.Rows[i]["thickness"].ToString();
                     txtinnerdia.Text = dt.Rows[i]["innerdia"].ToString();
+
+                    txtExternaldia.Text = dt.Rows[i]["Externaldia"].ToString();
+                    txtSymbleOnPapertube.Text = dt.Rows[i]["SymbleOnPaperTube"].ToString();
+
                     txtmoisture.Text = dt.Rows[i]["moisture"].ToString();
                     txtweight.Text = dt.Rows[i]["weight"].ToString();
                     txtfound.Text = dt.Rows[i]["found"].ToString();
                     txtacceptance.Text = dt.Rows[i]["acceptance"].ToString();
+
+                    txtOilStain.Text = dt.Rows[i]["OilStain"].ToString();
+                    txtSmell.Text = dt.Rows[i]["Smell"].ToString();
+                    txtOthers.Text = dt.Rows[i]["Others"].ToString();
+
                     txtlotresult.Text = dt.Rows[i]["lotresult"].ToString();
 
-
-
-
                     // sc.Add(box1.Text + "," + box2.Text + "," + box3.Text);
-
-
-
                     rowIndex++;
-
-
                 }
-
                 //InsertRecords(sc);
             }
         }
@@ -307,28 +364,36 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                 TextBox txtlength = (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtlength");
                 TextBox txtthickness = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtthickness");
                 TextBox txtinnerdia = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtinnerdia");
-                TextBox txtmoisture = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtmoisture");
-                TextBox txtweight = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtweight");
-                TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtfound");
-                TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtacceptance");
-                TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtlotresult");
+
+                TextBox txtExternaldia = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtExternaldia");
+                TextBox txtSymbleOnPapertube = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtSymbleOnPapertube");
+
+                TextBox txtmoisture = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtmoisture");
+                TextBox txtweight = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtweight");
+                TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtfound");
+                TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtacceptance");
+
+                TextBox txtOilStain = (TextBox)Dgdetail.Rows[i].Cells[13].FindControl("txtOilStain");
+                TextBox txtSmell = (TextBox)Dgdetail.Rows[i].Cells[14].FindControl("txtSmell");
+                TextBox txtOthers = (TextBox)Dgdetail.Rows[i].Cells[15].FindControl("txtOthers");
+
+                TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[16].FindControl("txtlotresult");
 
                 if (txtsrno.Text != "")
                 {
-                    str = str + @"  Insert into PaperTubeInspectionDetail(Docid,Srno,Description,totalqty,samplesize,length,Thickness,Innerdia,Moisture,Weight,Found,Acceptance,Lotresult)
-                   values (" + hndocid.Value + ",'" + txtsrno.Text + "','" + txtdescription.Text.Replace("'", "''") + "'," + (txttotalqty.Text == "" ? "0" : txttotalqty.Text) + @",
-                          '" + txtsamplesize.Text.Replace("'", "''") + "','" + txtlength.Text.Replace("'", "''") + "','" + txtthickness.Text.Replace("'", "''") + "','" + txtinnerdia.Text.Replace("'", "''") + "','" + txtmoisture.Text.Replace("'", "''") + @"'
-                          ,'" + txtweight.Text.Replace("'", "''") + "','" + txtfound.Text.Replace("'", "''") + "','" + txtacceptance.Text.Replace("'", "''") + "','" + txtlotresult.Text.Replace("'", "''") + "')";
+                    str = str + @"  Insert into PaperTubeInspectionDetail(Docid, Srno, Description, totalqty, samplesize, length, Thickness, Innerdia, 
+                    Moisture, Weight, Found, Acceptance, Lotresult, ExternalDia, SymbleOnPaperTube, OilStain, Smell, Others) 
+                    values (" + hndocid.Value + ",'" + txtsrno.Text + "','" + txtdescription.Text.Replace("'", "''") + "'," + (txttotalqty.Text == "" ? "0" : txttotalqty.Text) + @",
+                    '" + txtsamplesize.Text.Replace("'", "''") + "','" + txtlength.Text.Replace("'", "''") + "','" + txtthickness.Text.Replace("'", "''") + "','" + txtinnerdia.Text.Replace("'", "''") + @"',
+                    '" + txtmoisture.Text.Replace("'", "''") + "','" + txtweight.Text.Replace("'", "''") + "','" + txtfound.Text.Replace("'", "''") + "','" + txtacceptance.Text.Replace("'", "''") + "','" + txtlotresult.Text.Replace("'", "''") + @"', 
+                    '" + txtExternaldia.Text.Replace("'", "''") + "','" + txtSymbleOnPapertube.Text.Replace("'", "''") + "','" + txtOilStain.Text.Replace("'", "''") + "','" + txtSmell.Text.Replace("'", "''") + "','" + txtOthers.Text.Replace("'", "''") + "')";
                 }
-
-
             }
             if (str != "")
             {
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
             }
         }
-
     }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
@@ -349,11 +414,15 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                 {
                     Session["rptFileName"] = "~\\Reports\\rptPapertubeinspectionKaysons.rpt";
                 }
+                else if (Session["VarCompanyNo"].ToString() == "45")
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptPapertubeinspectionMWS.rpt";
+                }
                 else
                 {
                     Session["rptFileName"] = "~\\Reports\\rptPapertubeinspection.rpt";
                 }
-               
+
                 Session["Getdataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\rptPapertubeinspection.xsd";
                 StringBuilder stb = new StringBuilder();
@@ -365,7 +434,6 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "alt1", "alert('No records found.')", true);
             }
-
         }
         catch (Exception ex)
         {
@@ -472,8 +540,10 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
     }
     private void fillDocno()
     {
-        string str = @"SELECT Distinct RIM.DOCID,RIM.DOCNO +' # ' +Replace(convert(nvarchar(11),RIM.Reportdate,106),' ','-') as DocNo FROM PaperTubeInspectionMaster RIM INNER JOIN PaperTubeInspectionDetail RID ON RIM.DOCID=RID.DOCID
-                      Where RIM.COMPANYID=" + DDcompanyName.SelectedValue + " And RIM.BranchID = " + DDBranchName.SelectedValue;
+        string str = @"SELECT Distinct RIM.DOCID,RIM.DOCNO +' # ' +Replace(convert(nvarchar(11),RIM.Reportdate,106),' ','-') as DocNo 
+                FROM PaperTubeInspectionMaster RIM(nolock) 
+                --INNER JOIN PaperTubeInspectionDetail RID(nolock) ON RIM.DOCID=RID.DOCID
+                Where RIM.COMPANYID=" + DDcompanyName.SelectedValue + " And RIM.BranchID = " + DDBranchName.SelectedValue;
         if (txtsuppliersearch.Text != "")
         {
             str = str + " and RIM.Suppliername like '" + txtsuppliersearch.Text.Trim() + "%'";
@@ -489,8 +559,8 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
     }
     protected void FillDataback()
     {
-        string str = @"SELECT * FROM PaperTubeInspectionMaster RIM Where RIM.DocId=" + hndocid.Value + @"
-                       SELECT * FROM PaperTubeInspectionDetail RID Where RID.DocId=" + hndocid.Value;
+        string str = @"SELECT * FROM PaperTubeInspectionMaster RIM(nolock) Where RIM.DocId=" + hndocid.Value + @"
+                       SELECT * FROM PaperTubeInspectionDetail RID(nolock) Where RID.DocId=" + hndocid.Value;
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -517,13 +587,21 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                         TextBox txtlength = (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtlength");
                         TextBox txtthickness = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtthickness");
                         TextBox txtinnerdia = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtinnerdia");
-                        TextBox txtmoisture = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtmoisture");
-                        TextBox txtweight = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtweight");
-                        TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtfound");
-                        TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtacceptance");
-                        TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtlotresult");
 
+                        TextBox txtExternaldia = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtExternaldia");
+                        TextBox txtSymbleOnPapertube = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtSymbleOnPapertube");
 
+                        TextBox txtmoisture = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtmoisture");
+                        TextBox txtweight = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtweight");
+                        TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtfound");
+                        TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtacceptance");
+
+                        TextBox txtOilStain = (TextBox)Dgdetail.Rows[i].Cells[13].FindControl("txtOilStain");
+                        TextBox txtSmell = (TextBox)Dgdetail.Rows[i].Cells[14].FindControl("txtSmell");
+                        TextBox txtOthers = (TextBox)Dgdetail.Rows[i].Cells[15].FindControl("txtOthers");
+
+                        TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[16].FindControl("txtlotresult");
+                        
                         txtsrno.Text = ds.Tables[1].Rows[i]["srno"].ToString();
                         txtdescription.Text = ds.Tables[1].Rows[i]["description"].ToString();
                         txttotalqty.Text = ds.Tables[1].Rows[i]["totalqty"].ToString();
@@ -531,10 +609,19 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                         txtlength.Text = ds.Tables[1].Rows[i]["length"].ToString();
                         txtthickness.Text = ds.Tables[1].Rows[i]["thickness"].ToString();
                         txtinnerdia.Text = ds.Tables[1].Rows[i]["innerdia"].ToString();
+
+                        txtExternaldia.Text = ds.Tables[1].Rows[i]["ExternalDia"].ToString();
+                        txtSymbleOnPapertube.Text = ds.Tables[1].Rows[i]["SymbleOnPaperTube"].ToString();
+
                         txtmoisture.Text = ds.Tables[1].Rows[i]["Moisture"].ToString();
                         txtweight.Text = ds.Tables[1].Rows[i]["Weight"].ToString();
                         txtfound.Text = ds.Tables[1].Rows[i]["found"].ToString();
                         txtacceptance.Text = ds.Tables[1].Rows[i]["acceptance"].ToString();
+
+                        txtOilStain.Text = ds.Tables[1].Rows[i]["OilStain"].ToString();
+                        txtSmell.Text = ds.Tables[1].Rows[i]["Smell"].ToString();
+                        txtOthers.Text = ds.Tables[1].Rows[i]["Others"].ToString();
+
                         txtlotresult.Text = ds.Tables[1].Rows[i]["lotresult"].ToString();
                     }
                     else
@@ -548,11 +635,20 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                         TextBox txtlength = (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtlength");
                         TextBox txtthickness = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtthickness");
                         TextBox txtinnerdia = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtinnerdia");
-                        TextBox txtmoisture = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtmoisture");
-                        TextBox txtweight = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtweight");
-                        TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtfound");
-                        TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtacceptance");
-                        TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtlotresult");
+
+                        TextBox txtExternaldia = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtExternaldia");
+                        TextBox txtSymbleOnPapertube = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtSymbleOnPapertube");
+
+                        TextBox txtmoisture = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtmoisture");
+                        TextBox txtweight = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtweight");
+                        TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtfound");
+                        TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtacceptance");
+
+                        TextBox txtOilStain = (TextBox)Dgdetail.Rows[i].Cells[13].FindControl("txtOilStain");
+                        TextBox txtSmell = (TextBox)Dgdetail.Rows[i].Cells[14].FindControl("txtSmell");
+                        TextBox txtOthers = (TextBox)Dgdetail.Rows[i].Cells[15].FindControl("txtOthers");
+
+                        TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[16].FindControl("txtlotresult");
 
                         txtsrno.Text = ds.Tables[1].Rows[i]["srno"].ToString();
                         txtdescription.Text = ds.Tables[1].Rows[i]["description"].ToString();
@@ -561,10 +657,19 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                         txtlength.Text = ds.Tables[1].Rows[i]["Length"].ToString();
                         txtthickness.Text = ds.Tables[1].Rows[i]["thickness"].ToString();
                         txtinnerdia.Text = ds.Tables[1].Rows[i]["innerdia"].ToString();
+
+                        txtExternaldia.Text = ds.Tables[1].Rows[i]["ExternalDia"].ToString();
+                        txtSymbleOnPapertube.Text = ds.Tables[1].Rows[i]["SymbleOnPaperTube"].ToString();
+
                         txtmoisture.Text = ds.Tables[1].Rows[i]["Moisture"].ToString();
                         txtweight.Text = ds.Tables[1].Rows[i]["Weight"].ToString();
                         txtfound.Text = ds.Tables[1].Rows[i]["found"].ToString();
                         txtacceptance.Text = ds.Tables[1].Rows[i]["acceptance"].ToString();
+
+                        txtOilStain.Text  = ds.Tables[1].Rows[i]["OilStain"].ToString();
+                        txtSmell.Text = ds.Tables[1].Rows[i]["Smell"].ToString();
+                        txtOthers.Text = ds.Tables[1].Rows[i]["Others"].ToString();
+
                         txtlotresult.Text = ds.Tables[1].Rows[i]["lotresult"].ToString();
                     }
 

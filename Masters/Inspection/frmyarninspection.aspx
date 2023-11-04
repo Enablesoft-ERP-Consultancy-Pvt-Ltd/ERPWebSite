@@ -131,10 +131,10 @@
             <table border="1" cellspacing="2" style="width: 100%">
                 <tr>
                     <td style="width: 10%; border-style: dotted">
-                        <asp:Label Text="Supplier Name" runat="server" CssClass="labelbold"  />
+                        <asp:Label Text="Supplier Name" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="width: 50%; border-style: dotted">
-                        <asp:TextBox ID="txtsuppliername" CssClass="textb" Width="95%" runat="server" />                       
+                        <asp:TextBox ID="txtsuppliername" CssClass="textb" Width="95%" runat="server" />
                     </td>
                     <td style="width: 5%; border-style: dotted">
                         <asp:Label ID="Label1" Text="Date :" runat="server" CssClass="labelbold" />
@@ -496,6 +496,122 @@
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_7" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                </tr>
+                <tr id="Tr8" runat="server" visible="false">
+                    <td style="width: 10%; padding: 1% 1% 1% 1%; text-align: center">
+                        <asp:Label ID="Label22" Text="8" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center; width: 15%">
+                        <asp:Label ID="lblcheckpoint_8" Text="SMELL" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtspecification_8" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt8_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt8_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt8_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt8_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt8_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtavgvalue_8" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                </tr>
+                <tr id="Tr9" runat="server" visible="false">
+                    <td style="width: 10%; padding: 1% 1% 1% 1%; text-align: center">
+                        <asp:Label ID="Label25" Text="9" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center; width: 15%">
+                        <asp:Label ID="lblcheckpoint_9" Text="KITTI/DUST" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtspecification_9" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt9_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt9_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt9_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt9_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt9_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtavgvalue_9" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                </tr>
+                <tr id="Tr10" runat="server" visible="false">
+                    <td style="width: 10%; padding: 1% 1% 1% 1%; text-align: center">
+                        <asp:Label ID="Label26" Text="10" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center; width: 15%">
+                        <asp:Label ID="lblcheckpoint_10" Text="OBA(UNDER UV LIGHT)" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtspecification_10" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt10_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt10_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt10_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt10_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt10_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtavgvalue_10" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                </tr>
+                <tr id="Tr11" runat="server" visible="false">
+                    <td style="width: 10%; padding: 1% 1% 1% 1%; text-align: center">
+                        <asp:Label ID="Label28" Text="11" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center; width: 15%">
+                        <asp:Label ID="lblcheckpoint_11" Text="OTHER" runat="server" CssClass="labelbold" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtspecification_11" CssClass="textb" Width="85%" runat="server" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt11_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt11_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt11_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt11_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                    </td>
+                    <td style="text-align: center; width: 8%">
+                        <asp:TextBox ID="txt11_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                    </td>
+                    <td style="text-align: center">
+                        <asp:TextBox ID="txtavgvalue_11" CssClass="textb" Width="85%" runat="server" />
                     </td>
                 </tr>
             </table>

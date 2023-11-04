@@ -130,8 +130,7 @@
                                         <ItemTemplate>
                                             <asp:TextBox ID="txttotalqty" runat="server" Width="100%" />
                                         </ItemTemplate>
-                                    </asp:TemplateField>
-                                   
+                                    </asp:TemplateField>                                   
                                     <asp:TemplateField HeaderText="Sample Plan">
                                         <ItemTemplate>
                                             <asp:TextBox ID="txtsamplesize" runat="server" Width="100%" />
@@ -152,6 +151,18 @@
                                             <asp:TextBox ID="txtinnerdia" runat="server" Width="100%" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                    
+                                    <asp:TemplateField HeaderText="External Dia In mm">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtExternaldia" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Symble On Paper tube">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtSymbleOnPapertube" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+
                                     <asp:TemplateField HeaderText="Moisture">
                                         <ItemTemplate>
                                             <asp:TextBox ID="txtmoisture" runat="server" Width="100%" />
@@ -170,6 +181,22 @@
                                     <asp:TemplateField HeaderText="Acceptance">
                                         <ItemTemplate>
                                             <asp:TextBox ID="txtacceptance" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    
+                                    <asp:TemplateField HeaderText="Oil Stain">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtOilStain" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Smell">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtSmell" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Others">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtOthers" runat="server" Width="100%" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Lot Result">

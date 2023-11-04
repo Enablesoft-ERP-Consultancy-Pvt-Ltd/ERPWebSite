@@ -5087,6 +5087,12 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 Where OD.OrderId = " + DDorderNo.SelectedValue + @"
                 Order BY Size";
         }
+        else
+        {
+
+            str = @"select Distinct vf.shapeid, " + StrSize + @" from shape vf order by shapename";
+
+        }
 
         UtilityModule.ConditionalComboFill(ref ddlshape, str, true, "--Plz Select--");
 
@@ -5153,6 +5159,12 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 Where OD.OrderId = " + DDorderNo.SelectedValue + @"
                 Order BY Size";
         }
+        else
+        {
+
+            str = @"select Distinct vf.sizeid, " + StrSize + @" from size vf order by Sizeid";
+
+        }
 
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--Plz Select--");
 
@@ -5172,7 +5184,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
     {
         //fill_gride();
-        string str = "select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where vf.QualityId=" + DDQuality.SelectedValue + @" and vf.designid<>0 order by vf.designName";
+        string str = string.Empty;
 
         if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
         {
@@ -5181,6 +5193,11 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + " And vf.QualityId=" + DDQuality.SelectedValue + @" 
                 Where OD.OrderId = " + DDorderNo.SelectedValue + @"
                 Order BY vf.designName";
+        }
+        else
+        {
+          str=  "select Distinct vf.designId,vf.designName From Design vf  order by designName";
+
         }
 
         //str = str + @" Select Distinct IsNull((select Top 1 processId From Item_Process Where QualityId=" + DDQuality.SelectedValue + " and SeqNo=IP.SeqNo-1),0) as FromProcessid From Item_Process IP Where QualityId=" + DDQuality.SelectedValue + " and processid=" + ddfrom.SelectedValue;
@@ -5211,6 +5228,11 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + " And vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + @" 
                 Where OD.OrderId = " + DDorderNo.SelectedValue + @"
                 Order BY vf.ColorName";
+        }
+        else
+        {
+            str = "select Distinct vf.ColorId,vf.ColorName From color vf  order by ColorName";
+
         }
 
         UtilityModule.ConditionalComboFill(ref DDColor, str, true, "--Plz Select--");

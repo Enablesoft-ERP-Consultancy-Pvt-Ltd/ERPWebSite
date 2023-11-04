@@ -1322,46 +1322,17 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     btnconfirm_Click(sender, new EventArgs());
                 }
                 break;
+            case "45":
+                txtactualwidth.Focus();
+                break;
             default:
                 btnconfirm.Focus();
                 break;
         }
-
-        //if (Convert.ToInt32(Session["varcompanyNo"]) == 28)
-        //{
-        //    if (Convert.ToInt32(Session["varSubCompanyId"]) == 283)
-        //    {
-        //        btnconfirm_Click(sender, new EventArgs());
-        //    }
-        //    else
-        //    {
-        //        txtactualwidth.Focus();
-        //        return;
-        //    }
-        //}
     }
     protected void Savedetail(Object sender = null)
     {
         lblmessage.Text = "";
-
-        //switch (Session["varcompanyid"].ToString())
-        //{
-        //    case "16":
-        //        if (Tdreturnremark.Visible == false)
-        //        {
-
-        //            if (Convert.ToDecimal(txtstockweight.Text == "" ? "0" : txtstockweight.Text) <= 0)
-        //            {
-        //                lblmessage.Text = "Please enter stock Weight.";
-        //                txtstockweight.Focus();
-        //                return;
-        //            }
-        //        }
-        //        break;
-        //    default:
-        //        break;
-        //}
-
         if (Session["varcompanyId"].ToString() == "22")
         {
             if (DDCarpetGrade.SelectedIndex == 0)
@@ -2747,6 +2718,5 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         {
             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
         }
-
     }
 }

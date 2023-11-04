@@ -1312,7 +1312,14 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                         string BinNo = TDBINNO.Visible == true && DDBinNo.SelectedIndex > 0 ? DDBinNo.SelectedItem.Text : "";
                         _arrpara[42].Value = BinNo;
                         _arrpara[43].Value = txtPenalityRemark.Text;
-                        _arrpara[44].Value = TDCompanyLotNo.Visible == true ? (chkoldlotno.Checked == true ? "1" : "0") : "0";
+                        if (Session["varCompanyId"].ToString() == "44")
+                        {
+                            _arrpara[44].Value = 1;
+                        }
+                        else
+                        {
+                            _arrpara[44].Value = TDCompanyLotNo.Visible == true ? (chkoldlotno.Checked == true ? "1" : "0") : "0";
+                        }
                         _arrpara[45].Direction = ParameterDirection.Output;
 
                         System.Data.SqlTypes.SqlDateTime getDate2;
