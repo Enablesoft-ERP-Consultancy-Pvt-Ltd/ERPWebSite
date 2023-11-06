@@ -47,6 +47,8 @@
               <xs:element name="TODATE" type="xs:string" minOccurs="0" />
               <xs:element name="DATEFLAG" type="xs:int" minOccurs="0" />
               <xs:element name="FolioChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="MasterBuyerSize" type="xs:string" minOccurs="0" />
+              <xs:element name="MasterCompanyId" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

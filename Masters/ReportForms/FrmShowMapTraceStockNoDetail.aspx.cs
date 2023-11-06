@@ -192,47 +192,7 @@ public partial class Masters_ReportForms_FrmShowMapTraceStockNoDetail : CustomPa
     {
         BtnShow_Click(sender, e);
     }
-//    protected void lnkbtnName_Click(object sender, EventArgs e)
-//    {
-//        ModalPopupExtender1.Show();
-//        LinkButton lnk = sender as LinkButton;
 
-//        if (lnk != null)
-//        {
-//            GridViewRow grv = lnk.NamingContainer as GridViewRow;
-//            hngridrowindex.Value = grv.RowIndex.ToString();            
-
-//            //int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[16].Text);
-//            int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[3].Text);
-//            int ProcessId = Convert.ToInt32(((Label)DGStock.Rows[grv.RowIndex].FindControl("lblProcessId")).Text);
-//            int Item_Finished_Id = Convert.ToInt32(((Label)DGStock.Rows[grv.RowIndex].FindControl("lblFinishedid")).Text);
-//            string VarStockNo = Convert.ToString(DGStock.Rows[grv.RowIndex].Cells[0].Text);
-
-//            SqlParameter[] param = new SqlParameter[4];
-//            param[0] = new SqlParameter("@processid", ProcessId);
-//            param[1] = new SqlParameter("@Finishedid", Item_Finished_Id);
-//            param[2] = new SqlParameter("@issueorderid", IssueOrderId);
-//            param[3] = new SqlParameter("@TStockNo", VarStockNo);
-
-//            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetRawDetailForStockNo", param);
-
-////            string str = "";
-
-////            str = @"select Distinct ITEM_NAME,QualityName,ShadeColorName,Lotno 
-////                From ProcessRawMaster PM 
-////                inner join ProcessRawTran PT on PM.PRMid=PT.PRMid
-////                inner join V_FinishedItemDetail v on PT.Finishedid=v.ITEM_FINISHED_ID
-////                inner join Process_issue_detail_" + ProcessId + @" PID on PM.Prorderid=PID.IssueOrderId 
-////                inner join PROCESS_CONSUMPTION_DETAIL PCD on PM.Prorderid=PCD.ISSUEORDERID and PT.Finishedid=PCd.IFINISHEDID and 
-////                        PCd.PROCESSID=" + ProcessId + @" And PID.Issue_Detail_Id=PCd.ISSUE_DETAIL_ID
-////                Where PM.TypeFlag = 0 And PM.Processid=" + ProcessId + " and PM.Prorderid=" + IssueOrderId + " and PM.trantype=0 and PID.Item_Finished_Id=" + Item_Finished_Id;
-
-////            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-
-//            GDLinkedtoCustomer.DataSource = ds;
-//            GDLinkedtoCustomer.DataBind();
-//        }
-//    }
     private void HookOnFocus(Control CurrentControl)
     {
         //checks if control is one of TextBox, DropDownList, ListBox or Button
@@ -251,116 +211,7 @@ public partial class Masters_ReportForms_FrmShowMapTraceStockNoDetail : CustomPa
             foreach (Control CurrentChildControl in CurrentControl.Controls)
                 HookOnFocus(CurrentChildControl);
     }
-    //protected void btnconfirm_Click(object sender, EventArgs e)
-    //{
-    //    lblmsg.Text = "";
-    //    #region
-    //    //string str = "", msg = "";
-    //    //DataSet ds = null;
-    //    //string Tstockno = txtStockNo.Text;
-    //    //string[] split = Tstockno.Split(',');
-    //    //foreach (string item in split)
-    //    //{
-    //    //    str = @"select isnull(PackingId,0) as PackingId From carpetNumber Where Tstockno='" + item + "' and PackingId=999999999";
-    //    //    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-    //    //    if (ds.Tables[0].Rows.Count > 0)
-    //    //    {
-    //    //        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update carpetnumber set Pack=0,Packingid=0,PackingDetailID=0 Where Tstockno='" + item + "'");
-    //    //        msg = msg + " StockNo - " + item + " confirmed sucessfully";
-    //    //    }
-    //    //    else
-    //    //    {
-    //    //        msg = msg + " StockNo -" + item + " can not confirmed";
-    //    //    }
-    //    //}
-    //    //lblmsg.Text = msg;
-    //    #endregion
-    //    SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-    //    if (con.State == ConnectionState.Closed)
-    //    {
-    //        con.Open();
-    //    }
-    //    SqlTransaction Tran = con.BeginTransaction();
-    //    try
-    //    {
-
-    //        SqlParameter[] param = new SqlParameter[4];
-    //        param[0] = new SqlParameter("@TstockNo", txtStockNo.Text);
-    //        param[1] = new SqlParameter("@userid", Session["varuserid"]);
-    //        param[2] = new SqlParameter("@mastercompanyId", Session["varcompanyNo"]);
-    //        param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-    //        param[3].Direction = ParameterDirection.Output;
-    //        //*******
-    //        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_STOCKCONFIRMED", param);
-    //        lblmsg.Text = param[3].Value.ToString();
-    //        Tran.Commit();
-    //    }
-
-    //    catch (Exception ex)
-    //    {
-    //        Tran.Rollback();
-    //        lblmsg.Text = ex.Message;
-    //    }
-    //    finally
-    //    {
-    //        con.Close();
-    //        con.Dispose();
-    //    }
-    //}
-    //protected void btnprintstockrawdetail_Click(object sender, EventArgs e)
-    //{
-    //    GetStockRawdetail();
-    //    ModalPopupExtender1.Show();
-
-    //}
-    //protected void GetStockRawdetail()
-    //{
-        
-    //    int rowindex = Convert.ToInt16(hngridrowindex.Value);
-    //    int IssueOrderId = Convert.ToInt32(DGStock.Rows[rowindex].Cells[3].Text);        
-    //    int ProcessId = Convert.ToInt32(((Label)DGStock.Rows[rowindex].FindControl("lblProcessId")).Text);
-    //    int Item_Finished_Id = Convert.ToInt32(((Label)DGStock.Rows[rowindex].FindControl("lblFinishedid")).Text);
-    //    string ReceiveDate = DGStock.Rows[rowindex].Cells[6].Text;
-    //    //*****************
-    //    SqlParameter[] param = new SqlParameter[4];
-    //    param[0] = new SqlParameter("@processid", ProcessId);
-    //    param[1] = new SqlParameter("@Finishedid", Item_Finished_Id);
-    //    param[2] = new SqlParameter("@issueorderid", IssueOrderId);
-    //    param[3] = new SqlParameter("@Receivedate", ReceiveDate);
-
-    //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetStockRawdetailForOthers", param);
-
-    //    //Export to excel
-    //    GridView GridView1 = new GridView();
-    //    GridView1.AllowPaging = false;
-
-    //    GridView1.DataSource = ds;
-    //    GridView1.DataBind();
-
-    //    Response.Clear();
-    //    Response.Buffer = true;
-    //    Response.AddHeader("content-disposition",
-    //     "attachment;filename=STOCKRAWDETAIL" + DateTime.Now + ".xls");
-    //    Response.Charset = "";
-    //    Response.ContentType = "application/vnd.ms-excel";
-    //    StringWriter sw = new StringWriter();
-    //    HtmlTextWriter hw = new HtmlTextWriter(sw);
-
-    //    for (int i = 0; i < GridView1.Rows.Count; i++)
-    //    {
-    //        //Apply text style to each Row
-    //        GridView1.Rows[i].Attributes.Add("class", "textmode");
-    //    }
-    //    GridView1.RenderControl(hw);
-
-    //    //style to format numbers to string
-    //    string style = @"<style> .textmode { mso-number-format:\@; } </style>";
-    //    Response.Write(style);
-    //    Response.Output.Write(sw.ToString());
-    //    Response.Flush();
-    //    Response.End();
-
-    //}
+    
     public override void VerifyRenderingInServerForm(Control control)
     {
         //required to avoid the run time error "  
@@ -377,32 +228,7 @@ public partial class Masters_ReportForms_FrmShowMapTraceStockNoDetail : CustomPa
             Report();
         //}
     }
-    //protected void StockWiseRawMasterialIssueDetail()
-    //{
-    //    SqlParameter[] param = new SqlParameter[4];
-    //    param[0] = new SqlParameter("@processid", 1);
-    //    param[1] = new SqlParameter("@Prmid", 0);
-    //    param[2] = new SqlParameter("@TStockNo", txtStockNo.Text);
-    //    param[3] = new SqlParameter("@Type", 1);
-    //    //************
-    //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_STOCKNOWISEMATERIALISSUE", param);
-    //    if (ds.Tables[0].Rows.Count > 0)
-    //    {
-
-    //        Session["rptFileName"] = "~\\Reports\\Rptstocknowisematerialissue.rpt";
-    //        Session["GetDataset"] = ds;
-    //        Session["dsFileName"] = "~\\ReportSchema\\Rptstocknowisematerialissue.xsd";
-
-    //        StringBuilder stb = new StringBuilder();
-    //        stb.Append("<script>");
-    //        stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-    //        ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
-    //    }
-    //    else
-    //    {
-    //        ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
-    //    }
-    //}
+    
     protected void Report()
     {
         Response.Clear();

@@ -26,11 +26,7 @@
     <asp:UpdatePanel ID="updatepanel1" runat="server">
         <ContentTemplate>
             <table width="100%">
-                <tr>
-                    <%-- <td>
-                            <asp:Button ID="btnStockNo" runat="server" BackColor="White" 
-                                    BorderColor="White" BorderWidth="0px" ForeColor="White" Height="0px" Width="0px" />                               
-                            </td>--%>
+                <tr>                   
                     <td style="width: 6%">
                         <span class="labelbold">Stock No </span>
                     </td>
@@ -40,25 +36,12 @@
                     </td>
                     <td>
                         <asp:Button ID="BtnShow" runat="server" Text="Show" CssClass="buttonnorm" OnClick="BtnShow_Click" />
-                        <%-- <asp:CheckBox ID="chkForBazarSize" Text="For Bazar Size" runat="server" />
-                        <asp:CheckBox ID="ChkForStockRawIssueDetail" Text="For Stock Raw Issue" runat="server" />--%>
-                        <%-- <asp:Button ID="btnconfirm" runat="server" Visible="false" CssClass="buttonnorm"
-                            Text="Confirm" OnClick="btnconfirm_Click" />--%>
+                       
                         <asp:Button ID="btnPreview" runat="server" Visible="false" CssClass="buttonnorm"
                             Text="Preview" OnClick="btnPreview_Click" />
                     </td>
                 </tr>
-                <tr id="trStockRemark" runat="server" visible="false">
-                    <%--<td style="width: 6%">
-                        <span class="labelbold">Remark </span>
-                    </td>
-                    <td style="width: 55%">
-                        <asp:TextBox ID="TxtStockNoRemark" runat="server" CssClass="textb" Width="99%"></asp:TextBox>
-                    </td>
-                    <td>
-                        <asp:Button ID="BtnSaveRemark" runat="server" CssClass="buttonnorm" Text="Confirm"
-                            OnClick="BtnSaveRemark_Click" />
-                    </td>--%>
+                <tr id="trStockRemark" runat="server" visible="false">                   
                     <td>
                         <asp:Button ID="btnpack" CssClass="buttonnorm" Text="StockOut" runat="server"
                             Visible="false" OnClientClick="return confirm('Do you want to stockout this Stock No.?')"
@@ -88,7 +71,7 @@
                                         </ItemTemplate>
                                          <ItemStyle HorizontalAlign="Center" Width="100px" />
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Item name" HeaderStyle-HorizontalAlign="Left">
+                                    <asp:TemplateField HeaderText="Item Name" HeaderStyle-HorizontalAlign="Left">
                                         <ItemTemplate>
                                             <asp:Label ID="lblitemname" Text='<%#Bind("Item_Name") %>' runat="server" />
                                         </ItemTemplate>
@@ -152,8 +135,7 @@
                             runat="server" />
                     </td>
                 </tr>
-            </table>
-            
+            </table>            
             <asp:HiddenField ID="hngridrowindex" Value="0" runat="server" />
         </ContentTemplate>
         <Triggers>            
