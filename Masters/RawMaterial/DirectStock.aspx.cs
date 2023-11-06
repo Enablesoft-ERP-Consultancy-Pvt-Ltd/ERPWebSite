@@ -90,7 +90,8 @@ public partial class Masters_process_itemRecieve : System.Web.UI.Page
                     break;
                 case "42":
                     BtnStockNoToVCMSale.Visible = true;
-                    TDUpdatePrice.Visible = true;                    
+                    TDUpdatePrice.Visible = true;
+                    ChkForInchSize.Visible = true;
                     break;
                 case "44":
                     ChkForExcelExport.Visible = false;
