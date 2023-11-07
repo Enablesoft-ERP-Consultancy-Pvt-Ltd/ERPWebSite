@@ -55,6 +55,7 @@
               <xs:element name="QualityRate" type="xs:double" minOccurs="0" />
               <xs:element name="FolioChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="CarpetQuality" type="xs:string" minOccurs="0" />
+              <xs:element name="GatePassNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

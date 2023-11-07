@@ -53,6 +53,10 @@ public partial class Masters_ReportForms_FrmShowMapTraceStockNoDetail : CustomPa
                 trStockRemark.Visible = true;
                 //BtnSaveRemark.Visible = false;
             }
+            if (Session["usertype"].ToString() == "1")
+            {
+                btnpack.Visible = true;
+            }
 
             txtStockNo.Text = "";
             txtStockNo.Focus();
