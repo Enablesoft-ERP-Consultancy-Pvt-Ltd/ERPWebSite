@@ -1763,7 +1763,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         param[5] = new SqlParameter("@Issueorderid", txtissueno.Text);
         param[6] = new SqlParameter("@Where", strCondition);
-        param[7] = new SqlParameter("@ChkForSummary", ChkSummary.Checked==true ? "1" : "0");
+        //param[7] = new SqlParameter("@ChkForSummary", ChkSummary.Checked==true ? "1" : "0");
 
         ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "FinishingIssueDetail", param);
 

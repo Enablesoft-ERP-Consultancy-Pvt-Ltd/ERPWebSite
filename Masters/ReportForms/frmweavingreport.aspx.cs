@@ -551,6 +551,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 WeaverRawMaterialIssRecQualityWiseReport();
                 return;
             }
+            else if (ChkOpenIssRecConDetail.Checked == true)
+            {
+                OpenIssRecConDetail();
+                return;
+            }
             else
             {
                 WeaverRawMaterialIssRecWithConsumptionReport();
@@ -6183,7 +6188,140 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             lblmsg.Text = ex.Message;
         }
     }
+    protected void OpenIssRecConDetail()
+    {
+        lblmsg.Text = "";
+        try
+        {
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("Pro_Get_EmployeeQualityWiseOpenIssRecBalDetail", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
 
+            cmd.Parameters.AddWithValue("@CompanyID", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@ProcessID", 1);
+            cmd.Parameters.AddWithValue("@EmpID", DDWeaver.SelectedValue);
+            cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            //***********
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+
+                sht.Range("A1:I1").Merge();
+                sht.Range("A2:I2").Merge();
+                sht.Range("A3:I3").Merge();
+                //sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveDate"]);
+
+                sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"]);
+                sht.Range("A1:I1").Style.Font.Bold = true;
+                sht.Range("A1:I1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:I1").Style.Font.FontName = "Calibri";
+                sht.Range("A1:I1").Style.Font.FontSize = 12;
+
+                sht.Range("A2").SetValue("Raw Material Consumption With Weaver Report");
+                sht.Range("A2:I2").Style.Font.Bold = true;
+                sht.Range("A2:I2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:I2").Style.Font.FontName = "Calibri";
+                sht.Range("A2:I2").Style.Font.FontSize = 12;
+
+                sht.Range("A3").SetValue("Period From " + ds.Tables[0].Rows[0]["FromDate"] + " To " + ds.Tables[0].Rows[0]["ToDate"]);
+                sht.Range("A3:I3").Style.Font.Bold = true;
+                sht.Range("A3:I3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A3:I3").Style.Font.FontName = "Calibri";
+                sht.Range("A3:I3").Style.Font.FontSize = 12;
+                //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
+
+                //*******Header
+                sht.Range("A4").Value = "CONTRACTOR NAME";
+                sht.Range("B4").Value = "QUALITY NAME";
+                sht.Range("C4").Value = "OPEN. BAL";
+                sht.Range("D4").Value = "ISS QTY";
+                sht.Range("E4").Value = "RET QTY";
+                sht.Range("F4").Value = "CON QTY";
+                sht.Range("G4").Value = "AREA";
+                sht.Range("H4").Value = "QTY";
+                sht.Range("I4").Value = "BALANCE";
+
+                sht.Range("A4:I4").Style.Font.FontName = "Calibri";
+                sht.Range("A4:I4").Style.Font.FontSize = 11;
+                sht.Range("A4:I4").Style.Font.Bold = true;
+                sht.Range("A4:I4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A4:I4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A4:I4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A4:I4").Style.Alignment.SetWrapText();
+
+                row = 5;
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
+                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"]);
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["OpenQty"]);
+                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["IssQty"]);
+                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["RecQty"]);
+                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["ConQty"]);
+                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["Area"]);
+                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["Qty"]);
+                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["BalQty"]);
+
+                    using (var a = sht.Range("A2" + ":I" + (row - 1)))
+                    {
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    row = row + 1;
+                }
+                ////*************
+                //sht.Columns(1, 30).AdjustToContents();
+
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("RawMaterialConsumptionWithWeaverReport_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+    }
     protected void WeaverRawMaterialIssRecWithConsumptionReport()
     {
         lblmsg.Text = "";
@@ -7730,9 +7868,9 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 var sht = xapp.Worksheets.Add("sheet1");
                 sht.PageSetup.PageOrientation = XLPageOrientation.Landscape;
                 sht.PageSetup.AdjustTo(55);
-                sht.PageSetup.FitToPages(1, 1);                
+                sht.PageSetup.FitToPages(1, 1);
                 sht.PageSetup.PaperSize = XLPaperSize.A4Paper;
-               
+
                 //sht.PageSetup.VerticalDpi = 300;
                 //sht.PageSetup.HorizontalDpi = 300;
                 sht.PageSetup.Margins.Top = 0.2;
@@ -7883,7 +8021,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
                             OQty = Convert.ToInt32(row3["Qty"].ToString());
                             RecQty = Convert.ToInt32(row3["RecQty"].ToString());
-                            OnLoomQty=Convert.ToInt32(row3["Qty"].ToString())-Convert.ToInt32(row3["RecQty"].ToString());
+                            OnLoomQty = Convert.ToInt32(row3["Qty"].ToString()) - Convert.ToInt32(row3["RecQty"].ToString());
 
                             sht.Range("A" + row).SetValue(CustomerCode);
                             sht.Range("B" + row).SetValue(OrderNo);
@@ -7913,8 +8051,8 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                         rowto = row - 1;
                         sht.Range("I" + row).SetValue("Total");
                         sht.Range("J" + row).FormulaA1 = "=SUM(J" + rowfrom + ":J" + rowto + ")";
-                        sht.Range("K" + row).FormulaA1 = "SUM(K" + rowfrom + ":K" + rowto + ")";   
-                        sht.Range("L" + row).FormulaA1 = "SUM(L" + rowfrom + ":L" + rowto + ")";   
+                        sht.Range("K" + row).FormulaA1 = "SUM(K" + rowfrom + ":K" + rowto + ")";
+                        sht.Range("L" + row).FormulaA1 = "SUM(L" + rowfrom + ":L" + rowto + ")";
                         //sht.Range("I" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
                         sht.Range("C" + row + ":W" + row).Style.Font.Bold = true;
                         sht.Range("C" + row + ":W" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);

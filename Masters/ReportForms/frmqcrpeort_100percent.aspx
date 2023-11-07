@@ -9,7 +9,6 @@
         function CloseForm() {
             window.location.href = "../../main.aspx";
         }
-
     </script>
     <script type="text/javascript">
         function Jscriptvalidate() {

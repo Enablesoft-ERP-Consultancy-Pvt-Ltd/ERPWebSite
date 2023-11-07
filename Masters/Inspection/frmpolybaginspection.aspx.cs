@@ -63,6 +63,24 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                     btnApprove.Visible = false;
                     break;
             }
+            CompanyWiseGridViewChange();
+        }
+    }
+
+    private void CompanyWiseGridViewChange()
+    {
+        if (Convert.ToInt32(Session["varcompanyid"]) == 45)
+        {
+            Dgdetail.Columns[8].Visible = false;
+            Dgdetail.Columns[11].Visible = false;
+            Dgdetail.Columns[12].Visible = false;
+        }
+        else
+        {
+            Dgdetail.Columns[4].Visible = false;
+            Dgdetail.Columns[13].Visible = false;
+            Dgdetail.Columns[14].Visible = false;
+            Dgdetail.Columns[15].Visible = false;
         }
     }
     protected void Changeapprovebuttoncolor(int approvestatus = 0)
@@ -85,6 +103,7 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
         dt.Columns.Add(new DataColumn("Description", typeof(string)));
         dt.Columns.Add(new DataColumn("Totalqty", typeof(string)));
         dt.Columns.Add(new DataColumn("SampleSize", typeof(string)));
+        dt.Columns.Add(new DataColumn("SizeInCM", typeof(string)));
         dt.Columns.Add(new DataColumn("Gauge", typeof(string)));
         dt.Columns.Add(new DataColumn("Sealing", typeof(string)));
         dt.Columns.Add(new DataColumn("Printing", typeof(string)));
@@ -93,6 +112,9 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
         dt.Columns.Add(new DataColumn("Color", typeof(string)));
         dt.Columns.Add(new DataColumn("Found", typeof(string)));
         dt.Columns.Add(new DataColumn("Acceptance", typeof(string)));
+        dt.Columns.Add(new DataColumn("SymbleONPolyBag", typeof(string)));
+        dt.Columns.Add(new DataColumn("NoofPunture", typeof(string)));
+        dt.Columns.Add(new DataColumn("Others", typeof(string)));
         dt.Columns.Add(new DataColumn("Lotresult", typeof(string)));
 
         dr = dt.NewRow();
@@ -100,6 +122,7 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
         dr["Description"] = string.Empty;
         dr["Totalqty"] = string.Empty;
         dr["Samplesize"] = string.Empty;
+        dr["SizeInCM"] = string.Empty;
         dr["Gauge"] = string.Empty;
         dr["Sealing"] = string.Empty;
         dr["Printing"] = string.Empty;
@@ -108,6 +131,9 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
         dr["color"] = string.Empty;
         dr["Found"] = string.Empty;
         dr["Acceptance"] = string.Empty;
+        dr["SymbleONPolyBag"] = string.Empty;
+        dr["NoofPunture"] = string.Empty;
+        dr["Others"] = string.Empty;
         dr["Lotresult"] = string.Empty;
         dt.Rows.Add(dr);
         //dr = dt.NewRow();
@@ -135,23 +161,27 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                     TextBox txtdescription = (TextBox)Dgdetail.Rows[rowIndex].Cells[1].FindControl("txtdescription");
                     TextBox txttotalqty = (TextBox)Dgdetail.Rows[rowIndex].Cells[2].FindControl("txttotalqty");
                     TextBox txtsamplesize = (TextBox)Dgdetail.Rows[rowIndex].Cells[3].FindControl("txtsamplesize");
-                    TextBox txtgauge = (TextBox)Dgdetail.Rows[rowIndex].Cells[4].FindControl("txtgauge");
-                    TextBox txtsealing = (TextBox)Dgdetail.Rows[rowIndex].Cells[5].FindControl("txtsealing");
-                    TextBox txtprinting = (TextBox)Dgdetail.Rows[rowIndex].Cells[6].FindControl("txtprinting");
-                    TextBox txttearing = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txttearing");
-                    TextBox txtclearity = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txtclearity");
-                    TextBox txtcolor = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtcolor");
-                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtfound");
-                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtacceptance");
-                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[12].FindControl("txtlotresult");
-
-
+                    TextBox txtSizeInCM = (TextBox)Dgdetail.Rows[rowIndex].Cells[4].FindControl("txtSizeInCM");
+                    TextBox txtgauge = (TextBox)Dgdetail.Rows[rowIndex].Cells[5].FindControl("txtgauge");
+                    TextBox txtsealing = (TextBox)Dgdetail.Rows[rowIndex].Cells[6].FindControl("txtsealing");
+                    TextBox txtprinting = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txtprinting");
+                    TextBox txttearing = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txttearing");
+                    TextBox txtclearity = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtclearity");
+                    TextBox txtcolor = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtcolor");
+                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtfound");
+                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[12].FindControl("txtacceptance");
+                    TextBox txtSymbleONPolyBag = (TextBox)Dgdetail.Rows[rowIndex].Cells[13].FindControl("txtSymbleONPolyBag");
+                    TextBox txtNoofPunture = (TextBox)Dgdetail.Rows[rowIndex].Cells[14].FindControl("txtNoofPunture");
+                    TextBox txtOthers = (TextBox)Dgdetail.Rows[rowIndex].Cells[15].FindControl("txtOthers");
+                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[16].FindControl("txtlotresult");
+                    
                     drCurrentRow = dtCurrentTable.NewRow();
                     drCurrentRow["srno"] = i + 1;
 
                     dtCurrentTable.Rows[i - 1]["description"] = txtdescription.Text;
                     dtCurrentTable.Rows[i - 1]["totalqty"] = txttotalqty.Text;
                     dtCurrentTable.Rows[i - 1]["samplesize"] = txtsamplesize.Text;
+                    dtCurrentTable.Rows[i - 1]["SizeInCM"] = txtSizeInCM.Text;
                     dtCurrentTable.Rows[i - 1]["Gauge"] = txtgauge.Text;
                     dtCurrentTable.Rows[i - 1]["Sealing"] = txtsealing.Text;
                     dtCurrentTable.Rows[i - 1]["Printing"] = txtprinting.Text;
@@ -160,8 +190,10 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                     dtCurrentTable.Rows[i - 1]["Color"] = txtcolor.Text;
                     dtCurrentTable.Rows[i - 1]["Found"] = txtfound.Text;
                     dtCurrentTable.Rows[i - 1]["Acceptance"] = txtacceptance.Text;
+                    dtCurrentTable.Rows[i - 1]["SymbleONPolyBag"] = txtSymbleONPolyBag.Text;
+                    dtCurrentTable.Rows[i - 1]["NoofPunture"] = txtNoofPunture.Text;
+                    dtCurrentTable.Rows[i - 1]["Others"] = txtOthers.Text;
                     dtCurrentTable.Rows[i - 1]["Lotresult"] = txtlotresult.Text;
-
 
                     rowIndex++;
                 }
@@ -195,20 +227,25 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                     TextBox txtdescription = (TextBox)Dgdetail.Rows[rowIndex].Cells[1].FindControl("txtdescription");
                     TextBox txttotalqty = (TextBox)Dgdetail.Rows[rowIndex].Cells[2].FindControl("txttotalqty");
                     TextBox txtsamplesize = (TextBox)Dgdetail.Rows[rowIndex].Cells[3].FindControl("txtsamplesize");
-                    TextBox txtgauge = (TextBox)Dgdetail.Rows[rowIndex].Cells[4].FindControl("txtgauge");
-                    TextBox txtsealing = (TextBox)Dgdetail.Rows[rowIndex].Cells[5].FindControl("txtsealing");
-                    TextBox txtprinting = (TextBox)Dgdetail.Rows[rowIndex].Cells[6].FindControl("txtprinting");
-                    TextBox txttearing = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txttearing");
-                    TextBox txtclearity = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txtclearity");
-                    TextBox txtcolor = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtcolor");
-                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtfound");
-                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtacceptance");
-                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[12].FindControl("txtlotresult");
+                    TextBox txtSizeInCM = (TextBox)Dgdetail.Rows[rowIndex].Cells[4].FindControl("txtSizeInCM");
+                    TextBox txtgauge = (TextBox)Dgdetail.Rows[rowIndex].Cells[5].FindControl("txtgauge");
+                    TextBox txtsealing = (TextBox)Dgdetail.Rows[rowIndex].Cells[6].FindControl("txtsealing");
+                    TextBox txtprinting = (TextBox)Dgdetail.Rows[rowIndex].Cells[7].FindControl("txtprinting");
+                    TextBox txttearing = (TextBox)Dgdetail.Rows[rowIndex].Cells[8].FindControl("txttearing");
+                    TextBox txtclearity = (TextBox)Dgdetail.Rows[rowIndex].Cells[9].FindControl("txtclearity");
+                    TextBox txtcolor = (TextBox)Dgdetail.Rows[rowIndex].Cells[10].FindControl("txtcolor");
+                    TextBox txtfound = (TextBox)Dgdetail.Rows[rowIndex].Cells[11].FindControl("txtfound");
+                    TextBox txtacceptance = (TextBox)Dgdetail.Rows[rowIndex].Cells[12].FindControl("txtacceptance");
+                    TextBox txtSymbleONPolyBag = (TextBox)Dgdetail.Rows[rowIndex].Cells[13].FindControl("txtSymbleONPolyBag");
+                    TextBox txtNoofPunture = (TextBox)Dgdetail.Rows[rowIndex].Cells[14].FindControl("txtNoofPunture");
+                    TextBox txtOthers = (TextBox)Dgdetail.Rows[rowIndex].Cells[15].FindControl("txtOthers");
+                    TextBox txtlotresult = (TextBox)Dgdetail.Rows[rowIndex].Cells[16].FindControl("txtlotresult");
 
                     txtsrno.Text = dt.Rows[i]["srno"].ToString();
                     txtdescription.Text = dt.Rows[i]["Description"].ToString();
                     txttotalqty.Text = dt.Rows[i]["totalqty"].ToString();
                     txtsamplesize.Text = dt.Rows[i]["samplesize"].ToString();
+                    txtSizeInCM.Text = dt.Rows[i]["SizeInCM"].ToString();
                     txtgauge.Text = dt.Rows[i]["Gauge"].ToString();
                     txtsealing.Text = dt.Rows[i]["sealing"].ToString();
                     txtprinting.Text = dt.Rows[i]["printing"].ToString();
@@ -217,20 +254,15 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                     txtcolor.Text = dt.Rows[i]["color"].ToString();
                     txtfound.Text = dt.Rows[i]["found"].ToString();
                     txtacceptance.Text = dt.Rows[i]["acceptance"].ToString();
+                    txtSymbleONPolyBag.Text = dt.Rows[i]["SymbleONPolyBag"].ToString();
+                    txtNoofPunture.Text = dt.Rows[i]["NoofPunture"].ToString();
+                    txtOthers.Text = dt.Rows[i]["Others"].ToString();
                     txtlotresult.Text = dt.Rows[i]["lotresult"].ToString();
-
-
-
 
                     // sc.Add(box1.Text + "," + box2.Text + "," + box3.Text);
 
-
-
                     rowIndex++;
-
-
                 }
-
                 //InsertRecords(sc);
             }
         }
@@ -299,43 +331,46 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
     }
     private void insertrecordDetail(SqlTransaction Tran)
     {
-
         string str = "";
         if (Dgdetail.Rows.Count != 0)
         {
-
             for (int i = 0; i < Dgdetail.Rows.Count; i++)
             {
                 TextBox txtsrno = (TextBox)Dgdetail.Rows[i].Cells[0].FindControl("txtsrno");
                 TextBox txtdescription = (TextBox)Dgdetail.Rows[i].Cells[1].FindControl("txtdescription");
                 TextBox txttotalqty = (TextBox)Dgdetail.Rows[i].Cells[2].FindControl("txttotalqty");
                 TextBox txtsamplesize = (TextBox)Dgdetail.Rows[i].Cells[3].FindControl("txtsamplesize");
-                TextBox txtgauge = (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtgauge");
-                TextBox txtsealing = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtsealing");
-                TextBox txtprinting = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtprinting");
-                TextBox txttearing = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txttearing");
-                TextBox txtclearity = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtclearity");
-                TextBox txtcolor = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtcolor");
-                TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtfound");
-                TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtacceptance");
-                TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtlotresult");
+                TextBox txtSizeInCM = (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtSizeInCM");
+                TextBox txtgauge = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtgauge");
+                TextBox txtsealing = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtsealing");
+                TextBox txtprinting = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtprinting");
+                TextBox txttearing = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txttearing");
+                TextBox txtclearity = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtclearity");
+                TextBox txtcolor = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtcolor");
+                TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtfound");
+                TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtacceptance");
+                TextBox txtSymbleONPolyBag = (TextBox)Dgdetail.Rows[i].Cells[13].FindControl("txtSymbleONPolyBag");
+                TextBox txtNoofPunture = (TextBox)Dgdetail.Rows[i].Cells[14].FindControl("txtNoofPunture");
+                TextBox txtOthers = (TextBox)Dgdetail.Rows[i].Cells[15].FindControl("txtOthers");
+                TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[16].FindControl("txtlotresult");
 
                 if (txtsrno.Text != "")
                 {
-                    str = str + @"  Insert into PolybagInspectionDetail(Docid,Srno,Description,totalqty,samplesize,Gauge,Sealing,Printing,Tearing,Clearity,Color,Found,Acceptance,Lotresult)
-                   values (" + hndocid.Value + ",'" + txtsrno.Text + "','" + txtdescription.Text.Replace("'", "''") + "','" + txttotalqty.Text.Replace("'", "''") + @"',
-                          '" + txtsamplesize.Text.Replace("'", "''") + "','" + txtgauge.Text.Replace("'", "''") + "','" + txtsealing.Text.Replace("'", "''") + "','" + txtprinting.Text.Replace("'", "''") + "','" + txttearing.Text.Replace("'", "''") + @"'
-                          ,'" + txtclearity.Text.Replace("'", "''") + "','" + txtcolor.Text.Replace("'", "''") + "','" + txtfound.Text.Replace("'", "''") + "','" + txtacceptance.Text.Replace("'", "''") + "','" + txtlotresult.Text.Replace("'", "''") + "')";
+                    str = str + @"  Insert into PolybagInspectionDetail(Docid,Srno,Description,totalqty,
+                    samplesize,Gauge,Sealing,Printing,Tearing,
+                    Clearity,Color,Found,Acceptance,Lotresult,
+                    SizeInCM,SymbleONPolyBag,NoofPunture,Others)
+                    values (" + hndocid.Value + ",'" + txtsrno.Text + "','" + txtdescription.Text.Replace("'", "''") + "','" + txttotalqty.Text.Replace("'", "''") + @"',
+                    '" + txtsamplesize.Text.Replace("'", "''") + "','" + txtgauge.Text.Replace("'", "''") + "','" + txtsealing.Text.Replace("'", "''") + "','" + txtprinting.Text.Replace("'", "''") + "','" + txttearing.Text.Replace("'", "''") + @"',
+                    '" + txtclearity.Text.Replace("'", "''") + "','" + txtcolor.Text.Replace("'", "''") + "','" + txtfound.Text.Replace("'", "''") + "','" + txtacceptance.Text.Replace("'", "''") + "','" + txtlotresult.Text.Replace("'", "''") + @"',
+                    '" + txtSizeInCM.Text.Replace("'", "''") + "','" + txtSymbleONPolyBag.Text.Replace("'", "''") + "','" + txtNoofPunture.Text.Replace("'", "''") + "','" + txtOthers.Text.Replace("'", "''") + "')";
                 }
-
-
             }
             if (str != "")
             {
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
             }
         }
-
     }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
@@ -353,7 +388,18 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
             if (ds.Tables[0].Rows.Count > 0)
             {
 
-                Session["rptFileName"] = "~\\Reports\\rptPolyBaginspection.rpt";
+                if (Session["VarCompanyNo"].ToString() == "21")
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptPolyBaginspectionKaysons.rpt";
+                }
+                else if (Session["VarCompanyNo"].ToString() == "45")
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptPolyBaginspectionMWS.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptPolyBaginspection.rpt";
+                }
                 Session["Getdataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\rptPolyBaginspection.xsd";
                 StringBuilder stb = new StringBuilder();
@@ -473,8 +519,10 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
     }
     private void fillDocno()
     {
-        string str = @"SELECT Distinct RIM.DOCID,RIM.DOCNO +' # ' +Replace(convert(nvarchar(11),RIM.Reportdate,106),' ','-') as DocNo FROM POLYBAGINSPECTIONMASTER RIM INNER JOIN PolybagInspectionDetail RID ON RIM.DOCID=RID.DOCID
-                      Where RIM.COMPANYID=" + DDcompanyName.SelectedValue + " And RIM.BranchID = " + DDBranchName.SelectedValue;
+        string str = @"SELECT Distinct RIM.DOCID,RIM.DOCNO +' # ' +Replace(convert(nvarchar(11),RIM.Reportdate,106),' ','-') as DocNo 
+            FROM POLYBAGINSPECTIONMASTER RIM 
+            --INNER JOIN PolybagInspectionDetail RID ON RIM.DOCID=RID.DOCID
+            Where RIM.COMPANYID=" + DDcompanyName.SelectedValue + " And RIM.BranchID = " + DDBranchName.SelectedValue;
         if (txtsuppliersearch.Text != "")
         {
             str = str + " and RIM.Suppliername like '" + txtsuppliersearch.Text.Trim() + "%'";
@@ -516,6 +564,7 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                         TextBox txtdescription = (TextBox)Dgdetail.Rows[i].Cells[1].FindControl("txtdescription");
                         TextBox txttotalqty = (TextBox)Dgdetail.Rows[i].Cells[2].FindControl("txttotalqty");
                         TextBox txtsamplesize = (TextBox)Dgdetail.Rows[i].Cells[3].FindControl("txtsamplesize");
+                        TextBox txtSizeInCM = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtSizeInCM");
                         TextBox txtgauge = (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtgauge");
                         TextBox txtsealing = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtsealing");
                         TextBox txtprinting = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtprinting");
@@ -524,13 +573,16 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                         TextBox txtcolor = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtcolor");
                         TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtfound");
                         TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtacceptance");
+                        TextBox txtSymbleONPolyBag = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtSymbleONPolyBag");
+                        TextBox txtNoofPunture = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtNoofPunture");
+                        TextBox txtOthers = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtOthers");
                         TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtlotresult");
-
 
                         txtsrno.Text = ds.Tables[1].Rows[i]["srno"].ToString();
                         txtdescription.Text = ds.Tables[1].Rows[i]["description"].ToString();
                         txttotalqty.Text = ds.Tables[1].Rows[i]["totalqty"].ToString();
                         txtsamplesize.Text = ds.Tables[1].Rows[i]["samplesize"].ToString();
+                        txtSizeInCM.Text = ds.Tables[1].Rows[i]["SizeInCM"].ToString(); 
                         txtgauge.Text = ds.Tables[1].Rows[i]["Gauge"].ToString();
                         txtsealing.Text = ds.Tables[1].Rows[i]["Sealing"].ToString();
                         txtprinting.Text = ds.Tables[1].Rows[i]["Printing"].ToString();
@@ -539,6 +591,9 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                         txtcolor.Text = ds.Tables[1].Rows[i]["COlor"].ToString();
                         txtfound.Text = ds.Tables[1].Rows[i]["found"].ToString();
                         txtacceptance.Text = ds.Tables[1].Rows[i]["acceptance"].ToString();
+                        txtSymbleONPolyBag.Text = ds.Tables[1].Rows[i]["SymbleONPolyBag"].ToString();
+                        txtNoofPunture.Text = ds.Tables[1].Rows[i]["NoofPunture"].ToString();
+                        txtOthers.Text = ds.Tables[1].Rows[i]["Others"].ToString();
                         txtlotresult.Text = ds.Tables[1].Rows[i]["lotresult"].ToString();
                     }
                     else
@@ -549,21 +604,25 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                         TextBox txtdescription = (TextBox)Dgdetail.Rows[i].Cells[1].FindControl("txtdescription");
                         TextBox txttotalqty = (TextBox)Dgdetail.Rows[i].Cells[2].FindControl("txttotalqty");
                         TextBox txtsamplesize = (TextBox)Dgdetail.Rows[i].Cells[3].FindControl("txtsamplesize");
-                        TextBox txtgauge = (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtgauge");
-                        TextBox txtsealing = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtsealing");
-                        TextBox txtprinting = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtprinting");
-                        TextBox txttearing = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txttearing");
-                        TextBox txtclearity = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txtclearity");
-                        TextBox txtcolor = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtcolor");
-                        TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtfound");
-                        TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtacceptance");
-                        TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtlotresult");
-
+                        TextBox txtSizeInCM= (TextBox)Dgdetail.Rows[i].Cells[4].FindControl("txtSizeInCM");
+                        TextBox txtgauge = (TextBox)Dgdetail.Rows[i].Cells[5].FindControl("txtgauge");
+                        TextBox txtsealing = (TextBox)Dgdetail.Rows[i].Cells[6].FindControl("txtsealing");
+                        TextBox txtprinting = (TextBox)Dgdetail.Rows[i].Cells[7].FindControl("txtprinting");
+                        TextBox txttearing = (TextBox)Dgdetail.Rows[i].Cells[8].FindControl("txttearing");
+                        TextBox txtclearity = (TextBox)Dgdetail.Rows[i].Cells[9].FindControl("txtclearity");
+                        TextBox txtcolor = (TextBox)Dgdetail.Rows[i].Cells[10].FindControl("txtcolor");
+                        TextBox txtfound = (TextBox)Dgdetail.Rows[i].Cells[11].FindControl("txtfound");
+                        TextBox txtacceptance = (TextBox)Dgdetail.Rows[i].Cells[12].FindControl("txtacceptance");
+                        TextBox txtSymbleONPolyBag = (TextBox)Dgdetail.Rows[i].Cells[13].FindControl("txtSymbleONPolyBag");
+                        TextBox txtNoofPunture = (TextBox)Dgdetail.Rows[i].Cells[14].FindControl("txtNoofPunture");
+                        TextBox txtOthers = (TextBox)Dgdetail.Rows[i].Cells[15].FindControl("txtOthers");
+                        TextBox txtlotresult = (TextBox)Dgdetail.Rows[i].Cells[16].FindControl("txtlotresult");
 
                         txtsrno.Text = ds.Tables[1].Rows[i]["srno"].ToString();
                         txtdescription.Text = ds.Tables[1].Rows[i]["description"].ToString();
                         txttotalqty.Text = ds.Tables[1].Rows[i]["totalqty"].ToString();
                         txtsamplesize.Text = ds.Tables[1].Rows[i]["samplesize"].ToString();
+                        txtSizeInCM.Text = ds.Tables[1].Rows[i]["SizeInCM"].ToString();
                         txtgauge.Text = ds.Tables[1].Rows[i]["Gauge"].ToString();
                         txtsealing.Text = ds.Tables[1].Rows[i]["Sealing"].ToString();
                         txtprinting.Text = ds.Tables[1].Rows[i]["Printing"].ToString();
@@ -572,13 +631,13 @@ public partial class Masters_Inspection_frmpolybaginspection : System.Web.UI.Pag
                         txtcolor.Text = ds.Tables[1].Rows[i]["COlor"].ToString();
                         txtfound.Text = ds.Tables[1].Rows[i]["found"].ToString();
                         txtacceptance.Text = ds.Tables[1].Rows[i]["acceptance"].ToString();
+                        txtSymbleONPolyBag.Text = ds.Tables[1].Rows[i]["SymbleONPolyBag"].ToString();
+                        txtNoofPunture.Text = ds.Tables[1].Rows[i]["NoofPunture"].ToString();
+                        txtOthers.Text = ds.Tables[1].Rows[i]["Others"].ToString();
                         txtlotresult.Text = ds.Tables[1].Rows[i]["lotresult"].ToString();
                     }
-
-
                 }
             }
-
         }
     }
     protected void EditRights_Button(int usertype, int approvestatus = 0)

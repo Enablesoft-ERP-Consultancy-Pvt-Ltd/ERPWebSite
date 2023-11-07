@@ -140,6 +140,11 @@
                                             <asp:TextBox ID="txtsamplesize" runat="server" Width="100%" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Size in CM">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtSizeInCM" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Gauge">
                                         <ItemTemplate>
                                             <asp:TextBox ID="txtgauge" runat="server" Width="100%" />
@@ -178,6 +183,21 @@
                                     <asp:TemplateField HeaderText="Acceptance">
                                         <ItemTemplate>
                                             <asp:TextBox ID="txtacceptance" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="SymbleONPolyBag">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtSymbleONPolyBag" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="NoofPunture">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtNoofPunture" runat="server" Width="100%" />
+                                        </ItemTemplate>
+                                    </asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Others">
+                                        <ItemTemplate>
+                                            <asp:TextBox ID="txtOthers" runat="server" Width="100%" />
                                         </ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Lot Result">
