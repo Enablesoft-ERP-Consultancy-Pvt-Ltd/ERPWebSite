@@ -71,6 +71,16 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
             {
                 TDBinNo.Visible = true;
             }
+
+            switch (Session["varcompanyid"].ToString())
+            {                
+                case "43":                    
+                    TDVehicleNo.Visible = true;
+                    break;
+                default:
+                    TDVehicleNo.Visible = false;
+                    break;
+            }
         }
     }
     protected void DDprocess_SelectedIndexChanged(object sender, EventArgs e)
@@ -307,7 +317,7 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] arr = new SqlParameter[22];
+            SqlParameter[] arr = new SqlParameter[23];
             arr[0] = new SqlParameter("@PrmId", SqlDbType.Int);
             arr[0].Direction = ParameterDirection.InputOutput;
             arr[0].Value = hnprmid.Value;
@@ -338,6 +348,8 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
             arr[19].Direction = ParameterDirection.Output;
             arr[20] = new SqlParameter("@BinNo", TDBinNo.Visible == true ? DDBinNo.SelectedItem.Text : "");
             arr[21] = new SqlParameter("@Remark", (txtremark.Text).Trim());
+            arr[22] = new SqlParameter("@VehicleNo", TDVehicleNo.Visible==true ? txtVehicleNo.Text : "");
+
             //*******************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SAMPLEPROCESS_RAW_ISSUE", arr);
             lblmsg.Text = arr[19].Value.ToString();
@@ -502,7 +514,8 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
         try
         {
             string strsql = @"Select PrtId,ITEM_NAME,QualityName+ Space(2)+DesignName+ Space(2)+ColorName+ Space(2)+ShapeName+ Space(2)+SizeFt+ Space(2)+ShadeColorName DESCRIPTION,
-                             IssueQuantity Qty,LotNo,GodownName,PT.TagNo,PM.ChalanNo,Replace(convert(nvarchar(11),PM.Date,106),' ','-') as IssueDate,IsNull(PM.Remark,'') as Remark 
+                             IssueQuantity Qty,LotNo,GodownName,PT.TagNo,PM.ChalanNo,Replace(convert(nvarchar(11),PM.Date,106),' ','-') as IssueDate,IsNull(PM.Remark,'') as Remark,
+                             isnull(PM.VehicleNo,'') as VehicleNo 
                              From Processrawmaster PM,ProcessRawTran PT,V_FinishedItemDetail VF,GodownMaster GM 
                              Where PM.TypeFlag = 0 And PM.Prmid=Pt.prmid and  PT.Finishedid=VF.Item_Finished_id And 
                              PT.GodownId=GM.GodownId And PT.PrmID=" + hnprmid.Value + " And VF.MasterCompanyId=" + Session["varCompanyId"];
@@ -515,6 +528,7 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
                     txtchallanNo.Text = ds.Tables[0].Rows[0]["chalanno"].ToString();
                     txtissuedate.Text = ds.Tables[0].Rows[0]["issuedate"].ToString();
                     txtremark.Text = ds.Tables[0].Rows[0]["Remark"].ToString();
+                    txtVehicleNo.Text = ds.Tables[0].Rows[0]["VehicleNo"].ToString();
                 }
 
             }

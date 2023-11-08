@@ -55,6 +55,7 @@ public partial class Masters_ReportForms_FrmShowMapTraceStockNoDetail : CustomPa
             }
             if (Session["usertype"].ToString() == "1")
             {
+                trStockRemark.Visible = true;
                 btnpack.Visible = true;
             }
 
