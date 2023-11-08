@@ -76,7 +76,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
                     From PROCESS_NAME_MASTER PNM(Nolock) 
                     Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varCompanyId"] + " And PNM.process_Name_ID <> " + DDFromProcessName.SelectedValue + @" 
                     Order By PNM.PROCESS_NAME 
-                    Select Distinct b.ProcessRecId, b.ChallanNo 
+                    Select Distinct b.ProcessRecId, b.ChallanNo,a.CurrentProStatus 
                     From HomeFurnishingStockNo a(Nolock) 
                     JOIN HomeFurnishing_Stock_Detail HSD(Nolock) ON HSD.StockNo = a.StockNo And HSD.ToProcessID = a.CurrentProStatus 
                     JOIN HomeFurnishingReceiveMaster b(Nolock) ON b.CompanyID = HSD.CompanyID And b.ProcessRecId = HSD.Process_Rec_ID And b.ProcessID = HSD.ToProcessID 

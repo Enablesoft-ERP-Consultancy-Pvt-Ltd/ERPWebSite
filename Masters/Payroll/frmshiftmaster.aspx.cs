@@ -97,6 +97,10 @@ public partial class Masters_Payroll_frmshiftmaster : System.Web.UI.Page
             arr[43] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
             arr[44] = new SqlParameter("@InTime_Relaxation", txtintimerelaxation.Text == "" ? "0" : txtintimerelaxation.Text);
 
+            arr[45] = new SqlParameter("@ShiftMinIntime", TxtShiftMinIntime.Text == "" ? "00:00" : TxtShiftMinIntime.Text);
+            arr[46] = new SqlParameter("@ShiftMaxIntime", TxtShiftMaxIntime.Text == "" ? "00:00" : TxtShiftMaxIntime.Text);
+            arr[47] = new SqlParameter("@NextDay", TxtNextDay.Text == "" ? "0" : TxtNextDay.Text);
+
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Hr_Pro_Hrshiftmaster]", arr);
             Tran.Commit();
             ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('" + arr[42].Value.ToString() + "')", true);
@@ -165,10 +169,11 @@ public partial class Masters_Payroll_frmshiftmaster : System.Web.UI.Page
         txtteabreakhouraftershift.Text = "";
         txtdinnerbreakdeductafter.Text = "";
         txtdinnerbreakdeductafterhour.Text = "";
-
-
-
+        TxtNextDay.Text = "0";
+        TxtShiftMinIntime.Text = "";
+        TxtShiftMaxIntime.Text = "";
     }
+
     protected void chkedit_CheckedChanged(object sender, EventArgs e)
     {
         Trshiftcode.Visible = false;
@@ -181,10 +186,10 @@ public partial class Masters_Payroll_frmshiftmaster : System.Web.UI.Page
     }
     protected void Fillshiftcode()
     {
-        string str = "select ShiftId,shiftcode From HR_ShiftMaster Where Companyid=" + DDcompany.SelectedValue + " order by shiftcode";
+        string str = "select ShiftId,shiftcode From HR_ShiftMaster(Nolock) Where Companyid=" + DDcompany.SelectedValue + " order by shiftcode";
         UtilityModule.ConditionalComboFill(ref DDshiftcode, str, true, "--Plz Select--");
-
     }
+
     protected void DDcompany_SelectedIndexChanged(object sender, EventArgs e)
     {
         Fillshiftcode();
@@ -199,8 +204,8 @@ public partial class Masters_Payroll_frmshiftmaster : System.Web.UI.Page
                       Tea_Startsecond, Tea_Endsecond, OTBefore, OTbefore_time, OTafter, OTafter_time, Halfdayhrs, Fulldayhrs, 
                       Latearrivalgrace, Arrivalgracededuction, EarlyDeparturegrace, Departuregracededuction, Fullshift, 
                       Halfshift, Instart, Inend, Outstart, Outend, Workhour, Cropbefore, cropafter, Beforerand, Afterrand, 
-                      Teabreakhouraftershift, Dinnerbreakdeductafter, Hour,Intime_Relaxation
-                      From Hr_Shiftmaster Where shiftid=" + hnshiftid.Value;
+                      Teabreakhouraftershift, Dinnerbreakdeductafter, Hour,Intime_Relaxation, InStartNew, OutStartNew, NextDayEnd 
+                      From Hr_Shiftmaster(Nolock) Where shiftid=" + hnshiftid.Value;
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -335,7 +340,9 @@ public partial class Masters_Payroll_frmshiftmaster : System.Web.UI.Page
             txtteabreakhouraftershift.Text = ds.Tables[0].Rows[0]["Teabreakhouraftershift"].ToString();
             txtdinnerbreakdeductafter.Text = ds.Tables[0].Rows[0]["dinnerbreakdeductafter"].ToString();
             txtdinnerbreakdeductafterhour.Text = ds.Tables[0].Rows[0]["Hour"].ToString();
-
+            TxtShiftMinIntime.Text = ds.Tables[0].Rows[0]["InStartNew"].ToString();
+            TxtShiftMaxIntime.Text = ds.Tables[0].Rows[0]["OutStartNew"].ToString();
+            TxtNextDay.Text = ds.Tables[0].Rows[0]["NextDayEnd"].ToString();
         }
         else
         {

@@ -44,7 +44,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             }
             else if (Convert.ToInt16(Session["varcompanyId"]) == 44)
             {
-                str = str + " and Process_name_id in (12,11,5,18,8,29)";
+                str = str + " and Process_name_id in (12,11,5,18,8,29,54,34)";
             }
             else if (variable.Carpetcompany == "1")
             {

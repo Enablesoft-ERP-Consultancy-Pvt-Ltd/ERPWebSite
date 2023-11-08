@@ -10,6 +10,7 @@ using System.Text;
 
 public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : System.Web.UI.Page
 {
+    static string TempProcessRecId = "";
     static string btnclickflag = "";
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -624,9 +625,11 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             BtnDelete.Visible = true;
             TDPoOrderNo.Visible = false;
             TDDDYear.Visible = true;
+            TDEditRecChallanNo.Visible = true;
         }
         else
         {
+            TDEditRecChallanNo.Visible = false;
             TDPoOrderNo.Visible = true;
             BtnDelete.Visible = false;
             TDSlipNoForEdit.Visible = false;
@@ -1099,5 +1102,35 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         {
             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
         }
+    }
+    protected void txtEditRecChallanNo_TextChanged(object sender, EventArgs e)
+    {
+        string str = "", str2 = "";
+
+         str = @"Select Distinct isnull(PRM.Process_Rec_Id,0) as Process_Rec_Id From PROCESS_RECEIVE_MASTER_1 PRM(NoLock) 
+                       Where PRM.CHALLANNO='" + txtEditRecChallanNo.Text + "'";
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        if (ds.Tables[0].Rows.Count > 0)
+        {            
+            TempProcessRecId = ds.Tables[0].Rows[0]["Process_Rec_Id"].ToString();
+        }
+
+        str2 = @"Select Distinct PH.HissabNo, PH.Process_Rec_Id  From PROCESS_HISSAB PH(NoLock) Where PH.Process_Rec_Id=" + TempProcessRecId + "";
+        DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
+        if (ds2.Tables[0].Rows.Count > 0)
+        {
+            TxtSlipNo.Text = ds2.Tables[0].Rows[0]["HissabNo"].ToString();
+
+            if (TxtSlipNo.Text != "")
+            {
+                TxtSlipNo_TextChanged(sender, new EventArgs());
+            }
+           
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+
     }
 }

@@ -200,6 +200,22 @@
                 TRExportExcel.Visible = false;
                 TRTagNo.Visible = true;
             }
+            if (RDDyeingHouseLedgerDetail.Checked == true)
+            {
+                TRCustomerCode.Visible = false;
+                TRorderNo.Visible = false;
+                TRProcessName.Visible = false;
+                TRemployee.Visible = false;
+                TRRecChallan.Visible = false;
+                TRcheckdate.Visible = false;
+                TRIndentRecMachineIssQtyWise.Visible = false;
+                TRItemName.Visible = false;
+                TRQuality.Visible = false;
+                TRShadeColor.Visible = false;
+                TRIndentStatus.Visible = false;
+                TRExportExcel.Visible = false;
+                TRTagNo.Visible = true;
+            }
         }
     </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -207,7 +223,7 @@
             <table width="75%">
                 <tr>
                     <td style="width: 300px" valign="top">
-                        <div style="width: 287px; padding-top: 5px; max-height: 290px; float: left; border-style: solid;
+                        <div style="width: 287px; padding-top: 5px; max-height: 320px; float: left; border-style: solid;
                             border-width: thin">
                             &nbsp;&nbsp;
                             <asp:RadioButton ID="RDProcessIssDetail" Text="INDENT ISSUE DETAIL" runat="server"
@@ -265,6 +281,9 @@
                                 AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
                                 Visible="false" /><br />
                                 &nbsp;&nbsp;  <asp:RadioButton ID="RDIndentMaterialIssueDetail" Text="INDENT MATERIAL ISSUE DETAIL" runat="server"
+                                AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
+                                Visible="false" /><br />
+                                &nbsp;&nbsp;  <asp:RadioButton ID="RDDyeingHouseLedgerDetail" Text="DYEING HOUSE LEDGER DETAIL" runat="server"
                                 AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
                                 Visible="false" /><br />
                                

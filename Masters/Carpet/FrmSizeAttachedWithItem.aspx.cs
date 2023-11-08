@@ -97,9 +97,20 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
     {
         // txtid.Text = "0";
         //fill_grid();
-
-        string strsql = @"Select S.Sizeid,S.SizeFt FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
+        string strsql = "";
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            strsql = @"Select S.Sizeid,S.SizeFt+'  '+'['+ProdSizeFt+']' FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
                             S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " Order By S.SizeFt";
+        }
+        else
+        {
+            strsql = @"Select S.Sizeid,S.SizeFt FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
+                            S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " Order By S.SizeFt";
+        }
+
+
+        
 
         UtilityModule.ConditionalComboFill(ref DDSize, strsql, true, "--Select--");
 

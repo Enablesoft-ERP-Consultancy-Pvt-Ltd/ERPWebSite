@@ -259,7 +259,32 @@
                             </td>
                         </tr>
                     </table>
-                </div>                
+                </div>   
+                 <div>
+                    <table width="23%">
+                        <tr>
+                            <td>
+                                <asp:Label ID="Label1" runat="server" Text="From:" CssClass="labelbold"></asp:Label><br />
+                                <asp:TextBox ID="txtFromDate" CssClass="textb" Width="80px" runat="server"/>
+                                <asp:CalendarExtender ID="CalendarExtender1" TargetControlID="txtFromDate" Format="dd-MMM-yyyy"
+                                    runat="server">
+                                </asp:CalendarExtender>
+                            </td>
+                             <td>
+                                <asp:Label ID="Label2" runat="server" Text="To:" CssClass="labelbold"></asp:Label><br />
+                                <asp:TextBox ID="txtToDate" CssClass="textb" Width="80px" runat="server"/>
+                                <asp:CalendarExtender ID="CalendarExtender2" TargetControlID="txtToDate" Format="dd-MMM-yyyy"
+                                    runat="server">
+                                </asp:CalendarExtender>
+                            </td>
+                            <td align="left">  
+                             <asp:Label ID="Label4" runat="server" Text="" CssClass="labelbold"></asp:Label><br />                             
+                                 <asp:Button ID="BtnPreviewNew" runat="server" Text="Preview" CssClass="buttonnorm" OnClick="BtnPreviewNew_Click" /> 
+                                
+                            </td>
+                        </tr>
+                    </table>
+                </div>                  
                <%-- <asp:HiddenField ID="hnissueid" runat="server" Value="0" />--%>
             </ContentTemplate>
         </asp:UpdatePanel>

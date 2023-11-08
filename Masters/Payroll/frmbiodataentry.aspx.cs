@@ -930,6 +930,10 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
     }
     protected void refreshcontrol()
     {
+        if (chkedit.Checked == true)
+        {
+            btnRemoveResign.Visible = false;
+        }
         tcbiodata.ActiveTabIndex = 0;
         ddpostapplied.SelectedIndex = -1;
         //txtpaycode.Text = "";
@@ -1081,6 +1085,10 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     hnempid.Value = ds.Tables[0].Rows[0]["empid"].ToString();
+                    if (Convert.ToInt32(ds.Tables[0].Rows[0]["ResignStatus"]) == 1)
+                    {
+                        btnRemoveResign.Visible = true;
+                    }
                     if (ddpostapplied.Items.FindByValue(ds.Tables[0].Rows[0]["Postappliedfor"].ToString()) != null)
                     {
                         ddpostapplied.SelectedValue = ds.Tables[0].Rows[0]["Postappliedfor"].ToString();
@@ -1532,7 +1540,6 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
     }
     protected void DGallowances_RowDataBound(object sender, GridViewRowEventArgs e)
     {
-
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             Label lblallowance_type = (Label)e.Row.FindControl("lblallowance_type");
@@ -1547,7 +1554,6 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
                     txtallowanceamount.Enabled = false;
                     break;
             }
-
         }
     }
     protected void DGDeductions_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -1566,7 +1572,17 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
                     txtdeductionamount.Enabled = false;
                     break;
             }
-
         }
+    }
+    protected void btnRemoveResign_Click(object sender, EventArgs e)
+    {
+        lblmsg.Text = "";
+        string Str = @"Update HR_EmployeeInformation Set RESIGNDATE = null, RESIGNSTATUS = 0 Where EmpID = " + hnempid.Value + @" 
+                Update Empinfo Set Blacklist = 0 Where EmpID = " + hnempid.Value;
+        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+
+        ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('Employee Resign Successfully Remove !!!')", true);
+
+        refreshcontrol();
     }
 }

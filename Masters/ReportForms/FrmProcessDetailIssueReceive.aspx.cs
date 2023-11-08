@@ -102,6 +102,10 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     RDWeaverRawMaterialIssueDetail.Visible = true;
                     break;
                 case 44:
+                    RDTasselIssueReceiveSummary.Visible = true;
+                    RDTasselPartnerIssueSummary.Visible = true;
+                    RDTasselPartnerReceiveSummary.Visible = true;
+                    RDTasselMakingRawIssueDetail.Visible = true;
                     RDProcessIssRecDetail.Visible = true;
                     RDFinishingpending.Visible = true;
                     RDFinishingIssueDetail.Visible = true;
@@ -112,13 +116,13 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     RDStockNoTobeIssued.Visible = false;
                     RDPendingQty.Visible = false;
                     RDStockRecQithwt.Visible = false;
-                     
+
                     RDGatePass.Visible = false;
                     RDDailyfinreport.Visible = false;
                     RDProcessIssRecDetailWithConsumpton.Visible = false;
                     RDWeaverRawMaterialIssueDetail.Visible = false;
                     RDWeaverRawMaterialReceiveDetail.Visible = false;
-                    
+
                     ChkForProcessIssRecSummary.Visible = false;
                     ChkSummary.Visible = false;
                     RDPerday.Visible = false;
@@ -128,7 +132,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
 
                     break;
                 case 247:
-                    RDWeaverRawMaterialIssueDetail.Visible = true;                   
+                    RDWeaverRawMaterialIssueDetail.Visible = true;
                     break;
 
             }
@@ -227,13 +231,34 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             }
             else
             {
+                if (RDProcessIssRecDetail.Checked == true)
+                {
+                    Str = "Select Process_Rec_Id,isnull(ChallanNo,Process_Rec_Id) as Process_Rec_Id from PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + "(Nolock) Where CompanyId=" + DDCompany.SelectedValue;
+                    if (DDEmpName.SelectedIndex > 0)
+                    {
+                        Str = Str + " And EmpId=" + DDEmpName.SelectedValue;
+                    }
+                    Str = Str + " UNION  ";
+                    Str = Str + @" select Distinct PRM.Process_Rec_Id,isnull(PRM.ChallanNo,PRM.Process_Rec_Id) as Process_Rec_Id1 
+                        From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PRM(Nolock) 
+                        JOIN Employee_ProcessReceiveNo Emp(Nolock) on PRM.Process_Rec_Id=Emp.Process_Rec_Id and Emp.ProcessId=" + DDProcessName.SelectedValue + @"";
+                    if (DDEmpName.SelectedIndex > 0)
+                    {
+                        Str = Str + " And Emp.EmpId=" + DDEmpName.SelectedValue;
+                    }
+                }
+                else
+                {
+
+                    Str = "Select Process_Rec_Id,isnull(ChallanNo,Process_Rec_Id) as Process_Rec_Id from PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + "(Nolock) Where CompanyId=" + DDCompany.SelectedValue;
+                    if (DDEmpName.SelectedIndex > 0)
+                    {
+                        Str = Str + " And EmpId=" + DDEmpName.SelectedValue;
+                    }
+                }
+
                 //Str = "Select Process_Rec_Id,Process_Rec_Id from PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " Where CompanyId=" + DDCompany.SelectedValue;
 
-                Str = "Select Process_Rec_Id,isnull(ChallanNo,Process_Rec_Id) as Process_Rec_Id from PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + "(Nolock) Where CompanyId=" + DDCompany.SelectedValue;
-                if (DDEmpName.SelectedIndex > 0)
-                {
-                    Str = Str + " And EmpId=" + DDEmpName.SelectedValue;
-                }
                 UtilityModule.ConditionalComboFill(ref DDChallanNo, Str, true, "--Select--");
                 Label4.Text = "Rec Challan No.";
             }
@@ -333,7 +358,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
     protected void BtnPreview_Click(object sender, EventArgs e)
     {
         lblMessage.Text = "";
-        
+
         if (RDProcessIssRecDetail.Checked == true && chkexcelexport.Checked == true && Session["varcompanyId"].ToString() != "16")
         {
             Processreceiveexcelexport();
@@ -480,6 +505,11 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                             JobWiseProcessReceiveSummary_Vikram();
                             return;
                         }
+                        else if (Session["VarCompanyNo"].ToString() == "43")
+                        {
+                            JobWiseProcessReceiveSummary_CI();
+                            return;
+                        }
                         else
                         {
                             ProcessReceiveDetailSummary();
@@ -541,7 +571,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
 
         if (RDFinishingBalance.Checked == true)
         {
-            FinishingReceiveBalanceReport();            
+            FinishingReceiveBalanceReport();
             return;
         }
         if (RDProcessWiseAdvancePayment.Checked == true)
@@ -640,6 +670,10 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                             ProcessIssueSummaryExcelExportVikramKM();
                             return;
                         }
+                        else if (Session["VarCompanyNo"].ToString() == "43")
+                        {
+                            FinishingIssueDetailSummary(tran);
+                        }
                         else
                         {
                             ProcessIssueSummaryExcelExport();
@@ -664,7 +698,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     else
                     {
                         FinishingIssueReceiveSummary(tran);
-                    
+
                     }
                 }
 
@@ -1373,7 +1407,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         //{
         //    con.Open();
         //}
-        
+
         //SqlCommand cmd = new SqlCommand("FinishinghissabchallanWise", con);
         //cmd.CommandType = CommandType.StoredProcedure;
         //cmd.CommandTimeout = 30000;
@@ -1721,7 +1755,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             strCondition = strCondition + " And VF.ShadecolorId=" + DDShadeColor.SelectedValue;
         }
         //End Conditions
-        SqlParameter[] param = new SqlParameter[20];
+        SqlParameter[] param = new SqlParameter[8];
         param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
         param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
         param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
@@ -1729,6 +1763,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         param[5] = new SqlParameter("@Issueorderid", txtissueno.Text);
         param[6] = new SqlParameter("@Where", strCondition);
+        //param[7] = new SqlParameter("@ChkForSummary", ChkSummary.Checked==true ? "1" : "0");
 
         ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "FinishingIssueDetail", param);
 
@@ -1747,7 +1782,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     Session["rptFileName"] = "~\\Reports\\Rptfinishingissuedetail.rpt";
                 }
 
-            }
+            }            
             else
             {
                 Session["rptFileName"] = "~\\Reports\\Rptfinishingissuedetail.rpt";
@@ -3274,7 +3309,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         ChkForDate.Visible = false;
 
         if (RDFinishingBalance.Checked == true)
-        {           
+        {
             TDexcelExport.Visible = false;
             TRChkBoxIssueDate.Visible = false;
             trIssueDate.Visible = false;
@@ -5032,7 +5067,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                 sht.Range("I2").Value = "Shade Color";
                 sht.Range("J2").Value = "Consumption Qty";
                 sht.Range("K2").Value = "Issue Qty";
-                sht.Range("L2").Value = "Balance Qty";               
+                sht.Range("L2").Value = "Balance Qty";
 
 
                 sht.Range("A2:L2").Style.Font.FontName = "Calibri";
@@ -5059,7 +5094,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                     sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["ConsumptionQTY"]);
                     sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["IssueQty"]);
                     sht.Range("L" + row).SetValue(Convert.ToDouble(ds.Tables[0].Rows[i]["ConsumptionQTY"]) - Convert.ToDouble(ds.Tables[0].Rows[i]["IssueQty"]));
-                    
+
 
                     row = row + 1;
                 }
@@ -6225,12 +6260,12 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             }
             // if (Session["VarCompanyNo"].ToString() == "44")
             //{
-         //   Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummaryagni.rpt";
+            //   Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummaryagni.rpt";
             // }
             //else
             // {
             //Session["rptFileName"] = "~\\Reports\\RptFinishingIssueReceiveSummary.rpt"; 
-             
+
             // }
 
             Session["Getdataset"] = ds;
@@ -7900,7 +7935,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                         ////sht.Range("A" + row).Style.Font.SetBold();
                         //sht.Range("A" + row + ":G" + row).Style.Font.SetBold();
 
-                        DataTable dtdistinctItem = ds2.Tables[0].DefaultView.ToTable(true, "EmpName", "Item_Name", "QualityName", "DesignName", "ColorName", "ShapeName", "Width", "Length", "Item_Finished_Id","Rate");
+                        DataTable dtdistinctItem = ds2.Tables[0].DefaultView.ToTable(true, "EmpName", "Item_Name", "QualityName", "DesignName", "ColorName", "ShapeName", "Width", "Length", "Item_Finished_Id", "Rate");
 
                         rowfrom = row + 1;
                         foreach (DataRow dritem in dtdistinctItem.Rows)
@@ -7934,7 +7969,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                             //var Area = ds.Tables[0].Compute("sum(Area)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
                             //tArea = tArea + Convert.ToDecimal(Area);
                             //sht.Range("H" + row).SetValue(Area);
-                           
+
                             //sht.Range("I" + row).SetValue(dritem["Rate"]);
 
                             //var Amt = ds.Tables[0].Compute("sum(Amount)", "EmpName='" + dr2["EmpName"] + "' and Item_Finished_Id='" + dritem["Item_Finished_Id"] + "' and Rate='" + dritem["Rate"] + "'");
@@ -8000,7 +8035,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     private void FinishingReceiveBalanceReport()
     {
-       // DataSet ds = new DataSet();
+        // DataSet ds = new DataSet();
         string strCondition = "And PM.CompanyId=" + DDCompany.SelectedValue;
         //Check Conditions
         //if (ChkForDate.Checked == true)
@@ -8014,7 +8049,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         if (TRorderno.Visible == true && DDorderno.SelectedIndex > 0)
         {
             strCondition = strCondition + " And OM.orderid=" + DDorderno.SelectedValue;
-        }       
+        }
         if (DDCategory.SelectedIndex > 0)
         {
             strCondition = strCondition + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
@@ -8047,7 +8082,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         {
             strCondition = strCondition + " And VF.ShadecolorId=" + DDShadeColor.SelectedValue;
         }
-        
+
 
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         if (con.State == ConnectionState.Closed)
@@ -8057,11 +8092,11 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         SqlCommand cmd = new SqlCommand("PRO_FINISHINGRECEIVEBALANCEREPORT", con);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.CommandTimeout = 3000;
-        
-        cmd.Parameters.AddWithValue("@ProcessID", DDProcessName.SelectedIndex > 0 ? DDProcessName.SelectedValue : "0");        
-        cmd.Parameters.AddWithValue("@empid", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");      
+
+        cmd.Parameters.AddWithValue("@ProcessID", DDProcessName.SelectedIndex > 0 ? DDProcessName.SelectedValue : "0");
+        cmd.Parameters.AddWithValue("@empid", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");
         cmd.Parameters.AddWithValue("@AsOnDate", txtAsOnDate.Text);
-        cmd.Parameters.AddWithValue("@Where", strCondition);        
+        cmd.Parameters.AddWithValue("@Where", strCondition);
 
         DataSet ds = new DataSet();
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -8077,6 +8112,174 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             Session["rptFileName"] = "~\\Reports\\RptFinishingBalanceOrderWiseReport.rpt";
             Session["Getdataset"] = ds;
             Session["dsFileName"] = "~\\ReportSchema\\RptFinishingBalanceOrderWiseReport.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+    }
+
+    private void JobWiseProcessReceiveSummary_CI()
+    {
+        DataSet ds = new DataSet();
+        string where = DDProcessName.SelectedItem.Text + "  Summary ";
+        string strCondition = "And PM.CompanyId=" + DDCompany.SelectedValue;
+        //Check Conditions
+        if (ChkForDate.Checked == true)
+        {
+            strCondition = strCondition + " And PM.ReceiveDate>='" + TxtFromDate.Text + "' And PM.ReceiveDate<='" + TxtToDate.Text + "'";
+            where = where + " From:" + TxtFromDate.Text + " and To: " + TxtToDate.Text + ",";
+        }
+
+        if (DDChallanNo.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
+            where = where + " ChallanNo:" + DDChallanNo.SelectedItem.Text + ",";
+        }
+        if (DDCategory.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
+        }
+        if (ddItemName.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And VF.ITEM_ID=" + ddItemName.SelectedValue;
+            where = where + " ItemName:" + ddItemName.SelectedItem.Text + ",";
+        }
+        if (DDQuality.SelectedIndex > 0 && TRDDQuality.Visible == true)
+        {
+            strCondition = strCondition + " And VF.QualityId=" + DDQuality.SelectedValue;
+            where = where + " Quality:" + DDQuality.SelectedItem.Text + ",";
+        }
+        if (DDDesign.SelectedIndex > 0 && TRDDDesign.Visible == true)
+        {
+            strCondition = strCondition + " And VF.designId=" + DDDesign.SelectedValue;
+            where = where + " Design:" + DDDesign.SelectedItem.Text + ",";
+        }
+        if (DDColor.SelectedIndex > 0 && TRDDColor.Visible == true)
+        {
+            strCondition = strCondition + " And VF.ColorId=" + DDColor.SelectedValue;
+        }
+        if (DDShape.SelectedIndex > 0 && TRDDShape.Visible == true)
+        {
+            strCondition = strCondition + " And VF.ShapeId=" + DDShape.SelectedValue;
+        }
+        if (DDSize.SelectedIndex > 0 && TRDDSize.Visible == true)
+        {
+            strCondition = strCondition + " And VF.SizeId=" + DDSize.SelectedValue;
+        }
+        if (DDShadeColor.SelectedIndex > 0 && TRDDShadeColor.Visible == true)
+        {
+            strCondition = strCondition + " And VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+        }
+        //End Conditions
+        SqlParameter[] param = new SqlParameter[20];
+        param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
+        param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
+        param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
+        param[3] = new SqlParameter("@Todate", TxtToDate.Text);
+        param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
+        param[5] = new SqlParameter("@Process_Rec_ID", DDChallanNo.SelectedIndex<=0?"0" : DDChallanNo.SelectedValue);
+        param[6] = new SqlParameter("@Where", strCondition);
+
+        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "JobWiseProcessReceiveSummary_CI", param);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (ChkSummary.Checked == true)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptProcessDetailNewRecSummary_CI.rpt";
+
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptProcessDetailNewRecSummary_CI.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+
+            }
+
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+    }
+
+    private void FinishingIssueDetailSummary(SqlTransaction tran)
+    {
+        DataSet ds = new DataSet();
+        string strCondition = "And PM.CompanyId=" + DDCompany.SelectedValue;
+        //Check Conditions
+        if (ChkForDate.Checked == true)
+        {
+            strCondition = strCondition + " And PM.Assigndate>='" + TxtFromDate.Text + "' And PM.Assigndate<='" + TxtToDate.Text + "'";
+        }
+        if (TRcustcode.Visible == true && DDcustcode.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And OM.Customerid=" + DDcustcode.SelectedValue;
+        }
+        if (TRorderno.Visible == true && DDorderno.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And OM.orderid=" + DDorderno.SelectedValue;
+        }
+        if (DDChallanNo.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And PM.Issueorderid=" + DDChallanNo.SelectedValue;
+        }
+        if (DDCategory.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
+        }
+        if (ddItemName.SelectedIndex > 0)
+        {
+            strCondition = strCondition + " And VF.ITEM_ID=" + ddItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0 && TRDDQuality.Visible == true)
+        {
+            strCondition = strCondition + " And VF.QualityId=" + DDQuality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0 && TRDDDesign.Visible == true)
+        {
+            strCondition = strCondition + " And VF.designId=" + DDDesign.SelectedValue;
+        }
+        if (DDColor.SelectedIndex > 0 && TRDDColor.Visible == true)
+        {
+            strCondition = strCondition + " And VF.ColorId=" + DDColor.SelectedValue;
+        }
+        if (DDShape.SelectedIndex > 0 && TRDDShape.Visible == true)
+        {
+            strCondition = strCondition + " And VF.ShapeId=" + DDShape.SelectedValue;
+        }
+        if (DDSize.SelectedIndex > 0 && TRDDSize.Visible == true)
+        {
+            strCondition = strCondition + " And VF.SizeId=" + DDSize.SelectedValue;
+        }
+        if (DDShadeColor.SelectedIndex > 0 && TRDDShadeColor.Visible == true)
+        {
+            strCondition = strCondition + " And VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+        }
+        //End Conditions
+        SqlParameter[] param = new SqlParameter[8];
+        param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
+        param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
+        param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
+        param[3] = new SqlParameter("@Todate", TxtToDate.Text);
+        param[4] = new SqlParameter("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
+        param[5] = new SqlParameter("@Issueorderid", txtissueno.Text);
+        param[6] = new SqlParameter("@Where", strCondition);        
+
+        ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "FinishingIssueDetailSummary", param);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {                
+            Session["rptFileName"] = "~\\Reports\\RptFinishingIssueDetailSummary.rpt";               
+          
+            Session["Getdataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptFinishingIssueDetailSummary.xsd";
             StringBuilder stb = new StringBuilder();
             stb.Append("<script>");
             stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");

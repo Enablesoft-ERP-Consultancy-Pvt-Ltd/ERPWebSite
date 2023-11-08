@@ -142,6 +142,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDIssRecConsumpSummary.Visible = true;
                 Td1.Visible = true;
                 TDWeaverOrderStatus.Visible = true;
+                TDDouraReport.Visible = true;
 
             }
             else if (Session["varcompanyId"].ToString() == "39")
@@ -550,6 +551,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 WeaverRawMaterialIssRecQualityWiseReport();
                 return;
             }
+            else if (ChkOpenIssRecConDetail.Checked == true)
+            {
+                OpenIssRecConDetail();
+                return;
+            }
             else
             {
                 WeaverRawMaterialIssRecWithConsumptionReport();
@@ -574,6 +580,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         else if (RDWeaverRawMaterialIssueSummary.Checked == true)
         {
             WeaverRawMaterialIssQualityWiseSummaryReport();
+            return;
+        }
+        else if (RDDouraReport.Checked == true)
+        {
+            WeaverDouraReport();
             return;
         }
     }
@@ -2318,6 +2329,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             Trshadecolor.Visible = false;
         }
         if (RDItemQualityWiseWeavingPaymentSummary.Checked == true)
+        {
+            Trdesign.Visible = false;
+            Trcolor.Visible = false;
+            Trsize.Visible = false;
+            Trshadecolor.Visible = false;
+        }
+        if (RDQualityWiseProductionHissabSummary.Checked == true)
         {
             Trdesign.Visible = false;
             Trcolor.Visible = false;
@@ -6170,7 +6188,140 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             lblmsg.Text = ex.Message;
         }
     }
+    protected void OpenIssRecConDetail()
+    {
+        lblmsg.Text = "";
+        try
+        {
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("Pro_Get_EmployeeQualityWiseOpenIssRecBalDetail", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
 
+            cmd.Parameters.AddWithValue("@CompanyID", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@ProcessID", 1);
+            cmd.Parameters.AddWithValue("@EmpID", DDWeaver.SelectedValue);
+            cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            //***********
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+
+                sht.Range("A1:I1").Merge();
+                sht.Range("A2:I2").Merge();
+                sht.Range("A3:I3").Merge();
+                //sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["ReceiveDate"]);
+
+                sht.Range("A1").SetValue(ds.Tables[0].Rows[0]["CompanyName"]);
+                sht.Range("A1:I1").Style.Font.Bold = true;
+                sht.Range("A1:I1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:I1").Style.Font.FontName = "Calibri";
+                sht.Range("A1:I1").Style.Font.FontSize = 12;
+
+                sht.Range("A2").SetValue("Raw Material Consumption With Weaver Report");
+                sht.Range("A2:I2").Style.Font.Bold = true;
+                sht.Range("A2:I2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A2:I2").Style.Font.FontName = "Calibri";
+                sht.Range("A2:I2").Style.Font.FontSize = 12;
+
+                sht.Range("A3").SetValue("Period From " + ds.Tables[0].Rows[0]["FromDate"] + " To " + ds.Tables[0].Rows[0]["ToDate"]);
+                sht.Range("A3:I3").Style.Font.Bold = true;
+                sht.Range("A3:I3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A3:I3").Style.Font.FontName = "Calibri";
+                sht.Range("A3:I3").Style.Font.FontSize = 12;
+                //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
+
+                //*******Header
+                sht.Range("A4").Value = "CONTRACTOR NAME";
+                sht.Range("B4").Value = "QUALITY NAME";
+                sht.Range("C4").Value = "OPEN. BAL";
+                sht.Range("D4").Value = "ISS QTY";
+                sht.Range("E4").Value = "RET QTY";
+                sht.Range("F4").Value = "CON QTY";
+                sht.Range("G4").Value = "AREA";
+                sht.Range("H4").Value = "QTY";
+                sht.Range("I4").Value = "BALANCE";
+
+                sht.Range("A4:I4").Style.Font.FontName = "Calibri";
+                sht.Range("A4:I4").Style.Font.FontSize = 11;
+                sht.Range("A4:I4").Style.Font.Bold = true;
+                sht.Range("A4:I4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A4:I4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A4:I4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A4:I4").Style.Alignment.SetWrapText();
+
+                row = 5;
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
+                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"]);
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["OpenQty"]);
+                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["IssQty"]);
+                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["RecQty"]);
+                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["ConQty"]);
+                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["Area"]);
+                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["Qty"]);
+                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["BalQty"]);
+
+                    using (var a = sht.Range("A2" + ":I" + (row - 1)))
+                    {
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    row = row + 1;
+                }
+                ////*************
+                //sht.Columns(1, 30).AdjustToContents();
+
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("RawMaterialConsumptionWithWeaverReport_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+    }
     protected void WeaverRawMaterialIssRecWithConsumptionReport()
     {
         lblmsg.Text = "";
@@ -7439,31 +7590,31 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
                 FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
             }
-            if (DDDesign.SelectedIndex > 0)
-            {
-                str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
-                FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
-            }
-            if (DDColor.SelectedIndex > 0)
-            {
-                str = str + " and vf.Colorid=" + DDColor.SelectedValue;
-                FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
-            }
-            if (DDSize.SelectedIndex > 0)
-            {
-                str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
-                FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
-            }
+            //if (DDDesign.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+            //    FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            //}
+            //if (DDColor.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+            //    FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            //}
+            //if (DDSize.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+            //    FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            //}
             if (ChkselectDate.Checked == true)
             {
                 str = str + " and PH.Date>='" + txtfromDate.Text + "' and PH.Date<='" + txttodate.Text + "'";
                 FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
             }
-            //if (DDUnitname.SelectedIndex > 0)
-            //{
-            //    str = str + " and PIM.Units=" + DDUnitname.SelectedValue;
-            //    FilterBy = FilterBy + ", Unitname -" + DDUnitname.SelectedItem.Text;
-            //}
+            ////if (DDUnitname.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and PIM.Units=" + DDUnitname.SelectedValue;
+            ////    FilterBy = FilterBy + ", Unitname -" + DDUnitname.SelectedItem.Text;
+            ////}
 
             ////if (DDFoliotype.SelectedIndex > 0)
             ////{
@@ -7506,6 +7657,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@ChkselectDate", ChkselectDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+            cmd.Parameters.AddWithValue("@ProductionType", DDproductiontype.SelectedValue);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -7623,6 +7775,353 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
             }
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+    }
+
+    protected void WeaverDouraReport()
+    {
+        try
+        {
+            string str = "";
+
+            if (DDCustCode.SelectedIndex > 0)
+            {
+                str = str + " and OM.Customerid=" + DDCustCode.SelectedValue;
+            }
+            if (DDOrderNo.SelectedIndex > 0)
+            {
+                str = str + " and OM.orderid=" + DDOrderNo.SelectedValue;
+            }
+            if (DDFolioNo.SelectedIndex > 0)
+            {
+                str = str + " and PIM.Issueorderid=" + DDFolioNo.SelectedValue;
+            }
+            if (DDQtype.SelectedIndex > 0)
+            {
+                str = str + " and VF.Item_id=" + DDQtype.SelectedValue;
+            }
+            if (DDQuality.SelectedIndex > 0)
+            {
+                str = str + " and VF.Qualityid=" + DDQuality.SelectedValue;
+            }
+            if (DDDesign.SelectedIndex > 0)
+            {
+                str = str + " and VF.DesignId=" + DDDesign.SelectedValue;
+            }
+            if (DDColor.SelectedIndex > 0)
+            {
+                str = str + " and VF.Colorid=" + DDColor.SelectedValue;
+            }
+            if (DDSize.SelectedIndex > 0)
+            {
+                str = str + " and VF.Sizeid=" + DDSize.SelectedValue;
+            }
+            if (ChkselectDate.Checked == true)
+            {
+                str = str + " and PIM.Assigndate>='" + txtfromDate.Text + "' and PIM.AssignDate<='" + txttodate.Text + "'";
+            }
+
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_GETWEAVERDOURAREPORT", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@EMPID", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@WHERE", str);
+            cmd.Parameters.AddWithValue("@fromdate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
+            cmd.Parameters.AddWithValue("@Dateflag", ChkselectDate.Checked == true ? "1" : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            //***********
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                //var xapp = new XLWorkbook();
+                //var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                sht.PageSetup.PageOrientation = XLPageOrientation.Landscape;
+                sht.PageSetup.AdjustTo(55);
+                sht.PageSetup.FitToPages(1, 1);
+                sht.PageSetup.PaperSize = XLPaperSize.A4Paper;
+
+                //sht.PageSetup.VerticalDpi = 300;
+                //sht.PageSetup.HorizontalDpi = 300;
+                sht.PageSetup.Margins.Top = 0.2;
+                sht.PageSetup.Margins.Bottom = 0.2;
+                sht.PageSetup.Margins.Right = 0.2;
+                sht.PageSetup.Margins.Left = 0.2;
+                sht.PageSetup.Margins.Header = 0.2;
+                sht.PageSetup.Margins.Footer = 0.2;
+
+                //sht.PageSetup.SetScaleHFWithDocument();
+                //sht.PageSetup.CenterHorizontally = true;
+
+                sht.Column("A").Width = 12.11;
+                sht.Column("B").Width = 16.67;
+                sht.Column("C").Width = 16.33;
+                sht.Column("D").Width = 16.33;
+                sht.Column("E").Width = 20.67;
+                sht.Column("F").Width = 17.67;
+                sht.Column("G").Width = 20.56;
+                sht.Column("H").Width = 12.89;
+                sht.Column("I").Width = 12.33;
+                sht.Column("J").Width = 12.67;
+                sht.Column("K").Width = 12.67;
+                sht.Column("L").Width = 15.78;
+                sht.Column("M").Width = 16.78;
+                sht.Column("N").Width = 15.78;
+                sht.Column("O").Width = 11.22;
+                sht.Column("P").Width = 15.78;
+                sht.Column("Q").Width = 11.22;
+                sht.Column("R").Width = 15.78;
+                sht.Column("S").Width = 11.22;
+                sht.Column("T").Width = 15.78;
+                sht.Column("U").Width = 11.22;
+                sht.Column("V").Width = 22.78;
+                sht.Column("W").Width = 20.11;
+
+                sht.Range("A1:W1").Merge();
+                sht.Range("A1").SetValue("WEAVER DOURA REPORT DETAIL");
+                sht.Range("A1:W1").Style.Font.Bold = true;
+                sht.Range("A1:W1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:W1").Style.Font.FontName = "Calibri";
+                sht.Range("A1:W1").Style.Font.FontSize = 12;
+                //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
+
+                if (ChkselectDate.Checked == true)
+                {
+                    sht.Range("A2:W2").Merge();
+                    sht.Range("A2").SetValue("FROM DATE: " + txtfromDate.Text + " " + "TODATE:" + txttodate.Text);
+                    sht.Range("A2:W2").Style.Font.Bold = true;
+                    sht.Range("A2:W2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A2:W2").Style.Font.FontName = "Calibri";
+                    sht.Range("A2:W2").Style.Font.FontSize = 12;
+                    //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
+                }
+                else
+                {
+                    sht.Range("A2:W2").Merge();
+                    sht.Range("A2").SetValue("");
+                }
+
+                sht.Range("A3:W3").Merge();
+                sht.Range("A3").SetValue("");
+                sht.Range("A3:W3").Style.Font.Bold = true;
+                sht.Range("A3:W3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A3:W3").Style.Font.FontName = "Calibri";
+                sht.Range("A3:W3").Style.Font.FontSize = 12;
+                //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
+
+                //*******Header
+                sht.Range("A4").Value = "C.CODE";
+                sht.Range("B4").Value = "ORDER NO";
+                sht.Range("C4").Value = "FOLIO NO";
+                sht.Range("D4").Value = "CARPET NO";
+                sht.Range("E4").Value = "WEAVER NAME";
+                sht.Range("F4").Value = "ISSUE DATE";
+                sht.Range("G4").Value = "DELIVERY DATE";
+                sht.Range("H4").Value = "DESIGN";
+                sht.Range("I4").Value = "SIZE";
+                sht.Range("J4").Value = "O QTY";
+                sht.Range("K4").Value = "REC QTY";
+                sht.Range("L4").Value = "ON LOOM";
+                sht.Range("M4").Value = "OFF LOOM";
+                sht.Range("N4").Value = "LOOM POSITION I";
+                sht.Range("O4").Value = "DATE";
+                sht.Range("P4").Value = "LOOM POSITION II";
+                sht.Range("Q4").Value = "DATE";
+                sht.Range("R4").Value = "LOOM POSITION III";
+                sht.Range("S4").Value = "DATE";
+                sht.Range("T4").Value = "LOOM POSITION IV";
+                sht.Range("U4").Value = "DATE";
+                sht.Range("V4").Value = "LOOM INSPECTOR";
+                sht.Range("W4").Value = "REMARKS";
+
+                sht.Range("A4:W4").Style.Font.FontName = "Calibri";
+                sht.Range("A4:W4").Style.Font.FontSize = 11;
+                sht.Range("A4:W4").Style.Font.Bold = true;
+                sht.Range("A4:W4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A4:W4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A4:W4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A4:W4").Style.Alignment.SetWrapText();
+
+
+                row = 5;
+
+                int noofrows2 = 0;
+                int i2 = 0;
+
+                string POrderId = "";
+                //string OrderColor = "";
+
+                DataTable DtDistinctEmpNameFolioNo = ds.Tables[0].DefaultView.ToTable(true, "ChallanNo", "ISSUEORDERID");
+                noofrows2 = DtDistinctEmpNameFolioNo.Rows.Count;
+
+                for (i2 = 0; i2 < noofrows2; i2++)
+                {
+                    string CustomerCode = "";
+                    string OrderNo = "";
+                    string FolioChallanNo = "";
+                    string TStockNo = "";
+                    string EmpName = "";
+                    string AssignDate = "";
+                    string DeliveryDate = "";
+                    string DesignName = "";
+                    string Size = "";
+                    decimal OQty = 0;
+                    decimal RecQty = 0;
+                    decimal OnLoomQty = 0;
+
+                    int rowfrom = 0, rowto = 0;
+
+                    DataRow[] foundRows;
+                    foundRows = ds.Tables[0].Select("ChallanNo='" + DtDistinctEmpNameFolioNo.Rows[i2]["ChallanNo"] + "' and ISSUEORDERID='" + DtDistinctEmpNameFolioNo.Rows[i2]["ISSUEORDERID"] + "'");
+
+                    if (foundRows.Length > 0)
+                    {
+                        rowfrom = row;
+                        foreach (DataRow row3 in foundRows)
+                        {
+                            CustomerCode = row3["CustomerCode"].ToString();
+                            OrderNo = row3["CustomerOrderNo"].ToString();
+                            FolioChallanNo = row3["ChallanNo"].ToString();
+                            TStockNo = row3["TStockNo"].ToString();
+                            EmpName = row3["EmpName"].ToString();
+                            AssignDate = row3["AssignDate"].ToString();
+                            DeliveryDate = row3["FolioDeliveryDate"].ToString();
+                            DesignName = row3["DesignName"].ToString();
+                            Size = row3["Size"].ToString();
+
+                            OQty = Convert.ToInt32(row3["Qty"].ToString());
+                            RecQty = Convert.ToInt32(row3["RecQty"].ToString());
+                            OnLoomQty = Convert.ToInt32(row3["Qty"].ToString()) - Convert.ToInt32(row3["RecQty"].ToString());
+
+                            sht.Range("A" + row).SetValue(CustomerCode);
+                            sht.Range("B" + row).SetValue(OrderNo);
+                            sht.Range("C" + row).SetValue(FolioChallanNo);
+                            sht.Range("D" + row).SetValue(TStockNo);
+                            sht.Range("E" + row).SetValue(EmpName);
+                            sht.Range("F" + row).SetValue(AssignDate);
+                            sht.Range("G" + row).SetValue(DeliveryDate);
+                            sht.Range("H" + row).SetValue(DesignName);
+                            sht.Range("I" + row).SetValue(Size);
+                            sht.Range("J" + row).SetValue(OQty);
+                            sht.Range("K" + row).SetValue(RecQty);
+                            sht.Range("L" + row).SetValue(OnLoomQty);
+
+                            //sht.Range("A" + row + ":W" + row).Style.Font.Bold = true;
+                            sht.Range("A" + row + ":W" + row).Style.Font.FontName = "Calibri";
+                            sht.Range("A" + row + ":W" + row).Style.Font.FontSize = 11;
+                            sht.Range("A" + row + ":W" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            sht.Range("A" + row + ":W" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                            sht.Range("A" + row + ":W" + row).Style.Alignment.WrapText = true;
+
+                            row = row + 1;
+
+                            //break;
+                        }
+
+                        rowto = row - 1;
+                        sht.Range("I" + row).SetValue("Total");
+                        sht.Range("J" + row).FormulaA1 = "=SUM(J" + rowfrom + ":J" + rowto + ")";
+                        sht.Range("K" + row).FormulaA1 = "SUM(K" + rowfrom + ":K" + rowto + ")";
+                        sht.Range("L" + row).FormulaA1 = "SUM(L" + rowfrom + ":L" + rowto + ")";
+                        //sht.Range("I" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
+                        sht.Range("C" + row + ":W" + row).Style.Font.Bold = true;
+                        sht.Range("C" + row + ":W" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        sht.Range("C" + row + ":W" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                    }
+
+                    using (var a = sht.Range("A2" + ":W" + (row - 1)))
+                    {
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    row = row + 1;
+                }
+
+                row = row + 1;
+
+                ////*************
+                //sht.Columns(1, 30).AdjustToContents();
+
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("DouraReport_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
+            }
+
+            //SqlParameter[] param = new SqlParameter[8];
+            //param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+            //param[1] = new SqlParameter("@EMPID", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            //param[2] = new SqlParameter("@WHERE", str);
+            //param[3] = new SqlParameter("@fromdate", txtfromDate.Text);
+            //param[4] = new SqlParameter("@Todate", txttodate.Text);
+            //param[5] = new SqlParameter("@Dateflag", ChkselectDate.Checked == true ? "1" : "0");
+            //param[6] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            //param[7] = new SqlParameter("@UserId", Session["VarUserId"]);
+
+            //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVERDOURAREPORT", param);
+
+            //if (ds.Tables[0].Rows.Count > 0)
+            //{
+            //    Session["rptFileName"] = "~\\Reports\\Rptweaverpendingbarcode.rpt";
+            //    Session["GetDataset"] = ds;
+            //    Session["dsFileName"] = "~\\ReportSchema\\Rptweaverpendingbarcode.xsd";
+
+            //    StringBuilder stb = new StringBuilder();
+            //    stb.Append("<script>");
+            //    stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            //    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            //}
+            //else
+            //{
+            //    ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+            //}
         }
         catch (Exception ex)
         {

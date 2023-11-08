@@ -61,7 +61,7 @@ public partial class Masters_Process_FrmProcessRecRateUpdate : System.Web.UI.Pag
     protected void DDProcessNameSelectedIndex()
     {
         string str = "";
-        if (Session["VarCompanyNo"].ToString() == "42")
+        if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46")
         {
             str = @"Select Distinct EPR.EmpID, EI.EmpName + Case When EI.EmpCode <> '' Then ' / ' + EI.EmpCode End EmployeeName 
             From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" a
@@ -90,7 +90,7 @@ public partial class Masters_Process_FrmProcessRecRateUpdate : System.Web.UI.Pag
     protected void DDEmployeeName_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
-        if (Session["VarCompanyNo"].ToString() == "42")
+        if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46")
         {
             str = @"Select Distinct a.IssueOrderId, a.ChallanNo 
             From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" a

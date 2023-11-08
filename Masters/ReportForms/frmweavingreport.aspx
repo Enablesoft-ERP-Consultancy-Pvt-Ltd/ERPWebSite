@@ -43,7 +43,7 @@
                 TDWeaverOrderStatus.Visible = true;
             }
 
-
+            TROpenIssRecConDetail.Visible = false;
             TDChkForWeavingPendingQtyWithAreaSize.Visible = false;
             TDChkForWeavingPendingQtyWithExcelReport.Visible = false;
             TDWeaverRawMaterialIssRecWithConsumption.Visible = true;
@@ -80,6 +80,14 @@
             TDChkForStockDetail.Visible = false;
             TDChkForDepartmentRawDetail.Visible = false;
             TRReceiveHoldDetail.Visible = false;
+            if (Session["varcompanyId"].ToString() == "42")
+            {
+                TDDouraReport.Visible = true;
+            }
+            else
+            {
+                TDDouraReport.Visible = false;
+            }
 
             if (RDAll.Checked == true)
             {
@@ -550,7 +558,16 @@
                     ChkselectDate.Checked = false;
                     TDchksummary.Visible = true;
                 }
-
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    trFolioNo.Visible = false;
+                    trCategoryName.Visible = false;
+                    trItemName.Visible = false;
+                    Trquality.Visible = false;
+                    Trshadecolor.Visible = false;
+                    TDchksummary.Visible = true;
+                    TROpenIssRecConDetail.Visible = true;
+                }
             }
             if (RDWeaverReceivePaymentSummary.Checked == true)
             {
@@ -613,6 +630,14 @@
                 trFolioType.Visible = false;
                 TRCustomerCode.Visible = false;
                 TROrderNo.Visible = false;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Trproductiontype.Visible = true;                    
+                }
+                else
+                {
+                    Trproductiontype.Visible = false;                   
+                }
             }
             if (RDWeaverRawMaterialIssueSummary.Checked == true)
             {
@@ -643,6 +668,36 @@
                 TRChkWeavingReport.Visible = false;
                 ChkselectDate.Checked = true;              
 
+            }
+            if (RDDouraReport.Checked == true)
+            {
+                TRCompanyName.Visible = true;
+                TRCustomerCode.Visible = true;
+                TROrderNo.Visible = true;
+                trWeaver.Visible = true;
+                trFolioNo.Visible = true;
+                Trunitname.Visible = false;
+                trReportType.Visible = false;
+                trProductionStatus.Visible = false;
+                trFolioType.Visible = false;
+                Trproductiontype.Visible = false;
+                trCategoryName.Visible = true;
+                trItemName.Visible = true;
+                Trquality.Visible = true;
+                Trdesign.Visible = true;
+                Trcolor.Visible = true;
+                Trsize.Visible = true;
+                Trshadecolor.Visible = false;
+                Trorderstatus.Visible = false;
+                TRReturnGatePassNo.Visible = false;
+                TRTagNo.Visible = false;
+                TDchksummary.Visible = false;
+                TDchkpbarcode.Visible = false;
+                TRchkforshadewise.Visible = false;
+                TRChkUnpaidApprovalNo.Visible = false;
+                TRChkWeavingReport.Visible = false;
+                ChkselectDate.Checked = true;
+               
             }
         }        
     </script>
@@ -827,6 +882,15 @@
                                             OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>
                                 </tr>
+
+                                 <tr>
+                                    <td id="TDDouraReport" runat="server" visible="false">
+                                        <asp:RadioButton ID="RDDouraReport" Text="Doura Report"
+                                            runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
+                                            OnCheckedChanged="RadioButton_CheckedChanged" />
+                                    </td>
+                                </tr>
+
                             </table>
                         </asp:Panel>
                     </div>
@@ -1160,6 +1224,11 @@
                                 <tr id="TRReceiveHoldDetail" runat="server" visible="false">
                                     <td colspan="3">
                                         <asp:CheckBox ID="ChkReceiveHoldDetail" runat="server" CssClass="checkboxbold" Text="Receive Hold Detail" />
+                                    </td>
+                                </tr>
+                                <tr id="TROpenIssRecConDetail" runat="server" visible="false">
+                                    <td colspan="3">
+                                        <asp:CheckBox ID="ChkOpenIssRecConDetail" runat="server" CssClass="checkboxbold" Text="Opening Iss Rec Consmp Detail" />
                                     </td>
                                 </tr>
                                 <tr>
