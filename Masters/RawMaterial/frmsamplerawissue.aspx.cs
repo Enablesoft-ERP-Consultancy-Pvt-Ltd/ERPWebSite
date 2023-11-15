@@ -374,13 +374,32 @@ public partial class Masters_RawMaterial_frmsamplerawissue : System.Web.UI.Page
     }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
-        string str = "select * From V_SamplematerialIssue where prmid=" + hnprmid.Value;
+        string str = "";
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            str = "select * From V_SamplematerialIssue_CI where prmid=" + hnprmid.Value;
+        }
+        else
+        {
+            str = "select * From V_SamplematerialIssue where prmid=" + hnprmid.Value;
+        }
+        
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            Session["rptFileName"] = "~\\Reports\\rptsamplematerialissue.rpt";
-            Session["GetDataset"] = ds;
-            Session["dsFileName"] = "~\\ReportSchema\\rptsamplematerialissue.xsd";
+            if (Session["VarCompanyNo"].ToString() == "43")
+            {
+                Session["rptFileName"] = "~\\Reports\\RptSampleMaterialIssueCI.rpt";
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptSampleMaterialIssueCI.xsd";
+            }
+            else
+            {
+                Session["rptFileName"] = "~\\Reports\\rptsamplematerialissue.rpt";
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\rptsamplematerialissue.xsd";
+            }
+           
 
             StringBuilder stb = new StringBuilder();
             stb.Append("<script>");
