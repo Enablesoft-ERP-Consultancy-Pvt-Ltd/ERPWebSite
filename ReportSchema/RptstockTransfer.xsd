@@ -30,6 +30,10 @@
               <xs:element name="EWayBillNo" type="xs:string" minOccurs="0" />
               <xs:element name="HSNCode" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="ToCompanyName" type="xs:string" minOccurs="0" />
+              <xs:element name="ToCompAddr1" type="xs:string" minOccurs="0" />
+              <xs:element name="ToCompAddr2" type="xs:string" minOccurs="0" />
+              <xs:element name="ToCompAddr3" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

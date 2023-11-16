@@ -162,8 +162,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
         string str = string.Empty;
         if (chksample.Checked == true)
         {
-            TRPartyChallanNo.Visible = false;
-            txtPartyChallanNo.Text = "";
+            if (Session["VarCompanyNo"].ToString() != "43")
+            {
+                TRPartyChallanNo.Visible = false;
+                txtPartyChallanNo.Text = "";
+            }
 
             str = @" Select ID as Indentid,indentNo From SampleDyeingmaster SM Where 1=1";
             if (DDCompany.SelectedIndex > 0)

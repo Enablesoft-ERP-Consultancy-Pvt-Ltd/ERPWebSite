@@ -37,7 +37,7 @@
               <xs:element name="Moisture" type="xs:decimal" minOccurs="0" />
               <xs:element name="CheckedBy" type="xs:string" minOccurs="0" />
               <xs:element name="IndentRecRemarks" type="xs:string" minOccurs="0" />
-              <xs:element name="IssueQtyOnMachine" type="xs:decimal" minOccurs="0" />
+              <xs:element name="IssueQtyOnMachine" type="xs:double" minOccurs="0" />
               <xs:element name="OrderQuality" type="xs:string" minOccurs="0" />
               <xs:element name="GodownName" type="xs:string" minOccurs="0" />
             </xs:sequence>
