@@ -1177,7 +1177,8 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                     _arrpara[40].Value = TDBatchNo.Visible == false ? "" : DDbatchNo.SelectedItem.Text;
                     _arrpara[41].Value = Session["varcompanyid"];
                     _arrpara[42].Direction = ParameterDirection.Output;
-                    _arrpara[43].Direction = ParameterDirection.Output;
+                    _arrpara[43].Direction = ParameterDirection.InputOutput;
+                    _arrpara[43].Value = TxtChallanNO.Text;
 
                     if (Session["VarCompanyNo"].ToString() == "16" || Session["VarcompanyNo"].ToString() == "28")
                     {
@@ -2249,7 +2250,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
         str = @"Select PRM.Process_Rec_Id,PRM.ChallanNo From PROCESS_RECEIVE_MASTER_" + DDFromProcessForRecChallanNo.SelectedValue + " PRM(NoLock) JOIN PROCESS_RECEIVE_DETAIL_" + DDFromProcessForRecChallanNo.SelectedValue + @" PRD(NoLock) ON PRM.PROCESS_REC_ID=PRD.PROCESS_REC_ID
                 JOIN Employee_ProcessReceiveNo EPR(NoLock) ON PRM.PROCESS_REC_ID=EPR.Process_Rec_id and EPR.ProcessId=" + DDFromProcessForRecChallanNo.SelectedValue + @"
                 JOIN EmpInfo EI(NoLock) ON EPR.Empid=EI.EmpId
-                Where EI.EmpId=" + DDProcessWiseEmpName.SelectedValue + @"
+                Where EI.EmpId=" + DDProcessWiseEmpName.SelectedValue + " and PRM.CompanyId=" + DDCompanyName.SelectedValue + @"
                 Group by PRM.Process_Rec_Id,PRM.ChallanNo
                 Order by PRM.Process_Rec_Id";
        
