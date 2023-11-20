@@ -105,7 +105,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
                 int ProcessId = reader["process_Name_id"] != null ? Convert.ToInt32(reader["process_Name_id"]) : 0;
                 int _processType = reader["ProcessType"] != null ? Convert.ToInt32(reader["ProcessType"]) : 0;
                 _obj.ItemId = reader["ProcessType"].ToString() + '-' + reader["process_Name_id"].ToString();
-                _obj.ItemName = ((ProcessType)_processType).ToString() + '-' + reader["Process_Name"].ToString();
+                _obj.ItemName = '(' + ((ProcessType)_processType).ToString() + ") " + reader["Process_Name"].ToString();
                 lstselected.Add(_obj);
             }
             lstSelectProcess.DataSource = lstselected;
