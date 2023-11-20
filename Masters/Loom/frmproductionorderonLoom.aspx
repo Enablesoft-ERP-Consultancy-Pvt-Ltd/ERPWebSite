@@ -433,6 +433,11 @@
                                 <asp:CheckBox ID="ChkForMaterialRate" class="tdstyle" runat="server"
                                     Text="Material Rate" CssClass="checkboxbold" />
                             </td>
+                            <td id="TDChkForWithoutCottonMaterial" runat="server" visible="false"
+                                style="border-style: none">
+                                <asp:CheckBox ID="ChkForWithoutCottonMaterial" class="tdstyle" runat="server"
+                                    Text="For Without Cloth" CssClass="checkboxbold" />
+                            </td>
                         </tr>
                     </table>
                     <div style="width: 60%; float: left;">

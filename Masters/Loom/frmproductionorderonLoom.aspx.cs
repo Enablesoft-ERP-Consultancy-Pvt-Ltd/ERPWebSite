@@ -236,6 +236,18 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     ChkForSlipPrint.Visible = false;
                     TDChkForStockNoAttach.Visible = true;
                     break;
+                case "43":
+                    TDTanaCottonLotNo.Visible = false;
+                    BtnUpdateTanaLotNo.Visible = false;
+                    TDTanaLotNo.Visible = false;
+                    txtWeaverIdNo.Visible = true;
+                    txtWeaverIdNoscan.Visible = false;
+                    BtnPreviewConsumption.Visible = false;
+                    ChkForWithoutRate.Visible = false;
+                    TDLastFolioNo.Visible = false;
+                    ChkForSlipPrint.Visible = false;
+                    TDChkForWithoutCottonMaterial.Visible = true;
+                    break;
                 case "45":
                     TDTanaCottonLotNo.Visible = false;
                     BtnUpdateTanaLotNo.Visible = false;
@@ -1200,6 +1212,15 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 else
                 {
                     cmd.Parameters.AddWithValue("@MaterialRate", 0);
+                }
+
+                if (TDChkForWithoutCottonMaterial.Visible == true)
+                {
+                    cmd.Parameters.AddWithValue("@WithoutCottonMaterialFlag", ChkForWithoutCottonMaterial.Checked == true ? "1" : "0");
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@WithoutCottonMaterialFlag", 0);
                 }
 
                 cmd.ExecuteNonQuery();

@@ -12,7 +12,6 @@
         function CloseForm() {
             window.location.href = "../../main.aspx";
         }
-      
     </script>
     <asp:UpdatePanel ID="upd1" runat="server">
         <ContentTemplate>
@@ -70,7 +69,7 @@
                 </table>
             </div>
             <div style="max-height: 500px; overflow: auto;">
-                <asp:GridView ID="DG" runat="server" AutoGenerateColumns="false">
+                <asp:GridView ID="DG" runat="server" AutoGenerateColumns="false" OnRowDataBound="DG_RowDataBound">
                     <HeaderStyle CssClass="gvheaders" />
                     <AlternatingRowStyle CssClass="gvalts" />
                     <RowStyle CssClass="gvrow" />
@@ -153,6 +152,11 @@
                         <asp:TemplateField HeaderText="RATE DATE">
                             <ItemTemplate>
                                 <asp:Label ID="lblratedate" runat="server" Text='<%#Bind("ratedate") %>'></asp:Label>
+                            </ItemTemplate>
+                        </asp:TemplateField>
+                           <asp:TemplateField Visible="false" HeaderText="Pallet No.">
+                            <ItemTemplate>
+                                <asp:Label ID="lblpalletno" runat="server" Text='<%#Bind("PalletNo") %>'></asp:Label>
                             </ItemTemplate>
                         </asp:TemplateField>
                         <asp:TemplateField Visible="false">
