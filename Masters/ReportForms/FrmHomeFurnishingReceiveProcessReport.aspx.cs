@@ -203,7 +203,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingReceiveProcessReport :
             SqlTransaction tran = con.BeginTransaction();
             try
             {
-                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING")
+                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING" || DDProcessName.SelectedItem.Text == "BLOCK PRINTING")
                 {
                     HomeFurnishingReceiveDetailReport();                                   
                 }

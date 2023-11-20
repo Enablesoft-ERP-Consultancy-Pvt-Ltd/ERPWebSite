@@ -61,9 +61,9 @@ public partial class Masters_Process_FrmProcessRecRateUpdate : System.Web.UI.Pag
     protected void DDProcessNameSelectedIndex()
     {
         string str = "";
-        if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46")
+        if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46" || Session["VarCompanyNo"].ToString() == "38")
         {
-            str = @"Select Distinct EPR.EmpID, EI.EmpName + Case When EI.EmpCode <> '' Then ' / ' + EI.EmpCode End EmployeeName 
+            str = @"Select Distinct EPR.EmpID, EI.EmpName + Case When EI.EmpCode <> '' Then ' / ' + EI.EmpCode Else '' End EmployeeName 
             From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" a
             JOIN PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" b on b.IssueOrderID = a.IssueOrderID 
             JOIN Employee_ProcessOrderNo EPR ON EPR.IssueOrderID = a.IssueOrderID And EPR.IssueDetailID = b.Issue_Detail_ID And EPR.ProcessId = " + DDProcessName.SelectedValue + @" 
@@ -73,7 +73,7 @@ public partial class Masters_Process_FrmProcessRecRateUpdate : System.Web.UI.Pag
         }
         else
         {
-             str = @"Select Distinct EPR.EmpID, EI.EmpName + Case When EI.EmpCode <> '' Then ' / ' + EI.EmpCode End EmployeeName 
+            str = @"Select Distinct EPR.EmpID, EI.EmpName + Case When EI.EmpCode <> '' Then ' / ' + EI.EmpCode Else '' End EmployeeName 
             From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" a
             JOIN PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" b on b.IssueOrderID = a.IssueOrderID 
             JOIN Employee_ProcessOrderNo EPR ON EPR.IssueOrderID = a.IssueOrderID And EPR.IssueDetailID = b.Issue_Detail_ID And EPR.ProcessId = " + DDProcessName.SelectedValue + @" 
@@ -90,7 +90,7 @@ public partial class Masters_Process_FrmProcessRecRateUpdate : System.Web.UI.Pag
     protected void DDEmployeeName_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
-        if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46")
+        if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46" || Session["VarCompanyNo"].ToString() == "38")
         {
             str = @"Select Distinct a.IssueOrderId, a.ChallanNo 
             From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" a

@@ -36,6 +36,7 @@
               <xs:element name="Commrate" type="xs:decimal" minOccurs="0" />
               <xs:element name="TotalRate" type="xs:double" minOccurs="0" />
               <xs:element name="MasterBuyerSize" type="xs:string" minOccurs="0" />
+              <xs:element name="PenalityRemarks" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

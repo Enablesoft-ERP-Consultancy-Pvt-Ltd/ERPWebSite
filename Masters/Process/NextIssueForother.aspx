@@ -162,7 +162,7 @@
                                             <td id="TDIssueno" runat="server">
                                                 <asp:Label ID="lblissueno" Text="Issue No." runat="server" CssClass="labelbold" />
                                                 <br />
-                                                <asp:TextBox CssClass="textb" ID="TxtChallanNO" runat="server" Width="100px" Enabled="false"></asp:TextBox>
+                                                <asp:TextBox CssClass="textb" ID="TxtChallanNO" runat="server" Width="100px" ReadOnly="true" ></asp:TextBox>
                                             </td>
                                         </tr>
                                         <tr>

@@ -353,6 +353,12 @@
                                 <br />
                                 <asp:TextBox ID="txtissueqty" runat="server" CssClass="textb" Width="80px" onkeypress="return isNumberKeywithdecimal(event)" />
                             </td>
+
+                            <td id="TDVehicleNo" runat="server" visible="false">
+                                <asp:Label ID="Label30" runat="server" Text="Vehicle No" CssClass="labelbold"></asp:Label>
+                                &nbsp;<br />
+                                <asp:TextBox ID="txtVehicleNo" Width="100px" runat="server" CssClass="textb"></asp:TextBox>
+                            </td>
                         </tr>
                     </table>
                 </fieldset>

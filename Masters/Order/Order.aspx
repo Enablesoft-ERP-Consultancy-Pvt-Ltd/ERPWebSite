@@ -452,7 +452,7 @@
         </table>
         <asp:UpdatePanel ID="upd1" runat="server" UpdateMode="Conditional">
             <ContentTemplate>
-                <asp:TabContainer ID="tbsample" runat="server" Width="100%" ActiveTabIndex="1">
+                <asp:TabContainer ID="tbsample" runat="server" Width="100%" ActiveTabIndex="0">
                     <asp:TabPanel ID="TabMainInformation" HeaderText="Customer Information" runat="server">
                         <HeaderTemplate>
                             Customer Information

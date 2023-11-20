@@ -816,7 +816,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
             str = @"Select isnull(PIM.ChallanNo,'') as ChallanNo, Ci.CompanyId,BM.BranchName CompanyName, BM.BranchAddress CompAddr1, '' CompAddr2, '' CompAddr3,BM.PhoneNo CompTel,CI.CompFax,CI.GSTNo
                         ,EI.Empname,Ei.Empaddress as address,'' as Address2,'' asAddress3,'' as Mobile,Ei.EMPGSTIN as Empgstin,PIM.issueorderid
                         ,PIM.assigndate,PID.reqbydate,(select PROCESS_NAME From PROCESS_NAME_MASTER Where PROCESS_NAME_ID=" + DDTOProcess.SelectedValue + @") as Job,
-                        Vf.QualityName,Vf.designName,Vf.ColorName,Case When Vf.shapeid=1 Then '' Else Left(vf.shapename,1) End  as Shapename,
+                        vf.CATEGORY_NAME,Vf.QualityName,Vf.designName,Vf.ColorName,Case When Vf.shapeid=1 Then '' Else Left(vf.shapename,1) End  as Shapename,
                         PID.Width+' x ' +PID.Length as Size,PID.qty,PID.Qty*PID.area as Area,PIM.UnitId,PID.Rate,PID.Issue_Detail_Id,
                         (Select * from [dbo].[Get_StockNoIssue_Detail_Wise](PID.Issue_Detail_Id," + DDTOProcess.SelectedValue + @")) TStockNo,PIM.Instruction,PIM.Remarks,PID.Item_Finished_Id,
                         case when " + Session["varcompanyId"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '' end as FolioNo,
