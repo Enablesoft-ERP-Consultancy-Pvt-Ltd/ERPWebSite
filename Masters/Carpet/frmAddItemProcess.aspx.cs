@@ -8,6 +8,9 @@ using System.Data;
 using System.Data.SqlClient;
 using IExpro.Core.Common;
 using IExpro.Web.Models;
+using System.Windows.Forms;
+using System.Xml;
+using System.ServiceModel.Activities;
 
 public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 {
@@ -23,9 +26,9 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 
             var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
 
-            rdbtnLst.DataSource= result;
+            rdbtnLst.DataSource = result;
             rdbtnLst.DataBind();
-            rdbtnLst.SelectedIndex= 0;
+            rdbtnLst.SelectedIndex = 0;
 
 
 
@@ -83,7 +86,10 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
                 //Check if process Already Exists
                 if (!lstSelectProcess.Items.Contains(lstProcess.Items[i]))
                 {
-                    lstSelectProcess.Items.Add(new ListItem(lstProcess.Items[i].Text, lstProcess.Items[i].Value));
+
+                    var lstItem = new ListItem('(' + rdbtnLst.SelectedItem.Text + ") " + lstProcess.Items[i].Text, rdbtnLst.SelectedValue + '-' + lstProcess.Items[i].Value);
+                    //lstItem.Attributes.Add("ProcessType", rdbtnLst.SelectedValue); 
+                    lstSelectProcess.Items.Add(lstItem);
                 }
             }
         }
@@ -94,7 +100,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 
         foreach (ListItem liItems in lstSelectProcess.Items)
         {
-            if (liItems.Selected == true)
+            if (liItems.Selected)
             {
                 lstselected.Add(liItems);
             }
@@ -111,6 +117,21 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
+
+
+        XmlDocument doc = new XmlDocument();
+        XmlElement el = (XmlElement)doc.AppendChild(doc.CreateElement("ProcessItems"));
+        for (int i = 0; i < lstSelectProcess.Items.Count; i++)
+        {
+            XmlElement elm = doc.CreateElement("ProcessItem");
+            elm.InnerText = lstSelectProcess.Items[i].Text;
+            var itemValue = lstSelectProcess.Items[i].Value.Split('-');
+            elm.SetAttribute("ProcessType", itemValue[0]);
+            elm.SetAttribute("ProcessId", itemValue[1]);
+            el.AppendChild(elm);
+        }
+
+        Console.WriteLine(doc.OuterXml);
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         if (con.State == ConnectionState.Closed)
         {
@@ -192,4 +213,69 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
     {
         Fillselectprocess();
     }
+
+
+
+
+
+    protected override object SaveViewState()
+    {
+        // create object array for Item count + 1
+        object[] allStates = new object[this.Items.Count + 1];
+
+        // the +1 is to hold the base info
+        object baseState = base.SaveViewState();
+        allStates[0] = baseState;
+
+        Int32 i = 1;
+        // now loop through and save each Style attribute for the List
+        foreach (ListItem li in this.Items)
+        {
+            Int32 j = 0;
+            string[][] attributes = new string[li.Attributes.Count][];
+            foreach (string attribute in li.Attributes.Keys)
+            {
+                attributes[j++] = new string[] { attribute, li.Attributes[attribute] };
+            }
+            allStates[i++] = attributes;
+        }
+        return allStates;
+    }
+
+    protected override void LoadViewState(object savedState)
+    {
+        if (savedState != null)
+        {
+            object[] myState = (object[])savedState;
+
+            // restore base first
+            if (myState[0] != null)
+                base.LoadViewState(myState[0]);
+
+            Int32 i = 1;
+            foreach (ListItem li in this.Items)
+            {
+                // loop through and restore each style attribute
+                foreach (string[] attribute in (string[][])myState[i++])
+                {
+                    li.Attributes[attribute[0]] = attribute[1];
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
