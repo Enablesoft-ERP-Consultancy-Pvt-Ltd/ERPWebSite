@@ -11,6 +11,9 @@ using IExpro.Web.Models;
 using System.Windows.Forms;
 using System.Xml;
 using System.ServiceModel.Activities;
+using DocumentFormat.OpenXml.Office.Word;
+using IExpro.Core.Models;
+using System.Windows.Interop;
 
 public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 {
@@ -60,22 +63,60 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
     }
     protected void Fillselectprocess()
     {
-        string str = @"select PNM.process_Name_id,PNM.Process_Name from Process_name_Master PNM,Item_Process IP
-                      Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varcompanyid"] + "";
-        if (DDQuality.SelectedIndex > 0)
+        SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        SqlParameter[] param = new SqlParameter[6];
+
+        param[0] = new SqlParameter("@Flag", SqlDbType.Int);
+        param[0].Direction = ParameterDirection.Input;
+        param[0].Value = 2;
+
+        param[1] = new SqlParameter("@CompanyId", SqlDbType.VarChar);
+        param[1].Direction = ParameterDirection.Input;
+        param[1].Value = Convert.ToInt32(Session["varcompanyid"]);
+
+        param[2] = new SqlParameter("@ItemId", SqlDbType.Int);
+        param[2].Direction = ParameterDirection.Input;
+        param[2].Value = Convert.ToInt32(Request.QueryString["a"]);
+
+        param[3] = new SqlParameter("@QualityId", SqlDbType.Int);
+        param[3].Direction = ParameterDirection.Input;
+        param[3].Value = Convert.ToInt32(DDQuality.SelectedValue);
+
+        param[4] = new SqlParameter("@DesignId", SqlDbType.Int);
+        param[4].Direction = ParameterDirection.Input;
+        param[4].Value = Convert.ToInt32(DDDesign.SelectedValue);
+
+
+        param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 200);
+        param[5].Direction = ParameterDirection.Output;
+
+
+
+
+        List<ItemList> lstselected = new List<ItemList>();
+
+        using (var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "ProcessSequenceProc", param))
         {
-            str = str + " and IP.QualityId=" + DDQuality.SelectedValue;
+            while (reader.Read())
+            {
+                ItemList _obj = new ItemList();
+
+                _obj.Index = reader["SeqNo"] != null ? Convert.ToInt32(reader["SeqNo"]) : 0;
+                int ProcessId = reader["process_Name_id"] != null ? Convert.ToInt32(reader["process_Name_id"]) : 0;
+                int _processType = reader["ProcessType"] != null ? Convert.ToInt32(reader["ProcessType"]) : 0;
+                _obj.ItemId = reader["ProcessType"].ToString() + '-' + reader["process_Name_id"].ToString();
+                _obj.ItemName = ((ProcessType)_processType).ToString() + '-' + reader["Process_Name"].ToString();
+                lstselected.Add(_obj);
+            }
+            lstSelectProcess.DataSource = lstselected;
+            lstSelectProcess.DataValueField = "ItemId";
+            lstSelectProcess.DataTextField = "ItemName";
+            lstSelectProcess.DataBind();
         }
-        if (DDDesign.SelectedIndex > 0)
-        {
-            str = str + " and IP.DesignId=" + DDDesign.SelectedValue;
-        }
-        else
-        {
-            str = str + " and IP.DesignId=0";
-        }
-        str = str + "  order by IP.SeqNo";
-        UtilityModule.ConditonalListFill(ref lstSelectProcess, str);
+
+
+
+
     }
     protected void btngo_Click(object sender, EventArgs e)
     {
@@ -126,12 +167,14 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
             XmlElement elm = doc.CreateElement("ProcessItem");
             elm.InnerText = lstSelectProcess.Items[i].Text;
             var itemValue = lstSelectProcess.Items[i].Value.Split('-');
+            int seqNo = i + 1;
+            elm.SetAttribute("SeqNO", seqNo.ToString());
             elm.SetAttribute("ProcessType", itemValue[0]);
             elm.SetAttribute("ProcessId", itemValue[1]);
             el.AppendChild(elm);
         }
 
-        Console.WriteLine(doc.OuterXml);
+        Console.WriteLine();
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         if (con.State == ConnectionState.Closed)
         {
@@ -141,46 +184,28 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
         try
         {
             SqlParameter[] array = new SqlParameter[8];
-            array[0] = new SqlParameter("@Itemid", SqlDbType.Int);
-            array[1] = new SqlParameter("@UserId", SqlDbType.Int);
-            array[2] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
-            array[3] = new SqlParameter("@ProcessId_SeqNO", SqlDbType.VarChar, 100);
-            array[4] = new SqlParameter("@Msg", SqlDbType.VarChar, 50);
-            array[5] = new SqlParameter("@QualityId", SqlDbType.Int);
-            array[6] = new SqlParameter("@DesignId", SqlDbType.Int);
-            array[7] = new SqlParameter("@ProcessType", SqlDbType.TinyInt);
-            array[0].Value = Request.QueryString["a"];
+            array[0] = new SqlParameter("@Flag", SqlDbType.Int);
+            array[1] = new SqlParameter("@CreatedBy", SqlDbType.Int);
+            array[2] = new SqlParameter("@CompanyId", SqlDbType.Int);
+            array[3] = new SqlParameter("@QualityId", SqlDbType.Int);
+            array[4] = new SqlParameter("@DesignId", SqlDbType.Int);
+            array[5] = new SqlParameter("@ProcessXml", SqlDbType.Xml);
+            array[6] = new SqlParameter("@Msg", SqlDbType.VarChar, 200);
+            array[7] = new SqlParameter("@ItemId", SqlDbType.Int);
+
+            array[0].Value = 1;
             array[1].Value = Session["varuserid"];
             array[2].Value = Session["varcompanyId"];
-            array[7].Value = rdbtnLst.SelectedValue;
-            string str = "";
-            string strnew = "";
-            // find ProcessId And SeqNo
-            int seqNo = 0;
-            for (int i = 0; i < lstSelectProcess.Items.Count; i++)
-            {
+            array[3].Value = Convert.ToInt32(DDQuality.SelectedValue);
+            array[4].Value = Convert.ToInt32(DDDesign.SelectedValue);
+            array[5].Value = doc.OuterXml;
+            array[6].Direction = ParameterDirection.Output;
 
-                seqNo += 1;
-                str = lstSelectProcess.Items[i].Value + "," + seqNo;
-                if (strnew == "")
-                {
-                    strnew = str;
-                }
-                else
-                {
-                    strnew = strnew + "|" + str;
-
-                }
-
-            }
-            array[3].Value = strnew;
-            array[4].Direction = ParameterDirection.Output;
-            array[5].Value = TDquality.Visible == false ? "0" : DDQuality.SelectedValue;
-            array[6].Value = TDDesign.Visible == false ? "0" : (DDDesign.SelectedIndex > 0 ? DDDesign.SelectedValue : "0");
+            array[7].Value = Request.QueryString["a"];
             //Save Data
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveItem_Process", array);
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "ProcessSequenceProc", array);
             Tran.Commit();
-            lblMessage.Text = array[4].Value.ToString();
+            lblMessage.Text = array[6].Value.ToString();
         }
         catch (Exception ex)
         {
@@ -217,52 +242,6 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 
 
 
-
-    protected override object SaveViewState()
-    {
-        // create object array for Item count + 1
-        object[] allStates = new object[this.Items.Count + 1];
-
-        // the +1 is to hold the base info
-        object baseState = base.SaveViewState();
-        allStates[0] = baseState;
-
-        Int32 i = 1;
-        // now loop through and save each Style attribute for the List
-        foreach (ListItem li in this.Items)
-        {
-            Int32 j = 0;
-            string[][] attributes = new string[li.Attributes.Count][];
-            foreach (string attribute in li.Attributes.Keys)
-            {
-                attributes[j++] = new string[] { attribute, li.Attributes[attribute] };
-            }
-            allStates[i++] = attributes;
-        }
-        return allStates;
-    }
-
-    protected override void LoadViewState(object savedState)
-    {
-        if (savedState != null)
-        {
-            object[] myState = (object[])savedState;
-
-            // restore base first
-            if (myState[0] != null)
-                base.LoadViewState(myState[0]);
-
-            Int32 i = 1;
-            foreach (ListItem li in this.Items)
-            {
-                // loop through and restore each style attribute
-                foreach (string[] attribute in (string[][])myState[i++])
-                {
-                    li.Attributes[attribute[0]] = attribute[1];
-                }
-            }
-        }
-    }
 
 
 

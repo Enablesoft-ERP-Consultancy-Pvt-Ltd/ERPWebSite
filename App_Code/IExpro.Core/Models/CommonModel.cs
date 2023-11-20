@@ -12,6 +12,13 @@ namespace IExpro.Core.Models
     }
 
 
+    public class ItemList
+    {
+        public int Index { get; set; }
+        public string ItemId { get; set; }
+        public string ItemName { get; set; }
+    }
+
     public abstract class BaseEntity
     {
         public int CompanyId { get; set; }
