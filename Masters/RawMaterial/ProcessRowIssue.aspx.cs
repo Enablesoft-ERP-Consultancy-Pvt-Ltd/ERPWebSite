@@ -1310,6 +1310,14 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
                     PCD.ProcessId=" + ddProcessName.SelectedValue + " And PCD.IssueOrderID=" + ddOrderNo.SelectedValue + @" And PCD.IFinishedid=" + ds.Tables[0].Rows[0]["Finishedid"] + @"
                     Group By PM.IssueOrderId,PCD.IFinishedid";
                     break;
+                case "38":
+                    Str = @"SELECT ROUND(SUM(CASE WHEN PCD.ICalType<>1 Then Case When UnitId=1 Then (PD.Qty-isnull(CancelQty,0))*PD.Area*PCD.IQTY*1.196 Else (PD.Qty-isnull(CancelQty,0))*PD.Area*PCD.IQTY End Else 
+                    Case When UnitId=1 Then (PD.Qty-isnull(CancelQty,0))*PCD.IQTY*1.196 Else (PD.Qty-isnull(CancelQty,0))*PCD.IQTY End End),3) Qty,[dbo].[Get_ProcessIssueQty] (PCD.IFinishedid,PM.IssueOrderId) IssQty 
+                    From PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + @" PD,
+                    PROCESS_CONSUMPTION_DETAIL PCD Where PM.IssueOrderId=PD.IssueOrderId And PD.Issue_Detail_Id=PCD.Issue_Detail_Id And 
+                    PCD.ProcessId=" + ddProcessName.SelectedValue + " And PCD.IssueOrderID=" + ddOrderNo.SelectedValue + @" And PCD.IFinishedid=" + ds.Tables[0].Rows[0]["Finishedid"] + @"
+                    Group By PM.IssueOrderId,PCD.IFinishedid";
+                    break;
                 default:
                     Str = @"SELECT ROUND(SUM(CASE WHEN CalType=0 or Caltype=2 Then Case When UnitId=1 Then (PD.Qty-isnull(CancelQty,0))*PD.Area*PCD.IQTY*1.196 Else (PD.Qty-isnull(CancelQty,0))*PD.Area*PCD.IQTY End Else 
                     Case When UnitId=1 Then (PD.Qty-isnull(CancelQty,0))*PCD.IQTY*1.196 Else (PD.Qty-isnull(CancelQty,0))*PCD.IQTY End End),3) Qty,[dbo].[Get_ProcessIssueQty] (PCD.IFinishedid,PM.IssueOrderId) IssQty 

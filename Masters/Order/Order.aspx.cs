@@ -7927,7 +7927,7 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             {
                 TDSampleCode.Visible = true;
 
-                if (Session["varcompanyId"].ToString() == "16" || (Session["varcompanyId"].ToString() == "28" && (Session["varSubCompanyId"].ToString() == "282" || Session["varSubCompanyId"].ToString() == "285")))
+                if (Session["varcompanyId"].ToString() == "16" || (Session["varcompanyId"].ToString() == "28" && (Session["varSubCompanyId"].ToString() == "282" || Session["varSubCompanyId"].ToString() == "285" || Session["varSubCompanyId"].ToString() == "281")))
                 {
                     string Str = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'S ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'S %'").ToString();
                     TxtCustOrderNo.Text = "S " + Str;

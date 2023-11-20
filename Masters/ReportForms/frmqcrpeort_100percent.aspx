@@ -112,6 +112,8 @@
                             &nbsp
                         </td>
                         <td style="border-style: dotted; width: 70%" align="right">
+                            <asp:CheckBox ID="ChkDATETIMEREPORTFORBAZAR" runat="server" Text="DATE TIME REPORT FOR BAZAR"
+                                CssClass="checkboxbold" Visible="false" />
                             <asp:Button ID="btngetdata" runat="server" CssClass="buttonnorm" Text="Export to Excel"
                                 OnClick="btngetdata_Click" />
                             <asp:Button ID="BtnClose" runat="server" CssClass="buttonnorm" Text="CLOSE" OnClientClick="return CloseForm();" />

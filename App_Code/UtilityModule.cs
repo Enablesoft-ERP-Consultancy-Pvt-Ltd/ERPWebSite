@@ -3447,4 +3447,35 @@ public class UtilityModule
         }
         return Convert.ToDouble(Z);
     }
+
+    public static int CalculatePostFixMapTrace(string Str)
+    {
+        int CarpetPostFixValue = 0;
+        string sql = "";
+        
+            sql = "Select IsNull(Max(CN.Postfix),0)+1 from MAP_STENCILSTOCKNO CN Where 1=1 ";
+            if (Str != "")
+            {
+                sql = sql + " AND CN.PreFix like '" + Str + "%'";
+            }
+            else
+            {
+                sql = sql + " AND CN.PreFix like '%'";
+            }
+       
+
+
+        //if (Str == "")
+        //{
+
+        //    //CarpetPostFixValue = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, ));
+        //}
+        //else
+        //{
+        //    CarpetPostFixValue = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select IsNull(Max(Postfix),0)+1 from CarpetNumber Where PreFix like '" + Str + "%'"));
+        //}
+        CarpetPostFixValue = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql));
+
+        return CarpetPostFixValue;
+    }
 }

@@ -51,9 +51,7 @@
             avg = avg == "Infinity" ? 0 : avg;
 
             document.getElementById("CPH_Form_txtavgvalue" + pet_other + "_" + Srno + "").value = (getNum(parseFloat(avg)).toFixed(2));
-
         }
-        
 
     </script>
     <asp:UpdatePanel runat="server" ID="upd1">
@@ -480,19 +478,19 @@
                         <asp:TextBox ID="txtspecification_7" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(7,1);" />
+                        <asp:TextBox ID="txt7_1" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(7,1);" />
+                        <asp:TextBox ID="txt7_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(7,1);" />
+                        <asp:TextBox ID="txt7_3" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(7,1);" />
+                        <asp:TextBox ID="txt7_4" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(7,1);" />
+                        <asp:TextBox ID="txt7_5" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_7" CssClass="textb" Width="85%" runat="server" />
@@ -509,19 +507,19 @@
                         <asp:TextBox ID="txtspecification_8" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                        <asp:TextBox ID="txt8_1" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                        <asp:TextBox ID="txt8_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                        <asp:TextBox ID="txt8_3" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                        <asp:TextBox ID="txt8_4" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(8,1);" />
+                        <asp:TextBox ID="txt8_5" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_8" CssClass="textb" Width="85%" runat="server" />
@@ -538,19 +536,19 @@
                         <asp:TextBox ID="txtspecification_9" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                        <asp:TextBox ID="txt9_1" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                        <asp:TextBox ID="txt9_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                        <asp:TextBox ID="txt9_3" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                        <asp:TextBox ID="txt9_4" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(9,1);" />
+                        <asp:TextBox ID="txt9_5" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_9" CssClass="textb" Width="85%" runat="server" />
@@ -567,19 +565,19 @@
                         <asp:TextBox ID="txtspecification_10" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt10_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                        <asp:TextBox ID="txt10_1" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt10_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                        <asp:TextBox ID="txt10_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt10_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                        <asp:TextBox ID="txt10_3" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt10_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                        <asp:TextBox ID="txt10_4" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt10_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(10,1);" />
+                        <asp:TextBox ID="txt10_5" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_10" CssClass="textb" Width="85%" runat="server" />
@@ -596,19 +594,19 @@
                         <asp:TextBox ID="txtspecification_11" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt11_1" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                        <asp:TextBox ID="txt11_1" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt11_2" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                        <asp:TextBox ID="txt11_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt11_3" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                        <asp:TextBox ID="txt11_3" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt11_4" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                        <asp:TextBox ID="txt11_4" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt11_5" CssClass="textb" Width="85%" runat="server" onchange="return keypress(11,1);" />
+                        <asp:TextBox ID="txt11_5" CssClass="textb" Width="85%" runat="server" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_11" CssClass="textb" Width="85%" runat="server" />
