@@ -1,90 +1,87 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="frmAddItemProcess.aspx.cs"
-    Inherits="Masters_Process_frmAddItemProcess" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/PopUp.master" AutoEventWireup="true"
+    CodeFile="frmAddItemProcess.aspx.cs" Inherits="Masters_Carpet_frmAddItemProcess" %>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title>Add Jobs</title>
-    <link href="../../Styles/vijay.css" rel="stylesheet" type="text/css" />
-    <script src="../../Scripts/JScript.js" type="text/javascript"></script>
-    <script src="../../Scripts/jquery-1.4.1.js" type="text/javascript"></script>
-    <%--<script type="text/javascript" src="../../Scripts/Fixfocus.js"></script>--%>
-    <script type="text/javascript">
-        function CloseForm() {
-            self.close();
-        }
-    </script>
-</head>
-<body>
-    <form id="form1" runat="server">
-    <div style="width: 800px; background-color: #B5C7DE">
-        <div style="margin-top: 20px; margin-left: 10px">
-            <table style="width: 100%">
-                <tr>
-                    <td>
-                        <asp:Label ID="lblItemName" runat="server" Style="font-weight: bold; font-size: 20px;
-                            color: Red" Text="MK"></asp:Label>
-                    </td>
-                    <td id="TDquality" runat="server">
-                        <asp:Label ID="lblquality" runat="server" Text="QUALITY NAME" CssClass="labelbold"></asp:Label>
-                        <asp:DropDownList ID="DDQuality" CssClass="dropdown" Width="200px" AutoPostBack="true"
-                            runat="server" OnSelectedIndexChanged="DDQuality_SelectedIndexChanged">
-                        </asp:DropDownList>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
 
-                        <asp:RadioButtonList ID="rdbtnLst" runat="server" RepeatDirection="Horizontal" DataValueField="ItemId" DataTextField="ItemName"></asp:RadioButtonList>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentBody" runat="Server">
 
-                    </td>
-                    <td id="TDDesign" runat="server" visible="false">
-                        <asp:Label ID="Label1" runat="server" Text="DESIGN NAME" CssClass="labelbold"></asp:Label>
-                        <asp:DropDownList ID="DDDesign" CssClass="dropdown" Width="200px" AutoPostBack="true"
-                            runat="server" OnSelectedIndexChanged="DDDesign_SelectedIndexChanged">
-                        </asp:DropDownList>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div style="width: 800px; height: 250px; margin-top: 30px">
-            <div style="float: left; margin-left: 30px; width: 220px; overflow: scroll">
-                <span style="color: Black; font-weight: bold; font-size: 20px">Jobs</span>
-                <asp:ListBox ID="lstProcess" runat="server" Width="200px" Height="200px" SelectionMode="Single">
-                </asp:ListBox>
+        <div class="card">
+
+            <div class="card-header">
+                   <div class="card-title">
+                <asp:Label ID="lblItemName" runat="server" Text="MK"></asp:Label>
             </div>
-            <div style="float: left; margin-left: 30px; margin-top: 50px">
-                <asp:Button ID="btngo" runat="server" Text=">>" Width="50px" OnClick="btngo_Click" /><br />
-                <br />
-                <asp:Button ID="btnDelete" runat="server" Text="<<" Width="50px" OnClick="btnDelete_Click" />
-            </div>
-            <div style="float: right; margin-right: 190px; width: 220px; overflow: scroll">
-                <span style="color: Black; font-weight: bold; font-size: 20px">Items Job Sequence</span>
-                <asp:ListBox ID="lstSelectProcess" runat="server" Width="200px" Height="200px" SelectionMode="Multiple">
-                </asp:ListBox>
+                </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <asp:Label ID="lblMessage" CssClass="label label-danger" runat="server"></asp:Label>
+                    </div>
+                </div>
+                <div class="row">
+
+                    <div class="col-sm-6" id="TDquality" runat="server">
+                        <div class="mb-3">
+                            <label class="form-label">Quality:</label>
+                            <asp:DropDownList ID="DDQuality" AutoPostBack="true" OnSelectedIndexChanged="DDQuality_SelectedIndexChanged"
+                                CssClass="form-select required" runat="server">
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6" id="TDDesign" runat="server" visible="false">
+                        <div class="mb-3">
+                            <label class="form-label">Design:</label>
+                            <asp:DropDownList ID="DDDesign" AutoPostBack="true" OnSelectedIndexChanged="DDDesign_SelectedIndexChanged"
+                                CssClass="form-select required" runat="server">
+                            </asp:DropDownList>
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="mb-3">
+                            <label class="form-label">Process Type:</label>
+                            <asp:RadioButtonList ID="rdbtnLst" runat="server" RepeatDirection="Horizontal" DataValueField="ItemId"
+                                DataTextField="ItemName">
+                            </asp:RadioButtonList>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-5">
+                        <label class="form-label">Jobs:</label>
+                        <asp:ListBox ID="lstProcess" CssClass="form-select" runat="server" Height="200px"
+                            SelectionMode="Single"></asp:ListBox>
+                    </div>
+
+                    <div class="col-sm-2 text-center" style="margin-top: 8rem!important;">
+
+                        <div class="btn-group-vertical mbm">
+
+                            <asp:LinkButton ID="btngo" CssClass="btn btn-green" runat="server" OnClick="btngo_Click">  <i class="fa fa-angle-double-left"></i></asp:LinkButton>
+                            <asp:LinkButton ID="btnDelete" CssClass="btn btn-primary" runat="server"
+                                OnClick="btnDelete_Click">        <i class="fa fa-angle-double-right"></i></asp:LinkButton>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="col-sm-5">
+                        <label class="form-label">Selected Jobs:</label>
+                        <asp:ListBox ID="lstSelectProcess" CssClass="form-select" runat="server" Height="200px"
+                            SelectionMode="Multiple"></asp:ListBox>
+                    </div>
+                </div>
+                <div class="row mt-5">
+                    <div class="col-lg-12">
+                        <asp:LinkButton ID="btnClose" CssClass="btn btn-md btn-red" runat="server" OnClientClick="return CloseForm();">Close</asp:LinkButton>
+                        <asp:LinkButton ID="btnSave" CssClass="btn btn-md btn-black" runat="server" OnClick="btnsave_Click">Save Changes</asp:LinkButton>
+                    </div>
+                </div>
             </div>
         </div>
-        <div style="width: 607px;">
-            <table style="width: 607px;">
-                <tr>
-                    <td align="right">
-                        &nbsp;
-                        <asp:Button ID="btnsave" runat="server" CssClass="buttonnorm" Text="Save" Width="75px"
-                            OnClick="btnsave_Click" />
-                        &nbsp;<asp:Button ID="btnClose" runat="server" CssClass="buttonnorm" Text="Close"
-                            Width="75px" OnClientClick="return CloseForm();" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <asp:Label ID="lblMessage" runat="server" Text="" CssClass="labelnormalMM" ForeColor="Red"></asp:Label>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    </form>
-</body>
-</html>
+  
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="ContentScripts" runat="Server">
+</asp:Content>
+
