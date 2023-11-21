@@ -288,7 +288,9 @@ public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
                         }
                         if (VarReceiveDetailId > 0 && VarTypeFlag == 0)
                         {
-                            DGStock.Rows[i].Cells[5].Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select Process_Rec_Id From PROCESS_Receive_DETAIL_" + VarProcessId + " Where Process_Rec_Detail_Id=" + VarReceiveDetailId + "").ToString();
+                            //DGStock.Rows[i].Cells[5].Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select Process_Rec_Id From PROCESS_Receive_DETAIL_" + VarProcessId + " Where Process_Rec_Detail_Id=" + VarReceiveDetailId + "").ToString();
+
+                            DGStock.Rows[i].Cells[5].Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select Distinct PRM.CHALLANNO From Process_Receive_Master_" + VarProcessId + " PRM(NoLock) JOIN PROCESS_RECEIVE_DETAIL_" + VarProcessId + " PRD(NoLock) ON PRM.PROCESS_REC_ID=PRD.PROCESS_REC_ID Where PRD.Process_Rec_Detail_Id=" + VarReceiveDetailId + "").ToString();
                         }
                     }
                 }
@@ -352,8 +354,8 @@ public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
             GridViewRow grv = lnk.NamingContainer as GridViewRow;
             hngridrowindex.Value = grv.RowIndex.ToString();            
 
-            //int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[16].Text);
-            int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[3].Text);
+            int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[16].Text);
+            //int IssueOrderId = Convert.ToInt32(DGStock.Rows[grv.RowIndex].Cells[3].Text);
             int ProcessId = Convert.ToInt32(((Label)DGStock.Rows[grv.RowIndex].FindControl("lblProcessId")).Text);
             int Item_Finished_Id = Convert.ToInt32(((Label)DGStock.Rows[grv.RowIndex].FindControl("lblFinishedid")).Text);
             string VarStockNo = Convert.ToString(DGStock.Rows[grv.RowIndex].Cells[0].Text);
@@ -467,7 +469,8 @@ public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
     {
         
         int rowindex = Convert.ToInt16(hngridrowindex.Value);
-        int IssueOrderId = Convert.ToInt32(DGStock.Rows[rowindex].Cells[3].Text);        
+        //int IssueOrderId = Convert.ToInt32(DGStock.Rows[rowindex].Cells[3].Text);
+        int IssueOrderId = Convert.ToInt32(DGStock.Rows[rowindex].Cells[16].Text);
         int ProcessId = Convert.ToInt32(((Label)DGStock.Rows[rowindex].FindControl("lblProcessId")).Text);
         int Item_Finished_Id = Convert.ToInt32(((Label)DGStock.Rows[rowindex].FindControl("lblFinishedid")).Text);
         string ReceiveDate = DGStock.Rows[rowindex].Cells[6].Text;

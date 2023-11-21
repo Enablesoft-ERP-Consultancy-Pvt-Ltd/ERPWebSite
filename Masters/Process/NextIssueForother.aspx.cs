@@ -67,7 +67,21 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
             //    DDCategory.SelectedIndex = 1;
             //    DDCategory_SelectedIndexChanged(DDCategory, new EventArgs());
             //}
+
             DDUnit.SelectedIndex = 1;
+
+            if (Session["VarCompanyNo"].ToString() == "43")
+            {
+                if (Session["CurrentWorkingCompanyID"].ToString() == "2")
+                {
+                    ddUnits.SelectedIndex = 1;
+                }
+                else
+                {
+                    ddUnits.SelectedIndex = 0;
+                }
+            }          
+
 
             UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 4, false, "");
             DDBranchName.Enabled = false;
