@@ -32,7 +32,7 @@
               <xs:element name="MapStencilNo" type="xs:int" minOccurs="0" />
               <xs:element name="MapTraceType" type="xs:string" minOccurs="0" />
               <xs:element name="MapType" type="xs:string" minOccurs="0" />
-              <xs:element name="FolioChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="FolioChallanNo" type="xs:int" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

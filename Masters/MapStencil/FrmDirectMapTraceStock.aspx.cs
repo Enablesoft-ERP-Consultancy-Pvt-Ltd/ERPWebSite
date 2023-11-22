@@ -1135,7 +1135,7 @@ public partial class Masters_MapStencil_FrmDirectMapTraceStock : System.Web.UI.P
             //}
             if (ddlunit.SelectedIndex > 0)
             {
-                Where = Where + " And St.unitid=" + ddlunit.SelectedValue;
+                Where = Where + " And CN.unitid=" + ddlunit.SelectedValue;
                 //filterby = filterby + " Color : " + ddcolor.SelectedItem.Text;
             }
             //if (txtlotno.Text != "")
