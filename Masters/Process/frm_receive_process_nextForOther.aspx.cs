@@ -76,7 +76,21 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
             }
             if (ddUnits.Items.Count > 0)
             {
-                ddUnits.SelectedIndex = 1;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    if (Session["CurrentWorkingCompanyID"].ToString() == "2")
+                    {
+                        ddUnits.SelectedIndex = 2;
+                    }
+                    else
+                    {
+                        ddUnits.SelectedIndex = 1;
+                    }
+                }
+                else
+                {
+                    ddUnits.SelectedIndex = 1;
+                }                
 
             }
             TxtreceiveDate.Text = DateTime.Now.Date.ToString("dd-MMM-yyyy");

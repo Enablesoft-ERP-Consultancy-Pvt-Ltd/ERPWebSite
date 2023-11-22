@@ -36,7 +36,22 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
             UtilityModule.ConditionalComboFillWithDS(ref ddUnits, ds, 1, true, "---Plz Select---");
             if (ddUnits.Items.Count > 0)
             {
-                ddUnits.SelectedIndex = 1;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    if (Session["CurrentWorkingCompanyID"].ToString() == "2")
+                    {
+                        ddUnits.SelectedIndex = 2;
+                    }
+                    else
+                    {
+                        ddUnits.SelectedIndex = 1;
+                    }
+                }
+                else
+                {
+                    ddUnits.SelectedIndex = 1;
+                }  
+                
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDTOProcess, ds, 2, true, "---Plz Select---");
 

@@ -92,7 +92,22 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
 
             if (DDProdunit.Items.Count > 0)
             {
-                DDProdunit.SelectedIndex = 1;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    if (Session["CurrentWorkingCompanyID"].ToString() == "2")
+                    {                        
+                        DDProdunit.SelectedIndex = 5;
+                    }
+                    else
+                    {
+                        DDProdunit.SelectedIndex = 1;
+                    }
+                }
+                else
+                {
+                    DDProdunit.SelectedIndex = 1;
+                }  
+                
                 DDProdunit_SelectedIndexChanged(sender, new EventArgs());
             }
             txtissuedate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
