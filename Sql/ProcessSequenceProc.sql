@@ -1,3 +1,6 @@
+update Item_Process set ProcessType=1 Where ProcessType=0 OR ProcessType is Null;
+
+
 CREATE PROCEDURE [dbo].[ProcessSequenceProc]   
 @Flag int=null,  
 @ItemId INT=NUll,   
