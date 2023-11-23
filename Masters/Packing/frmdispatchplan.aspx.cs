@@ -65,6 +65,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
             dt.Columns.Add("Sizeid", typeof(int));
             dt.Columns.Add("PackingTypeid", typeof(int));
             dt.Columns.Add("Ratedate", typeof(string));
+            dt.Columns.Add("PalletNo", typeof(string));
 
             if (!Directory.Exists(Server.MapPath("~/Dispatchplan/")))
             {
@@ -143,6 +144,14 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
                         dr["Sizeid"] = dtitemdesc.Rows[0]["Sizeid"];
                         dr["Packingtypeid"] = dtitemdesc.Rows[0]["packingtypeid"];
                         dr["Ratedate"] = DateTime.FromOADate(Convert.ToDouble(wsp.Readcell("M" + rNo))).ToString("dd-MMM-yyyy");
+                        if (Session["varCompanyId"].ToString() == "14")
+                        {
+                            dr["PalletNo"] = wsp.Readcell("N" + rNo).Trim();
+                        }
+                        else
+                        {
+                            dr["PalletNo"] = "";
+                        }
                         dt.Rows.Add(dr);
                     }
                     if (dt.Rows.Count > 0)
@@ -189,6 +198,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
     protected void btnsave_Click(object sender, EventArgs e)
     {
         lblmsg.Text = "";
+        Label lblpallet = new Label();
         //*************Table Type
         DataTable dt = new DataTable();
         dt.Columns.Add("Itemid", typeof(int));
@@ -209,6 +219,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
         dt.Columns.Add("Dtstamp", typeof(string));
         dt.Columns.Add("Ratedate", typeof(string));
         dt.Columns.Add("ShipId", typeof(string));
+        dt.Columns.Add("PalletNo", typeof(string));
         //***********
         for (int i = 0; i < DG.Rows.Count; i++)
         {
@@ -232,6 +243,11 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
             Label lblpono = (Label)gvr.FindControl("lblpono");
             Label lbldtstamp = (Label)gvr.FindControl("lbldtstamp");
             Label lblratedate = (Label)gvr.FindControl("lblratedate");
+            if (Session["varCompanyId"].ToString() == "14")
+            {
+                 lblpallet = (Label)gvr.FindControl("lblpalletno");
+            }
+            
             //***************
             DataRow dr = dt.NewRow();
             dr["Itemid"] = lblitemid.Text;
@@ -252,6 +268,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
             dr["Dtstamp"] = lbldtstamp.Text;
             dr["Ratedate"] = lblratedate.Text;
             dr["ShipId"] = "";
+            dr["PalletNo"] = lblpallet.Text;
             dt.Rows.Add(dr);
         }
         if (dt.Rows.Count > 0)
@@ -306,7 +323,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
     {
         string str = @"select vf.QualityName+' '+vf.designName as Quality,vf.ColorName as Colour,vf.SizeMtr as Size,pt.PackingType AS Packtype,
                         DPD.articleno,dpd.PlanPcs,dpd.Packpcs,dpd.WIPpcs,dpd.ECISNo,dpd.Dest,Replace(CONVERT(nvarchar(11),dpd.Podate,106),' ','-') as Podate,dpd.Pono,dpd.Dtstamp,
-                        DPM.ID as Planid,DPD.DetailId as Plandetailid,dpd.Itemid,dpd.Qualityid,dpd.Designid,dpd.ColorId,dpd.Shapeid,dpd.Sizeid,dpd.Packtypeid as packingtypeid,Replace(convert(nvarchar(11),DPD.RateDate,106),' ','-') as Ratedate
+                        DPM.ID as Planid,DPD.DetailId as Plandetailid,dpd.Itemid,dpd.Qualityid,dpd.Designid,dpd.ColorId,dpd.Shapeid,dpd.Sizeid,dpd.Packtypeid as packingtypeid,Replace(convert(nvarchar(11),DPD.RateDate,106),' ','-') as Ratedate,isnull(DPD.palletnos,'') as PalletNo
                         From DispatchPlanmaster DPM inner join DispatchPlanDetail DPD on DPM.ID=DPD.Masterid
                         inner join V_FinishedItemDetail vf on DPD.Itemid=vf.item_id
                         and DPD.Qualityid=vf.QualityId and dpd.Designid=vf.designId and dpd.ColorId=vf.ColorId
@@ -364,6 +381,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
     protected void btnallocate_Click(object sender, EventArgs e)
     {
         lblmsg.Text = "";
+        Label lblpalletno = new Label();
         //*************Table Type
         DataTable dt = new DataTable();
         dt.Columns.Add("Itemid", typeof(int));
@@ -384,6 +402,8 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
         dt.Columns.Add("Dtstamp", typeof(string));
         dt.Columns.Add("PlanId", typeof(int));
         dt.Columns.Add("PlanDetailId", typeof(int));
+        dt.Columns.Add("PalletNo", typeof(string));
+        
         //***********
         for (int i = 0; i < DG.Rows.Count; i++)
         {
@@ -408,6 +428,10 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
             Label lbldtstamp = (Label)gvr.FindControl("lbldtstamp");
             Label lblid = (Label)gvr.FindControl("lblid");
             Label lbldetailid = (Label)gvr.FindControl("lbldetailid");
+            if (Session["varCompanyId"].ToString() == "14")
+            {
+                 lblpalletno = (Label)gvr.FindControl("lblpalletno");
+            }
             //***************
             DataRow dr = dt.NewRow();
             dr["Itemid"] = lblitemid.Text;
@@ -428,6 +452,8 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
             dr["Dtstamp"] = lbldtstamp.Text;
             dr["Planid"] = lblid.Text;
             dr["Plandetailid"] = lbldetailid.Text;
+            dr["PalletNo"] = lblpalletno.Text;
+
             //*****************
             dt.Rows.Add(dr);
         }
@@ -557,6 +583,17 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
         catch
         {
             return false;
+        }
+    }
+    protected void DG_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            if (Convert.ToInt16(Session["varcompanyid"]) ==14)
+            {
+                DG.Columns[15].Visible = true;
+                
+            }
         }
     }
 }

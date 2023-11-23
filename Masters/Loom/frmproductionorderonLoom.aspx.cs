@@ -92,7 +92,22 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
 
             if (DDProdunit.Items.Count > 0)
             {
-                DDProdunit.SelectedIndex = 1;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    if (Session["CurrentWorkingCompanyID"].ToString() == "2")
+                    {                        
+                        DDProdunit.SelectedIndex = 5;
+                    }
+                    else
+                    {
+                        DDProdunit.SelectedIndex = 1;
+                    }
+                }
+                else
+                {
+                    DDProdunit.SelectedIndex = 1;
+                }  
+                
                 DDProdunit_SelectedIndexChanged(sender, new EventArgs());
             }
             txtissuedate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
@@ -235,6 +250,18 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     TDLastFolioNo.Visible = false;
                     ChkForSlipPrint.Visible = false;
                     TDChkForStockNoAttach.Visible = true;
+                    break;
+                case "43":
+                    TDTanaCottonLotNo.Visible = false;
+                    BtnUpdateTanaLotNo.Visible = false;
+                    TDTanaLotNo.Visible = false;
+                    txtWeaverIdNo.Visible = true;
+                    txtWeaverIdNoscan.Visible = false;
+                    BtnPreviewConsumption.Visible = false;
+                    ChkForWithoutRate.Visible = false;
+                    TDLastFolioNo.Visible = false;
+                    ChkForSlipPrint.Visible = false;
+                    TDChkForWithoutCottonMaterial.Visible = true;
                     break;
                 case "45":
                     TDTanaCottonLotNo.Visible = false;
@@ -1200,6 +1227,15 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 else
                 {
                     cmd.Parameters.AddWithValue("@MaterialRate", 0);
+                }
+
+                if (TDChkForWithoutCottonMaterial.Visible == true)
+                {
+                    cmd.Parameters.AddWithValue("@WithoutCottonMaterialFlag", ChkForWithoutCottonMaterial.Checked == true ? "1" : "0");
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@WithoutCottonMaterialFlag", 0);
                 }
 
                 cmd.ExecuteNonQuery();

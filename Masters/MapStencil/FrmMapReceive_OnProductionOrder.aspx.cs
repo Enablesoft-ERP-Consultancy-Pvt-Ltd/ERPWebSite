@@ -265,6 +265,26 @@ public partial class Masters_MapStencil_FrmMapReceive_OnProductionOrder : System
         {
             str = str + " and MIM.RecID=" + hnRecid.Value + "";
         }
+        str = str + " Union";
+        str = str + @" select MIM.RecId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
+                        CASE WHEN MSSN.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
+                        MID.RecDetailId,MID.IssueOrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.MapStencilType,MIM.ChallanNo,
+                        Replace(CONVERT(nvarchar(11),MIM.ReceiveDate,106),' ','-') as ReceiveDate,
+                        1 as Qty,MSSN.MSStockNo,MSSN.MapStencilNo,MID.IssueId,MID.IssueDetailId,MID.IssueOrderId
+                        from Map_ReceiveOnProductionOrderMaster MIM INNER JOIN Map_ReceiveOnProductionOrderDetail MID ON MIM.RecId=MID.RecId 
+                        INNER JOIN V_FinishedItemDetail VF ON MID.ItemFinishedId=VF.Item_Finished_Id                       
+                        INNER JOIN Map_StencilStockNo_Detail MSSND ON MIM.RecId=MSSND.ReceiveID and MID.RecDetailId=MSSND.ReceiveDetailId
+                        INNER JOIN Map_StencilStockNo MSSN ON MSSND.MapStencilNo=MSSN.MapStencilNo and MSSN.Type=0
+                        where MIM.CompanyId=" + DDcompany.SelectedValue + " ";
+        if (txtChallanNo.Text != "")
+        {
+            str = str + " and MIM.ChallanNo='" + txtChallanNo.Text + "'";
+        }
+        else
+        {
+            str = str + " and MIM.RecID=" + hnRecid.Value + "";
+        }
+
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         gvdetail.DataSource = ds.Tables[0];

@@ -337,7 +337,6 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
             btnsave.Visible = false;
             BtnUpdateRemark.Visible = false;
             gvdetail.Columns[8].Visible = false;
-
         }
     }
     private void EditCheckedChanged()
@@ -1153,8 +1152,10 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
             else
             {
                 strsql = @"Select PrtId,CATEGORY_NAME,ITEM_NAME,QualityName+ Space(2)+DesignName+ Space(2)+ColorName+ Space(2)+ShapeName+ Space(2)+SizeFt+ Space(2)+ShadeColorName DESCRIPTION,
-                             IssueQuantity Qty,LotNo,GodownName,Pt.BinNo,PT.TagNo From ProcessRawTran PT,V_FinishedItemDetail VF,GodownMaster GM Where PT.Finishedid=VF.Item_Finished_id And 
-                             PT.GodownId=GM.GodownId And PT.PrmID=" + ViewState["Prmid"] + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                            IssueQuantity Qty,LotNo,GodownName,Pt.BinNo,PT.TagNo 
+                            From ProcessRawTran PT,V_FinishedItemDetail VF,GodownMaster GM 
+                            Where PT.Finishedid=VF.Item_Finished_id And PT.GodownId=GM.GodownId And PT.PrmID=" + ViewState["Prmid"] + @" And 
+                            VF.MasterCompanyId=" + Session["varCompanyId"];
                 strsql =strsql + " Order By PrtId";
             }
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -2450,10 +2451,28 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME FROM 
-            dbo.ITEM_PARAMETER_MASTER INNER JOIN PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId INNER JOIN
-            dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
-            Where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " and item_master.category_id=" + ddCatagory.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Item--");
+                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select WithoutCottonMaterial 
+                    From PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @"(Nolock) 
+                    Where IsNull(WithoutCottonMaterial, 0) = 1 And IssueOrderID = " + ddOrderNo.SelectedValue);
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT VF.ITEM_ID, VF.ITEM_NAME 
+                    FROM PROCESS_CONSUMPTION_DETAIL PCD(Nolock) 
+                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = PCD.IFinishedId And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + @" And 
+                        VF.ITEM_NAME not Like '%Cloth%'
+                    Where PCD.ISSUEORDERID = " + ddOrderNo.SelectedValue + " and PCD.Processid = " + ddProcessName.SelectedValue + @" And 
+                    PCD.MasterCompanyId = " + Session["varCompanyId"] + "", true, "--Select Item--");
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT VF.ITEM_ID, VF.ITEM_NAME 
+                    FROM PROCESS_CONSUMPTION_DETAIL PCD(Nolock) 
+                    JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = PCD.IFinishedId And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + @"
+                    Where PCD.ISSUEORDERID = " + ddOrderNo.SelectedValue + " and PCD.Processid = " + ddProcessName.SelectedValue + @" And 
+                    PCD.MasterCompanyId = " + Session["varCompanyId"] + "", true, "--Select Item--");
+                }
+                
             }
 
             if (dditemname.Items.Count > 0)

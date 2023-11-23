@@ -652,6 +652,18 @@ public partial class Masters_MapStencil_FrmMapIssue_OnProductionOrder : System.W
         //{
         str = str + " and MIM.IssueID=" + hnissueid.Value + "";
         //}
+        str = str + " Union";
+        str = str + @" select MIM.IssueId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
+                        CASE WHEN MSSN.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
+                        MID.IssueDetailId,MIM.IssueOrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.ProductionUnitId,MIM.LoomNoId,MIM.MapStencilType,MIM.ChallanNo,
+                        Replace(CONVERT(nvarchar(11),MIM.IssueDate,106),' ','-') as IssueDate,
+                        1 as Qty,MSSN.MSStockNo,MSSN.MapStencilNo
+                        from Map_IssueOnProductionOrderMaster MIM(NoLock) INNER JOIN Map_IssueOnProductionOrderDetail MID(NoLock) ON MIM.IssueId=MID.IssueId 
+                        INNER JOIN V_FinishedItemDetail VF(NoLock) ON MID.ItemFinishedId=VF.Item_Finished_Id                        
+                        INNER JOIN Map_StencilStockNo_Detail MSSND(NoLock) ON MIM.IssueId=MSSND.IssueID and MID.IssueDetailId=MSSND.IssueDetailId
+                        INNER JOIN Map_StencilStockNo MSSN(NoLock) ON MSSND.MapStencilNo=MSSN.MapStencilNo and MSSN.Type=0
+                        where MIM.CompanyId=" + DDcompany.SelectedValue + "";
+        str = str + " and MIM.IssueID=" + hnissueid.Value + "";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         gvdetail.DataSource = ds.Tables[0];
