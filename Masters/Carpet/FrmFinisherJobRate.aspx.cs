@@ -693,28 +693,40 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         {
             if (DDJobType.SelectedIndex > 0 && DDQualityType.SelectedIndex < 0)
             {
-                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + @" 
-                        Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + ",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename , RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
+                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc RD1 Where RD1.Effectivedate <='" + txtEffectiveDate.Text + "' And RD1.JobTypeId=" + DDJobType.SelectedValue + @")";
+
+               // where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + @" 
+                        //Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + ",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename , RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
             }
             else if (DDJobType.SelectedIndex > 0 && DDQualityType.SelectedIndex > 0 && DDQuality.SelectedIndex < 0 && DDSize.SelectedIndex < 0)
             {
-                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + @"
-                        Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + ",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
+                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc RD1 Where RD1.Effectivedate <='" + txtEffectiveDate.Text + "' And RD1.JobTypeId=" + DDJobType.SelectedValue + " and RD1.Item_Id=" + DDQualityType.SelectedValue + @")";
+
+                //where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + @"
+                        //Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + ",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
             }
             else if (DDJobType.SelectedIndex > 0 && DDQualityType.SelectedIndex > 0 && DDQuality.SelectedIndex > 0 && DDSize.SelectedIndex < 0)
             {
-                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + " and RD.QualityId=" + DDQuality.SelectedValue + @"
-                        Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
+                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc RD1 Where RD1.Effectivedate <='" + txtEffectiveDate.Text + "' And RD1.JobTypeId=" + DDJobType.SelectedValue + " and RD1.Item_Id=" + DDQualityType.SelectedValue + " and RD1.QualityId=" + DDQuality.SelectedValue + @")";
+
+                //where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + " and RD.QualityId=" + DDQuality.SelectedValue + @"
+                        //Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
             }
             else if (DDJobType.SelectedIndex > 0 && DDQualityType.SelectedIndex > 0 && DDQuality.SelectedIndex > 0 && DDSize.SelectedIndex > 0)
             {
-                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + " and RD.QualityId=" + DDQuality.SelectedValue + " and RD.SizeId=" + DDSize.SelectedValue + @"
-                        Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
+                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc RD1 Where RD1.Effectivedate <='" + txtEffectiveDate.Text + "' And RD1.JobTypeId=" + DDJobType.SelectedValue + " and RD1.Item_Id=" + DDQualityType.SelectedValue + " and RD1.QualityId=" + DDQuality.SelectedValue + " and RD1.SizeId=" + DDSize.SelectedValue + @")";
+
+                //where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + " and RD.QualityId=" + DDQuality.SelectedValue + " and RD.SizeId=" + DDSize.SelectedValue + @"
+                        //Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
             }
             else if (DDJobType.SelectedIndex > 0 && DDQualityType.SelectedIndex > 0 && DDQuality.SelectedIndex < 0 && DDSize.SelectedIndex > 0)
             {
-                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + " and RD.SizeId=" + DDSize.SelectedValue + @"
-                        Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
+                where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc RD1 Where RD1.Effectivedate <='" + txtEffectiveDate.Text + "' And RD1.JobTypeId=" + DDJobType.SelectedValue + " and RD1.Item_Id=" + DDQualityType.SelectedValue + " and RD1.SizeId=" + DDSize.SelectedValue + @")";
+
+                //where = where + "And Effectivedate in (Select max(Effectivedate) From RateDesc Where Effectivedate <='" + txtEffectiveDate.Text + "' And JobTypeId=" + DDJobType.SelectedValue + " and RD.Item_Id=" + DDQualityType.SelectedValue + " and RD.SizeId=" + DDSize.SelectedValue + @"
+                        //Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,RD.QualityId,RD.JobTypeId,CO.CalcId,RateId,IM.ITEM_ID,RD.DesignId,RD.ColorId,RD.SizeId,Rate2,EffectiveDate,RD.Shapeid,S.Shapename, RD.Ratelocation,RD.Unitid,U.UnitName, RD.Remark, EI.EmpCode, EI.EmpName,RD.Bonus )";
+
+
             }
         }
         where = where + @" Group by IM.ITEM_NAME,QualityName,DesignName,ColorName," + sizeColumn + @",ShapeName,PNM.PROCESS_NAME,CO.CalcName,Rate,
