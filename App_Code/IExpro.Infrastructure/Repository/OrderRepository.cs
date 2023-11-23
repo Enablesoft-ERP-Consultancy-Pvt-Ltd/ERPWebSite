@@ -143,12 +143,12 @@ Where x.RowNo=1 and (x.OrderDate >= DATEADD(month, -6, GetDate())) AND  x.Compan
                        DispatchDate = x.FirstOrDefault().DispatchDate,
                        PackingDate = x.FirstOrDefault().PackingDate,
                        DelayDays = x.FirstOrDefault().DelayDays,
-                       ProcessList = x.GroupBy(y => new { y.ProcessId, y.ProcessName, y.ProcessType }).Select(z => new ProcessItem
+                       ProcessList = x.GroupBy(y => new { y.ProcessId,  y.ProcessType }).Select(z => new ProcessItem
                        {
                            SeqNo = z.Min(zx => zx.SeqNo),
                            ProcessId = z.Key.ProcessId,
                            ProcessType = z.Key.ProcessType,
-                           ProcessName = z.Key.ProcessName
+                           ProcessName = z.FirstOrDefault().ProcessName
                        }).OrderBy(m => m.ProcessType).OrderBy(n => n.SeqNo).ToList(),
 
                    });
@@ -645,21 +645,21 @@ Where  x.OrderId= @OrderId  and x.RowNo=1 ";
                 {
 
                     var result = conn.Query<IssueMaterialModel>(sqlQuery, new { @OrderId = OrderId });
-                        //Select(x => new IssueMaterialModel
-                        //{
-                        //    IssueId = x.IssueId,
-                        //    OrderId = x.OrderId,
-                        //    FinishedId = x.FinishedId,
-                        //    VendorId = x.VendorId,
-                        //    VendorName = x.VendorName,
-                        //    MaterialName = x.MaterialName,
-                        //    ReqDate = x.ReqDate,
-                        //    IssDate = x.IssDate,
-                        //    RecDate = x.RecDate,
-                        //    ChallanNo = x.ChallanNo,
-                        //    IssueQty = x.IssueQty,
-                        //    ReceiveQty = x.ReceiveQty,
-                        //});
+                    //Select(x => new IssueMaterialModel
+                    //{
+                    //    IssueId = x.IssueId,
+                    //    OrderId = x.OrderId,
+                    //    FinishedId = x.FinishedId,
+                    //    VendorId = x.VendorId,
+                    //    VendorName = x.VendorName,
+                    //    MaterialName = x.MaterialName,
+                    //    ReqDate = x.ReqDate,
+                    //    IssDate = x.IssDate,
+                    //    RecDate = x.RecDate,
+                    //    ChallanNo = x.ChallanNo,
+                    //    IssueQty = x.IssueQty,
+                    //    ReceiveQty = x.ReceiveQty,
+                    //});
 
 
                     return (result);

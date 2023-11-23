@@ -139,7 +139,10 @@ $(function () {
                             btnHtml += "Choose Process<span class='caret'></span></button><ul role='menu' class='dropdown-menu dropdown-left-posotion' style='max-height:400px;overflow:auto;'>";
                             btnHtml += "<li><a class='btnPurchase mrm' prName='PURCHASE' exthref=" + data.OrderId + "' extType='0' title='PURCHASE' extSeq='0'><i class='fa fa-shopping-cart mrs text-green'></i><strong>Purchase</strong></a></li>";
 
-                            //console.log(data);
+                            console.log("Process");
+                            console.log(data.CustomerOrderNo);
+                            
+                            console.log(data.ProcessList);
                             $.each(data.ProcessList, function (index, item) {
 
                                 item.SeqNo = index + 1;
