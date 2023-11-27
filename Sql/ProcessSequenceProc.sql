@@ -1,3 +1,7 @@
+ALTER TABLE [dbo].[Item_Process] 
+ADD  [ProcessType] [tinyint] NULL
+
+
 update Item_Process set ProcessType=1 Where ProcessType=0 OR ProcessType is Null;
 
 
