@@ -1474,6 +1474,7 @@ public partial class Masters_ReportForms_frmHr_SalaryReport : System.Web.UI.Page
             {
                 cmd.Parameters.AddWithValue("@USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR", 0);
             }
+            cmd.Parameters.AddWithValue("@BranchID", DDBranchName.SelectedValue);
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             DataSet ds = new DataSet();
@@ -1676,6 +1677,7 @@ public partial class Masters_ReportForms_frmHr_SalaryReport : System.Web.UI.Page
                     sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["NoOFDays"]);
                     sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["BonusMinRate"]);
                     sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["Bonus"]);
+                    sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["EmpStatus"]);
 
                     sht.Range("A" + Hrow).Style.Alignment.SetWrapText();
                     sht.Range("B" + Hrow).Style.Alignment.SetWrapText();
@@ -1684,6 +1686,7 @@ public partial class Masters_ReportForms_frmHr_SalaryReport : System.Web.UI.Page
                     sht.Range("F" + Hrow).Style.Alignment.SetWrapText();
                     sht.Range("G" + Hrow).Style.Alignment.SetWrapText();
                     sht.Range("O" + Hrow).Style.Alignment.SetWrapText();
+                    sht.Range("P" + Hrow).Style.Alignment.SetWrapText();
                     row = row + 1;
                 }
 

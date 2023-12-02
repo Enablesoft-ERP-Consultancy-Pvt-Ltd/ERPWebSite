@@ -355,10 +355,10 @@
                                                     AutoPostBack="true" OnTextChanged="txtWeaverIdNo_TextChanged"></asp:TextBox>
                                                 <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
                                                 <asp:AutoCompleteExtender ID="txtWeaverIdNo_AutoCompleteExtender" runat="server"
-                                                    BehaviorID="SrchAutoComplete" CompletionInterval="20" Enabled="True" ServiceMethod="GetEmployeeForJob"
+                                                    BehaviorID="SrchAutoComplete" CompletionInterval="20" Enabled="True" ServiceMethod="GetEmployeeForJobNew"
                                                     EnableCaching="true" CompletionSetCount="20" OnClientItemSelected="EmpSelected"
                                                     ServicePath="~/Autocomplete.asmx" TargetControlID="txtWeaverIdNo" UseContextKey="True"
-                                                    ContextKey="0#0#0" MinimumPrefixLength="2">
+                                                    ContextKey="0" MinimumPrefixLength="1">
                                                 </asp:AutoCompleteExtender>
                                             </td>
                                             <td>

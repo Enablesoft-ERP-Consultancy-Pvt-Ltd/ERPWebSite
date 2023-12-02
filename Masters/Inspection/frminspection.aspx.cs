@@ -835,8 +835,14 @@ public partial class Masters_Inspection_frminspection : System.Web.UI.Page
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-
-                Session["rptFileName"] = "~\\Reports\\rptrawyarninspection.rpt";
+                if (Convert.ToInt32(Session["varcompanyid"]) == 45)
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptrawyarninspectionMWS.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\rptrawyarninspection.rpt";
+                }
                 Session["Getdataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\rptrawyarninspection.xsd";
                 StringBuilder stb = new StringBuilder();

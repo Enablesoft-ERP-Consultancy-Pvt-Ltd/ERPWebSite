@@ -146,21 +146,21 @@ public partial class Masters_Inspection_FrmYarnInspectionNew : System.Web.UI.Pag
             txtother4_5.Text = ds.Tables[0].Rows[0]["Fiveother_4"].ToString();
             txtavgvalueother_4.Text = ds.Tables[0].Rows[0]["AvgvalueOther_4"].ToString();
             //5
-            txtspecification_5.Text = ds.Tables[0].Rows[0]["Specification_5"].ToString();
-            txt5_1.Text = ds.Tables[0].Rows[0]["One_5"].ToString();
-            txt5_2.Text = ds.Tables[0].Rows[0]["Two_5"].ToString();
-            txt5_3.Text = ds.Tables[0].Rows[0]["Three_5"].ToString();
-            txt5_4.Text = ds.Tables[0].Rows[0]["Four_5"].ToString();
-            txt5_5.Text = ds.Tables[0].Rows[0]["Five_5"].ToString();
-            txtavgvalue_5.Text = ds.Tables[0].Rows[0]["Avgvalue_5"].ToString();
-            //5
-            txtspecification_6.Text = ds.Tables[0].Rows[0]["Specification_6"].ToString();
-            txt6_1.Text = ds.Tables[0].Rows[0]["One_6"].ToString();
-            txt6_2.Text = ds.Tables[0].Rows[0]["Two_6"].ToString();
-            txt6_3.Text = ds.Tables[0].Rows[0]["Three_6"].ToString();
-            txt6_4.Text = ds.Tables[0].Rows[0]["Four_6"].ToString();
-            txt6_5.Text = ds.Tables[0].Rows[0]["Five_6"].ToString();
-            txtavgvalue_6.Text = ds.Tables[0].Rows[0]["Avgvalue_6"].ToString();
+            //txtspecification_5.Text = ds.Tables[0].Rows[0]["Specification_5"].ToString();
+            //txt5_1.Text = ds.Tables[0].Rows[0]["One_5"].ToString();
+            //txt5_2.Text = ds.Tables[0].Rows[0]["Two_5"].ToString();
+            //txt5_3.Text = ds.Tables[0].Rows[0]["Three_5"].ToString();
+            //txt5_4.Text = ds.Tables[0].Rows[0]["Four_5"].ToString();
+            //txt5_5.Text = ds.Tables[0].Rows[0]["Five_5"].ToString();
+            //txtavgvalue_5.Text = ds.Tables[0].Rows[0]["Avgvalue_5"].ToString();
+            ////5
+            //txtspecification_6.Text = ds.Tables[0].Rows[0]["Specification_6"].ToString();
+            //txt6_1.Text = ds.Tables[0].Rows[0]["One_6"].ToString();
+            //txt6_2.Text = ds.Tables[0].Rows[0]["Two_6"].ToString();
+            //txt6_3.Text = ds.Tables[0].Rows[0]["Three_6"].ToString();
+            //txt6_4.Text = ds.Tables[0].Rows[0]["Four_6"].ToString();
+            //txt6_5.Text = ds.Tables[0].Rows[0]["Five_6"].ToString();
+            //txtavgvalue_6.Text = ds.Tables[0].Rows[0]["Avgvalue_6"].ToString();
             //7
             txtspecification_7.Text = ds.Tables[0].Rows[0]["Specification_7"].ToString();
             txt7_1.Text = ds.Tables[0].Rows[0]["One_7"].ToString();
@@ -327,21 +327,21 @@ public partial class Masters_Inspection_FrmYarnInspectionNew : System.Web.UI.Pag
         txtother4_5.Text = "";
         txtavgvalueother_4.Text = "";
         //5
-        txtspecification_5.Text = "";
-        txt5_1.Text = "";
-        txt5_2.Text = "";
-        txt5_3.Text = "";
-        txt5_4.Text = "";
-        txt5_5.Text = "";
-        txtavgvalue_5.Text = "";
-        //5
-        txtspecification_6.Text = "";
-        txt6_1.Text = "";
-        txt6_2.Text = "";
-        txt6_3.Text = "";
-        txt6_4.Text = "";
-        txt6_5.Text = "";
-        txtavgvalue_6.Text = "";
+        //txtspecification_5.Text = "";
+        //txt5_1.Text = "";
+        //txt5_2.Text = "";
+        //txt5_3.Text = "";
+        //txt5_4.Text = "";
+        //txt5_5.Text = "";
+        //txtavgvalue_5.Text = "";
+        ////5
+        //txtspecification_6.Text = "";
+        //txt6_1.Text = "";
+        //txt6_2.Text = "";
+        //txt6_3.Text = "";
+        //txt6_4.Text = "";
+        //txt6_5.Text = "";
+        //txtavgvalue_6.Text = "";
         //7
         txtspecification_7.Text = "";
         txt7_1.Text = "";
@@ -436,27 +436,48 @@ public partial class Masters_Inspection_FrmYarnInspectionNew : System.Web.UI.Pag
 
     private void insertinto_RAWYARNINSPECTIONDETAIL(SqlTransaction Tran)
     {
+        //string str = @"Insert into RAWYARNINSPECTIONDETAIL (DOCID, SUPPLIERNAME, CHALLANNO_DATE, YARNTYPE, COUNT, LOTNO, 
+        //             TOTALBALE, SAMPLESIZE, NOOFHANK, CHECKPOINT_1, SPECIFICATION_1, ONE_1, TWO_1, THREE_1, FOUR_1, FIVE_1, 
+        //             AVGVALUE_1, CHECKPOINT_2, SPECIFICATION_2, ONE_2, TWO_2, THREE_2, FOUR_2, FIVE_2, AVGVALUE_2, CHECKPOINT_3, 
+        //             SPECIFICATION_3, ONE_3, TWO_3, THREE_3, FOUR_3, FIVE_3, AVGVALUE_3, CHECKPOINTPET_4, SPECIFICATIONPET_4, 
+        //             ONEPET_4, TWOPET_4, THREEPET_4, FOURPET_4, FIVEPET_4, AVGVALUEPET_4, CHECKPOINTOTHER_4, SPECIFICATIONOTHER_4, 
+        //             ONEOTHER_4, TWOOTHER_4, THREEOTHER_4, FOUROTHER_4, FIVEOTHER_4, AVGVALUEOTHER_4, CHECKPOINT_5, SPECIFICATION_5, ONE_5, 
+        //             TWO_5, THREE_5, FOUR_5, FIVE_5, AVGVALUE_5, CHECKPOINT_6, SPECIFICATION_6, ONE_6, TWO_6, THREE_6, FOUR_6, FIVE_6, 
+        //             AVGVALUE_6, CHECKPOINT_7, SPECIFICATION_7, ONE_7, TWO_7, THREE_7, FOUR_7, FIVE_7, AVGVALUE_7, VenderLotNo,
+        //             CHECKPOINT_8, SPECIFICATION_8, ONE_8, TWO_8, THREE_8, FOUR_8, FIVE_8, AVGVALUE_8,
+        //             CHECKPOINT_9, SPECIFICATION_9, ONE_9, TWO_9, THREE_9, FOUR_9, FIVE_9, AVGVALUE_9,InwardsNo, Cone )
+        //             values(" + hndocid.Value + ",'" + txtsuppliername.Text.Replace("'", "''") + "','" + txtchallannodate.Text.Replace("'", "''") + "','" + txtyarntype.Text.Replace("'", "''") + "','" + txtcount.Text.Replace("'", "''") + "','" + txtlotno.Text.Replace("'", "''") + @"',
+        //             " + (txttotalbale.Text == "" ? "0" : txttotalbale.Text) + ", " + (txtsamplesize.Text == "" ? "0" : txtsamplesize.Text) + "," + (txtnoofhank.Text == "" ? "0" : txtnoofhank.Text) + ",'" + lblcheckpoint_1.Text.Replace("'", "''") + "','" + txtspecification_1.Text.Replace("'", "''") + "','" + txt1_1.Text.Replace("'", "''") + "','" + txt1_2.Text.Replace("'", "''") + "','" + txt1_3.Text.Replace("'", "''") + "','" + txt1_4.Text.Replace("'", "''") + "','" + txt1_5.Text.Replace("'", "''") + @"',
+        //             '" + txtavgvalue_1.Text.Replace("'", "''") + "','" + lblcheckpoint_2.Text.Replace("'", "''") + "','" + txtspecification_2.Text.Replace("'", "''") + "','" + txt2_1.Text.Replace("'", "''") + "','" + txt2_2.Text.Replace("'", "''") + "','" + txt2_3.Text.Replace("'", "''") + "','" + txt2_4.Text.Replace("'", "''") + "','" + txt2_5.Text.Replace("'", "''") + @"',
+        //              '" + txtavgvalue_2.Text.Replace("'", "''") + "','" + lblcheckpoint_3.Text.Replace("'", "''") + "','" + txtspecification_3.Text.Replace("'", "''") + "','" + txt3_1.Text.Replace("'", "''") + "','" + txt3_2.Text.Replace("'", "''") + "','" + txt3_3.Text.Replace("'", "''") + "','" + txt3_4.Text.Replace("'", "''") + "','" + txt3_5.Text.Replace("'", "''") + @"',
+        //              '" + txtavgvalue_3.Text.Replace("'", "''") + "','" + lblcheckpointpet_4.Text.Replace("'", "''") + "','" + txtspecificationpet_4.Text.Replace("'", "''") + "','" + txtpet4_1.Text.Replace("'", "''") + "','" + txtpet4_2.Text.Replace("'", "''") + "','" + txtpet4_3.Text.Replace("'", "''") + "','" + txtpet4_4.Text.Replace("'", "''") + "','" + txtpet4_5.Text.Replace("'", "''") + @"',
+        //            '" + txtavgvaluepet_4.Text.Replace("'", "''") + "','" + lblcheckpointother_4.Text.Replace("'", "''") + "','" + txtspecificationother_4.Text.Replace("'", "''") + "','" + txtother4_1.Text.Replace("'", "''") + "','" + txtother4_2.Text.Replace("'", "''") + "','" + txtother4_3.Text.Replace("'", "''") + "','" + txtother4_4.Text.Replace("'", "''") + "','" + txtother4_5.Text.Replace("'", "''") + @"',
+        //            '" + txtavgvalueother_4.Text.Replace("'", "''") + "','" + lblcheckpoint_5.Text.Replace("'", "''") + "','" + txtspecification_5.Text.Replace("'", "''") + "','" + txt5_1.Text.Replace("'", "''") + "','" + txt5_2.Text.Replace("'", "''") + "','" + txt5_3.Text.Replace("'", "''") + "','" + txt5_4.Text.Replace("'", "''") + "','" + txt5_5.Text.Replace("'", "''") + @"',
+        //            '" + txtavgvalue_5.Text.Replace("'", "''") + "','" + lblcheckpoint_6.Text.Replace("'", "''") + "','" + txtspecification_6.Text.Replace("'", "''") + "','" + txt6_1.Text.Replace("'", "''") + "','" + txt6_2.Text.Replace("'", "''") + "','" + txt6_3.Text.Replace("'", "''") + "','" + txt6_4.Text.Replace("'", "''") + "','" + txt6_5.Text.Replace("'", "''") + @"',
+        //            '" + txtavgvalue_6.Text.Replace("'", "''") + "','" + lblcheckpoint_7.Text.Replace("'", "''") + "','" + txtspecification_7.Text.Replace("'", "''") + "','" + txt7_1.Text.Replace("'", "''") + "','" + txt7_2.Text.Replace("'", "''") + "','" + txt7_3.Text.Replace("'", "''") + "','" + txt7_4.Text.Replace("'", "''") + "','" + txt7_5.Text.Replace("'", "''") + @"',
+        //            '" + txtavgvalue_7.Text.Replace("'", "''") + "','" + TxtVenderLotNo.Text.Replace("'", "''") + "','" + lblcheckpoint_8.Text.Replace("'", "''") + "','" + txtspecification_8.Text.Replace("'", "''") + "','" + txt8_1.Text.Replace("'", "''") + "','" + txt8_2.Text.Replace("'", "''") + "','" + txt8_3.Text.Replace("'", "''") + "','" + txt8_4.Text.Replace("'", "''") + "','" + txt8_5.Text.Replace("'", "''") + @"',
+        //            '" + txtavgvalue_8.Text.Replace("'", "''") + "','" + lblcheckpoint_9.Text.Replace("'", "''") + "','" + txtspecification_9.Text.Replace("'", "''") + "','" + txt9_1.Text.Replace("'", "''") + "','" + txt9_2.Text.Replace("'", "''") + "','" + txt9_3.Text.Replace("'", "''") + "','" + txt9_4.Text.Replace("'", "''") + "','" + txt9_5.Text.Replace("'", "''") + @"',
+        //            '" + txtavgvalue_9.Text.Replace("'", "''") + "','" + txtInwardsNo.Text.Replace("'", "''") + "','" + txtCone.Text.Replace("'", "''") + "')";
+
+
+
         string str = @"Insert into RAWYARNINSPECTIONDETAIL (DOCID, SUPPLIERNAME, CHALLANNO_DATE, YARNTYPE, COUNT, LOTNO, 
                      TOTALBALE, SAMPLESIZE, NOOFHANK, CHECKPOINT_1, SPECIFICATION_1, ONE_1, TWO_1, THREE_1, FOUR_1, FIVE_1, 
                      AVGVALUE_1, CHECKPOINT_2, SPECIFICATION_2, ONE_2, TWO_2, THREE_2, FOUR_2, FIVE_2, AVGVALUE_2, CHECKPOINT_3, 
                      SPECIFICATION_3, ONE_3, TWO_3, THREE_3, FOUR_3, FIVE_3, AVGVALUE_3, CHECKPOINTPET_4, SPECIFICATIONPET_4, 
                      ONEPET_4, TWOPET_4, THREEPET_4, FOURPET_4, FIVEPET_4, AVGVALUEPET_4, CHECKPOINTOTHER_4, SPECIFICATIONOTHER_4, 
-                     ONEOTHER_4, TWOOTHER_4, THREEOTHER_4, FOUROTHER_4, FIVEOTHER_4, AVGVALUEOTHER_4, CHECKPOINT_5, SPECIFICATION_5, ONE_5, 
-                     TWO_5, THREE_5, FOUR_5, FIVE_5, AVGVALUE_5, CHECKPOINT_6, SPECIFICATION_6, ONE_6, TWO_6, THREE_6, FOUR_6, FIVE_6, 
-                     AVGVALUE_6, CHECKPOINT_7, SPECIFICATION_7, ONE_7, TWO_7, THREE_7, FOUR_7, FIVE_7, AVGVALUE_7, VenderLotNo,
+                     ONEOTHER_4, TWOOTHER_4, THREEOTHER_4, FOUROTHER_4, FIVEOTHER_4, AVGVALUEOTHER_4,CHECKPOINT_7, SPECIFICATION_7, ONE_7, TWO_7, THREE_7, FOUR_7, FIVE_7, AVGVALUE_7, VenderLotNo,
                      CHECKPOINT_8, SPECIFICATION_8, ONE_8, TWO_8, THREE_8, FOUR_8, FIVE_8, AVGVALUE_8,
                      CHECKPOINT_9, SPECIFICATION_9, ONE_9, TWO_9, THREE_9, FOUR_9, FIVE_9, AVGVALUE_9,InwardsNo, Cone )
                      values(" + hndocid.Value + ",'" + txtsuppliername.Text.Replace("'", "''") + "','" + txtchallannodate.Text.Replace("'", "''") + "','" + txtyarntype.Text.Replace("'", "''") + "','" + txtcount.Text.Replace("'", "''") + "','" + txtlotno.Text.Replace("'", "''") + @"',
-                     " + (txttotalbale.Text == "" ? "0" : txttotalbale.Text) + ", " + (txtsamplesize.Text == "" ? "0" : txtsamplesize.Text) + "," + (txtnoofhank.Text == "" ? "0" : txtnoofhank.Text) + ",'" + lblcheckpoint_1.Text.Replace("'", "''") + "','" + txtspecification_1.Text.Replace("'", "''") + "','" + txt1_1.Text.Replace("'", "''") + "','" + txt1_2.Text.Replace("'", "''") + "','" + txt1_3.Text.Replace("'", "''") + "','" + txt1_4.Text.Replace("'", "''") + "','" + txt1_5.Text.Replace("'", "''") + @"',
-                     '" + txtavgvalue_1.Text.Replace("'", "''") + "','" + lblcheckpoint_2.Text.Replace("'", "''") + "','" + txtspecification_2.Text.Replace("'", "''") + "','" + txt2_1.Text.Replace("'", "''") + "','" + txt2_2.Text.Replace("'", "''") + "','" + txt2_3.Text.Replace("'", "''") + "','" + txt2_4.Text.Replace("'", "''") + "','" + txt2_5.Text.Replace("'", "''") + @"',
-                      '" + txtavgvalue_2.Text.Replace("'", "''") + "','" + lblcheckpoint_3.Text.Replace("'", "''") + "','" + txtspecification_3.Text.Replace("'", "''") + "','" + txt3_1.Text.Replace("'", "''") + "','" + txt3_2.Text.Replace("'", "''") + "','" + txt3_3.Text.Replace("'", "''") + "','" + txt3_4.Text.Replace("'", "''") + "','" + txt3_5.Text.Replace("'", "''") + @"',
-                      '" + txtavgvalue_3.Text.Replace("'", "''") + "','" + lblcheckpointpet_4.Text.Replace("'", "''") + "','" + txtspecificationpet_4.Text.Replace("'", "''") + "','" + txtpet4_1.Text.Replace("'", "''") + "','" + txtpet4_2.Text.Replace("'", "''") + "','" + txtpet4_3.Text.Replace("'", "''") + "','" + txtpet4_4.Text.Replace("'", "''") + "','" + txtpet4_5.Text.Replace("'", "''") + @"',
-                    '" + txtavgvaluepet_4.Text.Replace("'", "''") + "','" + lblcheckpointother_4.Text.Replace("'", "''") + "','" + txtspecificationother_4.Text.Replace("'", "''") + "','" + txtother4_1.Text.Replace("'", "''") + "','" + txtother4_2.Text.Replace("'", "''") + "','" + txtother4_3.Text.Replace("'", "''") + "','" + txtother4_4.Text.Replace("'", "''") + "','" + txtother4_5.Text.Replace("'", "''") + @"',
-                    '" + txtavgvalueother_4.Text.Replace("'", "''") + "','" + lblcheckpoint_5.Text.Replace("'", "''") + "','" + txtspecification_5.Text.Replace("'", "''") + "','" + txt5_1.Text.Replace("'", "''") + "','" + txt5_2.Text.Replace("'", "''") + "','" + txt5_3.Text.Replace("'", "''") + "','" + txt5_4.Text.Replace("'", "''") + "','" + txt5_5.Text.Replace("'", "''") + @"',
-                    '" + txtavgvalue_5.Text.Replace("'", "''") + "','" + lblcheckpoint_6.Text.Replace("'", "''") + "','" + txtspecification_6.Text.Replace("'", "''") + "','" + txt6_1.Text.Replace("'", "''") + "','" + txt6_2.Text.Replace("'", "''") + "','" + txt6_3.Text.Replace("'", "''") + "','" + txt6_4.Text.Replace("'", "''") + "','" + txt6_5.Text.Replace("'", "''") + @"',
-                    '" + txtavgvalue_6.Text.Replace("'", "''") + "','" + lblcheckpoint_7.Text.Replace("'", "''") + "','" + txtspecification_7.Text.Replace("'", "''") + "','" + txt7_1.Text.Replace("'", "''") + "','" + txt7_2.Text.Replace("'", "''") + "','" + txt7_3.Text.Replace("'", "''") + "','" + txt7_4.Text.Replace("'", "''") + "','" + txt7_5.Text.Replace("'", "''") + @"',
-                    '" + txtavgvalue_7.Text.Replace("'", "''") + "','" + TxtVenderLotNo.Text.Replace("'", "''") + "','" + lblcheckpoint_8.Text.Replace("'", "''") + "','" + txtspecification_8.Text.Replace("'", "''") + "','" + txt8_1.Text.Replace("'", "''") + "','" + txt8_2.Text.Replace("'", "''") + "','" + txt8_3.Text.Replace("'", "''") + "','" + txt8_4.Text.Replace("'", "''") + "','" + txt8_5.Text.Replace("'", "''") + @"',
-                    '" + txtavgvalue_8.Text.Replace("'", "''") + "','" + lblcheckpoint_9.Text.Replace("'", "''") + "','" + txtspecification_9.Text.Replace("'", "''") + "','" + txt9_1.Text.Replace("'", "''") + "','" + txt9_2.Text.Replace("'", "''") + "','" + txt9_3.Text.Replace("'", "''") + "','" + txt9_4.Text.Replace("'", "''") + "','" + txt9_5.Text.Replace("'", "''") + @"',
+                     " + (txttotalbale.Text == "" ? "0" : txttotalbale.Text) + ", " + (txtsamplesize.Text == "" ? "0" : txtsamplesize.Text) + "," + (txtnoofhank.Text == "" ? "0" : txtnoofhank.Text) + ",'" + lblcheckpoint_1.Text.Replace("'", "''") + "','" + txtspecification_1.Text.Replace("'", "''") + "','" + txt1_1.Text.Replace("'", "''") + "','" + txt1_2.Text.Replace("'", "''") + "','" + txt1_3.Text + "','" + txt1_4.Text + "','" + txt1_5.Text + @"',
+                     '" + txtavgvalue_1.Text.Replace("'", "''") + "','" + lblcheckpoint_2.Text.Replace("'", "''") + "','" + txtspecification_2.Text.Replace("'", "''") + "','" + txt2_1.Text.Replace("'", "''") + "','" + txt2_2.Text.Replace("'", "''") + "','" + txt2_3.Text + "','" + txt2_4.Text + "','" + txt2_5.Text + @"',
+                      '" + txtavgvalue_2.Text.Replace("'", "''") + "','" + lblcheckpoint_3.Text.Replace("'", "''") + "','" + txtspecification_3.Text.Replace("'", "''") + "','" + txt3_1.Text.Replace("'", "''") + "','" + txt3_2.Text.Replace("'", "''") + "','" + txt3_3.Text + "','" + txt3_4.Text + "','" + txt3_5.Text + @"',
+                      '" + txtavgvalue_3.Text.Replace("'", "''") + "','" + lblcheckpointpet_4.Text.Replace("'", "''") + "','" + txtspecificationpet_4.Text.Replace("'", "''") + "','" + txtpet4_1.Text.Replace("'", "''") + "','" + txtpet4_2.Text.Replace("'", "''") + "','" + txtpet4_3.Text + "','" + txtpet4_4.Text + "','" + txtpet4_5.Text + @"',
+                    '" + txtavgvaluepet_4.Text.Replace("'", "''") + "','" + lblcheckpointother_4.Text.Replace("'", "''") + "','" + txtspecificationother_4.Text.Replace("'", "''") + "','" + txtother4_1.Text.Replace("'", "''") + "','" + txtother4_2.Text.Replace("'", "''") + "','" + txtother4_3.Text + "','" + txtother4_4.Text+ "','" + txtother4_5.Text+ @"',
+                    '" + txtavgvalueother_4.Text.Replace("'", "''") + "','" + lblcheckpoint_7.Text.Replace("'", "''") + "','" + txtspecification_7.Text.Replace("'", "''") + "','" + txt7_1.Text.Replace("'", "''") + "','" + txt7_2.Text.Replace("'", "''") + "','" + txt7_3.Text + "','" + txt7_4.Text + "','" + txt7_5.Text + @"',
+                    '" + txtavgvalue_7.Text.Replace("'", "''") + "','" + TxtVenderLotNo.Text.Replace("'", "''") + "','" + lblcheckpoint_8.Text.Replace("'", "''") + "','" + txtspecification_8.Text.Replace("'", "''") + "','" + txt8_1.Text.Replace("'", "''") + "','" + txt8_2.Text.Replace("'", "''") + "','" + txt8_3.Text + "','" + txt8_4.Text+ "','" + txt8_5.Text + @"',
+                    '" + txtavgvalue_8.Text.Replace("'", "''") + "','" + lblcheckpoint_9.Text.Replace("'", "''") + "','" + txtspecification_9.Text.Replace("'", "''") + "','" + txt9_1.Text.Replace("'", "''") + "','" + txt9_2.Text.Replace("'", "''") + "','" + txt9_3.Text + "','" + txt9_4.Text + "','" + txt9_5.Text + @"',
                     '" + txtavgvalue_9.Text.Replace("'", "''") + "','" + txtInwardsNo.Text.Replace("'", "''") + "','" + txtCone.Text.Replace("'", "''") + "')";
 
         SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);

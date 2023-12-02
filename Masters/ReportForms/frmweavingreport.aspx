@@ -699,6 +699,22 @@
                 ChkselectDate.Checked = true;
                
             }
+            if (RDWeavingRecSummaryWithTDS.Checked == true)
+            {
+                Trunitname.Visible = false;
+                trProductionStatus.Visible = false;
+                trFolioType.Visible = false;
+                TRCustomerCode.Visible = false;
+                TROrderNo.Visible = false;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Trproductiontype.Visible = true;
+                }
+                else
+                {
+                    Trproductiontype.Visible = false;
+                }
+            }
         }        
     </script>
     <asp:UpdatePanel ID="UPD1" runat="server">
@@ -886,6 +902,13 @@
                                  <tr>
                                     <td id="TDDouraReport" runat="server" visible="false">
                                         <asp:RadioButton ID="RDDouraReport" Text="Doura Report"
+                                            runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
+                                            OnCheckedChanged="RadioButton_CheckedChanged" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td id="TDWeavingRecSummaryWithTDS" runat="server" visible="false">
+                                        <asp:RadioButton ID="RDWeavingRecSummaryWithTDS" Text="Weaving Rec Summary With TDS"
                                             runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
                                             OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>

@@ -187,6 +187,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDWeaverAdvancePaymentFolioWise.Visible = false;
                 TDQualityWiseProductionHissabSummary.Visible = true;
                 TDWeaverRawMaterialIssueSummary.Visible = true;
+                TDWeavingRecSummaryWithTDS.Visible = true;
             }
             else
             {
@@ -585,6 +586,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         else if (RDDouraReport.Checked == true)
         {
             WeaverDouraReport();
+            return;
+        }
+        else if (RDWeavingRecSummaryWithTDS.Checked == true)
+        {
+            WeavingReceiveSummaryWithTDSReport_CI();
             return;
         }
     }
@@ -2336,6 +2342,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             Trshadecolor.Visible = false;
         }
         if (RDQualityWiseProductionHissabSummary.Checked == true)
+        {
+            Trdesign.Visible = false;
+            Trcolor.Visible = false;
+            Trsize.Visible = false;
+            Trshadecolor.Visible = false;
+        }
+        if (RDWeavingRecSummaryWithTDS.Checked == true)
         {
             Trdesign.Visible = false;
             Trcolor.Visible = false;
@@ -8094,38 +8107,143 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
             }
-
-            //SqlParameter[] param = new SqlParameter[8];
-            //param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
-            //param[1] = new SqlParameter("@EMPID", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
-            //param[2] = new SqlParameter("@WHERE", str);
-            //param[3] = new SqlParameter("@fromdate", txtfromDate.Text);
-            //param[4] = new SqlParameter("@Todate", txttodate.Text);
-            //param[5] = new SqlParameter("@Dateflag", ChkselectDate.Checked == true ? "1" : "0");
-            //param[6] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
-            //param[7] = new SqlParameter("@UserId", Session["VarUserId"]);
-
-            //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVERDOURAREPORT", param);
-
-            //if (ds.Tables[0].Rows.Count > 0)
-            //{
-            //    Session["rptFileName"] = "~\\Reports\\Rptweaverpendingbarcode.rpt";
-            //    Session["GetDataset"] = ds;
-            //    Session["dsFileName"] = "~\\ReportSchema\\Rptweaverpendingbarcode.xsd";
-
-            //    StringBuilder stb = new StringBuilder();
-            //    stb.Append("<script>");
-            //    stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-            //    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
-            //}
-            //else
-            //{
-            //    ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
-            //}
+          
         }
         catch (Exception ex)
         {
             lblmsg.Text = ex.Message;
         }
+    }
+
+    protected void WeavingReceiveSummaryWithTDSReport_CI()
+    {
+        lblmsg.Text = "";
+        try
+        {
+            string str = "", FilterBy = "";
+            //if (DDProductionstatus.SelectedIndex > 0)
+            //{
+            //    str = str + " and PIM.Status='" + DDProductionstatus.SelectedItem.Text + "'";
+            //    FilterBy = FilterBy + ", Production Status -" + DDProductionstatus.SelectedItem.Text;
+            //    if (DDProductionstatus.SelectedIndex == 1)
+            //    {
+            //        str = str + " and PID.Pqty>0";
+            //    }
+            //}
+            if (DDFolioNo.SelectedIndex > 0)
+            {
+                str = str + " and PH.ProcessOrderNo=" + DDFolioNo.SelectedValue;
+                FilterBy = FilterBy + ", Folio No. -" + DDFolioNo.SelectedItem.Text;
+            }
+            if (DDQtype.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Item_id=" + DDQtype.SelectedValue;
+                FilterBy = FilterBy + ", Item Name -" + DDQtype.SelectedItem.Text;
+            }
+            if (DDQuality.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+                FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
+            }
+            //if (DDDesign.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+            //    FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            //}
+            //if (DDColor.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+            //    FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            //}
+            //if (DDSize.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+            //    FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            //}
+            if (ChkselectDate.Checked == true)
+            {
+                str = str + " and PH.Date>='" + txtfromDate.Text + "' and PH.Date<='" + txttodate.Text + "'";
+                FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
+            }
+            ////if (DDUnitname.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and PIM.Units=" + DDUnitname.SelectedValue;
+            ////    FilterBy = FilterBy + ", Unitname -" + DDUnitname.SelectedItem.Text;
+            ////}
+
+            ////if (DDFoliotype.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and PIM.Purchasefolio=" + DDFoliotype.SelectedValue;
+            ////    FilterBy = FilterBy + ", Folio Type -" + DDFoliotype.SelectedItem.Text;
+            ////}
+            ////if (DDCustCode.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and OM.Customerid=" + DDCustCode.SelectedValue;
+            ////    FilterBy = FilterBy + ", Customer code -" + DDCustCode.SelectedItem.Text;
+            ////}
+            ////if (DDOrderNo.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and OM.orderid=" + DDOrderNo.SelectedValue;
+            ////    FilterBy = FilterBy + ", Order No. -" + DDOrderNo.SelectedItem.Text;
+            ////}
+            //SqlParameter[] param = new SqlParameter[4];
+            //param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
+            //param[1] = new SqlParameter("@Processid", 1);
+            //param[2] = new SqlParameter("@where", str);
+            //param[3] = new SqlParameter("@EMpid", (DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0"));
+
+            //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVINGFOLIODETAILSWITHBAZAARDETAILS", param);
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_WeavingHissabSummaryWithTDSReport_CI", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 500;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Processid", 1);
+            cmd.Parameters.AddWithValue("@Where", str);
+            cmd.Parameters.AddWithValue("@Empid", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@ChkselectDate", ChkselectDate.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+            cmd.Parameters.AddWithValue("@ProductionType", DDproductiontype.SelectedValue);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptProductionHissabSummaryWithTDS_CI.rpt";
+
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptProductionHissabSummaryWithTDS_CI.xsd";
+
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+
     }
 }

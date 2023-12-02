@@ -237,18 +237,18 @@
                         <asp:Label ID="Label10" Text="Specification" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:Label ID="Label11" Text="1" runat="server" CssClass="labelbold" />
+                        <asp:Label ID="Label11" Text="Finding" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center; width: 8%">
-                        <asp:Label ID="Label12" Text="2" runat="server" CssClass="labelbold" />
+                        <asp:Label ID="Label12" Text="Finding" runat="server" CssClass="labelbold" />
                     </td>
-                    <td style="text-align: center; width: 8%">
+                    <td style="text-align: center; width: 8%;display:none;">
                         <asp:Label ID="Label13" Text="3" runat="server" CssClass="labelbold" />
                     </td>
-                    <td style="text-align: center; width: 8%">
+                    <td style="text-align: center; width: 8%;display:none;">
                         <asp:Label ID="Label14" Text="4" runat="server" CssClass="labelbold" />
                     </td>
-                    <td style="text-align: center; width: 8%">
+                    <td style="text-align: center; width: 8%;display:none;">
                         <asp:Label ID="Label15" Text="5" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
@@ -263,7 +263,7 @@
                         <asp:Label ID="lblcheckpoint_1" Text="PRESENCE OF REF.SAMPLE" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
-                        <asp:TextBox ID="txtspecification_1" CssClass="textb" Width="85%" runat="server" />
+                        <asp:TextBox ID="txtspecification_1" CssClass="textb" Width="85%" runat="server" ReadOnly="true" Text="As per Approved Sample" />
                     </td>
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt1_1" CssClass="textb" Width="85%" runat="server"/>
@@ -271,14 +271,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt1_2" CssClass="textb" Width="85%" runat="server"/>
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt1_3" CssClass="textb" Width="85%" runat="server"/>
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt1_3" CssClass="textb" Width="85%" runat="server" Text=""/>
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt1_4" CssClass="textb" Width="85%" runat="server"/>
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt1_4" CssClass="textb" Width="85%" runat="server" Text=""/>
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt1_5" CssClass="textb" Width="85%" runat="server"/>
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt1_5" CssClass="textb" Width="85%" runat="server" Text=""/>
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_1" CssClass="textb" Width="85%" runat="server" />
@@ -292,7 +292,7 @@
                         <asp:Label ID="lblcheckpoint_2" Text="MOISTURE % AGE" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
-                        <asp:TextBox ID="txtspecification_2" CssClass="textb" Width="85%" runat="server" />
+                        <asp:TextBox ID="txtspecification_2" CssClass="textb" Width="85%" runat="server" ReadOnly="true" Text="As per Spec. Sheet" />
                     </td>
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt2_1" CssClass="textb" Width="85%" runat="server" />
@@ -300,14 +300,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt2_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt2_3" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt2_3" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt2_4" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt2_4" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt2_5" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt2_5" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_2" CssClass="textb" Width="85%" runat="server" />
@@ -318,10 +318,10 @@
                         <asp:Label ID="Label21" Text="3" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
-                        <asp:Label ID="lblcheckpoint_3" Text="MIXING WITH OTHER YARN" runat="server" CssClass="labelbold" />
+                        <asp:Label ID="lblcheckpoint_3" Text="MIXING WITH OTHER YARN" runat="server" CssClass="labelbold"  />
                     </td>
                     <td style="text-align: center">
-                        <asp:TextBox ID="txtspecification_3" CssClass="textb" Width="85%" runat="server" />
+                        <asp:TextBox ID="txtspecification_3" CssClass="textb" Width="85%" runat="server" ReadOnly="true" Text="NO" />
                     </td>
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt3_1" CssClass="textb" Width="85%" runat="server" />
@@ -329,14 +329,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt3_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt3_3" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt3_3" CssClass="textb" Width="85%" runat="server"  Text=""/>
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt3_4" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt3_4" CssClass="textb" Width="85%" runat="server" Text=""/>
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt3_5" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt3_5" CssClass="textb" Width="85%" runat="server" Text=""/>
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_3" CssClass="textb" Width="85%" runat="server" />
@@ -351,7 +351,7 @@
                             CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
-                        <asp:TextBox ID="txtspecificationpet_4" CssClass="textb" Width="85%" runat="server" />
+                        <asp:TextBox ID="txtspecificationpet_4" CssClass="textb" Width="85%" runat="server" ReadOnly="true" Text="NO" />
                     </td>
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txtpet4_1" CssClass="textb" Width="85%" runat="server" />
@@ -359,14 +359,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txtpet4_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txtpet4_3" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txtpet4_3" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txtpet4_4" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;"> 
+                        <asp:TextBox ID="txtpet4_4" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txtpet4_5" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txtpet4_5" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvaluepet_4" CssClass="textb" Width="85%" runat="server" />
@@ -472,7 +472,7 @@
                             runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
-                        <asp:TextBox ID="txtspecificationother_4" CssClass="textb" Width="85%" runat="server" />
+                        <asp:TextBox ID="txtspecificationother_4" CssClass="textb" Width="85%" runat="server" ReadOnly="true" Text="As Per Spec. Sheet/Ref. Sample" />
                     </td>
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txtother4_1" CssClass="textb" Width="85%" runat="server" />
@@ -480,14 +480,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txtother4_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txtother4_3" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txtother4_3" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txtother4_4" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txtother4_4" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txtother4_5" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txtother4_5" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalueother_4" CssClass="textb" Width="85%" runat="server" />
@@ -584,7 +584,7 @@
                         </table>
                     </td>--%>
                 </tr>
-                <tr id="Tr5" runat="server">
+               <%-- <tr id="Tr5" runat="server">
                     <td style="width: 10%; padding: 1% 1% 1% 1%; text-align: center">
                         <asp:Label ID="Label27" Text="6" runat="server" CssClass="labelbold" />
                     </td>
@@ -613,8 +613,8 @@
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_5" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                </tr>
-                <tr id="Tr6" runat="server">
+                </tr>--%>
+                <%--<tr id="Tr6" runat="server">
                     <td style="width: 10%; padding: 1% 1% 1% 1%; text-align: center">
                         <asp:Label ID="Label29" Text="7" runat="server" CssClass="labelbold" />
                     </td>
@@ -643,7 +643,7 @@
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_6" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                </tr>
+                </tr>--%>
                 <tr id="Tr7" runat="server">
                     <td style="width: 10%; padding: 1% 1% 1% 1%; text-align: center">
                         <asp:Label ID="Label31" Text="8" runat="server" CssClass="labelbold" />
@@ -652,7 +652,7 @@
                         <asp:Label ID="lblcheckpoint_7" Text="PRESENCE OF STAIN. IF ANY" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
-                        <asp:TextBox ID="txtspecification_7" CssClass="textb" Width="85%" runat="server" />
+                        <asp:TextBox ID="txtspecification_7" CssClass="textb" Width="85%" runat="server" ReadOnly="true" Text="NO" />
                     </td>
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt7_1" CssClass="textb" Width="85%" runat="server" />
@@ -660,14 +660,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt7_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_3" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt7_3" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_4" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt7_4" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt7_5" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt7_5" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_7" CssClass="textb" Width="85%" runat="server" />
@@ -678,11 +678,11 @@
                         <asp:Label ID="Label24" Text="9" runat="server" CssClass="labelbold" />
                     </td>
                     <td style="text-align: center; width: 15%">
-                        <asp:Label ID="lblcheckpoint_8" Text="TRANSPORT CONDITION AND DAMAGE" runat="server"
+                        <asp:Label ID="lblcheckpoint_8" Text="TRANSPORT CONDITION" runat="server"
                             CssClass="labelbold" />
                     </td>
                     <td style="text-align: center">
-                        <asp:TextBox ID="txtspecification_8" CssClass="textb" Width="85%" runat="server" />
+                        <asp:TextBox ID="txtspecification_8" CssClass="textb" Width="85%" runat="server" ReadOnly="true" Text="OK" />
                     </td>
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt8_1" CssClass="textb" Width="85%" runat="server" />
@@ -690,14 +690,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt8_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_3" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt8_3" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_4" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt8_4" CssClass="textb" Width="85%" runat="server" Text=""/>
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt8_5" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt8_5" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_8" CssClass="textb" Width="85%" runat="server" />
@@ -720,14 +720,14 @@
                     <td style="text-align: center; width: 8%">
                         <asp:TextBox ID="txt9_2" CssClass="textb" Width="85%" runat="server" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_3" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt9_3" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_4" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt9_4" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
-                    <td style="text-align: center; width: 8%">
-                        <asp:TextBox ID="txt9_5" CssClass="textb" Width="85%" runat="server" />
+                    <td style="text-align: center; width: 8%;display:none;">
+                        <asp:TextBox ID="txt9_5" CssClass="textb" Width="85%" runat="server" Text="" />
                     </td>
                     <td style="text-align: center">
                         <asp:TextBox ID="txtavgvalue_9" CssClass="textb" Width="85%" runat="server" />
