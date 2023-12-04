@@ -6,6 +6,7 @@
         <xs:element name="Table">
           <xs:complexType>
             <xs:sequence>
+              <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
               <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
               <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />

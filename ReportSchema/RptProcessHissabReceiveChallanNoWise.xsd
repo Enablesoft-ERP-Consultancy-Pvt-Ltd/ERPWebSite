@@ -75,6 +75,7 @@
               <xs:element name="AvgLagat" type="xs:double" minOccurs="0" />
               <xs:element name="LOSSCONSUMEDQTY" type="xs:double" minOccurs="0" />
               <xs:element name="FinalShowConsumedQty" type="xs:double" minOccurs="0" />
+              <xs:element name="FinalShowAvgLagat" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
