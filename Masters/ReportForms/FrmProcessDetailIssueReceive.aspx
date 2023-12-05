@@ -196,6 +196,10 @@
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingBalance_CheckedChanged" />
                                 <br />
                                 &nbsp;&nbsp;
+                                  <asp:RadioButton ID="RDFinishingRecSummaryWithTDS" runat="server" Text="Finishing Rec Summary With TDS" Visible="false"
+                                    GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingRecSummaryWithTDS_CheckedChanged" />
+                                <br />
+                                &nbsp;&nbsp;
                             </div>
                         </td>
                         <td valign="top">
