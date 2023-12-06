@@ -2431,21 +2431,21 @@ public partial class Masters_RawMaterial_FrmMultipleChallanRawMaterialIssue : Sy
     private void CarpetInternationalFormatReport()
     {
         SqlParameter[] _array = new SqlParameter[3];
-        _array[0] = new SqlParameter("@prmId", SqlDbType.Int);
+        _array[0] = new SqlParameter("@ChallanNo", SqlDbType.VarChar,50);
         _array[1] = new SqlParameter("@ProcessId", SqlDbType.Int);
         _array[2] = new SqlParameter("@Trantype", SqlDbType.Int);
 
-        _array[0].Value = ViewState["Prmid"];
+        _array[0].Value = txtchalanno.Text;
         _array[1].Value = ddProcessName.SelectedValue;
         _array[2].Value = 0; //For Issue
 
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_WeaverRawMaterialIssuedDetail_CarpetInternational", _array);
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_WeaverRawMaterialIssuedMultipleFolioDetail_CarpetInternational", _array);
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            Session["rptFileName"] = "~\\Reports\\RptRawMaterialIssueDetailCarpetInternational.rpt";
+            Session["rptFileName"] = "~\\Reports\\RptRawMaterialIssueOnMultipleFolioDetailCI.rpt";
             Session["GetDataset"] = ds;
-            Session["dsFileName"] = "~\\ReportSchema\\RptRawMaterialIssueDetailCarpetInternational.xsd";
+            Session["dsFileName"] = "~\\ReportSchema\\RptRawMaterialIssueOnMultipleFolioDetailCI.xsd";
 
             StringBuilder stb = new StringBuilder();
             stb.Append("<script>");
@@ -2459,6 +2459,8 @@ public partial class Masters_RawMaterial_FrmMultipleChallanRawMaterialIssue : Sy
     }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
+        CarpetInternationalFormatReport();
+
 //        if (Session["varCompanyId"].ToString() == "9" && ChkWayChallanFormat.Checked == true)
 //        {
 //            WayChallanFormatReport();
