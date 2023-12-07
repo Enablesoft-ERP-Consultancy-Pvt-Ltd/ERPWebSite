@@ -8224,7 +8224,14 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                Session["rptFileName"] = "~\\Reports\\RptProductionHissabSummaryWithTDS_CI.rpt";
+                if (ChkForWithoutTDS.Checked == true)
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptProductionHissabSummaryWithoutTDS_CI.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptProductionHissabSummaryWithTDS_CI.rpt";
+                }
 
                 Session["GetDataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\RptProductionHissabSummaryWithTDS_CI.xsd";

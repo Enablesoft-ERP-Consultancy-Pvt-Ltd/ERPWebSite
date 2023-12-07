@@ -43,6 +43,7 @@
                 TDWeaverOrderStatus.Visible = true;
             }
 
+            TRForWithoutTDS.Visible = false;
             TROpenIssRecConDetail.Visible = false;
             TDChkForWeavingPendingQtyWithAreaSize.Visible = false;
             TDChkForWeavingPendingQtyWithExcelReport.Visible = false;
@@ -709,10 +710,12 @@
                 if (Session["VarCompanyNo"].ToString() == "43")
                 {
                     Trproductiontype.Visible = true;
+                    TRForWithoutTDS.Visible = true;
                 }
                 else
                 {
                     Trproductiontype.Visible = false;
+                    TRForWithoutTDS.Visible = false;
                 }
             }
         }        
@@ -1252,6 +1255,11 @@
                                 <tr id="TROpenIssRecConDetail" runat="server" visible="false">
                                     <td colspan="3">
                                         <asp:CheckBox ID="ChkOpenIssRecConDetail" runat="server" CssClass="checkboxbold" Text="Opening Iss Rec Consmp Detail" />
+                                    </td>
+                                </tr>
+                                 <tr id="TRForWithoutTDS" runat="server" visible="false">
+                                    <td colspan="3">
+                                        <asp:CheckBox ID="ChkForWithoutTDS" runat="server" CssClass="checkboxbold" Text="For Without TDS" />
                                     </td>
                                 </tr>
                                 <tr>
