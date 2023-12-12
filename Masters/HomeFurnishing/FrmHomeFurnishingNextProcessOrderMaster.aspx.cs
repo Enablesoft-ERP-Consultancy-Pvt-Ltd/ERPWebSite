@@ -72,17 +72,16 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
     }
     protected void DDFromProcessName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = @"Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
+        string str = @"Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME,a.CurrentProStatus 
                     From PROCESS_NAME_MASTER PNM(Nolock) 
                     Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varCompanyId"] + " And PNM.process_Name_ID <> " + DDFromProcessName.SelectedValue + @" 
                     Order By PNM.PROCESS_NAME 
-                    Select Distinct b.ProcessRecId, b.ChallanNo,a.CurrentProStatus 
+                    Select Distinct b.ProcessRecId, b.ChallanNo 
                     From HomeFurnishingStockNo a(Nolock) 
                     JOIN HomeFurnishing_Stock_Detail HSD(Nolock) ON HSD.StockNo = a.StockNo And HSD.ToProcessID = a.CurrentProStatus 
                     JOIN HomeFurnishingReceiveMaster b(Nolock) ON b.CompanyID = HSD.CompanyID And b.ProcessRecId = HSD.Process_Rec_ID And b.ProcessID = HSD.ToProcessID 
                     Where a.Pack = 0 And a.IssRecStatus = 0  And (a.PRMID = 0 or a.PRMID is null) And a.CompanyID = " + DDcompany.SelectedValue + @" And 
-                    a.CurrentProStatus = " + DDFromProcessName.SelectedValue + @" 
-                    Order By b.ProcessRecId";
+                    (a.CurrentProStatus = " + DDFromProcessName.SelectedValue + " or a.CurrentProStatus is not null)   Order By b.ProcessRecId";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         UtilityModule.ConditionalComboFillWithDS(ref DDToProcess, ds, 0, true, "--Plz Select--");
         UtilityModule.ConditionalComboFillWithDS(ref DDChallanNo, ds, 1, true, "--Plz Select--");
@@ -777,7 +776,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
                 dr["activestatus"] = Chkboxitem.Checked == true ? 0 : 1;
                 if (Session["varcompanyId"].ToString() == "44")
                 {
-                    dr["Processid"] = DDFromProcessName.SelectedValue;
+                    dr["Processid"] = DDToProcess.SelectedValue;
                 }
                 else
                 {
@@ -795,7 +794,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
             param[3].Direction = ParameterDirection.Output;
             if (Session["varcompanyId"].ToString() == "44")
             {
-                param[4] = new SqlParameter("@Processid", DDFromProcessName.SelectedValue);
+                param[4] = new SqlParameter("@Processid", DDToProcess.SelectedValue);
             }
             else {
                 param[4] = new SqlParameter("@Processid", 1);
@@ -1205,7 +1204,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
                     Label lblissuedetailid = ((Label)DGOrderdetail.Rows[j].FindControl("lblissuedetailid"));
 
                     DataRow dr = dtrecord.NewRow();
-                    dr["processid"] = DDFromProcessName.SelectedValue;
+                    dr["processid"] = DDToProcess.SelectedValue;
                     dr["issueorderid"] = lblissueorderid.Text;
                     dr["issuedetailid"] = lblissuedetailid.Text;
                     dr["empid"] = listWeaverName.Items[i].Value;
@@ -1215,7 +1214,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
             //
             SqlParameter[] param = new SqlParameter[6];
             param[0] = new SqlParameter("@issueorderid", hnissueorderid.Value);
-            param[1] = new SqlParameter("@processid", DDFromProcessName.SelectedValue);
+            param[1] = new SqlParameter("@processid", DDToProcess.SelectedValue);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;

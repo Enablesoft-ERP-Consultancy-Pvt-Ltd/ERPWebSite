@@ -228,7 +228,7 @@
                                         OnClick="BtnGetRate_Click" />
                         </div>
                     </div>
-                    <div id="DivCommRate" runat="server" visible="false" style="margin-top: 1%">
+                    <div id="DivCommRate" runat="server" visible="true" style="margin-top: 1%">
                         <div style="width: 150px; float: left; text-align: right; padding-right: 10px">
                             <asp:Label ID="Label4" runat="server" Text="COMM. RATE" CssClass="labelbold"></asp:Label>
                         </div>

@@ -309,6 +309,20 @@
                                                                 </tr>
                                                             </table>
                                                         </td>
+
+                                                        <td id="TdDyingLotNo" runat="server" visible="false" style="width: 50%">
+                                                            <table style="width: 100%">
+                                                                <tr>
+                                                                    <td id="TD10" runat="server">
+                                                                        <asp:Label ID="Label6" Text="Dying Lot No" runat="server" CssClass="labelbold" /><br />
+                                                                    </td>
+                                                                    <td style="width: 70%">
+                                                                        <asp:TextBox CssClass="textb" ID="TxtDyingLotNo" runat="server" Width="120px"></asp:TextBox>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </td>
+
                                                     </tr>
                                                 </table>
                                             </td>

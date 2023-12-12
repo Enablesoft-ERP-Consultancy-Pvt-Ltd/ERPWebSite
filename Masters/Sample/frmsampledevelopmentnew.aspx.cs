@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-public partial class Masters_Process_frmsampledevelopmentnew : System.Web.UI.Page
+public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
 {
     static int DataGridDeleteID = 0;
     protected void Page_Load(object sender, EventArgs e)
@@ -328,7 +328,7 @@ public partial class Masters_Process_frmsampledevelopmentnew : System.Web.UI.Pag
         {
             if (DDRCategory.SelectedIndex > 0)
             {
-                if (Convert.ToInt16(DDRCategory.SelectedValue) == 2)
+                if (Convert.ToString(DDRCategory.SelectedItem.Text) == "RAW MATERIAL")
                 {
                     TDRShade.Visible = false;
                     TDRINPUTSHADECOLOR.Visible = true;

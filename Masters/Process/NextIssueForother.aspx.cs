@@ -166,6 +166,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                     TxtIssueQty.Enabled = true;
                     TxtIssueQty.Text = "200";
                     DGStockDetail.PageSize = 200;
+                    TdDyingLotNo.Visible = true;
                     break;
                 case 27:
                     switch (Session["Usertype"].ToString())
@@ -1033,7 +1034,8 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                     {
                         Rate = TxtRateNew.Text == "" ? "0" : TxtRateNew.Text;
                     }
-                    SqlParameter[] _arrpara = new SqlParameter[49];
+                    SqlParameter[] _arrpara = new SqlParameter[50];
+
                     _arrpara[0] = new SqlParameter("@IssueOrderid", SqlDbType.Int);
                     _arrpara[1] = new SqlParameter("@Empid", SqlDbType.Int);
                     _arrpara[2] = new SqlParameter("@Assign_Date", SqlDbType.SmallDateTime);
@@ -1088,6 +1090,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                     _arrpara[46] = new SqlParameter("@GSTType", SqlDbType.Int);
                     _arrpara[47] = new SqlParameter("@EWayBillNo", SqlDbType.VarChar, 15);
                     _arrpara[48] = new SqlParameter("@ChkForExportSize", SqlDbType.Int);
+                    _arrpara[49] = new SqlParameter("@DyingLotNo", SqlDbType.VarChar, 100);
 
                     //
                     //  int num = 1;
@@ -1230,6 +1233,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                         _arrpara[47].Value = TDEWayBillNo.Visible == false ? "0" : txtEWayBillNo.Text == "" ? "0" : txtEWayBillNo.Text;
                     }
                     _arrpara[48].Value = TDExportSize.Visible == false ? "0" : ChkForExportSize.Checked == true ? "1" : "0";
+                    _arrpara[49].Value = TdDyingLotNo.Visible == false ? "" : TxtDyingLotNo.Text;
 
                     //Insert into Process_Issue_Master And Process_Issue_Detail 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_NextProcessIssueForOther", _arrpara);
