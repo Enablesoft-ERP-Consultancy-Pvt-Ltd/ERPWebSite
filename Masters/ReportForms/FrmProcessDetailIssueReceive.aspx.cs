@@ -3014,7 +3014,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
         }
         //****************
-        SqlParameter[] arr = new SqlParameter[7];
+        SqlParameter[] arr = new SqlParameter[8];
         arr[0] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
         arr[1] = new SqlParameter("@Empid", DDEmpName.SelectedValue);
         arr[2] = new SqlParameter("@fromdate", TxtFromDate.Text);
@@ -3022,6 +3022,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         arr[4] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
         arr[5] = new SqlParameter("@Where", str);
         arr[6] = new SqlParameter("@IssueOrderId", txtissueno.Text);
+        arr[7] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
         //***************
         DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.StoredProcedure, "Pro_getFinisherPendingpcs", arr);
         if (ds.Tables[0].Rows.Count > 0)
