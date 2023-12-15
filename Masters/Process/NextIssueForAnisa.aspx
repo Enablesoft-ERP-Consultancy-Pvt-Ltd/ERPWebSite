@@ -355,11 +355,13 @@
                                                     AutoPostBack="true" OnTextChanged="txtWeaverIdNo_TextChanged"></asp:TextBox>
                                                 <asp:TextBox ID="txtgetvalue" runat="server" Style="display: none"></asp:TextBox>
                                                 <asp:AutoCompleteExtender ID="txtWeaverIdNo_AutoCompleteExtender" runat="server"
-                                                    BehaviorID="SrchAutoComplete" CompletionInterval="20" Enabled="True" ServiceMethod="GetEmployeeForJobNew"
+                                                    BehaviorID="SrchAutoComplete" CompletionInterval="20" Enabled="True" ServiceMethod="GetEmployeeForJob"
                                                     EnableCaching="true" CompletionSetCount="20" OnClientItemSelected="EmpSelected"
                                                     ServicePath="~/Autocomplete.asmx" TargetControlID="txtWeaverIdNo" UseContextKey="True"
                                                     ContextKey="0" MinimumPrefixLength="1">
                                                 </asp:AutoCompleteExtender>
+
+                                                <%----Replace GetEmployeeForJobNew() Method With GetEmployeeForJob() because emp not fill discuss with devi sir and vikas ji----%>
                                             </td>
                                             <td>
                                                 <table>

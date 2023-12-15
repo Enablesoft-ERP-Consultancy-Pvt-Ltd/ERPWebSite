@@ -1651,7 +1651,14 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 }
                 else if (ChkReceiveSummaryFinishedItemWise.Checked == true)
                 {
-                    Session["rptFileName"] = "~\\Reports\\RptWeaverCarpetRecSummaryFinishedItemWise.rpt";
+                    if (Session["VarCompanyNo"].ToString() == "43")
+                    {
+                        Session["rptFileName"] = "~\\Reports\\RptWeaverCarpetRecSummaryFinishedItemWiseCI.rpt";
+                    }
+                    else
+                    {
+                        Session["rptFileName"] = "~\\Reports\\RptWeaverCarpetRecSummaryFinishedItemWise.rpt";
+                    }
                 }
                 else
                 {

@@ -554,7 +554,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     _arrpara[33] = new SqlParameter("@Bonus", SqlDbType.Float);
                     _arrpara[34] = new SqlParameter("@BonusAmt", SqlDbType.Float);
                     _arrpara[35] = new SqlParameter("@QAPersonname", SqlDbType.VarChar,50);
-                    _arrpara[36] = new SqlParameter("@DyingLotNo", SqlDbType.VarChar, 100);
+                    _arrpara[36] = new SqlParameter("@DyeingLotNo", SqlDbType.VarChar, 100);
 
                     if (ViewState["recid"] == null)
                     {
