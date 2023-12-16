@@ -1660,6 +1660,10 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                         Session["rptFileName"] = "~\\Reports\\RptWeaverCarpetRecSummaryFinishedItemWise.rpt";
                     }
                 }
+                else if (ChkReceiveSummaryQualityDesignSizeWise.Checked == true)
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptWeaverCarpetRecSummaryQualityDesignSizeWise.rpt";                    
+                }
                 else
                 {
                     if (Session["varCompanyId"].ToString() == "41")

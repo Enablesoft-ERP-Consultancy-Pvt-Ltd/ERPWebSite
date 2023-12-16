@@ -43,6 +43,7 @@
                 TDWeaverOrderStatus.Visible = true;
             }
 
+            TDChkReceiveSummaryQualityDesignSizeWise.Visible = false;
             TRForWithoutTDS.Visible = false;
             TROpenIssRecConDetail.Visible = false;
             TDChkForWeavingPendingQtyWithAreaSize.Visible = false;
@@ -143,6 +144,7 @@
                 Trproductiontype.Visible = true;
                 Trunitname.Visible = true;
                 TDChkReceiveSummaryFinishedItemWise.Visible = true;
+                TDChkReceiveSummaryQualityDesignSizeWise.Visible = true;
 
                 if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
                 {
@@ -1260,6 +1262,12 @@
                                  <tr id="TRForWithoutTDS" runat="server" visible="false">
                                     <td colspan="3">
                                         <asp:CheckBox ID="ChkForWithoutTDS" runat="server" CssClass="checkboxbold" Text="For Without TDS" />
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td id="TDChkReceiveSummaryQualityDesignSizeWise" runat="server" visible="false">
+                                        <asp:CheckBox ID="ChkReceiveSummaryQualityDesignSizeWise" Text="Rec Summary QualityDesignSize Wise"
+                                            runat="server" CssClass="checkboxbold" />
                                     </td>
                                 </tr>
                                 <tr>

@@ -122,7 +122,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 
                 case 44:
                      TDemployee.Visible = false;
-                    TablePartyChallanNo.Visible = true;
+                    TablePartyChallanNo.Visible = true;                    
                     TxtReceiveQty.Enabled = true;
                     TxtReceiveQty.Text = "200";
                     DGStockDetail.PageSize = 200;
@@ -152,6 +152,12 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     TDTotalPcsNew.Visible = true;
                     Tr4.Visible = true;
                     Label4.Text = "Group No";
+                      TablePartyChallanNo.Visible = true;
+                      TDPartyChallanNo.Visible = false;
+                      TDQANameNew.Visible = false;
+                    TxtReceiveQty.Enabled = true;
+                    TxtReceiveQty.Text = "200";
+                    DGStockDetail.PageSize = 200;
                     break;
                 default:
                     DDUnit.SelectedValue = "1";

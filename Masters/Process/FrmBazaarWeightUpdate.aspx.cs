@@ -70,9 +70,12 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
 
                 if (txtDryWeight.Text != "0")
                 {
-                    txtTotalWeight.Enabled = false;
-                    txtChkPcs.Enabled = false;
-                    txtChkWeight.Enabled = false;
+                    if (Session["Usertype"].ToString() != "1")
+                    {
+                        txtTotalWeight.Enabled = false;
+                        txtChkPcs.Enabled = false;
+                        txtChkWeight.Enabled = false;
+                    }
                 }
                 else
                 {

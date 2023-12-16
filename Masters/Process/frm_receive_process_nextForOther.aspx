@@ -269,7 +269,7 @@
                                                 <table id="TablePartyChallanNo" runat="server" visible="false" style="width: 100%"
                                                     border="1" cellpadding="5" cellspacing="0">
                                                     <tr>
-                                                        <td style="width: 50%">
+                                                        <td id="TDPartyChallanNo" runat="server" visible="true" style="width: 50%">
                                                             <table style="width: 100%">
                                                                 <tr>
                                                                     <td>
@@ -281,7 +281,7 @@
                                                                 </tr>
                                                             </table>
                                                         </td>
-                                                        <td style="width: 50%">
+                                                        <td  style="width: 50%">
                                                             <table width="100%">
                                                                 <tr>
                                                                     <td>
@@ -296,7 +296,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="width: 50%">
+                                                        <td id="TDQANameNew" runat="server" visible="true" style="width: 50%">
                                                             <table style="width: 100%">
                                                                 <tr>
                                                                     <td id="TDQaname" runat="server">

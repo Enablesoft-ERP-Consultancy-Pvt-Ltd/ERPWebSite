@@ -242,7 +242,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                         default:
                             //DIVStockDetail.Visible = false;
                             //btngetstock.Visible = false;
-                            btnsavegrid.Visible = false;
+                            btnsavegrid.Visible = true;
                             TDCustomerCode.Visible = false;
                             TDCustomerOrderNo.Visible = false;
                             TrBindRecChallanNoJobWise.Visible = true;

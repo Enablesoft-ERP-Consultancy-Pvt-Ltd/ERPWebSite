@@ -13,7 +13,7 @@
               <xs:element name="COMPADDR3" type="xs:string" minOccurs="0" />
               <xs:element name="COMPTEL" type="xs:string" minOccurs="0" />
               <xs:element name="GSTNO" type="xs:string" minOccurs="0" />
-              <xs:element name="EMPID" type="xs:int" minOccurs="0" />
+              <xs:element name="EmpId" type="xs:int" minOccurs="0" />
               <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
               <xs:element name="FATHERNAME" type="xs:string" minOccurs="0" />
               <xs:element name="ADDRESS" type="xs:string" minOccurs="0" />
@@ -59,6 +59,8 @@
               <xs:element name="PartyChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="ActualWidth" type="xs:string" minOccurs="0" />
               <xs:element name="ActualLength" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
+              <xs:element name="MasterBuyerSize" type="xs:string" minOccurs="0" />
               <xs:element name="FromDate" type="xs:string" minOccurs="0" />
               <xs:element name="Todate" type="xs:string" minOccurs="0" />
               <xs:element name="Dateflag" type="xs:int" minOccurs="0" />
