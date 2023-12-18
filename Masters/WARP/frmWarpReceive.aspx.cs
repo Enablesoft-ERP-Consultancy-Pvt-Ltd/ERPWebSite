@@ -165,7 +165,7 @@ public partial class Masters_WARP_frmWarpReceive : System.Web.UI.Page
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-                SqlParameter[] param = new SqlParameter[16];
+                SqlParameter[] param = new SqlParameter[17];
                 param[0] = new SqlParameter("@id", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.InputOutput;
                 param[0].Value = ViewState["reportid"];

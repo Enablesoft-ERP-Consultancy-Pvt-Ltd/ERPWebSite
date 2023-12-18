@@ -816,14 +816,20 @@ public partial class Masters_Order_Order : System.Web.UI.Page
             }
             else
             {
-                TxtNewOrderNo.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select LocalOrder from ordermaster where  orderid=" + DDCustOrderNo.SelectedValue + "").ToString();
+                TxtNewOrderNo.Text = "";
+                str = @"select LocalOrder from ordermaster where  orderid=" + DDCustOrderNo.SelectedValue;
+
+                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    TxtNewOrderNo.Text = ds.Tables[0].Rows[0]["LocalOrder"].ToString();
+                }
             }
             if (Gvchklist.Rows.Count > 0)
             {
                 Check_mark();
             }
-
-
         }
     }
     //****************************************************************************************************************************

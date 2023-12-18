@@ -682,6 +682,8 @@
                                     Visible="false" CssClass="checkboxbold" />
                                 <asp:CheckBox ID="ChkForSlipPrint" runat="server" Text="For Slip Print" class="tdstyle"
                                     Visible="false" CssClass="checkboxbold" />
+                                <asp:Button ID="BtnOrderProcessToEHIUnitSecond" runat="server" Text="EHI Unit Second" CssClass="buttonnorm"
+                                Visible="false" OnClick="BtnOrderProcessToEHIUnitSecond_Click" />
                                 <asp:Button ID="BtnOrderProcessToPNM" runat="server" Text="PNM INC." CssClass="buttonnorm"
                                     Visible="false" OnClick="BtnOrderProcessToPNM_Click" />
                                 <asp:Button ID="BtnChampoPanipat" runat="server" Text="Champo Panipat" CssClass="buttonnorm"

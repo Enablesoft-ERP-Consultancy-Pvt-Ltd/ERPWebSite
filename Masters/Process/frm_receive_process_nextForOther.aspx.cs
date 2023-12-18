@@ -122,7 +122,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 
                 case 44:
                      TDemployee.Visible = false;
-                    TablePartyChallanNo.Visible = true;                    
+                    TablePartyChallanNo.Visible = true;
                     TxtReceiveQty.Enabled = true;
                     TxtReceiveQty.Text = "200";
                     DGStockDetail.PageSize = 200;
@@ -151,7 +151,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     DDUnit.SelectedValue = "1";
                     TDTotalPcsNew.Visible = true;
                     Tr4.Visible = true;
-                    Label4.Text = "Group No";
+                    Label4.Text = "Group No";                  
                       TablePartyChallanNo.Visible = true;
                       TDPartyChallanNo.Visible = false;
                       TDQANameNew.Visible = false;
@@ -560,7 +560,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     _arrpara[33] = new SqlParameter("@Bonus", SqlDbType.Float);
                     _arrpara[34] = new SqlParameter("@BonusAmt", SqlDbType.Float);
                     _arrpara[35] = new SqlParameter("@QAPersonname", SqlDbType.VarChar,50);
-                    _arrpara[36] = new SqlParameter("@DyeingLotNo", SqlDbType.VarChar, 100);
+                    _arrpara[36] = new SqlParameter("@DyingLotNo", SqlDbType.VarChar, 100);
 
                     if (ViewState["recid"] == null)
                     {
