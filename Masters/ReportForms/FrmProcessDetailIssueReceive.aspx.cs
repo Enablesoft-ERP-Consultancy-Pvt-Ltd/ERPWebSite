@@ -247,6 +247,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     {
                         Str = Str + " And Emp.EmpId=" + DDEmpName.SelectedValue;
                     }
+                    Str = Str + " Where PRM.Companyid=" + DDCompany.SelectedValue + "";
                 }
                 else
                 {
