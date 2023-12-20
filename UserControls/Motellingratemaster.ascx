@@ -160,6 +160,12 @@
                                 <asp:ListItem Text="14 Ply" />
                                 <asp:ListItem Text="20 Ply" />
                                 <asp:ListItem Text="28 Ply" />
+                                <asp:ListItem Text="45 Ply" />
+                                <asp:ListItem Text="46 Ply" />
+                                <asp:ListItem Text="47 Ply" />
+                                <asp:ListItem Text="48 Ply" />
+                                <asp:ListItem Text="49 Ply" />
+                                <asp:ListItem Text="50 Ply" />
                             </asp:DropDownList>
                         </td>
                         <td id="TDTransport" runat="server" visible="false">

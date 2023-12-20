@@ -10,23 +10,21 @@
               <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
               <xs:element name="ITEM_ID" type="xs:int" minOccurs="0" />
               <xs:element name="ARTICLES" type="xs:string" minOccurs="0" />
-              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
-              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
-              <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
-              <xs:element name="COLOUR" type="xs:string" minOccurs="0" />
-              <xs:element name="SHAPE" type="xs:string" minOccurs="0" />
               <xs:element name="JOBNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLOUR" type="xs:string" minOccurs="0" />
               <xs:element name="SIZE" type="xs:string" minOccurs="0" />
               <xs:element name="UNITRATE" type="xs:double" minOccurs="0" />
-              <xs:element name="DATE" type="xs:string" minOccurs="0" />
+              <xs:element name="DATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="SHAPE" type="xs:string" minOccurs="0" />
               <xs:element name="RATETYPE" type="xs:string" minOccurs="0" />
               <xs:element name="COMMRATE" type="xs:double" minOccurs="0" />
-              <xs:element name="FINISHEDID" type="xs:int" minOccurs="0" />
               <xs:element name="RateLocation" type="xs:string" minOccurs="0" />
               <xs:element name="Bonus" type="xs:double" minOccurs="0" />
               <xs:element name="FinisherRate" type="xs:double" minOccurs="0" />
+              <xs:element name="EmpCode" type="xs:string" minOccurs="0" />
               <xs:element name="OrderTypeId" type="xs:double" minOccurs="0" />
               <xs:element name="OrderCategory" type="xs:string" minOccurs="0" />
+              <xs:element name="RateRemarks" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

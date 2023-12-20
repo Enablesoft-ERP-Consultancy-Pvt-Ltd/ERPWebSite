@@ -308,7 +308,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
                 Label lblArea = ((Label)DG.Rows[i].FindControl("lblArea"));
 
 
-                if (Chkboxitem.Checked == true && (txtPerSetQty.Text != "") && (txtNoOfSet.Text != "") && DDCompany.SelectedIndex > 0 && DDCustomerOrderNo.SelectedIndex > 0)
+                if (Chkboxitem.Checked == true && (txtPerSetQty.Text != "") && (txtNoOfSet.Text != "") && DDCompany.SelectedIndex >= 0 && DDCustomerOrderNo.SelectedIndex > 0)
                 {
                     Strdetail = Strdetail + txtPerSetQty.Text + '|' + txtNoOfSet.Text + '|' + lblOrderQty.Text + '|' + lblItemFinishedId.Text + '|' + lblOrderId.Text + '|' + lblArea.Text  + '~';
                 }

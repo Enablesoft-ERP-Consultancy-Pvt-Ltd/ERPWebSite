@@ -29,6 +29,7 @@
               <xs:element name="IssueChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="ISSUEORDERID" type="xs:int" minOccurs="0" />
               <xs:element name="MasterCompanyId" type="xs:int" minOccurs="0" />
+              <xs:element name="AssignDate" type="xs:dateTime" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
