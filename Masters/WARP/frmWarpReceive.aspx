@@ -222,6 +222,10 @@
                                 <asp:DropDownList ID="DDgodown" CssClass="dropdown" Width="150px" runat="server">
                                 </asp:DropDownList>
                             </td>
+                            <td>
+                                <asp:Label ID="Label16" runat="server" Text="Remark" CssClass="labelbold"></asp:Label><br />
+                                <asp:TextBox ID="txtRemark" CssClass="textb" Width="500px" runat="server" />
+                            </td>
                         </tr>
                     </table>
                 </fieldset>

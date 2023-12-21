@@ -79,7 +79,10 @@ public partial class Masters_Process_NextIssueForAnisa : System.Web.UI.Page
             {
                 TxtIssueDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
                 //CalendarExtender1.StartDate = DateTime.Now;
-                CalendarExtender1.EndDate = DateTime.Now;
+                if (Session["Usertype"].ToString() != "1")
+                {
+                    CalendarExtender1.EndDate = DateTime.Now;
+                }
             }
             else
             {
@@ -216,7 +219,9 @@ public partial class Masters_Process_NextIssueForAnisa : System.Web.UI.Page
     protected void DDTOProcess_SelectedIndexChanged(object sender, EventArgs e)
     {
         //For grid fill
+        lstWeaverName.Items.Clear();
         hnfromprocessid.Value = "0";
+        txtWeaverIdNo_AutoCompleteExtender.ContextKey = DDTOProcess.SelectedValue;
         //
         LblErrorMessage.Text = "";
         ViewState["IssueOrderid"] = 0;

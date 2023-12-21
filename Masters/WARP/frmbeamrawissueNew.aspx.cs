@@ -358,7 +358,7 @@ public partial class Masters_WARP_frmbeamrawissueNew : System.Web.UI.Page
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-                SqlParameter[] param = new SqlParameter[12];
+                SqlParameter[] param = new SqlParameter[13];
                 param[0] = new SqlParameter("@id", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.InputOutput;
                 param[0].Value = (ViewState["reportid"] == null ? "0" : ViewState["reportid"]);
@@ -376,6 +376,7 @@ public partial class Masters_WARP_frmbeamrawissueNew : System.Web.UI.Page
                 param[9].Direction = ParameterDirection.Output;
                 param[10] = new SqlParameter("@Processid", DDProcess.SelectedValue);
                 param[11] = new SqlParameter("@Item_finished_id", DDArtilceroll.SelectedValue);
+                param[12] = new SqlParameter("@Remark", txtRemark.Text);
 
                 //*******************
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveWarpRawIssue", param);

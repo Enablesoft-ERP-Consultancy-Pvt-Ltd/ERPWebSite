@@ -335,7 +335,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
                 Label lblId = ((Label)DG.Rows[i].FindControl("lblId"));
                 Label lblDetailId = ((Label)DG.Rows[i].FindControl("lblDetailId"));
 
-                if (Chkboxitem.Checked == true && (txtReceiveNoOfSet.Text != "") && DDCompany.SelectedIndex > 0)
+                if (Chkboxitem.Checked == true && (txtReceiveNoOfSet.Text != "") && DDCompany.SelectedIndex >= 0)
                 {
                     Strdetail = Strdetail + txtReceiveNoOfSet.Text + '|' + lblItemFinishedId.Text + '|' + lblOrderId.Text + '|' + lblId.Text + '|' + lblDetailId.Text + '~';
                 }

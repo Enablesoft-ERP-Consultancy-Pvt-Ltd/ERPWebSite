@@ -196,6 +196,10 @@
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingBalance_CheckedChanged" />
                                 <br />
                                 &nbsp;&nbsp;
+                                  <asp:RadioButton ID="RDFinishingRecSummaryWithTDS" runat="server" Text="Finishing Rec Summary With TDS" Visible="false"
+                                    GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingRecSummaryWithTDS_CheckedChanged" />
+                                <br />
+                                &nbsp;&nbsp;
                             </div>
                         </td>
                         <td valign="top">
@@ -555,7 +559,11 @@
                                                 <asp:CheckBox ID="ChkBuyerItemSizeWiseSummary" runat="server" CssClass="checkboxbold" Text="Buyer Item Size Wise Summary" />
                                             </td>
                                         </tr>
-
+                                         <tr id="TRForWithoutTDS" runat="server" visible="false">
+                                    <td colspan="3">
+                                        <asp:CheckBox ID="ChkForWithoutTDS" runat="server" CssClass="checkboxbold" Text="For Without TDS" />
+                                    </td>
+                                </tr>
                                          <tr id="TRAsOnDate" runat="server" visible="false">
                                         <td>
                                             <asp:Label ID="Label12" runat="server" CssClass="labelbold" Text="As ON Date"></asp:Label>

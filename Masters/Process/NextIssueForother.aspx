@@ -162,7 +162,7 @@
                                             <td id="TDIssueno" runat="server">
                                                 <asp:Label ID="lblissueno" Text="Issue No." runat="server" CssClass="labelbold" />
                                                 <br />
-                                                <asp:TextBox CssClass="textb" ID="TxtChallanNO" runat="server" Width="100px" ReadOnly="true" ></asp:TextBox>
+                                                <asp:TextBox CssClass="textb" ID="TxtChallanNO" runat="server" Width="100px" ReadOnly="true"></asp:TextBox>
                                             </td>
                                         </tr>
                                         <tr>
@@ -192,8 +192,8 @@
                                             </td>
                                             <td id="Td10" class="tdstyle" runat="server">
                                                 <asp:Label ID="Label18" runat="server" Text="From Process" CssClass="labelbold"></asp:Label><br />
-                                                <asp:DropDownList ID="DDFromProcessForRecChallanNo" runat="server" CssClass="dropdown" Width="150px"
-                                                    AutoPostBack="true" OnSelectedIndexChanged="DDFromProcessForRecChallanNo_SelectedIndexChanged">
+                                                <asp:DropDownList ID="DDFromProcessForRecChallanNo" runat="server" CssClass="dropdown"
+                                                    Width="150px" AutoPostBack="true" OnSelectedIndexChanged="DDFromProcessForRecChallanNo_SelectedIndexChanged">
                                                 </asp:DropDownList>
                                             </td>
                                             <td id="TD11" runat="server" visible="true">
@@ -207,9 +207,7 @@
                                                 <asp:DropDownList ID="DDRecChallanNoJobWise" runat="server" CssClass="dropdown" Width="150px">
                                                 </asp:DropDownList>
                                             </td>
-                                        
                                         </tr>
-
                                         <tr>
                                             <td id="Tdissuedate" class="tdstyle" runat="server">
                                                 <span class="labelbold">IssueDate</span>
@@ -235,7 +233,8 @@
                                             </td>
                                             <td id="TDCustomerOrderNo" runat="server" visible="false">
                                                 <asp:Label ID="Label13" runat="server" Text="Order No." CssClass="labelbold"></asp:Label><br />
-                                                <asp:DropDownList ID="DDorderNo" OnSelectedIndexChanged="DDorderNo_SelectedIndexChanged" AutoPostBack="true" runat="server" CssClass="dropdown" Width="150px">
+                                                <asp:DropDownList ID="DDorderNo" OnSelectedIndexChanged="DDorderNo_SelectedIndexChanged"
+                                                    AutoPostBack="true" runat="server" CssClass="dropdown" Width="150px">
                                                 </asp:DropDownList>
                                             </td>
                                         </tr>
@@ -444,11 +443,10 @@
                                     <asp:TextBox CssClass="textb" ID="TxtRateNew" onkeypress="return isNumberKey(event);"
                                         runat="server" Width="70px"></asp:TextBox>
                                 </td>
-                                <td id="TDExportSize" runat="server" class="tdstyle" visible="false">                                    
+                                <td id="TDExportSize" runat="server" class="tdstyle" visible="false">
                                     <asp:CheckBox ID="ChkForExportSize" runat="server" Text="Chk For Export Size" CssClass="checkboxbold" />
-                                    <br />                                    
+                                    <br />
                                 </td>
-
                                 <td align="center">
                                     <asp:Label ID="LblErrorMessage" runat="server" Text="" CssClass="labelbold" ForeColor="Red"></asp:Label>
                                 </td>
@@ -473,6 +471,11 @@
                                     <cc1:ListSearchExtender ID="LSEDDUnit" runat="server" TargetControlID="DDUnit" ViewStateMode="Disabled"
                                         PromptCssClass="labelbold" PromptPosition="Bottom">
                                     </cc1:ListSearchExtender>
+                                </td>
+                                <td id="TdDyingLotNo" runat="server" visible="false">
+                                    <span class="labelbold">Dying Lot No</span>
+                                    <br />
+                                    <asp:TextBox CssClass="textb" ID="TxtDyingLotNo" runat="server" Width="120px"></asp:TextBox>
                                 </td>
                             </tr>
                         </table>
@@ -583,7 +586,7 @@
                                                         <asp:Label ID="lblAmount" Text='<%#Bind("Amount") %>' runat="server" />
                                                     </ItemTemplate>
                                                 </asp:TemplateField>
-                                                 <asp:TemplateField HeaderText="Bonus" Visible="false">
+                                                <asp:TemplateField HeaderText="Bonus" Visible="false">
                                                     <ItemTemplate>
                                                         <asp:Label ID="lblBonus" Text='<%#Bind("Bonus") %>' runat="server" />
                                                     </ItemTemplate>
@@ -630,7 +633,8 @@
                                 <td class="tdstyle" align="right">
                                     <asp:CheckBox ID="ChkForSummary" CssClass="checkboxbold" runat="server" Text="For Print Summary"
                                         Visible="true" />
-                                         &nbsp;<asp:CheckBox ID="ChkForWithoutRate" runat="server" Text="For Without Rate" CssClass="checkboxbold" Visible="false" />
+                                    &nbsp;<asp:CheckBox ID="ChkForWithoutRate" runat="server" Text="For Without Rate"
+                                        CssClass="checkboxbold" Visible="false" />
                                     &nbsp;<asp:Button CssClass="buttonnorm" ID="BtnPreview" runat="server" Text="Preview"
                                         OnClick="BtnPreview_Click" />
                                     &nbsp;<asp:Button CssClass="buttonnorm" ID="BtnClose" runat="server" Text="Close"
@@ -638,7 +642,7 @@
                                     &nbsp;<asp:Button CssClass="buttonnorm" ID="BtnNew" runat="server" Text="New" OnClientClick="return NewForm();" />
                                 </td>
                             </tr>
-                            <tr id="Tr2" runat="server" >
+                            <tr id="Tr2" runat="server">
                                 <td class="tdstyle">
                                     Remarks&nbsp;&nbsp;&nbsp;&nbsp;
                                     <asp:TextBox CssClass="textb" ID="TxtRemarks" runat="server" Width="90%"></asp:TextBox>

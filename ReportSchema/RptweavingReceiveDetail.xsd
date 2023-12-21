@@ -61,6 +61,7 @@
               <xs:element name="ActualLength" type="xs:string" minOccurs="0" />
               <xs:element name="CustomerOrderNo" type="xs:string" minOccurs="0" />
               <xs:element name="MasterBuyerSize" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
               <xs:element name="FromDate" type="xs:string" minOccurs="0" />
               <xs:element name="Todate" type="xs:string" minOccurs="0" />
               <xs:element name="Dateflag" type="xs:int" minOccurs="0" />

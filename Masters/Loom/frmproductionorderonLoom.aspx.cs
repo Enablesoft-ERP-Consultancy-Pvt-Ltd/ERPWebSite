@@ -181,6 +181,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                     txtWeaverIdNoscan.Visible = false;
                     TDTanaLotNo.Visible = false;
                     BtnUpdateTanaLotNo.Visible = false;
+                    BtnOrderProcessToEHIUnitSecond.Visible = true;
                     break;
                 case "27":
                 case "34":
@@ -3813,5 +3814,47 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
     protected void btngokulpur_Click(object sender, EventArgs e)
     {
         OrderProcessToAllCompanyMWS(7);
+    }
+
+    protected void BtnOrderProcessToEHIUnitSecond_Click(object sender, EventArgs e)
+    {
+        OrderProcessToAllCompanyEMBH(1);
+    }
+    private void OrderProcessToAllCompanyEMBH(int TypeFlag)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            SqlParameter[] param = new SqlParameter[6];
+            param[0] = new SqlParameter("@ISSUEORDERID", hnissueorderid.Value);
+            param[1] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
+            param[1].Direction = ParameterDirection.Output;
+            param[2] = new SqlParameter("@MASTERCOMPANYID", 15);
+            param[3] = new SqlParameter("@USERID", 1);
+            param[4] = new SqlParameter("@POUFTYPECATEGORY", 0);
+            param[5] = new SqlParameter("@TYPEFLAG", TypeFlag);
+
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Save_EMBHProductionOrder_CreateCustomerOrderInEMBH", param);
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + param[1].Value + "')", true);
+            Tran.Commit();
+        }
+        catch (Exception ex)
+        {
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn1", "alert('" + ex.Message + "')", true);
+            Tran.Rollback();
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
     }
 }

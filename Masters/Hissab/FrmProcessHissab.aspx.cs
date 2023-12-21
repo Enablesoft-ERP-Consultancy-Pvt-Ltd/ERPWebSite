@@ -867,6 +867,9 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
                 case "38":
                     Session["ReportPath"] = "Reports/RptProcessHissabSummaryVikramKhamaria.rpt";
                     break;
+                case "43":
+                    Session["ReportPath"] = "Reports/RptProcessHissabSummaryCI.rpt";
+                    break;
                 case "42":
                     if (DDProcessName.SelectedValue == "1")
                     {

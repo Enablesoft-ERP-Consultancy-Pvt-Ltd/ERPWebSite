@@ -232,6 +232,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             cmd.Parameters.AddWithValue("@OrderID", TrOrderNo.Visible == true ? DDOrderNo.SelectedIndex <= 0 ? "0" : DDOrderNo.SelectedValue : "0");
             cmd.Parameters.AddWithValue("@WithoutWeavingProcess", TRForWithoutWeavingProcess.Visible == true ? ChkForWithoutWeavingProcess.Checked == true ? "1" : "0" : "0");
             cmd.Parameters.AddWithValue("@FroProcessWiseSummary", ChkForProcessWiseSummary.Checked == true ? "1" : "0");
+            cmd.Parameters.AddWithValue("@ChkForMtr", ChkForMtrSize.Checked == true ? 1 : 0); 
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -308,125 +309,9 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
         {
 
         }
-
-
-        //DataSet ds = new DataSet();
-        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        //if (con.State == ConnectionState.Closed)
-        //{
-        //    con.Open();
-        //}
-        //try
-        //{
-        //    SqlParameter[] array = new SqlParameter[10];
-
-        //    array[0] = new SqlParameter("@ProcessId", SqlDbType.Int);
-        //    array[1] = new SqlParameter("@Fromdate", SqlDbType.SmallDateTime);
-        //    array[2] = new SqlParameter("@Todate", SqlDbType.SmallDateTime);
-        //    array[3] = new SqlParameter("@Companyid", SqlDbType.Int);
-        //    array[4] = new SqlParameter("@UserId", SqlDbType.Int);
-        //    array[5] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
-        //    array[6] = new SqlParameter("@UnitsId", SqlDbType.Int);
-        //    array[7] = new SqlParameter("@Where", str);
-        //    array[8] = new SqlParameter("@excelexport", chkexport.Checked == true ? "1" : "0");
-        //    array[9] = new SqlParameter("@WITHSTOCKDETAIL", chkwithstockdetail.Checked == true ? "1" : "0");
-
-
-        //    array[0].Value = DDjob.SelectedIndex <= 0 ? "0" : DDjob.SelectedValue;
-        //    array[1].Value = txtFromdate.Text;
-        //    array[2].Value = txtToDate.Text;
-        //    array[3].Value = 1;
-        //    array[4].Value = Session["varuserId"];
-        //    array[5].Value = Session["varcompanyId"];
-        //    array[6].Value = DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue;
-
-        //    ds = SqlHelper.ExecuteDataset(con, CommandType.StoredProcedure, "Pro_ForProduction_JobSummaryOther", array);
-
-        //    if (ds.Tables[0].Rows.Count > 0)
-        //    {
-        //        if (chkexport.Checked == true && chkwithstockdetail.Checked == false)
-        //        {
-        //            JobwiseissueExcelExport(ds, FilterBy);
-        //            return;
-        //        }
-        //        else if (chkexport.Checked == true && chkwithstockdetail.Checked == true)
-        //        {
-        //            switch (Session["VarCompanyId"].ToString())
-        //            {
-        //                case "22":
-        //                    JobwiseissueExcelExportDiamond_WithstockDetail(ds, FilterBy);                           
-        //                    break;                            
-        //                default :
-        //                    JobwiseissueExcelExport_WithstockDetail(ds, FilterBy);                            
-        //                    break;
-
-        //            }
-
-        //            //JobwiseissueExcelExport_WithstockDetail(ds, FilterBy);
-        //            //return;
-        //        }
-        //        else
-        //        {
-        //            Session["dsFileName"] = "~\\ReportSchema\\RptProduction_JobSummary.xsd";
-        //            Session["rptFileName"] = "Reports/RptProduction_JobSummaryNew.rpt";
-        //            Session["GetDataset"] = ds;
-        //            StringBuilder stb = new StringBuilder();
-        //            stb.Append("<script>");
-        //            stb.Append("window.open('../../ViewReport.aspx?Export=Y', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-        //            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
-        //    }
-
-        //}
-        //catch (Exception)
-        //{
-        //}
-        //finally
-        //{
-        //    con.Dispose();
-        //    con.Close();
-        //    ds.Dispose();
-        //}
-
     }
     protected void ShowreportforOther_day()
     {
-        //string str = "";
-        //string FilterBy = "";
-        //if (ddItemName.SelectedIndex > 0)
-        //{
-        //    str = str + " and vf.item_id=" + ddItemName.SelectedValue;
-        //    FilterBy = FilterBy + " ITEMNAME-" + ddItemName.SelectedItem.Text;
-        //}
-        //if (DDQuality.SelectedIndex > 0)
-        //{
-        //    str = str + " and vf.QualityId=" + DDQuality.SelectedValue;
-        //    FilterBy = FilterBy + " QUALITY-" + DDQuality.SelectedItem.Text;
-        //}
-        //if (DDDesign.SelectedIndex > 0)
-        //{
-        //    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
-        //    FilterBy = FilterBy + " DESIGN-" + DDDesign.SelectedItem.Text;
-        //}
-        //if (DDColor.SelectedIndex > 0)
-        //{
-        //    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
-        //    FilterBy = FilterBy + " COLOR-" + DDColor.SelectedItem.Text;
-        //}
-        //if (DDShape.SelectedIndex > 0)
-        //{
-        //    str = str + " and vf.shapeid=" + DDShape.SelectedValue;
-        //    FilterBy = FilterBy + " SHAPE-" + DDShape.SelectedItem.Text;
-        //}
-        //if (DDSize.SelectedIndex > 0)
-        //{
-        //    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
-        //    FilterBy = FilterBy + " SIZE-" + DDSize.SelectedItem.Text;
-        //}
         //**********************************
         try
         {
@@ -587,90 +472,6 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
         {
 
         }
-
-
-        //DataSet ds = new DataSet();
-        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        //if (con.State == ConnectionState.Closed)
-        //{
-        //    con.Open();
-        //}
-        //try
-        //{
-        //    SqlParameter[] array = new SqlParameter[10];
-
-        //    array[0] = new SqlParameter("@ProcessId", SqlDbType.Int);
-        //    array[1] = new SqlParameter("@Fromdate", SqlDbType.SmallDateTime);
-        //    array[2] = new SqlParameter("@Todate", SqlDbType.SmallDateTime);
-        //    array[3] = new SqlParameter("@Companyid", SqlDbType.Int);
-        //    array[4] = new SqlParameter("@UserId", SqlDbType.Int);
-        //    array[5] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
-        //    array[6] = new SqlParameter("@UnitsId", SqlDbType.Int);
-        //    array[7] = new SqlParameter("@Where", str);
-        //    array[8] = new SqlParameter("@excelexport", chkexport.Checked == true ? "1" : "0");
-        //    array[9] = new SqlParameter("@WITHSTOCKDETAIL", chkwithstockdetail.Checked == true ? "1" : "0");
-
-
-        //    array[0].Value = DDjob.SelectedIndex <= 0 ? "0" : DDjob.SelectedValue;
-        //    array[1].Value = txtFromdate.Text;
-        //    array[2].Value = txtToDate.Text;
-        //    array[3].Value = 1;
-        //    array[4].Value = Session["varuserId"];
-        //    array[5].Value = Session["varcompanyId"];
-        //    array[6].Value = DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue;
-
-        //    ds = SqlHelper.ExecuteDataset(con, CommandType.StoredProcedure, "Pro_ForProduction_JobSummaryOther", array);
-
-        //    if (ds.Tables[0].Rows.Count > 0)
-        //    {
-        //        if (chkexport.Checked == true && chkwithstockdetail.Checked == false)
-        //        {
-        //            JobwiseissueExcelExport(ds, FilterBy);
-        //            return;
-        //        }
-        //        else if (chkexport.Checked == true && chkwithstockdetail.Checked == true)
-        //        {
-        //            switch (Session["VarCompanyId"].ToString())
-        //            {
-        //                case "22":
-        //                    JobwiseissueExcelExportDiamond_WithstockDetail(ds, FilterBy);                           
-        //                    break;                            
-        //                default :
-        //                    JobwiseissueExcelExport_WithstockDetail(ds, FilterBy);                            
-        //                    break;
-
-        //            }
-
-        //            //JobwiseissueExcelExport_WithstockDetail(ds, FilterBy);
-        //            //return;
-        //        }
-        //        else
-        //        {
-        //            Session["dsFileName"] = "~\\ReportSchema\\RptProduction_JobSummary.xsd";
-        //            Session["rptFileName"] = "Reports/RptProduction_JobSummaryNew.rpt";
-        //            Session["GetDataset"] = ds;
-        //            StringBuilder stb = new StringBuilder();
-        //            stb.Append("<script>");
-        //            stb.Append("window.open('../../ViewReport.aspx?Export=Y', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-        //            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
-        //    }
-
-        //}
-        //catch (Exception)
-        //{
-        //}
-        //finally
-        //{
-        //    con.Dispose();
-        //    con.Close();
-        //    ds.Dispose();
-        //}
-
     }
     protected void DDjob_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -879,133 +680,124 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             FilterBy = FilterBy + " SIZE-" + DDSize.SelectedItem.Text;
         }
         //**********************************
-        try
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
         {
-            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-            if (con.State == ConnectionState.Closed)
-            {
-                con.Open();
-            }
-            SqlCommand cmd = new SqlCommand("PRO_FORPRODUCTION_JOBSUMMARYPROCESSWISE", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandTimeout = 3000;
-
-            cmd.Parameters.AddWithValue("@ProcessId", DDjob.SelectedIndex <= 0 ? "0" : DDjob.SelectedValue);
-            cmd.Parameters.AddWithValue("@Fromdate", txtFromdate.Text);
-            cmd.Parameters.AddWithValue("@ToDate", txtToDate.Text);
-            cmd.Parameters.AddWithValue("@Companyid", Session["CurrentWorkingCompanyID"]);
-            cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
-            cmd.Parameters.AddWithValue("@UnitsId", DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue);
-            cmd.Parameters.AddWithValue("@Where", str);
-
-            DataSet ds = new DataSet();
-            SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            cmd.ExecuteNonQuery();
-            ad.Fill(ds);
-
-            con.Close();
-            con.Dispose();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                var xapp = new XLWorkbook();
-                var sht = xapp.Worksheets.Add("Process_Wise_Production_Summary");
-
-                //*************
-                //***********
-                sht.Row(1).Height = 24;
-                sht.Range("A1:H1").Merge();
-                sht.Range("A1:H1").Style.Font.FontSize = 10;
-                sht.Range("A1:H1").Style.Font.Bold = true;
-                sht.Range("A1:H1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A1:H1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                sht.Range("A1:H1").Style.Alignment.WrapText = true;
-                //************
-                sht.Range("A1").SetValue("Process_Wise_Production_Summary (From -" + txtFromdate.Text + " To-" + txtToDate.Text + ") " + FilterBy);
-
-                sht.Range("A2:H2").Style.Font.FontSize = 10;
-                sht.Range("A2:H2").Style.Font.Bold = true;
-                sht.Range("F2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                sht.Range("G2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                sht.Range("H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                sht.Range("A2").Value = "UNIT NAME";
-                sht.Range("B2").Value = "JOB NAME";
-                sht.Range("C2").Value = "ITEM NAME";
-                sht.Range("D2").Value = "QUALITY";
-                sht.Range("E2").Value = "SIZE";
-                sht.Range("F2").Value = "QTY";
-                sht.Range("G2").Value = "AREA IN GAJ";
-                sht.Range("H2").Value = "AREA IN SQ FT";
-
-                int row = 3;
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["UnitName"]);
-                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["Job"]);
-                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["ItemName"]);
-                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"]);
-                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["Size"]);
-                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["RecQty"]);
-                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["AreaInGaj"]);
-                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["AreaSqFt"]);
-
-                    row = row + 1;
-                }
-                ds.Dispose();
-                //**************grand Totalp
-                var sum = sht.Evaluate("SUM(F3:F" + (row - 1) + ")");
-                sht.Range("F" + row).SetValue(sum);
-                sht.Range("F" + row).Style.Font.Bold = true;
-
-                var AreaIngaj = sht.Evaluate("SUM(G3:G" + (row - 1) + ")");
-                sht.Range("G" + row).SetValue(AreaIngaj);
-                sht.Range("G" + row).Style.Font.Bold = true;
-
-                var AreaInSqFt = sht.Evaluate("SUM(H3:H" + (row - 1) + ")");
-                sht.Range("H" + row).SetValue(AreaInSqFt);
-                sht.Range("H" + row).Style.Font.Bold = true;
-
-                using (var a = sht.Range("A1:H" + row))
-                {
-                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                }
-
-                String Path;
-                sht.Columns(1, 8).AdjustToContents();
-                string Fileextension = "xlsx";
-                string filename = UtilityModule.validateFilename("Process_Wise_Production_Summary_" + DateTime.Now + "." + Fileextension);
-                Path = Server.MapPath("~/Tempexcel/" + filename);
-                xapp.SaveAs(Path);
-                xapp.Dispose();
-                //Download File
-                Response.ClearContent();
-                Response.ClearHeaders();
-                // Response.Clear();
-                Response.ContentType = "application/vnd.ms-excel";
-                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
-                Response.WriteFile(Path);
-                // File.Delete(Path);
-                Response.End();
-            }
-            else
-            {
-                ScriptManager.RegisterStartupScript(Page, GetType(), "JobPendalt", "alert('No records found..')", true);
-            }
-
-
+            con.Open();
         }
-        catch (Exception)
-        {
-        }
-        finally
-        {
+        SqlCommand cmd = new SqlCommand("PRO_FORPRODUCTION_JOBSUMMARYPROCESSWISE", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 3000;
 
+        cmd.Parameters.AddWithValue("@ProcessId", DDjob.SelectedIndex <= 0 ? "0" : DDjob.SelectedValue);
+        cmd.Parameters.AddWithValue("@Fromdate", txtFromdate.Text);
+        cmd.Parameters.AddWithValue("@ToDate", txtToDate.Text);
+        cmd.Parameters.AddWithValue("@Companyid", Session["CurrentWorkingCompanyID"]);
+        cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+        cmd.Parameters.AddWithValue("@UnitsId", DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue);
+        cmd.Parameters.AddWithValue("@Where", str);
+        cmd.Parameters.AddWithValue("@ChkForMtr", ChkForMtrSize.Checked == true ? 1 : 0); 
+
+        DataSet ds = new DataSet();
+        SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+        ad.Fill(ds);
+
+        con.Close();
+        con.Dispose();
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("Process_Wise_Production_Summary");
+
+            //*************
+            //***********
+            sht.Row(1).Height = 24;
+            sht.Range("A1:H1").Merge();
+            sht.Range("A1:H1").Style.Font.FontSize = 10;
+            sht.Range("A1:H1").Style.Font.Bold = true;
+            sht.Range("A1:H1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:H1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+            sht.Range("A1:H1").Style.Alignment.WrapText = true;
+            //************
+            sht.Range("A1").SetValue("Process_Wise_Production_Summary (From -" + txtFromdate.Text + " To-" + txtToDate.Text + ") " + FilterBy);
+
+            sht.Range("A2:H2").Style.Font.FontSize = 10;
+            sht.Range("A2:H2").Style.Font.Bold = true;
+            sht.Range("F2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("G2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+            sht.Range("H2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+            sht.Range("A2").Value = "UNIT NAME";
+            sht.Range("B2").Value = "JOB NAME";
+            sht.Range("C2").Value = "ITEM NAME";
+            sht.Range("D2").Value = "QUALITY";
+            sht.Range("E2").Value = "SIZE";
+            sht.Range("F2").Value = "QTY";
+            sht.Range("G2").Value = "AREA IN GAJ";
+            sht.Range("H2").Value = "AREA IN SQ FT";
+
+            int row = 3;
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+            {
+                sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["UnitName"]);
+                sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["Job"]);
+                sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["ItemName"]);
+                sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"]);
+                sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["Size"]);
+                sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["RecQty"]);
+                sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["AreaInGaj"]);
+                sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["AreaSqFt"]);
+
+                row = row + 1;
+            }
+            ds.Dispose();
+            //**************grand Totalp
+            var sum = sht.Evaluate("SUM(F3:F" + (row - 1) + ")");
+            sht.Range("F" + row).SetValue(sum);
+            sht.Range("F" + row).Style.Font.Bold = true;
+
+            var AreaIngaj = sht.Evaluate("SUM(G3:G" + (row - 1) + ")");
+            sht.Range("G" + row).SetValue(AreaIngaj);
+            sht.Range("G" + row).Style.Font.Bold = true;
+
+            var AreaInSqFt = sht.Evaluate("SUM(H3:H" + (row - 1) + ")");
+            sht.Range("H" + row).SetValue(AreaInSqFt);
+            sht.Range("H" + row).Style.Font.Bold = true;
+
+            using (var a = sht.Range("A1:H" + row))
+            {
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+            }
+
+            String Path;
+            sht.Columns(1, 8).AdjustToContents();
+            string Fileextension = "xlsx";
+            string filename = UtilityModule.validateFilename("Process_Wise_Production_Summary_" + DateTime.Now + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "JobPendalt", "alert('No records found..')", true);
         }
     }
+
     protected void JobwiseissueExcelExport(DataSet ds, string FilterBy)
     {
         if (ds.Tables[0].Rows.Count > 0)

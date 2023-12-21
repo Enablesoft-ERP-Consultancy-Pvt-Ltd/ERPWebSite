@@ -46,7 +46,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
                         JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CUSHIONTYPEITEM = 1 
                         Where OM.Status = 0 And OM.CompanyID = " + Session["CurrentWorkingCompanyID"] + @"
                         Order By CI.CustomerCode 
-                        SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('TASSEL MAKING', 'POM-POM MAKING', 'BRAIDING', 'LACE MACKING') Order By PROCESS_NAME ";
+                        SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('TASSEL MAKING', 'POM-POM MAKING', 'BRAIDING', 'LACE MACKING', 'FRINGES MAKING') Order By PROCESS_NAME ";
                         
             }
             str = str + @" Select ID, BranchName 

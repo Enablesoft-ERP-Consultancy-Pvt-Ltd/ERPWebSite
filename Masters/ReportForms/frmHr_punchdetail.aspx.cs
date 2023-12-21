@@ -33,7 +33,8 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
                         Select ID, BranchName 
                         From BRANCHMASTER BM(nolock) 
                         JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                        SELECT DIVISIONID, DIVISION FROM HR_DIVISIONMASTER(Nolock) ORDER BY DISPSEQNO,DIVISION ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, true, "--ALL--");
@@ -54,6 +55,8 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
                 return;
             }
 
+            UtilityModule.ConditionalComboFillWithDS(ref dddivision, ds, 4, true, "--Plz Select--");
+
             DDreporttype.Items.Add(new ListItem("Punch Detail", "1"));
             DDreporttype.Items.Add(new ListItem("Attendance Report", "2"));
             DDreporttype.Items.Add(new ListItem("Long Absenteeism Report", "3"));
@@ -63,6 +66,7 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
             DDreporttype.Items.Add(new ListItem("Leaving Report", "7"));
             DDreporttype.Items.Add(new ListItem("Attendance Register", "8"));
             DDreporttype.Items.Add(new ListItem("Late Arrival Report", "9"));
+            DDreporttype.Items.Add(new ListItem("Early Outing Report", "15"));
             DDreporttype.Items.Add(new ListItem("Department Wise Present Report", "10"));
             DDreporttype.Items.Add(new ListItem("Department Present Report", "11"));
             DDreporttype.Items.Add(new ListItem("Total Head Count", "12"));
@@ -121,6 +125,9 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
                 break;
             case "14":
                 ActualPerformanceDetailReport();
+                break;
+            case "15":
+                EarlyOutingReport();
                 break;
             default:
                 break;
@@ -1043,6 +1050,7 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR", 0);
             }
             cmd.Parameters.AddWithValue("@BranchID", DDBranchName.SelectedValue);
+            cmd.Parameters.AddWithValue("@DIVISION", dddivision.SelectedValue);
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             DataSet ds = new DataSet();
@@ -1069,6 +1077,151 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
                 stb.Append("<script>");
                 stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
                 ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+    }
+    protected void EarlyOutingReport()
+    {
+        lblmsg.Text = "";
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        try
+        {
+            string Departmentid = "", Designationid = "";
+            for (int i = 0; i < lstdept.Items.Count; i++)
+            {
+                if (Departmentid == "")
+                {
+                    Departmentid = lstdept.Items[i].Value;
+                }
+                else
+                {
+                    Departmentid = Departmentid + "," + lstdept.Items[i].Value;
+                }
+            }
+            for (int i = 0; i < lstdesignation.Items.Count; i++)
+            {
+                if (Designationid == "")
+                {
+                    Designationid = lstdesignation.Items[i].Value;
+                }
+                else
+                {
+                    Designationid = Designationid + "," + lstdesignation.Items[i].Value;
+                }
+            }
+            SqlCommand cmd = new SqlCommand("[PRO_HR_GETEARLYGOINGREPORT]", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompanyName.SelectedIndex == -1 ? "0" : DDCompanyName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Departmentid", Departmentid);
+            cmd.Parameters.AddWithValue("@empcode", txtempcode.Text);
+            cmd.Parameters.AddWithValue("@fromDate", txtfromdate.Text);
+            cmd.Parameters.AddWithValue("@Designationid", Designationid);
+            cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
+            if (Session["usertype"].ToString() == "5" && variable.HR_EMPLOYEE_SHOW_OR_NOT_USER_WISE == "1")
+            {
+                cmd.Parameters.AddWithValue("@USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR", 1);
+            }
+            else
+            {
+                cmd.Parameters.AddWithValue("@USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR", 0);
+            }
+            cmd.Parameters.AddWithValue("@BranchID", DDBranchName.SelectedValue);
+
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            DataSet ds = new DataSet();
+            ad.Fill(ds);
+            if (ds.Tables[0].Rows.Count == 0)
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altform12", "alert('No data found for this selection !!!')", true);
+                return;
+            }
+            else
+            {
+                if (!Directory.Exists(Server.MapPath("~/TempHrexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/TempHrexcel/"));
+                }
+
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("Newjoiningreport");
+
+                sht.Range("A1:I1").Merge();
+                sht.Range("A2:I2").Merge();
+                sht.Range("A1").SetValue("EARLY GOING REPORT - " + txtfromdate.Text);
+                sht.Range("A2").SetValue("Company/Unit : " + DDCompanyName.SelectedItem.Text);
+                sht.Range("A1:I2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:I2").Style.Font.SetBold();
+
+                sht.Range("A3:C3").Merge();
+                sht.Range("A3").SetValue("Total Early Arrivals : " + ds.Tables[0].Rows.Count);
+                sht.Range("A3:C3").Style.Font.SetBold();
+
+                int Hrow = 4;
+
+                sht.Range("A" + Hrow).SetValue("S.No.");
+                sht.Range("B" + Hrow).SetValue("Date");
+                sht.Range("C" + Hrow).SetValue("Card No.");
+                sht.Range("D" + Hrow).SetValue("Employee Name");
+                sht.Range("E" + Hrow).SetValue("Designation");
+                sht.Range("F" + Hrow).SetValue("Out");
+                sht.Range("G" + Hrow).SetValue("Shift End");
+                sht.Range("H" + Hrow).SetValue("Early Hrs.");
+                sht.Range("I" + Hrow).SetValue("Remark");
+                sht.Range("A" + Hrow + ":I" + Hrow).Style.Font.SetBold();
+                sht.Range("F" + Hrow + ":H" + Hrow).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                
+                int row = Hrow + 1;
+
+                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                {
+                    sht.Range("A" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("F" + row + ":H" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A" + row).SetValue(i + 1);
+                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["DATEOFFICE"]);
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["empcode"]);
+                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["empname"]);
+                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["Designation"]);
+                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["OUT2"]);
+                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["SHIFTENDTIME"]);
+                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["EARLY_HRS"]);
+                    sht.Range("I" + row).SetValue("");
+                    row = row + 1;
+                }
+                //************
+                sht.Columns(1, 25).AdjustToContents();
+
+                using (var a = sht.Range("A1" + ":I" + row))
+                {
+                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                }
+
+                string Path = "";
+                string Fileextension = "xlsx";
+                string filename = UtilityModule.validateFilename("EarlyOutingReport" + DateTime.Now + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
             }
         }
         catch (Exception ex)
@@ -1648,15 +1801,20 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
     }
     protected void DDreporttype_SelectedIndexChanged(object sender, EventArgs e)
     {
+        trdivision.Visible = false;
         switch (DDreporttype.SelectedValue)
         {
             case "4":
             case "6":
             case "7":
-            case "8":
             case "9":
             case "13":
             case "14":
+            case "15":
+                trtodate.Visible = true;
+                break;
+            case "8":
+                trdivision.Visible = true;
                 trtodate.Visible = true;
                 break;
             default:
@@ -1736,8 +1894,8 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Wagescalculation", DDwagescalculation.SelectedValue);
             cmd.Parameters.AddWithValue("@empcode", txtempcode.Text);
             cmd.Parameters.AddWithValue("@fromDate", txtfromdate.Text);
-            cmd.Parameters.AddWithValue("@Todate", txttodate.Text); 
-            
+            cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
+
             if (Session["usertype"].ToString() == "5" && variable.HR_EMPLOYEE_SHOW_OR_NOT_USER_WISE == "1")
             {
                 cmd.Parameters.AddWithValue("@USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR", 1);
@@ -1905,8 +2063,8 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Wagescalculation", DDwagescalculation.SelectedValue);
             cmd.Parameters.AddWithValue("@empcode", txtempcode.Text);
             cmd.Parameters.AddWithValue("@fromDate", txtfromdate.Text);
-            cmd.Parameters.AddWithValue("@Todate", txttodate.Text); 
-            
+            cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
+
             if (Session["usertype"].ToString() == "5" && variable.HR_EMPLOYEE_SHOW_OR_NOT_USER_WISE == "1")
             {
                 cmd.Parameters.AddWithValue("@USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR", 1);

@@ -1046,6 +1046,10 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     {
                         DGRecDetail.Columns[i].Visible = true;
                     }
+                    if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "QA NAME" || DGRecDetail.Columns[i].HeaderText.ToUpper() == "QC CHECK")
+                    {
+                        DGRecDetail.Columns[i].Visible = false;
+                    }
                 }
 
             }

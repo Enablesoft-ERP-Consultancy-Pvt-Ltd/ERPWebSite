@@ -69,6 +69,15 @@
                                     </asp:DropDownList>
                                 </td>
                             </tr>
+                            <tr id="trdivision" runat ="server" visible ="false" >
+                                <td style="width: 20%; border-style: dotted">
+                                    <asp:Label ID="Label13" runat="server" CssClass="labelbold" Text="Division"></asp:Label>
+                                </td>
+                                <td style="width: 80%; border-style: dotted">
+                                    <asp:DropDownList ID="dddivision" runat="server" CssClass="dropdown" Width="95%">
+                                    </asp:DropDownList>
+                                </td>
+                            </tr>
                             <tr>
                                 <td style="width: 20%; border-style: dotted">
                                     <asp:Label ID="Label2" runat="server" CssClass="labelbold" Text="Emp. Code" />

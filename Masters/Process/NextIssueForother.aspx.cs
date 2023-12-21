@@ -166,6 +166,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                     TxtIssueQty.Enabled = true;
                     TxtIssueQty.Text = "200";
                     DGStockDetail.PageSize = 200;
+                    TdDyingLotNo.Visible = true;
                     break;
                 case 27:
                     switch (Session["Usertype"].ToString())
@@ -241,7 +242,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                         default:
                             //DIVStockDetail.Visible = false;
                             //btngetstock.Visible = false;
-                            btnsavegrid.Visible = false;
+                            btnsavegrid.Visible = true;
                             TDCustomerCode.Visible = false;
                             TDCustomerOrderNo.Visible = false;
                             TrBindRecChallanNoJobWise.Visible = true;
@@ -1033,7 +1034,8 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                     {
                         Rate = TxtRateNew.Text == "" ? "0" : TxtRateNew.Text;
                     }
-                    SqlParameter[] _arrpara = new SqlParameter[49];
+                    SqlParameter[] _arrpara = new SqlParameter[50];
+
                     _arrpara[0] = new SqlParameter("@IssueOrderid", SqlDbType.Int);
                     _arrpara[1] = new SqlParameter("@Empid", SqlDbType.Int);
                     _arrpara[2] = new SqlParameter("@Assign_Date", SqlDbType.SmallDateTime);
@@ -1088,6 +1090,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                     _arrpara[46] = new SqlParameter("@GSTType", SqlDbType.Int);
                     _arrpara[47] = new SqlParameter("@EWayBillNo", SqlDbType.VarChar, 15);
                     _arrpara[48] = new SqlParameter("@ChkForExportSize", SqlDbType.Int);
+                    _arrpara[49] = new SqlParameter("@DyingLotNo", SqlDbType.VarChar, 100);
 
                     //
                     //  int num = 1;
@@ -1191,8 +1194,8 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                     _arrpara[40].Value = TDBatchNo.Visible == false ? "" : DDbatchNo.SelectedItem.Text;
                     _arrpara[41].Value = Session["varcompanyid"];
                     _arrpara[42].Direction = ParameterDirection.Output;
-                    _arrpara[43].Direction = ParameterDirection.InputOutput;
                     _arrpara[43].Value = TxtChallanNO.Text;
+                    _arrpara[43].Direction = ParameterDirection.InputOutput;
 
                     if (Session["VarCompanyNo"].ToString() == "16" || Session["VarcompanyNo"].ToString() == "28")
                     {
@@ -1230,6 +1233,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                         _arrpara[47].Value = TDEWayBillNo.Visible == false ? "0" : txtEWayBillNo.Text == "" ? "0" : txtEWayBillNo.Text;
                     }
                     _arrpara[48].Value = TDExportSize.Visible == false ? "0" : ChkForExportSize.Checked == true ? "1" : "0";
+                    _arrpara[49].Value = TdDyingLotNo.Visible == false ? "" : TxtDyingLotNo.Text;
 
                     //Insert into Process_Issue_Master And Process_Issue_Detail 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_NextProcessIssueForOther", _arrpara);
@@ -1245,6 +1249,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                     {
                         LblErrorMessage.Text = _arrpara[35].Value.ToString();
                         LblErrorMessage.Visible = true;
+                        Tran.Rollback();
                     }
                     else
                     {
@@ -1257,19 +1262,18 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                         TxtStockNo.Focus();
                         LblErrorMessage.Visible = true;
                         LblErrorMessage.Text = "Data Successfully Saved.......";
-                    }
-                    if (_arrpara[42].Value.ToString() == "1") //Data Not Saved in case of packing
-                    {
-                        Tran.Rollback();
-                    }
-                    else
-                    {
-                        Tran.Commit();
+                        if (_arrpara[42].Value.ToString() == "1") //Data Not Saved in case of packing
+                        {
+                            Tran.Rollback();
+                        }
+                        else
+                        {
+                            Tran.Commit();
+                        }
                     }
                     BtnPreview.Enabled = true;
 
                     FillGridDetails();
-
                 }
             }
             catch (Exception ex)
@@ -1436,16 +1440,10 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
         ViewState["IssueOrderid"] = 0;
         TxtIssueDate.Enabled = true;
     }
-    protected void SaveScanCarpetNumber()
-    {
-        saveDetail();
-        disablecontrols();
-        Focus = "TxtStockNo";
-    }
+    
 
     protected void TxtStockNo_TextChanged(object sender, EventArgs e)
     {
-
         if (Session["varCompanyNo"].ToString() == "27" && Session["usertype"].ToString() != "1")
         {
             btnclickflag = "";
@@ -1457,7 +1455,12 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
         {
             SaveScanCarpetNumber();
         }
-
+    }
+    protected void SaveScanCarpetNumber()
+    {
+        saveDetail();
+        disablecontrols();
+        Focus = "TxtStockNo";
     }
     protected void saveDetail()
     {
@@ -1467,8 +1470,8 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
         param[0] = new SqlParameter("@TStockNo", TxtStockNo.Text);
         param[1] = new SqlParameter("@ProcessId", DDTOProcess.SelectedValue);
         param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-        param[3] = new SqlParameter("@FromProcessid", SqlDbType.Int);
         param[2].Direction = ParameterDirection.Output;
+        param[3] = new SqlParameter("@FromProcessid", SqlDbType.Int);        
         param[3].Direction = ParameterDirection.Output;
         param[4] = new SqlParameter("@notmaintainjobseq", chkjobseqno.Checked == true ? "1" : "0");
         param[5] = new SqlParameter("@unitid", DDUnit.SelectedValue);
@@ -1499,57 +1502,13 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
         }
         LblErrorMessage.Text = param[2].Value.ToString();
         ViewState["FromProcessId"] = param[3].Value.ToString();
-        //
-        #region on 16-Jul-2016
-        //        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Cn.CompanyId,CN.issRecStatus,CN.CurrentProStatus,CN.StockNo,CN.Pack,vf.Item_Id,vf.Item_name from CarpetNumber CN,V_FinishedItemDetail vf  Where TStockNo='" + TxtStockNo.Text + "' And CN.CompanyId=1 And CN.Item_Finished_id=vf.Item_Finished_Id");
-        //        if (Ds.Tables[0].Rows.Count > 0)
-        //        {
-        //            LblErrorMessage.Visible = true;
-        //            LblErrorMessage.Text = "";
-        //            //Find From ProcessId
-        //            FindFromProcessId(Convert.ToInt16(Ds.Tables[0].Rows[0]["Item_Id"]), Convert.ToInt16(DDTOProcess.SelectedValue));
-        //            if (ViewState["FromProcessId"].ToString() == "0")
-        //            {
-        //                LblErrorMessage.Text = "Prevoius Job is not available or not define for " + Ds.Tables[0].Rows[0]["Item_Name"] + "......";
-        //                return;
-        //            }
-        //            //
-        //            if (Convert.ToInt32(Ds.Tables[0].Rows[0]["CompanyId"]) != Convert.ToInt32(DDCompanyName.SelectedValue))
-        //            {
-        //                LblErrorMessage.Text = "This Stock No Does Not Belong To That Company...";
-        //                TxtStockNo.Focus();
-        //            }
-        //            else if (Convert.ToInt32(Ds.Tables[0].Rows[0]["issRecStatus"]) != 0)
-        //            {
-        //                string Str = @"Select Distinct (select * from [dbo].[Get_Folio_EMployee](PM.IssueOrderID,CurrentProstatus,PD.Issue_Detail_ID))+'  /  '+replace(convert(varchar(11),AssignDate,106), ' ','-') EmpInFormation 
-        //                            From PROCESS_ISSUE_MASTER_" + Ds.Tables[0].Rows[0]["CurrentProStatus"] + " PM,PROCESS_ISSUE_DETAIL_" + Ds.Tables[0].Rows[0]["CurrentProStatus"] + @" PD,
-        //                            Process_Stock_Detail PSD,CarpetNumber CN Where PM.IssueOrderid=PD.IssueOrderid  And 
-        //                            PD.Issue_Detail_ID=PSD.IssueDetailID And PSD.StockNo=CN.StockNo And ReceiveDetailId=0 And CN.StockNo=" + Ds.Tables[0].Rows[0]["StockNo"] + @" And 
-        //                            CN.CurrentProStatus=" + Ds.Tables[0].Rows[0]["CurrentProStatus"];
-        //                LblErrorMessage.Text = "Issue To " + SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str).ToString();
-        //                TxtStockNo.Focus();
-        //            }
-        //            else if (Convert.ToInt32(Ds.Tables[0].Rows[0]["CurrentProStatus"]) != Convert.ToInt32(ViewState["FromProcessId"]))
-        //            {
-        //                string Str = @"Select Process_Name From Process_Name_Master Where Process_Name_Id=" + Ds.Tables[0].Rows[0]["CurrentProStatus"] + "";
-        //                LblErrorMessage.Text = "Stock No.  Belongs To " + SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str).ToString() + " Process";
-        //                TxtStockNo.Focus();
-        //            }
-        //            else if (Convert.ToInt32(Ds.Tables[0].Rows[0]["Pack"]) != 0)
-        //            {
-        //                LblErrorMessage.Text = "Stock No. Already Packed....";
-        //                TxtStockNo.Focus();
-        //            }
-        //        }
-        //        else
-        //        {
-        //            LblErrorMessage.Text = "Stock No is not available....";
-        //            TxtStockNo.Focus();
-        //        }
-        #endregion
+
         if (LblErrorMessage.Text == "")
         {
-            Issue_CarpetWise(TxtStockNo.Text, "0", ds);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Issue_CarpetWise(TxtStockNo.Text, "0", ds);
+            }
             //if (TDgetstockdetail.Visible==true)
             //{
             //    Fillstockdetail();

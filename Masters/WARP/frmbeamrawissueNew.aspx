@@ -137,6 +137,10 @@
                                     runat="server">
                                 </asp:CalendarExtender>
                             </td>
+                            <td>
+                                <asp:Label ID="Label12" runat="server" Text="Remark" CssClass="labelbold"></asp:Label><br />
+                                <asp:TextBox ID="txtRemark" CssClass="textb" Width="500px" runat="server" />
+                            </td>
                         </tr>
                     </table>
                 </fieldset>

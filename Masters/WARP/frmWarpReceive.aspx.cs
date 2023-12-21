@@ -165,7 +165,7 @@ public partial class Masters_WARP_frmWarpReceive : System.Web.UI.Page
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-                SqlParameter[] param = new SqlParameter[16];
+                SqlParameter[] param = new SqlParameter[17];
                 param[0] = new SqlParameter("@id", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.InputOutput;
                 param[0].Value = ViewState["reportid"];
@@ -187,6 +187,8 @@ public partial class Masters_WARP_frmWarpReceive : System.Web.UI.Page
                 param[13] = new SqlParameter("@Processid", DDProcess.SelectedValue);
                 param[14] = new SqlParameter("@Pcs", txtpcs.Text == "" ? "0" : txtpcs.Text);
                 param[15] = new SqlParameter("@McNo", txtm_cno.Text);
+                param[16] = new SqlParameter("@Remark", txtRemark.Text);
+
                 //*******************
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_saveWarpReceive", param);
                 //*******************
@@ -270,21 +272,23 @@ public partial class Masters_WARP_frmWarpReceive : System.Web.UI.Page
     }
     protected void FillBeamNo()
     {
-        string str = "";
+        string str = @"select Distinct WLM.ID,WLM.LoomNo 
+                    From WarpLoommaster WLM(Nolock) 
+                    join WarpLoomDetail WLD(Nolock) on WLM.ID=WLD.ID 
+                    join LoomStock LS(Nolock) on WLM.LoomNo=LS.LoomNo 
+                    Where WLM.CompanyId=" + DDcompany.SelectedValue + " and WLM.DeptId=" + DDDept.SelectedValue + " and WLM.EmpId=" + DDemployee.SelectedValue + " and WLD.Issuemasterid=" + DDIssueno.SelectedValue;
+
         if (Session["VarCompanyNo"].ToString() == "21" || Session["VarCompanyNo"].ToString() == "45")
         {
-            str = @"select Distinct WLM.ID,WLM.LoomNo from WarpLoommaster WLM  inner join WarpLoomDetail WLD on WLM.ID=WLD.ID
-                            inner join LoomStock LS on WLM.LoomNo=LS.LoomNo
-                            and WLM.CompanyId=" + DDcompany.SelectedValue + " and WLM.DeptId=" + DDDept.SelectedValue + " and WLM.EmpId=" + DDemployee.SelectedValue + " and WLD.Issuemasterid=" + DDIssueno.SelectedValue + " order by WLM.id";
+            str = str + " ";
         }
         else
         {
-            str = @"select Distinct WLM.ID,WLM.LoomNo from WarpLoommaster WLM  inner join WarpLoomDetail WLD on WLM.ID=WLD.ID
-                            inner join LoomStock LS on WLM.LoomNo=LS.LoomNo
-                            and LS.Qtyinhand>0 and WLM.CompanyId=" + DDcompany.SelectedValue + " and WLM.DeptId=" + DDDept.SelectedValue + " and WLM.EmpId=" + DDemployee.SelectedValue + " and WLD.Issuemasterid=" + DDIssueno.SelectedValue + " order by WLM.id";
+            str = str + " And LS.Qtyinhand>0 ";
         }
-         UtilityModule.ConditionalComboFill(ref DDBeamNo, str, true, "--Plz Select--");
+        str = str + " order by WLM.id";
 
+        UtilityModule.ConditionalComboFill(ref DDBeamNo, str, true, "--Plz Select--");
     }
     protected void FillBeamDetail()
     {

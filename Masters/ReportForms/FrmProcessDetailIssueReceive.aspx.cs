@@ -100,6 +100,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     break;
                 case 43:
                     RDWeaverRawMaterialIssueDetail.Visible = true;
+                    RDFinishingRecSummaryWithTDS.Visible = true;
                     break;
                 case 44:
                     RDTasselIssueReceiveSummary.Visible = true;
@@ -246,6 +247,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     {
                         Str = Str + " And Emp.EmpId=" + DDEmpName.SelectedValue;
                     }
+                    Str = Str + " Where PRM.Companyid=" + DDCompany.SelectedValue + "";
                 }
                 else
                 {
@@ -577,6 +579,11 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (RDProcessWiseAdvancePayment.Checked == true)
         {
             ProcessWiseAdvancePaymentDetail();
+            return;
+        }
+        if (RDFinishingRecSummaryWithTDS.Checked == true)
+        {
+            FinishingReceiveSummaryWithTDSReport_CI();
             return;
         }
 
@@ -2504,6 +2511,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDGatePass_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -2538,6 +2546,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         trIssueDate.Visible = false;
         TRCheckWithTime.Visible = false;
@@ -2593,6 +2602,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetailWithConsumpton_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -2754,6 +2764,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         TRChkBoxIssueDate.Visible = false;
         trIssueDate.Visible = false;
         TRQualityWiseSummary.Visible = false;
+        TRForWithoutTDS.Visible = false;
 
     }
     protected void ProcessOrderFolio(SqlTransaction Tran)
@@ -3004,7 +3015,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
         }
         //****************
-        SqlParameter[] arr = new SqlParameter[7];
+        SqlParameter[] arr = new SqlParameter[8];
         arr[0] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
         arr[1] = new SqlParameter("@Empid", DDEmpName.SelectedValue);
         arr[2] = new SqlParameter("@fromdate", TxtFromDate.Text);
@@ -3012,6 +3023,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         arr[4] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
         arr[5] = new SqlParameter("@Where", str);
         arr[6] = new SqlParameter("@IssueOrderId", txtissueno.Text);
+        arr[7] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
         //***************
         DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.StoredProcedure, "Pro_getFinisherPendingpcs", arr);
         if (ds.Tables[0].Rows.Count > 0)
@@ -3089,6 +3101,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3111,6 +3124,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDCommDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3123,6 +3137,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockNoTobeIssued_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3136,6 +3151,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPendingQty_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3149,6 +3165,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockRecQithwt_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3162,6 +3179,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPerday_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3175,6 +3193,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingpending_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3188,6 +3207,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDDailyfinreport_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3201,6 +3221,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3225,6 +3246,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3248,6 +3270,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerIssueSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3272,6 +3295,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -3295,6 +3319,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingBalance_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
         TRBuyerItemSizeWiseSummary.Visible = false;
@@ -4744,6 +4769,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDWeaverRawMaterialIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -5139,6 +5165,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDWeaverRawMaterialReceiveDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -7274,6 +7301,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     //}
     protected void RDTasselMakingRawIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         if (RDTasselMakingRawIssueDetail.Checked == true)
         {
@@ -7597,6 +7625,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDProcessWiseAdvancePayment_CheckedChanged(object sender, EventArgs e)
     {
+        TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         if (RDProcessWiseAdvancePayment.Checked == true)
         {
@@ -8289,5 +8318,131 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         {
             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
         }
+    }
+
+    protected void RDFinishingRecSummaryWithTDS_CheckedChanged(object sender, EventArgs e)
+    {
+        TRAsOnDate.Visible = false;
+        if (RDFinishingRecSummaryWithTDS.Checked == true)
+        {
+            TDJobWiseSummary.Visible = false;
+            TDsizesummary.Visible = false;
+            TRBuyerItemSizeWiseSummary.Visible = false;
+            TRChkBoxIssueDate.Visible = false;
+            TRcustcode.Visible = false;
+            TRorderno.Visible = false;
+            TRCheckWithTime.Visible = false;
+            TRQualityWiseSummary.Visible = false;
+            TRRecChallan.Visible = false;
+            TRCategoryName.Visible = false;
+            TRddItemName.Visible = false;
+            TRlotNo.Visible = false;
+            TR1.Visible = false;
+            TRGatePass.Visible = false;
+            TRIssueNo.Visible = false;
+            ChkForProcessIssRecSummary.Visible = false;
+            ChkForPendingStockNo.Visible = false;
+            TDexcelExport.Visible = false;
+            ChkSummary.Visible = false;
+            ChkForComplete.Visible = false;
+            TRForWithoutTDS.Visible = true;
+        }
+
+    }
+    protected void FinishingReceiveSummaryWithTDSReport_CI()
+    {
+        lblMessage.Text = "";
+        try
+        {
+            string str = "", FilterBy = "";
+           
+            //if (ddItemName.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Item_id=" + ddItemName.SelectedValue;
+            //    FilterBy = FilterBy + ", Item Name -" + ddItemName.SelectedItem.Text;
+            //}
+            //if (DDQuality.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+            //    FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
+            //}
+            //if (DDDesign.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+            //    FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            //}
+            //if (DDColor.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+            //    FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            //}
+            //if (DDSize.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+            //    FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            //}
+            if (ChkForDate.Checked == true)
+            {
+                str = str + " and PH.Date>='" + TxtFromDate.Text + "' and PH.Date<='" + TxtToDate.Text + "'";
+                FilterBy = FilterBy + ", From -" + TxtFromDate.Text + " To - " + TxtToDate.Text;
+            }           
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_FinishingProcessHissabSummaryWithTDSReport_CI", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 500;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Processid", DDProcessName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Where", str);
+            cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@ChkselectDate",  ChkForDate.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);           
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (ChkForWithoutTDS.Checked == true)
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptFinishingProcessHissabSummaryWithoutTDS_CI.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptFinishingProcessHissabSummaryWithTDS_CI.rpt";
+                }                
+
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptFinishingProcessHissabSummaryWithTDS_CI.xsd";
+
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
+            }
+
+        }
+        catch (Exception ex)
+        {
+           lblMessage.Text = ex.Message;
+        }
+
     }
 }

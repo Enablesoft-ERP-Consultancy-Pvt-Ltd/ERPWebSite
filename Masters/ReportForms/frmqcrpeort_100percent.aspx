@@ -112,6 +112,7 @@
                             &nbsp
                         </td>
                         <td style="border-style: dotted; width: 70%" align="right">
+                            <asp:CheckBox ID="ChkForMtrSize" runat="server" Text="For Mtr Size" CssClass="checkboxbold" />
                             <asp:CheckBox ID="ChkDATETIMEREPORTFORBAZAR" runat="server" Text="DATE TIME REPORT FOR BAZAR"
                                 CssClass="checkboxbold" Visible="false" />
                             <asp:Button ID="btngetdata" runat="server" CssClass="buttonnorm" Text="Export to Excel"

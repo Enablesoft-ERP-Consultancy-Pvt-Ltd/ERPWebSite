@@ -212,10 +212,11 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
         {
             str = str + " and vf.Colorid=" + DDColor.SelectedValue;
         }
-        if (DDShape.SelectedIndex > 0)
-        {
-            str = str + " and vf.shapeId=" + DDShape.SelectedValue;
-        }
+        str = str + " and vf.shapeId=" + DDShape.SelectedValue;
+        //if (DDShape.SelectedIndex > 0)
+        //{
+        //    str = str + " and vf.shapeId=" + DDShape.SelectedValue;
+        //}
         if (ddSize.SelectedIndex > 0)
         {
             str = str + " and vf.Sizeid=" + ddSize.SelectedValue;
@@ -229,7 +230,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] array = new SqlParameter[11];
+            SqlParameter[] array = new SqlParameter[12];
             array[0] = new SqlParameter("@CompanyId", SqlDbType.Int);
             array[1] = new SqlParameter("@ProcessId", SqlDbType.Int);
             array[2] = new SqlParameter("@RateType", SqlDbType.Int);
@@ -242,6 +243,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
             array[9] = new SqlParameter("@where", SqlDbType.VarChar, 500);
             array[10] = new SqlParameter("@msg", SqlDbType.VarChar, 200);
             array[10].Direction = ParameterDirection.Output;
+            array[11] = new SqlParameter("@CommRate", SqlDbType.VarChar, 10);
 
             array[0].Value = DDCompanyName.SelectedValue;
             array[1].Value = ddJob.SelectedValue;
@@ -253,6 +255,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
             array[7].Value = Session["varcompanyId"].ToString();
             array[8].Value = Session["varuserid"].ToString(); 
             array[9].Value = str;
+            array[11].Value = txtcommrate.Text == "" ? "0" : txtcommrate.Text;
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_RateUpdateOnFolioAndReceiveNew", array);
             //Tran.Commit();
@@ -454,10 +457,12 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
              if (ds.Tables[0].Rows.Count > 0)
              {
                  txtrate.Text = ds.Tables[0].Rows[0]["UNITRATE"].ToString();
+                 txtcommrate.Text = ds.Tables[0].Rows[0]["COMMRATE"].ToString();
              }
              else
              {
                  txtrate.Text = "";
+                 txtcommrate.Text = "";
                  lblMessage.Text = "Rate Not Define Please Define Rate For Update";
              }
          }

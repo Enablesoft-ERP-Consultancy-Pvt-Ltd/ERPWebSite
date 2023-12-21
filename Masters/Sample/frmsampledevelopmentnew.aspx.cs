@@ -328,7 +328,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         {
             if (DDRCategory.SelectedIndex > 0)
             {
-                if (Convert.ToInt16(DDRCategory.SelectedValue) == 2)
+                if (Convert.ToString(DDRCategory.SelectedItem.Text) == "RAW MATERIAL")
                 {
                     TDRShade.Visible = false;
                     TDRINPUTSHADECOLOR.Visible = true;

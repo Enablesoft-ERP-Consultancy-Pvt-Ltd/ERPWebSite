@@ -77,7 +77,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
         lblmsg.Text = "";
         try
         {
-            SqlParameter[] param = new SqlParameter[6];
+            SqlParameter[] param = new SqlParameter[7];
             param[0] = new SqlParameter("@companyId", DDCompany.SelectedValue);
             param[1] = new SqlParameter("@processid", DDprocessname.SelectedValue);
             param[2] = new SqlParameter("@fromdate", txtfromdate.Text);
@@ -92,6 +92,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
             {
                 param[5] = new SqlParameter("@OrderID", 0);
             }
+            param[6] = new SqlParameter("@ChkForMtr", ChkForMtrSize.Checked == true ? 1 : 0);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETQCREPORT_100PERCENT", param);
             if (ds.Tables[0].Rows.Count > 0)
@@ -195,11 +196,14 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
         lblmsg.Text = "";
         try
         {
-            SqlParameter[] param = new SqlParameter[4];
+            SqlParameter[] param = new SqlParameter[7];
             param[0] = new SqlParameter("@companyId", DDCompany.SelectedValue);
             param[1] = new SqlParameter("@processid", DDprocessname.SelectedValue);
             param[2] = new SqlParameter("@fromdate", txtfromdate.Text);
             param[3] = new SqlParameter("@Todate", txttodate.Text);
+            param[4] = new SqlParameter("@CustomerID", DDCustomerCode.SelectedValue);
+            param[5] = new SqlParameter("@OrderID", DDOrderNo.SelectedValue);
+            param[6] = new SqlParameter("@ChkForMtr", ChkForMtrSize.Checked == true ? 1 : 0);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETQCREPORT_100PERCENT", param);
             if (ds.Tables[0].Rows.Count > 0)
@@ -322,6 +326,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
             }
             cmd.Parameters.AddWithValue("@fromdate", txtfromdate.Text);
             cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
+            cmd.Parameters.AddWithValue("@ChkForMtr", ChkForMtrSize.Checked == true ? 1 : 0);
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             DataSet ds = new DataSet();
@@ -449,6 +454,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
             {
                 cmd.Parameters.AddWithValue("@OrderID", 0);
             }
+            cmd.Parameters.AddWithValue("@ChkForMtr", ChkForMtrSize.Checked == true ? 1 : 0);
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             DataSet ds = new DataSet();

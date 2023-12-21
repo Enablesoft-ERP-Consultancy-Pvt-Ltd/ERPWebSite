@@ -320,6 +320,18 @@ public partial class Masters_Process_frmjobReceiveeditforOther : System.Web.UI.P
                 LinkButton1.Visible = false;
             }
 
+            if (Convert.ToInt32(Session["varcompanyId"]) == 43)
+            {
+                if (Session["usertype"].ToString() != "1")
+                {
+                    LinkButton1.Visible = false;
+                }
+                else
+                {
+                    LinkButton1.Visible = true;
+                }
+            }
+
             for (int i = 0; i < DGDetail.Columns.Count; i++)
             {
                 if (DGDetail.Columns[i].HeaderText == "Bonus")

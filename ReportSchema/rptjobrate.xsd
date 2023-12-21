@@ -1,0 +1,34 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="ARTICLES" type="xs:string" minOccurs="0" />
+              <xs:element name="JOBNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLOUR" type="xs:string" minOccurs="0" />
+              <xs:element name="SIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="UNITRATE" type="xs:double" minOccurs="0" />
+              <xs:element name="DATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="SHAPE" type="xs:string" minOccurs="0" />
+              <xs:element name="RATETYPE" type="xs:string" minOccurs="0" />
+              <xs:element name="COMMRATE" type="xs:double" minOccurs="0" />
+              <xs:element name="RateLocation" type="xs:string" minOccurs="0" />
+              <xs:element name="Bonus" type="xs:double" minOccurs="0" />
+              <xs:element name="FinisherRate" type="xs:double" minOccurs="0" />
+              <xs:element name="EmpCode" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderTypeId" type="xs:double" minOccurs="0" />
+              <xs:element name="OrderCategory" type="xs:string" minOccurs="0" />
+              <xs:element name="RateRemarks" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

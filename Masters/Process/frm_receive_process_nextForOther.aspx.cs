@@ -135,6 +135,7 @@ public partial class Masters_Process_frm_receive_process_nextForOther : System.W
                     TxtReceiveQty.Enabled = true;
                     TxtReceiveQty.Text = "200";
                     DGStockDetail.PageSize = 200;
+                    TdDyingLotNo.Visible = true;
                     break;
                 case 30:
                     lblStockCarpetNo.Text = "Enter Carpet No";
@@ -150,7 +151,13 @@ public partial class Masters_Process_frm_receive_process_nextForOther : System.W
                     DDUnit.SelectedValue = "1";
                     TDTotalPcsNew.Visible = true;
                     Tr4.Visible = true;
-                    Label4.Text = "Group No";
+                    Label4.Text = "Group No";                  
+                      TablePartyChallanNo.Visible = true;
+                      TDPartyChallanNo.Visible = false;
+                      TDQANameNew.Visible = false;
+                    TxtReceiveQty.Enabled = true;
+                    TxtReceiveQty.Text = "200";
+                    DGStockDetail.PageSize = 200;
                     break;
                 default:
                     DDUnit.SelectedValue = "1";
@@ -464,7 +471,7 @@ public partial class Masters_Process_frm_receive_process_nextForOther : System.W
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] _arrpara = new SqlParameter[36];
+            SqlParameter[] _arrpara = new SqlParameter[37];
             DataSet ds3 = new DataSet(); 
             Str = @"Select CalType,UnitId,PM.IssueOrderId,PD.issue_Detail_id,length,width,area,rate,Round(Amount/Qty, 2) Amount,PD.Item_Finished_id,PD.orderid,PM.remarks,Cn.Companyid,isnull(PD.Bonus,0) as Bonus,isnull(PD.BonusAmt,0) as BonusAmt 
                     From CarpetNumber CN,Process_Stock_Detail PSD,Process_Issue_Master_" + Hn_ProcessId.Value + " PM,Process_Issue_Detail_" + Hn_ProcessId.Value + @" PD 
@@ -553,6 +560,7 @@ public partial class Masters_Process_frm_receive_process_nextForOther : System.W
                     _arrpara[33] = new SqlParameter("@Bonus", SqlDbType.Float);
                     _arrpara[34] = new SqlParameter("@BonusAmt", SqlDbType.Float);
                     _arrpara[35] = new SqlParameter("@QAPersonname", SqlDbType.VarChar,50);
+                    _arrpara[36] = new SqlParameter("@DyingLotNo", SqlDbType.VarChar, 100);
 
                     if (ViewState["recid"] == null)
                     {
@@ -638,6 +646,7 @@ public partial class Masters_Process_frm_receive_process_nextForOther : System.W
                     {
                         _arrpara[35].Value = "";
                     }
+                    _arrpara[36].Value = TdDyingLotNo.Visible == false ? "" : TxtDyingLotNo.Text;
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_NextProcessReceiveForOther]", _arrpara);
                     ViewState["recid"] = _arrpara[0].Value.ToString();

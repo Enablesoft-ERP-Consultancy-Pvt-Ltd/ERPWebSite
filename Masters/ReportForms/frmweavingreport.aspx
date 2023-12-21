@@ -43,6 +43,8 @@
                 TDWeaverOrderStatus.Visible = true;
             }
 
+            TDChkReceiveSummaryQualityDesignSizeWise.Visible = false;
+            TRForWithoutTDS.Visible = false;
             TROpenIssRecConDetail.Visible = false;
             TDChkForWeavingPendingQtyWithAreaSize.Visible = false;
             TDChkForWeavingPendingQtyWithExcelReport.Visible = false;
@@ -142,6 +144,7 @@
                 Trproductiontype.Visible = true;
                 Trunitname.Visible = true;
                 TDChkReceiveSummaryFinishedItemWise.Visible = true;
+                TDChkReceiveSummaryQualityDesignSizeWise.Visible = true;
 
                 if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
                 {
@@ -699,6 +702,24 @@
                 ChkselectDate.Checked = true;
                
             }
+            if (RDWeavingRecSummaryWithTDS.Checked == true)
+            {
+                Trunitname.Visible = false;
+                trProductionStatus.Visible = false;
+                trFolioType.Visible = false;
+                TRCustomerCode.Visible = false;
+                TROrderNo.Visible = false;
+                if (Session["VarCompanyNo"].ToString() == "43")
+                {
+                    Trproductiontype.Visible = true;
+                    TRForWithoutTDS.Visible = true;
+                }
+                else
+                {
+                    Trproductiontype.Visible = false;
+                    TRForWithoutTDS.Visible = false;
+                }
+            }
         }        
     </script>
     <asp:UpdatePanel ID="UPD1" runat="server">
@@ -886,6 +907,13 @@
                                  <tr>
                                     <td id="TDDouraReport" runat="server" visible="false">
                                         <asp:RadioButton ID="RDDouraReport" Text="Doura Report"
+                                            runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
+                                            OnCheckedChanged="RadioButton_CheckedChanged" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td id="TDWeavingRecSummaryWithTDS" runat="server" visible="false">
+                                        <asp:RadioButton ID="RDWeavingRecSummaryWithTDS" Text="Weaving Rec Summary With TDS"
                                             runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
                                             OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>
@@ -1229,6 +1257,17 @@
                                 <tr id="TROpenIssRecConDetail" runat="server" visible="false">
                                     <td colspan="3">
                                         <asp:CheckBox ID="ChkOpenIssRecConDetail" runat="server" CssClass="checkboxbold" Text="Opening Iss Rec Consmp Detail" />
+                                    </td>
+                                </tr>
+                                 <tr id="TRForWithoutTDS" runat="server" visible="false">
+                                    <td colspan="3">
+                                        <asp:CheckBox ID="ChkForWithoutTDS" runat="server" CssClass="checkboxbold" Text="For Without TDS" />
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td id="TDChkReceiveSummaryQualityDesignSizeWise" runat="server" visible="false">
+                                        <asp:CheckBox ID="ChkReceiveSummaryQualityDesignSizeWise" Text="Rec Summary QualityDesignSize Wise"
+                                            runat="server" CssClass="checkboxbold" />
                                     </td>
                                 </tr>
                                 <tr>

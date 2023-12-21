@@ -834,20 +834,13 @@ public partial class Masters_Process_GenrateInDent : System.Web.UI.Page
                     }
                     else
                     {
-                        str = str + " and ShadecolorId=" + DDColorShade.SelectedValue;
-                    
+                        str = str + " and ShadecolorId=" + DDColorShade.SelectedValue;                    
                     }
-
-                    
-                  
                 }
                 else
                 {
-                   
-                        str = str + " and ShadeColorName like 'Undyed%'";
-                   
-               }
-                
+                    str = str + " And (ShadeColorName like 'Undyed%' OR ShadeColorName like 'NATURAL%')";                   
+               }                
             }
         }
         UtilityModule.ConditionalComboFill(ref DDISSUESHADE, str, true, "--Plz select--");

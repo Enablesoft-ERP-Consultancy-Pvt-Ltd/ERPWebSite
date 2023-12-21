@@ -70,9 +70,12 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
 
                 if (txtDryWeight.Text != "0")
                 {
-                    txtTotalWeight.Enabled = false;
-                    txtChkPcs.Enabled = false;
-                    txtChkWeight.Enabled = false;
+                    if (Session["Usertype"].ToString() != "1")
+                    {
+                        txtTotalWeight.Enabled = false;
+                        txtChkPcs.Enabled = false;
+                        txtChkWeight.Enabled = false;
+                    }
                 }
                 else
                 {
@@ -254,28 +257,55 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] param = new SqlParameter[9];
-            param[0] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
-            param[1] = new SqlParameter("@ReceiveDate", txtBazaarDate.Text);
-            param[2] = new SqlParameter("@DetailData", DetailData);
-            param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
-            param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-            param[5].Direction = ParameterDirection.Output;
+            SqlCommand cmd = new SqlCommand("PRO_UPDATEBAZAARCONSUMPTION_WithDryWeightCalculation", con, Tran);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
 
-            ///**********
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_UPDATEBAZAARCONSUMPTION_WithDryWeightCalculation", param);
-            //*******************                   
-            Tran.Commit();
-            if (param[5].Value.ToString() != "")
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@ReceiveDate", txtBazaarDate.Text);
+            cmd.Parameters.AddWithValue("@DetailData", DetailData);
+            cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
+            cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+            cmd.Parameters.Add("@msg", SqlDbType.VarChar, 500);
+            cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
+
+            cmd.ExecuteNonQuery();
+            if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
             {
-                lblmessage.Text = param[5].Value.ToString();
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altsave", "alert('" + cmd.Parameters["@msg"].Value.ToString() + "');", true);
+                lblmessage.Text = cmd.Parameters["@msg"].Value.ToString();
+                Tran.Rollback();
             }
             else
             {
+                Tran.Commit();
                 lblmessage.Text = "DATA SAVED SUCCESSFULLY.";
                 FillRecDetails();
             }
+           
+
+            //SqlParameter[] param = new SqlParameter[9];
+            //param[0] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
+            //param[1] = new SqlParameter("@ReceiveDate", txtBazaarDate.Text);
+            //param[2] = new SqlParameter("@DetailData", DetailData);
+            //param[3] = new SqlParameter("@userid", Session["varuserid"]);
+            //param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            //param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            //param[5].Direction = ParameterDirection.Output;
+
+            /////**********
+            //SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_UPDATEBAZAARCONSUMPTION_WithDryWeightCalculation", param);
+            ////*******************                   
+            //Tran.Commit();
+            //if (param[5].Value.ToString() != "")
+            //{
+            //    lblmessage.Text = param[5].Value.ToString();
+            //}
+            //else
+            //{
+            //    lblmessage.Text = "DATA SAVED SUCCESSFULLY.";
+            //    FillRecDetails();
+            //}
 
         }
         catch (Exception ex)
