@@ -220,7 +220,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                             Where PID.IssueOrderID=PID1.IssueOrderId and PID.ITEM_FINISHED_ID=PID1.Item_Finished_Id For XML PATH('')) as CustomerOrderNo,
                         (Select Distinct CustIn.CustomerCode+',' from PROCESS_ISSUE_DETAIL_" + DDTOProcess.SelectedValue + @" PID2(NoLock) JOIN  OrderMaster OM2(NoLock) ON OM2.OrderID = PID2.OrderID 
                             JOIN CustomerInfo CustIn(NoLock) ON OM2.CustomerId=CustIn.CustomerId  Where PID2.IssueOrderId=PID.IssueOrderID For XML PATH('')) as CustomerCode,pim.Remarks,
-                    Case When PIM.CALTYPE=0 Then 'Area Wise' Else 'Pcs Wise' End as CalType
+                    Case When PIM.CALTYPE=0 Then 'Area Wise' Else 'Pcs Wise' End as CalType,isnull(PID.PENALITY,0) as Penality,isnull(PID.PREMARKS,'') as PRemarks
                     From PROCESS_Receive_MASTER_" + DDTOProcess.SelectedValue + @" PIM(NoLock) 
                     Join PROCESS_Receive_DETAIL_" + DDTOProcess.SelectedValue + @" PID(NoLock) on PIM.Process_Rec_Id=PID.Process_Rec_Id
                     Join PROCESS_ISSUE_DETAIL_" + DDTOProcess.SelectedValue + @" PIS(NoLock) on PIS.IssueOrderId=PID.IssueOrderId AND PIS.Issue_Detail_Id=PID.Issue_Detail_Id
@@ -280,6 +280,9 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                             break;
                         case "44":
                             Session["rptFileName"] = "~\\Reports\\RptNextReceiveNew2_agni.rpt";
+                            break;
+                        case "43":
+                            Session["rptFileName"] = "~\\Reports\\RptNextReceiveNew2_CI.rpt";
                             break;
                         default:
                             Session["rptFileName"] = "~\\Reports\\RptNextReceiveNew2.rpt";

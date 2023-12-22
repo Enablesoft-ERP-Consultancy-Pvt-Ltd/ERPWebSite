@@ -51,6 +51,8 @@
               <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
               <xs:element name="Remarks" type="xs:string" minOccurs="0" />
               <xs:element name="CalType" type="xs:string" minOccurs="0" />
+              <xs:element name="Penality" type="xs:double" minOccurs="0" />
+              <xs:element name="PRemarks" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

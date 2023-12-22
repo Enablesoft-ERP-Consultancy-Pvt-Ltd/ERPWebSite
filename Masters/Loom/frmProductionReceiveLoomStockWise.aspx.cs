@@ -2514,13 +2514,20 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             string sql = "";
             sql = @"select PenalityId,PenalityName,rate,PenalityType,QualityId from PenalityMaster where (Qualityid=" + lblQualityId.Text + " or Qualityid=0) and PenalityWF='W' And PenalityId<>-1 ";
 
-            if (lblCalType.Text == "1")
+            if (Session["VarCompanyNo"].ToString() == "43")
             {
-                sql = sql + "And PenalityType='A'";
+                sql = sql + "And PenalityType='C'";
             }
             else
             {
-                sql = sql + "And PenalityType='C'";
+                if (lblCalType.Text == "1")
+                {
+                    sql = sql + "And PenalityType='A'";
+                }
+                else
+                {
+                    sql = sql + "And PenalityType='C'";
+                }
             }
             sql = sql + "Order By PenalityName Desc";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);

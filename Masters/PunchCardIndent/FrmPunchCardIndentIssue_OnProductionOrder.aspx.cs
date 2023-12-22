@@ -461,7 +461,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     private void BindIssueGridOnFolio()
     {
         SqlParameter[] param = new SqlParameter[3];
-        param[0] = new SqlParameter("@CompanyId", DDCategoryName.SelectedValue);
+        param[0] = new SqlParameter("@CompanyId", DDcompany.SelectedValue);
         param[1] = new SqlParameter("@Item_Finished_Id", DDDescription.SelectedValue);
         param[2] = new SqlParameter("@MSG", SqlDbType.VarChar, 200);
         param[2].Direction = ParameterDirection.Output;
