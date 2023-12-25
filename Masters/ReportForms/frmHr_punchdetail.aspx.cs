@@ -71,7 +71,17 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
             DDreporttype.Items.Add(new ListItem("Department Present Report", "11"));
             DDreporttype.Items.Add(new ListItem("Total Head Count", "12"));
 
-            if (Convert.ToInt16(Session["varCompanyId"]) == 16 && Convert.ToInt16(Session["varuserId"]) != 85)
+            int UserType=1;
+            
+            if (Convert.ToInt16(Session["varCompanyId"]) == 16 && Convert.ToInt16(Session["varuserId"]) == 85)
+            {
+                UserType = 0;
+            }
+            if (Convert.ToInt16(Session["varCompanyId"]) == 16 && Convert.ToInt16(Session["varuserId"]) == 139)
+            {
+                UserType = 0;
+            }
+            if (Convert.ToInt16(Session["varCompanyId"]) == 16 && UserType == 1)
             {
                 DDreporttype.Items.Add(new ListItem("Actual Performance Summary Report", "13"));
                 DDreporttype.Items.Add(new ListItem("Actual Performance Detail Report", "14"));

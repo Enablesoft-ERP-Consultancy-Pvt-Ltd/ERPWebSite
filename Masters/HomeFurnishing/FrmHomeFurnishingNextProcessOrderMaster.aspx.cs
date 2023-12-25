@@ -72,7 +72,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
     }
     protected void DDFromProcessName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = @"Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME,a.CurrentProStatus 
+        string str = @"Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
                     From PROCESS_NAME_MASTER PNM(Nolock) 
                     Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varCompanyId"] + " And PNM.process_Name_ID <> " + DDFromProcessName.SelectedValue + @" 
                     Order By PNM.PROCESS_NAME 

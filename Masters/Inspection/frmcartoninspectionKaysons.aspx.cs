@@ -11,7 +11,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Text;
 
-public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
+public partial class Masters_Inspection_frmcartoninspectionKaysons : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
