@@ -2498,10 +2498,10 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
                 }
             }
-            if (DDEmpName.SelectedIndex > 0)
-            {
-                Str1 = Str1 + " And EmpId=" + DDEmpName.SelectedValue;
-            }
+            //if (DDEmpName.SelectedIndex > 0)
+            //{
+            //    Str1 = Str1 + " And EmpId=" + DDEmpName.SelectedValue;
+            //}
             if (ddItemName.SelectedIndex > 0)
             {
                 Str1 = Str1 + " And VF.ITEM_ID=" + ddItemName.SelectedValue;

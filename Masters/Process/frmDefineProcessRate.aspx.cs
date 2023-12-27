@@ -187,13 +187,40 @@ public partial class Masters_Process_frmDefineProcessRate : System.Web.UI.Page
         switch (DDsizeType.SelectedValue)
         {
             case "0":
-                size = "sizeft";
+                switch (Session["varcompanyId"].ToString())
+                {                    
+                    case "43":
+                        size = "sizeft+'  '+'['+Prodsizeft+']'";
+                        break;
+                    default:
+                        size = "sizeft";
+                        break;
+                }
+                //size = "sizeft";
                 break;
             case "1":
-                size = "SizeMtr";
+                switch (Session["varcompanyId"].ToString())
+                {
+                    case "43":
+                        size = "SizeMtr+'  '+'['+ProdSizemtr+']'";
+                        break;
+                    default:
+                        size = "SizeMtr";
+                        break;
+                }
+                //size = "SizeMtr";
                 break;
             case "2":
-                size = "Sizeinch";
+                switch (Session["varcompanyId"].ToString())
+                {
+                    case "43":
+                        size = "Sizeinch+'  '+'['+Prodsizeft+']'";
+                        break;
+                    default:
+                        size = "Sizeinch";
+                        break;
+                }
+                //size = "Sizeinch";
                 break;
             default:
                 break;
