@@ -350,6 +350,8 @@
                                 OnClick="btnpriview_Click" />
                             <asp:Button ID="btnclose" runat="server" Text="Close" OnClientClick="return CloseForm(); "
                                 CssClass="buttonnorm" OnClick="btnclose_Click" />
+                                <asp:Button ID="BtnUpdateRemark" runat="server" Text="Update Remark" OnClick="BtnUpdateRemark_Click"
+                            OnClientClick="return confirm('Do You Want To Save?')" CssClass="buttonnorm" />
                             <%-- <asp:Button ID="btndelete" runat="server" Text="Delete" CssClass="buttonnorm" Visible="false"
                                 Enabled="False" />--%>
                         </td>

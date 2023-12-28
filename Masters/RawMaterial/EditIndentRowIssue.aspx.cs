@@ -1411,6 +1411,14 @@ public partial class Masters_Rawmaterial_EditIndentRowIssue : System.Web.UI.Page
         if (ds.Tables[0].Rows.Count > 0)
         {
             Session["OrderWiseFlag"] = ds.Tables[0].Rows[0]["OrderWiseFlag"].ToString();
+
+            string str1 = "select top(1) isnull(Remark,'') as Remark from PP_ProcessRawTran where PRMid=" + DDChallan.SelectedValue + " and remark<>''";
+            DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str1);
+            if (ds1.Tables[0].Rows.Count > 0)
+            {
+                txtremarks.Text = ds1.Tables[0].Rows[0]["Remark"].ToString();
+            }
+
             if (Convert.ToInt32(ds.Tables[0].Rows[0]["OrderWiseFlag"]) == 1)
             {
                 TDLotNo.Visible = false;
@@ -1953,5 +1961,54 @@ public partial class Masters_Rawmaterial_EditIndentRowIssue : System.Web.UI.Page
                 con.Dispose();
             }
         }
+    }
+
+    protected void BtnUpdateRemark_Click(object sender, EventArgs e)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {
+            SqlParameter[] arr = new SqlParameter[7];
+
+            arr[0] = new SqlParameter("@PRMID", SqlDbType.Int);
+            arr[1] = new SqlParameter("@TranType", SqlDbType.Int);
+            arr[2] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
+            arr[3] = new SqlParameter("@userid", Session["varuserid"]);
+            arr[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[5] = new SqlParameter("@Remark", txtremarks.Text);
+            arr[6] = new SqlParameter("@ProcessId", ddProcessName.SelectedValue);
+
+            arr[0].Value = DDChallan.SelectedValue;
+            arr[1].Value = 0;
+            arr[2].Direction = ParameterDirection.Output;
+
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_IndentRawIssue_Update_Remark", arr);
+
+            Label1.Visible = true;
+            Label1.Text = arr[2].Value.ToString();
+            //if (arr[2].Value.ToString() != "")
+            //{
+            //    ScriptManager.RegisterStartupScript(Page, GetType(), "altdel", "alert('" + arr[2].Value.ToString() + "');", true);
+            //}
+            //else
+            //{
+            //    LblError.Text = arr[2].Value.ToString();
+            //}
+            Tran.Commit();
+        }
+        catch (Exception ex)
+        {
+            Tran.Rollback();
+            Label1.Visible = true;
+            Label1.Text = ex.Message;
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+        Fill_Grid();
     }
 }
