@@ -47,13 +47,16 @@
                         <td style="width: 40%" valign="top">
                             <table border="1" cellspacing="2" width="100%">
                                 <tr>
-                                    <td style="border-style: dotted">
-                                        <asp:Label Text="Department Name" CssClass="labelbold" runat="server" />
+                                    <td class="tdstyle">
+                                        <asp:Label ID="Label33" runat="server" Text="Branch Name" CssClass="labelbold"></asp:Label>
+                                        <asp:DropDownList CssClass="dropdown" ID="DDBranchName" Width="80%" runat="server">
+                                        </asp:DropDownList>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="border-style: dotted">
-                                        <asp:DropDownList ID="DDdepartment" CssClass="dropdown" Width="95%" runat="server"
+                                        <asp:Label Text="Department Name" CssClass="labelbold" runat="server" />
+                                        <asp:DropDownList ID="DDdepartment" CssClass="dropdown" Width="75%" runat="server"
                                             AutoPostBack="true" OnSelectedIndexChanged="DDdepartment_SelectedIndexChanged">
                                         </asp:DropDownList>
                                     </td>
@@ -169,7 +172,7 @@
                                                 <td style="width: 20%">
                                                     <asp:Button ID="btnassignbulk" CssClass="buttonnorm" Text="Assign Shift All" runat="server"
                                                         OnClientClick="if (!confirm('Do you want to Assign?')) return; this.disabled=true;this.value = 'wait ...';"
-                                                        UseSubmitBehavior="false" onclick="btnassignbulk_Click" />
+                                                        UseSubmitBehavior="false" OnClick="btnassignbulk_Click" />
                                                 </td>
                                             </tr>
                                         </table>

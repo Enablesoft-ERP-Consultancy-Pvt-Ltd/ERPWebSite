@@ -1514,6 +1514,11 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
             //    Fillstockdetail();
             //}
         }
+        else
+        {
+            LblErrorMessage.Visible = true;
+            LblErrorMessage.Text = param[2].Value.ToString();
+        }
     }
     private void CHECKVALIDCONTROL()
     {

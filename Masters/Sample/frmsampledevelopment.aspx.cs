@@ -596,6 +596,7 @@ public partial class Masters_Sample_frmsampledevelopment : System.Web.UI.Page
         DR["Dyeingtype"] = DDDyeingtype.SelectedIndex > 0 ? DDDyeingtype.SelectedItem.Text : "";
         DR["UnitName"] = DDUnit.SelectedIndex > 0 ? DDUnit.SelectedItem.Text : "";
         DR["anticipatedwt"] = txtanticipatedwt.Text == "" ? "0" : txtanticipatedwt.Text;
+        DR["actualwt"] = txtprodwt.Text == "" ? "0" : txtprodwt.Text;
         DR["vendorname"] = DDLotno.SelectedIndex > 0 ? lblvendorname.Text : "";
         DR["ProcessID"] = DDRProcessName.SelectedValue;
         DR["CalType"] = DDRCalType.SelectedValue;

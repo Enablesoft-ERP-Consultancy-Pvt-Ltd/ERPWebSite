@@ -499,6 +499,26 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 e.Row.BackColor = System.Drawing.Color.Green;
                 lnkdel.Visible = false;
             }
+
+            if (Convert.ToInt32(Session["varcompanyId"]) == 43)
+            {
+                LinkButton lnkdel2 = (LinkButton)e.Row.FindControl("lnkdel");
+                if (Session["usertype"].ToString() != "1")
+                {
+                    lnkdel2.Visible = false;
+                }
+                else
+                {
+                    if (lblisreceived.Text == "Y")
+                    {
+                        //LinkButton lnkdel = (LinkButton)e.Row.FindControl("lnkdel");
+                        e.Row.BackColor = System.Drawing.Color.Green;
+                        lnkdel2.Visible = false;
+                    }
+                }
+            }
+            
+
             switch (DDTOProcess.SelectedItem.Text.ToUpper())
             {
                 case "THIRD BACKING":

@@ -1525,14 +1525,11 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
             {
                 lblmsg.Text = ex.Message;
             }
-
         }
-
     }
     protected void txtdateofjoining_TextChanged(object sender, EventArgs e)
     {
         txtconfirmdate.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select convert(nvarchar(11),DATEADD(dd,-1,DATEADD (MM,6,convert(date,CONVERT(varchar(11),'" + txtdateofjoining.Text + "',103),104))),103)").ToString();
-
     }
     protected void btnrefreshgrouponBiodata_Click(object sender, EventArgs e)
     {

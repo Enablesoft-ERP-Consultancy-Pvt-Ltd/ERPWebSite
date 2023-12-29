@@ -26,13 +26,23 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
             txtfromdate.Text = startDate.ToString("dd/MM/yyyy");
             txttodate.Text = System.DateTime.Now.ToString("dd/MM/yyyy");
 
-            UtilityModule.ConditionalComboFill(ref DDdepartment, @" 
-                        Select Distinct D.DepartmentId, D.DepartmentName 
+            string str = @"Select Distinct D.DepartmentId, D.DepartmentName 
                         From Department D(Nolock)
                         JOIN DepartmentBranch DB(Nolock) ON DB.DepartmentID = D.DepartmentId 
                         JOIN BranchUser BU(Nolock) ON BU.BranchID = DB.BranchID And BU.UserID = " + Session["varuserId"] + @" 
                         Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varCompanyId"] + @" 
-                        Order By D.DepartmentName ", true, "--Select--");
+                        Order By D.DepartmentName 
+                        Select ID, BranchName 
+                        From BRANCHMASTER BM(nolock) 
+                        JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+            UtilityModule.ConditionalComboFillWithDS(ref DDdepartment, ds, 0, true, "--Select--");
+
+            UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 1, false, "");
+            DDBranchName.Enabled = false;
         }
     }
     private void SetInitialRowGrid()
@@ -64,9 +74,11 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
     {
         try
         {
-            string str = @"SELECT EI.EMPID,EI.EMPCODE+' - '+EI.EMPNAME AS EMPNAME 
-                    FROM EMPINFO EI With (nolock) INNER JOIN HR_EMPLOYEEINFORMATION HEI With (nolock) ON EI.EMPID=HEI.EMPID AND 
-                    EI.EMPCODE='" + txtempcode.Text + "' AND HEI.RESIGNSTATUS=0";
+            string str = @"SELECT EI.EMPID,EI.EMPCODE + ' - ' + EI.EMPNAME EMPNAME 
+                    FROM EMPINFO EI With(nolock) 
+                    JOIN HR_EMPLOYEEINFORMATION HEI With(nolock) ON EI.EMPID=HEI.EMPID AND HEI.RESIGNSTATUS = 0 
+                    Where EI.EMPCODE = '" + txtempcode.Text + "' And EI.BranchID = " + DDBranchName.SelectedValue;
+
             if (Session["usertype"].ToString() == "5" && variable.HR_EMPLOYEE_SHOW_OR_NOT_USER_WISE == "1")
             {
                 str = str + " And EI.USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR = 1";
@@ -76,10 +88,8 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
             {
                 if (listWeaverName.Items.FindByValue(ds.Tables[0].Rows[0]["Empid"].ToString()) == null)
                 {
-
                     listWeaverName.Items.Add(new ListItem(ds.Tables[0].Rows[0]["Empname"].ToString(), ds.Tables[0].Rows[0]["Empid"].ToString()));
                 }
-
             }
             else
             {
@@ -260,7 +270,6 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
             con.Close();
             con.Dispose();
         }
-
     }
     protected void btngetdata_Click(object sender, EventArgs e)
     {
@@ -298,8 +307,6 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
 
                 for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                 {
-
-
                     TextBox txtdate = (TextBox)Dgdetail.Rows[i].FindControl("txtdate");
                     Label lblshiftid = (Label)Dgdetail.Rows[i].FindControl("lblshiftid");
                     DropDownList ddshift = (DropDownList)Dgdetail.Rows[i].FindControl("ddshift");
@@ -317,8 +324,6 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
             {
                 ScriptManager.RegisterStartupScript(Page, GetType(), "altgetdata", "alert('No records found in this range !!!')", true);
             }
-
-
         }
         catch (Exception ex)
         {
@@ -328,18 +333,18 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
     protected void DDdepartment_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = @"select ei.EmpId,ei.EmpCode,ei.EmpName 
-            From EmpInfo ei inner join Department d on ei.Departmentid=d.DepartmentId 
-            Where D.departmentid=" + DDdepartment.SelectedValue;
+            From EmpInfo ei(Nolock) 
+            join Department d(Nolock) on ei.Departmentid=d.DepartmentId And D.departmentid=" + DDdepartment.SelectedValue + @" 
+            Where EI.BlackList = 0 And ei.BranchID = " + DDBranchName.SelectedValue;
+
         if (Session["usertype"].ToString() == "5" && variable.HR_EMPLOYEE_SHOW_OR_NOT_USER_WISE == "1")
         {
             str = str + " And ei.USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR = 1";
         }
-
         str = str + " order by ei.EmpCode";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         Dgemp.DataSource = ds.Tables[0];
         Dgemp.DataBind();
-
     }
     protected void btnset_Click(object sender, EventArgs e)
     {
@@ -363,11 +368,9 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
                 {
                     if (listWeaverName.Items.FindByValue(lblempid.Text) == null)
                     {
-
                         listWeaverName.Items.Add(new ListItem(empname, lblempid.Text));
                     }
                 }
-
             }
         }
         catch (Exception ex)
@@ -410,6 +413,5 @@ public partial class Masters_Payroll_frmshiftschedule : System.Web.UI.Page
             con.Close();
             con.Dispose();
         }
-
     }
 }
