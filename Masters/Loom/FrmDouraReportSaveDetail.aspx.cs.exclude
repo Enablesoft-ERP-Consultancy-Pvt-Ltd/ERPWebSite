@@ -1,0 +1,470 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+using System.IO;
+
+public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["varCompanyId"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
+        if (!IsPostBack)
+        {
+            string str = @"select CI.CompanyId,CompanyName 
+                        From CompanyInfo CI(Nolock) 
+                        inner Join Company_Authentication CA(Nolock) on CA.CompanyId = CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                        Select ID, BranchName 
+                        From BRANCHMASTER BM(nolock) 
+                        JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                        Select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' Empname 
+                        From EmpInfo EI(Nolock) 
+                        inner join Department D(Nolock) on EI.Departmentid = D.DepartmentId And D.DepartmentName = 'PRODUCTION' And EI.Status = 'P' 
+                        And EI.Blacklist = 0 order by Empname
+                        select ICM.Category_id,ICM.CATEGORY_NAME From Item_category_Master  ICM 
+                          inner join CategorySeparate CS on ICM.CATEGORY_ID=Cs.Categoryid and Cs.id=0 and ICM.MasterCompanyid=" + Session["varcompanyid"] + " ";
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
+
+            if (DDcompany.Items.Count > 0)
+            {
+                DDcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
+                DDcompany.Enabled = false;
+            }
+            UtilityModule.ConditionalComboFillWithDS(ref DDBranch, ds, 1, false, "");
+            DDBranch.Enabled = false;
+            if (DDBranch.Items.Count == 0)
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Branch not define for this user!');", true);
+                return;
+            }
+            //UtilityModule.ConditionalComboFillWithDS(ref DDunitname, ds, 1, true, "--Plz Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDEmployeeName, ds, 2, true, "--Plz Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 3, true, "---Plz Select---");
+            //TxtIssRecDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+        }
+    }
+//    protected void DDIssRecType_SelectedIndexChanged(object sender, EventArgs e)
+//    {
+//        TxtIssRecNo.Text = "";
+
+//        string Str = @"Select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' Empname 
+//                        From EmpInfo EI(Nolock) 
+//                        inner join Department D(Nolock) on EI.Departmentid = D.DepartmentId And D.DepartmentName = 'PRODUCTION' And EI.Status = 'P' 
+//                        And EI.Blacklist = 0 order by Empname";
+
+//        if (DDIssRecType.SelectedValue == "1")
+//        {
+//            Str = @"Select Distinct EI.EmpId, EI.Empcode + ' [' + EI.Empname + ']' Empname 
+//            From ProcessIssueAttachMasterPC a(Nolock) 
+//            JOIN EmpInfo EI(Nolock) ON EI.EmpID = a.EmpID 
+//            Where a.IssRecFlag = 0 And a.CompanyID = " + DDcompany.SelectedValue + " And a.Units = " + DDunitname.SelectedValue + @" Order By Empname ";
+//        }
+
+//        UtilityModule.ConditionalComboFill(ref DDEmployeeName, Str, true, "--Plz Select--");
+//    }
+    protected void DDEmployeeName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Fill_EmployeeName();
+    }
+    protected void Fill_EmployeeName()
+    {
+        //TxtIssRecNo.Text = "";
+        string Str = @"Select Distinct a.IssueOrderId, a.CHALLANNO 
+            From PROCESS_ISSUE_MASTER_1 a(Nolock) 
+            JOIN Employee_ProcessOrderNo EPO(Nolock) ON EPO.IssueOrderId = a.IssueOrderId And EPO.ProcessId = 1 And EPO.EmpID = " + DDEmployeeName.SelectedValue + @" 
+            Where a.Companyid = " + DDcompany.SelectedValue + "  Order By a.IssueOrderId Desc";
+
+//        if (DDIssRecType.SelectedValue == "1")
+//        {
+//            Str = @"Select Distinct a.IssueOrderID, PIM.CHALLANNO 
+//            From ProcessIssueAttachMasterPC a(Nolock)
+//            JOIN PROCESS_ISSUE_MASTER_1 PIM(Nolock) ON PIM.IssueOrderId = a.IssueOrderID 
+//            Where a.IssRecFlag = 0 And a.CompanyID = " + DDcompany.SelectedValue + " And a.Units = " + DDunitname.SelectedValue + @" And 
+//                a.EmpID = " + DDEmployeeName.SelectedValue + @" Order By a.IssueOrderID Desc ";
+//        }
+
+        UtilityModule.ConditionalComboFill(ref DDFolioNo, Str, true, "--Plz Select--");
+    }
+    protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM Where IM.category_id=" + DDCategory.SelectedValue + " order by ITEM_NAME", true, "--Plz Select--");
+        Fillcombo();
+    }
+    protected void Fillcombo()
+    {
+        Trquality.Visible = false;
+        Trdesign.Visible = false;
+        Trcolor.Visible = false;
+        Trsize.Visible = false;
+        Trshadecolor.Visible = false;
+        string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
+                  " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                switch (dr["PARAMETER_ID"].ToString())
+                {
+                    case "1":
+                        Trquality.Visible = true;
+                        break;
+                    case "2":
+                        Trdesign.Visible = true;
+                        break;
+                    case "3":
+                        Trcolor.Visible = true;
+                        break;
+                    case "5":
+                        Trsize.Visible = true;
+                        break;
+                    case "6":
+                        Trshadecolor.Visible = true;
+                        break;
+                }
+            }
+        }
+
+       
+
+    }
+    protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        FillQuality();
+    }
+    protected void FillQuality()
+    {
+        string str = @"select Distinct Q.QualityId,Q.QualityName From ITEM_MASTER IM inner Join Quality Q on Q.Item_Id=IM.ITEM_ID inner Join CategorySeparate cs on IM.CATEGORY_ID=cs.Categoryid where 1=1";
+        if (DDCategory.SelectedIndex > 0)
+        {
+            str = str + "  and IM.Category_id=" + DDCategory.SelectedValue;
+        }
+        if (DDItemName.SelectedIndex > 0)
+        {
+            str = str + "  and IM.Item_id=" + DDItemName.SelectedValue;
+        }
+        str = str + "  order by QualityName";
+        UtilityModule.ConditionalComboFill(ref DDQuality, str, true, "---Plz Select---");
+    }
+    protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
+    {
+
+        FillDesign();
+        FillSize();
+        if (Trshadecolor.Visible == true)
+        {
+            FillShade();
+        }
+    }
+    protected void FillDesign()
+    {
+        string str = @"select Distinct Vf.designId,vf.designName From V_finishedItemDetail Vf Where Vf.designId>0";
+        if (DDItemName.SelectedIndex > 0)
+        {
+            str = str + "  and vf.Item_id=" + DDItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            str = str + "  and vf.QualityId=" + DDQuality.SelectedValue;
+        }
+
+        str = str + "  order by designName";
+        UtilityModule.ConditionalComboFill(ref DDDesign, str, true, "---Plz Select---");
+    }
+    protected void FillShade()
+    {
+        string str = @"select Distinct ShadecolorId,ShadeColorName From V_finishedItemDetail Vf Where Vf.ShadecolorId>0";
+        if (DDItemName.SelectedIndex > 0)
+        {
+            str = str + "  and vf.Item_id=" + DDItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            str = str + "  and vf.QualityId=" + DDQuality.SelectedValue;
+        }
+
+        str = str + "  order by ShadeColorName";
+        UtilityModule.ConditionalComboFill(ref DDshade, str, true, "---Plz Select---");
+    }
+    protected void FillColor()
+    {
+        string str = @"select Distinct Vf.Colorid,vf.Colorname From V_finishedItemDetail Vf Where Vf.Colorid>0";
+        if (DDItemName.SelectedIndex > 0)
+        {
+            str = str + "  and vf.Item_id=" + DDItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            str = str + "  and vf.QualityId=" + DDQuality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0)
+        {
+            str = str + "  and vf.DesignId=" + DDDesign.SelectedValue;
+        }
+
+
+        str = str + "  order by Colorname";
+        UtilityModule.ConditionalComboFill(ref DDColor, str, true, "---Plz Select---");
+    }
+    protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        FillColor();
+    }
+    protected void FillSize()
+    {
+        string size = "ProdSizeFt";
+        if (Chkmtrsize.Checked == true)
+        {
+            size = "ProdSizemtr";
+        }
+
+        string str = @"select Distinct  Vf.Sizeid,vf." + size + " as Size  From V_finishedItemDetail Vf Where Vf.Sizeid>0";
+        if (DDItemName.SelectedIndex > 0)
+        {
+            str = str + "  and vf.Item_id=" + DDItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0)
+        {
+            str = str + "  and vf.QualityId=" + DDQuality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0)
+        {
+            str = str + "  and vf.DesignId=" + DDDesign.SelectedValue;
+        }
+        if (DDColor.SelectedIndex > 0)
+        {
+            str = str + "  and vf.Colorid=" + DDColor.SelectedValue;
+        }
+
+        str = str + "  order by Size";
+        UtilityModule.ConditionalComboFill(ref DDSize, str, true, "---Plz Select---");
+    }
+    protected void Chkmtrsize_CheckedChanged(object sender, EventArgs e)
+    {
+        FillSize();
+    }
+    protected void DDColor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        FillSize();
+    }
+    protected void DDFolioNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+    }
+    protected void BtnShowData_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string str = "";
+
+          
+            //if (DDFolioNo.SelectedIndex > 0)
+            //{
+            //    str = str + " and PIM.Issueorderid=" + DDFolioNo.SelectedValue;
+            //}
+            if (DDItemName.SelectedIndex > 0)
+            {
+                str = str + " and VF.Item_id=" + DDItemName.SelectedValue;
+            }
+            if (DDQuality.SelectedIndex > 0)
+            {
+                str = str + " and VF.Qualityid=" + DDQuality.SelectedValue;
+            }
+            if (DDDesign.SelectedIndex > 0)
+            {
+                str = str + " and VF.DesignId=" + DDDesign.SelectedValue;
+            }
+            if (DDColor.SelectedIndex > 0)
+            {
+                str = str + " and VF.Colorid=" + DDColor.SelectedValue;
+            }
+            if (DDSize.SelectedIndex > 0)
+            {
+                str = str + " and VF.Sizeid=" + DDSize.SelectedValue;
+            }            
+
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_GETDOURAREPORTSAVEDATA", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDcompany.SelectedValue);
+            //cmd.Parameters.AddWithValue("@EMPID", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@IssueOrderId", DDFolioNo.SelectedValue); 
+            cmd.Parameters.AddWithValue("@WHERE", str);            
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            //***********
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                DG.DataSource = ds.Tables[0];
+                DG.DataBind();
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+    }
+    protected void BtnSave_Click(object sender, EventArgs e)
+    {
+        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        //if (con.State == ConnectionState.Closed)
+        //{
+        //    con.Open();
+        //}
+        //SqlTransaction Tran = con.BeginTransaction();
+        //try
+        //{
+        //    SqlParameter[] param = new SqlParameter[12];
+        //    param[0] = new SqlParameter("@CompanyID", DDcompany.SelectedValue);
+        //    param[1] = new SqlParameter("@Units", DDunitname.SelectedValue);
+        //    param[2] = new SqlParameter("@EmpID", DDEmployeeName.SelectedValue);
+        //    param[3] = new SqlParameter("@IssueOrderID", DDFolioNo.SelectedValue);
+        //    param[4] = new SqlParameter("@ProcessID", 1);
+        //    param[5] = new SqlParameter("@IssRecFlag", DDIssRecType.SelectedValue);
+        //    param[6] = new SqlParameter("@TstockNo", txtstockno.Text);
+        //    param[7] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+        //    param[8] = new SqlParameter("@UserID", Session["varuserid"]);
+        //    param[9] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
+        //    param[9].Direction = ParameterDirection.Output;
+        //    param[10] = new SqlParameter("@IssRecNo", SqlDbType.VarChar, 100);
+        //    param[10].Value = TxtIssRecNo.Text == "" ? "0" : TxtIssRecNo.Text;
+        //    param[10].Direction = ParameterDirection.InputOutput;
+        //    param[11] = new SqlParameter("@IssRecDate", TxtIssRecDate.Text);
+
+        //    SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveMasterPCAttachToFolio", param);
+        //    Tran.Commit();
+        //    lblmsg.Text = param[9].Value.ToString();
+        //    TxtIssRecNo.Text = param[10].Value.ToString();
+        //    FillGrid();
+        //    Refreshcontrol();
+        //}
+        //catch (Exception ex)
+        //{
+        //    Tran.Rollback();
+        //    lblmsg.Text = ex.Message;
+
+        //}
+        //finally
+        //{
+        //    con.Close();
+        //    con.Dispose();
+        //}
+    }
+    protected void Refreshcontrol()
+    {
+        //txtstockno.Text = "";
+        //txtstockno.Focus();
+    }
+//    protected void FillGrid()
+//    {
+//        string str = @"Select a.IssRecNo, VF.ITEM_NAME + ' ' + VF.QualityName + ' ' + VF.DesignName + ' ' + VF.ColorName + ' ' + VF.ShapeName + ' ' + VF.SizeFt + ' ' + VF.ShadeColorName [Description], 
+//                a.TStockNo, a.IssueOrderID, a.StockNo 
+//                From ProcessIssueAttachMasterPC a(Nolock) 
+//                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = a.ITEM_FINISHED_ID 
+//                Where a.IssRecFlag = " + DDIssRecType.SelectedValue + " And IssueOrderID = " + DDFolioNo.SelectedValue;
+
+//        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+//        DG.DataSource = ds.Tables[0];
+//        DG.DataBind();
+//    }
+
+    //protected void DG_RowDataBound(object sender, GridViewRowEventArgs e)
+    //{
+    //    if (e.Row.RowType == DataControlRowType.DataRow)
+    //    {
+    //        e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
+    //        e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
+    //    }
+    //}
+
+    //protected void lbDelete_Click(object sender, EventArgs e)
+    //{
+    //    SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+    //    if (con.State == ConnectionState.Closed)
+    //    {
+    //        con.Open();
+    //    }
+    //    SqlTransaction Tran = con.BeginTransaction();
+    //    try
+    //    {
+    //        LinkButton lb = (LinkButton)sender;
+    //        GridViewRow grv = (GridViewRow)lb.NamingContainer;
+    //        string IssueOrderID = ((Label)DG.Rows[grv.RowIndex].FindControl("lblIssueOrderID")).Text;
+    //        string StockNo = ((Label)DG.Rows[grv.RowIndex].FindControl("lblStockNo")).Text;
+
+    //        SqlParameter[] param = new SqlParameter[7];
+
+    //        param[0] = new SqlParameter("@StockNo", StockNo);
+    //        param[1] = new SqlParameter("@IssueOrderID", IssueOrderID);
+    //        param[2] = new SqlParameter("@ProcessID", 1);
+    //        param[3] = new SqlParameter("@IssRecFlag", DDIssRecType.SelectedValue);
+    //        param[4] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+    //        param[5] = new SqlParameter("@UserID", Session["varuserid"]);
+
+    //        param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+    //        param[6].Direction = ParameterDirection.Output;
+
+    //        SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteMasterPCAttachToFolio", param);
+    //        Tran.Commit();
+    //        lblmsg.Text = param[6].Value.ToString();
+    //        FillGrid();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Tran.Rollback();
+    //        lblmsg.Text = ex.Message;
+
+    //    }
+    //    finally
+    //    {
+    //        con.Close();
+    //        con.Dispose();
+    //    }
+    //}
+
+    //protected void txtstockno_TextChanged(object sender, EventArgs e)
+    //{
+    //    BtnSave.Focus();
+    //}
+    //protected void DDunitname_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+    //    TxtIssRecNo.Text = "";
+    //}
+    //protected void DDFolioNo_SelectedIndexChanged(object sender, EventArgs e)
+    //{
+    //    TxtIssRecNo.Text = "";
+    //    FillGrid();
+    //}
+    
+}
