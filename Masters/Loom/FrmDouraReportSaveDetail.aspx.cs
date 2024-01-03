@@ -51,28 +51,12 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
             //UtilityModule.ConditionalComboFillWithDS(ref DDunitname, ds, 1, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDEmployeeName, ds, 2, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 3, true, "---Plz Select---");
-            //TxtIssRecDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+
+
+            txtDouraDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
         }
     }
-//    protected void DDIssRecType_SelectedIndexChanged(object sender, EventArgs e)
-//    {
-//        TxtIssRecNo.Text = "";
 
-//        string Str = @"Select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' Empname 
-//                        From EmpInfo EI(Nolock) 
-//                        inner join Department D(Nolock) on EI.Departmentid = D.DepartmentId And D.DepartmentName = 'PRODUCTION' And EI.Status = 'P' 
-//                        And EI.Blacklist = 0 order by Empname";
-
-//        if (DDIssRecType.SelectedValue == "1")
-//        {
-//            Str = @"Select Distinct EI.EmpId, EI.Empcode + ' [' + EI.Empname + ']' Empname 
-//            From ProcessIssueAttachMasterPC a(Nolock) 
-//            JOIN EmpInfo EI(Nolock) ON EI.EmpID = a.EmpID 
-//            Where a.IssRecFlag = 0 And a.CompanyID = " + DDcompany.SelectedValue + " And a.Units = " + DDunitname.SelectedValue + @" Order By Empname ";
-//        }
-
-//        UtilityModule.ConditionalComboFill(ref DDEmployeeName, Str, true, "--Plz Select--");
-//    }
     protected void DDEmployeeName_SelectedIndexChanged(object sender, EventArgs e)
     {
         Fill_EmployeeName();
@@ -85,14 +69,6 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
             JOIN Employee_ProcessOrderNo EPO(Nolock) ON EPO.IssueOrderId = a.IssueOrderId And EPO.ProcessId = 1 And EPO.EmpID = " + DDEmployeeName.SelectedValue + @" 
             Where a.Companyid = " + DDcompany.SelectedValue + "  Order By a.IssueOrderId Desc";
 
-//        if (DDIssRecType.SelectedValue == "1")
-//        {
-//            Str = @"Select Distinct a.IssueOrderID, PIM.CHALLANNO 
-//            From ProcessIssueAttachMasterPC a(Nolock)
-//            JOIN PROCESS_ISSUE_MASTER_1 PIM(Nolock) ON PIM.IssueOrderId = a.IssueOrderID 
-//            Where a.IssRecFlag = 0 And a.CompanyID = " + DDcompany.SelectedValue + " And a.Units = " + DDunitname.SelectedValue + @" And 
-//                a.EmpID = " + DDEmployeeName.SelectedValue + @" Order By a.IssueOrderID Desc ";
-//        }
 
         UtilityModule.ConditionalComboFill(ref DDFolioNo, Str, true, "--Plz Select--");
     }
@@ -135,9 +111,7 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
                         break;
                 }
             }
-        }
-
-       
+        }       
 
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
@@ -300,7 +274,7 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
             {
                 con.Open();
             }
-            SqlCommand cmd = new SqlCommand("PRO_GETDOURAREPORTSAVEDATA", con);
+            SqlCommand cmd = new SqlCommand("PRO_GETDOURAREPORTINSPECTIONDATA", con);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.CommandTimeout = 3000;
 
@@ -327,6 +301,9 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
             }
             else
             {
+                DG.DataSource = "";
+                DG.DataBind();
+
                 ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
             }
         }
@@ -335,51 +312,162 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
             lblmsg.Text = ex.Message;
         }
     }
+    private void CHECKVALIDCONTROL()
+    {
+
+        lblmsg.Text = "";
+        //if (UtilityModule.VALIDDROPDOWNLIST(DDCompany) == false)
+        //{
+        //    goto a;
+        //}   
+
+        if (UtilityModule.VALIDDROPDOWNLIST(DDEmployeeName) == false)
+        {
+            goto a;
+        }
+        if (UtilityModule.VALIDDROPDOWNLIST(DDFolioNo) == false)
+        {
+            goto a;
+        }       
+        else
+        {
+            goto B;
+        }
+    a:
+        lblmsg.Visible = true;
+    UtilityModule.SHOWMSG(lblmsg);
+    B: ;
+    }
     protected void BtnSave_Click(object sender, EventArgs e)
     {
-        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        //if (con.State == ConnectionState.Closed)
-        //{
-        //    con.Open();
-        //}
-        //SqlTransaction Tran = con.BeginTransaction();
-        //try
-        //{
-        //    SqlParameter[] param = new SqlParameter[12];
-        //    param[0] = new SqlParameter("@CompanyID", DDcompany.SelectedValue);
-        //    param[1] = new SqlParameter("@Units", DDunitname.SelectedValue);
-        //    param[2] = new SqlParameter("@EmpID", DDEmployeeName.SelectedValue);
-        //    param[3] = new SqlParameter("@IssueOrderID", DDFolioNo.SelectedValue);
-        //    param[4] = new SqlParameter("@ProcessID", 1);
-        //    param[5] = new SqlParameter("@IssRecFlag", DDIssRecType.SelectedValue);
-        //    param[6] = new SqlParameter("@TstockNo", txtstockno.Text);
-        //    param[7] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
-        //    param[8] = new SqlParameter("@UserID", Session["varuserid"]);
-        //    param[9] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
-        //    param[9].Direction = ParameterDirection.Output;
-        //    param[10] = new SqlParameter("@IssRecNo", SqlDbType.VarChar, 100);
-        //    param[10].Value = TxtIssRecNo.Text == "" ? "0" : TxtIssRecNo.Text;
-        //    param[10].Direction = ParameterDirection.InputOutput;
-        //    param[11] = new SqlParameter("@IssRecDate", TxtIssRecDate.Text);
+        CHECKVALIDCONTROL();
 
-        //    SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveMasterPCAttachToFolio", param);
-        //    Tran.Commit();
-        //    lblmsg.Text = param[9].Value.ToString();
-        //    TxtIssRecNo.Text = param[10].Value.ToString();
-        //    FillGrid();
-        //    Refreshcontrol();
-        //}
-        //catch (Exception ex)
-        //{
-        //    Tran.Rollback();
-        //    lblmsg.Text = ex.Message;
+        if (lblmsg.Text == "")
+        {
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
 
-        //}
-        //finally
-        //{
-        //    con.Close();
-        //    con.Dispose();
-        //}
+            //for (int i = 0; i < DG.Rows.Count; i++)
+            //{
+            //    //CheckBox Chkboxitem = ((CheckBox)DG.Rows[i].FindControl("Chkboxitem"));
+
+            //    Label lblTStockNo = ((Label)DG.Rows[i].FindControl("lblTStockNo"));
+            //    Label lblIssueOrderID = ((Label)DG.Rows[i].FindControl("lblIssueOrderID"));
+            //    Label lblItemFinishedId = ((Label)DG.Rows[i].FindControl("lblItemFinishedId"));
+
+            //    TextBox txtOffLoom = ((TextBox)DG.Rows[i].FindControl("txtOffLoom"));
+            //    TextBox txtLoomPosition = ((TextBox)DG.Rows[i].FindControl("txtLoomPosition"));               
+
+            //    //if (Chkboxitem.Checked == false)   // Change when Updated Completed
+            //    //{
+            //    //    ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Please Select Checkbox');", true);               
+            //    //    return;
+            //    //}
+               
+            //    if (txtOffLoom.Text=="" && txtLoomPosition.Text=="" )   // Change when Updated Completed
+            //    {
+            //        ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Off Loom and Loom Position Can Not Be Blank');", true);
+            //        //txtReceiveNoOfSet.Focus();
+            //        return;
+            //    }
+            //    //if (Convert.ToDecimal(txtReceiveQty.Text == "" ? "0" : txtReceiveQty.Text) > Convert.ToDecimal(lblBalToRecQty.Text) && Chkboxitem.Checked == true)   // Change when Updated Completed
+            //    //{
+            //    //    ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Receive qty can not be greater than balance qty');", true);
+            //    //    txtReceiveQty.Text = "";
+            //    //    txtReceiveQty.Focus();
+            //    //    return;
+            //    //}
+            //}
+
+            string Strdetail = "";
+            for (int i = 0; i < DG.Rows.Count; i++)
+            {
+                //CheckBox Chkboxitem = ((CheckBox)DG.Rows[i].FindControl("Chkboxitem"));
+
+                Label lblTStockNo = ((Label)DG.Rows[i].FindControl("lblTStockNo"));
+                Label lblIssueOrderID = ((Label)DG.Rows[i].FindControl("lblIssueOrderID"));
+                Label lblItemFinishedId = ((Label)DG.Rows[i].FindControl("lblItemFinishedId"));
+
+                TextBox txtOffLoom = ((TextBox)DG.Rows[i].FindControl("txtOffLoom"));
+                TextBox txtLoomPosition = ((TextBox)DG.Rows[i].FindControl("txtLoomPosition")); 
+
+
+                if (txtOffLoom.Text!="" && txtLoomPosition.Text!="" && DDFolioNo.SelectedIndex > 0 && DDEmployeeName.SelectedIndex>0)
+                {
+                    Strdetail = Strdetail + lblTStockNo.Text + '|' + lblIssueOrderID.Text + '|' + lblItemFinishedId.Text + '|' + txtOffLoom.Text + '|' + txtLoomPosition.Text + '~';
+                }
+            }
+
+
+            if (Strdetail != "")
+            {
+                SqlTransaction Tran = con.BeginTransaction();
+                try
+                {
+
+                    //        //******
+                    SqlCommand cmd = new SqlCommand("Pro_SaveDouraReportInspectionData", con, Tran);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandTimeout = 3000;
+                    cmd.Parameters.Add("@DouraID", SqlDbType.Int);
+                    cmd.Parameters["@DouraID"].Direction = ParameterDirection.InputOutput;
+                    cmd.Parameters["@DouraID"].Value = 0;
+                    //cmd.Parameters["@DouraID"].Value = hnDouraId.Value;
+                    cmd.Parameters.AddWithValue("@Companyid", DDcompany.SelectedValue);
+                    cmd.Parameters.AddWithValue("@ProcessID", 1);                    
+                    cmd.Parameters.AddWithValue("@DouraDate", txtDouraDate.Text);
+                    cmd.Parameters.AddWithValue("@DouraInspector", txtDouraInspector.Text);
+                    cmd.Parameters.AddWithValue("@Remarks", txtDouraRemark.Text);
+                    cmd.Parameters.AddWithValue("@StringDetail", Strdetail);
+                    cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
+                    cmd.Parameters["@msg"].Direction = ParameterDirection.Output; 
+                 
+                    //cmd.Parameters.Add("@ChallanNo", SqlDbType.VarChar, 30);
+                    //cmd.Parameters["@ChallanNo"].Direction = ParameterDirection.InputOutput;
+                    //cmd.Parameters["@ChallanNo"].Value = "";
+                   
+                    cmd.ExecuteNonQuery();
+                    if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
+                    {
+                        lblmsg.Text = cmd.Parameters["@msg"].Value.ToString();
+                        Tran.Rollback();
+                    }
+                    else
+                    {
+                        lblmsg.Text = "Data Saved Successfully.";
+                        Tran.Commit();                        
+                        hnDouraId.Value = cmd.Parameters["@DouraID"].Value.ToString();// param[0].Value.ToString();
+                        //txtIssueNo.Text = cmd.Parameters["@ChallanNo"].Value.ToString();
+
+                        DG.DataSource = "";
+                        DG.DataBind();
+                       
+                    }
+                    //******                    
+
+                }
+                catch (Exception ex)
+                {
+                    Tran.Rollback();
+                    lblmsg.Text = ex.Message;
+                }
+                finally
+                {
+                    con.Close();
+                    con.Dispose();
+                }
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Please fill atleast one row to save data.');", true);
+            }
+        }
+       
     }
     protected void Refreshcontrol()
     {
@@ -399,72 +487,13 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
 //        DG.DataBind();
 //    }
 
-    //protected void DG_RowDataBound(object sender, GridViewRowEventArgs e)
-    //{
-    //    if (e.Row.RowType == DataControlRowType.DataRow)
-    //    {
-    //        e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
-    //        e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
-    //    }
-    //}
-
-    //protected void lbDelete_Click(object sender, EventArgs e)
-    //{
-    //    SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-    //    if (con.State == ConnectionState.Closed)
-    //    {
-    //        con.Open();
-    //    }
-    //    SqlTransaction Tran = con.BeginTransaction();
-    //    try
-    //    {
-    //        LinkButton lb = (LinkButton)sender;
-    //        GridViewRow grv = (GridViewRow)lb.NamingContainer;
-    //        string IssueOrderID = ((Label)DG.Rows[grv.RowIndex].FindControl("lblIssueOrderID")).Text;
-    //        string StockNo = ((Label)DG.Rows[grv.RowIndex].FindControl("lblStockNo")).Text;
-
-    //        SqlParameter[] param = new SqlParameter[7];
-
-    //        param[0] = new SqlParameter("@StockNo", StockNo);
-    //        param[1] = new SqlParameter("@IssueOrderID", IssueOrderID);
-    //        param[2] = new SqlParameter("@ProcessID", 1);
-    //        param[3] = new SqlParameter("@IssRecFlag", DDIssRecType.SelectedValue);
-    //        param[4] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
-    //        param[5] = new SqlParameter("@UserID", Session["varuserid"]);
-
-    //        param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-    //        param[6].Direction = ParameterDirection.Output;
-
-    //        SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteMasterPCAttachToFolio", param);
-    //        Tran.Commit();
-    //        lblmsg.Text = param[6].Value.ToString();
-    //        FillGrid();
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Tran.Rollback();
-    //        lblmsg.Text = ex.Message;
-
-    //    }
-    //    finally
-    //    {
-    //        con.Close();
-    //        con.Dispose();
-    //    }
-    //}
-
-    //protected void txtstockno_TextChanged(object sender, EventArgs e)
-    //{
-    //    BtnSave.Focus();
-    //}
-    //protected void DDunitname_SelectedIndexChanged(object sender, EventArgs e)
-    //{
-    //    TxtIssRecNo.Text = "";
-    //}
-    //protected void DDFolioNo_SelectedIndexChanged(object sender, EventArgs e)
-    //{
-    //    TxtIssRecNo.Text = "";
-    //    FillGrid();
-    //}
+    protected void DG_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
+            e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
+        }
+    }   
     
 }

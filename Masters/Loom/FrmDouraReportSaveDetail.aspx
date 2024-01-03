@@ -13,6 +13,15 @@
         function CloseForm() {
             window.location.href = "../../main.aspx";
         }
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
     </script>
     <script type="text/javascript">
         function Jscriptvalidate() {
@@ -151,7 +160,7 @@
                         <tr>                            
                             <td>
                                 <asp:Label ID="Label9" runat="server" Text="Doura Date" CssClass="labelbold"></asp:Label><br />
-                                <asp:TextBox ID="txtDouraDate" CssClass="textb" runat="server" Width ="200px"  ReadOnly="true"/>
+                                <asp:TextBox ID="txtDouraDate" CssClass="textb" runat="server" Width ="200px" />
                                 <asp:CalendarExtender ID="cal1" TargetControlID="txtDouraDate" Format="dd-MMM-yyyy"
                                     runat="server">
                                 </asp:CalendarExtender>
@@ -222,17 +231,28 @@
                                                     <asp:Label ID="lblTStockNo" Text='<%#Bind("TStockNo") %>' runat="server" Width="100px" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField Visible="false">
+                                             <asp:TemplateField HeaderText="Off Loom">
                                                 <ItemTemplate>
-                                                    <asp:Label ID="lblIssueOrderID" Text='<%#Bind("IssueOrderID") %>' runat="server" />                                                    
+                                                    <asp:TextBox ID="txtOffLoom" Width="70px" BackColor="Yellow" runat="server" onkeypress="return isNumberKey(event);" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
-                                            <asp:TemplateField>
+                                             <asp:TemplateField HeaderText="Loom Position">
+                                                <ItemTemplate>
+                                                    <asp:TextBox ID="txtLoomPosition" Width="70px" BackColor="Yellow" runat="server" />
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                            <asp:TemplateField Visible="false">
+                                                <ItemTemplate>
+                                                    <asp:Label ID="lblIssueOrderID" Text='<%#Bind("IssueOrderID") %>' runat="server" />  
+                                                    <asp:Label ID="lblItemFinishedId" Text='<%#Bind("Item_Finished_Id") %>' runat="server" />                                                    
+                                                </ItemTemplate>
+                                            </asp:TemplateField>
+                                           <%-- <asp:TemplateField>
                                                 <ItemTemplate>
                                                     <asp:LinkButton ID="lblDel" runat="server" OnClick="lbDelete_Click" ToolTip="Delete"
                                                         OnClientClick="return confirm('Do you want to delete this row?');" CausesValidation="False">Delete</asp:LinkButton>
                                                 </ItemTemplate>
-                                            </asp:TemplateField>
+                                            </asp:TemplateField>--%>
                                         </Columns>
                                     </asp:GridView>
                                 </div>
@@ -240,7 +260,7 @@
                         </tr>
                     </table>
                 </div>
-                <asp:HiddenField ID="hnuid" runat="server" />
+                <asp:HiddenField ID="hnDouraId" runat="server" />
             </div>
         </ContentTemplate>
     </asp:UpdatePanel>
