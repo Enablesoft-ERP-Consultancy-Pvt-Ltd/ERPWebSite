@@ -108,24 +108,23 @@
                                 <asp:RadioButton ID="RDProcessIssRecDetail" Text="Process Receive Detail" runat="server"
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDProcessIssRecDetail_CheckedChanged" />
                                 <br />
-                                 &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDFinishingpending" runat="server" Text="Process Pending Pcs"
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="true" OnCheckedChanged="RDFinishingpending_CheckedChanged" />
                                 <br />
-                                 &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDFinishingIssueDetail" runat="server" Text="Process Issue Detail"
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingIssueDetail_CheckedChanged" />
                                 <br />
-                                 &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDProcessIssueReceiveSummary" runat="server" Text="Process Issue Receive Summary"
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDProcessIssueReceiveSummary_CheckedChanged" />
                                 <br />
-                                 &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDProcessWiseAdvancePayment" Text="Process Wise Advance Payment"
                                     runat="server" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
                                     OnCheckedChanged="RDProcessWiseAdvancePayment_CheckedChanged" />
-                                    <br>
-                                    </br>
+                                <br></br>
                                 &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDGatePass" Text="Gate In OR Gate Pass Detail" runat="server"
                                     GroupName="OrderType" CssClass="labelbold" OnCheckedChanged="RDGatePass_CheckedChanged"
@@ -156,13 +155,10 @@
                                 <asp:RadioButton ID="RDPerday" runat="server" Text="Per Day Production Status" GroupName="OrderType"
                                     CssClass="labelbold" AutoPostBack="true" OnCheckedChanged="RDPerday_CheckedChanged" />
                                 <br />
-                               
-                               
                                 &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDDailyfinreport" runat="server" Text="Daily Finishing Receive Detail"
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDDailyfinreport_CheckedChanged" />
                                 <br />
-                                
                                 &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDWeaverRawMaterialIssueDetail" runat="server" Text="Weaving & Finishing RawMaterial Issue Detail"
                                     Visible="false" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
@@ -173,41 +169,45 @@
                                     Visible="false" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
                                     OnCheckedChanged="RDWeaverRawMaterialReceiveDetail_CheckedChanged" />
                                 <br />
-                                 &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDTasselIssueReceiveSummary" runat="server" Text="Tassal Issue Receive Summary"
-                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True" OnCheckedChanged="RDTasselIssueReceiveSummary_CheckedChanged" />
+                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True"
+                                    OnCheckedChanged="RDTasselIssueReceiveSummary_CheckedChanged" />
                                 <br />
-                              
-                                 &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDTasselPartnerIssueSummary" runat="server" Text="Tassal Issue Report"
-                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True" OnCheckedChanged="RDTasselPartnerIssueSummary_CheckedChanged" />
+                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True"
+                                    OnCheckedChanged="RDTasselPartnerIssueSummary_CheckedChanged" />
                                 <br />
-                              
-                                 &nbsp;&nbsp;
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDTasselPartnerReceiveSummary" runat="server" Text="Tassal Receive Report"
-                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True" OnCheckedChanged="RDTasselPartnerReceiveSummary_CheckedChanged" />
-                                <br />                                
-                                 &nbsp;&nbsp;
-                                <asp:RadioButton ID="RDTasselMakingRawIssueDetail" runat="server" Text="Tassal RawMaterial Issue Detail"
-                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True" OnCheckedChanged="RDTasselMakingRawIssueDetail_CheckedChanged" />
+                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True"
+                                    OnCheckedChanged="RDTasselPartnerReceiveSummary_CheckedChanged" />
                                 <br />
-                                  &nbsp;&nbsp;
+                                &nbsp;&nbsp;
+                                <asp:RadioButton ID="RDTasselMakingRawIssueDetail" runat="server" Text="Tassal RawMaterial Issue Detail"
+                                    GroupName="OrderType" CssClass="labelbold" Visible="false" AutoPostBack="True"
+                                    OnCheckedChanged="RDTasselMakingRawIssueDetail_CheckedChanged" />
+                                <br />
+                                &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDFinishingBalance" runat="server" Text="Finishing Balance"
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingBalance_CheckedChanged" />
                                 <br />
                                 &nbsp;&nbsp;
-                                  <asp:RadioButton ID="RDFinishingRecSummaryWithTDS" runat="server" Text="Finishing Rec Summary With TDS" Visible="false"
-                                    GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingRecSummaryWithTDS_CheckedChanged" />
+                                <asp:RadioButton ID="RDFinishingRecSummaryWithTDS" runat="server" Text="Finishing Rec Summary With TDS"
+                                    Visible="false" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
+                                    OnCheckedChanged="RDFinishingRecSummaryWithTDS_CheckedChanged" />
                                 <br />
-                                &nbsp;&nbsp;                                 
-                                  <asp:RadioButton ID="RDFinishingHissabSummary" runat="server" Text="Finishing Hissab Summary" Visible="false"
-                                    GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingHissabSummary_CheckedChanged" />
+                                &nbsp;&nbsp;
+                                <asp:RadioButton ID="RDFinishingHissabSummary" runat="server" Text="Finishing Hissab Summary"
+                                    Visible="false" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
+                                    OnCheckedChanged="RDFinishingHissabSummary_CheckedChanged" />
                                 <br />
                                 &nbsp;&nbsp;
                             </div>
                         </td>
                         <td valign="top">
-                            <div style="float: left; width: 450px; max-height: 500px;  vertical-align:top">
+                            <div style="float: left; width: 450px; max-height: 500px; vertical-align: top">
                                 <table>
                                     <tr>
                                         <td>
@@ -265,7 +265,7 @@
                                             <cc1:ListSearchExtender ID="ListSearchExtender2" runat="server" TargetControlID="DDEmpName"
                                                 ViewStateMode="Disabled" PromptCssClass="labelbold" PromptPosition="Bottom">
                                             </cc1:ListSearchExtender>
-                                            <asp:CheckBox ID="ChkForComplete" Text="Complete" runat="server" CssClass="checkboxbold"  />
+                                            <asp:CheckBox ID="ChkForComplete" Text="Complete" runat="server" CssClass="checkboxbold" />
                                         </td>
                                     </tr>
                                     <tr id="TRRecChallan" runat="server">
@@ -461,7 +461,7 @@
                                             <asp:CheckBox ID="ChkForDate" runat="server" Text="Check For Date" CssClass="checkboxbold" />
                                         </td>
                                     </tr>
-                                     <tr>
+                                    <tr>
                                         <td colspan="2" align="left">
                                             <asp:CheckBox ID="chksumm" runat="server" Text="Summary" Visible="false" CssClass="checkboxbold" />
                                         </td>
@@ -553,39 +553,45 @@
                                                 <asp:CheckBox ID="ChkWithRecTime" runat="server" CssClass="checkboxbold" Text="WITH TIME" />
                                             </td>
                                         </tr>
-                                         <tr id="TRQualityWiseSummary" runat="server" visible="false">
+                                        <tr id="TRQualityWiseSummary" runat="server" visible="false">
                                             <td colspan="3">
                                                 <asp:CheckBox ID="ChkQualityWiseSummary" runat="server" CssClass="checkboxbold" Text="QualityWise Summary" />
                                             </td>
                                         </tr>
                                         <tr id="TRBuyerItemSizeWiseSummary" runat="server" visible="false">
                                             <td colspan="3">
-                                                <asp:CheckBox ID="ChkBuyerItemSizeWiseSummary" runat="server" CssClass="checkboxbold" Text="Buyer Item Size Wise Summary" />
+                                                <asp:CheckBox ID="ChkBuyerItemSizeWiseSummary" runat="server" CssClass="checkboxbold"
+                                                    Text="Buyer Item Size Wise Summary" />
                                             </td>
                                         </tr>
-                                         <tr id="TRForWithoutTDS" runat="server" visible="false">
-                                    <td colspan="3">
-                                        <asp:CheckBox ID="ChkForWithoutTDS" runat="server" CssClass="checkboxbold" Text="For Without TDS" />
-                                    </td>
-                                </tr>
-                                         <tr id="TRAsOnDate" runat="server" visible="false">
-                                        <td>
-                                            <asp:Label ID="Label12" runat="server" CssClass="labelbold" Text="As ON Date"></asp:Label>
-                                        </td>
-                                        <td>
-                                            <asp:TextBox ID="txtAsOnDate" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
-                                            <asp:CalendarExtender ID="CalendarExtender5" runat="server" Format="dd-MMM-yyyy"
-                                                TargetControlID="txtAsOnDate">
-                                            </asp:CalendarExtender>
-                                        </td>
-                                        <td align="right">
-                                            &nbsp;
-                                        </td>
-                                        <td>
-                                            &nbsp;
-                                        </td>
-                                    </tr>
-
+                                        <tr id="TRForWithoutTDS" runat="server" visible="false">
+                                            <td colspan="3">
+                                                <asp:CheckBox ID="ChkForWithoutTDS" runat="server" CssClass="checkboxbold" Text="For Without TDS" />
+                                            </td>
+                                        </tr>
+                                        <tr id="TRQualityDesignSizeWiseSummary" runat="server" visible="false">
+                                            <td colspan="3">
+                                                <asp:CheckBox ID="ChkQualityDesignSizeWiseSummary" runat="server" CssClass="checkboxbold"
+                                                    Text="Quality Design Size Wise Summary" />
+                                            </td>
+                                        </tr>
+                                        <tr id="TRAsOnDate" runat="server" visible="false">
+                                            <td>
+                                                <asp:Label ID="Label12" runat="server" CssClass="labelbold" Text="As ON Date"></asp:Label>
+                                            </td>
+                                            <td>
+                                                <asp:TextBox ID="txtAsOnDate" runat="server" CssClass="textb" Width="100px"></asp:TextBox>
+                                                <asp:CalendarExtender ID="CalendarExtender5" runat="server" Format="dd-MMM-yyyy"
+                                                    TargetControlID="txtAsOnDate">
+                                                </asp:CalendarExtender>
+                                            </td>
+                                            <td align="right">
+                                                &nbsp;
+                                            </td>
+                                            <td>
+                                                &nbsp;
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td align="right" colspan="4">
                                                 &nbsp;<asp:CheckBox ID="ChkSummary" runat="server" CssClass="checkboxnormal" Text="For Summary" />

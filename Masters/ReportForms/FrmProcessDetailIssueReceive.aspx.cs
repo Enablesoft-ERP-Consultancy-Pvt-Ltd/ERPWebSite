@@ -463,7 +463,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (RDProcessIssRecDetail.Checked == true)
         {
             //********Finishing New Module Wise
-            if (variable.VarFinishingNewModuleWise == "1" && (Convert.ToInt16(DDProcessName.SelectedIndex <= 0 ? "0" : DDProcessName.SelectedValue) > 1) || chksizesummary.Checked == true || ChkBuyerItemSizeWiseSummary.Checked == true)
+            if (variable.VarFinishingNewModuleWise == "1" && (Convert.ToInt16(DDProcessName.SelectedIndex <= 0 ? "0" : DDProcessName.SelectedValue) > 1) || chksizesummary.Checked == true || ChkBuyerItemSizeWiseSummary.Checked == true || ChkQualityDesignSizeWiseSummary.Checked==true)
             {
                 if (Chkissueno.Checked == true)
                 {
@@ -1409,7 +1409,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         }
         //End Conditions
         int ReportType = 0;
-        if (chksizesummary.Checked == true)
+        if (chksizesummary.Checked == true || ChkQualityDesignSizeWiseSummary.Checked==true)
         {
             ReportType = 2;
         }
@@ -1456,84 +1456,112 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         {
             if (chksizesummary.Checked == true)
             {
-                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                if (Session["VarCompanyNo"].ToString() == "43")
                 {
-                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                    Session["rptFileName"] = "~\\Reports\\RptQualitySizeWiseFinishingProcessSummaryCI.rpt";                    
+                    Session["GetDataset"] = ds;
+                    //Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
+                    StringBuilder stb2 = new StringBuilder();
+                    stb2.Append("<script>");
+                    stb2.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb2.ToString(), false);
                 }
-                string Path = "";
-                var xapp = new XLWorkbook();
-                var sht = xapp.Worksheets.Add("sheet1");
-                int row = 0;
-
-                //******************
-
-                sht.Range("A1").Value = where;
-                sht.Range("A1:C1").Style.Alignment.SetWrapText();
-                sht.Range("A1:C1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A1:C1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
-                sht.Range("A1:C1").Merge();
-                sht.Row(1).Height = 44;
-
-                sht.Range("A2").Value = "Size";
-                sht.Range("B2").Value = "Qty";
-                sht.Range("C2").Value = "Area";
-                sht.Range("B2:C2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "Width", "Length", "ShapeName");
-                DataView dv1 = new DataView(dtdistinct);
-                dv1.Sort = "Width,Length,ShapeName";
-                DataTable dtdistinct1 = dv1.ToTable();
-                row = 3;
-
-                foreach (DataRow dr in dtdistinct1.Rows)
+                else
                 {
-                    sht.Range("A" + row).SetValue(dr["width"] + "x" + dr["Length"] + "  (" + dr["ShapeName"] + ")");
-                    var qty = ds.Tables[0].Compute("sum(qty)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
-                    var Area = ds.Tables[0].Compute("sum(Area)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
-                    sht.Range("B" + row).SetValue(qty == DBNull.Value ? 0 : qty);
-                    sht.Range("C" + row).SetValue(Area == DBNull.Value ? 0 : Area);
-                    row = row + 1;
+                    if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                    {
+                        Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                    }
+                    string Path = "";
+                    var xapp = new XLWorkbook();
+                    var sht = xapp.Worksheets.Add("sheet1");
+                    int row = 0;
 
+                    //******************
+
+                    sht.Range("A1").Value = where;
+                    sht.Range("A1:C1").Style.Alignment.SetWrapText();
+                    sht.Range("A1:C1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A1:C1").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Center);
+                    sht.Range("A1:C1").Merge();
+                    sht.Row(1).Height = 44;
+
+                    sht.Range("A2").Value = "Size";
+                    sht.Range("B2").Value = "Qty";
+                    sht.Range("C2").Value = "Area";
+                    sht.Range("B2:C2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+                    DataTable dtdistinct = ds.Tables[0].DefaultView.ToTable(true, "Width", "Length", "ShapeName");
+                    DataView dv1 = new DataView(dtdistinct);
+                    dv1.Sort = "Width,Length,ShapeName";
+                    DataTable dtdistinct1 = dv1.ToTable();
+                    row = 3;
+
+                    foreach (DataRow dr in dtdistinct1.Rows)
+                    {
+                        sht.Range("A" + row).SetValue(dr["width"] + "x" + dr["Length"] + "  (" + dr["ShapeName"] + ")");
+                        var qty = ds.Tables[0].Compute("sum(qty)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
+                        var Area = ds.Tables[0].Compute("sum(Area)", "Width='" + dr["width"] + "' and Length='" + dr["Length"] + "' And ShapeName = '" + dr["ShapeName"] + "'");
+                        sht.Range("B" + row).SetValue(qty == DBNull.Value ? 0 : qty);
+                        sht.Range("C" + row).SetValue(Area == DBNull.Value ? 0 : Area);
+                        row = row + 1;
+
+                    }
+                    //********Grand TOtal
+                    sht.Range("A" + row).Value = "GRAND TOTAL";
+                    sht.Range("B" + row).FormulaA1 = "=SUM(B3:$B$" + (row - 1) + ")";
+                    sht.Range("C" + row).FormulaA1 = "=SUM(C3:$C$" + (row - 1) + ")";
+                    sht.Columns(1, 10).AdjustToContents();
+                    //sht.Rows().AdjustToContents();
+
+                    using (var a = sht.Range("A2" + ":C" + row))
+                    {
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    }
+
+                    string Fileextension = "xlsx";
+                    string filename = UtilityModule.validateFilename("Processreceivesummary_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                    Path = Server.MapPath("~/Tempexcel/" + filename);
+                    xapp.SaveAs(Path);
+                    xapp.Dispose();
+                    //Download File
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+                    // Response.Clear();
+                    Response.ContentType = "application/vnd.ms-excel";
+                    Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                    Response.WriteFile(Path);
+                    // File.Delete(Path);
+                    Response.End();
+                    return;
                 }
-                //********Grand TOtal
-                sht.Range("A" + row).Value = "GRAND TOTAL";
-                sht.Range("B" + row).FormulaA1 = "=SUM(B3:$B$" + (row - 1) + ")";
-                sht.Range("C" + row).FormulaA1 = "=SUM(C3:$C$" + (row - 1) + ")";
-                sht.Columns(1, 10).AdjustToContents();
-                //sht.Rows().AdjustToContents();
 
-                using (var a = sht.Range("A2" + ":C" + row))
-                {
-                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                }
 
-                string Fileextension = "xlsx";
-                string filename = UtilityModule.validateFilename("Processreceivesummary_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
-                Path = Server.MapPath("~/Tempexcel/" + filename);
-                xapp.SaveAs(Path);
-                xapp.Dispose();
-                //Download File
-                Response.ClearContent();
-                Response.ClearHeaders();
-                // Response.Clear();
-                Response.ContentType = "application/vnd.ms-excel";
-                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
-                Response.WriteFile(Path);
-                // File.Delete(Path);
-                Response.End();
-                return;
             }
-            //Session["rptFileName"] = "~\\Reports\\rpt_rawmeterialstock_detailNEW.rpt";
-            Session["rptFileName"] = Session["ReportPath"];
-            Session["GetDataset"] = ds;
-            //Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
-            StringBuilder stb = new StringBuilder();
-            stb.Append("<script>");
-            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            else if (ChkQualityDesignSizeWiseSummary.Checked == true)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptQualityDesignSizeWiseFinishingProcessSummary.rpt";
+                Session["GetDataset"] = ds;
+                //Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
+                StringBuilder stb2 = new StringBuilder();
+                stb2.Append("<script>");
+                stb2.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb2.ToString(), false);
+            }
+            else
+            {
+                //Session["rptFileName"] = "~\\Reports\\rpt_rawmeterialstock_detailNEW.rpt";
+                Session["rptFileName"] = Session["ReportPath"];
+                Session["GetDataset"] = ds;
+                //Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
         }
         else
         {
@@ -2072,9 +2100,12 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         lblMessage.Text = "";
         if (TRProcessName.Visible == true)
         {
-            if (UtilityModule.VALIDDROPDOWNLIST(DDProcessName) == false)
+            if (Session["varCompanyId"].ToString() != "44")
             {
-                goto a;
+                if (UtilityModule.VALIDDROPDOWNLIST(DDProcessName) == false)
+                {
+                    goto a;
+                }
             }
         }
         if (UtilityModule.VALIDTEXTBOX(TxtFromDate) == false)
@@ -2517,6 +2548,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDGatePass_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -2552,6 +2584,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         trIssueDate.Visible = false;
@@ -2577,6 +2610,11 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             if (Session["varcompanyid"].ToString() == "16" || Session["usertype"].ToString() == "28")
             {
                 TRBuyerItemSizeWiseSummary.Visible = true;
+            }
+
+            if (Session["VarCompanyid"].ToString() == "43")
+            {
+                TRQualityDesignSizeWiseSummary.Visible = true;
             }
 
             UtilityModule.ConditionalComboFill(ref DDEmpName, @"Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end EmpName 
@@ -2608,6 +2646,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetailWithConsumpton_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -2771,6 +2810,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         trIssueDate.Visible = false;
         TRQualityWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
+        TRQualityDesignSizeWiseSummary.Visible = false;
 
     }
     protected void ProcessOrderFolio(SqlTransaction Tran)
@@ -3107,6 +3147,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3130,6 +3171,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDCommDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3143,6 +3185,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockNoTobeIssued_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3157,6 +3200,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPendingQty_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3171,6 +3215,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockRecQithwt_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3185,6 +3230,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPerday_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3199,6 +3245,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingpending_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3213,6 +3260,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDDailyfinreport_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3227,6 +3275,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3252,6 +3301,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3276,6 +3326,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerIssueSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3301,6 +3352,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3325,6 +3377,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingBalance_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TDJobWiseSummary.Visible = false;
         TDsizesummary.Visible = false;
@@ -4775,6 +4828,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDWeaverRawMaterialIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -5171,6 +5225,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDWeaverRawMaterialReceiveDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -7307,6 +7362,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     //}
     protected void RDTasselMakingRawIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         if (RDTasselMakingRawIssueDetail.Checked == true)
@@ -7631,6 +7687,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDProcessWiseAdvancePayment_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
         if (RDProcessWiseAdvancePayment.Checked == true)
@@ -8352,6 +8409,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             ChkSummary.Visible = false;
             ChkForComplete.Visible = false;
             TRForWithoutTDS.Visible = true;
+            TRQualityDesignSizeWiseSummary.Visible = false;
         }
 
     }
@@ -8479,6 +8537,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             TRForWithoutTDS.Visible = false;
             trDates.Visible = true;
             ChkForDate.Visible = true;
+            TRQualityDesignSizeWiseSummary.Visible = false;
         }
 
     }

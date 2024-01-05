@@ -7919,48 +7919,70 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Column("J").Width = 12.67;
                 sht.Column("K").Width = 12.67;
                 sht.Column("L").Width = 15.78;
+
                 sht.Column("M").Width = 16.78;
                 sht.Column("N").Width = 15.78;
                 sht.Column("O").Width = 11.22;
                 sht.Column("P").Width = 15.78;
-                sht.Column("Q").Width = 11.22;
-                sht.Column("R").Width = 15.78;
-                sht.Column("S").Width = 11.22;
-                sht.Column("T").Width = 15.78;
-                sht.Column("U").Width = 11.22;
-                sht.Column("V").Width = 22.78;
-                sht.Column("W").Width = 20.11;
+                sht.Column("Q").Width = 15.78;
 
-                sht.Range("A1:W1").Merge();
+                sht.Column("R").Width = 16.78;
+                sht.Column("S").Width = 15.78;
+                sht.Column("T").Width = 11.22;
+                sht.Column("U").Width = 15.78;
+                sht.Column("V").Width = 15.78;
+
+                sht.Column("W").Width = 16.78;
+                sht.Column("X").Width = 15.78;
+                sht.Column("Y").Width = 11.22;
+                sht.Column("Z").Width = 15.78;
+                sht.Column("AA").Width = 15.78;
+
+                sht.Column("AB").Width = 16.78;
+                sht.Column("AC").Width = 15.78;
+                sht.Column("AD").Width = 11.22;
+                sht.Column("AE").Width = 15.78;
+                sht.Column("AF").Width = 15.78;
+
+                //sht.Column("P").Width = 15.78;
+                //sht.Column("Q").Width = 11.22;
+                //sht.Column("R").Width = 15.78;
+                //sht.Column("S").Width = 11.22;
+                //sht.Column("T").Width = 15.78;
+                //sht.Column("U").Width = 11.22;
+                //sht.Column("V").Width = 22.78;
+                //sht.Column("W").Width = 20.11;
+
+                sht.Range("A1:AF1").Merge();
                 sht.Range("A1").SetValue("WEAVER DOURA REPORT DETAIL");
-                sht.Range("A1:W1").Style.Font.Bold = true;
-                sht.Range("A1:W1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A1:W1").Style.Font.FontName = "Calibri";
-                sht.Range("A1:W1").Style.Font.FontSize = 12;
+                sht.Range("A1:AF1").Style.Font.Bold = true;
+                sht.Range("A1:AF1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:AF1").Style.Font.FontName = "Calibri";
+                sht.Range("A1:AF1").Style.Font.FontSize = 12;
                 //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
 
                 if (ChkselectDate.Checked == true)
                 {
-                    sht.Range("A2:W2").Merge();
+                    sht.Range("A2:AF2").Merge();
                     sht.Range("A2").SetValue("FROM DATE: " + txtfromDate.Text + " " + "TODATE:" + txttodate.Text);
-                    sht.Range("A2:W2").Style.Font.Bold = true;
-                    sht.Range("A2:W2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                    sht.Range("A2:W2").Style.Font.FontName = "Calibri";
-                    sht.Range("A2:W2").Style.Font.FontSize = 12;
+                    sht.Range("A2:AF2").Style.Font.Bold = true;
+                    sht.Range("A2:AF2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A2:AF2").Style.Font.FontName = "Calibri";
+                    sht.Range("A2:AF2").Style.Font.FontSize = 12;
                     //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
                 }
                 else
                 {
-                    sht.Range("A2:W2").Merge();
+                    sht.Range("A2:AF2").Merge();
                     sht.Range("A2").SetValue("");
                 }
 
-                sht.Range("A3:W3").Merge();
+                sht.Range("A3:AF3").Merge();
                 sht.Range("A3").SetValue("");
-                sht.Range("A3:W3").Style.Font.Bold = true;
-                sht.Range("A3:W3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A3:W3").Style.Font.FontName = "Calibri";
-                sht.Range("A3:W3").Style.Font.FontSize = 12;
+                sht.Range("A3:AF3").Style.Font.Bold = true;
+                sht.Range("A3:AF3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A3:AF3").Style.Font.FontName = "Calibri";
+                sht.Range("A3:AF3").Style.Font.FontSize = 12;
                 //sht.Range("A1:M1").Style.Fill.BackgroundColor = XLColor.LightGray;
 
                 //*******Header
@@ -7976,25 +7998,47 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("J4").Value = "O QTY";
                 sht.Range("K4").Value = "REC QTY";
                 sht.Range("L4").Value = "ON LOOM";
-                sht.Range("M4").Value = "OFF LOOM";
+
+                sht.Range("M4").Value = "OFF LOOM I";
                 sht.Range("N4").Value = "LOOM POSITION I";
                 sht.Range("O4").Value = "DATE";
-                sht.Range("P4").Value = "LOOM POSITION II";
-                sht.Range("Q4").Value = "DATE";
-                sht.Range("R4").Value = "LOOM POSITION III";
-                sht.Range("S4").Value = "DATE";
-                sht.Range("T4").Value = "LOOM POSITION IV";
-                sht.Range("U4").Value = "DATE";
-                sht.Range("V4").Value = "LOOM INSPECTOR";
-                sht.Range("W4").Value = "REMARKS";
+                sht.Range("P4").Value = "LOOM INSPECTOR I";
+                sht.Range("Q4").Value = "REMARKS I";
 
-                sht.Range("A4:W4").Style.Font.FontName = "Calibri";
-                sht.Range("A4:W4").Style.Font.FontSize = 11;
-                sht.Range("A4:W4").Style.Font.Bold = true;
-                sht.Range("A4:W4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-                sht.Range("A4:W4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A4:W4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                sht.Range("A4:W4").Style.Alignment.SetWrapText();
+                sht.Range("R4").Value = "OFF LOOM II";
+                sht.Range("S4").Value = "LOOM POSITION II";
+                sht.Range("T4").Value = "DATE";
+                sht.Range("U4").Value = "LOOM INSPECTOR II";
+                sht.Range("V4").Value = "REMARKS II";
+
+                sht.Range("W4").Value = "OFF LOOM III";
+                sht.Range("X4").Value = "LOOM POSITION III";
+                sht.Range("Y4").Value = "DATE";
+                sht.Range("Z4").Value = "LOOM INSPECTOR III";
+                sht.Range("AA4").Value = "REMARKS III";
+
+                sht.Range("AB4").Value = "OFF LOOM IV";
+                sht.Range("AC4").Value = "LOOM POSITION IV";
+                sht.Range("AD4").Value = "DATE";
+                sht.Range("AE4").Value = "LOOM INSPECTOR IV";
+                sht.Range("AF4").Value = "REMARKS IV";
+
+                //sht.Range("P4").Value = "LOOM POSITION II";
+                //sht.Range("Q4").Value = "DATE";
+                //sht.Range("R4").Value = "LOOM POSITION III";
+                //sht.Range("S4").Value = "DATE";
+                //sht.Range("T4").Value = "LOOM POSITION IV";
+                //sht.Range("U4").Value = "DATE";
+                //sht.Range("V4").Value = "LOOM INSPECTOR";
+                //sht.Range("W4").Value = "REMARKS";
+
+                sht.Range("A4:AF4").Style.Font.FontName = "Calibri";
+                sht.Range("A4:AF4").Style.Font.FontSize = 11;
+                sht.Range("A4:AF4").Style.Font.Bold = true;
+                sht.Range("A4:AF4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+                sht.Range("A4:AF4").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A4:AF4").Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                sht.Range("A4:AF4").Style.Alignment.SetWrapText();
 
 
                 row = 5;
@@ -8022,6 +8066,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     decimal OQty = 0;
                     decimal RecQty = 0;
                     decimal OnLoomQty = 0;
+                    string DouraDate1 = "";
+                    string DouraDate2 = "";
+                    string DouraDate3 = "";
+                    string DouraDate4 = "";
+                    string DouraDate5 = "";
 
                     int rowfrom = 0, rowto = 0;
 
@@ -8052,20 +8101,77 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                             sht.Range("C" + row).SetValue(FolioChallanNo);
                             sht.Range("D" + row).SetValue(TStockNo);
                             sht.Range("E" + row).SetValue(EmpName);
-                            sht.Range("F" + row).SetValue(AssignDate);
-                            sht.Range("G" + row).SetValue(DeliveryDate);
+                            sht.Range("F" + row).SetValue(Convert.ToDateTime(AssignDate).ToString("dd/MM/yyyy"));
+                            sht.Range("G" + row).SetValue(Convert.ToDateTime(DeliveryDate).ToString("dd/MM/yyyy"));                          
                             sht.Range("H" + row).SetValue(DesignName);
                             sht.Range("I" + row).SetValue(Size);
                             sht.Range("J" + row).SetValue(OQty);
                             sht.Range("K" + row).SetValue(RecQty);
                             sht.Range("L" + row).SetValue(OnLoomQty);
 
+                            sht.Range("M" + row).SetValue(row3["OffLoom1"].ToString());
+                            sht.Range("N" + row).SetValue(row3["LoomPosition1"].ToString());
+                            if (row3["DouraDate1"].ToString() == "01-Jan-1900 00:00:00")
+                            {
+                                DouraDate1 = "";
+                            }
+                            else
+                            {
+                                DouraDate1 = Convert.ToDateTime(row3["DouraDate1"].ToString()).ToString("dd/MM/yyyy");                               
+                            }
+                            sht.Range("O" + row).SetValue(DouraDate1);
+                            sht.Range("P" + row).SetValue(row3["DouraInspector1"].ToString());
+                            sht.Range("Q" + row).SetValue(row3["Remarks1"].ToString());
+
+                            sht.Range("R" + row).SetValue(row3["OffLoom2"].ToString());
+                            sht.Range("S" + row).SetValue(row3["LoomPosition2"].ToString());
+                            if (row3["DouraDate2"].ToString() == "01-Jan-1900 00:00:00")
+                            {
+                                DouraDate2 = "";
+                            }
+                            else
+                            {
+                                DouraDate2 = Convert.ToDateTime(row3["DouraDate2"].ToString()).ToString("dd/MM/yyyy");
+                            }
+                            sht.Range("T" + row).SetValue(DouraDate2);
+                            sht.Range("U" + row).SetValue(row3["DouraInspector2"].ToString());
+                            sht.Range("V" + row).SetValue(row3["Remarks2"].ToString());
+
+                            sht.Range("W" + row).SetValue(row3["OffLoom3"].ToString());
+                            sht.Range("X" + row).SetValue(row3["LoomPosition3"].ToString());
+                            if (row3["DouraDate3"].ToString() == "01-Jan-1900 00:00:00")
+                            {
+                                DouraDate3 = "";
+                            }
+                            else
+                            {
+                                DouraDate3 = Convert.ToDateTime(row3["DouraDate3"].ToString()).ToString("dd/MM/yyyy");
+                            }
+                            sht.Range("Y" + row).SetValue(DouraDate3);
+                            sht.Range("Z" + row).SetValue(row3["DouraInspector3"].ToString());
+                            sht.Range("AA" + row).SetValue(row3["Remarks3"].ToString());
+
+
+                            sht.Range("AB" + row).SetValue(row3["OffLoom4"].ToString());
+                            sht.Range("AC" + row).SetValue(row3["LoomPosition4"].ToString());
+                            if (row3["DouraDate4"].ToString() == "01-Jan-1900 00:00:00")
+                            {
+                                DouraDate4= "";
+                            }
+                            else
+                            {
+                                DouraDate4 = Convert.ToDateTime(row3["DouraDate4"].ToString()).ToString("dd/MM/yyyy");
+                            }
+                            sht.Range("AD" + row).SetValue(DouraDate4);
+                            sht.Range("AE" + row).SetValue(row3["DouraInspector4"].ToString());
+                            sht.Range("AF" + row).SetValue(row3["Remarks4"].ToString());
+
                             //sht.Range("A" + row + ":W" + row).Style.Font.Bold = true;
-                            sht.Range("A" + row + ":W" + row).Style.Font.FontName = "Calibri";
-                            sht.Range("A" + row + ":W" + row).Style.Font.FontSize = 11;
-                            sht.Range("A" + row + ":W" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                            sht.Range("A" + row + ":W" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
-                            sht.Range("A" + row + ":W" + row).Style.Alignment.WrapText = true;
+                            sht.Range("A" + row + ":AF" + row).Style.Font.FontName = "Calibri";
+                            sht.Range("A" + row + ":AF" + row).Style.Font.FontSize = 11;
+                            sht.Range("A" + row + ":AF" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                            sht.Range("A" + row + ":AF" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                            sht.Range("A" + row + ":AF" + row).Style.Alignment.WrapText = true;
 
                             row = row + 1;
 
@@ -8078,12 +8184,12 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                         sht.Range("K" + row).FormulaA1 = "SUM(K" + rowfrom + ":K" + rowto + ")";
                         sht.Range("L" + row).FormulaA1 = "SUM(L" + rowfrom + ":L" + rowto + ")";
                         //sht.Range("I" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
-                        sht.Range("C" + row + ":W" + row).Style.Font.Bold = true;
-                        sht.Range("C" + row + ":W" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                        sht.Range("C" + row + ":W" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
+                        sht.Range("C" + row + ":AF" + row).Style.Font.Bold = true;
+                        sht.Range("C" + row + ":AF" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                        sht.Range("C" + row + ":AF" + row).Style.Alignment.SetVertical(XLAlignmentVerticalValues.Top);
                     }
 
-                    using (var a = sht.Range("A2" + ":W" + (row - 1)))
+                    using (var a = sht.Range("A2" + ":AF" + (row - 1)))
                     {
                         a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
                         a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
