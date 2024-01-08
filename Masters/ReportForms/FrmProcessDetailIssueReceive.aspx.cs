@@ -102,6 +102,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     RDWeaverRawMaterialIssueDetail.Visible = true;
                     RDFinishingRecSummaryWithTDS.Visible = true;
                     RDFinishingHissabSummary.Visible = true;
+                    RDFinishingNillBalance.Visible = true;
                     break;
                 case 44:
                     RDTasselIssueReceiveSummary.Visible = true;
@@ -590,6 +591,11 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (RDFinishingHissabSummary.Checked == true)
         {
             FinishingHissabSummaryReport_CI();
+            return;
+        }
+        if (RDFinishingNillBalance.Checked == true)
+        {
+            FinishingReceiveNillBalanceReport();
             return;
         }
 
@@ -3391,6 +3397,8 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         ChkForComplete.Visible = false;
         TRAsOnDate.Visible = false;
         ChkForDate.Visible = false;
+        TRCategoryName.Visible = true;
+        TRddItemName.Visible = true;
 
         if (RDFinishingBalance.Checked == true)
         {
@@ -3407,6 +3415,45 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             TRIssueNo.Visible = false;
             ChkForComplete.Visible = false;
             TRAsOnDate.Visible = true;
+            ChkForDate.Visible = false;
+        }
+    }
+    protected void RDFinishingNillBalance_CheckedChanged(object sender, EventArgs e)
+    {
+        TRQualityDesignSizeWiseSummary.Visible = false;
+        TRForWithoutTDS.Visible = false;
+        TDJobWiseSummary.Visible = false;
+        TDsizesummary.Visible = false;
+        TRBuyerItemSizeWiseSummary.Visible = false;
+        TRCheckWithTime.Visible = false;
+        TRQualityWiseSummary.Visible = false;
+        TRRecChallan.Visible = false;
+        trDates.Visible = false;
+        TR1.Visible = false;
+        TRIssueNo.Visible = false;
+        ChkForComplete.Visible = false;
+        TRAsOnDate.Visible = false;
+        ChkForDate.Visible = false;
+        TRCategoryName.Visible = true;
+        TRddItemName.Visible = true;
+
+        if (RDFinishingNillBalance.Checked == true)
+        {
+            TRCategoryName.Visible = false;
+            TRddItemName.Visible = false;
+            TDexcelExport.Visible = false;
+            TRChkBoxIssueDate.Visible = false;
+            trIssueDate.Visible = false;
+            TRcustcode.Visible = false;
+            TRorderno.Visible = false;
+            ChkForProcessIssRecSummary.Visible = false;
+            ChkSummary.Visible = false;
+            TRRecChallan.Visible = false;
+            trDates.Visible = false;
+            TR1.Visible = false;
+            TRIssueNo.Visible = false;
+            ChkForComplete.Visible = false;
+            TRAsOnDate.Visible = false;
             ChkForDate.Visible = false;
         }
     }
@@ -8630,5 +8677,103 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             lblMessage.Text = ex.Message;
         }
 
+    }
+
+    private void FinishingReceiveNillBalanceReport()
+    {
+        // DataSet ds = new DataSet();
+        string strCondition = "And PM.CompanyId=" + DDCompany.SelectedValue;
+        //Check Conditions
+        //if (ChkForDate.Checked == true)
+        //{
+        //    strCondition = strCondition + " And PM.Assigndate>='" + TxtFromDate.Text + "' And PM.Assigndate<='" + TxtToDate.Text + "'";
+        //}
+        //if (TRcustcode.Visible == true && DDcustcode.SelectedIndex > 0)
+        //{
+        //    strCondition = strCondition + " And OM.Customerid=" + DDcustcode.SelectedValue;
+        //}
+        //if (TRorderno.Visible == true && DDorderno.SelectedIndex > 0)
+        //{
+        //    strCondition = strCondition + " And OM.orderid=" + DDorderno.SelectedValue;
+        //}
+        //if (DDCategory.SelectedIndex > 0)
+        //{
+        //    strCondition = strCondition + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
+        //}
+        //if (ddItemName.SelectedIndex > 0)
+        //{
+        //    strCondition = strCondition + " And VF.ITEM_ID=" + ddItemName.SelectedValue;
+        //}
+        //if (DDQuality.SelectedIndex > 0 && TRDDQuality.Visible == true)
+        //{
+        //    strCondition = strCondition + " And VF.QualityId=" + DDQuality.SelectedValue;
+        //}
+        //if (DDDesign.SelectedIndex > 0 && TRDDDesign.Visible == true)
+        //{
+        //    strCondition = strCondition + " And VF.designId=" + DDDesign.SelectedValue;
+        //}
+        //if (DDColor.SelectedIndex > 0 && TRDDColor.Visible == true)
+        //{
+        //    strCondition = strCondition + " And VF.ColorId=" + DDColor.SelectedValue;
+        //}
+        //if (DDShape.SelectedIndex > 0 && TRDDShape.Visible == true)
+        //{
+        //    strCondition = strCondition + " And VF.ShapeId=" + DDShape.SelectedValue;
+        //}
+        //if (DDSize.SelectedIndex > 0 && TRDDSize.Visible == true)
+        //{
+        //    strCondition = strCondition + " And VF.SizeId=" + DDSize.SelectedValue;
+        //}
+        //if (DDShadeColor.SelectedIndex > 0 && TRDDShadeColor.Visible == true)
+        //{
+        //    strCondition = strCondition + " And VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+        //}
+
+        if (DDProcessName.SelectedIndex > 0)
+        {
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_FINISHINGRECEIVE_NILL_BALANCEREPORT", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@ProcessID", DDProcessName.SelectedIndex > 0 ? DDProcessName.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@empid", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@AsOnDate", DateTime.Now.ToString("dd-MMM-yyyy"));
+            cmd.Parameters.AddWithValue("@Where", strCondition);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            //***********
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptFinishingBalanceNillReportCI.rpt";
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptFinishingBalanceNillReportCI.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+            }
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Please Select Process Name!');", true);
+        }
+
+        
     }
 }

@@ -96,7 +96,7 @@
                 <table width="85%">
                     <tr>
                         <td style="width: 300px" valign="top">
-                            <div style="width: 287px; padding-top: 5px; height: 460px; float: left; border-style: solid;
+                            <div style="width: 287px; padding-top: 5px; height: 480px; float: left; border-style: solid;
                                 border-width: thin">
                                 &nbsp;&nbsp;
                                 <br />
@@ -202,6 +202,10 @@
                                 <asp:RadioButton ID="RDFinishingHissabSummary" runat="server" Text="Finishing Hissab Summary"
                                     Visible="false" GroupName="OrderType" CssClass="labelbold" AutoPostBack="True"
                                     OnCheckedChanged="RDFinishingHissabSummary_CheckedChanged" />
+                                <br />
+                                &nbsp;&nbsp;
+                                <asp:RadioButton ID="RDFinishingNillBalance" runat="server" Text="Finishing Nill Balance" Visible="false"
+                                    GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDFinishingNillBalance_CheckedChanged" />
                                 <br />
                                 &nbsp;&nbsp;
                             </div>
