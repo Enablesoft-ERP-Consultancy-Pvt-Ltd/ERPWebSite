@@ -950,7 +950,14 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                         And Item_Id=" + DDQualityType.SelectedValue + @" and RD.ToDate is null";
             str = str + " Group By JobTypeId,Item_Id,QualityId,DesignId,ColorId,SizeId,CalcOptionId,Rate,Rate2,ReIssRate,ShapeId,EffectiveDate,Bonus)";
         }
-        str = str + " Group By PNM.Process_Name,IM.Item_Name,RD.QualityId,Q.QualityName,RD.DesignId,D.DesignName,RD.ColorId,C.ColorName,RD.SizeID,QS.Finishing_Mt_Size,S.ShapeName,RD.Rate,Rd.Rate2,RD.ReIssRate,RD.EffectiveDate,CO.CalcName,CI.CustomerCode,RD.Remark,RD.Bonus  ";
+        if (Session["VarCompanyNo"].ToString() == "43")
+        {
+            str = str + " Group By PNM.Process_Name,IM.Item_Name,RD.QualityId,Q.QualityName,RD.DesignId,D.DesignName,RD.ColorId,C.ColorName,RD.SizeID,SA.ItemFinishingSizeMtr,S.ShapeName,RD.Rate,Rd.Rate2,RD.ReIssRate,RD.EffectiveDate,CO.CalcName,CI.CustomerCode,RD.Remark,RD.Bonus  ";
+        }
+        else
+        {
+            str = str + " Group By PNM.Process_Name,IM.Item_Name,RD.QualityId,Q.QualityName,RD.DesignId,D.DesignName,RD.ColorId,C.ColorName,RD.SizeID,QS.Finishing_Mt_Size,S.ShapeName,RD.Rate,Rd.Rate2,RD.ReIssRate,RD.EffectiveDate,CO.CalcName,CI.CustomerCode,RD.Remark,RD.Bonus  ";
+        }       
         str = str + " Order by IM.Item_Name";
 
 

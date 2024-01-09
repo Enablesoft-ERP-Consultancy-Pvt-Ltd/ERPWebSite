@@ -464,7 +464,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (RDProcessIssRecDetail.Checked == true)
         {
             //********Finishing New Module Wise
-            if (variable.VarFinishingNewModuleWise == "1" && (Convert.ToInt16(DDProcessName.SelectedIndex <= 0 ? "0" : DDProcessName.SelectedValue) > 1) || chksizesummary.Checked == true || ChkBuyerItemSizeWiseSummary.Checked == true || ChkQualityDesignSizeWiseSummary.Checked==true)
+            if (variable.VarFinishingNewModuleWise == "1" && (Convert.ToInt16(DDProcessName.SelectedIndex <= 0 ? "0" : DDProcessName.SelectedValue) > 1) || chksizesummary.Checked == true || ChkBuyerItemSizeWiseSummary.Checked == true || ChkQualityDesignSizeWiseSummary.Checked == true || ChkQualitySizeWiseHissabSummary.Checked== true)
             {
                 if (Chkissueno.Checked == true)
                 {
@@ -1415,7 +1415,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         }
         //End Conditions
         int ReportType = 0;
-        if (chksizesummary.Checked == true || ChkQualityDesignSizeWiseSummary.Checked==true)
+        if (chksizesummary.Checked == true || ChkQualityDesignSizeWiseSummary.Checked==true || ChkQualitySizeWiseHissabSummary.Checked==true)
         {
             ReportType = 2;
         }
@@ -1556,6 +1556,16 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 stb2.Append("<script>");
                 stb2.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
                 ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb2.ToString(), false);
+            }
+            else if (ChkQualitySizeWiseHissabSummary.Checked == true)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptQualitySizeWiseProcessHissabSummaryCI.rpt";
+                Session["GetDataset"] = ds;
+                //Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
+                StringBuilder stb3 = new StringBuilder();
+                stb3.Append("<script>");
+                stb3.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb3.ToString(), false);
             }
             else
             {
@@ -2554,6 +2564,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDGatePass_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -2590,6 +2601,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -2621,6 +2633,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             if (Session["VarCompanyid"].ToString() == "43")
             {
                 TRQualityDesignSizeWiseSummary.Visible = true;
+                TRQualitySizeWiseHissabSummary.Visible = true;
             }
 
             UtilityModule.ConditionalComboFill(ref DDEmpName, @"Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end EmpName 
@@ -2652,6 +2665,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetailWithConsumpton_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -2817,6 +2831,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         TRQualityWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
+        TRQualitySizeWiseHissabSummary.Visible = false;
 
     }
     protected void ProcessOrderFolio(SqlTransaction Tran)
@@ -3153,6 +3168,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3177,6 +3193,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDCommDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3191,6 +3208,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockNoTobeIssued_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3206,6 +3224,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPendingQty_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3221,6 +3240,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockRecQithwt_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3236,6 +3256,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPerday_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3251,6 +3272,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingpending_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3266,6 +3288,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDDailyfinreport_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3281,6 +3304,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3307,6 +3331,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3332,6 +3357,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerIssueSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3358,6 +3384,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -3383,6 +3410,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingBalance_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -3420,6 +3448,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingNillBalance_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TDJobWiseSummary.Visible = false;
@@ -4875,6 +4904,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDWeaverRawMaterialIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -5272,6 +5302,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDWeaverRawMaterialReceiveDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -7409,6 +7440,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     //}
     protected void RDTasselMakingRawIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -7734,6 +7766,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDProcessWiseAdvancePayment_CheckedChanged(object sender, EventArgs e)
     {
+        TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
         TRAsOnDate.Visible = false;
@@ -8457,6 +8490,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             ChkForComplete.Visible = false;
             TRForWithoutTDS.Visible = true;
             TRQualityDesignSizeWiseSummary.Visible = false;
+            TRQualitySizeWiseHissabSummary.Visible = false;
         }
 
     }
@@ -8585,6 +8619,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             trDates.Visible = true;
             ChkForDate.Visible = true;
             TRQualityDesignSizeWiseSummary.Visible = false;
+            TRQualitySizeWiseHissabSummary.Visible = false;
         }
 
     }

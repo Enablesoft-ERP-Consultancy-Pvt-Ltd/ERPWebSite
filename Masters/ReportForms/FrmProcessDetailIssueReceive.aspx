@@ -579,6 +579,12 @@
                                                     Text="Quality Design Size Wise Summary" />
                                             </td>
                                         </tr>
+                                        <tr id="TRQualitySizeWiseHissabSummary" runat="server" visible="false">
+                                            <td colspan="3">
+                                                <asp:CheckBox ID="ChkQualitySizeWiseHissabSummary" runat="server" CssClass="checkboxbold"
+                                                    Text="Quality Size Wise Hissab Summary" />
+                                            </td>
+                                        </tr>
                                         <tr id="TRAsOnDate" runat="server" visible="false">
                                             <td>
                                                 <asp:Label ID="Label12" runat="server" CssClass="labelbold" Text="As ON Date"></asp:Label>
