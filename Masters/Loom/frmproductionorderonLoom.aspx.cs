@@ -57,7 +57,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                 JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
                 Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
-                Order By D.DepartmentName
+                Order By D.DepartmentName 
                 select isnull(masterunitid,0) as masterunitid From mastersetting(Nolock)";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);

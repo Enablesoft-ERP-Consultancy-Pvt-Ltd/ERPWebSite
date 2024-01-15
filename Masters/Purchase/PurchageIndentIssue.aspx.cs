@@ -245,9 +245,11 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                 case 16:
                     TDChkForSampleFlag.Visible = true;
                     chkindentvise.Enabled = true;
+                    TxtShadeColorFill.Visible = true;
                     break;
                 case 28:
                     chkindentvise.Enabled = true;
+                    TxtShadeColorFill.Visible = true;
                     break;
                 case 20:
                     txtchalanno.Enabled = false;
@@ -1275,11 +1277,11 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                                     }
                                     UtilityModule.ConditionalComboFill(ref ddlshadeNew, str, true, "Select ShadeColor");
                                 }
-                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
+                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName From ShadeColor(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
+                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName From ShadeColor(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
                             }
                             break;
                         case "10":
@@ -4883,7 +4885,6 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                 TxtRate.Text = "0";                
                 //fill_text();
             }
-
             Tran.Commit();
         }
         catch (Exception ex)
@@ -4892,5 +4893,13 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             lblerrormessage.Text = ex.Message;
             con.Close();
         }
+    }
+    protected void TxtShadeColorFill_TextChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref ddlshade, @"Select distinct ShadecolorId, ShadeColorName 
+        From ShadeColor(Nolock) 
+        Where MasterCompanyId=" + Session["varCompanyId"] + @" 
+        And ShadeColorName Like '" + TxtShadeColorFill.Text + @"%' 
+        Order By ShadeColorName ", true, "Select ShadeColor");
     }
 }

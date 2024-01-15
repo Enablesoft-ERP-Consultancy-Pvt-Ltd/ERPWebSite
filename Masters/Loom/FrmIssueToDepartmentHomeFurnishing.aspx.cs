@@ -263,7 +263,7 @@ public partial class Masters_Loom_FrmIssueToDepartmentHomeFurnishing : System.We
         array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         array[1] = new SqlParameter("@ProcessId", 1);
         array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
-        array[3] = new SqlParameter("@REPORTTYPE", 3);
+        array[3] = new SqlParameter("@REPORTTYPE", 6);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
 
@@ -367,7 +367,7 @@ public partial class Masters_Loom_FrmIssueToDepartmentHomeFurnishing : System.We
             param[6] = new SqlParameter("@rate", txtrategrid.Text == "" ? "0" : txtrategrid.Text);
 
             //*************
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateIssueToDepartment", param);
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateIssueToDepartmentHomeFurnishing", param);
             //*************
             lblmessage.Text = param[4].Value.ToString();
             Tran.Commit();
@@ -409,7 +409,7 @@ public partial class Masters_Loom_FrmIssueToDepartmentHomeFurnishing : System.We
             param[3] = new SqlParameter("@MastercompanyId", Session["varcompanyNo"]);
             param[4] = new SqlParameter("@Userid", Session["varuserid"]);
             //********
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteIssueToDepartment", param);
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteIssueToDepartmentHomeFurnishing", param);
             lblmessage.Text = param[2].Value.ToString();
             Tran.Commit();
             FillGrid();
@@ -530,7 +530,7 @@ public partial class Masters_Loom_FrmIssueToDepartmentHomeFurnishing : System.We
                 param[2] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                 param[2].Direction = ParameterDirection.Output;
 
-                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateConsumptionIssueToDepartment", param);
+                SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateConsumptionIssueToDepartmentHomeFurnishing", param);
                 if (param[2].Value.ToString() != "")
                 {
                     lblmessage.Text = param[2].Value.ToString();
