@@ -188,6 +188,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDQualityWiseProductionHissabSummary.Visible = true;
                 TDWeaverRawMaterialIssueSummary.Visible = true;
                 TDWeavingRecSummaryWithTDS.Visible = true;
+                TDBazaarWiseWeavingRegisterSummary.Visible = true;
             }
             else
             {
@@ -591,6 +592,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         else if (RDWeavingRecSummaryWithTDS.Checked == true)
         {
             WeavingReceiveSummaryWithTDSReport_CI();
+            return;
+        }
+        else if (RDBazaarWiseWeavingRegisterSummary.Checked == true)
+        {
+            BazaarWiseWeavingRegisterSummaryReport_CI();            
             return;
         }
     }
@@ -8370,4 +8376,100 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         }
 
     }
+    protected void BazaarWiseWeavingRegisterSummaryReport_CI()
+    {
+        lblmsg.Text = "";
+        try
+        {
+            string str = "", FilterBy = "";
+           
+            //if (DDFolioNo.SelectedIndex > 0)
+            //{
+            //    str = str + " and PH.ProcessOrderNo=" + DDFolioNo.SelectedValue;
+            //    FilterBy = FilterBy + ", Folio No. -" + DDFolioNo.SelectedItem.Text;
+            //}
+            //if (DDQtype.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Item_id=" + DDQtype.SelectedValue;
+            //    FilterBy = FilterBy + ", Item Name -" + DDQtype.SelectedItem.Text;
+            //}
+            //if (DDQuality.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+            //    FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
+            //}
+            ////if (DDDesign.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+            ////    FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            ////}
+            ////if (DDColor.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+            ////    FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            ////}
+            ////if (DDSize.SelectedIndex > 0)
+            ////{
+            ////    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+            ////    FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            ////}
+            //if (ChkselectDate.Checked == true)
+            //{
+            //    str = str + " and PH.Date>='" + txtfromDate.Text + "' and PH.Date<='" + txttodate.Text + "'";
+            //    FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
+            //}
+            
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_BazaarWiseWeavingRegisterSummaryReport_CI", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 500;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Processid", 1);
+            cmd.Parameters.AddWithValue("@Where", str);
+            cmd.Parameters.AddWithValue("@Empid", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@ChkselectDate", ChkselectDate.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+     
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptBazaarWiseWeavingRegisterReportCI.xsd";
+                Session["rptFileName"] = "~\\Reports\\RptBazaarWiseWeavingRegisterReportCI.rpt";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+
+    }
+
 }

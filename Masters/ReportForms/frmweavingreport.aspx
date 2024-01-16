@@ -720,6 +720,21 @@
                     TRForWithoutTDS.Visible = false;
                 }
             }
+            if (RDBazaarWiseWeavingRegisterSummary.Checked == true)
+            {
+                Trunitname.Visible = false;
+                trProductionStatus.Visible = false;
+                trFolioType.Visible = false;
+                TRCustomerCode.Visible = false;
+                TROrderNo.Visible = false;
+                Trproductiontype.Visible = false;
+                trCategoryName.Visible = false;
+                trItemName.Visible = false;
+                trFolioNo.Visible = false;
+                Trquality.Visible = false;
+                Trshadecolor.Visible = false;
+                
+            }
         }        
     </script>
     <asp:UpdatePanel ID="UPD1" runat="server">
@@ -918,7 +933,13 @@
                                             OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>
                                 </tr>
-
+                                <tr>
+                                    <td id="TDBazaarWiseWeavingRegisterSummary" runat="server" visible="false">
+                                        <asp:RadioButton ID="RDBazaarWiseWeavingRegisterSummary" Text="Bazaar Wise Weaving Register Summary"
+                                            runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
+                                            OnCheckedChanged="RadioButton_CheckedChanged" />
+                                    </td>
+                                </tr>
                             </table>
                         </asp:Panel>
                     </div>
