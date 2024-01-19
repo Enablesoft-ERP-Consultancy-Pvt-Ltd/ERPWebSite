@@ -20,6 +20,13 @@
             var control = document.getElementById("newPreview1");
             control.style.visibility = "hidden";
         }
+        function KeyDownHandler(event) {
+            if (event.keyCode == 13) {
+                event.returnValue = false;
+                event.cancel = true;
+                window.document.getElementById('<%=btnShadeColorFill.ClientID %>').click();
+            }
+        }
         function PreviewReferenceImage(imgFile) {
             var newPreviewRef = document.getElementById("DivReferenceImage");
             document.getElementById("DivReferenceImage").value = "";
@@ -268,7 +275,7 @@
                         <asp:Button ID="btnAddSize" runat="server" CssClass="buttonsmalls" OnClientClick="return AddSize();"
                             TabIndex="17" Text="ADD" Width="40px" />
                         <asp:CheckBox ID="ChkForInchSize" runat="server" Text="For Inch" Font-Bold="true"
-                                    Visible="false" AutoPostBack="true" OnCheckedChanged="ChkForInchSize_CheckedChanged" />
+                            Visible="false" AutoPostBack="true" OnCheckedChanged="ChkForInchSize_CheckedChanged" />
                         <br />
                         <asp:DropDownList ID="ddsize" runat="server" Width="150px" CssClass="dropdown" AutoPostBack="True"
                             OnSelectedIndexChanged="ddsize_SelectedIndexChanged" TabIndex="16">
@@ -278,9 +285,11 @@
                     </td>
                     <td id="shd" runat="server" visible="false" class="tdstyle">
                         <asp:Label ID="lblshadecolor" runat="server" Text="ShadeColor" CssClass="labelbold"></asp:Label>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<asp:Button ID="btnaddshadecolor" runat="server"
-                            CssClass="buttonsmalls" OnClientClick="return AddShadecolor()" TabIndex="24"
-                            Text="ADD" Width="40px" />
+                        &nbsp;<asp:Button ID="btnaddshadecolor" runat="server" CssClass="buttonsmalls" OnClientClick="return AddShadecolor()"
+                            TabIndex="24" Text="ADD" Width="40px" />
+                        <asp:TextBox ID="TxtShadeColorFill" CssClass="textb" runat="server" Width="60px"
+                            Visible="false" onKeypress="KeyDownHandler(event);"></asp:TextBox>
+                        <asp:Button ID="btnShadeColorFill" runat="server" Style="display: none" OnClick="TxtShadeColorFill_TextChanged" />
                         <br />
                         <asp:DropDownList ID="ddlshade" runat="server" Width="150px" CssClass="dropdown"
                             AutoPostBack="True" OnSelectedIndexChanged="ddlshade_SelectedIndexChanged" TabIndex="18">
@@ -566,7 +575,6 @@
                     </td>
                 </tr>
             </table>
-
             <table>
                 <tr id="TRFinishedStockReport" runat="server" visible="false">
                     <td>
@@ -593,7 +601,6 @@
                     </td>
                 </tr>
             </table>
-
             <asp:HiddenField ID="HDF1" runat="server" />
             <asp:HiddenField ID="hnstockid" runat="server" Value="0" />
             <asp:HiddenField ID="hnqtyinhand" runat="server" Value="0" />

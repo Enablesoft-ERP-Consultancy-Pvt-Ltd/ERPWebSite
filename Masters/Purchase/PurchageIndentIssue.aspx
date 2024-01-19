@@ -28,6 +28,13 @@
         function NewForm() {
             window.location.href = "PurchageIndentIssue.aspx";
         }
+        function KeyDownHandler(event) {
+            if (event.keyCode == 13) {
+                event.returnValue = false;
+                event.cancel = true;
+                window.document.getElementById('<%=btnShadeColorFill.ClientID %>').click();
+            }
+        }
         function isNumberKey(evt) {
             var charCode = (evt.which) ? evt.which : event.keyCode
             if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -339,9 +346,9 @@
                                                 Text="CUSTOMER WISE" CssClass="checkboxbold" ForeColor="White" />
                                         </td>
                                         <td>
-                                            <asp:CheckBox ID="chkforsample" runat="server" Visible="false"
-                                                Text="Sample Order" CssClass="checkboxbold" Font-Bold="true" ForeColor="White"
-                                                AutoPostBack="True" OnCheckedChanged="chkforsample_CheckedChanged" />
+                                            <asp:CheckBox ID="chkforsample" runat="server" Visible="false" Text="Sample Order"
+                                                CssClass="checkboxbold" Font-Bold="true" ForeColor="White" AutoPostBack="True"
+                                                OnCheckedChanged="chkforsample_CheckedChanged" />
                                         </td>
                                         <td id="TdrequirDate" runat="server" visible="false">
                                             <asp:Label ID="lblreqdate" Font-Bold="true" ForeColor="Red" runat="server" Text=""></asp:Label>
@@ -356,7 +363,7 @@
                                         </td>
                                         <td id="TDChkForSampleFlag" runat="server" visible="false">
                                             <asp:CheckBox ID="ChkForForSampleFlag" runat="server" Text="For Sample" CssClass="checkboxbold"
-                                                Font-Bold="true" ForeColor="White" AutoPostBack="True" OnCheckedChanged="ChkForForSampleFlag_CheckedChanged"/>
+                                                Font-Bold="true" ForeColor="White" AutoPostBack="True" OnCheckedChanged="ChkForForSampleFlag_CheckedChanged" />
                                         </td>
                                         <td class="tdstyle" id="TDPoNoNew" runat="server" visible="false">
                                             <asp:DropDownList ID="DDPoNoNew" runat="server" CssClass="dropdown" Width="110px">
@@ -567,8 +574,12 @@
                                     </td>
                                     <td id="shd" runat="server" visible="false">
                                         <asp:Label ID="lblshadecolor" runat="server" class="tdstyle" Text="ShadeColor" CssClass="labelbold"></asp:Label>
+                                        &nbsp;
+                                        <asp:TextBox ID="TxtShadeColorFill" CssClass="textb" runat="server" Width="60px" Visible ="false" 
+                                            onKeypress="KeyDownHandler(event);"></asp:TextBox>
+                                        <asp:Button ID="btnShadeColorFill" runat="server" Style="display: none" OnClick="TxtShadeColorFill_TextChanged" />
                                         &nbsp;<br />
-                                        <asp:DropDownList ID="ddlshade" runat="server" Width="150px" CssClass="dropdown"
+                                        <asp:DropDownList ID="ddlshade" runat="server" Width="160px" CssClass="dropdown"
                                             OnSelectedIndexChanged="ddlshade_SelectedIndexChanged" AutoPostBack="True">
                                         </asp:DropDownList>
                                     </td>
@@ -601,24 +612,23 @@
                                         <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ErrorMessage="Only .gif,.jpeg or.jpg files are allowed!"
                                             ValidationExpression="^.*\.(jpg|JPG|gif|GIF|jpeg|JPEG|BMP|bmp)$" ControlToValidate="PhotoImage"></asp:RegularExpressionValidator>
                                     </td>
-                                   
                                 </tr>
-                                  <tr runat="server" id="trrevisedremark" visible="false">
-                                            <td>
-                                                <asp:Label ID="Label52" runat="server" Text="Item Remarks" CssClass="labelbold"></asp:Label>
-                                            </td>
-                                            <td>
-                                                <asp:TextBox ID="TxtItemRemark" runat="server" Width="250px" CssClass="textboxremark"
-                                                    TextMode="MultiLine"></asp:TextBox>
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td id="revisedremark" runat="server" class="tdstyle" visible="false">
-                                                <asp:Label ID="Label53" runat="server" CssClass="labelbold" Text="Revised Remarks"></asp:Label>
-                                                <asp:TextBox ID="TXTreviseRemark" runat="server" CssClass="textboxremark" TextMode="MultiLine"
-                                                    Width="250px"></asp:TextBox>
-                                            </td>
-                                    </tr>
+                                <tr runat="server" id="trrevisedremark" visible="false">
+                                    <td>
+                                        <asp:Label ID="Label52" runat="server" Text="Item Remarks" CssClass="labelbold"></asp:Label>
+                                    </td>
+                                    <td>
+                                        <asp:TextBox ID="TxtItemRemark" runat="server" Width="250px" CssClass="textboxremark"
+                                            TextMode="MultiLine"></asp:TextBox>
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td id="revisedremark" runat="server" class="tdstyle" visible="false">
+                                        <asp:Label ID="Label53" runat="server" CssClass="labelbold" Text="Revised Remarks"></asp:Label>
+                                        <asp:TextBox ID="TXTreviseRemark" runat="server" CssClass="textboxremark" TextMode="MultiLine"
+                                            Width="250px"></asp:TextBox>
+                                    </td>
+                                </tr>
                             </table>
                         </fieldset>
                         <fieldset>
@@ -669,14 +679,16 @@
                                         <asp:TextBox ID="TxtAmount" runat="server" Enabled="false" Width="85px" CssClass="textb"></asp:TextBox>
                                     </td>
                                     <td id="tdreqby" runat="server" visible="false" class="tdstyle">
-                                        <asp:Label ID="lblreqby" runat="server" Text="Requested By" CssClass="labelbold"></asp:Label><span style="color:Red">*</span>
+                                        <asp:Label ID="lblreqby" runat="server" Text="Requested By" CssClass="labelbold"></asp:Label><span
+                                            style="color: Red">*</span>
                                         <br />
-                                        <asp:TextBox ID="txtReqBy" runat="server"  Width="85px" CssClass="textb"></asp:TextBox>
+                                        <asp:TextBox ID="txtReqBy" runat="server" Width="85px" CssClass="textb"></asp:TextBox>
                                     </td>
-                                     <td id="tdreqfor" runat="server" visible="false" class="tdstyle">
-                                        <asp:Label ID="lblreqfor" runat="server" Text="Requested For" CssClass="labelbold"></asp:Label><span style="color:Red">*</span>
+                                    <td id="tdreqfor" runat="server" visible="false" class="tdstyle">
+                                        <asp:Label ID="lblreqfor" runat="server" Text="Requested For" CssClass="labelbold"></asp:Label><span
+                                            style="color: Red">*</span>
                                         <br />
-                                        <asp:TextBox ID="txtreqfor" runat="server"  Width="85px" CssClass="textb"></asp:TextBox>
+                                        <asp:TextBox ID="txtreqfor" runat="server" Width="85px" CssClass="textb"></asp:TextBox>
                                     </td>
                                 </tr>
                                 <tr>
@@ -884,8 +896,8 @@
                                             <td>
                                                 <asp:DropDownList ID="ddpayement" runat="server" CssClass="dropdown" Width="115px">
                                                 </asp:DropDownList>
-                                                 &nbsp;&nbsp;<asp:Button ID="BtnAddPaymentModeCustom" runat="server" CssClass="buttonsmalls"
-                                                        OnClientClick="return AddPaymentMode(); " Text="&#43;" Width="35px" />
+                                                &nbsp;&nbsp;<asp:Button ID="BtnAddPaymentModeCustom" runat="server" CssClass="buttonsmalls"
+                                                    OnClientClick="return AddPaymentMode(); " Text="&#43;" Width="35px" />
                                             </td>
                                             <td id="TdlblFrieghtRate" runat="server" class="tdstyle">
                                                 <asp:Label ID="Label40" runat="server" Text="Freight Rate" CssClass="labelbold"></asp:Label>
@@ -908,8 +920,8 @@
                                             <td colspan="4">
                                                 <asp:DropDownList ID="dddelivery" CssClass="dropdown" runat="server" Width="114px">
                                                 </asp:DropDownList>
-                                                 &nbsp;<asp:Button ID="Button1" runat="server" CssClass="buttonsmalls"
-                                                        OnClientClick="return AddDeliveryTerms(); " Text="&#43;" Width="35px" />
+                                                &nbsp;<asp:Button ID="Button1" runat="server" CssClass="buttonsmalls" OnClientClick="return AddDeliveryTerms(); "
+                                                    Text="&#43;" Width="35px" />
                                             </td>
                                         </tr>
                                         <tr id="trtransort" runat="server">
@@ -959,14 +971,13 @@
                                                 <asp:TextBox ID="txtMill" runat="server" Width="250px" CssClass="textboxremark" TextMode="MultiLine"></asp:TextBox>
                                             </td>
                                         </tr>
-                                       
                                         <tr>
                                             <td class="tdstyle">
                                                 <asp:Label ID="Label54" runat="server" Text="Delivery Address" CssClass="labelbold"></asp:Label>
                                             </td>
                                             <td>
-                                             <asp:DropDownList Width="100px" ID="ddlDeliveryAddress" runat="server" CssClass="dropdown" Visible="false">
-                                                  
+                                                <asp:DropDownList Width="100px" ID="ddlDeliveryAddress" runat="server" CssClass="dropdown"
+                                                    Visible="false">
                                                 </asp:DropDownList>
                                                 <asp:TextBox ID="txtDeliveryAddress" runat="server" Width="250px" CssClass="textboxremark"
                                                     TextMode="MultiLine" Visible="false"></asp:TextBox>

@@ -128,7 +128,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                     lblsrno.Visible = false;
                     break;
                 case 14:
-                    TDQtyWeight.Visible = true;                    
+                    TDQtyWeight.Visible = true;
                     break;
             }
             ParameteLabel();
@@ -290,16 +290,16 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             {
                 string str = @"Select Distinct PII.PIndentIssueId, Case When IsNull(OM.LocalOrder, '') = '' Then PII.ChallanNo Else OM.LocalOrder + ' | ' + PII.ChallanNo End 
                         From PurchaseIndentIssue PII(Nolock) ";
-//                if (MasterCompanyId == 16)
-//                {
-//                    str = str + @" JOIN PurchaseIndentIssueTran PIT(Nolock) on PIT.PIndentIssueId = PII.PIndentIssueId 
-//                                            And PIT.UnitID in (Select UnitID From Unit(Nolock) Where UnitTypeID <> 2)";
-//                }
+                //                if (MasterCompanyId == 16)
+                //                {
+                //                    str = str + @" JOIN PurchaseIndentIssueTran PIT(Nolock) on PIT.PIndentIssueId = PII.PIndentIssueId 
+                //                                            And PIT.UnitID in (Select UnitID From Unit(Nolock) Where UnitTypeID <> 2)";
+                //                }
 
                 str = str + @" left Join ordermaster OM(Nolock) on PII.orderid = OM.orderid 
                 Where PII.Status in (" + Postatus + ") And PII.PartyId = " + DDPartyName.SelectedValue + " And PII.CompanyId = " + DDCompanyName.SelectedValue + @" 
                 And PII.BranchID = " + DDBranchName.SelectedValue + " And PII.MasterCompanyId=" + Session["varCompanyId"];
-                
+
                 str = str + " Order by  PII.PindentIssueId desc";
 
                 UtilityModule.ConditionalComboFill(ref DDChallanNo, str, true, "--Select Order No--");
@@ -376,7 +376,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id 
             inner join Item_Master IM on IPM.Item_Id=IM.Item_Id 
             where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " and IM.Category_Id=" + DDCategory.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
-        
+
         //if (MasterCompanyId == 16)
         //{
         //    Str = Str + " And PIT.UnitID in (Select UnitID From Unit(Nolock) Where UnitTypeID <> 2)";
@@ -1006,7 +1006,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                     _array[0].Value = DDCompanyName.SelectedValue;
                     _array[1].Value = finishedid;
                     _array[2].Value = DDChallanNo.SelectedValue;
-                    _array[3].Value =DDLotNo.Items.Count>0? DDLotNo.SelectedItem.Text:"";
+                    _array[3].Value = DDLotNo.Items.Count > 0 ? DDLotNo.SelectedItem.Text : "";
                     _array[4].Value = Session["varcompanyId"];
 
                     if (DDCustomerOrderNo.Visible == true && DDCustomerOrderNo.Items.Count > 0)
@@ -1111,7 +1111,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
         {
             if (Lblmessage.Text == "")
             {
-                string LotNo = "",TagNo=string.Empty;
+                string LotNo = "", TagNo = string.Empty;
                 int finishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TextItemCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
                 string ReceiveNo = (TxtReceiveNo.Text == "" ? "0" : TxtReceiveNo.Text).ToString();
                 string hnpid = (hnprid.Value == "" ? "0" : hnprid.Value).ToString();
@@ -1243,7 +1243,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                         _arrpara[57] = new SqlParameter("@TCS", SqlDbType.Float);
                         _arrpara[58] = new SqlParameter("@BranchID", SqlDbType.Int);
                         _arrpara[59] = new SqlParameter("@TagNo", SqlDbType.NVarChar, 50);
-                        _arrpara[60] = new SqlParameter("@QtyWeight", SqlDbType.Decimal,18-3);
+                        _arrpara[60] = new SqlParameter("@QtyWeight", SqlDbType.Decimal, 18 - 3);
 
                         _arrpara[0].Direction = ParameterDirection.InputOutput;
                         _arrpara[0].Value = ViewState["PurchaseReceiveId"];
@@ -1370,7 +1370,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                                 _arrpara[11].Value = Convert.ToDouble(_arrpara[11].Value) - Convert.ToDouble(txtbellwt.Text == "" ? "0" : txtbellwt.Text);
                             }
 
-                           
+
                             if (Convert.ToString(Session["varCompanyId"]) == "43")
                             {
                                 TagNo = PurchaseReceiveTagNo;
@@ -1390,7 +1390,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                                     UtilityModule.StockStockTranTableUpdateNew(Convert.ToInt32(_arrpara[8].Value), Convert.ToInt32(_arrpara[9].Value), Convert.ToInt32(_arrpara[1].Value), (variable.VarPURCHASERECEIVEAUTOGENLOTNO == "1" ? CompanyLotno : Convert.ToString(_arrpara[15].Value)), Convert.ToDouble(_arrpara[11].Value), _arrpara[4].Value.ToString(), DateTime.Now.ToString("dd-MMM-yyyy"), "PurchaseReceiveDetail", Convert.ToInt32(_arrpara[7].Value), Tran, 1, true, 1, VarFinish_Type, UnitId: Convert.ToInt16(DDUnit.SelectedValue), TagNo: TagNo, BinNo: BinNo);
                                 }
                             }
-                            
+
                             report();
 
                             BtnPreview.Enabled = true;
@@ -1737,7 +1737,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                     }
                 }
             }
-           
+
         }
         if (hncomp.Value == "10")
         {
@@ -1769,7 +1769,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             if (e.Row.RowType == DataControlRowType.Header)
             {
                 for (int i = 0; i < DGPurchaseReceiveDetail.Columns.Count; i++)
-                {                   
+                {
                     if (DGPurchaseReceiveDetail.Columns[i].HeaderText == "TAGNO")
                     {
                         e.Row.Cells[i].Text = "UCNNo";
@@ -1783,7 +1783,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                 TextBox txtLotNo = e.Row.FindControl("txtLotNo") as TextBox;
                 txtLotNo.Enabled = true;
             }
-            
+
         }
     }
     protected void TextItemCode_TextChanged(object sender, EventArgs e)
@@ -2120,13 +2120,25 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                 fill_grid();
                 BtnPreview.Enabled = true;
                 TxtReceiveDate.Focus();
+
                 DDCategory.SelectedIndex = -1;
                 DDItem.SelectedIndex = -1;
-                DDQuality.SelectedIndex = -1;
-                DDDesign.SelectedIndex = -1;
-                DDColor.SelectedIndex = -1;
-                DDColorShade.SelectedIndex = 1;
-
+                if (TdQuality.Visible == true)
+                {
+                    DDQuality.SelectedIndex = -1;
+                }
+                if (TdDesign.Visible == true)
+                {
+                    DDDesign.SelectedIndex = -1;
+                }
+                if (TdColor.Visible == true)
+                {
+                    DDColor.SelectedIndex = -1;
+                }
+                if (TdColorShade.Visible == true)
+                {
+                    DDColorShade.SelectedIndex = 1;
+                }
             }
         }
         catch (Exception ex)
@@ -2351,14 +2363,14 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             //    cst = Convert.ToDouble(TxtAmount.Text) * Convert.ToDouble(txtcst.Text) / 100;
             //Txtnetamount.Text = Convert.ToString(Convert.ToDouble(TxtAmount.Text) + vat + cst);
 
-            double SGST = 0.00, IGST = 0.00,TCS=0.00;
+            double SGST = 0.00, IGST = 0.00, TCS = 0.00;
             if (txtSGST.Text != "")
                 SGST = Convert.ToDouble(TxtAmount.Text) * Convert.ToDouble(txtSGST.Text == "" ? "0" : txtSGST.Text) / 100;
             if (txtIGST.Text != "")
                 IGST = Convert.ToDouble(TxtAmount.Text) * Convert.ToDouble(txtIGST.Text == "" ? "0" : txtIGST.Text) / 100;
             if (txtTCS.Text != "")
                 TCS = Convert.ToDouble(TxtAmount.Text) * Convert.ToDouble(txtTCS.Text == "" ? "0" : txtTCS.Text) / 100;
-            Txtnetamount.Text = Convert.ToString(Convert.ToDouble(TxtAmount.Text) + SGST + IGST+TCS);
+            Txtnetamount.Text = Convert.ToString(Convert.ToDouble(TxtAmount.Text) + SGST + IGST + TCS);
         }
     }
 
@@ -2382,14 +2394,14 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
         ////cst
 
         ////CGST SGST IGST
-        double SGST = 0.00, IGST = 0.00,TCS=0.00;//,//freight=0.00;
+        double SGST = 0.00, IGST = 0.00, TCS = 0.00;//,//freight=0.00;
         SGST = amount * (Convert.ToDouble(txtSGST.Text == "" ? "0" : txtSGST.Text) + Convert.ToDouble(txtCGST.Text == "" ? "0" : txtCGST.Text)) / 100;
         IGST = amount * Convert.ToDouble(txtIGST.Text == "" ? "0" : txtIGST.Text) / 100;
         TCS = amount * Convert.ToDouble(txtTCS.Text == "" ? "0" : txtTCS.Text) / 100;
         //freight =Convert.ToDouble(txtfreight.Text == "" ? "0" : txtfreight.Text);
 
         ////Penality
-        amount = amount + SGST + IGST+TCS;
+        amount = amount + SGST + IGST + TCS;
         amount = amount - Convert.ToDouble(TxtPenalty.Text == "" ? "0" : TxtPenalty.Text);
         Txtnetamount.Text = amount.ToString();
     }
@@ -2520,7 +2532,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
         {
             if (DDPreviewType.SelectedValue == "0")
             {
-                Session["ReportPath"] = "Reports/PurchaseReceiveNewIndusKleed.rpt";               
+                Session["ReportPath"] = "Reports/PurchaseReceiveNewIndusKleed.rpt";
             }
             else if (DDPreviewType.SelectedValue == "1")
             {
@@ -3151,7 +3163,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
-            param[4] = new SqlParameter("@MRemark", txtmastremark.Text);           
+            param[4] = new SqlParameter("@MRemark", txtmastremark.Text);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_UPDATEPURCHASEREC_MAINREMARK", param);
             Tran.Commit();

@@ -211,7 +211,7 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
             }
             UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
 
-            if (Session["VarCompanyNo"].ToString() == "42")
+            if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46")
             {
                 if (DDProcessName.SelectedItem.Text == "WEAVING")
                 {
@@ -239,7 +239,7 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
     {
         if (DDProcessName.SelectedIndex > 0 && ChkForEdit.Checked == true)
         {
-            if (Session["VarCompanyNo"].ToString() == "42" && DDProcessName.SelectedItem.Text.ToUpper() == "WEAVING")
+            if ((Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46") && DDProcessName.SelectedItem.Text.ToUpper() == "WEAVING")
             {
                 string str = @"Select Distinct PH.HissabNo,cast(PH.HissabNo as varchar)+' / '+PIM.ChallanNo as HissabNo1 
                     From PROCESS_HISSAB PH(NoLock) JOIN Process_Issue_Master_1 PIM(NoLock) ON PH.ProcessOrderNo=PIM.ISSUEORDERID
@@ -423,7 +423,7 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
 
         //if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex <= 0 && DDProcessName.SelectedItem.Text.ToUpper()=="WEAVING")
         //{
-        if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex <= 0)
+        if ((Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46") && DDPOOrderNo.SelectedIndex <= 0)
         {
             DGDetail.DataSource = null;
             DGDetail.DataBind();
@@ -518,7 +518,7 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
                         txtamount.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(TAmount)", "")), 2).ToString(); 
                         txttotalcommission.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(commamount)", "")), 2).ToString();
                         txttotalpenality.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(Penality)", "")), 2).ToString();
-                        if (Session["VarCompanyNo"].ToString() == "42")
+                        if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46")
                         {
                             txtTotalBonusAmt.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(BonusAmt)", "")), 2).ToString();
                             txtAdditionAmt.Text = Math.Round(Convert.ToDouble(Ds.Tables[0].Compute("Sum(MaterialAmt)", "")), 2).ToString();
@@ -880,6 +880,16 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
                         Session["ReportPath"] = "Reports/RptProcessHissabSummaryVikramMirzapurForNextProcess.rpt";
                     }
                     break;
+                case "46":
+                    if (DDProcessName.SelectedValue == "1")
+                    {
+                        Session["ReportPath"] = "Reports/RptProcessHissabSummaryNeman.rpt";
+                    }
+                    else
+                    {
+                        Session["ReportPath"] = "Reports/RptProcessHissabSummaryNemanForNextProcess.rpt";
+                    }
+                    break;
                 case "44":
                     Session["ReportPath"] = "Reports/RptProcessHissabSummary_agni.rpt";
                     break;
@@ -1035,7 +1045,7 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
 
     protected void DDPOOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyNo"].ToString() == "42" && DDProcessName.SelectedValue != "1")
+        if ((Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46") && DDProcessName.SelectedValue != "1")
         {
             string str = @"select Replace(convert(nvarchar(11),isnull(MIN(PRM.ReceiveDate),Getdate()),106),' ','-') As FromDate,Replace(convert(nvarchar(11),
                     isnull(MAX(PRM.ReceiveDate),getdate()),106),' ','-') as ToDate
@@ -1114,6 +1124,18 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
                     view = "V_PRINTVOUCHER_FORNEXRPROCESS";
                     Session["rptFileName"] = "Reports/RptVoucher_VikramMirzapurForNextProcess.rpt";
                 }                
+                break;
+            case "46":
+                if (DDProcessName.SelectedValue == "1")
+                {
+                    view = "V_PRINTVOUCHER_FOLIOWISE";
+                    Session["rptFileName"] = "Reports/RptVoucher_Neman.rpt";
+                }
+                else
+                {
+                    view = "V_PRINTVOUCHER_FORNEXRPROCESS";
+                    Session["rptFileName"] = "Reports/RptVoucher_NemanForNextProcess.rpt";
+                }
                 break;
             case "44":
                 Session["rptFileName"] = "Reports/rptvoucheragni.rpt";
@@ -1394,7 +1416,7 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
     }
     protected void FillMaterialDeductionCharge()
     {
-        if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex > 0 && DDProcessName.SelectedItem.Text.ToUpper() == "WEAVING")
+        if ((Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46") && DDPOOrderNo.SelectedIndex > 0 && DDProcessName.SelectedItem.Text.ToUpper() == "WEAVING")
         {
             string str = "";
             str = "Select isnull(sum(AA.AdvanceAmt),0) as AdvanceAmt From AdvanceAmountByFolioNoWise AA(NoLock) Where AA.PaymentType=2 And AA.CompanyID = " + DDCompanyName.SelectedValue + @" 

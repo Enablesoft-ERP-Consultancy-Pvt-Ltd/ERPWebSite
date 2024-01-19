@@ -42,6 +42,7 @@
               <xs:element name="PROCESS_REC_ID" type="xs:int" minOccurs="0" />
               <xs:element name="StockNoRemarks" type="xs:string" minOccurs="0" />
               <xs:element name="AREANEW" type="xs:double" minOccurs="0" />
+              <xs:element name="RecChallanNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

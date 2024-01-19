@@ -873,8 +873,8 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
                 else
                 {
                     str = @"Select Distinct ID.LotNo,ID.LotNo From IndentDetail ID,PP_ProcessRawtran PRT 
-            Where ID.IndentId=PRT.IndentId And PRT.IndentId=" + ddindent.SelectedValue + " And PRMid=" + ddChallanNo.SelectedValue + @" And 
-            ID.OFinishedid=" + Varfinishedid;
+                            Where ID.IndentId=PRT.IndentId And PRT.IndentId=" + ddindent.SelectedValue + " And PRMid=" + ddChallanNo.SelectedValue + @" And 
+                            ID.OFinishedid=" + Varfinishedid;
                 }
             }
             else

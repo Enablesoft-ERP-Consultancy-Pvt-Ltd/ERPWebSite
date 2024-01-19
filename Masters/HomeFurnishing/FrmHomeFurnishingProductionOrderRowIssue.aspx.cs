@@ -1575,7 +1575,6 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrderRowI
         string str = "";
         if (Session["varCompanyId"].ToString() == "44")
         {
-
             str = @" Select PM.Date, PM.ChalanNo, PM.trantype, PT.IssueQuantity, 
                                 PT.Lotno, GM.GodownName, Case When IsNull(EI.EmpName, '') = '' Then 
 	                                (Select Distinct EII.EmpName + ', ' 
@@ -1604,36 +1603,33 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrderRowI
                                 LEFT join EmpInfo Ei(Nolock) on PM.Empid=ei.EmpId 
                                 join PROCESS_NAME_MASTER PNM(Nolock) on PM.Processid=PNM.PROCESS_NAME_ID 
                                 Where PM.TypeFlag = 1 AND PM.Prmid=" + ViewState["Prmid"];
-
-
-
-
         }
         else
         {
             str = @" Select PM.Date, PM.ChalanNo, PM.trantype, PT.IssueQuantity, 
-                                PT.Lotno, GM.GodownName, Case When IsNull(EI.EmpName, '') = '' Then 
-	                                (Select Distinct EII.EmpName + ', ' 
-		                                From Employee_HomeFurnishingOrderMaster  EPO(Nolock) 
-		                                JOIN Empinfo EII(Nolock) ON EII.EmpID = EPO.EmpID And EPO.IssueOrderId = PM.Prorderid And EPO.ProcessId = PM.Processid) 
-                                Else EI.EmpName End EmpName, EI.Address, CI.CompanyName, CI.CompAddr1, CI.CompAddr2, 
-                                CI.CompAddr3, CI.CompTel, vf.ITEM_NAME, vf.QualityName, vf.designName, 
-                                vf.ColorName, vf.ShadeColorName, vf.ShapeName, vf.SizeMtr, PNM.PROCESS_NAME, 
-                                PM.Prorderid, EI.GSTNo as empgstin, CI.GSTNo,PT.TAGNO,PT.BINNO, 
-                                (Select Distinct CII.CustomerCode + ', '
-		                                From HomeFurnishingOrderDetail PID(Nolock) 
-		                                JOIN OrderMaster OM(Nolock) ON OM.OrderiD = PID.OrderiD 
-                                        JOIN CustomerInfo CII(Nolock) ON CII.CustomerID = OM.CustomerID 
-                                        Where PID.IssueOrderId = PM.Prorderid For XML Path('')) OrderNo, 
-                                1 ReportType, PM.Prorderid IssueOrderID 
-                                From ProcessRawMaster PM(Nolock) 
-                                join ProcessRawTran PT(Nolock) on PM.PRMid=PT.PRMid 
-                                join CompanyInfo ci(Nolock) on PM.Companyid=ci.CompanyId 
-                                join V_FinishedItemDetail vf(Nolock) on PT.Finishedid=vf.ITEM_FINISHED_ID 
-                                join GodownMaster GM(Nolock) on PT.Godownid=GM.GoDownID 
-                                LEFT join EmpInfo Ei(Nolock) on PM.Empid=ei.EmpId 
-                                join PROCESS_NAME_MASTER PNM(Nolock) on PM.Processid=PNM.PROCESS_NAME_ID 
-                                Where PM.TypeFlag = 1 AND PM.Prmid=" + ViewState["Prmid"];
+                    PT.Lotno, GM.GodownName, Case When IsNull(EI.EmpName, '') = '' Then 
+	                    (Select Distinct EII.EmpName + ', ' 
+		                    From Employee_HomeFurnishingOrderMaster  EPO(Nolock) 
+		                    JOIN Empinfo EII(Nolock) ON EII.EmpID = EPO.EmpID And EPO.IssueOrderId = PM.Prorderid And EPO.ProcessId = PM.Processid) 
+                    Else EI.EmpName End EmpName, EI.Address, CI.CompanyName, BM.BranchAddress CompAddr1, '' CompAddr2, 
+                    '' CompAddr3, BM.PhoneNo CompTel, vf.ITEM_NAME, vf.QualityName, vf.designName, 
+                    vf.ColorName, vf.ShadeColorName, vf.ShapeName, vf.SizeMtr, PNM.PROCESS_NAME, 
+                    PM.Prorderid, EI.GSTNo as empgstin, CI.GSTNo,PT.TAGNO,PT.BINNO, 
+                    (Select Distinct CII.CustomerCode + ', '
+		                    From HomeFurnishingOrderDetail PID(Nolock) 
+		                    JOIN OrderMaster OM(Nolock) ON OM.OrderiD = PID.OrderiD 
+                            JOIN CustomerInfo CII(Nolock) ON CII.CustomerID = OM.CustomerID 
+                            Where PID.IssueOrderId = PM.Prorderid For XML Path('')) OrderNo, 
+                    1 ReportType, PM.Prorderid IssueOrderID 
+                    From ProcessRawMaster PM(Nolock) 
+                    JOIN BRANCHMASTER BM ON BM.ID = PM.BRANCHID 
+                    join ProcessRawTran PT(Nolock) on PM.PRMid=PT.PRMid 
+                    join CompanyInfo ci(Nolock) on PM.Companyid=ci.CompanyId 
+                    join V_FinishedItemDetail vf(Nolock) on PT.Finishedid=vf.ITEM_FINISHED_ID 
+                    join GodownMaster GM(Nolock) on PT.Godownid=GM.GoDownID 
+                    LEFT join EmpInfo Ei(Nolock) on PM.Empid=ei.EmpId 
+                    join PROCESS_NAME_MASTER PNM(Nolock) on PM.Processid=PNM.PROCESS_NAME_ID 
+                    Where PM.TypeFlag = 1 AND PM.Prmid=" + ViewState["Prmid"];
         }
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
@@ -1647,8 +1643,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrderRowI
                 Session["rptFileName"] = "~\\Reports\\RptRawIssueRecDuplicateNew.rpt";
             
             }
-        
-            
+
             Session["GetDataset"] = ds;
             Session["dsFileName"] = "~\\ReportSchema\\RptRawIssueRecDuplicateNew.xsd";
 

@@ -23,7 +23,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
         if (Session["varCompanyId"] == null)
         {
             Response.Redirect("~/Login.aspx");
-        }   
+        }
 
         lblerror.Text = "";
         Label2.Text = "";
@@ -72,21 +72,27 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                 case "8":
                     LblLotNo.Text = "Lot No./Batch No.";
                     break;
+                case "9":
+                    ChkForExcelExport.Visible = true;
+                    break;
                 case "10":
                     tdlotno.Visible = false;
                     break;
                 case "14":
                     TDnoofCone.Visible = true;
                     break;
+                case "16":
+                    TxtShadeColorFill.Visible = true;
+                    break;
                 case "21":
                     ChkMtr.Checked = true;
                     TDDirectStockRemark.Visible = true;
                     break;
+                case "28":
+                    TxtShadeColorFill.Visible = true;
+                    break;
                 case "36":
                     TDDirectStockRemark.Visible = true;
-                    break;
-                case "9":
-                    ChkForExcelExport.Visible = true;
                     break;
                 case "42":
                     BtnStockNoToVCMSale.Visible = true;
@@ -180,7 +186,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                         break;
                     case "6":
                         shd.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddlshade, "select shadecolorid,shadecolorname from shadecolor Where MasterCompanyId=" + Session["varCompanyId"] + " order by shadecolorname", true, "Select Shadecolor");
+                        FillShadeColorName();
                         break;
                 }
             }
@@ -674,7 +680,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                 con.Close();
                 con.Dispose();
             }
-        }  
+        }
         return ds;
     }
     protected void gvcarpetdetail_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -932,16 +938,16 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                 ds = null;
                 Label lblunitid = ((Label)gvcarpetdetail.Rows[gvcarpetdetail.SelectedIndex].FindControl("lblunitid"));
 
-//                string str = @"SELECT DISTINCT s.StockID, (Select quantity From stocktran stt(Nolock) Where stt.Stockid = s.StockID And stt.tablename = 'Opening stock') OpenStock, s.Qtyinhand, s.lotno, 
-//                (SELECT TStockNos FROM  Get_StockNoRec_carpet_Wise(s.ITEM_FINISHED_ID) Get_StockNoRec_carpet_Wise_1) StockNos, 
-//                IPM.QUALITY_ID, IPM.DESIGN_ID, IPM.COLOR_ID, IPM.shadecolor_id, IPM.SHAPE_ID, IPM.SIZE_ID, IM.ITEM_ID, IM.CATEGORY_ID, IsNull(st.stocktranid, 0) stocktranid, 
-//                s.Companyid, s.Godownid, s.TypeId, " + lblunitid.Text + @" UnitId, s.ITEM_FINISHED_ID, s.Price, IsNull(st.coneuse, 0) coneuse, s.TagNo, s.BinNo 
-//                FROM stock s(Nolock)
-//                Left Join stocktran st(Nolock) on st.stockid = s.stockid And st.tablename = 'Opening stock'
-//                JOIN ITEM_PARAMETER_MASTER IPM(Nolock) ON IPM.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID 
-//                JOIN ITEM_MASTER IM(Nolock) ON IM.ITEM_ID = IPM.ITEM_ID 
-//                Where s.StockID=" + gvcarpetdetail.SelectedValue + " And s.Companyid = " + ddlcompany.SelectedValue + @" And 
-//                IM.MasterCompanyId = " + Session["varCompanyId"];
+                //                string str = @"SELECT DISTINCT s.StockID, (Select quantity From stocktran stt(Nolock) Where stt.Stockid = s.StockID And stt.tablename = 'Opening stock') OpenStock, s.Qtyinhand, s.lotno, 
+                //                (SELECT TStockNos FROM  Get_StockNoRec_carpet_Wise(s.ITEM_FINISHED_ID) Get_StockNoRec_carpet_Wise_1) StockNos, 
+                //                IPM.QUALITY_ID, IPM.DESIGN_ID, IPM.COLOR_ID, IPM.shadecolor_id, IPM.SHAPE_ID, IPM.SIZE_ID, IM.ITEM_ID, IM.CATEGORY_ID, IsNull(st.stocktranid, 0) stocktranid, 
+                //                s.Companyid, s.Godownid, s.TypeId, " + lblunitid.Text + @" UnitId, s.ITEM_FINISHED_ID, s.Price, IsNull(st.coneuse, 0) coneuse, s.TagNo, s.BinNo 
+                //                FROM stock s(Nolock)
+                //                Left Join stocktran st(Nolock) on st.stockid = s.stockid And st.tablename = 'Opening stock'
+                //                JOIN ITEM_PARAMETER_MASTER IPM(Nolock) ON IPM.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID 
+                //                JOIN ITEM_MASTER IM(Nolock) ON IM.ITEM_ID = IPM.ITEM_ID 
+                //                Where s.StockID=" + gvcarpetdetail.SelectedValue + " And s.Companyid = " + ddlcompany.SelectedValue + @" And 
+                //                IM.MasterCompanyId = " + Session["varCompanyId"];
 
                 string str = @"SELECT DISTINCT s.StockID, (Select quantity From stocktran stt(Nolock) Where stt.Stockid = s.StockID And stt.tablename = 'Opening stock') OpenStock, s.Qtyinhand, s.lotno, 
                 '' StockNos, 
@@ -961,22 +967,22 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                     hnstockid.Value = stockid.ToString();
                     txtstockid.Text = ds.Tables[0].Rows[0]["stockid"].ToString();
                     ddlcatagorytype.SelectedValue = ds.Tables[0].Rows[0]["typeid"].ToString();
-                    UtilityModule.ConditionalComboFill(ref ddlcatagoryname, @"SELECT dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME  FROM  dbo.CategorySeparate INNER JOIN
-                    dbo.ITEM_CATEGORY_MASTER ON dbo.CategorySeparate.Categoryid = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID
+                    UtilityModule.ConditionalComboFill(ref ddlcatagoryname, @"SELECT dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME  FROM  dbo.CategorySeparate(Nolock) JOIN 
+                    dbo.ITEM_CATEGORY_MASTER(Nolock) ON dbo.CategorySeparate.Categoryid = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID 
                     WHERE dbo.CategorySeparate.id =" + ddlcatagorytype.SelectedValue + " And ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Catagory");
 
                     ddlcatagoryname.SelectedValue = ds.Tables[0].Rows[0]["category_id"].ToString();
 
-                    UtilityModule.ConditionalComboFill(ref ddlitemname, "Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddlcatagoryname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Item_Name", true, "--select Item--");
+                    UtilityModule.ConditionalComboFill(ref ddlitemname, "Select Distinct Item_Id,Item_Name from Item_Master(Nolock) where Category_Id=" + ddlcatagoryname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Item_Name", true, "--select Item--");
 
                     ddlitemname.SelectedValue = ds.Tables[0].Rows[0]["item_id"].ToString();
 
-                    string Qry = @"SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + ddlitemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"];
-                    Qry = Qry + @" select qualityid,qualityname from quality where item_id=" + ddlitemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by qualityname";
-                    Qry = Qry + @" select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName  ";
-                    Qry = Qry + "  SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + " order by ColorName";
-                    Qry = Qry + " select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Shapeid ";
-                    Qry = Qry + " select shadecolorid,shadecolorname from shadecolor Where MasterCompanyId=" + Session["varCompanyId"] + " order by shadecolorname";
+                    string Qry = @"SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i(Nolock) JOIN Unit u(Nolock) ON i.UnitTypeID = u.UnitTypeID where item_id=" + ddlitemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"];
+                    Qry = Qry + @" select qualityid,qualityname from quality(Nolock) where item_id=" + ddlitemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by qualityname";
+                    Qry = Qry + @" select distinct Designid,DesignName from Design(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName  ";
+                    Qry = Qry + "  SELECT ColorId,ColorName FROM Color(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " order by ColorName";
+                    Qry = Qry + " select Shapeid,ShapeName from Shape(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Shapeid ";
+                    Qry = Qry + " select shadecolorid,shadecolorname from shadecolor(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " order by shadecolorname";
                     DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
                     ddlunit.SelectedValue = ds.Tables[0].Rows[0]["unitid"].ToString();
 
@@ -1410,7 +1416,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
         Txtpostfix.Visible = false;
         btnsave.Text = "Save";
         ddlgodown.Enabled = true;
-       
+
         TxtRate.Text = "0";
         Txtminstock.Text = "0";
 
@@ -1440,7 +1446,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                     dquality.SelectedValue = null;
                     break;
             }
-           
+
         }
         if (clr.Visible == true)
         {
@@ -1456,7 +1462,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
         }
         if (shd.Visible == true)
         {
-           ddlshade.SelectedValue = null;          
+            ddlshade.SelectedValue = null;
         }
         txtnoofcone.Text = "";
         hnstockid.Value = "0";
@@ -1651,7 +1657,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
         {
             view = "V_FinishedItemDetailNew";
         }
-        string str =string.Empty;
+        string str = string.Empty;
         if (Session["varCompanyId"].ToString() == "44")
         {
             str = @"select vf.item_name,Vf.QualityName,Vf.designname,vf.ColorName,vf.ShapeName,
@@ -1665,9 +1671,9 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                 case when CN.StockUnitid=1 then vf.SizeMtr  else vf.SizeFt end as SizeFt,CN.TStockNo,CN.StockNo, IsNull(CN.Price, 0) Price 
                 From  CarpetNumber CN Inner Join " + view + @" Vf on CN.Item_Finished_Id=Vf.ITEM_FINISHED_ID
                 Where CN.TypeId=0 and CN.Pack=0 ";
-        
-        
-        
+
+
+
         }
         if (ddlitemname.SelectedIndex > 0)
         {
@@ -1852,8 +1858,8 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
     private void CheckBackDateEntryStop()
     {
         //Check StopBackEntryDate
-       //// if (variable.VarStopBackDateEntryOnAllForms == "1" && Session["varuserid"].ToString() != "1")
-       //// {
+        //// if (variable.VarStopBackDateEntryOnAllForms == "1" && Session["varuserid"].ToString() != "1")
+        //// {
         if (variable.VarStopBackDateEntryOnAllForms == "1")
         {
             string currentdate = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -1897,7 +1903,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                     return;
                 }
             }
-            
+
             if (txtdate.Text == param[3].Value.ToString())
             {
                 lblMessageVal.Visible = true;
@@ -1994,7 +2000,7 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Companyid", ddlcompany.SelectedValue);
             cmd.Parameters.AddWithValue("@TypeId", ddlcatagorytype.SelectedValue);
             cmd.Parameters.AddWithValue("@Where", Where);
-            cmd.Parameters.AddWithValue("@MasterCompayId", Session["VarCompanyId"]);        
+            cmd.Parameters.AddWithValue("@MasterCompayId", Session["VarCompanyId"]);
 
 
             DataSet ds = new DataSet();
@@ -2187,14 +2193,14 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                     Str = Str + lblstockno.Text + '|' + VarPriceNew + '~';
                 }
             }
-            
+
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@StrDetail", Str);
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
-            
+
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateRateInCarpetNumber", param);
             if (param[1].Value.ToString() == "Date Successfully updated")
@@ -2442,8 +2448,24 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
             //}
             //else
             //{
-                UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeInch from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "select size");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeInch from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "select size");
             //}
         }
+    }
+    protected void TxtShadeColorFill_TextChanged(object sender, EventArgs e)
+    {
+        FillShadeColorName();
+    }
+    private void FillShadeColorName()
+    {
+        string Str = @"Select distinct ShadecolorId, ShadeColorName 
+        From ShadeColor(Nolock) 
+        Where MasterCompanyId=" + Session["varCompanyId"];
+        if (TxtShadeColorFill.Text != "")
+        {
+            Str = Str + " And ShadeColorName Like '" + TxtShadeColorFill.Text + @"%' ";
+        }
+        Str = Str + " Order By ShadeColorName ";
+        UtilityModule.ConditionalComboFill(ref ddlshade, Str, true, "Select ShadeColor");
     }
 }

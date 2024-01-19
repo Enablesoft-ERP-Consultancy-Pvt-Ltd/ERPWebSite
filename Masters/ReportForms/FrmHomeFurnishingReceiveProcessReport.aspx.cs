@@ -203,7 +203,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingReceiveProcessReport :
             SqlTransaction tran = con.BeginTransaction();
             try
             {
-                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING" || DDProcessName.SelectedItem.Text == "BLOCK PRINTING" || DDProcessName.SelectedItem.Text == "TUFTING")
+                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "COMPUTER EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "DIGITAL PRINTING(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING" || DDProcessName.SelectedItem.Text == "KANTHA HANDWORK" || DDProcessName.SelectedItem.Text == "TUFTING" || DDProcessName.SelectedItem.Text == "APLIQUE CUTTING" || DDProcessName.SelectedItem.Text == "UPHOLSTERY" || DDProcessName.SelectedItem.Text == "BLOCK PRINTING" || DDProcessName.SelectedItem.Text == "PATCH STITCHING" || DDProcessName.SelectedItem.Text == "HAND STITCHING" || DDProcessName.SelectedItem.Text == "TUMBLING")
                 {
                     HomeFurnishingReceiveDetailReport();                                   
                 }
