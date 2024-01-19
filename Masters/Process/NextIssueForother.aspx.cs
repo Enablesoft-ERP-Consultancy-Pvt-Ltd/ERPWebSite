@@ -249,6 +249,25 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                             break;
                     }
                     break;
+                case 46:
+                    switch (Session["Usertype"].ToString())
+                    {
+                        case "1":
+                            DIVStockDetail.Visible = true;
+                            btngetstock.Visible = true;
+                            btnsavegrid.Visible = true;
+                            TDExportSize.Visible = true;
+                            break;
+                        default:
+                            //DIVStockDetail.Visible = false;
+                            //btngetstock.Visible = false;
+                            btnsavegrid.Visible = true;
+                            TDCustomerCode.Visible = false;
+                            TDCustomerOrderNo.Visible = false;
+                             TDExportSize.Visible  = false;
+                            break;
+                    }
+                    break;
                 default:
                     switch (Session["Usertype"].ToString())
                     {

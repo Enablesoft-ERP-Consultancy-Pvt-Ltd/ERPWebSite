@@ -25,9 +25,14 @@
               <xs:element name="ID" type="xs:int" minOccurs="0" />
               <xs:element name="AdvanceAmount" type="xs:double" minOccurs="0" />
               <xs:element name="BonusAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="AdvanceAmountFolioWise" type="xs:double" minOccurs="0" />
+              <xs:element name="IssueChallanNo" type="xs:string" minOccurs="0" />
               <xs:element name="AdditionAmt" type="xs:double" minOccurs="0" />
               <xs:element name="DeductionAmt" type="xs:double" minOccurs="0" />
-              <xs:element name="UserName" type="xs:string" minOccurs="0" />
+              <xs:element name="MaterialDeductionAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="ProcessHissabGST" type="xs:double" minOccurs="0" />
+              <xs:element name="CommPaymentFlag" type="xs:int" minOccurs="0" />
+              <xs:element name="EmpPanNo" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
