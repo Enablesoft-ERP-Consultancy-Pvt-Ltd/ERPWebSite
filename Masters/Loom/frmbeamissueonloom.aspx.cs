@@ -191,7 +191,29 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
         }
         else
         {
-            FillGrid();
+            if (Session["VarCompanyNo"].ToString() == "14")
+            {
+                if (chkcomplete.Checked == true)
+                {
+                    TDissue.Visible = true;
+                    DDissueno.SelectedIndex = -1;
+
+                    string str = @"select Distinct PRM.PrmId,PRM.ChalanNo 
+                        from ProcessRawMaster PRM inner join ProcessRawTran PRT on PRM.PRMid=PRT.PRMid And 
+                        PRM.BeamType=1 And PRM.TypeFlag = 0 And PRM.CompanyID = " + DDcompany.SelectedValue + " And PRM.Prorderid=" + DDFoliono.SelectedValue + " and Processid=1 and PRM.TranType=0";
+                    UtilityModule.ConditionalComboFill(ref DDissueno, str, true, "--Plz Select--");
+                }
+                else
+                {
+                    TDissue.Visible = false;
+                    DDissueno.SelectedIndex = -1;
+                    FillGrid();
+                }
+            }
+            else
+            {
+                FillGrid();
+            }
         }
     }
     protected void DDGodown_SelectedIndexChanged(object sender, EventArgs e)
@@ -356,8 +378,27 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
     }
     protected void DDissueno_SelectedIndexChanged(object sender, EventArgs e)
     {
-        hnprmid.Value = DDissueno.SelectedValue;
-        Fillissuedetail();
+        if (Session["VarCompanyNo"].ToString() == "14")
+        {
+            if (chkcomplete.Checked == true)
+            {
+                hnprmid.Value = DDissueno.SelectedValue;
+                DGIssueDetail.DataSource = "";
+                DGIssueDetail.DataBind();
+            }
+            else
+            {
+                hnprmid.Value = DDissueno.SelectedValue;
+                Fillissuedetail();
+            }
+        }
+        else
+        {
+            hnprmid.Value = DDissueno.SelectedValue;
+            Fillissuedetail();
+        }
+
+        
     }
     protected void Fillissuedetail()
     {

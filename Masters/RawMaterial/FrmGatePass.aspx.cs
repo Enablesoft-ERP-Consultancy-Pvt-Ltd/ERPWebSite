@@ -20,7 +20,7 @@ public partial class Masters_RawMaterial_FrmGatePass : System.Web.UI.Page
         if (!IsPostBack)
         {
             str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname 
-                    select Empid,EmpName + ' (' + EmpCode + ')' EmpName from empinfo where mastercompanyid=" + Session["varCompanyId"] + @" order by empname
+                    select Empid,EmpName + ' (' + EmpCode + ')' EmpName from empinfo where BlackList = 0 and mastercompanyid=" + Session["varCompanyId"] + @" order by empname
                     select DepartmentId,DepartmentName from Department order by DepartmentName
                     select val,Type from SizeType Order by val 
                  Select ID, BranchName 
@@ -925,7 +925,7 @@ public partial class Masters_RawMaterial_FrmGatePass : System.Web.UI.Page
     }
     protected void DDDept_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddempname, "select EmpId,EmpName + ' (' + EmpCode + ')' EmpName From Empinfo Where MasterCompanyid=" + Session["varcompanyno"] + " and Departmentid=" + DDDept.SelectedValue + " order by EmpName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref ddempname, "select EmpId,EmpName + ' (' + EmpCode + ')' EmpName From Empinfo Where BlackList = 0 and MasterCompanyid=" + Session["varcompanyno"] + " and Departmentid=" + DDDept.SelectedValue + " order by EmpName", true, "--Plz Select--");
 
     }
     protected void FillBinNo(object sender = null)
