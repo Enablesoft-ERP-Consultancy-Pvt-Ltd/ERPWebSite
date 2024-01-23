@@ -11,6 +11,10 @@ public partial class UserControls_ucmenu : System.Web.UI.UserControl
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (Session["varUserId"] != null)
         {
             DataSet ds = new DataSet();
@@ -25,14 +29,14 @@ public partial class UserControls_ucmenu : System.Web.UI.UserControl
                         sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable 
                         From formname(nolock) 
                         join UserRights UR(nolock) on UR.MenuId=formname.MenuId 
-                        Where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1 order By UR.Menuid ";
+                        Where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varMasterCompanyIDForERP"] + " AND Isvisible=1 order By UR.Menuid ";
                     }
                     else
                     {
                         sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable 
                         From formname(nolock) 
                         join UserRights UR(nolock) on UR.MenuId=formname.MenuId 
-                        Where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1  order By UR.Menuid ";
+                        Where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varMasterCompanyIDForERP"] + " AND Isvisible=1  order By UR.Menuid ";
                     }
                 }
                 else
@@ -40,7 +44,7 @@ public partial class UserControls_ucmenu : System.Web.UI.UserControl
                     sql = @"select UR.MenuID,Upper(DisplayName) As DisplayName,NavigateURL,parentid,ToolTip,case NavigateURL when '' then 'false' else 'true' end Selectable 
                     From Formname(nolock) 
                     join UserRights UR(nolock) on UR.MenuId=formname.MenuId 
-                    where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varCompanyId"] + " AND Isvisible=1 order By UR.Menuid ";
+                    where UR.userid=" + Session["varuserid"] + " and CompanyId=" + Session["varMasterCompanyIDForERP"] + " AND Isvisible=1 order By UR.Menuid ";
                 }
                 SqlDataAdapter da = new SqlDataAdapter(sql, conn);
                 da.Fill(ds);

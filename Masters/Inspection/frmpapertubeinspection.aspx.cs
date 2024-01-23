@@ -15,7 +15,7 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,11 +26,11 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
                 SetInitialRow();
             }
             string str = @"select CI.CompanyId,CI.CompanyName from CompanyInfo CI inner join Company_Authentication CA on Ci.CompanyId=CA.CompanyId
-                  WHere CI.MasterCompanyid=" + Session["varcompanyid"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName 
+                  WHere CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName 
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -68,7 +68,7 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
     }
     private void CompanyWiseGridViewChange()
     {
-        if (Convert.ToInt32(Session["varcompanyid"]) == 45)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 45)
         {
             Dgdetail.HeaderRow.Cells[3].Text = "Sample Size";
             Dgdetail.HeaderRow.Cells[4].Text = "Length in cm";
@@ -454,7 +454,7 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 
@@ -496,7 +496,7 @@ public partial class Masters_Inspection_frmcartoninspection : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 

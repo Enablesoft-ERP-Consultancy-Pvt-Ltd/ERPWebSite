@@ -14,7 +14,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
     {
         if (!IsPostBack)
         {
-            if (Session["varCompanyId"] == null)
+            if (Session["varMasterCompanyIDForERP"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
@@ -22,7 +22,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
             string Str = @"Select ICM.CATEGORY_ID, ICM.CATEGORY_NAME 
                     From ITEM_CATEGORY_MASTER ICM(Nolock) 
                     JOIN CategorySeparate CS(Nolock) ON CS.Categoryid = ICM.CATEGORY_ID And CS.id = 0 
-                    Where ICM.MasterCompanyid = " + Session["varCompanyId"] + @" 
+                    Where ICM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By ICM.CATEGORY_NAME 
                     Select Process_Name_ID, PROCESS_NAME 
                     From PROCESS_NAME_MASTER PNM(Nolock) Where PNM.PROCESS_NAME_ID in (5, 99, 33, 1, 29, 89, 2, 12, 4, 19, 35, 6, 7, 15) Order By AddProcessName ";
@@ -48,7 +48,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
         TDShadeColor.Visible = false;
         string strsql = @"SELECT IPM.CATEGORY_PARAMETERS_ID, IPM.CATEGORY_ID, IPM.PARAMETER_ID, PM.PARAMETER_NAME 
                     FROM ITEM_CATEGORY_PARAMETERS IPM(Nolock) 
-                    JOIN PARAMETER_MASTER PM(Nolock) ON PM.PARAMETER_ID = IPM.PARAMETER_ID And PM.MasterCompanyId = " + Session["varCompanyId"] + @"  
+                    JOIN PARAMETER_MASTER PM(Nolock) ON PM.PARAMETER_ID = IPM.PARAMETER_ID And PM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @"  
                     Where IPM.CATEGORY_ID = " + DDCategoryName.SelectedValue;
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -81,7 +81,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
         }
         UtilityModule.ConditionalComboFill(ref DDItemName, @"Select IM.ITEM_ID, IM.ITEM_NAME 
                     From ITEM_MASTER IM(Nolock) 
-                    Where IM.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And IM.MasterCompanyid = " + Session["varCompanyId"] + @" Order By IM.ITEM_NAME", true, "--Select ItemName--");
+                    Where IM.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And IM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By IM.ITEM_NAME", true, "--Select ItemName--");
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -92,7 +92,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
         UtilityModule.ConditionalComboFill(ref DDQuality, @"Select Distinct VF.QualityID, VF.QualityName 
             From V_FinishedItemDetail VF(Nolock) 
             Where VF.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And VF.ITEM_ID = " + DDItemName.SelectedValue + @" 
-            And VF.MasterCompanyid = " + Session["varCompanyId"] + @" And VF.DesignID > 0 And VF.ColorId > 0 And VF.SizeID > 0", true, "--Select Quality--");
+            And VF.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" And VF.DesignID > 0 And VF.ColorId > 0 And VF.SizeID > 0", true, "--Select Quality--");
     }
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -102,7 +102,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
     {
         string Str = @"Select Distinct VF.DesignID, VF.DesignName 
             From V_FinishedItemDetail VF(Nolock) 
-            Where VF.MasterCompanyid = " + Session["varCompanyId"] + @" And VF.DesignID > 0 And VF.ColorId > 0 And VF.SizeID > 0 And 
+            Where VF.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" And VF.DesignID > 0 And VF.ColorId > 0 And VF.SizeID > 0 And 
             VF.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And VF.ITEM_ID = " + DDItemName.SelectedValue;
         if (TDQuality.Visible == true && DDQuality.SelectedIndex > 0)
         {
@@ -120,7 +120,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
         string Str = @"Select Distinct VF.ColorID, VF.ColorName 
             From V_FinishedItemDetail VF(Nolock) 
             Where VF.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And VF.ITEM_ID = " + DDItemName.SelectedValue + @" And 
-            VF.MasterCompanyid = " + Session["varCompanyId"] + @" And VF.ColorId > 0 And VF.SizeID > 0";
+            VF.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" And VF.ColorId > 0 And VF.SizeID > 0";
         if (TDQuality.Visible == true && DDQuality.SelectedIndex > 0)
         {
             Str = Str + " And VF.QualityID = " + DDQuality.SelectedValue;
@@ -141,7 +141,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
         string Str = @"Select Distinct VF.ShapeID, VF.ShapeName 
             From V_FinishedItemDetail VF(Nolock) 
             Where VF.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And VF.ITEM_ID = " + DDItemName.SelectedValue + @" And 
-            VF.MasterCompanyid = " + Session["varCompanyId"] + @" And VF.SizeID > 0";
+            VF.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" And VF.SizeID > 0";
         if (TDQuality.Visible == true && DDQuality.SelectedIndex > 0)
         {
             Str = Str + " And VF.QualityID = " + DDQuality.SelectedValue;
@@ -172,7 +172,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
         string Str = @"Select Distinct VF.SizeID, " + Size + @" Size 
             From V_FinishedItemDetail VF(Nolock) 
             Where VF.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And VF.ITEM_ID = " + DDItemName.SelectedValue + @" And 
-            VF.MasterCompanyid = " + Session["varCompanyId"] + @" And VF.SizeID > 0";
+            VF.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" And VF.SizeID > 0";
         if (TDQuality.Visible == true && DDQuality.SelectedIndex > 0)
         {
             Str = Str + " And VF.QualityID = " + DDQuality.SelectedValue;
@@ -225,7 +225,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
             param[0] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
             param[1] = new SqlParameter("@DetailData", DetailData);
             param[2] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[3] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@Msg", SqlDbType.VarChar, 250);
             param[4].Direction = ParameterDirection.Output;
 
@@ -271,7 +271,7 @@ public partial class Masters_ProductionPlaning_FrmItemWiseDefineTime : System.We
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblCategoryName.Text = ParameterList[5];
         lblItemName.Text = ParameterList[6];
         lblQualityName.Text = ParameterList[0];

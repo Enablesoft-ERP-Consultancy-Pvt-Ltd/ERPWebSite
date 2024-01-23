@@ -15,7 +15,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,23 +24,23 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock) 
                         JOIN MAP_ISSUEMASTER a(nolock) ON a.CompanyId = CI.CompanyId 
-                        Where CI.MasterCompanyid = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                        Where CI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
 
                         Select Distinct CI.CustomerId, CI.CustomerCode 
                         From MAP_ISSUEMASTER a(nolock) 
                         JOIN CustomerInfo CI(nolock) ON a.CustomerId = CI.CustomerId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @"  Order By CI.CustomerCode
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @"  Order By CI.CustomerCode
     
                         Select Distinct EI.EmpID, EI.EmpName + '(' + EI.EmpCode + ')' EmpName
                         From MAP_ISSUEMASTER a(nolock) 
                         JOIN Empinfo EI(nolock) ON EI.EmpId = a.EmpId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" Order By EI.EmpName + '(' + EI.EmpCode + ')'
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" Order By EI.EmpName + '(' + EI.EmpCode + ')'
 
                         Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
                         From MAP_ISSUEMASTER a(nolock) 
                         JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
                         JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @"
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @"
                         Order By VF.CATEGORY_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -64,7 +64,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
             txttodate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             RDAll.Checked = true;
 
-            switch (Session["VarCompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "30":
                     TRCustomerCode.Visible = false;
@@ -85,7 +85,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         UtilityModule.ConditionalComboFill(ref DDCustCode, @"Select Distinct CI.CustomerId, CI.CustomerCode 
                         From MAP_ISSUEMASTER a(nolock) 
                         JOIN CustomerInfo CI(nolock) ON a.CustomerId = CI.CustomerId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + " Order By CI.CustomerCode", true, "--Select--");
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + " Order By CI.CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -97,11 +97,11 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
             From MAP_ISSUEMASTER a(nolock) 
             JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
             JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID ";
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             Str = Str + " And OM.Status = 0 ";
         }
-        Str = Str + " Where a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.CompanyId = " + DDCompany.SelectedValue;
+        Str = Str + " Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDCustCode.SelectedIndex > 0)
         {
@@ -118,7 +118,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
     {
         UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select a.ID, a.ChallanNo 
             From MAP_ISSUEMASTER a(nolock) 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And a.EmpId = " + DDDesignerName.SelectedValue + " Order By a.ID", true, "--Select--");
     }
     protected void DDChallanNo_SelectedIndexChanged(object sender, EventArgs e)
@@ -131,7 +131,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
             From MAP_ISSUEMASTER a(nolock) 
             JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And a.ID = " + DDChallanNo.SelectedValue + " Order By VF.CATEGORY_NAME ", true, "--Select--");
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -144,7 +144,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
             From MAP_ISSUEMASTER a(nolock) 
             JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -163,7 +163,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -216,7 +216,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         {
             str = str + " And VF.ITEM_ID = " + DDItemName.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -249,7 +249,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -282,7 +282,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -311,7 +311,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -340,7 +340,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -380,7 +380,7 @@ public partial class Masters_ReportForms_FrmMapStencilReport : System.Web.UI.Pag
         {
             str = str + " And VF.ShapeID = " + DDShape.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {

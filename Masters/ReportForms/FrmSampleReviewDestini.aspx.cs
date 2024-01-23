@@ -18,7 +18,7 @@ public partial class Masters_ReportForms_FrmSampleReviewDestini : System.Web.UI.
     {
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddCompName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "-Select Company-");
+            UtilityModule.ConditionalComboFill(ref ddCompName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "-Select Company-");
             if (ddCompName.Items.Count > 0)
             {
                 ddCompName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -230,13 +230,13 @@ public partial class Masters_ReportForms_FrmSampleReviewDestini : System.Web.UI.
         //        ScriptManager.RegisterStartupScript(Page, GetType(), "opn", "alert('" + _arrpara[2].Value + "');", true);
         //    }
         //    DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-        //    SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseReceiveDetail'," + VarPurchase_Rec_Detail_Id + ",getdate(),'Delete')");
+        //    SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseReceiveDetail'," + VarPurchase_Rec_Detail_Id + ",getdate(),'Delete')");
         //    fill_grid();
         //    //Fill_Grid_Show();
         //    if (DGPurchaseReceiveDetail.Rows.Count == 0)
         //    {
-        //        UtilityModule.ConditionalComboFill(ref ddlrecchalanno, "select distinct prm.PurchaseReceiveId,receiveno+' / '+BillNo from PurchaseReceiveMaster prm left outer join PurchaseReceiveDetail prd  on prd.purchasereceiveid=prm.purchasereceiveid where pindentissueid=" + DDChallanNo.SelectedValue + " And prm.MasterCompanyId=" + Session["varCompanyId"], true, "--SELECT--");
-        //        UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct ICM.Category_Id,ICM.Category_Name from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"], true, "--Select--");
+        //        UtilityModule.ConditionalComboFill(ref ddlrecchalanno, "select distinct prm.PurchaseReceiveId,receiveno+' / '+BillNo from PurchaseReceiveMaster prm left outer join PurchaseReceiveDetail prd  on prd.purchasereceiveid=prm.purchasereceiveid where pindentissueid=" + DDChallanNo.SelectedValue + " And prm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--SELECT--");
+        //        UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct ICM.Category_Id,ICM.Category_Name from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select--");
         //    }
         //}
         //catch (Exception ex)

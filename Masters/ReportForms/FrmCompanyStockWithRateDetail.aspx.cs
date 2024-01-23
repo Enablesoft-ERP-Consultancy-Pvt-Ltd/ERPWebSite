@@ -14,21 +14,21 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
     DataSet DS = new DataSet();
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA 
-                    Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+                    Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                     Select ICM.CATEGORY_ID, ICM.CATEGORY_NAME 
                     From ITEM_CATEGORY_MASTER ICM(nolock)
                     JOIN CategorySeparate CS(nolock) ON CS.Categoryid = ICM.CATEGORY_ID 
-                    Where CS.id = 1 And ICM.MasterCompanyid = " + Session["varCompanyId"] + @" 
+                    Where CS.id = 1 And ICM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By ICM.CATEGORY_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -56,7 +56,7 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
     {
         if (DDCategory.SelectedItem.Text.Trim() != "ALL")
         {
-            string str = @"Select ITEM_ID,ITEM_NAME from ITEM_MASTER(nolock) " + "WHERE CATEGORY_ID = " + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + @" order by ITEM_NAME
+            string str = @"Select ITEM_ID,ITEM_NAME from ITEM_MASTER(nolock) " + "WHERE CATEGORY_ID = " + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by ITEM_NAME
                 Select * From ITEM_CATEGORY_PARAMETERS(nolock) Where CATEGORY_ID = " + DDCategory.SelectedValue;
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -107,20 +107,20 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
         TRDDQuality.Visible = true;
         if (ddItemName.SelectedItem.Text.Trim() != "ALL")
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality(Nolock) Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality(Nolock) Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "ALL");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality(Nolock) Where MasterCompanyId=" + Session["varCompanyid"] + "  order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityName", true, "ALL");
         }
         DDQuality_SelectedIndexChanged(sender, e);
     }
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string qry = @"select DESIGNID,DESIGNNAME from DESIGN(Nolock) Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY DESIGNNAME
-        select COLORID,COLORNAME from color(Nolock) Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY COLORNAME
-        SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR(Nolock) Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY SHADECOLORNAME
-        SELECT SHAPEID, SHAPENAME FROM SHAPE(Nolock) Where MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SHAPENAME";
+        string qry = @"select DESIGNID,DESIGNNAME from DESIGN(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY DESIGNNAME
+        select COLORID,COLORNAME from color(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY COLORNAME
+        SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY SHADECOLORNAME
+        SELECT SHAPEID, SHAPENAME FROM SHAPE(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SHAPENAME";
         DataSet ds = SqlHelper.ExecuteDataset(qry);
 
         if (TRDDDesign.Visible == true)
@@ -146,11 +146,11 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
         {
             if (DDShape.SelectedItem.Text.Trim() != "ALL")
             {
-                UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE(Nolock) WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SIZEID", true, "ALL");
+                UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE(Nolock) WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SIZEID", true, "ALL");
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE(Nolock) Where MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SIZEID", true, "ALL");
+                UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SIZEID", true, "ALL");
             }
         }
     }
@@ -368,7 +368,7 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
                     join stockTran St(Nolock) on s.StockID=st.Stockid
                     join GodownMaster g(Nolock) on s.Godownid = g.GoDownID And G.BranchID = " + DDBranchName.SelectedValue + @" 
                     join V_FinishedItemDetail v(Nolock) on s.ITEM_FINISHED_ID=v.ITEM_FINISHED_ID
-                    Where s.companyid = " + DDCompany.SelectedValue + "  And V.MasterCompanyId=" + Session["varCompanyId"] + "";
+                    Where s.companyid = " + DDCompany.SelectedValue + "  And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
                 sQry = sQry + " and St.TranDate<='" + txtstockupto.Text + "'";
                 FilterBy = FilterBy + ",Stock Up to - " + txtstockupto.Text;
@@ -509,7 +509,7 @@ public partial class Masters_ReportForms_FrmCompanyStockWithRateDetail : System.
     private void FillGodownMaster()
     {
         UtilityModule.ConditionalComboFill(ref DDGodownName, @"Select GodownID, GodownName 
-        From GodownMaster(Nolock) Where BranchID = " + DDBranchName.SelectedValue + " And MasterCompanyID = " + Session["varCompanyId"] + @" 
+        From GodownMaster(Nolock) Where BranchID = " + DDBranchName.SelectedValue + " And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
         Order By GodownName ", true, "--Plz Select--");
     }
     protected void chkallstockno_CheckedChanged(object sender, EventArgs e)

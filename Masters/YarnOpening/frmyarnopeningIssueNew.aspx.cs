@@ -11,7 +11,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
             string str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName";
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName";
 
             if (variable.VarYARNOPENINGISSUEEMPWISE == "1")
             {
@@ -38,7 +38,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
                            and isnull(Ei.Blacklist,0)=0 order by EmpName  ";
             }
 
-            str = str + @"  select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + @" order by customer
+            str = str + @"  select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by customer
             select D.Departmentid,D.DepartmentName From Department D Where D.DepartmentName in('Yarn Opening','WEFT DEPARTMENT')";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -64,7 +64,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
                 TRempcodescan.Visible = true;
             }
 
-            if (Session["varcompanyid"].ToString() == "30")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "30")
             {
                 TDItemDescription.Visible = false;
             }
@@ -120,7 +120,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
             //************values
             if (Chkboxitem.Checked == true)
             {
-                if (Session["VarCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     if (txtIssueMachineNo.Text == "")
                     {
@@ -183,7 +183,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
                 param[8] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[8].Direction = ParameterDirection.Output;
                 param[9] = new SqlParameter("@dtrecord", dtrecord);
-                param[10] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+                param[10] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[11] = new SqlParameter("@Departmentid", DDdept.SelectedIndex > 0 ? DDdept.SelectedValue : "0");
                 param[12] = new SqlParameter("@DepartmentName", DDdept.SelectedIndex > 0 ? DDdept.SelectedItem.Text : "");
                 param[13] = new SqlParameter("@EWayBillNo", TxtEWayBillNo.Text);
@@ -461,7 +461,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
             TextBox txtYarnRate = (TextBox)e.Row.FindControl("txtYarnRate");
 
             string str = @"select Distinct U.UnitId,U.UnitName from ITEM_MASTER IM inner Join Unit U on IM.UnitTypeID=U.UnitTypeID Where Im.Item_id=" + lblitemid.Text + @" order by U.UnitName
-                     Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+                     Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                     Select ConeType, ConeType From ConeMaster Order By SrNo ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref ddunitgrid, ds, 0, false, "");

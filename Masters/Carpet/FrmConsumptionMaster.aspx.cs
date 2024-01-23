@@ -304,13 +304,13 @@ public partial class FrmConsumptionMaster : CustomPage
     }
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            if (Session["varcompanyId"].ToString() == "20" && variable.VarNewQualitySize == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "20" && variable.VarNewQualitySize == "1")
             {
                 hncomp.Value = "20";
                 SizeDate.Visible = true;

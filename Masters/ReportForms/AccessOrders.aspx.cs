@@ -17,7 +17,7 @@ public partial class AccessOrders : System.Web.UI.Page
             UtilityModule.ConditionalComboFill(ref ddlCompanyname, @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName", true, "------SELECT-----");
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName", true, "------SELECT-----");
 
             UtilityModule.ConditionalComboFill(ref ddlCustCode, "SELECT customerid,Customercode from customerinfo ", true, "------SELECT-----");
             txtfrmdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -31,7 +31,7 @@ public partial class AccessOrders : System.Web.UI.Page
     }
     protected void ddlCompanyname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        //UtilityModule.ConditionalComboFill(ref ddlCustCode, "SELECT customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CustomerCode", true, "--SELECT--");
+        //UtilityModule.ConditionalComboFill(ref ddlCustCode, "SELECT customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CustomerCode", true, "--SELECT--");
     }
     protected void chkdate_CheckedChanged(object sender, EventArgs e)
     {
@@ -50,7 +50,7 @@ public partial class AccessOrders : System.Web.UI.Page
         string str = @"select  CI.CompanyName,CI.CompAddr1,cI.CompAddr2,CI.CompAddr3,CI.CompTel,CC.CustomerCode,DOM.orderno as DraftOrderNo
                     ,DOM.OrderDate as DraftDate,case When OM.DRAFTORDERID IS null then 'Unconfirm' Else 'Confirm' End as Status from DRAFT_ORDER_MASTER DOM Left outer join OrderMaster OM
                     on DOM.OrderId=OM.DRAFTORDERID inner join CompanyInfo CI on DOM.CompanyId=CI.CompanyId
-                    inner join customerinfo CC on DOM.CustomerId=CC.CustomerId Where CI.MastercompanyId=" + Session["varcompanyId"];
+                    inner join customerinfo CC on DOM.CustomerId=CC.CustomerId Where CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ddlCompanyname.SelectedIndex > 0)
         {
             str = str + " And CI.CompanyId=" + ddlCompanyname.SelectedValue;

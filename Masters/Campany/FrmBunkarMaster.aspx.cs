@@ -14,7 +14,7 @@ public partial class Masters_Campany_FrmBunkarMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }        
@@ -68,7 +68,7 @@ public partial class Masters_Campany_FrmBunkarMaster : CustomPage
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -80,7 +80,7 @@ public partial class Masters_Campany_FrmBunkarMaster : CustomPage
     {
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@UserID", Session["VarUserId"]);
-        param[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+        param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[2] = new SqlParameter("@ContractorId", DDContractorName.SelectedValue);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FILLBUNKARMASTER", param);
@@ -155,7 +155,7 @@ public partial class Masters_Campany_FrmBunkarMaster : CustomPage
             _arrPara[6].Value = txtJoiningDate.Text;
             _arrPara[7].Value = ChkBunkarBlackList.Checked == true ? 1 : 0;
             _arrPara[8].Value = Session["varuserid"].ToString();
-            _arrPara[9].Value = Session["varCompanyId"].ToString();
+            _arrPara[9].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[10].Direction = ParameterDirection.Output;
 
 
@@ -282,7 +282,7 @@ public partial class Masters_Campany_FrmBunkarMaster : CustomPage
     private void report()
     {
 //        string qry = @"SELECT CompanyName,CompAddr1,CompAddr2,CompAddr3,CompFax,CompTel,RBICode,IECode,PANNr,CSTNo,TinNo,SignatoryName 
-//                       FROM CompanyInfo INNER JOIN  Signatory ON CompanyInfo.Sigantory=Signatory.SignatoryId where CompanyInfo.MasterCompanyId=" + Session["varCompanyId"];
+//                       FROM CompanyInfo INNER JOIN  Signatory ON CompanyInfo.Sigantory=Signatory.SignatoryId where CompanyInfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 //        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
 //        if (ds.Tables[0].Rows.Count > 0)
 //        {

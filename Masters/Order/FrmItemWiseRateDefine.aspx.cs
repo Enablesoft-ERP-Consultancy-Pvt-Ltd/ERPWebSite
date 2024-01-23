@@ -12,7 +12,7 @@ public partial class Masters_Order_FrmItemWiseRateDefine : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_Order_FrmItemWiseRateDefine : System.Web.UI.Page
 
             string str = @"Select CI.CompanyId,CompanyName 
             From CompanyInfo CI(Nolock)
-            JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + " And CA.MasterCompanyid = " + Session["varCompanyId"] + @" order by CompanyName 
+            JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + " And CA.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
             Select UnitID, UnitName From Unit(Nolock) Where UnitID in (1, 2) Order By UnitName";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -269,7 +269,7 @@ public partial class Masters_Order_FrmItemWiseRateDefine : System.Web.UI.Page
             parparam[3] = new SqlParameter("@UnitID", DDUnitName.SelectedValue);
             parparam[4] = new SqlParameter("@DetailData", DetailTable);
             parparam[5] = new SqlParameter("@UserID", Session["varuserId"].ToString().Trim());
-            parparam[6] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"].ToString().Trim());
+            parparam[6] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"].ToString().Trim());
             parparam[7] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             parparam[7].Direction = ParameterDirection.Output;
 

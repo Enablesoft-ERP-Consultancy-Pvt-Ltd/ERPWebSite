@@ -13,7 +13,7 @@ public partial class Masters_RawMaterial_IndentrawrecEdit : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-            if (Session["varCompanyId"] == null)
+            if (Session["varMasterCompanyIDForERP"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
@@ -439,7 +439,7 @@ WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " AND dbo.ITEM_MAS
             arr[4].Value = txtdate.Text;
 
             arr[5].Value = Convert.ToInt32(TXTPRTID.Text);
-            int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[6].Value = ItemFinishedId;
             arr[7].Value = Convert.ToInt32(ddgodown.SelectedValue);
             arr[8].Value = txtrec.Text;
@@ -503,7 +503,7 @@ WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " AND dbo.ITEM_MAS
             txtgatepass.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, str).ToString();
 
             SqlTransaction Tran = con.BeginTransaction();
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             int prt = Convert.ToInt32(SqlHelper.ExecuteScalar(Tran, CommandType.Text, "select isnull(max(PRTid),0) from PP_ProcessRecTran"));
             try
             {
@@ -597,7 +597,7 @@ WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " AND dbo.ITEM_MAS
 
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
             con.Open();
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             DataSet ds;
             string Str;
 

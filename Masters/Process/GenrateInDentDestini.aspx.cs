@@ -11,8 +11,8 @@ public partial class GenrateInDent : System.Web.UI.Page
     static int MasterCompanyId;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,7 +24,7 @@ public partial class GenrateInDent : System.Web.UI.Page
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtrecDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             tdindentno.Visible = false;
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By CompanyName", true, "--SelectCompany");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CompanyName", true, "--SelectCompany");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -32,7 +32,7 @@ public partial class GenrateInDent : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from CustomerInfo CI,ORDER_CONSUMPTION_DETAIL OCD,ORDERMASTER OM WHERE CI.CUSTOMERID=OM.CUSTOMERID AND OM.ORDERID=OCD.ORDERID And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By CI.Customercode + SPACE(5)+CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from CustomerInfo CI,ORDER_CONSUMPTION_DETAIL OCD,ORDERMASTER OM WHERE CI.CUSTOMERID=OM.CUSTOMERID AND OM.ORDERID=OCD.ORDERID And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CI.Customercode + SPACE(5)+CompanyName", true, "--SELECT--");
             ParameteLabel();
             int VarProdCode = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarProdCode From MasterSetting"));
             switch (VarProdCode)
@@ -52,7 +52,7 @@ public partial class GenrateInDent : System.Web.UI.Page
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         LblQuality.Text = ParameterList[0];
         LblDesign.Text = ParameterList[1];
         LblColor.Text = ParameterList[2];
@@ -65,9 +65,9 @@ public partial class GenrateInDent : System.Web.UI.Page
     protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (ChkEditOrder.Checked == true)
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from CustomerInfo CI,ORDER_CONSUMPTION_DETAIL OCD,ORDERMASTER OM WHERE CI.MasterCompanyId=" + Session["varCompanyId"] + " And CI.CUSTOMERID=OM.CUSTOMERID AND OM.ORDERID=OCD.ORDERID and ocd.orderid in(select orderid from indentdetail where indentid in(select indentid from indentmaster where  companyid=" + DDCompanyName.SelectedValue + "))  Order BY CI.Customercode + SPACE(5)+CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from CustomerInfo CI,ORDER_CONSUMPTION_DETAIL OCD,ORDERMASTER OM WHERE CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CI.CUSTOMERID=OM.CUSTOMERID AND OM.ORDERID=OCD.ORDERID and ocd.orderid in(select orderid from indentdetail where indentid in(select indentid from indentmaster where  companyid=" + DDCompanyName.SelectedValue + "))  Order BY CI.Customercode + SPACE(5)+CompanyName", true, "--SELECT--");
         else
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from CustomerInfo CI,ORDER_CONSUMPTION_DETAIL OCD,ORDERMASTER OM WHERE CI.MasterCompanyId=" + Session["varCompanyId"] + " And  CI.CUSTOMERID=OM.CUSTOMERID AND OM.ORDERID=OCD.ORDERID And OM.CompanyID = " + DDCompanyName.SelectedValue + " Order by CI.Customercode + SPACE(5)+CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from CustomerInfo CI,ORDER_CONSUMPTION_DETAIL OCD,ORDERMASTER OM WHERE CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And  CI.CUSTOMERID=OM.CUSTOMERID AND OM.ORDERID=OCD.ORDERID And OM.CompanyID = " + DDCompanyName.SelectedValue + " Order by CI.Customercode + SPACE(5)+CompanyName", true, "--SELECT--");
     }
     protected void DDCustomerCode_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -80,19 +80,19 @@ public partial class GenrateInDent : System.Web.UI.Page
     protected void ddOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (ChkEditOrder.Checked == true)
-            UtilityModule.ConditionalComboFill(ref DDProcessName, "Select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER PNM,ORDER_CONSUMPTION_DETAIL OCD,indentmaster im,indentdetail id WHERE PNM.PROCESS_NAME_ID=OCD.PROCESSID and im.indentid=id.indentid and id.orderid=ocd.orderid AND id.ORDERID=" + ddOrderNo.SelectedValue + " And PNM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDProcessName, "Select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER PNM,ORDER_CONSUMPTION_DETAIL OCD,indentmaster im,indentdetail id WHERE PNM.PROCESS_NAME_ID=OCD.PROCESSID and im.indentid=id.indentid and id.orderid=ocd.orderid AND id.ORDERID=" + ddOrderNo.SelectedValue + " And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         else
-            UtilityModule.ConditionalComboFill(ref DDProcessName, "Select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER PNM,ORDER_CONSUMPTION_DETAIL OCD WHERE PNM.PROCESS_NAME_ID=OCD.PROCESSID AND ORDERID=" + ddOrderNo.SelectedValue + " And PNM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDProcessName, "Select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER PNM,ORDER_CONSUMPTION_DETAIL OCD WHERE PNM.PROCESS_NAME_ID=OCD.PROCESSID AND ORDERID=" + ddOrderNo.SelectedValue + " And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         DDProcessName.Focus();
     }
     protected void DDProcessName_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (ChkEditOrder.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDPartyName, "select distinct EI.EmpId,EmpName from indentmaster im ,indentdetail id,EmpInfo EI where im.indentid=id.indentid AND EI.EMPID=IM.PARTYID and id.orderid=" + ddOrderNo.SelectedValue + " and processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " And im.CompanyId=" + DDCompanyName.SelectedValue + " Order By EmpName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDPartyName, "select distinct EI.EmpId,EmpName from indentmaster im ,indentdetail id,EmpInfo EI where im.indentid=id.indentid AND EI.EMPID=IM.PARTYID and id.orderid=" + ddOrderNo.SelectedValue + " and processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And im.CompanyId=" + DDCompanyName.SelectedValue + " Order By EmpName", true, "--Select--");
         }
         else
-            UtilityModule.ConditionalComboFill(ref DDPartyName, "select EI.EmpId,EmpName from EmpInfo EI inner join EmpProcess EP on EI.EmpId=EP.EmpId where processId=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDPartyName, "select EI.EmpId,EmpName from EmpInfo EI inner join EmpProcess EP on EI.EmpId=EP.EmpId where processId=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName", true, "--Select--");
         Fill_Grid_Show();
         DDPartyName.Focus();
     }
@@ -101,17 +101,17 @@ public partial class GenrateInDent : System.Web.UI.Page
         if (ChkEditOrder.Checked == true)
         {
             UtilityModule.ConditionalComboFill(ref ddindentno, "select distinct im.indentid,indentno from indentmaster im,indentdetail id where im.indentid=id.indentid and processid=" + DDProcessName.SelectedValue + " and partyid=" + DDPartyName.SelectedValue + " and orderid=" + ddOrderNo.SelectedValue + " And im.CompanyId=" + DDCompanyName.SelectedValue, true, "--Select--");
-            string strcategory = "SELECT DISTINCT IPM.CATEGORY_ID,IPM.CATEGORY_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_CATEGORY_MASTER IPM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.CATEGORY_ID=IPM.CATEGORY_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+            string strcategory = "SELECT DISTINCT IPM.CATEGORY_ID,IPM.CATEGORY_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_CATEGORY_MASTER IPM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.CATEGORY_ID=IPM.CATEGORY_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             UtilityModule.ConditionalComboFill(ref DDCategory, strcategory, true, "--Select Category--");
         }
-        //string strcategory = "SELECT DISTINCT IPM.CATEGORY_ID,IPM.CATEGORY_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_CATEGORY_MASTER IPM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.CATEGORY_ID=IPM.CATEGORY_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        //string strcategory = "SELECT DISTINCT IPM.CATEGORY_ID,IPM.CATEGORY_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_CATEGORY_MASTER IPM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.CATEGORY_ID=IPM.CATEGORY_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         //UtilityModule.ConditionalComboFill(ref DDCategory, strcategory, true, "--Select Category--");
         TxtDate.Focus();
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         ddlcategorycange();
-        string stritem = "SELECT DISTINCT IM.ITEM_ID,IM.ITEM_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_MASTER IM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.ITEM_ID=IM.ITEM_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.CATEGORY_ID=" + DDCategory.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        string stritem = "SELECT DISTINCT IM.ITEM_ID,IM.ITEM_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_MASTER IM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.ITEM_ID=IM.ITEM_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.CATEGORY_ID=" + DDCategory.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDItem, stritem, true, "---Select Item----");
     }
     private void ddlcategorycange()
@@ -130,7 +130,7 @@ public partial class GenrateInDent : System.Web.UI.Page
         TdSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -162,7 +162,7 @@ public partial class GenrateInDent : System.Web.UI.Page
     }
     protected void DDItem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string strquality = "SELECT DISTINCT Q.QUALITYID,Q.QUALITYNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,QUALITY Q  WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.QUALITYID=Q.QUALITYID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        string strquality = "SELECT DISTINCT Q.QUALITYID,Q.QUALITYNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,QUALITY Q  WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.QUALITYID=Q.QUALITYID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDQuality, strquality, true, "--Select Quality--");
     }
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
@@ -209,7 +209,7 @@ public partial class GenrateInDent : System.Web.UI.Page
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-                int finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varCompanyId"])));
+                int finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
                 if (finishedid > 0)
                 {
                     UtilityModule.ConditionalComboFill(ref ddFinish_Type, @"SELECT DISTINCT OCD.O_FINISHED_TYPE_ID,FT.FINISHED_TYPE_NAME from ORDER_CONSUMPTION_DETAIL OCD,FINISHED_TYPE FT 
@@ -220,7 +220,7 @@ public partial class GenrateInDent : System.Web.UI.Page
                     }
                     int VARFINISH_TYPE = 0;
                     VARFINISH_TYPE = TdFinish_Type.Visible == true ? Convert.ToInt32(ddFinish_Type.SelectedValue) : 0;
-                    UtilityModule.ConditionalComboFill(ref ddUnit, "SELECT DISTINCT U.UNITID,U.UNITNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,UNIT U WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND U.UNITID=OCD.OUNITID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + "", true, " Select ");
+                    UtilityModule.ConditionalComboFill(ref ddUnit, "SELECT DISTINCT U.UNITID,U.UNITNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,UNIT U WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND U.UNITID=OCD.OUNITID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, " Select ");
                     if (ddUnit.Items.Count > 0)
                     {
                         ddUnit.SelectedIndex = 1;
@@ -277,15 +277,15 @@ public partial class GenrateInDent : System.Web.UI.Page
         DDColorShade.Items.Clear();
         if (TdDesign.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDDesign, "SELECT DISTINCT D.DESIGNID,D.DESIGNNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,DESIGN D WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.DESIGNID=D.DESIGNID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Design--");
+            UtilityModule.ConditionalComboFill(ref DDDesign, "SELECT DISTINCT D.DESIGNID,D.DESIGNNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,DESIGN D WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.DESIGNID=D.DESIGNID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Design--");
         }
         if (TdColor.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT DISTINCT C.COLORID,C.COLORNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,COLOR C WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.COLORID=C.COLORID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Color--");
+            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT DISTINCT C.COLORID,C.COLORNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,COLOR C WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.COLORID=C.COLORID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Color--");
         }
         if (TdShape.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDShape, "SELECT DISTINCT S.SHAPEID,S.SHAPENAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SHAPE S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SHAPEID=S.SHAPEID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Shape--");
+            UtilityModule.ConditionalComboFill(ref DDShape, "SELECT DISTINCT S.SHAPEID,S.SHAPENAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SHAPE S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SHAPEID=S.SHAPEID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Shape--");
         }
         if (TdSize.Visible == true)
         {
@@ -293,7 +293,7 @@ public partial class GenrateInDent : System.Web.UI.Page
         }
         if (TdColorShade.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDColorShade, "SELECT DISTINCT S.SHADECOLORID,S.SHADECOLORNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SHADECOLOR S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SHADECOLORID=S.SHADECOLORID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"], true, "--Select ShadeColor--");
+            UtilityModule.ConditionalComboFill(ref DDColorShade, "SELECT DISTINCT S.SHADECOLORID,S.SHADECOLORNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SHADECOLOR S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SHADECOLORID=S.SHADECOLORID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select ShadeColor--");
         }
     }
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
@@ -309,11 +309,11 @@ public partial class GenrateInDent : System.Web.UI.Page
         string strSize;
         if (ChkFt.Checked == true)
         {
-            strSize = "SELECT DISTINCT S.SIZEID,S.SIZEFT FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SIZE S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SIZEID=S.SIZEID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " AND S.SHAPEID=" + DDShape.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+            strSize = "SELECT DISTINCT S.SIZEID,S.SIZEFT FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SIZE S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SIZEID=S.SIZEID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " AND S.SHAPEID=" + DDShape.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         }
         else
         {
-            strSize = "SELECT DISTINCT S.SIZEID,S.SIZEMTR FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SIZE S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SIZEID=S.SIZEID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " AND S.SHAPEID=" + DDShape.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+            strSize = "SELECT DISTINCT S.SIZEID,S.SIZEMTR FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,SIZE S WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.SIZEID=S.SIZEID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " AND VF.QUALITYID=" + DDQuality.SelectedValue + " AND S.SHAPEID=" + DDShape.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         }
         UtilityModule.ConditionalComboFill(ref DDSize, strSize, true, "--Select Size--");
     }
@@ -368,7 +368,7 @@ public partial class GenrateInDent : System.Web.UI.Page
             _arrpara[1].Value = ViewState["IndentDetailId"];
             //_arrpara[2].Value = DDProcessProgramNo.SelectedValue;
             _arrpara[2].Value = 0;
-            _arrpara[4].Value = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varCompanyId"]));
+            _arrpara[4].Value = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             //_arrpara[3].Value = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select IFinishedId from Order_Consumption_Detail OCD inner join ProcessProgram PP on OCD.OrderId=PP.Order_Id  where PP.PPId=" + DDProcessProgramNo.SelectedValue + " and OCD.OFinishedId=" + _arrpara[4].Value);
             _arrpara[3].Value = 0;
             _arrpara[5].Value = txtQty.Text;
@@ -381,7 +381,7 @@ public partial class GenrateInDent : System.Web.UI.Page
             _arrpara[11].Value = TxtDate.Text;
             _arrpara[12].Direction = ParameterDirection.InputOutput;
             _arrpara[12].Value = TxtIndentNo.Text.ToUpper();
-            _arrpara[13].Value = Session["varCompanyId"];
+            _arrpara[13].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[14].Value = Session["varuserid"];
             _arrpara[15].Direction = ParameterDirection.Output;
             _arrpara[16].Value = ddllotno.SelectedIndex > -1 ? ddllotno.SelectedItem.Text : "Without Lot No";
@@ -463,12 +463,12 @@ public partial class GenrateInDent : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            int FinshedId = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int FinshedId = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             string sqlstr = @"Select VF.Item_Finished_Id,VF.ProductCode,VF.Category_Name+'  '+VF.Item_Name+'  '+VF.QualityName +'  '+FINISHED_TYPE_Name Description,
                          vg.orderqty-[dbo].[Get_IndentIssQty](VG.PROCESSID,VG.ORDERID,VG.IFinishedid,VG.I_Finished_Type_Id) OrderQty,
                          VG.IQty Consmp,[dbo].[Get_StockQty_DESTINI] (" + ddOrderNo.SelectedValue + @"," + DDProcessName.SelectedValue + @"," + FinshedId + @"," + ddFinish_Type.SelectedValue + @",VF.Item_Finished_Id) StockQty
                          From VIEW_GENERATEINDENTQTY VG,V_FinishedItemDetail VF,Finished_Type FT Where VF.Item_Finished_Id=VG.IFinishedid And VG.I_Finished_Type_Id=FT.Id And OrderId=" + ddOrderNo.SelectedValue + @" And 
-                         ProcessId=" + DDProcessName.SelectedValue + @" And OFinishedid=" + FinshedId + @" And O_Finished_Type_Id=" + ddFinish_Type.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         ProcessId=" + DDProcessName.SelectedValue + @" And OFinishedid=" + FinshedId + @" And O_Finished_Type_Id=" + ddFinish_Type.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DS = SqlHelper.ExecuteDataset(con, CommandType.Text, sqlstr);
             txtstock.Text = DS.Tables[0].Rows[0]["StockQty"].ToString();
 
@@ -508,7 +508,7 @@ public partial class GenrateInDent : System.Web.UI.Page
         string sqlstr = @"Select Distinct ind.indentdetailid, IND.IndentId IndentId,''PPNo,IndentNo,sum(Quantity) Quantity,Rate,IPM.Category_Name+space(3)+IPM.Item_Name+space(3)+IPM.QualityName +space(3)+IPM.DesignName+space(3)+IPM.ColorName + Space(3)+IPM.ShapeName+ Space(3)+
                         IPM.SizeMtr+space(3)+IPM.ShadeColorName+FT.FINISHED_TYPE_NAME InDescription,'' OutDescription,isnull(ind.weight,0) weight,OFinishedId,O_FINISHED_TYPE_ID
                         From IndentMaster INM,V_FinishedItemDetail IPM,IndentDetail IND LEFT OUTER JOIN FINISHED_TYPE FT ON IND.O_FINISHED_Type_ID=FT.ID
-                        where IND.IndentId=INM.IndentId And IND.OFinishedId=IPM.Item_Finished_id and inm.processid=" + DDProcessName.SelectedValue + " And IND.IndentId=" + ViewState["IndentID"].ToString() + " And IPM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                        where IND.IndentId=INM.IndentId And IND.OFinishedId=IPM.Item_Finished_id and inm.processid=" + DDProcessName.SelectedValue + " And IND.IndentId=" + ViewState["IndentID"].ToString() + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                         Group by IND.IndentId,ind.indentdetailid,IndentNo,Rate,IPM.Category_Name,IPM.Item_Name,IPM.QualityName,IPM.DesignName,IPM.ColorName,IPM.ShapeName,IPM.SizeMtr,IPM.ShadeColorName,FT.FINISHED_TYPE_NAME,ind.weight,OFinishedId,O_FINISHED_TYPE_ID";
         try
         {
@@ -565,16 +565,16 @@ public partial class GenrateInDent : System.Web.UI.Page
         if (TxtProdCode.Text != "")
         {
             lblMessage.Text = "";
-            Str = "SELECT DISTINCT IPM.*,IM.CATEGORY_ID,orate as rate FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM WHERE OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.ITEM_ID=IM.ITEM_ID AND IPM.ProductCode='" + TxtProdCode.Text + "' And IM.MasterCompanyId=" + Session["varCompanyId"];
+            Str = "SELECT DISTINCT IPM.*,IM.CATEGORY_ID,orate as rate FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM WHERE OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.ITEM_ID=IM.ITEM_ID AND IPM.ProductCode='" + TxtProdCode.Text + "' And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 DDCategory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
                 ddlcategorycange();
-                string stritem = "SELECT DISTINCT IM.ITEM_ID,IM.ITEM_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_MASTER IM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.ITEM_ID=IM.ITEM_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.CATEGORY_ID=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
+                string stritem = "SELECT DISTINCT IM.ITEM_ID,IM.ITEM_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_MASTER IM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.ITEM_ID=IM.ITEM_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.CATEGORY_ID=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 UtilityModule.ConditionalComboFill(ref DDItem, stritem, true, "---Select Item----");
                 DDItem.SelectedValue = ds.Tables[0].Rows[0]["ITEM_ID"].ToString();
-                string strquality = "SELECT DISTINCT Q.QUALITYID,Q.QUALITYNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,QUALITY Q  WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.QUALITYID=Q.QUALITYID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                string strquality = "SELECT DISTINCT Q.QUALITYID,Q.QUALITYNAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,QUALITY Q  WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.QUALITYID=Q.QUALITYID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " AND VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 UtilityModule.ConditionalComboFill(ref DDQuality, strquality, true, "--Select Quality--");
                 DDQuality.SelectedValue = ds.Tables[0].Rows[0]["QUALITY_ID"].ToString();
                 ComboFill();
@@ -583,9 +583,9 @@ public partial class GenrateInDent : System.Web.UI.Page
                 DDColor.SelectedValue = ds.Tables[0].Rows[0]["COLOR_ID"].ToString();
                 DDColorShade.SelectedValue = ds.Tables[0].Rows[0]["ShadeColor_Id"].ToString();
                 DDShape.SelectedValue = ds.Tables[0].Rows[0]["SHAPE_ID"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID,SIZEFT fROM SIZE WhERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID,SIZEFT fROM SIZE WhERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
                 DDSize.SelectedValue = ds.Tables[0].Rows[0]["SIZE_ID"].ToString();
-                Str = "SELECT DISTINCT IPM.*,IM.CATEGORY_ID,orate as rate FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM WHERE OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.ITEM_ID=IM.ITEM_ID and ocd.processid=" + DDProcessName.SelectedValue + " AND IPM.ProductCode='" + TxtProdCode.Text + "' And IM.MasterCompanyId=" + Session["varCompanyId"];
+                Str = "SELECT DISTINCT IPM.*,IM.CATEGORY_ID,orate as rate FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM WHERE OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.ITEM_ID=IM.ITEM_ID and ocd.processid=" + DDProcessName.SelectedValue + " AND IPM.ProductCode='" + TxtProdCode.Text + "' And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
                 TxtRate.Text = ds1.Tables[0].Rows[0]["Rate"].ToString();
                 //txtTotalQty.Text = ds.Tables[0].Rows[0]["QTY"].ToString();
@@ -635,10 +635,10 @@ public partial class GenrateInDent : System.Web.UI.Page
             // DataSet DS1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select IndentId,rate from IndentDetail where IndentDetailId=" +ViewState["IndentDetailId"] + "");
             // ViewState["IndentID"] = DS1.Tables[0].Rows[0]["IndentId"].ToString();
 
-            string str = @"SELECT DISTINCT IPM.PRODUCTCODE FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM WHERE IPM.MasterCompanyId=" + Session["varCompanyId"] + " ANd  OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND ORDERID=" + ddOrderNo.SelectedValue + " AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ITEM_FINISHED_ID IN(SELECT OFINISHEDID FROM INDENTDETAIL WHERE INDENTDETAILID=" + ViewState["IndentDetailId"].ToString() + @")
+            string str = @"SELECT DISTINCT IPM.PRODUCTCODE FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM WHERE IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ANd  OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND ORDERID=" + ddOrderNo.SelectedValue + " AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ITEM_FINISHED_ID IN(SELECT OFINISHEDID FROM INDENTDETAIL WHERE INDENTDETAILID=" + ViewState["IndentDetailId"].ToString() + @")
                             select Date, receivedate from indentmaster WHERE IndentID=" + ViewState["IndentID"];
             DataSet DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-            //DataSet DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT DISTINCT IPM.PRODUCTCODE FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM WHERE IPM.MasterCompanyId=" + Session["varCompanyId"] + " ANd  OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND ORDERID=" + ddOrderNo.SelectedValue + " AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ITEM_FINISHED_ID IN(SELECT OFINISHEDID FROM INDENTDETAIL WHERE INDENTDETAILID=" +ViewState["IndentDetailId"].ToString() + ")");
+            //DataSet DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT DISTINCT IPM.PRODUCTCODE FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM WHERE IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ANd  OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND ORDERID=" + ddOrderNo.SelectedValue + " AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ITEM_FINISHED_ID IN(SELECT OFINISHEDID FROM INDENTDETAIL WHERE INDENTDETAILID=" +ViewState["IndentDetailId"].ToString() + ")");
             if (DS.Tables[0].Rows.Count > 0)
             {
                 TxtProdCode.Text = DS.Tables[0].Rows[0][0].ToString();
@@ -677,7 +677,7 @@ public partial class GenrateInDent : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            string st = "select Rate from DyeingRateMaster where PartyId=" + DDPartyName.SelectedValue + " and FromoQty <=" + txtQty.Text + " and ToQty>=" + txtQty.Text + " and  FINISHEDID=" + ViewState["FinishedId"] + " And MasterCompanyId=" + Session["varCompanyId"];
+            string st = "select Rate from DyeingRateMaster where PartyId=" + DDPartyName.SelectedValue + " and FromoQty <=" + txtQty.Text + " and ToQty>=" + txtQty.Text + " and  FINISHEDID=" + ViewState["FinishedId"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             TxtRate.Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, st).ToString();
             Tran.Commit();
             if (TxtRate.Text == null)
@@ -724,14 +724,14 @@ public partial class GenrateInDent : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
         imgLogo.ImageUrl.DefaultIfEmpty();
-        imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("ddyyhhmmss");
+        imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("ddyyhhmmss");
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
     }
@@ -761,7 +761,7 @@ public partial class GenrateInDent : System.Web.UI.Page
             _arrpara[10] = new SqlParameter("@RATE", SqlDbType.Float, 50);
             _arrpara[11] = new SqlParameter("@O_FINISHED_TYPE_ID", SqlDbType.Int);
 
-            int VARFINISHEDID = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varCompanyId"])));
+            int VARFINISHEDID = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
             _arrpara[0].Value = DDCompanyName.SelectedValue;
             _arrpara[1].Value = ddOrderNo.SelectedValue;
             _arrpara[2].Value = DDProcessName.SelectedValue;
@@ -801,10 +801,10 @@ public partial class GenrateInDent : System.Web.UI.Page
         lblMessage.Text = "";
         if (ChkEditOrder.Checked == false)
         {
-            int FinshedId = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int FinshedId = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             string Str = @"Select VF.Item_Finished_Id,VF.ProductCode,VF.Category_Name+'  '+VF.Item_Name+'  '+VF.QualityName +'  '+FINISHED_TYPE_Name Description,OrderQty-[dbo].[Get_IndentIssQty](VG.PROCESSID,VG.ORDERID,VG.IFinishedid,VG.I_Finished_Type_Id) OrderQty,
                     VG.Qty Consmp,[dbo].[Get_StockQty] (" + ddOrderNo.SelectedValue + @"," + DDProcessName.SelectedValue + @"," + FinshedId + @"," + ddFinish_Type.SelectedValue + @",VF.Item_Finished_Id) StockQty
-                    From VIEW_GENERATEINDENTQTY VG,V_FinishedItemDetail VF,Finished_Type FT Where VF.Item_Finished_Id=VG.IFinishedid And VG.I_Finished_Type_Id=FT.Id And VF.MasterCompanyId=" + Session["varCompanyId"] + @" And
+                    From VIEW_GENERATEINDENTQTY VG,V_FinishedItemDetail VF,Finished_Type FT Where VF.Item_Finished_Id=VG.IFinishedid And VG.I_Finished_Type_Id=FT.Id And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And
                     OrderId=" + ddOrderNo.SelectedValue + @" And ProcessId=" + DDProcessName.SelectedValue + @" And OFinishedid=" + FinshedId + @" And 
                     O_Finished_Type_Id=" + ddFinish_Type.SelectedValue + @" And OrderQty-[dbo].[Get_IndentIssQty](VG.PROCESSID,VG.ORDERID,VG.IFinishedid,VG.I_Finished_Type_Id)>=" + txtQty.Text + @" And VG.Qty>=" + txtQty.Text + @" And 
                     [dbo].[Get_StockQty] (" + ddOrderNo.SelectedValue + @"," + DDProcessName.SelectedValue + @"," + FinshedId + @"," + ddFinish_Type.SelectedValue + @",VF.Item_Finished_Id)>=" + txtQty.Text + "";
@@ -866,7 +866,7 @@ public partial class GenrateInDent : System.Web.UI.Page
         DGSHOWDATA.DataSource = "";
         if (ddOrderNo.SelectedIndex > 0 && DDProcessName.SelectedIndex > 0)
         {
-            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT DISTINCT IPM.PRODUCTCODE FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM WHERE OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND ORDERID=" + ddOrderNo.SelectedValue + " AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT DISTINCT IPM.PRODUCTCODE FROM ORDER_CONSUMPTION_DETAIL OCD,ITEM_PARAMETER_MASTER IPM WHERE OCD.OFINISHEDID=IPM.ITEM_FINISHED_ID AND ORDERID=" + ddOrderNo.SelectedValue + " AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             DGSHOWDATA.DataSource = Ds;
             DGSHOWDATA.DataBind();
             if (DGSHOWDATA.Rows.Count > 0)
@@ -1009,7 +1009,7 @@ public partial class GenrateInDent : System.Web.UI.Page
                 parparam[1].Value = ((Label)DGIndentDetail.Rows[e.RowIndex].FindControl("OFinishedId")).Text;
                 parparam[2].Value = ((Label)DGIndentDetail.Rows[e.RowIndex].FindControl("O_FINISHED_TYPE_ID")).Text;
                 parparam[3].Value = DGIndentDetail.Rows.Count;
-                parparam[4].Value = Session["varCompanyId"].ToString();
+                parparam[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "Pro_Delete_GenIndent_Destini", parparam);
 
                 // TXT_PROD_CODE_CHANGE();
@@ -1044,7 +1044,7 @@ public partial class GenrateInDent : System.Web.UI.Page
     }
     protected void DGSHOWDATA_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string strcategory = "SELECT DISTINCT IPM.CATEGORY_ID,IPM.CATEGORY_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_CATEGORY_MASTER IPM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.CATEGORY_ID=IPM.CATEGORY_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        string strcategory = "SELECT DISTINCT IPM.CATEGORY_ID,IPM.CATEGORY_NAME FROM ORDER_CONSUMPTION_DETAIL OCD,V_FINISHEDITEMDETAIL VF,ITEM_CATEGORY_MASTER IPM WHERE OCD.OFINISHEDID=VF.ITEM_FINISHED_ID AND VF.CATEGORY_ID=IPM.CATEGORY_ID AND OCD.PROCESSID=" + DDProcessName.SelectedValue + " AND ORDERID=" + ddOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDCategory, strcategory, true, "--Select Category--");
         int n = DGSHOWDATA.SelectedIndex;
         TxtProdCode.Text = ((Label)DGSHOWDATA.Rows[n].FindControl("lblPRODUCTCODE")).Text;

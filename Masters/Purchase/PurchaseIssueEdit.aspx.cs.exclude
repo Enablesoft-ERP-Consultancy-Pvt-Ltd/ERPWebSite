@@ -337,7 +337,7 @@ public partial class Masters_Purchase_PurchaseIssueEdit : System.Web.UI.Page
             arr[3].Value = ddlunit.SelectedValue;
             arr[4].Value = txtqty.Text;
             arr[5].Value = Session["varuserid"].ToString();
-            arr[6].Value = Session["varCompanyId"].ToString();
+            arr[6].Value = Session["varMasterCompanyIDForERP"].ToString();
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[PRO_p_indentissueedit]", arr);
             tran.Commit();
         }
@@ -521,7 +521,7 @@ public partial class Masters_Purchase_PurchaseIssueEdit : System.Web.UI.Page
         con.Open();
         SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from purchaseindentissuetran where pindentissuetranid=" +Convert.ToInt32(txtpindentissuedetailid.Text));
         DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'purchaseindentissuetran'," + txtpindentissuedetailid.Text + ",getdate(),'Delete')");
+        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'purchaseindentissuetran'," + txtpindentissuedetailid.Text + ",getdate(),'Delete')");
         Fill_Grid();
         Label2.Visible = true;
     }

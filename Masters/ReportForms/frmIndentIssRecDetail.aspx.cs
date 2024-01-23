@@ -17,36 +17,36 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
     string TempCustomerCode = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname ";
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname ";
 
-            if (Convert.ToInt32(Session["varcompanyId"]) == 16 || Convert.ToInt32(Session["varcompanyId"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
                 str = str + @" Select Distinct a.ProcessID, PNM.PROCESS_NAME 
                     From IndentMaster a(Nolock)
                     JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = a.ProcessID 
-                    WHere a.MasterCompanyId = " + Session["varCompanyId"] + @" Order  By PNM.PROCESS_NAME ";
+                    WHere a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order  By PNM.PROCESS_NAME ";
             }
-            else if (Convert.ToInt32(Session["varcompanyId"]) == 44)
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
             {
                 str = str + @" Select PROCESS_NAME_ID,PROCESS_NAME 
                     From Process_Name_Master 
-                    Where MasterCompanyId=" + Session["varCompanyId"] + " and Process_name_id in (10,11,5,18)"; 
+                    Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and Process_name_id in (10,11,5,18)"; 
             }
             else
             {
                 str = str + @" Select PROCESS_NAME_ID,PROCESS_NAME 
                     From Process_Name_Master 
-                    Where MasterCompanyId=" + Session["varCompanyId"] + @" and " + (variable.Carpetcompany == "1" ? " Process_Name='DYEING'" : "1=1") + @" Order By PROCESS_NAME ";
+                    Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" and " + (variable.Carpetcompany == "1" ? " Process_Name='DYEING'" : "1=1") + @" Order By PROCESS_NAME ";
             }
-            if (Convert.ToInt32(Session["varcompanyId"]) == 44)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
             {
-                str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varCompanyId"] + @"  Order by EmpName                  
+                str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  Order by EmpName                  
                 select distinct CI.CustomerId,CI.CustomerCode as customercode from OrderMaster OM inner join V_Indent_OredrId VO on Om.OrderId=VO.Orderid inner join customerinfo CI on CI.CustomerId=OM.CustomerId order by CustomerCode 
                 select IM.Item_Id,Im.Item_Name From Item_Master Im inner join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and cs.id=1 order by IM.ITEM_NAME 
                 select OrderCategoryId, OrderCategory from OrderCategory order by OrderCategory";
@@ -54,7 +54,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             else
             {
 
-                str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varCompanyId"] + @"  Order by EmpName                  
+                str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  Order by EmpName                  
                 select distinct CI.CustomerId,CI.CustomerCode+'/'+CompanyName as customercode from OrderMaster OM inner join V_Indent_OredrId VO on Om.OrderId=VO.Orderid inner join customerinfo CI on CI.CustomerId=OM.CustomerId order by CustomerCode 
                 select IM.Item_Id,Im.Item_Name From Item_Master Im inner join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and cs.id=1 order by IM.ITEM_NAME 
                 select OrderCategoryId, OrderCategory from OrderCategory order by OrderCategory";
@@ -105,7 +105,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             {
                 TRCustomerCode.Visible = false;
             }
-            if (Session["varcompanyId"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 RDPONot.Visible = false;
                 RDdyerledger.Visible = false;
@@ -114,7 +114,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
 
             }
 
-            if (Session["VarCompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 RDProcessIssDetail.Visible = false;
                 RDProcessRecDetail.Visible = false;
@@ -189,12 +189,12 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             {
                 str = @"select Distinct IM.IndentId,isnull(OM.LocalOrder,'')+'/'+ IM.IndentNo  from IndentMaster IM inner join V_Indent_OredrId VO on Im.IndentID=VO.IndentId
                         JOIN OrderMaster OM ON VO.OrderId=OM.OrderId
-                        Where IM.MasterCompanyid= " + Session["varcompanyid"];
+                        Where IM.MasterCompanyid= " + Session["varMasterCompanyIDForERP"];
             }
             else
             {
                 str = @"select Distinct IM.IndentId,IM.IndentNo  from IndentMaster IM inner join V_Indent_OredrId VO on Im.IndentID=VO.IndentId
-                  Where IM.MasterCompanyid= " + Session["varcompanyid"];
+                  Where IM.MasterCompanyid= " + Session["varMasterCompanyIDForERP"];
             }
 
 
@@ -228,7 +228,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
     {
         string str, strsample = string.Empty;
         str = @"select Distinct EI.EmpId,ltrim(Empname)+'/'+Address as EmpName from IndentMaster IM inner join V_Indent_OredrId VO on Im.IndentID=VO.IndentId
-                inner join empinfo EI on EI.EmpId=IM.PartyId  Where EI.MasterCompanyid= " + Session["varcompanyid"];
+                inner join empinfo EI on EI.EmpId=IM.PartyId  Where EI.MasterCompanyid= " + Session["varMasterCompanyIDForERP"];
 
         strsample = "select Distinct ei.EmpId,ei.EmpName+'/'+Address as Empname From SampleDyeingmaster SM inner join EmpInfo ei on SM.empid=ei.EmpId Where 1=1";
 
@@ -352,7 +352,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             Session["dsFilename"] = "~\\ReportSchema\\rptindentshadewiseDetail.xsd";
             if (RDSubitemwiseBalance.Checked == true)
             {
-                switch (Session["varCompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "27":
                         Session["rptFilename"] = "Reports/rptindentSubitemwiseDetailForAntique.rpt";
@@ -383,17 +383,17 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
     protected void OrderShadewiseDetail()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         {
             str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
             From V_ORDERSHADEWISEINDENTDETAIL_SAMARA Where Companyid=" + DDCompany.SelectedValue;
         }
-        else if (Session["varCompanyId"].ToString() == "42")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "42")
         {
             str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
             From V_ORDERSHADEWISEINDENTDETAIL_VIKRAMMIRZAPUR Where Companyid=" + DDCompany.SelectedValue;
         }
-        else if (Session["varCompanyId"].ToString() == "43")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "43")
         {
             str = "select *,'" + TxtFromDate.Text + "' as FromDate,'" + TxtToDate.Text + "' as ToDate," + (ChkForDate.Checked == true ? "1" : "0") + @" as Dateflag 
             From V_ORDERSHADEWISEINDENTDETAIL_CarpetInternational Where Companyid=" + DDCompany.SelectedValue;
@@ -686,11 +686,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
         {
             if (ChkForExportExcel.Checked == true)
             {
-                if (Session["varcompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     ShadewiseDetailExportExcelNew();
                 }
-                else if (Session["varcompanyId"].ToString() == "38" || Session["varcompanyId"].ToString() == "42")
+                else if (Session["varMasterCompanyIDForERP"].ToString() == "38" || Session["varMasterCompanyIDForERP"].ToString() == "42")
                 {
                     ShadewiseDetailExportExcelWithoutGateInNo();
                 }
@@ -822,7 +822,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             inner join v_finisheditemdetail vf on PT.finishedid=vf.item_finished_id
                             INNER JOIN V_Indent_OredrId IM ON PT.IndentId=IM.IndentId                            
                             left join orderdetail OD on PT.orderdetailid=OD.orderdetailid
-                            left join ordermaster Om on OD.orderid=OM.orderid WHere PM.mastercompanyid=" + Session["varcompanyid"];
+                            left join ordermaster Om on OD.orderid=OM.orderid WHere PM.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 }
                 else
                 {
@@ -839,7 +839,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     INNER JOIN OrderMaster OM ON OM.Orderid=IM.OrderId
                     INNER JOIN Companyinfo CI ON PM.CompanyId=CI.CompanyId
                     INNER JOIN Process_Name_Master PNM ON PM.ProcessId=PNM.PROCESS_NAME_ID
-                    Where PM.MasterCompanyId=" + Session["varCompanyId"];
+                    Where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                     if (variable.VarIndentIssRecReportDataWithSample == "1" || chksample.Checked == true)
                     {
@@ -1005,7 +1005,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             left join OrderMaster OM on OD.OrderId=OM.OrderId
                             left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                             INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                            Where IM.MasterCompanyId=" + Session["varCompanyId"];
+                            Where IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                     }
                     else
@@ -1036,7 +1036,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         LEFT JOIN CustomerInfo CustInfo ON OM.CustomerID=CustInfo.CustomerID
                         left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                         INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         switch (Session["varcompanyNo"].ToString())
                         {
                             case "16":
@@ -1216,7 +1216,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                             INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
                             JOIN GodownMaster GM ON PT.Godownid=GM.GoDownID
-                            Where IM.MasterCompanyId=" + Session["varCompanyId"];
+                            Where IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                     }
                     else
@@ -1240,7 +1240,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         ////                        left join OrderMaster OM on OD.OrderId=OM.OrderId
                         ////                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                         ////                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                        ////                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        ////                        Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
                         str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
@@ -1278,7 +1278,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                         INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
                         JOIN GodownMaster GM ON PT.Godownid=GM.GoDownID
-                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         switch (Session["varcompanyNo"].ToString())
                         {
                             case "16":
@@ -1447,7 +1447,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             left join OrderMaster OM on OD.OrderId=OM.OrderId
                             left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                             INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                            Where IM.MasterCompanyId=" + Session["varCompanyId"];
+                            Where IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                     }
                     else
@@ -1471,7 +1471,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         ////                        left join OrderMaster OM on OD.OrderId=OM.OrderId
                         ////                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                         ////                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                        ////                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        ////                        Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
                         str = @"select Process_Name,case When " + DDCompany.SelectedIndex + @">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,IndentNo,
@@ -1496,7 +1496,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         LEFT JOIN CustomerInfo CustInfo ON OM.CustomerID=CustInfo.CustomerID
                         left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
                         INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         switch (Session["varcompanyNo"].ToString())
                         {
                             case "16":
@@ -1662,7 +1662,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 }
                 else
                 {
-                    switch (Session["varcompanyid"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "6":
                         case "12":
@@ -1706,7 +1706,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         inner join PROCESS_NAME_MASTER PNM on PM.Processid=PNM.PROCESS_NAME_ID
                         left join OrderDetail OD on PT.Orderdetailid=OD.OrderDetailId
                         left join OrderMaster OM on OD.OrderId=OM.OrderId
-                        inner join V_FinishedItemDetail vf on pt.Finishedid=vf.ITEM_FINISHED_ID Where PM.MasterCompanyId=" + Session["varCompanyId"];
+                        inner join V_FinishedItemDetail vf on pt.Finishedid=vf.ITEM_FINISHED_ID Where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 }
                 else
                 {
@@ -1726,7 +1726,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     INNER JOIN Companyinfo CI ON PM.CompanyId=CI.CompanyId
                     INNER JOIN Process_Name_Master PNM ON PM.ProcessId=PNM.PROCESS_NAME_ID
                     LEFT JOIN NEWUSERDETAIL ND(Nolock) ON PM.USERID = ND.USERID 
-                    Where PM.MasterCompanyId=" + Session["varCompanyId"];
+                    Where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
 
@@ -1746,7 +1746,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                     INNER JOIN OrderMaster OM ON OM.Orderid=IM.OrderId
                     INNER JOIN Companyinfo CI ON PM.CompanyId=CI.CompanyId
                     INNER JOIN Process_Name_Master PNM ON PM.ProcessId=PNM.PROCESS_NAME_ID
-                    Where PM.MasterCompanyId=" + Session["varCompanyId"];
+                    Where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
                     
@@ -1903,7 +1903,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                             left join OrderMaster OM on OD.OrderId=OM.OrderId
                             left join V_IndentRawReturnQty  V on Pm.PRMid=v.prmid and PT.PRTid=v.PrtId 
                             INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-                            Where IM.MasterCompanyId=" + Session["varCompanyId"];
+                            Where IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                 }
                 else
@@ -1929,7 +1929,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         left outer Join V_IndentRawReturnQty V  on V.prmId=Pt.PrmId and V.prtId=PT.prtId
                         INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
                         LEFT JOIN NEWUSERDETAIL ND(Nolock) ON PT.USERID = ND.USERID 
-                      Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                      Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                     }
                     else
@@ -1952,7 +1952,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         left outer Join V_IndentRawReturnQty V  on V.prmId=Pt.PrmId and V.prtId=PT.prtId
                         INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
                        
-                      Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+                      Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     
                     }
                     
@@ -2103,7 +2103,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                         Session["rptFilename"] = "Reports/RptIndentRawIss_RecDetailjobordernew.rpt";
                         break;
                     default:
-                        switch (Session["varcompanyid"].ToString())
+                        switch (Session["varMasterCompanyIDForERP"].ToString())
                         {
                             case "6":
                                 Session["rptFilename"] = "Reports/RptIndentRawIss_RecDetailIndentWiseArtindia.rpt";
@@ -2129,7 +2129,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 str = @"select Distinct Process_Name,case When " + DDCompany.SelectedIndex + ">0 Then CI.CompanyName Else 'ALL' End As CompanyName,Empname,INM.IndentNo,INM.Date,'" + TxtFromDate.Text + " ' As FromDate,'" + TxtToDate.Text + "' As ToDate," + VarDateflag + @" As dateflag,OM.LocalOrder,OM.CustomerOrderNo
               From IndentMaster INM,V_Indent_OredrId IM,OrderMaster OM,Empinfo E,Companyinfo CI,Process_Name_Master PNM
               Where INM.IndentId=IM.IndentId And INM.PartyId=E.EmpId And OM.Orderid=IM.OrderId And INM.Indentid Not in(select Distinct IndentId from PP_ProcessRawTran PT Where PT.indentid=INM.IndentId)
-              And INM.Status<>'cancelled' And IM.CompanyId=CI.CompanyId And INM.ProcessId=PNM.PROCESS_NAME_ID And INM.MasterCompanyId=" + Session["varCompanyId"];
+              And INM.Status<>'cancelled' And IM.CompanyId=CI.CompanyId And INM.ProcessId=PNM.PROCESS_NAME_ID And INM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                 if (DDCompany.SelectedIndex > 0)
                 {
@@ -2491,7 +2491,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             cmd.CommandTimeout = 300;
 
             cmd.Parameters.AddWithValue("@CompanyId", DDCompany.SelectedValue);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
 
             DataSet ds = new DataSet();
@@ -2529,18 +2529,18 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
         {
             DDCustCode_SelectedIndexChanged(sender, new EventArgs());
         }
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "", str1 = "", str2 = "";
-        if (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28" || Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             str = @"Select distinct OM.OrderId, CustomerOrderNo as CustomerOrderNo 
                 From OrderMaster OM 
                 Where OM.Status=0";
         }
-        else if (Session["varcompanyid"].ToString() == "43")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "43")
         {
             str = @"Select distinct OM.OrderId, CustomerOrderNo+ ' / ' +LocalOrder as CustomerOrderNo 
                 From OrderMaster OM 
@@ -2592,7 +2592,7 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
     {
         string str = string.Empty;
         str = @"select Distinct PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME from IndentMaster IM inner join V_Indent_OredrId VO on Im.IndentID=VO.IndentId
-                inner join PROCESS_NAME_MASTER PNM on PNM.PROCESS_NAME_ID=IM.ProcessID Where PNM.mastercompanyId=" + Session["varcompanyid"];
+                inner join PROCESS_NAME_MASTER PNM on PNM.PROCESS_NAME_ID=IM.ProcessID Where PNM.mastercompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDCompany.SelectedIndex > 0)
         {
             str = str + "  and IM.Companyid=" + DDCompany.SelectedValue;

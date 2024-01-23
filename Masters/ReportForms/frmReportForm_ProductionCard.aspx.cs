@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_frmReportFormJob_ProductionCard : Syste
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -71,7 +71,7 @@ public partial class Masters_ReportForms_frmReportFormJob_ProductionCard : Syste
             _array[1].Value = DDMonth.SelectedItem.Text;
             _array[2].Value = DDyear.SelectedItem.Text;
             _array[3].Value = txtIdNo.Text;
-            _array[4].Value = Session["varCompanyId"];
+            _array[4].Value = Session["varMasterCompanyIDForERP"];
             _array[5].Value = Session["CurrentWorkingCompanyID"];// DDCompany.SelectedValue;
             _array[6].Value = chksummary.Checked == true ? 1 : 0;//1 For show Summary ANd 0 For Detail
             _array[7].Value = txtAdvanceAmt.Text == "" ? "0" : txtAdvanceAmt.Text;

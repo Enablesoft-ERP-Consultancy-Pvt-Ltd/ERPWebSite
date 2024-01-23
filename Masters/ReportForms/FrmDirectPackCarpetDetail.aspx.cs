@@ -14,14 +14,14 @@ public partial class Masters_ReportForms_FrmDirectPackCarpetDetail : System.Web.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
 
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname";
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);
             if (DDCompany.Items.Count > 0)
@@ -51,7 +51,7 @@ public partial class Masters_ReportForms_FrmDirectPackCarpetDetail : System.Web.
             cmd.Parameters.AddWithValue("@CompanyId", DDCompany.SelectedValue);
             cmd.Parameters.AddWithValue("@Fromdate", txtfromdate.Text);
             cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UserId", Session["varUserId"]);
 
 

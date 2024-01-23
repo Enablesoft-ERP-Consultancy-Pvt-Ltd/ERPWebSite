@@ -12,15 +12,15 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                Select Distinct CI.Customerid,CI.Customercode  from CustomerInfo CI where CI.MasterCompanyId=" + Session["varCompanyId"] + @" order by customercode
-                select PROCESS_NAME_ID,PROCESS_NAME From Process_Name_Master Where MasterCompanyid=" + Session["varcompanyId"] + @" and PROCESS_NAME='WEAVING'
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                Select Distinct CI.Customerid,CI.Customercode  from CustomerInfo CI where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by customercode
+                select PROCESS_NAME_ID,PROCESS_NAME From Process_Name_Master Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" and PROCESS_NAME='WEAVING'
                 select unitid,unitname from unit where unitid in (1,2) order by unitid desc
                 select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner Join CategorySeparate CS on ICM.CATEGORY_ID=CS.Categoryid and cs.id=0 order by ICM.CATEGORY_NAME";
 
@@ -48,7 +48,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
     }
@@ -118,14 +118,14 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
         if (TDDesign.Visible == true)
         {
             //str = "select Distinct D.designId,D.designName from V_FinishedItemDetail vf inner Join Design D on vf.DesignId=D.designid  Where Item_Id=" + dditemname.SelectedValue + " order by D.designname";
-            str = "select Designid,Designname From Design Where mastercompanyid=" + Session["varcompanyId"] + " order by designname";
+            str = "select Designid,Designname From Design Where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by designname";
             UtilityModule.ConditionalComboFill(ref dddesign, str, true, "--Select--");
         }
         //Color
         if (TDColor.Visible == true)
         {
             // str = "select Distinct C.colorid,C.colorname from V_FinishedItemDetail vf inner Join Color C on Vf.colorid=C.colorid  Where Item_Id=" + dditemname.SelectedValue + " order by C.Colorname";
-            str = "select Colorid,colorname From color Where mastercompanyid=" + Session["varcompanyid"] + " order by colorname";
+            str = "select Colorid,colorname From color Where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by colorname";
             UtilityModule.ConditionalComboFill(ref ddcolor, str, true, "--Select--");
 
         }
@@ -251,7 +251,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
             //     str = str + " and vf.colorid=" + ddcolor.SelectedValue;
             // }
             #endregion
-            str = "select Distinct S.sizeid,S." + size + " From size S Where S.shapeid=" + ddshape.SelectedValue + "  and S.mastercompanyid=" + Session["varcompanyid"];
+            str = "select Distinct S.sizeid,S." + size + " From size S Where S.shapeid=" + ddshape.SelectedValue + "  and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             str = str + " order by S." + size;
         }
         UtilityModule.ConditionalComboFill(ref ddsize, str, true, "--Select--");
@@ -372,7 +372,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
     }
     protected void DDprocess_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDvendor, "select EI.EmpId,EI.EmpName  From Empinfo EI inner join EmpProcess EP on EI.empid=EP.EmpId  and EP.ProcessId=" + DDprocess.SelectedValue + " and Ei.mastercompanyid=" + Session["varcompanyId"] + " order by Ei.EmpName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDvendor, "select EI.EmpId,EI.EmpName  From Empinfo EI inner join EmpProcess EP on EI.empid=EP.EmpId  and EP.ProcessId=" + DDprocess.SelectedValue + " and Ei.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by Ei.EmpName", true, "--Plz Select--");
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
@@ -401,7 +401,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
             param[8] = new SqlParameter("@Unitid", DDunit.SelectedValue);
             param[9] = new SqlParameter("@caltype", DDcaltype.SelectedValue);
             param[10] = new SqlParameter("@Remarks", txtremarks.Text);
-            int Item_finished_id = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Item_finished_id = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             param[11] = new SqlParameter("@Item_finished_id", Item_finished_id);
             param[12] = new SqlParameter("@Width", txtwidth.Text);
             param[13] = new SqlParameter("@Length", txtlength.Text);
@@ -412,7 +412,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
             param[18] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[18].Direction = ParameterDirection.Output;
             param[19] = new SqlParameter("@userid", Session["varuserid"]);
-            param[20] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[20] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             param[21] = new SqlParameter("@Quality", dquality.SelectedItem.Text);
             param[22] = new SqlParameter("@Design", dddesign.SelectedItem.Text);
@@ -479,7 +479,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
         //                        Length + 'x' + Width Size,Qty*Area as Area,Rate,Qty,Amount From PROCESS_ISSUE_MASTER_" + DDprocess.SelectedValue + @" PM,PROCESS_ISSUE_DETAIL_" + DDprocess.SelectedValue + @" PD,
         //                        ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
         //                        Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
-        //                        PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+        //                        PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
 
         if (variable.VarNewQualitySize == "1")
         {
@@ -490,7 +490,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
                     V_FinishedItemDetailNew IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
                     Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.ITEM_FINISHED_ID 
                     And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
-                    PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varcompanyId"] + " Order By Issue_Detail_Id Desc";
+                    PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
         }
         else
         {
@@ -501,7 +501,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
                     V_FinishedItemDetail IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
                     Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.ITEM_FINISHED_ID 
                     And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
-                    PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varcompanyId"] + " Order By Issue_Detail_Id Desc";
+                    PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
         }
 
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
@@ -699,7 +699,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
             param[9] = new SqlParameter("@userid", Session["varuserid"]);
             param[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[10].Direction = ParameterDirection.Output;
-            param[11] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[11] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[12] = new SqlParameter("@AreaOnepcs", AreaOnePcs);
             //**************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateSampleorder", param);
@@ -745,7 +745,7 @@ public partial class Masters_Process_frmsampleorder : System.Web.UI.Page
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             param[5] = new SqlParameter("@userid", Session["varuserid"]);
-            param[6] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[6] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //*****
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteSampleOrder", param);
             lblmsg.Text = param[4].Value.ToString();

@@ -10,7 +10,7 @@ public partial class Masters_Order_OrderDeptPlanning : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,7 +23,7 @@ public partial class Masters_Order_OrderDeptPlanning : System.Web.UI.Page
             }
             else
             {
-                str = @" select Distinct om.OrderId,om.LocalOrder+ ' / ' +om.CustomerOrderNo from OrderMaster om inner join orderdetail od On om.orderid=od.orderid inner join V_FinishedItemDetail v On od.Item_Finished_Id= v.Item_Finished_Id inner join UserRights_Category uc On v.CATEGORY_ID=uc.CategoryId  left outer join OrderProcessPlanning pm On om.orderid=pm.orderid Where om.status=0 and om.orderid  in (select distinct orderid from JobAssigns where supplierqty=0) and isnull(finalstatus,0)<>1  and uc.userid=" + Session["varuserid"] + " And V.MasterCompanyId=" + Session["varCompanyId"] + "";
+                str = @" select Distinct om.OrderId,om.LocalOrder+ ' / ' +om.CustomerOrderNo from OrderMaster om inner join orderdetail od On om.orderid=od.orderid inner join V_FinishedItemDetail v On od.Item_Finished_Id= v.Item_Finished_Id inner join UserRights_Category uc On v.CATEGORY_ID=uc.CategoryId  left outer join OrderProcessPlanning pm On om.orderid=pm.orderid Where om.status=0 and om.orderid  in (select distinct orderid from JobAssigns where supplierqty=0) and isnull(finalstatus,0)<>1  and uc.userid=" + Session["varuserid"] + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
             }
             UtilityModule.ConditionalComboFill(ref DDOrderNo,str, true, "--Select--");
             if (Session["varuserid"].ToString() == "12")
@@ -47,7 +47,7 @@ public partial class Masters_Order_OrderDeptPlanning : System.Web.UI.Page
             Lblsave.Text = "";
             sql = @"select Item_Name+'  '+QualityName+'  '+Designname+'  '+ColorName+'  '+ShadeColorName+'  '+Case When OrderUnitId=4 Then SizeMtr Else SizeMtr End As Description,Sum(QtyRequired) As Qty
                      From OrderMaster OM,OrderDetail OD,V_FinishedItemDetail V  where OM.OrderId=OD.OrderId 
-                     And V.Item_Finished_Id=OD.Item_Finished_Id And OM.OrderId=" + DDOrderNo.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"] + " group by Item_Name,QualityName,Designname,ColorName,ShadeColorName,OrderUnitId,SizeMtr,SizeFt ";
+                     And V.Item_Finished_Id=OD.Item_Finished_Id And OM.OrderId=" + DDOrderNo.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by Item_Name,QualityName,Designname,ColorName,ShadeColorName,OrderUnitId,SizeMtr,SizeFt ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -65,7 +65,7 @@ public partial class Masters_Order_OrderDeptPlanning : System.Web.UI.Page
                 sql = @"SELECT ID,LocalOrder+ ' / ' +CustomerOrderNo OrderNo,PROCESS_NAME ProcessName,OP.Processid,
                        Replace(Convert(varchar(11),Date,106), ' ','-') AS Date,Qty, 
                        case when FinalDate is NULL then  Replace(Convert(varchar(11),Date,106), ' ','-') else Replace(Convert(varchar(11),FinalDate,106), ' ','-') end  FinalDate,op.planremark as remark,op.depremark
-                       From OrderProcessPlanning OP,OrderMaster OM,Process_Name_Master PNM Where OP.OrderId=OM.OrderId And OP.PROCESSID=PNM.PROCESS_NAME_ID and op.processid in(select Distinct processid from UserRightsProcess where userid=" + Session["Varuserid"] + ") And OP.OrderId=" + DDOrderNo.SelectedValue + " And PNM.MasterCompanyId=" + Session["varCompanyId"] + "";
+                       From OrderProcessPlanning OP,OrderMaster OM,Process_Name_Master PNM Where OP.OrderId=OM.OrderId And OP.PROCESSID=PNM.PROCESS_NAME_ID and op.processid in(select Distinct processid from UserRightsProcess where userid=" + Session["Varuserid"] + ") And OP.OrderId=" + DDOrderNo.SelectedValue + " And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
                 DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);
                 if (ds1.Tables[0].Rows.Count > 0)
                 {
@@ -87,7 +87,7 @@ public partial class Masters_Order_OrderDeptPlanning : System.Web.UI.Page
             {
                 sql = @"Select Item_Name+'  '+QualityName+'  '+Designname+'  '+ColorName+'  '+ShadeColorName  As Description,Sum(Qty) As Qty
                      From OrderLocalConsumption OM,V_FinishedItemDetail V  
-                     Where V.Item_Finished_Id=OM.Finishedid And OM.OrderId=" + DDOrderNo.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"] + "  group by Item_Name,QualityName,Designname,ColorName,ShadeColorName ";
+                     Where V.Item_Finished_Id=OM.Finishedid And OM.OrderId=" + DDOrderNo.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  group by Item_Name,QualityName,Designname,ColorName,ShadeColorName ";
                 DataSet ds4 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);
                 if (ds4.Tables[0].Rows.Count > 0)
                 {

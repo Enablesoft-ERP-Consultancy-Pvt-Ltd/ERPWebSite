@@ -18,7 +18,7 @@ public partial class frmVendorAllocationMonthwise : System.Web.UI.Page
         //}
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDVendor, "select empid, empname from empinfo where MasterCompanyId=" + Session["varCompanyId"] + "", true, "---select---");
+            UtilityModule.ConditionalComboFill(ref DDVendor, "select empid, empname from empinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---select---");
             UtilityModule.ConditionalComboFill(ref DDyear, "select year,year year1 from session order by Year desc", true, "----select----");
             UtilityModule.ConditonalChkBoxListFill(ref checkmonth, "select month_id,Month_Name from Monthtable");
             DDyear.SelectedValue = DateTime.Now.Year.ToString();

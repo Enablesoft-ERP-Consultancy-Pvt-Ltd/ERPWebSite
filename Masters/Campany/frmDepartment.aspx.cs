@@ -11,7 +11,7 @@ public partial class frmColor : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -66,7 +66,7 @@ public partial class frmColor : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"SELECT ColorId as Sr_No,ColorName as " + lblcolorname.Text + " FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ColorId";            
+            string strsql = @"SELECT ColorId as Sr_No,ColorName as " + lblcolorname.Text + " FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ColorId";            
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);                   
             ds.Tables[0].Columns["ColorName"].ColumnName = "Color Name";
@@ -104,7 +104,7 @@ public partial class frmColor : CustomPage
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtcolor.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Color", _arrPara);
                 ClearAll();
@@ -136,7 +136,7 @@ public partial class frmColor : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !="+txtid.Text + " And MasterCompanyId= " + Session["varCompanyId"];
+        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !="+txtid.Text + " And MasterCompanyId= " + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -155,7 +155,7 @@ public partial class frmColor : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -260,12 +260,12 @@ public partial class frmColor : CustomPage
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select COLOR_ID from ITEM_PARAMETER_MASTER where MasterCompanyId=" + Session["varCompanyId"] + " And COLOR_ID=" + ViewState["id"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select COLOR_ID from ITEM_PARAMETER_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And COLOR_ID=" + ViewState["id"].ToString()));
             if (id <= 0)
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Color where ColorId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Color'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Color'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 lblMessage.Visible = true;
                 lblMessage.Text = "Value Deleted....";
             }

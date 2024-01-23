@@ -12,14 +12,14 @@ public partial class Masters_ReportForms_FrmProcessDetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + " Order By PROCESS_NAME";
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By PROCESS_NAME";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);
             UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 1, true, "--Select--");
@@ -31,7 +31,7 @@ public partial class Masters_ReportForms_FrmProcessDetail : System.Web.UI.Page
                 CompanySelectedChange();
             }
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
             LblCompanyName.Text = Session["varCompanyName"].ToString();
             LblUserName.Text = Session["varusername"].ToString();
             TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -40,7 +40,7 @@ public partial class Masters_ReportForms_FrmProcessDetail : System.Web.UI.Page
     }
     protected void DDProcessName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName", true, "--Select--");
     }
     protected void DDEmpName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -95,13 +95,13 @@ public partial class Masters_ReportForms_FrmProcessDetail : System.Web.UI.Page
                     Str = @"Select CompanyId,E.Empid,PHA.ProcessId,PNM.PROCESS_NAME,PHA.Appdate Date,E.EmpName,'Hissab/Slip No' AS Type,AppvNo HissabNo,NetAmt AS CreditBal,0 as DebitBal,'" + TxtFromDate.Text + "' FromDate,'" + TxtToDate.Text + @"' ToDate
                     From ProcessHissabApproved PHA inner join Empinfo E on PHA.EmpId=E.Empid Inner Join Process_Name_Master PNM ON PHA.ProcessId=PNM.PROCESS_NAME_ID 
                     Where PHA.HissabType=0 And CompanyId=" + DDCompany.SelectedValue + @" And 
-                    PHA.Appdate>='" + TxtFromDate.Text + "' And PHA.Appdate<='" + TxtToDate.Text + "' And E.MasterCompanyId=" + Session["varCompanyId"];
+                    PHA.Appdate>='" + TxtFromDate.Text + "' And PHA.Appdate<='" + TxtToDate.Text + "' And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                     string Str1 = @" Union Select php.CompanyId,E.Empid,PHP.ProcessId,PNM.PROCESS_NAME,php.date,e.empname,Case When Chqcash=0 Then 'Cash' Else 'Cheque No.' + cast(ChqNo as varchar)+'  '+ Narration End As Typ,
                     ' ' As BillNo,0 As Hissab,Sum(PHP.Amount) As Debitbal,'" + TxtFromDate.Text + "' FromDate,'" + TxtToDate.Text + @"' ToDate From ProcessHissabPayment php inner join empinfo e on php.partyid=e.empid inner Join 
                     ProcessHissabApproved PHA on php.ApprovalNo=PHA.AppvNo Inner Join Process_Name_Master PNM ON PHA.ProcessId=PNM.PROCESS_NAME_ID 
                     Where PHA.HissabType=0 And php.CompanyId=" + DDCompany.SelectedValue + @" And 
-                    PHA.Appdate>='" + TxtFromDate.Text + "' And PHA.Appdate<='" + TxtToDate.Text + "' And e.MasterCompanyId=" + Session["varCompanyId"];
+                    PHA.Appdate>='" + TxtFromDate.Text + "' And PHA.Appdate<='" + TxtToDate.Text + "' And e.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     if (DDProcessName.SelectedIndex > 0)
                     {
                         Str = Str + " And PHA.ProcessId=" + DDProcessName.SelectedValue;
@@ -134,7 +134,7 @@ public partial class Masters_ReportForms_FrmProcessDetail : System.Web.UI.Page
                     (select isnull(sum(Qty),0) from PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PRD where  PRD.Process_Rec_Detail_Id=PD.Process_Rec_Detail_Id and PRD.QualityType=3) as RejectQty
                     From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF,CompanyInfo CI,EmpInfo EI,Unit U
                     Where PM.Process_Rec_Id=PD.Process_Rec_Id And PD.Qty<>0 And PD.Item_Finished_id=VF.ITEM_FINISHED_ID  And PM.CompanyId=CI.CompanyId And PM.EmpId=EI.EmpId And PM.UnitId=U.UnitId And
-                    PD.Qty<>0 And PD.QualityType<>3 And PM.CompanyId=" + DDCompany.SelectedValue + " And PM.ReceiveDate>='" + TxtFromDate.Text + "' And PM.ReceiveDate<='" + TxtToDate.Text + "' And VF.MasterCompanyId=" + Session["varCompanyId"];
+                    PD.Qty<>0 And PD.QualityType<>3 And PM.CompanyId=" + DDCompany.SelectedValue + " And PM.ReceiveDate>='" + TxtFromDate.Text + "' And PM.ReceiveDate<='" + TxtToDate.Text + "' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     if (DDOrderNo.SelectedIndex > 0)
                     {
                         Str = Str + " And Pd.orderid=" + DDOrderNo.SelectedValue;
@@ -212,7 +212,7 @@ public partial class Masters_ReportForms_FrmProcessDetail : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -223,14 +223,14 @@ public partial class Masters_ReportForms_FrmProcessDetail : System.Web.UI.Page
     }
     private void CompanySelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
 
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "Select OrderId, LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster where CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
 
-        if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = "Select OrderId, CustomerOrderNo From OrderMaster where Status = 0 And CustomerId = " + DDCustCode.SelectedValue + " And CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
         }

@@ -15,7 +15,7 @@ public partial class Masters_Process_frmProductionReceive : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -227,7 +227,7 @@ public partial class Masters_Process_frmProductionReceive : System.Web.UI.Page
         if (TxtLength.Text != "" && TxtWidth.Text != "")
         {
             int Shape = 0;
-            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
+            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
 
             if (Convert.ToInt32(lblUnitId.Text) == 1)
             {
@@ -294,7 +294,7 @@ public partial class Masters_Process_frmProductionReceive : System.Web.UI.Page
         if (TxtLength.Text != "" && TxtWidth.Text != "")
         {
             int Shape = 0;
-            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
+            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
 
             if (Convert.ToInt32(lblUnitId.Text) == 1)
             {
@@ -524,7 +524,7 @@ public partial class Masters_Process_frmProductionReceive : System.Web.UI.Page
                     PROCESS_RECEIVE_MASTER_1 PM,PROCESS_RECEIVE_DETAIL_1 PD,V_FinishedItemDetail vf,
                     Item_Master IM,CompanyInfo CI,Unit U Where PM.Process_Rec_Id=PD.Process_Rec_Id And PD.Item_Finished_id=vf.Item_Finished_id And 
                     IM.Item_Id=vf.Item_Id And  PM.Companyid=CI.CompanyId  And PM.UnitId=U.UnitId And QualityType<>3 and 
-                    PM.Process_Rec_Id=" + ViewState["Process_Rec_Id"] + " And IM.MasterCompanyId=" + Session["varcompanyid"] + " And PM.CompanyId=1";
+                    PM.Process_Rec_Id=" + ViewState["Process_Rec_Id"] + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And PM.CompanyId=1";
 
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, qry);
             ////Add Table 

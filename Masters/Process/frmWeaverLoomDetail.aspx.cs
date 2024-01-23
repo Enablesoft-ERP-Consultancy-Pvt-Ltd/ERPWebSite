@@ -11,7 +11,7 @@ public partial class Masters_Process_frm_WeaverLoomDetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
 
@@ -94,7 +94,7 @@ public partial class Masters_Process_frm_WeaverLoomDetail : System.Web.UI.Page
                 _array[5].Value = ((TextBox)GDLoomDetail.Rows[i].FindControl("txtloomDetail")).Text;
                 _array[6].Value = ((Label)GDLoomDetail.Rows[i].FindControl("lblProcessId")).Text; ;
                 _array[7].Value = Session["varuserId"];
-                _array[8].Value = Session["varcompanyId"];
+                _array[8].Value = Session["varMasterCompanyIDForERP"];
                 _array[9].Value = ((Label)GDLoomDetail.Rows[i].FindControl("lblUnitId")).Text;
                 if (ViewState["DetailId"] == null)
                 {

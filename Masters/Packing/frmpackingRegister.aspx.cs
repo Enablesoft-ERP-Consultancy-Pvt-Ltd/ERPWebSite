@@ -12,7 +12,7 @@ public partial class Masters_Packing_frmpackingRegister : System.Web.UI.Page
     static int MaxRollNo = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -197,7 +197,7 @@ public partial class Masters_Packing_frmpackingRegister : System.Web.UI.Page
                 array[19].Value = txtDateStamp.Text;
                 array[20].Value = ddUnits.SelectedValue;
                 array[21].Value = Session["varuserid"];
-                array[22].Value = Session["Varcompanyid"];
+                array[22].Value = Session["varMasterCompanyIDForERP"];
                 array[23].Value = Session["CurrentWorkingCompanyID"];//fix companyid
                 array[24].Value = txttableno.Text == "" ? "0" : txttableno.Text;
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SavePackingregister", array);

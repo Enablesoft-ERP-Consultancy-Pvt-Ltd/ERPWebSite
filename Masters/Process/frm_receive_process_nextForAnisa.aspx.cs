@@ -23,7 +23,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -41,10 +41,10 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 SCRIPT_DOFOCUS.Replace("REQUEST_LASTFOCUS", Request["__LASTFOCUS"]),
                 true);
 
-            string str = "select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI where  CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname
+            string str = "select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI where  CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname
                           select unitid,unitname from unit where unitid in (1,2)
                           select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId";
-            if (Session["varcompanyId"].ToString() == "8")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "8")
             {
                 str = str + " select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER Where PROCESS_NAME_ID<>1 order by Process_Name ";
             }
@@ -81,7 +81,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
 
             }
             TxtreceiveDate.Text = DateTime.Now.Date.ToString("dd-MMM-yyyy");
-            int VarCompanyNo = Convert.ToInt32(Session["varCompanyId"].ToString());
+            int VarCompanyNo = Convert.ToInt32(Session["varMasterCompanyIDForERP"].ToString());
             switch (VarCompanyNo)
             {
                 case 5:
@@ -140,7 +140,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     private void Fill_Temp_OrderNo()
     {
         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "DELETE TEMP_PROCESS_RECEIVE_MASTER_NEW");
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER Where Process_Name_Id<>1 And MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name_Id");
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER Where Process_Name_Id<>1 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Process_Name_Id");
         if (Ds.Tables[0].Rows.Count > 0)
         {
             for (int i = 0; i < Ds.Tables[0].Rows.Count; i++)
@@ -156,9 +156,9 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     private void ProcessSelectedChanges()
     {
         ViewState["recid"] = 0;
-        UtilityModule.ConditionalComboFill(ref ddemp, "Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + ddprocess.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddemp, "Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + ddprocess.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
 
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT DISTINCT OCALTYPE FROM PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD WHERE PM.PCMID=PD.PCMID And PROCESSID=" + ddprocess.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT DISTINCT OCALTYPE FROM PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD WHERE PM.PCMID=PD.PCMID And PROCESSID=" + ddprocess.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
             DDcaltype.SelectedValue = Ds.Tables[0].Rows[0]["OCALTYPE"].ToString();
@@ -185,7 +185,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 UtilityModule.ConditionalComboFill(ref DDChallanNo, Str, true, "--SELECT--");
             }
             string str = @" select distinct issueorderid,ChallanNo from process_issue_master_" + ddprocess.SelectedValue + " where empid=" + ddemp.SelectedValue + " ";
-            str = str + @" Select distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_ID";
+            str = str + @" Select distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_ID";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddorderno, ds, 0, true, "--SELECT--");
             UtilityModule.ConditionalComboFillWithDS(ref ddcattype, ds, 1, true, "--Select Category--");
@@ -195,7 +195,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     {
         if (ddorderno.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref ddcattype, "select distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_ID", true, "--Select Category--");
+            UtilityModule.ConditionalComboFill(ref ddcattype, "select distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_ID", true, "--Select Category--");
         }
         fillgrid();
     }
@@ -203,9 +203,9 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     {
         //ddlcategorycange();
 
-        //UtilityModule.ConditionalComboFill(ref dditem, "select Item_id, Item_Name from Item_Master where Category_Id=" + ddcattype.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select Item----");
+        //UtilityModule.ConditionalComboFill(ref dditem, "select Item_id, Item_Name from Item_Master where Category_Id=" + ddcattype.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select Item----");
         UtilityModule.ConditionalComboFill(ref ddquality, @"select Distinct Q.QualityId,q.QualityName+' ['+Im.Item_Name+']' as QualityName From ITEM_MASTER IM inner join CategorySeparate CS on 
-                                                         IM.CATEGORY_ID=cs.Categoryid and cs.id=0  inner join Quality Q on IM.ITEM_ID=q.Item_Id and Cs.Categoryid=" + ddcattype.SelectedValue + " and Im.mastercompanyid=" + Session["varcompanyid"] + " order by Qualityname", true, "--Plz Select--");
+                                                         IM.CATEGORY_ID=cs.Categoryid and cs.id=0  inner join Quality Q on IM.ITEM_ID=q.Item_Id and Cs.Categoryid=" + ddcattype.SelectedValue + " and Im.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by Qualityname", true, "--Plz Select--");
     }
     private void ddlcategorycange()
     {
@@ -226,15 +226,15 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                         break;
                     case "2":
                         tddesign.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddldesig, "select DesignId,Designname from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Designname", true, "--Select Design--");
+                        UtilityModule.ConditionalComboFill(ref ddldesig, "select DesignId,Designname from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Designname", true, "--Select Design--");
                         break;
                     case "3":
                         tdcolor.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddcolour, "select  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Colorname", true, "--Select Color--");
+                        UtilityModule.ConditionalComboFill(ref ddcolour, "select  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Colorname", true, "--Select Color--");
                         break;
                     case "4":
                         tdshape.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,Shapename from Shape Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Shape--");
+                        UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,Shapename from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Shape--");
                         tdsize.Visible = true;
                         break;
                 }
@@ -245,7 +245,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     {
         if (dditem.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref ddquality, "Select QualityId,QualityName from Quality Where Item_Id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Quality--");
+            UtilityModule.ConditionalComboFill(ref ddquality, "Select QualityId,QualityName from Quality Where Item_Id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Quality--");
         }
         fillgrid();
     }
@@ -257,11 +257,11 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
     {
         if (DDUnit.SelectedValue == "2")
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select Sizeid,SizeFt from Size where ShapeId=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Size--");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select Sizeid,SizeFt from Size where ShapeId=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Size--");
         }
         else if (DDUnit.SelectedValue == "1")
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select Sizeid,SizeMtr from Size where ShapeId=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Size--");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select Sizeid,SizeMtr from Size where ShapeId=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Size--");
         }
         fillgrid();
     }
@@ -290,7 +290,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                            From v_finisheditemdetail vd,CarpetNumber CN,Process_Stock_Detail psd,process_issue_detail_" + ddprocess.SelectedValue + @" pid,process_issue_master_" + ddprocess.SelectedValue + @" pim
                            Where cn.item_finished_id=vd.item_finished_id and psd.stockno=cn.stockno and psd.toprocessid=" + ddprocess.SelectedValue + @" and 
                            pid.issue_detail_id=psd.issuedetailid and pim.issueorderid=pid.issueorderid and cn.currentprostatus=" + ddprocess.SelectedValue + @" and 
-                           issrecstatus=1 and pim.CompanyId=" + ddCompName.SelectedValue + " And Vd.MasterCompanyId=" + Session["varCompanyId"];
+                           issrecstatus=1 and pim.CompanyId=" + ddCompName.SelectedValue + " And Vd.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (ddemp.SelectedIndex > 0)
                 {
                     strsql = strsql + " And pim.empid=" + ddemp.SelectedValue;
@@ -441,7 +441,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
         {
             goto a;
         }
-        if (Session["VarCompanyId"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
         {
             if (TDFinishingDateStamp.Visible == true)
             {
@@ -472,7 +472,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 }
             }
         }
-        else if (Session["VarCompanyId"].ToString() == "22" && (ddprocess.SelectedItem.Text == "FINISHING" || ddprocess.SelectedItem.Text == "RE-WORK FINISHING"))
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "22" && (ddprocess.SelectedItem.Text == "FINISHING" || ddprocess.SelectedItem.Text == "RE-WORK FINISHING"))
         {
             if (UtilityModule.VALIDTEXTBOX(txtcheckedby) == false)
             {
@@ -496,7 +496,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
 
     private void save_carpet_wise(int FlagType, string EmpId, string StrTStockNos)
     {
-        if (Session["VarCompanyId"].ToString() == "22" && (ddprocess.SelectedItem.Text == "TABLE CHECKING" || ddprocess.SelectedItem.Text == "FINISHING" || ddprocess.SelectedItem.Text == "RE-WORK FINISHING"))
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22" && (ddprocess.SelectedItem.Text == "TABLE CHECKING" || ddprocess.SelectedItem.Text == "FINISHING" || ddprocess.SelectedItem.Text == "RE-WORK FINISHING"))
         {
             CHECKVALIDCONTROL();       
         }
@@ -631,7 +631,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                         _arrpara[23].Value = DDcaltype.SelectedValue;
                         _arrpara[24].Value = Hn_ProcessId.Value;// ddprocess.SelectedValue;
                         _arrpara[25].Value = hnstockno.Value;
-                        _arrpara[26].Value = Session["varcompanyid"].ToString();
+                        _arrpara[26].Value = Session["varMasterCompanyIDForERP"].ToString();
                         _arrpara[27].Value = TDcheckedby.Visible == true ? txtcheckedby.Text : "";
                         _arrpara[28].Value = ddStockQualityType.SelectedValue;
                         _arrpara[29].Value = txtactualwidth.Text.Trim();
@@ -642,7 +642,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                         _arrpara[35].Value = TDWoolMoisture.Visible == false ? "0" : txtReceiveWoolMoisture.Text == "" ? "0" : txtReceiveWoolMoisture.Text;
                         _arrpara[36].Value = TDFinishingDateStamp.Visible == false ? "" : txtFinishingReceiveDateStamp.Text;
 
-                        if (Session["varcompanyId"].ToString() == "14")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "14")
                         {
                             _arrpara[31] = new SqlParameter("@TStockNos", StrTStockNos);
                             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_NextProcessReceiveForAnisaBulkStockNos", _arrpara);
@@ -754,7 +754,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
 
             txtweight.Text = "";
         }
-        if (Session["varcompanyId"].ToString() == "8")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "8")
         {
             Fill_StockNo();
         }
@@ -883,7 +883,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
         V_NextProcessReceive.Width,V_NextProcessReceive.StockNo
         FROM  PROCESS_NAME_MASTER INNER JOIN V_Companyinfo INNER JOIN V_NextProcessReceive ON V_Companyinfo.CompanyId=V_NextProcessReceive.Companyid ON PROCESS_NAME_MASTER.PROCESS_NAME_ID=V_NextProcessReceive.PROCESSID
         INNER JOIN V_EmployeeInfo ON V_NextProcessReceive.Empid=V_EmployeeInfo.EmpId
-        Where V_NextProcessReceive.Process_Rec_Id=" + ViewState["recid"] + " And Process_name_Master.MasterCompanyId=" + Session["varCompanyId"] + " And V_CompanyInfo.CompanyId=" + ddCompName.SelectedValue;
+        Where V_NextProcessReceive.Process_Rec_Id=" + ViewState["recid"] + " And Process_name_Master.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And V_CompanyInfo.CompanyId=" + ddCompName.SelectedValue;
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         //if (ds.Tables[0].Rows.Count > 0)
         //{
@@ -956,7 +956,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                 LblErrorMessage.Text = "Data Deleted Successfully....";
                 // fill_DetailGride();
                 FillData_Dgdetail();
-                if (Session["varcompanyId"].ToString() == "8")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "8")
                 {
                     Fill_StockNo();
                 }
@@ -1166,7 +1166,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
         V_NextProcessReceive.Width,V_NextProcessReceive.StockNo,'' SName,'' QcValue
         FROM  PROCESS_NAME_MASTER INNER JOIN V_Companyinfo INNER JOIN V_NextProcessReceive ON V_Companyinfo.CompanyId=V_NextProcessReceive.Companyid ON PROCESS_NAME_MASTER.PROCESS_NAME_ID=V_NextProcessReceive.PROCESSID
         INNER JOIN V_EmployeeInfo ON V_NextProcessReceive.Empid=V_EmployeeInfo.EmpId
-        where V_NextProcessReceive.Process_Rec_Id=" + ViewState["recid"] + " And Process_Name_Master.MasterCompanyId=" + Session["varCompanyId"] + " And V_Companyinfo.CompanyId=" + ddCompName.SelectedValue;
+        where V_NextProcessReceive.Process_Rec_Id=" + ViewState["recid"] + " And Process_Name_Master.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And V_Companyinfo.CompanyId=" + ddCompName.SelectedValue;
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         string str = @"Select SName, Case when QCValue='1' then 'YES' else 'NO' END QCValue from QCdetail QCD inner join QCMaster QCM ON 
 QCD.QCMasterID=QCM.ID Inner Join QCParameter QCP ON QCM.ParaID=QCP.ParaID
@@ -1274,7 +1274,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -1305,7 +1305,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
             _array[4].Value = 0;// hn_finished.Value;
             _array[5].Value = Hn_ProcessId.Value;// ddprocess.SelectedValue;
             _array[6].Value = ddCompName.SelectedValue;
-            _array[7].Value = Session["varcompanyId"];
+            _array[7].Value = Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.StoredProcedure, "Pro_FillGridDetail_NextReceiveForAnisa", _array);
             //Table 0 For DGDetail And table 1 For dgstock
@@ -1460,7 +1460,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
         ////    con.Open();
         ////}
 
-        //if (Session["varcompanyId"].ToString() == "14")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "14")
         //{
         //    DGStockDetail.PageSize = 200;
         //}
@@ -1520,7 +1520,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
     }
     protected void btnShowDetail_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() == "8")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "8")
         {
             Fill_StockNo();
         }
@@ -1663,7 +1663,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
     protected void DGStockDetail_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         DGStockDetail.PageIndex = e.NewPageIndex;
-        if (Session["varcompanyid"].ToString() == "8")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "8")
         {
             Fill_StockNo();
         }
@@ -1675,7 +1675,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
     }
     protected void btnsavegrid_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() == "14")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "14")
         {
             string StrTStockNos = "";
             //Grid Loop
@@ -1707,7 +1707,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
             }
         }
         txtweight.Text = "";
-        if (Session["varcompanyid"].ToString() == "8")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "8")
         {
             Fill_StockNo();
         }
@@ -1724,7 +1724,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
         if (e.Row.RowType == DataControlRowType.Header)
         {
             CheckBox ChkAllItem = (CheckBox)e.Row.FindControl("ChkAllItem");
-            if (Session["varcompanyId"].ToString() == "8")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "8")
             {
                 ChkAllItem.Visible = false;
             }
@@ -1732,7 +1732,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
             CheckBox Chkboxitem = (CheckBox)e.Row.FindControl("Chkboxitem");
-            if (Session["varcompanyId"].ToString() == "8")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "8")
             {
                 Chkboxitem.Visible = false;
             }
@@ -1750,7 +1750,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
         DGStockDetail.DataSource = null;
         DGStockDetail.DataBind();
         
-        if (Session["varcompanyId"].ToString() == "14")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "14")
         {
             if (Convert.ToInt32(TxtBulkReceiveQty.Text) > 200)
             {
@@ -1767,7 +1767,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
     }
     protected void txtReceiveCottonMoisture_TextChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
         {
             if (Convert.ToInt32(txtReceiveCottonMoisture.Text.Trim()) < 0 || Convert.ToInt32(txtReceiveCottonMoisture.Text.Trim()) > 10)
             {
@@ -1779,7 +1779,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
     }
     protected void txtReceiveWoolMoisture_TextChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
         {
             if (Convert.ToInt32(txtReceiveWoolMoisture.Text.Trim()) < 0 || Convert.ToInt32(txtReceiveWoolMoisture.Text.Trim()) > 10)
             {
@@ -1791,7 +1791,7 @@ where RefName= 'process_receive_detail_" + ddprocess.SelectedValue + "' and QCD.
     }
     protected void txtFinishingReceiveDateStamp_TextChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22" && ddprocess.SelectedItem.Text == "TABLE CHECKING")
         {
             int DateStampLength = 0;
             DateStampLength = txtFinishingReceiveDateStamp.Text.Length;

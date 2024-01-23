@@ -11,7 +11,7 @@ public partial class UserControls_Motellingratemaster : System.Web.UI.UserContro
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -65,7 +65,7 @@ public partial class UserControls_Motellingratemaster : System.Web.UI.UserContro
             param[6] = new SqlParameter("@Orate", txtOrate.Text == "" ? "0" : txtOrate.Text);
             param[7] = new SqlParameter("@Effectivedate", txteffectivedate.Text);
             param[8] = new SqlParameter("@userid", Session["varuserid"]);
-            param[9] = new SqlParameter("@Mastercompanyid", Session["Varcompanyid"]);
+            param[9] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[10].Direction = ParameterDirection.Output;
             param[11] = new SqlParameter("@Shadecolorid", DDShade.SelectedIndex > 0 ? DDShade.SelectedValue : "0");

@@ -11,13 +11,13 @@ public partial class Masters_Carpet_DefinePackingAndOtherCost : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT COMPANY NAME--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT COMPANY NAME--");
             if (DDCompanyName.Items.Count > 0)
             {
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -32,7 +32,7 @@ public partial class Masters_Carpet_DefinePackingAndOtherCost : System.Web.UI.Pa
     }
     private void CompanySelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDCustomerName, "SELECT CI.CUSTOMERID,CI.CUSTOMERNAME FROM CUSTOMERINFO CI,ORDERMASTER OM WHERE CI.CUSTOMERID=OM.CUSTOMERID AND OM.COMPANYID=" + DDCompanyName.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT CUSTOMER NAME--");
+        UtilityModule.ConditionalComboFill(ref DDCustomerName, "SELECT CI.CUSTOMERID,CI.CUSTOMERNAME FROM CUSTOMERINFO CI,ORDERMASTER OM WHERE CI.CUSTOMERID=OM.CUSTOMERID AND OM.COMPANYID=" + DDCompanyName.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT CUSTOMER NAME--");
     }
     protected void DDCustomerName_SelectedIndexChanged(object sender, EventArgs e)
     {

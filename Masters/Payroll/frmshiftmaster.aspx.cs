@@ -10,7 +10,7 @@ public partial class Masters_Payroll_frmshiftmaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -94,7 +94,7 @@ public partial class Masters_Payroll_frmshiftmaster : System.Web.UI.Page
             arr[41] = new SqlParameter("@USERID", Session["varuserid"]);
             arr[42] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
             arr[42].Direction = ParameterDirection.Output;
-            arr[43] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
+            arr[43] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
             arr[44] = new SqlParameter("@InTime_Relaxation", txtintimerelaxation.Text == "" ? "0" : txtintimerelaxation.Text);
 
             arr[45] = new SqlParameter("@ShiftMinIntime", TxtShiftMinIntime.Text == "" ? "00:00" : TxtShiftMinIntime.Text);

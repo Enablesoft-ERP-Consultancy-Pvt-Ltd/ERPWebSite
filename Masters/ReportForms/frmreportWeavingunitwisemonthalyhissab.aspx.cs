@@ -14,14 +14,14 @@ public partial class Masters_ReportForms_frmreportWeavingunitwisemonthalyhissab 
     public static string Export = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
 
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName                           
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                           
                            select UnitsId,UnitName from Units order by UnitName
                            SELECT PROCESS_NAME_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESSTYPE=1 ORDER BY PROCESS_NAME
                            SELECT ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM INNER JOIN CATEGORYSEPARATE CS ON ICM.CATEGORY_ID=CS.CATEGORYID AND CS.ID=0 order by CATEGORY_NAME
@@ -29,12 +29,12 @@ public partial class Masters_ReportForms_frmreportWeavingunitwisemonthalyhissab 
                            From Department D(Nolock)
                            JOIN DepartmentBranch DB(Nolock) ON DB.DepartmentID = D.DepartmentId 
                            JOIN BranchUser BU(Nolock) ON BU.BranchID = DB.BranchID And BU.UserID = " + Session["varuserId"] + @" 
-                           Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                           Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                            Order By D.DepartmentName
                            Select ID, BranchName 
                            From BRANCHMASTER BM(nolock) 
                            JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                           Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                           Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -61,7 +61,7 @@ public partial class Masters_ReportForms_frmreportWeavingunitwisemonthalyhissab 
                 From PROCESS_NAME_MASTER PNM(Nolock) 
                 JOIN UserRightsProcess URP(Nolock) ON URP.ProcessId = PNM.PROCESS_NAME_ID And URP.Userid = " + Session["varuserid"] + @" 
                 Where PNM.ProcessType = 1";
-            if (Convert.ToInt32(Session["varCompanyId"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
                 str = str + @" UNION Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME, 2 TypeID  
                         From PROCESS_NAME_MASTER PNM(Nolock) 
@@ -93,22 +93,22 @@ public partial class Masters_ReportForms_frmreportWeavingunitwisemonthalyhissab 
                     Export = "Y";
                     break;
             }
-            if (Convert.ToInt32(Session["varCompanyId"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 281 && (Convert.ToInt32(Session["varuserid"]) == 26 || Convert.ToInt32(Session["varuserid"]) == 89))
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 281 && (Convert.ToInt32(Session["varuserid"]) == 26 || Convert.ToInt32(Session["varuserid"]) == 89))
             {
                 RDPAYMENTSAVE.Visible = true;
                 BtnSave.Visible = true;
             }
-            else if (Convert.ToInt32(Session["varCompanyId"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 282 && (Convert.ToInt32(Session["varuserid"]) == 4 || Convert.ToInt32(Session["varuserid"]) == 5 || Convert.ToInt32(Session["varuserid"]) == 6))
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 282 && (Convert.ToInt32(Session["varuserid"]) == 4 || Convert.ToInt32(Session["varuserid"]) == 5 || Convert.ToInt32(Session["varuserid"]) == 6))
             {
                 RDPAYMENTSAVE.Visible = true;
                 BtnSave.Visible = true;
             }
-            else if (Convert.ToInt32(Session["varCompanyId"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 283 && (Convert.ToInt32(Session["varuserid"]) == 9 || Convert.ToInt32(Session["varuserid"]) == 10 || Convert.ToInt32(Session["varuserid"]) == 11))
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 283 && (Convert.ToInt32(Session["varuserid"]) == 9 || Convert.ToInt32(Session["varuserid"]) == 10 || Convert.ToInt32(Session["varuserid"]) == 11))
             {
                 RDPAYMENTSAVE.Visible = true;
                 BtnSave.Visible = true;
             }
-            else if (Convert.ToInt32(Session["varCompanyId"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 283 && (Convert.ToInt32(Session["varuserid"]) == 4 || Convert.ToInt32(Session["varuserid"]) == 7 || Convert.ToInt32(Session["varuserid"]) == 8 || Convert.ToInt32(Session["varuserid"]) == 9))
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 283 && (Convert.ToInt32(Session["varuserid"]) == 4 || Convert.ToInt32(Session["varuserid"]) == 7 || Convert.ToInt32(Session["varuserid"]) == 8 || Convert.ToInt32(Session["varuserid"]) == 9))
             {
                 RDPAYMENTSAVE.Visible = true;
                 BtnSave.Visible = true;
@@ -216,7 +216,7 @@ public partial class Masters_ReportForms_frmreportWeavingunitwisemonthalyhissab 
             }
         }
         string ReportType = "", ReportTypeNew = "";
-        if (Session["varcompanyid"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             ReportType = DDReportType.SelectedIndex > 0 ? DDReportType.SelectedValue : "0";
             ReportTypeNew = RDPAYMENTSAVE.Checked == true ? "1" : "0";
@@ -256,7 +256,7 @@ public partial class Masters_ReportForms_frmreportWeavingunitwisemonthalyhissab 
         {
             if (DDReportType.SelectedValue == "0")
             {
-                switch (Session["varcompanyid"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "16":
                         Session["rptFileName"] = "~\\Reports\\rptweaverwisepaymentfinalforchampo.rpt";
@@ -348,7 +348,7 @@ public partial class Masters_ReportForms_frmreportWeavingunitwisemonthalyhissab 
             cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
             cmd.Parameters.AddWithValue("@DATAOVERWRITEFLAG", ChkForSaveCurrentData.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.Add("@Msg", SqlDbType.NVarChar, 100);
             cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;
 

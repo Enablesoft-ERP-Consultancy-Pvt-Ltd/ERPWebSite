@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddCustomerCourier : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,7 +24,7 @@ public partial class Masters_Campany_AddCustomerCourier : System.Web.UI.Page
     protected void fill_grid()
     {
 
-        string strsql = "select couriername,AcNo,detailid from couriermaster Where MastercompanyId=" + Session["varCompanyId"] + " And  CustomerId=" + Request.QueryString["a"];
+        string strsql = "select couriername,AcNo,detailid from couriermaster Where MastercompanyId=" + Session["varMasterCompanyIDForERP"] + " And  CustomerId=" + Request.QueryString["a"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 
 
@@ -64,7 +64,7 @@ public partial class Masters_Campany_AddCustomerCourier : System.Web.UI.Page
             _arrPara[1].Value = txtcourier.Text.ToUpper();
             _arrPara[2].Value = txtacno.Text;
             _arrPara[3].Value = Session["varuserid"].ToString();
-            _arrPara[4].Value = Session["varCompanyId"].ToString();
+            _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[5].Direction = ParameterDirection.InputOutput;
 
             if (btnsave.Text == "Update")

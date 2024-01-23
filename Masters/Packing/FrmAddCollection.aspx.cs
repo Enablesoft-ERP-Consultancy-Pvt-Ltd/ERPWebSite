@@ -13,14 +13,14 @@ public partial class Masters_Campany_FrmAddCollection : System.Web.UI.Page
     public static int Collectionid = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddcustomercode, "SELECT customerid,Customercode+' '+CompanyName from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by customercode", true, "--SELECT--");
-            UtilityModule.ConditonalChkBoxListFill(ref chlDesign, "Select designId,designName from design where MasterCompanyId=" + Session["varCompanyId"] + " order by designName");
+            UtilityModule.ConditionalComboFill(ref ddcustomercode, "SELECT customerid,Customercode+' '+CompanyName from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by customercode", true, "--SELECT--");
+            UtilityModule.ConditonalChkBoxListFill(ref chlDesign, "Select designId,designName from design where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by designName");
         }
     }
     protected void refresh_form()
@@ -53,7 +53,7 @@ public partial class Masters_Campany_FrmAddCollection : System.Web.UI.Page
             _arrPara[0].Value = Collectionid;
             _arrPara[1].Value = ddcustomercode.SelectedValue;
             _arrPara[2].Value = txttypeofcollection.Text.ToUpper();
-            //string str = "Select designId,designName from design where MasterCompanyId=" + Session["varCompanyId"] + "";
+            //string str = "Select designId,designName from design where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
             //SqlHelper.ExecuteNonQuery(con, CommandType.Text, str);
             int n = chlDesign.Items.Count;
@@ -67,18 +67,18 @@ public partial class Masters_Campany_FrmAddCollection : System.Web.UI.Page
             }
             _arrPara[3].Value = chlDesign.Items.Count;
             _arrPara[4].Value = Session["varuserid"].ToString();
-            _arrPara[5].Value = Session["varcompanyid"].ToString();
+            _arrPara[5].Value = Session["varMasterCompanyIDForERP"].ToString();
             Collectionid = Convert.ToInt16(SqlHelper.ExecuteScalar(Tran, CommandType.Text, "select isnull(Max(CollectionId),0)+1  from collection"));
             //Delete existing record
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "delete from collection where collectionname='" + _arrPara[2].Value + "' and customerid=" + _arrPara[1].Value + "");
-            string str1 = "Insert into collection (Collectionid,Customerid,CollectionName,Designid,userid,mastercompanyid)  Select Distinct  " + Collectionid + "," + ddcustomercode.SelectedValue + ",'" + txttypeofcollection.Text + "',*," + Session["varuserid"] + "," + Session["varCompanyId"] + " from Split('" + str + @"',',')";
+            string str1 = "Insert into collection (Collectionid,Customerid,CollectionName,Designid,userid,mastercompanyid)  Select Distinct  " + Collectionid + "," + ddcustomercode.SelectedValue + ",'" + txttypeofcollection.Text + "',*," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + " from Split('" + str + @"',',')";
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str1);
 
             Tran.Commit();
             lblMessage.Visible = true;
             lblMessage.Text = "Data Saved Successfully";
             refresh_form();
-            UtilityModule.ConditonalChkBoxListFill(ref chlDesign, "Select designId,designName from design where MasterCompanyId=" + Session["varCompanyId"] + " order by designName");
+            UtilityModule.ConditonalChkBoxListFill(ref chlDesign, "Select designId,designName from design where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by designName");
         }
         catch (Exception ex)
         {

@@ -12,14 +12,14 @@ public partial class Masters_Order_OrderStatus : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = "SELECT DISTINCT CATEGORY_ID,CATEGORY_NAME From item_category_master Where MasterCompanyId=" + Session["varCompanyId"] + @"
-                          select CustomerId,CustomerCode+' / '+CompanyName as Customer from customerinfo Where mastercompanyid=" + Session["varCompanyId"] + " order by customer";
+            string str = "SELECT DISTINCT CATEGORY_ID,CATEGORY_NAME From item_category_master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          select CustomerId,CustomerCode+' / '+CompanyName as Customer from customerinfo Where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by customer";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCatagory, ds, 0, true, "-ALL-");
             UtilityModule.ConditionalComboFillWithDS(ref DDbuyer, ds, 1, true, "-Select-");
@@ -58,7 +58,7 @@ public partial class Masters_Order_OrderStatus : System.Web.UI.Page
             str = @"select distinct LocalOrder+'/'+ CustomerOrderNo as OrderNo,om.orderid,om.Remarks as Remark 
                    From OrderMaster om  inner join orderdetail od On om.orderid=od.orderid inner join 
                    V_FinishedItemDetail v On od.Item_Finished_Id= v.Item_Finished_Id 
-                   Where  om.Status=" + DDStatus.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"] + " " + qry + " order by OM.orderid";
+                   Where  om.Status=" + DDStatus.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " " + qry + " order by OM.orderid";
         }
         else if (ddordertype.SelectedValue == "1")
         {
@@ -72,7 +72,7 @@ public partial class Masters_Order_OrderStatus : System.Web.UI.Page
             str = @"Select distinct 'I.No '+IndentNo+'  '+LocalOrder+'/'+ CustomerOrderNo as OrderNo,im.indentid as orderid,om.Remarks as Remark 
                   From OrderMaster om  inner join indentdetail od On om.orderid=od.orderid inner join 
                   Indentmaster im On od.indentid=im.indentid inner join v_Order_category v On v.orderid=od.orderid
-                  Where  im.Status='" + DDStatus.SelectedItem.Text + "' and MasterCompanyId=" + Session["varCompanyId"] + " " + qry + " order by orderid";
+                  Where  im.Status='" + DDStatus.SelectedItem.Text + "' and MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " " + qry + " order by orderid";
         }
         else if (ddordertype.SelectedValue == "3")
         {

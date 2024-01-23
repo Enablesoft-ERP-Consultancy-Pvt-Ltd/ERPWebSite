@@ -11,7 +11,7 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }   
@@ -23,7 +23,7 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
             {
                 string str = @"Select HS_CODE,MIN_ODRDERQTY,PRICE,INNER_PACKING,MASTER_PACKING,MASTER_PKG_SIZE,MASTER_PKG_SIZE_1,MASTER_PKG_SIZE_2,DESCRIPTION,VOLUME,DRAWBACKRATE,
             LOAD_20,LOAD_40,LOAD_40HQ,MATERIALREMARKS,FINISHREMARKS,PACKINGREMARKS,ISNULL(Iron,0) IRONWT,ISNULL(Glass,0) WOODWT,ISNULL(NetWeight,0) NETWT FROM ITEM_PARAMETER_OTHER,MAIN_ITEM_IMAGE
-            WHERE finishedid=Item_Finished_ID AND Item_Finished_ID =" + Request.QueryString["SrNo"] + " And MAIN_ITEM_IMAGE.MasterCompanyid=" + Session["varCompanyId"];
+            WHERE finishedid=Item_Finished_ID AND Item_Finished_ID =" + Request.QueryString["SrNo"] + " And MAIN_ITEM_IMAGE.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
                 DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
@@ -90,7 +90,7 @@ public partial class Masters_Carpet_DefineItemCodeOther : System.Web.UI.Page
             _param[18] = new SqlParameter("@IronWt", TxtIronWt.Text);
             _param[19] = new SqlParameter("@WoodWt", TxtWoodWt.Text);
             _param[20] = new SqlParameter("@NetWt", TxtNetWt.Text);
-            _param[21] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            _param[21] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "Save_Parameter_Other", _param);
             LblMsg.Text = "Record(s) has been saved successfully!";

@@ -21,7 +21,7 @@ public partial class Masters_Campany_ItemName : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -39,7 +39,7 @@ public partial class Masters_Campany_ItemName : CustomPage
             {
                 tr2.Visible = false;
             }
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 20:
                     TDMasterQualityType.Visible = true;
@@ -99,7 +99,7 @@ public partial class Masters_Campany_ItemName : CustomPage
         try
         {
             String[] ParameterList = new String[8];
-            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             lblcategoryname.Text = ParameterList[5];
             lblitemname.Text = ParameterList[6];
         }
@@ -127,7 +127,7 @@ public partial class Masters_Campany_ItemName : CustomPage
         //UtilityModule.ConditionalComboFill(ref ddUnit, "Select UnitTypeID,UnitType from UNIT_TYPE_MASTER Order by UnitTypeID", true, "--Select--");
         #endregion
         string str = @"Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER IM,UserRights_Category UC 
-                    where IM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + " And IM.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                    where IM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                     Order by Category_Name
                     Select UnitTypeID,UnitType from UNIT_TYPE_MASTER  Order by UnitTypeID 
                     select ID,ItemType from ItemType";
@@ -145,9 +145,9 @@ public partial class Masters_Campany_ItemName : CustomPage
         }
         UtilityModule.ConditionalComboFillWithDS(ref ddlItemType, ds, 2, true, "--Select--");
 
-        if (Session["varCompanyId"].ToString() == "20")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "20")
         {
-            string str2 = @"Select MasterQualityTypeId,MasterQualityTypeName from MASTERQUALITYTYPE where MasterCompanyId=" + Session["varCompanyId"] + @" Order by MasterQualityTypeName";
+            string str2 = @"Select MasterQualityTypeId,MasterQualityTypeName from MASTERQUALITYTYPE where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by MasterQualityTypeName";
             DataSet ds2 = SqlHelper.ExecuteDataset(str2);
             UtilityModule.ConditionalComboFillWithDS(ref DDMasterQualityType, ds2, 0, true, "--SELECT--");
         }
@@ -172,7 +172,7 @@ public partial class Masters_Campany_ItemName : CustomPage
             string sqlstr = @" Select CATEGORY_ID, UnitTypeID, ITEM_NAME, ITEM_CODE, FlagFixWeight, ItemType, isnull(KATIWITHEXPORTSIZE,0) KATIWITHEXPORTSIZE,
             IsNull(MasterQualityTypeId, 0) MasterQualityTypeId, CUSHIONTYPEITEM, pretreament, dyechem, PassSize 
             From ITEM_MASTER(Nolock) 
-            Where Item_Id = " + gdItem.SelectedValue + " And MasterCompanyid = " + Session["varCompanyId"];
+            Where Item_Id = " + gdItem.SelectedValue + " And MasterCompanyid = " + Session["varMasterCompanyIDForERP"];
 
             ViewState["ItemId"] = gdItem.SelectedValue;
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sqlstr);
@@ -278,7 +278,7 @@ public partial class Masters_Campany_ItemName : CustomPage
                     _arrPara[3].Value = txtItemName.Text.ToUpper();
                     _arrPara[4].Value = txtItemCode.Text.ToUpper();
                     _arrPara[5].Value = Session["varuserid"].ToString();
-                    _arrPara[6].Value = Session["varCompanyId"].ToString();
+                    _arrPara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara[7].Value = ChkFlagFixWeight.Checked == true ? 1 : 0;
                     _arrPara[8].Value = variable.Carpetcompany == "1" ? ddlItemType.SelectedValue : "-1";
                     _arrPara[9].Value = TDkatiwithexportsize.Visible == false ? "0" : (chkkatiwithexportsize.Checked == true ? "1" : "0");
@@ -367,7 +367,7 @@ public partial class Masters_Campany_ItemName : CustomPage
     {
         //int id = 0;
         DataSet ds = null;
-        string strsql = @"Select * from ITEM_MASTER Where Category_Id=" + ddCategory.SelectedValue + " And Item_Name='" + txtItemName.Text + "' and ITEM_ID !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from ITEM_MASTER Where Category_Id=" + ddCategory.SelectedValue + " And Item_Name='" + txtItemName.Text + "' and ITEM_ID !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         ds = SqlHelper.ExecuteDataset(strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -440,7 +440,7 @@ public partial class Masters_Campany_ItemName : CustomPage
             _array[0] = new SqlParameter("@ITEM_ID", ViewState["ItemId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteITEM_MASTER", _array);
             Tran.Commit();
@@ -483,7 +483,7 @@ public partial class Masters_Campany_ItemName : CustomPage
                 e.Row.Cells[5].Style.Add("display", "block");
                 gdItem.HeaderRow.Cells[5].Style.Add("display", "block");
 
-                if (Session["VarCompanyId"].ToString() == "20")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "20")
                 {
                     e.Row.Cells[6].Visible = true;
                 }

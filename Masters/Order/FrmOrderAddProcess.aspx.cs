@@ -11,7 +11,7 @@ public partial class Masters_Order_FrmOrderAddProcess : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,8 +21,8 @@ public partial class Masters_Order_FrmOrderAddProcess : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(Nolock) 
                     JOIN Company_Authentication CA(Nolock) ON CI.CompanyId = CA.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
-                    SELECT Customerid, CustomerCode From CustomerInfo(Nolock) Where Customercode <> '' And MasterCompanyId = " + Session["varCompanyId"] + " Order By CustomerCode";
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
+                    SELECT Customerid, CustomerCode From CustomerInfo(Nolock) Where Customercode <> '' And MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode";
 
             ds = SqlHelper.ExecuteDataset(str);
 

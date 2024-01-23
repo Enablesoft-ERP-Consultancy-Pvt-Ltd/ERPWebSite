@@ -14,8 +14,8 @@ public partial class Masters_Carpet_FrmMinWagesRatePerMin : System.Web.UI.Page
     static bool VarBool;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -69,7 +69,7 @@ public partial class Masters_Carpet_FrmMinWagesRatePerMin : System.Web.UI.Page
             _arrpara[2] = new SqlParameter("@EffectiveDate", txtEffectiveDate.Text);
             _arrpara[3] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 200);
             _arrpara[3].Direction = ParameterDirection.Output;
-            _arrpara[4] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _arrpara[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _arrpara[5] = new SqlParameter("@UserId", Session["varuserid"]);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_SaveMinWagesRatePerMin]", _arrpara);

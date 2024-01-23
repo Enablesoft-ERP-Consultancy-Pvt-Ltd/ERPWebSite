@@ -13,7 +13,7 @@ public partial class Masters_Order_FrmOrderChecklist : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,7 +23,7 @@ public partial class Masters_Order_FrmOrderChecklist : System.Web.UI.Page
             Session["order_id"] = 0;
             TxtCustOrderNo.Enabled = true;
 
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -31,7 +31,7 @@ public partial class Masters_Order_FrmOrderChecklist : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo where Customercode<>'' And MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo where Customercode<>'' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
         }
     }
     protected void TxtCustOrderNo_TextChanged(object sender, EventArgs e)
@@ -279,7 +279,7 @@ public partial class Masters_Order_FrmOrderChecklist : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

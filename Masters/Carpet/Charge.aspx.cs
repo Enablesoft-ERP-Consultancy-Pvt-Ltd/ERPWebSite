@@ -12,7 +12,7 @@ public partial class Charge : System.Web.UI.Page
     
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -43,7 +43,7 @@ public partial class Charge : System.Web.UI.Page
             _arrPara[2].Value = txtpercentage.Text;
             _arrPara[3].Direction = ParameterDirection.Output;
             _arrPara[4].Value = Session["varuserid"].ToString();
-            _arrPara[5].Value = Session["varCompanyId"].ToString();
+            _arrPara[5].Value = Session["varMasterCompanyIDForERP"].ToString();
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_ExpenseName", _arrPara);
             int ID = Convert.ToInt32(_arrPara[3].Value);
             if (ID == 0)
@@ -95,7 +95,7 @@ public partial class Charge : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select ExpID SrNo,ChargeName,Percentage  from ExpenseName Where MasterCompanyid=" + Session["varCompanyId"];
+            string strsql = "select ExpID SrNo,ChargeName,Percentage  from ExpenseName Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }

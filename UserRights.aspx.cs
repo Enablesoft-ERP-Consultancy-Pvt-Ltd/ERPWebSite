@@ -11,28 +11,28 @@ public partial class UserRigets : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDlCompanyName, "Select CompanyId,CompanyName from Companyinfo where MasterCompanyId=" + Session["varCompanyId"] + "", true, "----Select Company----");
+            UtilityModule.ConditionalComboFill(ref DDlCompanyName, "Select CompanyId,CompanyName from Companyinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "----Select Company----");
             if (DDlCompanyName.Items.Count > 0)
             {
                 DDlCompanyName.SelectedIndex = 1;
                 CompanySelectedChange();
             }
-            UtilityModule.ConditonalChkBoxListFill(ref ChLProcess, "Select Process_Name_id,Process_Name from Process_Name_Master where MasterCompanyId=" + Session["varCompanyId"] + " order by Process_Name");
-            UtilityModule.NewChkBoxListFill(ref ChlCategory, "select Category_ID,Category_Name From ITEM_CATEGORY_Master where MasterCompanyId=" + Session["varCompanyId"] + "  Order by  Category_Name");
-            UtilityModule.NewChkBoxListFill(ref CHKCompany, "select CompanyId,CompanyName From CompanyInfo Where MasterCompanyId=" + Session["varCompanyId"] + "  Order by  CompanyName");
-            UtilityModule.NewChkBoxListFill(ref ChkGodown, "select GodownId,GodownName from GodownMaster Where MasterCompanyId=" + Session["varCompanyId"] + "  Order by  GodownName");
-            UtilityModule.NewChkBoxListFill(ref ChkForBranch, "Select ID, BranchName From BRANCHMASTER(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + " Order By BranchName ");
-            UtilityModule.NewChkBoxListFill(ref ChkForCustomerCode, "Select CustomerID,CONCAT(CustomerCode,'(',customername,')') as CustomerCode  From CustomerInfo(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + " and isnull(CustomerCode,'')<>'' Order By CustomerCode");
+            UtilityModule.ConditonalChkBoxListFill(ref ChLProcess, "Select Process_Name_id,Process_Name from Process_Name_Master where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Process_Name");
+            UtilityModule.NewChkBoxListFill(ref ChlCategory, "select Category_ID,Category_Name From ITEM_CATEGORY_Master where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order by  Category_Name");
+            UtilityModule.NewChkBoxListFill(ref CHKCompany, "select CompanyId,CompanyName From CompanyInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order by  CompanyName");
+            UtilityModule.NewChkBoxListFill(ref ChkGodown, "select GodownId,GodownName from GodownMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order by  GodownName");
+            UtilityModule.NewChkBoxListFill(ref ChkForBranch, "Select ID, BranchName From BRANCHMASTER(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By BranchName ");
+            UtilityModule.NewChkBoxListFill(ref ChkForCustomerCode, "Select CustomerID,CONCAT(CustomerCode,'(',customername,')') as CustomerCode  From CustomerInfo(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " and isnull(CustomerCode,'')<>'' Order By CustomerCode");
             UtilityModule.NewChkBoxListFill(ref ChkForEmpVendor, @"Select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname 
             From empinfo EI(Nolock) 
             join Department DM(Nolock) on EI.Departmentid=DM.Departmentid 
-            Where EI.MasterCompanyId = " + Session["varCompanyId"] + @" and EI.blacklist = 0  AND DM.Departmentname = 'PURCHASE' 
+            Where EI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" and EI.blacklist = 0  AND DM.Departmentname = 'PURCHASE' 
             Group by EI.empid,EI.empname,EI.EmpCode   Order By EI.empname ");
 
             switch (Session["varcompanyNo"].ToString())
@@ -40,7 +40,7 @@ public partial class UserRigets : System.Web.UI.Page
                 case "8"://ANISA
                 case "14":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "7":
                     TRChLProcess.Visible = true;
@@ -50,41 +50,41 @@ public partial class UserRigets : System.Web.UI.Page
                     break;
                 case "38":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "39":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "40":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "41":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "42":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "29":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "20":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 case "37":
                     tdunits.Visible = true;
-                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                    UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     break;
                 default:
                     if (variable.VarFinishingNewModuleWise == "1")
                     {
                         tdunits.Visible = true;
-                        UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varCompanyId"] + "");
+                        UtilityModule.NewChkBoxListFill(ref chkunits, "select  UnitsId,UnitName from Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     }
                     break;
             }
@@ -99,8 +99,8 @@ public partial class UserRigets : System.Web.UI.Page
     }
     private void CompanySelectedChange()
     {
-        string str = "select UserId,UserName+' -- '+LoginName from NewUserDetail where CompanyId=" + Session["varCompanyId"] + "";
-        if (Session["varCompanyId"].ToString() == "21")
+        string str = "select UserId,UserName+' -- '+LoginName from NewUserDetail where CompanyId=" + Session["varMasterCompanyIDForERP"] + "";
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             str = str + " and USERType not in(1,6)";
         }
@@ -257,7 +257,7 @@ public partial class UserRigets : System.Web.UI.Page
     }
     protected void CheckedCheckBoxChkCompany()
     {
-        string str = "select Distinct CompanyId from [Company_Authentication] Where UserId=" + DDUserName.SelectedValue + " And  MasterCompanyId=" + Session["varCompanyId"];
+        string str = "select Distinct CompanyId from [Company_Authentication] Where UserId=" + DDUserName.SelectedValue + " And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -420,7 +420,7 @@ public partial class UserRigets : System.Web.UI.Page
                 root.Text = ParentNode[loop, 1];
                 root.Value = ParentNode[loop, 0];
                 string Sqlst = "select MenuId,DisplayName from FormName where ParentId=" + ParentNode[loop, 0];
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     if (Session["usertype"].ToString() == "6")
                     {
@@ -434,7 +434,7 @@ public partial class UserRigets : System.Web.UI.Page
                         //Sqlst = Sqlst + " And MenuID <> 92";
                     }
                 }
-                else if (Session["varCompanyId"].ToString() == "44")
+                else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     //Sqlst = Sqlst + " And MenuID not in(48,49)";
                     //Sqlst = Sqlst + " And MenuID = 92";
@@ -447,14 +447,14 @@ public partial class UserRigets : System.Web.UI.Page
                 {
                     
                     TreeNode child = new TreeNode();
-                    //if (Session["varCompanyId"].ToString()!="21" && ds1.Tables[0].Rows[a][1].ToString() != "PACKING")
+                    //if (Session["varMasterCompanyIDForERP"].ToString()!="21" && ds1.Tables[0].Rows[a][1].ToString() != "PACKING")
                     //{
                     child.Text = ds1.Tables[0].Rows[a][1].ToString();
                     child.Value = ds1.Tables[0].Rows[a][0].ToString();
                     //}
                     string Sqlst1 = "select MenuId,DisplayName from FormName where ParentId=" + ds1.Tables[0].Rows[a][0].ToString();
 
-                    if (Session["varCompanyId"].ToString() == "21")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     {
                         if (Session["usertype"].ToString() == "6")
                         {                           
@@ -516,15 +516,15 @@ public partial class UserRigets : System.Web.UI.Page
     private void save_user_rigths()
     {
         string st = menudetail();
-        if (Convert.ToInt32(Session["varCompanyId"]) == 16 && Convert.ToInt32(DDUserName.SelectedValue) == 57)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 && Convert.ToInt32(DDUserName.SelectedValue) == 57)
         {
             st = st + ",163,164,165,166,191,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,254,256,257,258,270,274,278,295";
         }
-        if (Convert.ToInt32(Session["varCompanyId"]) == 16 && Convert.ToInt32(DDUserName.SelectedValue) == 85)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 && Convert.ToInt32(DDUserName.SelectedValue) == 85)
         {
             st = st + ",163,164,165,166,191,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,248,249,250,251,252,254,256,258,270,274,278,295";
         }
-        if (Convert.ToInt32(Session["varCompanyId"]) == 16 && Convert.ToInt32(DDUserName.SelectedValue) == 129)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 && Convert.ToInt32(DDUserName.SelectedValue) == 129)
         {
             st = st + ",191,235,239,240,252,254,270";
         }
@@ -532,8 +532,8 @@ public partial class UserRigets : System.Web.UI.Page
         try
         {
             con.Open();
-            string q = @"Delete from UserRights where UserId= " + DDUserName.SelectedValue + " and CompanyId=" + Session["varCompanyId"] + @" ; 
-                        insert into UserRights select distinct " + DDUserName.SelectedValue + "," + Session["varCompanyId"] + ",*," + Session["varuserid"] + " from Split('" + st + "',',')";
+            string q = @"Delete from UserRights where UserId= " + DDUserName.SelectedValue + " and CompanyId=" + Session["varMasterCompanyIDForERP"] + @" ; 
+                        insert into UserRights select distinct " + DDUserName.SelectedValue + "," + Session["varMasterCompanyIDForERP"] + ",*," + Session["varuserid"] + " from Split('" + st + "',',')";
             SqlHelper.ExecuteNonQuery(con, CommandType.Text, q);
             int n = ChLProcess.Items.Count;
             string str = null;
@@ -608,23 +608,23 @@ public partial class UserRigets : System.Web.UI.Page
                 }
             }
 
-            string Str = "Delete From UserRightsProcess where UserId=" + DDUserName.SelectedValue + " And CompanyId=" + Session["varCompanyId"] + @"
-                          Delete From UserRights_Category where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
-                          Delete From Company_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
-                          Delete From Units_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
-                          Delete From Godown_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
-                          Delete From BranchUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
-                          Delete From CustomerUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
-                          Delete From VendorUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
+            string Str = "Delete From UserRightsProcess where UserId=" + DDUserName.SelectedValue + " And CompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          Delete From UserRights_Category where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          Delete From Company_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          Delete From Units_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          Delete From Godown_Authentication where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          Delete From BranchUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          Delete From CustomerUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                          Delete From VendorUser where UserId=" + DDUserName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
 
-                          Insert into UserRightsProcess select distinct " + DDUserName.SelectedValue + "," + Session["varCompanyId"] + ",*," + Session["varuserid"] + " from Split('" + str + @"',',')
-                          Insert into UserRights_Category select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str1 + @"',',')
-                          Insert into Company_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str2 + @"',',')
-                          Insert into Units_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str3 + @"',',')
-                          Insert into Godown_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str4 + @"',',')
-                          Insert into BranchUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str5 + @"',',')
-                          Insert into CustomerUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str6 + @"',',')
-                          Insert into VendorUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varCompanyId"] + " from Split('" + str7 + @"',',')";
+                          Insert into UserRightsProcess select distinct " + DDUserName.SelectedValue + "," + Session["varMasterCompanyIDForERP"] + ",*," + Session["varuserid"] + " from Split('" + str + @"',',')
+                          Insert into UserRights_Category select distinct " + DDUserName.SelectedValue + ",*," + Session["varMasterCompanyIDForERP"] + " from Split('" + str1 + @"',',')
+                          Insert into Company_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varMasterCompanyIDForERP"] + " from Split('" + str2 + @"',',')
+                          Insert into Units_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varMasterCompanyIDForERP"] + " from Split('" + str3 + @"',',')
+                          Insert into Godown_Authentication select distinct " + DDUserName.SelectedValue + ",*," + Session["varMasterCompanyIDForERP"] + " from Split('" + str4 + @"',',')
+                          Insert into BranchUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varMasterCompanyIDForERP"] + " from Split('" + str5 + @"',',')
+                          Insert into CustomerUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varMasterCompanyIDForERP"] + " from Split('" + str6 + @"',',')
+                          Insert into VendorUser Select distinct " + DDUserName.SelectedValue + ",*," + Session["varMasterCompanyIDForERP"] + " from Split('" + str7 + @"',',')";
 
 
             SqlHelper.ExecuteNonQuery(con, CommandType.Text, Str);
@@ -890,7 +890,7 @@ public partial class UserRigets : System.Web.UI.Page
     protected void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //LblCatg.Text = ParameterList[5];
     }
 }

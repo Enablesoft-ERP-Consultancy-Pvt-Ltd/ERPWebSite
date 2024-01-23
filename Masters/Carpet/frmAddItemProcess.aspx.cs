@@ -11,15 +11,15 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
-            lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
-            switch (Session["varcompanyid"].ToString())
+            lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     TDquality.Visible = false;
@@ -40,7 +40,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
     protected void Fillselectprocess()
     {
         string str = @"select PNM.process_Name_id,PNM.Process_Name from Process_name_Master PNM,Item_Process IP
-                      Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varcompanyid"] + "";
+                      Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (DDQuality.SelectedIndex > 0)
         {
             str = str + " and IP.QualityId=" + DDQuality.SelectedValue;
@@ -112,7 +112,7 @@ public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 
             array[0].Value = Request.QueryString["a"];
             array[1].Value = Session["varuserid"];
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
 
             string str = "";
             string strnew = "";

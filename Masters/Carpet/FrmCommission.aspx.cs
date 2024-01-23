@@ -11,13 +11,13 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            UtilityModule.ConditionalComboFill(ref ddCategoryName, "Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order by Category_Name", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddCategoryName, "Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Category_Name", true, "--SELECT--");
             ddCategoryName.Focus();
             if (ddCategoryName.Items.Count > 0)
             {
@@ -31,7 +31,7 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
         lblqualityname.Text = ParameterList[0];
@@ -45,7 +45,7 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
     {
         Quality.Visible = false;
         Design.Visible = false;
-        UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By ITEM_NAME", true, "SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ITEM_NAME", true, "SELECT--");
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from ITEM_CATEGORY_PARAMETERS Where CATEGORY_ID=" + ddCategoryName.SelectedValue + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -58,7 +58,7 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
                         break;
                     case "2":
                         Design.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varCompanyId"] + " Order By DESIGNNAME", true, "--ALL--");
+                        UtilityModule.ConditionalComboFill(ref ddDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By DESIGNNAME", true, "--ALL--");
                         break;
                 }
             }
@@ -66,7 +66,7 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
     }
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddQuality, "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QUALITYNAME", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddQuality, "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QUALITYNAME", true, "--SELECT--");
         FillGrid();
     }
     protected void ddQuality_SelectedIndexChanged(object sender, EventArgs e)
@@ -97,7 +97,7 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
             _arrPara[4].Value = Design.Visible == false ? "0" : ddDesign.SelectedIndex == 0 ? "-1" : ddDesign.SelectedValue;
             _arrPara[5].Value = TxtCommission.Text;
             _arrPara[6].Value = Session["varuserid"].ToString();
-            _arrPara[7].Value = Session["varCompanyId"].ToString();
+            _arrPara[7].Value = Session["varMasterCompanyIDForERP"].ToString();
             con.Open();
             SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Commission", _arrPara);
             LblErrorMessage.Text = "Save Details.....";
@@ -134,7 +134,7 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
         DG.DataSource = "";
         STR = @"Select ID,CATEGORY_NAME Category,ITEM_NAME ItemName,QualityName Quality,Case When C.DesignId=-1 Then 'All' Else Case When C.DesignId=0 Then '' Else designName End End Design,Commission 
                 From Commission C INNER JOIN ITEM_CATEGORY_MASTER ICM ON C.CategoryID=ICM.CATEGORY_ID INNER JOIN ITEM_MASTER IM ON C.ItemID=IM.ITEM_ID INNER JOIN 
-                Quality Q ON C.QualityId=Q.QualityId Left Outer Join Design D ON C.DesignId=D.DesignId Where C.CategoryID=" + ddCategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
+                Quality Q ON C.QualityId=Q.QualityId Left Outer Join Design D ON C.DesignId=D.DesignId Where C.CategoryID=" + ddCategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ddItemName.SelectedIndex > 0)
         {
             STR = STR + @" AND C.ItemID=" + ddItemName.SelectedValue + "";
@@ -163,7 +163,7 @@ public partial class Masters_Carpet_FrmCommission : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

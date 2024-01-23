@@ -11,16 +11,16 @@ public partial class Masters_Order_frmppm : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select CI.CompanyId,CI.CompanyName from CompanyInfo CI inner join Company_Authentication CA on Ci.CompanyId=CA.CompanyId
-                  WHere CI.MasterCompanyid=" + Session["varcompanyid"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName
-                  select CustomerId,customercode+'  '+companyname from customerinfo where MasterCompanyid=" + Session["varcompanyid"] + @"  order by CustomerCode
-                  select PROCESS_NAME_ID,PROCESS_NAME From Process_Name_Master where MasterCompanyid=" + Session["varcompanyId"] + "  order by PROCESS_NAME";
+                  WHere CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName
+                  select CustomerId,customercode+'  '+companyname from customerinfo where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"  order by CustomerCode
+                  select PROCESS_NAME_ID,PROCESS_NAME From Process_Name_Master where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  order by PROCESS_NAME";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -113,7 +113,7 @@ public partial class Masters_Order_frmppm : System.Web.UI.Page
                 param[1] = new SqlParameter("@CompanyId", DDCompanyName.SelectedValue);
                 param[2] = new SqlParameter("@orderid", DDOrderNo.SelectedValue);
                 param[3] = new SqlParameter("@userid", Session["varuserid"]);
-                param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+                param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[5] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
                 param[6] = new SqlParameter("@Requirements", txtrequirements.Text);
                 param[7] = new SqlParameter("@StartDate", txtstartdate.Text);
@@ -244,7 +244,7 @@ public partial class Masters_Order_frmppm : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@Detailid", lbldetailid.Text);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Process_name", lblprocess.Text);
@@ -302,7 +302,7 @@ public partial class Masters_Order_frmppm : System.Web.UI.Page
             param[4] = new SqlParameter("@ncpdetails", txtncpdetailsedit.Text);
             param[5] = new SqlParameter("@comments", txtcommentsedit.Text);
             param[6] = new SqlParameter("@userid", Session["varuserid"]);
-            param[7] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[7] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[8] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[8].Direction = ParameterDirection.Output;
             param[9] = new SqlParameter("@Fincomdt", txtfincomdtgrid.Text == "" ? DBNull.Value : (object)txtfincomdtgrid.Text);
@@ -330,7 +330,7 @@ public partial class Masters_Order_frmppm : System.Web.UI.Page
         //{
         //    for (int i = 0; i < GVPPMDETAIL.Columns.Count; i++)
         //    {
-        //        if (Session["varcompanyId"].ToString() == "16")
+        //        if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         //        {
         //            if (GVPPMDETAIL.Columns[i].HeaderText.ToUpper() == "REQUIREMENTS" || GVPPMDETAIL.Columns[i].HeaderText.ToUpper() == "NCP DETAILS IF ANY" || GVPPMDETAIL.Columns[i].HeaderText.ToUpper() == "COMMENTS")
         //            {

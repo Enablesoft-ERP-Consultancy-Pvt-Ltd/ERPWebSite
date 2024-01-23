@@ -46,7 +46,7 @@
             {
                 ChkWeavingReport.Checked = false;
                 Trproductiontype.Visible = true;
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     TRChkWeavingReport.Visible = true;
                 }
@@ -56,7 +56,7 @@
                 ChkWeavingReport.Checked = false;
                 TDchksummary.Visible = true;
                 Trproductiontype.Visible = true;
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     TRChkWeavingReport.Visible = true;
                 }
@@ -67,7 +67,7 @@
                 Tdtodate.Visible = false;
                 Tdtodatelabel.Visible = false;
                 Tdselectdate.Visible = false;
-                if (Session["varcompanyId"].ToString() == "27")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "27")
                 {
                     TRchkforshadewise.Visible = true;
                 }

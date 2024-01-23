@@ -18,7 +18,7 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["VarcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
            
@@ -69,7 +69,7 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
             cmd.Parameters.AddWithValue("@CompanyId", Session["CurrentWorkingCompanyID"]);
             cmd.Parameters.AddWithValue("@Lotno", txtLotno.Text);           
             cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked==true ? "1" : "0");
             cmd.Parameters.AddWithValue("FromDate", TxtFromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
@@ -116,7 +116,7 @@ public partial class Masters_ReportForms_FrmReportStockLotNoNew : System.Web.UI.
             cmd.Parameters.AddWithValue("@Lotno", txtLotno.Text);
             cmd.Parameters.AddWithValue("@TagNo", txtTagNo.Text);
             cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked == true ? "1" : "0");
             cmd.Parameters.AddWithValue("FromDate", TxtFromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);

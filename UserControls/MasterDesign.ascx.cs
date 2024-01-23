@@ -13,7 +13,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
         try
         {
             con.Open();
-            string design = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id  and ps.user_id='1' and  ps.parameter_id='2' And Ps.Company_Id=" + Session["varCompanyId"] + "").ToString();
+            string design = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id  and ps.user_id='1' and  ps.parameter_id='2' And Ps.Company_Id=" + Session["varMasterCompanyIDForERP"] + "").ToString();
             lbldesignname.Text = design;
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
         try
         {
             string strsql = @"select DesignId as Sr_No,DesignName  as Designname,isnull(DesignCode,'') as DesignCode, case when Enable_Disable=1 Then 'Disable' Else 'Enable' ENd as Status,Enable_Disable
-            from Design where MasterCompanyId=" + Session["varCompanyId"];
+            from Design where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (txtsearchdesign.Text != "")
             {
                 strsql = strsql + " and Designname like '" + txtsearchdesign.Text + "%'";
@@ -100,7 +100,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
         ViewState["id"] = id;
         txtid.Text = "0";
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select designId ,DesignName,isnull(DesignCode,'') as DesignCode from Design where DesignId=" + id + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select designId ,DesignName,isnull(DesignCode,'') as DesignCode from Design where DesignId=" + id + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         try
         {
 
@@ -172,7 +172,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Design Where designName='" + txtDesign.Text + "' and DesignId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Design Where designName='" + txtDesign.Text + "' and DesignId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -191,7 +191,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Design Where designCode='" + txtDesignCode.Text + "' and DesignId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Design Where designCode='" + txtDesignCode.Text + "' and DesignId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -212,7 +212,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
         {
             CheckDuplicateData();
 
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 if (txtDesignCode.Text != "")
                 {
@@ -242,7 +242,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
                     _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                     _arrPara[1].Value = txtDesign.Text.ToUpper();
                     _arrPara[2].Value = Session["varuserid"].ToString();
-                    _arrPara[3].Value = Session["varCompanyId"].ToString();
+                    _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara[4].Value = txtDesignCode.Text.ToUpper();
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_Design", _arrPara);
@@ -292,7 +292,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
     }
     private void Report()
     {
-        string qry = @"  SELECT designName  FROM   Design where MasterCompanyid=" + Session["varCompanyId"] + "  ORDER BY designName";
+        string qry = @"  SELECT designName  FROM   Design where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY designName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -318,7 +318,7 @@ public partial class UserControls_MasterDesign : System.Web.UI.UserControl
         {
             SqlParameter[] _array = new SqlParameter[5];
             _array[0] = new SqlParameter("@DesignId", ViewState["id"]);
-            _array[1] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _array[2] = new SqlParameter("@UserId", Session["varuserid"]);
             _array[3] = new SqlParameter("@VarMsg", SqlDbType.NVarChar, 500);
             _array[3].Direction = ParameterDirection.Output;

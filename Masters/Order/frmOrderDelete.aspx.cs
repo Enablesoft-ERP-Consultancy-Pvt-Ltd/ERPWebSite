@@ -11,7 +11,7 @@ public partial class Masters_Order_frmOrderDelete : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Order_frmOrderDelete : System.Web.UI.Page
             UtilityModule.ConditionalComboFill(ref ddcompany, @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName", false, "");
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName", false, "");
             if (ddcompany.Items.Count > 0)
             {
                 ddcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();

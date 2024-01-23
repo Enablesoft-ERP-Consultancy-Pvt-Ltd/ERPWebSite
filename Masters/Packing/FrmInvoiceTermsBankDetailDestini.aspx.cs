@@ -11,15 +11,15 @@ public partial class Masters_Packing_FrmInvoiceTermsBankDetailDestini : System.W
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
             TxtInvoiceId.Text = Request.QueryString["ID"];
-            string Str = @"Select PaymentId, PaymentName from Payment Where MasterCompanyId=" + Session["varCompanyId"] + @" order by PaymentName
-            Select TermId,TermName from Term Where MasterCompanyId=" + Session["varCompanyId"] + " Order By TermName";
+            string Str = @"Select PaymentId, PaymentName from Payment Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PaymentName
+            Select TermId,TermName from Term Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By TermName";
             DataSet ds = SqlHelper.ExecuteDataset(Str);
             UtilityModule.ConditionalComboFillWithDS(ref DDDelivery, ds, 0, true, "--Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDTerms, ds, 1, true, "--Select--");
@@ -35,7 +35,7 @@ public partial class Masters_Packing_FrmInvoiceTermsBankDetailDestini : System.W
         {
             RDDeclaration2.Checked = false;
             TxtDeclaration.Text = "";
-            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration1 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration1 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 TxtDeclaration.Text = ds.Tables[0].Rows[0]["Declaration1"].ToString();
@@ -47,7 +47,7 @@ public partial class Masters_Packing_FrmInvoiceTermsBankDetailDestini : System.W
         if (RDDeclaration2.Checked == true)
         {
             TxtDeclaration.Text = "";
-            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration2 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration2 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 TxtDeclaration.Text = ds.Tables[0].Rows[0]["Declaration2"].ToString();
@@ -114,7 +114,7 @@ public partial class Masters_Packing_FrmInvoiceTermsBankDetailDestini : System.W
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, Str);
                 Tran.Commit();
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + _arrPara[0].Value + ",getdate(),'Update')");
+                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + _arrPara[0].Value + ",getdate(),'Update')");
                 LblErrorMessage.Visible = true;
                 LblErrorMessage.Text = "Data Saved Successfully";
             }

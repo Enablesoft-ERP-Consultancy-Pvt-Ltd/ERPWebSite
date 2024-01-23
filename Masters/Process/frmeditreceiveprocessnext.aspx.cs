@@ -11,7 +11,7 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
     protected static string Focus = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,7 +23,7 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
         if (!IsPostBack)
         {
             string str;
-            if (Session["varcompanyid"].ToString() == "8")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "8")
             {
                 str = "select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER Where PROCESS_NAME_ID<>1 order by Process_Name   ";
             }
@@ -247,13 +247,13 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
             param[4].Direction = ParameterDirection.Output;
             param[5] = new SqlParameter("@issueorderid", lblissueorderid.Text);
             param[6] = new SqlParameter("@Processrecid", lblprocessrecid.Text);
-            param[7] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[7] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[8] = new SqlParameter("@userid", Session["varuserid"]);
             //****************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_JobReceive_Delete", param);
             lblmsg.Text = param[4].Value.ToString();
             Tran.Commit();
-            if (Session["varCompanyId"].ToString() != "14")
+            if (Session["varMasterCompanyIDForERP"].ToString() != "14")
             {
                 FillDetail();
             }
@@ -465,7 +465,7 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
     protected void DDcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref DDQuality, @"select Distinct Q.QualityId,q.QualityName+' ['+Im.Item_Name+']' as QualityName From ITEM_MASTER IM inner join CategorySeparate CS on 
-                                                         IM.CATEGORY_ID=cs.Categoryid and cs.id=0  inner join Quality Q on IM.ITEM_ID=q.Item_Id and Cs.Categoryid=" + DDcategory.SelectedValue + " and Im.mastercompanyid=" + Session["varcompanyid"] + " order by Qualityname", true, "--Plz Select--");
+                                                         IM.CATEGORY_ID=cs.Categoryid and cs.id=0  inner join Quality Q on IM.ITEM_ID=q.Item_Id and Cs.Categoryid=" + DDcategory.SelectedValue + " and Im.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by Qualityname", true, "--Plz Select--");
     }
     protected void DG_RowEditing(object sender, GridViewEditEventArgs e)
     {
@@ -498,7 +498,7 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
             param[1] = new SqlParameter("@recdetailid", lblrecdetailid.Text);
             param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[2].Direction = ParameterDirection.Output;
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@userid", Session["varuserid"]);
             param[5] = new SqlParameter("@ActualLength", txtgridactualL.Text.Trim());
             param[6] = new SqlParameter("@ActualWidth", txtgridactualW.Text.Trim());
@@ -569,7 +569,7 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
         //            param[3] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
         //            param[3].Direction = ParameterDirection.Output;
         //            param[4] = new SqlParameter("@UserId", Session["varuserid"]);
-        //            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+        //            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
         //            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_REMOVEQCDEFECTS", param);
         //            lblmsg.Text = param[3].Value.ToString();
@@ -616,7 +616,7 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
                     param[3] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
                     param[3].Direction = ParameterDirection.Output;
                     param[4] = new SqlParameter("@UserId", Session["varuserid"]);
-                    param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     param[6] = new SqlParameter("@QCRemoveDate", txtRemoveQCDate.Text);
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_REMOVEQCDEFECTS", param);

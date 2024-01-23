@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmHr_Esipfreport : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,12 +22,12 @@ public partial class Masters_ReportForms_frmHr_Esipfreport : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName  
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName  
                     Select Distinct D.DepartmentId, D.DepartmentName 
                     From Department D(Nolock)
                     JOIN DepartmentBranch DB(Nolock) ON DB.DepartmentID = D.DepartmentId 
                     JOIN BranchUser BU(Nolock) ON BU.BranchID = DB.BranchID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                    Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By D.DepartmentName 
                     SELECT MONTH_ID,MONTH_NAME FROM MONTHTABLE order by Month_Id
                     SELECT YEAR,YEAR AS YEAR1 FROM YEARDATA order by Year
@@ -35,7 +35,7 @@ public partial class Masters_ReportForms_frmHr_Esipfreport : System.Web.UI.Page
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, true, "--ALL--");

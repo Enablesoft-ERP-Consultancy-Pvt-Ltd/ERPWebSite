@@ -11,7 +11,7 @@ public partial class HRUserControls_Leavetype : System.Web.UI.UserControl
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -136,7 +136,7 @@ public partial class HRUserControls_Leavetype : System.Web.UI.UserControl
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@Name", lblname.Text);
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_HR_DELETELEAVETYPE", param);
             Tran.Commit();

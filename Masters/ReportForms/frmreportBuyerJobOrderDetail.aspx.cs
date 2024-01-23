@@ -7,7 +7,7 @@ public partial class Masters_ReportForms_frmreportBuyerJobOrderDetail : System.W
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -15,7 +15,7 @@ public partial class Masters_ReportForms_frmreportBuyerJobOrderDetail : System.W
         {
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
                          select shapeid,shapeName from Shape order by ShapeId
-                         select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varcompanyid"] + @" order by Customercode
+                         select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode
                          select Process_Name_id, Process_Name From Process_Name_Master PN,V_JobProcessId V Where PN.Process_name_Id=V.ProcessId Order by Process_Name";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -81,7 +81,7 @@ public partial class Masters_ReportForms_frmreportBuyerJobOrderDetail : System.W
 
             array[0].Value = DDCompany.SelectedValue;
             array[1].Value = DDOrder.SelectedValue;
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
             array[3].Value = Session["varuserid"];
 
             DS = SqlHelper.ExecuteDataset(con, CommandType.StoredProcedure, "Pro_BuyerOrderStatus", array);
@@ -131,7 +131,7 @@ public partial class Masters_ReportForms_frmreportBuyerJobOrderDetail : System.W
 
             array[0].Value = DDCompany.SelectedValue;
             array[1].Value = DDOrder.SelectedIndex <= 0 ? "0" : DDOrder.SelectedValue;
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
             array[3].Value = DDcustomer.SelectedValue;
 
             DS = SqlHelper.ExecuteDataset(con, CommandType.StoredProcedure, "[Pro_OrderDetail]", array);

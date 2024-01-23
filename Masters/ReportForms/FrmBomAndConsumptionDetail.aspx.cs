@@ -16,14 +16,14 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Category_Name
-            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + " Order By PROCESS_NAME";
+            string str = @"Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Category_Name
+            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By PROCESS_NAME";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(ddCategoryName, ds, 0);
             UtilityModule.ConditionalComboFillWithDS(ref ddProcessName, ds, 1, true, "--Select--");
@@ -32,7 +32,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
                 CATEGORY_DEPENDS_CONTROLS();
             }
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
             LblCompanyName.Text = Session["varCompanyName"].ToString();
             LblUserName.Text = Session["varusername"].ToString();
         }
@@ -50,7 +50,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Shape.Visible = false;
         Size.Visible = false;
         Shade.Visible = false;
-        UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By ITEM_NAME", true, "SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ITEM_NAME", true, "SELECT--");
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from ITEM_CATEGORY_PARAMETERS Where CATEGORY_ID=" + ddCategoryName.SelectedValue + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -89,7 +89,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         string Str = @" SELECT Distinct VF.QUALITYID, VF.QUALITYNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varCompanyId"];
+            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"];
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -99,7 +99,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.DesignID, VF.DESIGNNAME
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varCompanyId"];
+            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"];
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -109,7 +109,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.ColorID, VF.COLORNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varCompanyId"];
+            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"];
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -119,7 +119,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.SHAPEID, VF.SHAPENAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varCompanyId"];
+            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"];
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -129,7 +129,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.SHADECOLORID, VF.SHADECOLORNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varCompanyId"];
+            WHERE VF.ITEM_ID = " + Itemid + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"];
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -149,7 +149,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         string Str = @" SELECT Distinct VF.DesignID, VF.DESIGNNAME
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue;
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -159,7 +159,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.ColorID, VF.COLORNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue;
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -169,7 +169,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.SHAPEID, VF.SHAPENAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue;
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -179,7 +179,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.SHADECOLORID, VF.SHADECOLORNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue;
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
             Str = Str + " And PCM.ProcessID = " + ddProcessName.SelectedValue;
@@ -198,7 +198,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         string Str = @" SELECT Distinct VF.ColorID, VF.COLORNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
             And VF.DesignID = " + ddDesign.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
@@ -209,7 +209,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.SHAPEID, VF.SHAPENAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
             And VF.DesignID = " + ddDesign.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
@@ -220,7 +220,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.SHADECOLORID, VF.SHADECOLORNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
             And VF.DesignID = " + ddDesign.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
@@ -239,7 +239,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         string Str = @" SELECT Distinct VF.SHAPEID, VF.SHAPENAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
             And VF.DesignID = " + ddDesign.SelectedValue + " And VF.ColorID = " + ddColor.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
@@ -250,7 +250,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         Str = Str + @" SELECT Distinct VF.SHADECOLORID, VF.SHADECOLORNAME 
             FROM V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
-            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
+            WHERE VF.ITEM_ID = " + ddItemName.SelectedValue + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And VF.QualityID = " + ddQuality.SelectedValue + @"
             And VF.DesignID = " + ddDesign.SelectedValue + " And VF.ColorID = " + ddColor.SelectedValue;
         if (ddProcessName.SelectedIndex > 0)
         {
@@ -292,7 +292,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
             From V_FinishedItemDetail VF(Nolock) 
             JOIN PROCESSCONSUMPTIONMASTER PCM(Nolock) ON PCM.FINISHEDID = VF.ITEM_FINISHED_ID 
             Left Outer Join CustomerSize CS on VF.SizeId = CS.SizeId 
-            Where VF.shapeid=" + ddShape.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+            Where VF.shapeid=" + ddShape.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ddQuality.SelectedIndex > 0)
         {
             str = str + " And VF.QualityID = " + ddQuality.SelectedValue;
@@ -356,7 +356,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
         array[0] = new SqlParameter("@CategoryId", ddCategoryName.SelectedValue);
         array[1] = new SqlParameter("@ItemId", ddItemName.SelectedValue);
         array[2] = new SqlParameter("@where", STR);
-        array[3] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_DefineBombAndConsumptionExcelReport", array);
 
@@ -447,7 +447,7 @@ public partial class Masters_ReportForms_FrmBomAndConsumptionDetail : System.Web
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

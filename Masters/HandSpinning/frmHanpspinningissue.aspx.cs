@@ -14,16 +14,16 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and Process_name='Hand Spinning' and mastercompanyid=" + Session["varcompanyid"] + @" order by PROCESS_NAME
-                           select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=1 and ICM.MasterCompanyid=" + Session["varcompanyid"] + @"
-                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varcompanyid"] + @" order by GodownName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and Process_name='Hand Spinning' and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME
+                           select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=1 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
+                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by GodownName
                            select Val,Type from Sizetype
                            select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
@@ -126,7 +126,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
         TDISize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -160,7 +160,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
             }
         }
 
-        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " order by IM.item_name";
+        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by IM.item_name";
         UtilityModule.ConditionalComboFill(ref DDItem, stritem, true, "---Select Item----");
     }
     private void Rcategorychange()
@@ -179,7 +179,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
         TDRSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDRcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDRcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -212,7 +212,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
                 }
             }
         }
-        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDRcategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " order by IM.item_name";
+        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDRcategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by IM.item_name";
         UtilityModule.ConditionalComboFill(ref DDRitemName, stritem, true, "---Select Item----");
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -230,11 +230,11 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, DropDownList Shade, int Itemid)
     {
-        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By QUALITYNAME
-                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
-                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By QUALITYNAME
+                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
+                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -304,7 +304,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
         //size Query
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");
         //
@@ -342,7 +342,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
                 SizeString = "Sizeft";
                 break;
         }
-        Str = "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + DDRshape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "";
+        Str = "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + DDRshape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
 
         UtilityModule.ConditionalComboFill(ref DDRshape, Str, true, "--SELECT--");
 
@@ -359,15 +359,15 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
     {
         //    if (TDBinNo.Visible == true)
         //    {
-        //        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //        FillBinNo(Varfinishedid, sender);
         //    }
         //    else
         //    {
-        //        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //        FillLotno(Varfinishedid);
         //    }
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         FillLotno(Varfinishedid);
     }
     protected void FillBinNo(int varfinishedid, object sender = null)
@@ -435,7 +435,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
     }
     protected void DDLotno_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         if (TDTagno.Visible == true)
         {
             FillTagno(Varfinishedid);
@@ -456,7 +456,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
     }
     protected void DDTagNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         if (TDBinNo.Visible == true)
         {
             FillBinNo(Varfinishedid, sender);
@@ -495,7 +495,7 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
     }
     protected void DDBinNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         FillstockQty(Varfinishedid);
     }
     protected void btnsave_Click(object sender, EventArgs e)
@@ -521,17 +521,17 @@ public partial class Masters_HandSpinning_frmHanpspinningissue : System.Web.UI.P
             arr[4].Value = TxtIndentNo.Text;
             arr[5] = new SqlParameter("@IssueDate", TxtDate.Text);
             arr[6] = new SqlParameter("@ReqDate", TxtReqDate.Text);
-            arr[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            arr[7] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[8] = new SqlParameter("@DetailId", SqlDbType.Int);
             arr[8].Value = 0;
-            int varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[9] = new SqlParameter("@Ifinishedid", varfinishedid);
             arr[10] = new SqlParameter("@Iflagsize", DDsizetype.SelectedValue);
             arr[11] = new SqlParameter("@unitid", ddUnit.SelectedValue);
             arr[12] = new SqlParameter("@godownid", DDgodown.SelectedValue);
             arr[13] = new SqlParameter("@LotNo", DDLotno.SelectedItem.Text);
             arr[14] = new SqlParameter("@TagNo", TDTagno.Visible == false ? "Without Tag No" : DDTagNo.SelectedItem.Text);
-            int varRfinishedid = UtilityModule.getItemFinishedId(DDRitemName, DDRquality, DDRdesign, DDRcolor, DDRshape, DDRsize, txtRprodcode, Tran, DDRShadecolor, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varRfinishedid = UtilityModule.getItemFinishedId(DDRitemName, DDRquality, DDRdesign, DDRcolor, DDRshape, DDRsize, txtRprodcode, Tran, DDRShadecolor, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[15] = new SqlParameter("@Rfinishedid", varRfinishedid);
             arr[16] = new SqlParameter("@Rflagsize", DDRSizetype.SelectedValue);
             arr[17] = new SqlParameter("@RecLotNo", txtreclotno.Text == "" ? "Without Lot No" : txtreclotno.Text);

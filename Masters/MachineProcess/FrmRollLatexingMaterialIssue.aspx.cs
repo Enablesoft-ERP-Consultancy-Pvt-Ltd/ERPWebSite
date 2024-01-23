@@ -16,18 +16,18 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                            select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and MasterCompanyid=" + Session["varcompanyid"] + @" and PROCESS_NAME='LATEXING' order by PROCESS_NAME_ID
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                            select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" and PROCESS_NAME='LATEXING' order by PROCESS_NAME_ID
                             Select ID, BranchName 
                             From BRANCHMASTER BM(nolock) 
                             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -178,7 +178,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
                         Where PRM.MaterialIssuePageTypeId=1 and PRM.TranType=0 and PRM.CompanyID = " + DDcompany.SelectedValue + " and PRM.IssueNoId=" + DDFoliono.SelectedValue + " and PRM.Processid=" + DDprocess.SelectedValue;
 
             UtilityModule.ConditionalComboFill(ref DDissueno, str, true, "--Plz Select--");
-            if (Session["varcompanyid"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 Fillgrid();
             }
@@ -236,7 +236,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
                 }
             }
             DropDownList DDGodown = ((DropDownList)e.Row.FindControl("DDGodown"));
-            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -358,7 +358,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
     protected void btnsave_Click(object sender, EventArgs e)
     {
         string DetailData = "";
-        if (Session["varcompanyid"].ToString() == "21")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             string status = "";            
 
@@ -473,7 +473,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
             ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Please select atleast one check box');", true);
             return;
         }
-        //if (Session["varcompanyid"].ToString() == "21")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         //{
         //    if (chkEdit.Checked == false)     // Change when Updated Completed
         //    {
@@ -498,7 +498,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
             {
                 SqlParameter[] param = new SqlParameter[13];
                 param[0] = new SqlParameter("@RollMaterialIssueId", SqlDbType.Int);
-                if (chkEdit.Checked == true && Session["varcompanyid"].ToString() == "21")
+                if (chkEdit.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     param[0].Value = DDissueno.SelectedValue;
                 }
@@ -513,7 +513,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
                 param[3] = new SqlParameter("@IssueNoId", DDFoliono.SelectedValue);
                 param[4] = new SqlParameter("@ChallanDate", txtissuedate.Text);
                 param[5] = new SqlParameter("@userid", Session["varuserid"]);
-                param[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[7] = new SqlParameter("@DetailData", DetailData);
                 param[8] = new SqlParameter("@TranType", SqlDbType.TinyInt);
                 param[8].Value = 0;
@@ -632,7 +632,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
             TDIssueNo.Visible = true;
             DDissueno.SelectedIndex = -1;
 
-            //if (Session["varcompanyid"].ToString() == "21")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             //{
             //    if (variable.VarWeaverRawMaterialIssueToCompleteStatus == "1" && Session["usertype"].ToString() == "1")
             //    {
@@ -776,7 +776,7 @@ public partial class Masters_MachineProcess_FrmRollLatexingMaterialIssue : Syste
     }
     //protected void UpdateStockNoQty()
     //{
-    //    if (Session["varcompanyid"].ToString() == "21")
+    //    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
     //    {
     //        if (DDFoliono.SelectedIndex <= 0)
     //        {

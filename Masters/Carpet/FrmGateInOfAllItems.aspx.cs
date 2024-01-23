@@ -12,16 +12,16 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string Str = @"Select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And 
-                                CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" Order by CompanyName 
-                            SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By DepartmentName
-                            Select VarProdCode From MasterSetting Where VarCompanyNo=" + Session["varCompanyId"];
+                                CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by CompanyName 
+                            SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DepartmentName
+                            Select VarProdCode From MasterSetting Where VarCompanyNo=" + Session["varMasterCompanyIDForERP"];
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, Ds, 0, true, "Select Compompany");
             UtilityModule.ConditionalComboFillWithDS(ref DDDepartment, Ds, 1, true, "Select Department");
@@ -57,7 +57,7 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
     }
     private void DepartmentSelectedChange()
     {
-        string Str = @"Select EI.EmpId,EI.EmpName From EmpInfo EI,Department D Where EI.DepartmentId=D.DepartmentId And D.DepartmentId=" + DDDepartment.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"];
+        string Str = @"Select EI.EmpId,EI.EmpName From EmpInfo EI,Department D Where EI.DepartmentId=D.DepartmentId And D.DepartmentId=" + DDDepartment.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDPartyName, Str, true, "--Select Department--");
     }
     protected void DDPartyName_SelectedIndexChanged(object sender, EventArgs e)
@@ -70,7 +70,7 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
     }
     private void CategoryTypeSelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDCategory, @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME From V_FinishedItemDetail VF,CategorySeparate CS Where VF.CATEGORY_ID=CS.Categoryid And VF.MasterCompanyId=" + Session["varCompanyId"] + " And CS.ID=" + DDCategoryType.SelectedValue, true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCategory, @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME From V_FinishedItemDetail VF,CategorySeparate CS Where VF.CATEGORY_ID=CS.Categoryid And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CS.ID=" + DDCategoryType.SelectedValue, true, "--Select--");
         if (DDCategory.Items.Count > 0)
         {
             DDCategory.SelectedIndex = 1;
@@ -129,11 +129,11 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
                 }
             }
         }
-        UtilityModule.ConditionalComboFill(ref DDItem, @"Select Distinct VF.ITEM_ID,Vf.ITEM_NAME From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue, true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref DDItem, @"Select Distinct VF.ITEM_ID,Vf.ITEM_NAME From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue, true, "--Select Item--");
     }
     protected void DDItem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, @"Select Distinct VF.QualityId,VF.QualityName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.ITEM_ID=" + DDItem.SelectedValue, true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, @"Select Distinct VF.QualityId,VF.QualityName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.ITEM_ID=" + DDItem.SelectedValue, true, "--Select Item--");
         UtilityModule.ConditionalComboFill(ref DDUnit, "SELECT Distinct U.UnitId,U.UnitName FROM ITEM_MASTER I,Unit U Where I.UnitTypeID=U.UnitTypeID And ITEM_ID=" + DDItem.SelectedValue, true, "Select Unit");
         if (DDUnit.Items.Count > 0)
         {
@@ -149,19 +149,19 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
     {
         if (TdDesign.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDDesign, @"Select Distinct VF.DesignId,VF.DesignName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select Design--");
+            UtilityModule.ConditionalComboFill(ref DDDesign, @"Select Distinct VF.DesignId,VF.DesignName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select Design--");
         }
         if (TdColor.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDColor, @"Select Distinct VF.ColorId,VF.ColorName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select Color--");
+            UtilityModule.ConditionalComboFill(ref DDColor, @"Select Distinct VF.ColorId,VF.ColorName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select Color--");
         }
         if (TdShape.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDShape, @"Select Distinct VF.ShapeId,VF.ShapeName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select Shape--");
+            UtilityModule.ConditionalComboFill(ref DDShape, @"Select Distinct VF.ShapeId,VF.ShapeName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select Shape--");
         }
         if (TdColorShade.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDColorShade, @"Select Distinct VF.ShadeColorId,VF.ShadeColorName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select ShadeColor--");
+            UtilityModule.ConditionalComboFill(ref DDColorShade, @"Select Distinct VF.ShadeColorId,VF.ShadeColorName From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue, true, "--Select ShadeColor--");
         }
     }
     protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
@@ -185,11 +185,11 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
         string str = "";
         if (ChkFt.Checked == true)
         {
-            str = @"Select Distinct VF.SizeId,VF.SizeFt From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue + " And VF.ShapeId=" + DDShape.SelectedValue;
+            str = @"Select Distinct VF.SizeId,VF.SizeFt From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue + " And VF.ShapeId=" + DDShape.SelectedValue;
         }
         else
         {
-            str = @"Select Distinct VF.SizeId,VF.SizeMtr From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue + " And VF.ShapeId=" + DDShape.SelectedValue;
+            str = @"Select Distinct VF.SizeId,VF.SizeMtr From V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And VF.ITEM_ID=" + DDItem.SelectedValue + " And VF.QualityId=" + DDQuality.SelectedValue + " And VF.ShapeId=" + DDShape.SelectedValue;
         }
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--Select Size--");
     }
@@ -242,8 +242,8 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
             {
                 try
                 {
-                    int Finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProductCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"])));
-                    UtilityModule.ConditionalComboFill(ref DDGodownName, "Select Distinct S.GodownId,GM.GodownName From Stock S,GodownMaster GM Where S.Godownid=GM.Godownid And S.CompanyId=" + DDCompanyName.SelectedValue + " And ITEM_FINISHED_ID=" + Finishedid + " And GM.MasterCompanyid=" + Session["varCompanyId"] + " And QtyinHand>0 Order By GM.GodownName", true, "--Select Godown--");
+                    int Finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProductCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
+                    UtilityModule.ConditionalComboFill(ref DDGodownName, "Select Distinct S.GodownId,GM.GodownName From Stock S,GodownMaster GM Where S.Godownid=GM.Godownid And S.CompanyId=" + DDCompanyName.SelectedValue + " And ITEM_FINISHED_ID=" + Finishedid + " And GM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " And QtyinHand>0 Order By GM.GodownName", true, "--Select Godown--");
                 }
                 catch (Exception ex)
                 {
@@ -255,13 +255,13 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
     }
     protected void DDGodownName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProductCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"])));
+        int Finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProductCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
 
         UtilityModule.ConditionalComboFill(ref DDLotNo, "Select Distinct S.LotNo,S.LotNo From Stock S Where S.CompanyId=" + DDCompanyName.SelectedValue + " And ITEM_FINISHED_ID=" + Finishedid + " And S.GodownId=" + DDGodownName.SelectedValue + " And QtyinHand>0 Order By S.LotNo", true, "--Select Godown--");
     }
     protected void DDLotNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProductCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"])));
+        int Finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProductCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
 
         TxtStock.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Isnull(Round(Sum(QtyInHand),3),0) StockQty From Stock Where CompanyId=" + DDCompanyName.SelectedValue + " And ITEM_FINISHED_ID=" + Finishedid + " And GodownId=" + DDGodownName.SelectedValue + " And LotNo='" + DDLotNo.SelectedItem.Text + "'").ToString();
     }
@@ -284,7 +284,7 @@ public partial class Masters_Carpet_FrmGateInOfAllItems : System.Web.UI.Page
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         LblQuality.Text = ParameterList[0];
         LblDesign.Text = ParameterList[1];
         LblColor.Text = ParameterList[2];

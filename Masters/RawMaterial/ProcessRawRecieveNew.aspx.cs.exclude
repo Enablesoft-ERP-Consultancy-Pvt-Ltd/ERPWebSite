@@ -14,19 +14,19 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     static int MasterCompanyId;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             ViewState["Prmid"] = 0;
-            DataSet DSQ = SqlHelper.ExecuteDataset(@"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname
+            DataSet DSQ = SqlHelper.ExecuteDataset(@"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname
                          select PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From PROCESS_NAME_MASTER PNM inner join UserRightsProcess URP on PNM.PROCESS_NAME_ID=URP.ProcessId and URP.Userid=" + Session["varuserid"] + @"  WHere PNM.ProcessType=1  order by PROCESS_NAME
                          Select VarProdCode From MasterSetting
                          DELETE TEMP_PROCESS_ISSUE_MASTER_NEW
-                         Select Process_name_id from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"]);
+                         Select Process_name_id from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"]);
 
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, DSQ, 0, true, "Select Comp Name");
             if (ddCompName.Items.FindByValue(Session["dcompanyid"].ToString()) != null)
@@ -51,7 +51,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
                     procode.Visible = true;
                     break;
             }
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "9":
                     txtChallanNo.ReadOnly = true;
@@ -79,7 +79,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];
@@ -107,7 +107,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
                     INNER JOIN EMPINFO EI ON EMO.EMPID=EI.EMPID and Isnull(EI.blacklist,0)=0
                     WHERE PIM.COMPANYID=" + ddCompName.SelectedValue + ") A ORDER BY EMPNAME";
 
-        // UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct e.EmpId, e.EmpName  FROM  PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + " pim INNER JOIN  EmpInfo e ON pim.Empid = e.EmpId ANd e.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Emp");
+        // UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct e.EmpId, e.EmpName  FROM  PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + " pim INNER JOIN  EmpInfo e ON pim.Empid = e.EmpId ANd e.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Emp");
         UtilityModule.ConditionalComboFill(ref ddempname, str, true, "Select Emp");
     }
     protected void ddempname_SelectedIndexChanged(object sender, EventArgs e)
@@ -117,9 +117,9 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     }
     private void EmpNameSelectedChange()
     {
-        if (Session["varcompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
-            UtilityModule.ConditionalComboFill(ref ddPOrderNo, "Select Distinct PRM.Prorderid,om.localOrder+'/'+cast(PRM.Prorderid as varchar(100)) as Prorderid1 From ProcessRawMaster PRM inner join Process_issue_detail_" + ddProcessName.SelectedValue + " pD on PRM.prorderid=Pd.issueorderid inner join ordermaster OM on OM.orderid=PD.orderid  Where PRM.CompanyId=" + ddCompName.SelectedValue + " And PRM.Processid=" + ddProcessName.SelectedValue + " And PRM.Empid=" + ddempname.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + " order by Prorderid1", true, "Select POrder No.");
+            UtilityModule.ConditionalComboFill(ref ddPOrderNo, "Select Distinct PRM.Prorderid,om.localOrder+'/'+cast(PRM.Prorderid as varchar(100)) as Prorderid1 From ProcessRawMaster PRM inner join Process_issue_detail_" + ddProcessName.SelectedValue + " pD on PRM.prorderid=Pd.issueorderid inner join ordermaster OM on OM.orderid=PD.orderid  Where PRM.CompanyId=" + ddCompName.SelectedValue + " And PRM.Processid=" + ddProcessName.SelectedValue + " And PRM.Empid=" + ddempname.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Prorderid1", true, "Select POrder No.");
         }
         else
         {
@@ -140,7 +140,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
                         Where PM.CompanyId=" + ddCompName.SelectedValue + " And PM.Processid=" + ddProcessName.SelectedValue + " And PM.Empid=" + ddempname.SelectedValue +@" and isnull(pim.FOLIOSTATUS,0)=0) A
                         ORDER BY ISSUEORDERID desc";
             UtilityModule.ConditionalComboFill(ref ddPOrderNo, str, true, "Select POrder No.");
-            // UtilityModule.ConditionalComboFill(ref ddPOrderNo, "Select Distinct Prorderid,Prorderid From ProcessRawMaster Where CompanyId=" + ddCompName.SelectedValue + " And Processid=" + ddProcessName.SelectedValue + " And Empid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select POrder No.");
+            // UtilityModule.ConditionalComboFill(ref ddPOrderNo, "Select Distinct Prorderid,Prorderid From ProcessRawMaster Where CompanyId=" + ddCompName.SelectedValue + " And Processid=" + ddProcessName.SelectedValue + " And Empid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select POrder No.");
         }
     }
     protected void ChKForEdit_CheckedChanged(object sender, EventArgs e)
@@ -155,13 +155,13 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
             tdChallanNo.Visible = true;
             if (ddCompName.SelectedIndex > 0 && ddempname.SelectedIndex > 0 && ddPOrderNo.SelectedIndex > 0 && ddProcessName.SelectedIndex > 0)
             {
-                if (Session["varcompanyid"].ToString() == "9")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                 {
-                    UtilityModule.ConditionalComboFill(ref DDChallanNo, "Select PrmId,ChalanNo From ProcessRawMaster Where TranType=1 And Companyid=" + ddCompName.SelectedValue + " And ProcessId=" + ddProcessName.SelectedValue + " And PROrderId=" + ddPOrderNo.SelectedValue + " And EmpId=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select POrder No.");
+                    UtilityModule.ConditionalComboFill(ref DDChallanNo, "Select PrmId,ChalanNo From ProcessRawMaster Where TranType=1 And Companyid=" + ddCompName.SelectedValue + " And ProcessId=" + ddProcessName.SelectedValue + " And PROrderId=" + ddPOrderNo.SelectedValue + " And EmpId=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select POrder No.");
                 }
                 else
                 {
-                    UtilityModule.ConditionalComboFill(ref DDChallanNo, "Select PrmId,replace(Str(Prmid)+'/'+ChalanNo,' ','') ChallanNo From ProcessRawMaster Where TranType=1 And Companyid=" + ddCompName.SelectedValue + " And ProcessId=" + ddProcessName.SelectedValue + " And PROrderId=" + ddPOrderNo.SelectedValue + " And EmpId=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select POrder No.");
+                    UtilityModule.ConditionalComboFill(ref DDChallanNo, "Select PrmId,replace(Str(Prmid)+'/'+ChalanNo,' ','') ChallanNo From ProcessRawMaster Where TranType=1 And Companyid=" + ddCompName.SelectedValue + " And ProcessId=" + ddProcessName.SelectedValue + " And PROrderId=" + ddPOrderNo.SelectedValue + " And EmpId=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select POrder No.");
                 }
 
 
@@ -183,7 +183,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     private void Fill_GridForShowIssItem()
     {
         string strsql = @"Select CATEGORY_NAME ,ITEM_NAME,QualityName+' '+designName+' '+ColorName+' '+ShapeName+' '+SizeMtr+' '+ShadeColorName Description,Sum(IssueQuantity) IssueQuantity
-        From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=0 And PRM.PROrderId=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + @"
+        From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=0 And PRM.PROrderId=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
         Group By CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShapeName,SizeMtr,ShadeColorName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         DGShowIssDetail.DataSource = ds;
@@ -217,7 +217,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             strsql = @"Select PRT.PRTid,CATEGORY_NAME RecCategoryName,ITEM_NAME RecItemName,QualityName+' '+designName+' '+ColorName+' '+ShapeName+' '+SizeMtr+' '+ShadeColorName RecDescription,Sum(IssueQuantity) RecQty,isnull(PRM.Remark,'') as Remark
                     From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=1 
-                    And PRM.chalanno='" + txtChallanNo.Text + "' And PRM.MasterCompanyId=" + Session["varCompanyId"] + @" ";
+                    And PRM.chalanno='" + txtChallanNo.Text + "' And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ";
 
             if (ChKForEdit.Checked == true && ddPOrderNo.SelectedIndex > 0)
             {
@@ -233,12 +233,12 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         else
         {
             strsql = @"Select PRT.PRTid,CATEGORY_NAME RecCategoryName,ITEM_NAME RecItemName,QualityName+' '+designName+' '+ColorName+' '+ShapeName+' '+SizeMtr+' '+ShadeColorName RecDescription,Sum(IssueQuantity) RecQty,isnull(PRM.Remark,'') as Remark
-                    From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=1 And PRM.PRmId=" + ViewState["Prmid"] + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=1 And PRM.PRmId=" + ViewState["Prmid"] + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Group By PRT.PRTid,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShapeName,SizeMtr,ShadeColorName,PRM.Remark";
         }
 
         //        string strsql = @"Select PRT.PRTid,CATEGORY_NAME RecCategoryName,ITEM_NAME RecItemName,QualityName+' '+designName+' '+ColorName+' '+ShapeName+' '+SizeMtr+' '+ShadeColorName RecDescription,Sum(IssueQuantity) RecQty
-        //        From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=1 And PRM.PRmId=" + ViewState["Prmid"] + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + @"
+        //        From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=1 And PRM.PRmId=" + ViewState["Prmid"] + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
         //        Group By PRT.PRTid,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShapeName,SizeMtr,ShadeColorName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         DGMain.DataSource = ds;
@@ -252,7 +252,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     private void Fill_POrderNoSelectedChange(object sender = null)
     {
         string Qry = @"Select Distinct CATEGORY_ID,CATEGORY_NAME From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF 
-        Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "";
+        Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
         Qry = Qry + @"   SELECT DISTINCT GM.GoDownID,GM.GodownName FROM GodownMaster GM  order by GodownName";
 
         DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
@@ -282,7 +282,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         if (ddCatagory.SelectedIndex > 0)
         {
             UtilityModule.ConditionalComboFill(ref dditemname, @"Select Distinct ITEM_ID,ITEM_NAME From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF 
-            Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And VF.CATEGORY_ID=" + ddCatagory.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Item--");
+            Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And VF.CATEGORY_ID=" + ddCatagory.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Item--");
             if (dditemname.Items.Count > 0)
             {
                 dditemname.SelectedIndex = 1;
@@ -301,7 +301,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         shd.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -339,10 +339,10 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     {
         if (dditemname.SelectedIndex > 0)
         {
-            string Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"];
+            string Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             Qry = Qry + @"  Select Distinct Qualityid,QualityName From ProcessRawMaster PRM,ProcessRawTran PRT,
                         V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + @" And 
-                        VF.ITEM_ID=" + dditemname.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"];
+                        VF.ITEM_ID=" + dditemname.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref ddlunit, DSQ, 0, true, "Select Unit");
             if (ddlunit.Items.Count > 0)
@@ -382,7 +382,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             UtilityModule.ConditionalComboFill(ref ddsize, @"Select Distinct SizeId,SizeMtr From ProcessRawMaster PRM,ProcessRawTran PRT,
                         V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + @" And 
-                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And VF.ShapeId=" + ddshape.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Size");
+                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And VF.ShapeId=" + ddshape.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Size");
             if (ddsize.Items.Count > 0)
             {
                 ddsize.SelectedIndex = 1;
@@ -434,13 +434,13 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             txtlot.Text = "";
             txtissue.Text = "";
-            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, Txtprodcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, Txtprodcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             hnitemfinishedid.Value = ItemFinishedId.ToString();
             FIllLotno(ItemFinishedId, sender);
 
-            //            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select LotNo,PRT.TagNo From ProcessRawMaster PRM,ProcessRawTran PRT Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + @"
+            //            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select LotNo,PRT.TagNo From ProcessRawMaster PRM,ProcessRawTran PRT Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
             //            Select IsNull(Sum(IssueQuantity),0) AS Qty From ProcessRawMaster PRM,ProcessRawTran PRT
-            //            Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"]);
+            //            Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"]);
             //            if (Ds.Tables[0].Rows.Count > 0)
             //            {
             //                txtlot.Text = Ds.Tables[0].Rows[0]["LotNo"].ToString();
@@ -457,7 +457,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     {
         txtissue.Text = "";
         string str = @"Select IsNull(Sum(IssueQuantity),0) AS Qty From ProcessRawMaster PRM,ProcessRawTran PRT
-                     Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"];
+                     Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDlotno.SelectedIndex > 0)
         {
             str = str + "  and Prt.LotNo='" + DDlotno.SelectedItem.Text + "'";
@@ -475,7 +475,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     protected void FIllLotno(int ItemFinishedId, object sender = null)
     {
         DDlotno.SelectedIndex = -1;
-        string str = "Select Distinct Prt.LotNo,PRT.Lotno From ProcessRawMaster PRM,ProcessRawTran PRT Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"];
+        string str = "Select Distinct Prt.LotNo,PRT.Lotno From ProcessRawMaster PRM,ProcessRawTran PRT Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDlotno, str, true, "--Plz Select--");
         if (DDlotno.Items.Count > 0)
         {
@@ -486,7 +486,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     protected void FIllTagno(int ItemFinishedId, object sender = null)
     {
         DDtagno.SelectedIndex = -1;
-        string str = "Select Distinct Prt.Tagno,PRT.Tagno From ProcessRawMaster PRM,ProcessRawTran PRT Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + " and prt.Lotno='" + DDlotno.SelectedItem.Text + "'";
+        string str = "Select Distinct Prt.Tagno,PRT.Tagno From ProcessRawMaster PRM,ProcessRawTran PRT Where PRM.PRMid=PRT.PRMid And TranType=0 And PRT.Finishedid=" + ItemFinishedId + " And PRM.Prorderid=" + ddPOrderNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and prt.Lotno='" + DDlotno.SelectedItem.Text + "'";
 
         UtilityModule.ConditionalComboFill(ref DDtagno, str, true, "--Plz Select--");
         if (DDtagno.Items.Count > 0)
@@ -505,11 +505,11 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         // string Str;
         if (Txtprodcode.Text != "" && ddPOrderNo.SelectedIndex > 0)
         {
-            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * From ITEM_PARAMETER_MASTER IPM Where ProductCode='" + Txtprodcode.Text + "' And IPM.MasterCompanyId=" + Session["varCompanyId"] + "");
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * From ITEM_PARAMETER_MASTER IPM Where ProductCode='" + Txtprodcode.Text + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 string Str2 = @"Select VF.ITEM_FINISHED_ID,CATEGORY_ID,ITEM_ID,QualityId,DesignId,ColorId,ShapeId,SizeId,ShadecolorId From ProcessRawMaster PRM,
-                               ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=30 And VF.ITEM_FINISHED_ID=" + ds.Tables[0].Rows[0]["Item_finished_id"] + " And PRM.MasterCompanyId=" + Session["varCompanyId"];
+                               ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=30 And VF.ITEM_FINISHED_ID=" + ds.Tables[0].Rows[0]["Item_finished_id"] + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                 DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str2);
 
@@ -589,7 +589,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
                 arr[24] = new SqlParameter("@Remark", txtremark.Text);
                 arr[25] = new SqlParameter("@FolioChallanNo", SqlDbType.VarChar, 50);
 
-                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, Txtprodcode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, Txtprodcode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
                 arr[0].Value = ViewState["Prmid"];
                 arr[1].Value = ddCompName.SelectedValue;
@@ -601,7 +601,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
                 arr[6].Direction = ParameterDirection.InputOutput;
                 arr[7].Value = 1;
                 arr[8].Value = Session["varuserid"].ToString();
-                arr[9].Value = Session["varCompanyId"].ToString();
+                arr[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                 arr[10].Value = 0;
                 arr[20].Value = 0;
                 if (btnsave.Text == "Update")
@@ -660,7 +660,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             if (txtChallanNo.Text != "")
             {
-                string str = "Select chalanNo From ProcessRawMaster Where ChalanNo<>'' And TranType=1 And ChalanNo='" + txtChallanNo.Text + "' And PRMID<>" + ViewState["Prmid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+                string str = "Select chalanNo From ProcessRawMaster Where ChalanNo<>'' And TranType=1 And ChalanNo='" + txtChallanNo.Text + "' And PRMID<>" + ViewState["Prmid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
@@ -825,7 +825,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         String VarPOrderNo = TxtPOrderNo.Text == "" ? "0" : TxtPOrderNo.Text;
         string sql = "SELECT COMPANYID,PROCESSID,EMPID,ISSUEORDERID FROM VIEW_PROCESS_ISSUE_MASTER Where ChallanNo='" + VarPOrderNo + "'";
 
-        switch (Session["varcompanyid"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "28":
             case "16":
@@ -907,7 +907,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     {
         //        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select CATEGORY_ID,ITEM_ID,QualityId,ColorId,designId,ShapeId,SizeId,
         //        ShadecolorId,IssueQuantity,Godownid,Lotno,UnitId From ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And 
-        //        PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=1 And PRT.PRTId=" + DGMain.SelectedDataKey.Value + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "");
+        //        PRT.Finishedid=VF.ITEM_FINISHED_ID And PRM.TranType=1 And PRT.PRTId=" + DGMain.SelectedDataKey.Value + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         //        if (Ds.Tables[0].Rows.Count > 0)
         //        {
         //            ddCatagory.SelectedValue = Ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
@@ -960,7 +960,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
             arr[2] = new SqlParameter("@TranType", SqlDbType.Int);
             arr[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             arr[4] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             arr[0].Value = VarPrtID;
             arr[1].Value = 2;
@@ -997,7 +997,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             UtilityModule.ConditionalComboFill(ref dddesign, @"Select Distinct designId,designName From ProcessRawMaster PRM,ProcessRawTran PRT,
                         V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + @" And 
-                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Design");
+                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Design");
             if (dddesign.Items.Count > 0)
             {
                 dddesign.SelectedIndex = 1;
@@ -1007,7 +1007,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             UtilityModule.ConditionalComboFill(ref ddcolor, @"Select Distinct ColorId,ColorName From ProcessRawMaster PRM,ProcessRawTran PRT,
                         V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + @" And 
-                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Color");
+                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Color");
             if (ddcolor.Items.Count > 0)
             {
                 ddcolor.SelectedIndex = 1;
@@ -1017,7 +1017,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             UtilityModule.ConditionalComboFill(ref ddshape, @"Select Distinct ShapeId,ShapeName From ProcessRawMaster PRM,ProcessRawTran PRT,
                         V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + @" And 
-                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Shape");
+                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Shape");
             if (ddshape.Items.Count > 0)
             {
                 ddshape.SelectedIndex = 1;
@@ -1028,7 +1028,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
         {
             UtilityModule.ConditionalComboFill(ref ddlshade, @"Select Distinct ShadecolorId,ShadeColorName From ProcessRawMaster PRM,ProcessRawTran PRT,
                         V_FinishedItemDetail VF Where PRM.PRMid=PRT.PRMid And PRT.Finishedid=VF.ITEM_FINISHED_ID And TranType=0 And PRM.Prorderid=" + ddPOrderNo.SelectedValue + @" And 
-                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select ");
+                        VF.ITEM_ID=" + dditemname.SelectedValue + " And VF.Qualityid=" + dquality.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select ");
             if (ddlshade.Items.Count > 0)
             {
                 ddlshade.SelectedIndex = 1;
@@ -1038,7 +1038,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
     protected void btnpreview_Click(object sender, EventArgs e)
     {
         string str = "";
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "9":
                 str = @"SELECT PRM.Date, PRM.ChalanNo,PRM.trantype, PRT.IssueQuantity,PRT.Lotno, GM.GodownName, EI.EmpName,
@@ -1122,7 +1122,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieveNew : System.Web.UI.Pa
 
             if (variable.VarCHECKBINCONDITION == "1")
             {
-                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, Txtprodcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, Txtprodcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 UtilityModule.FillBinNO(DDBinNo, Convert.ToInt32(ddgodown.SelectedValue), Varfinishedid, New_Edit: 0);
             }
             else

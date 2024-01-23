@@ -11,15 +11,15 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName                           
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                           
                            select UnitsId,UnitName from Units order by UnitName
-                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName";
+                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -94,7 +94,7 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
     protected void FillGrid()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "14")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "14")
         {
             str = @"select Distinct V.BeamDescription, V.unitid, V.UnitName, V.LotNo, V.TagNo, V.GodownId, V.BeamNo, V.Grossweight,
                         V.TareWeight, V.NetWeight, V.ofinishedid, V.Srno, oSizeflag, V.pcs 
@@ -287,7 +287,7 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
                 param[3] = new SqlParameter("@Prorderid", DDFoliono.SelectedValue);
                 param[4] = new SqlParameter("@issueDate", txtissuedate.Text);
                 param[5] = new SqlParameter("@userid", Session["varuserid"]);
-                param[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[7] = new SqlParameter("@dtrecords", dtrecords);
                 param[8] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[8].Direction = ParameterDirection.Output;
@@ -446,7 +446,7 @@ public partial class Masters_Loom_frmbeamissueonloom : System.Web.UI.Page
             param[2] = new SqlParameter("@prorderid", lblprorderod.Text);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@UserId", Session["VarUserid"]);
             //************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_deletebeamissueonloom", param);

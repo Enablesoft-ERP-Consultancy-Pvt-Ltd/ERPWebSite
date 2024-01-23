@@ -14,7 +14,7 @@
         function ClickNew() {
             window.location.href = "FrmGateInRegister.aspx";
         }
-        if (Session["varcompanyId"].ToString() != "44") {
+        if (Session["varMasterCompanyIDForERP"].ToString() != "44") {
             function Validation() {
                 if (document.getElementById("<%=txtdate.ClientID %>").value == "") {
                     alert("Pls Select Date");

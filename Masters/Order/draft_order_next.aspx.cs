@@ -15,7 +15,7 @@ public partial class Masters_Order_draft_order_next : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,13 +26,13 @@ public partial class Masters_Order_draft_order_next : System.Web.UI.Page
             Session["val"] = 0;
             hncode.Value = "";
             logo();
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
             if (DDCompanyName.Items.Count > 0)
             {
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDCompanyName.Enabled = false;
             }
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
             TxtOrderDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtDeliveryDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
         }
@@ -61,16 +61,16 @@ public partial class Masters_Order_draft_order_next : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -129,7 +129,7 @@ public partial class Masters_Order_draft_order_next : System.Web.UI.Page
             string strsql = @"select OD.OrderDetailId as Sr_No,od.ourcode,od.buyercode,VF.CATEGORY_NAME CATEGORY,VF.ITEM_NAME ITEMNAME,VF.QUALITYNAME+SPACE(2)+VF.DESIGNNAME+SPACE(2)+VF.COLORNAME+SPACE(2)+SHAPENAME+SPACE(2)+
             CASE WHEN oD.orderUnitId=1 THEN VF.SIZEMTR ELSE VF.SIZEFT END DESCRIPTION,od.remarks as Remark,od.Qtyrequired as Qty ,od.totalArea as Area,finishinginstructions as PPInstruction 
             from ordermaster om,orderdetail od,V_FINISHEDITEMDETAIL VF
-            where om.orderid=od.orderid and OD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID and OM.Orderid='" + id + "' And VF.MasterCompanyId=" + Session["varCompanyId"];
+            where om.orderid=od.orderid and OD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID and OM.Orderid='" + id + "' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             hntot.Value = Convert.ToString(ds.Tables[0].Rows.Count);
             if (ds.Tables[0].Rows.Count > 0)
@@ -280,7 +280,7 @@ public partial class Masters_Order_draft_order_next : System.Web.UI.Page
         str = @"UPDATE orderDETAIL Set Remarks='" + Txtremark.Text + "',pro_flag=1,UPDATE_FLAG=0 where orderdetailid=" + Session["id"] + "";
         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'orderDETAIL'," + Session["id"] + ",getdate(),'Update')");
+        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'orderDETAIL'," + Session["id"] + ",getdate(),'Update')");
         tr1.Style.Add("Display", "none");
         Txtremark.Text = "";
         refreshform();

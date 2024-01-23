@@ -15,14 +15,14 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportMWS : System.Web.U
     static int masterunitid = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
-                           select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varcompanyid"] + @" order by Customercode select isnull(masterunitid,0) as masterunitid from mastersetting";
+                           select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode select isnull(masterunitid,0) as masterunitid from mastersetting";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             txtfromDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
@@ -70,7 +70,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportMWS : System.Web.U
             {
                 con.Open();
             }
-            //if (Session["varcompanyId"].ToString() == "45")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "45")
             //{
                 SP = "Pro_ordersummary_new";
             //}
@@ -128,7 +128,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportMWS : System.Web.U
     protected void btnexport_Click(object sender, EventArgs e)
     {
      
-        if (Session["varcompanyId"].ToString() == "45")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "45")
         {
             DataSet ds = new DataSet();
             if (ViewState["ds"] != null)
@@ -437,14 +437,14 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportMWS : System.Web.U
 
             for (int i = 0; i < GVDetails.Columns.Count; i++)
             {
-                if (Session["varcompanyId"].ToString() == "39")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "39")
                 {
                     if (GVDetails.Columns[i].HeaderText == "BALANCE" || GVDetails.Columns[i].HeaderText == "DISPATCHED")
                     {
                         GVDetails.Columns[i].Visible = true;
                     }
                 }
-                if (Session["varcompanyId"].ToString() == "45" )
+                if (Session["varMasterCompanyIDForERP"].ToString() == "45" )
                 {
                     if (GVDetails.Columns[i].HeaderText == "STOCKOUT" || GVDetails.Columns[i].HeaderText == "PRODUCTION UNIT")
                     {

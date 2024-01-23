@@ -11,7 +11,7 @@ public partial class ShippingMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class ShippingMaster : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string str = "select AgentId,AgentName,Address,ContectPerson,PhoneNo,Mobile,Fax, Email from shipp Where MasterCompanyId=" + Session["varCompanyId"] + " order by Agentid";
+            string str = "select AgentId,AgentName,Address,ContectPerson,PhoneNo,Mobile,Fax, Email from shipp Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Agentid";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
 

@@ -13,7 +13,7 @@ public partial class Masters_Loom_FrmIssueOrderNoConsumptionExtraPercentage : Sy
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Loom_FrmIssueOrderNoConsumptionExtraPercentage : Sy
         if (!IsPostBack)
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA 
-                        Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName 
+                        Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                         Select * From PROCESS_NAME_MASTER Where PROCESS_NAME_ID Not in (5, 9) Order By PROCESS_NAME_ID ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -163,7 +163,7 @@ public partial class Masters_Loom_FrmIssueOrderNoConsumptionExtraPercentage : Sy
             param[2] = new SqlParameter("@IssueOrderID", DDFolioNo.SelectedValue);
             param[3] = new SqlParameter("@ExtraPercentageQty", TxtExtraPercentageQty.Text == "" ? "0" : TxtExtraPercentageQty.Text);
             param[4] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[5] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[5] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[6].Direction = ParameterDirection.Output;
 

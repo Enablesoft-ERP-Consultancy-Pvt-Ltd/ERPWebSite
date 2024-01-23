@@ -11,7 +11,7 @@ public partial class Masters_Campany_Shape : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -30,7 +30,7 @@ public partial class Masters_Campany_Shape : CustomPage
         try
         {
             con.Open();
-            string shape = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id And  ps.company_id=" + Session["varCompanyId"] + "  and  ps.parameter_id='4'").ToString();
+            string shape = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id And  ps.company_id=" + Session["varMasterCompanyIDForERP"] + "  and  ps.parameter_id='4'").ToString();
             lblshapeyname.Text = shape;
         }
         catch (Exception ex)
@@ -63,7 +63,7 @@ public partial class Masters_Campany_Shape : CustomPage
 
         try
         {
-            string strsql = "select ShapeId as Sr_No,ShapeName as '" + lblshapeyname.Text + "' from Shape where MasterCompanyId=" + Session["varCompanyId"] + " order by ShapeId";
+            string strsql = "select ShapeId as Sr_No,ShapeName as '" + lblshapeyname.Text + "' from Shape where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShapeId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
 
@@ -98,7 +98,7 @@ public partial class Masters_Campany_Shape : CustomPage
         // Session["id"] = id;
          ViewState["id"] = id;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from Shape where ShapeId=" + id + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from Shape where ShapeId=" + id + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
    try
    {
     if (ds.Tables[0].Rows.Count == 1)
@@ -135,7 +135,7 @@ public partial class Masters_Campany_Shape : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Shape Where ShapeName='" + txtShape.Text + "' and ShapeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Shape Where ShapeName='" + txtShape.Text + "' and ShapeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -170,7 +170,7 @@ protected void BtnSave_Click(object sender, EventArgs e)
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtShape.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
 
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Shape", _arrPara);
@@ -236,7 +236,7 @@ protected void btndelete_Click(object sender, EventArgs e)
     {
         SqlParameter[] parparam = new SqlParameter[3];
         parparam[0] = new SqlParameter("@id", ViewState["id"].ToString());
-        parparam[1] = new SqlParameter("@varCompanyId", Session["varCompanyId"].ToString());
+        parparam[1] = new SqlParameter("@varCompanyId", Session["varMasterCompanyIDForERP"].ToString());
         parparam[2] = new SqlParameter("@varuserid", Session["varuserid"].ToString());
 
         int id = SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "Proc_DeleteShape", parparam);
@@ -258,7 +258,7 @@ protected void btndelete_Click(object sender, EventArgs e)
         //{
         //    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Shape where ShapeId=" + ViewState["id"].ToString());
         //    DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-        //    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Shape'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+        //    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Shape'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
         //    LblError.Visible = true;
         //    LblError.Text = "Value Deleted...";
         //}

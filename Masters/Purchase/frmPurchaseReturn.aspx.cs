@@ -12,7 +12,7 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
     //string msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
             int VarCompanyNo = Convert.ToInt32(Session["varCompanyno"].ToString());
             hncomp.Value = VarCompanyNo.ToString();
             //hncomp.Value = VarCompanyNo.ToString();
-            string Str = "Select CI.CompanyId,CompanyName from CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserid"] + " And CI. MasterCompanyId=" + Session["varCompanyId"].ToString() + @" Order By CompanyName";
+            string Str = "Select CI.CompanyId,CompanyName from CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserid"] + " And CI. MasterCompanyId=" + Session["varMasterCompanyIDForERP"].ToString() + @" Order By CompanyName";
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, Ds, 0, true, "--SELECT--");
@@ -51,7 +51,7 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
         string Str = @"select Distinct E.EMpId,E.Empname +'/'+Address 
         From Empinfo E(nolock)
         JOIN PurchaseReceiveMaster PM(nolock) ON PM.PartyId = E.EmpId And Challan_Status = 0 
-        Where E.MasterCompanyid=" + Session["varCompanyId"];
+        Where E.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
 
         Str = Str + " Order By E.Empname +'/'+Address";
 
@@ -61,7 +61,7 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
                 From Empinfo E(nolock)
                 JOIN VendorUser VU(nolock) ON VU.EmpID = E.EmpId And VU.UserID = " + Session["varuserid"] + @" 
                 JOIN PurchaseReceiveMaster PM(nolock) ON PM.PartyId = E.EmpId And Challan_Status = 0 
-                Where E.MasterCompanyid = " + Session["varCompanyId"] + " Order By E.Empname +'/'+Address "; 
+                Where E.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By E.Empname +'/'+Address "; 
         }
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -86,7 +86,7 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
         {
             str = @"select PurchaseReceiveId,BillNo+'|'+Replace(Convert(nvarchar(11),ReceiveDate,106),' ','-') As ChallanNo 
             From PurchaseReceiveMaster(Nolock) 
-            Where CompanyId=" + DDCompany.SelectedValue + " And MasterCompanyId=" + Session["VarcompanyId"] + @" And PartyId=" + DDPartyName.SelectedValue + " ";
+            Where CompanyId=" + DDCompany.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And PartyId=" + DDPartyName.SelectedValue + " ";
             str = str + " AND Challan_Status= 0";
             //if (chkcomplete.Checked == true)
             //{
@@ -102,7 +102,7 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
         {
             str = @"select PurchaseReceiveId,BillNo+'|'+Replace(Convert(nvarchar(11),ReceiveDate,106),' ','-') As ChallanNo 
             From PurchaseReceiveMaster(Nolock)  
-            Where CompanyId=" + DDCompany.SelectedValue + " And MasterCompanyId=" + Session["VarcompanyId"] + @" And 
+            Where CompanyId=" + DDCompany.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And 
             PartyId=" + DDPartyName.SelectedValue + @" AND BillNo in (Select distinct ChallanNO from PurchaseReturnMaster Where PartyID=" + DDPartyName.SelectedValue + @") ";
             str = str + " AND Challan_Status= 0";
             //if (chkcomplete.Checked == true)
@@ -239,7 +239,7 @@ public partial class Masters_Purchase_frmPurchaseReturn : System.Web.UI.Page
                     _param[0] = new SqlParameter("@PartyID", lblPartyId.Text);
                     _param[1] = new SqlParameter("@CompanyID", DDCompany.SelectedValue);
                     _param[2] = new SqlParameter("@UserID", Session["varuserid"]);
-                    _param[3] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"]);
+                    _param[3] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                     _param[4] = new SqlParameter("@GatePassNo", SqlDbType.NVarChar, 50);
                     _param[4].Direction = ParameterDirection.InputOutput;
                     if (ViewState["IsEdit"].ToString() == "0")

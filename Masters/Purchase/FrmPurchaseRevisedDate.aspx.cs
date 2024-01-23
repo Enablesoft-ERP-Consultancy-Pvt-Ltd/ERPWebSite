@@ -12,10 +12,13 @@ public partial class Masters_Purchase_FrmPurchaseRevisedDate : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (!IsPostBack)
         {
-            if (Session["varCompanyId"].ToString() == "7")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "7")
             {
                 if (Session["varuserid"].ToString() == "1" || Session["varuserid"].ToString() == "12")
                 {
@@ -26,7 +29,7 @@ public partial class Masters_Purchase_FrmPurchaseRevisedDate : System.Web.UI.Pag
                     BtnSave.Visible = false;
                 }
             }
-            UtilityModule.ConditionalComboFill(ref ddCatagory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from CategorySeparate CS,ITEM_CATEGORY_MASTER IM ,UserRights_Category UC  Where IM.Category_Id=UC.Categoryid And UC.UserId=" + Session["varuserid"] + " And IM.Category_Id=CS.CategoryId And IM.MasterCompanyId=" + Session["varCompanyId"] + "  Order by CATEGORY_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddCatagory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from CategorySeparate CS,ITEM_CATEGORY_MASTER IM ,UserRights_Category UC  Where IM.Category_Id=UC.Categoryid And UC.UserId=" + Session["varuserid"] + " And IM.Category_Id=CS.CategoryId And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order by CATEGORY_NAME", true, "--SELECT--");
             if (ddCatagory.Items.Count > 0)
             {
                 ddCatagory.SelectedIndex = 1;
@@ -42,7 +45,7 @@ public partial class Masters_Purchase_FrmPurchaseRevisedDate : System.Web.UI.Pag
     }
     private void fillemp()
     {
-        UtilityModule.ConditionalComboFill(ref DdEmp, "select Distinct empid,empname from PurchaseIndentIssue pii left outer join Ordermaster om On pii.orderid=om.orderid inner join Orderdetail od On od.orderid=om.orderid inner join V_FinishedItemDetail v On v.item_finished_id=od.Item_Finished_Id inner join Empinfo e On e.empid=pii.partyid Where om.status=0 and v.CATEGORY_ID=" + ddCatagory.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"] + " order by empname", true, "-Select-");
+        UtilityModule.ConditionalComboFill(ref DdEmp, "select Distinct empid,empname from PurchaseIndentIssue pii left outer join Ordermaster om On pii.orderid=om.orderid inner join Orderdetail od On od.orderid=om.orderid inner join V_FinishedItemDetail v On v.item_finished_id=od.Item_Finished_Id inner join Empinfo e On e.empid=pii.partyid Where om.status=0 and v.CATEGORY_ID=" + ddCatagory.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by empname", true, "-Select-");
     }
     private void FillGrid()
     {
@@ -50,7 +53,7 @@ public partial class Masters_Purchase_FrmPurchaseRevisedDate : System.Web.UI.Pag
         str = @"select Distinct om.LocalOrder+' '+CustomerOrderNo OrderNo,PindentIssueid,replace(convert(varchar(11),pii.duedate,106),' ','-')as duedate,pii.status from PurchaseIndentIssue pii left outer join 
               Ordermaster om On pii.orderid=om.orderid inner join Orderdetail od On od.orderid=om.orderid inner join 
               V_FinishedItemDetail v On v.item_finished_id=od.Item_Finished_Id inner join UserRights_Category uc On uc.CategoryId=v.CATEGORY_ID 
-              Where om.status=0 and pii.status='Pending' and v.CATEGORY_ID=" + ddCatagory.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"];
+              Where om.status=0 and pii.status='Pending' and v.CATEGORY_ID=" + ddCatagory.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DdEmp.SelectedIndex > 0)
         {
             str=str+" and pii.partyid=" + DdEmp.SelectedValue + "";
@@ -150,7 +153,7 @@ public partial class Masters_Purchase_FrmPurchaseRevisedDate : System.Web.UI.Pag
             string resourcedatabaseid = e.CommandArgument.ToString();
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select CATEGORY_NAME +'  '+ITEM_NAME+'  '+QualityName+'  '+designName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName as description,
             Sum(quantity) as Qty,V.ITEM_FINISHED_ID,pii.PindentIssueid from PurchaseIndentIssue pii inner join PurchaseIndentIssueTran pit On pii.PindentIssueid=pit.PindentIssueid inner join 
-            V_FinishedItemDetail V On V.ITEM_FINISHED_ID=pit.Finishedid where pii.PindentIssueid=" + resourcedatabaseid + " And V.MasterCompanyId=" + Session["varCompanyId"] + " group by CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,V.ITEM_FINISHED_ID,pii.PindentIssueid");
+            V_FinishedItemDetail V On V.ITEM_FINISHED_ID=pit.Finishedid where pii.PindentIssueid=" + resourcedatabaseid + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,V.ITEM_FINISHED_ID,pii.PindentIssueid");
             GridView1.DataSource = ds;
             GridView1.DataBind();
         }

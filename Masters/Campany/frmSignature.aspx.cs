@@ -11,7 +11,7 @@ public partial class Masters_Campany_Design : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -47,7 +47,7 @@ public partial class Masters_Campany_Design : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string sqlstr = "Select SignatoryId as ID,SignatoryName from Signatory Where MasterCompanyId=" + Session["varCompanyId"] + " Order by SignatoryId";
+            string sqlstr = "Select SignatoryId as ID,SignatoryName from Signatory Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by SignatoryId";
             DS = SqlHelper.ExecuteDataset(con, CommandType.Text, sqlstr);
         }
         catch (Exception ex)
@@ -78,11 +78,11 @@ public partial class Masters_Campany_Design : CustomPage
             string sqlstr;
             if (btnsave.Text == "Update")
             {
-                sqlstr = "Select Isnull(SignatoryId,0) from Signatory where SignatoryName='" + TxtSignature.Text + "' and SignatoryID !=" + DGSignature.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                sqlstr = "Select Isnull(SignatoryId,0) from Signatory where SignatoryName='" + TxtSignature.Text + "' and SignatoryID !=" + DGSignature.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                sqlstr = "Select Isnull(max(SignatoryId),0) from Signatory where SignatoryName='" + TxtSignature.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                sqlstr = "Select Isnull(max(SignatoryId),0) from Signatory where SignatoryName='" + TxtSignature.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
                 int Processid = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, sqlstr));
             if (Processid > 0)
@@ -137,7 +137,7 @@ public partial class Masters_Campany_Design : CustomPage
                         else
                         {
                              id = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(SignatoryId),0)+1 from Signatory"));
-                            string sqlstr = "Insert into Signatory (SignatoryId,SignatoryName,userid,MasterCompanyid) values (" + id + ",'" + TxtSignature.Text.ToUpper() + "'," + Convert.ToInt32(Session["varuserid"])+","+Convert.ToInt32(Session["varCompanyId"])+")";
+                            string sqlstr = "Insert into Signatory (SignatoryId,SignatoryName,userid,MasterCompanyid) values (" + id + ",'" + TxtSignature.Text.ToUpper() + "'," + Convert.ToInt32(Session["varuserid"])+","+Convert.ToInt32(Session["varMasterCompanyIDForERP"])+")";
                             SqlHelper.ExecuteNonQuery(con, CommandType.Text, sqlstr);
                             status = "Insert";
                             LblErrer.Visible = true;
@@ -146,7 +146,7 @@ public partial class Masters_Campany_Design : CustomPage
                             TxtSignature.Text = "";
                         }
                         DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Signatory'," + id + ",getdate(),'"+status+"')");
+                        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Signatory'," + id + ",getdate(),'"+status+"')");
                    }
 
                 }
@@ -178,12 +178,12 @@ public partial class Masters_Campany_Design : CustomPage
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Sigantory from CompanyInfo where MasterCompanyId=" + Session["varCompanyId"] + " And Sigantory=" + Session["id"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Sigantory from CompanyInfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And Sigantory=" + Session["id"].ToString()));
             if (id <= 0)
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Signatory where SignatoryId=" + Session["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Signatory'," + Session["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Signatory'," + Session["id"].ToString() + ",getdate(),'Delete')");
                 TxtSignature.Text = "";
                 LblErrer.Visible = true;
                 LblErrer.Text = "Value Deleted...";

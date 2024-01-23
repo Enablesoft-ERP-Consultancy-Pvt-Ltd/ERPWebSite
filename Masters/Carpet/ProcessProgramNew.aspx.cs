@@ -13,7 +13,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
         {
             logo();
 
-            UtilityModule.ConditionalComboFill(ref ddcompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddcompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
             if (ddcompany.Items.FindByValue(Session["CurrentWorkingCompanyID"].ToString()) != null)
             {
                 ddcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -29,7 +29,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
                 CompanySelectedChange();
             }
 
-            UtilityModule.ConditionalComboFill(ref ddprocess, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " Order by PROCESS_NAME", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddprocess, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by PROCESS_NAME", true, "--Select--");
             if (ddprocess.Items.Count > 0)
             {
                 ddprocess.SelectedValue = "5";
@@ -44,16 +44,16 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
     {
         if (ddcompany.SelectedIndex > 0)
         {
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 6:  ///Art INdia
-                    UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by CustomerId", true, "--Select--");
+                    UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CustomerId", true, "--Select--");
                     break;
                 default:
-                    UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5) +CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by CustomerId", true, "--Select--");
+                    UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5) +CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CustomerId", true, "--Select--");
                     break;
             }
-            //UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by CustomerId", true, "--Select--");
+            //UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CustomerId", true, "--Select--");
         }
     }
     protected void ddcustomer_SelectedIndexChanged(object sender, EventArgs e)
@@ -64,7 +64,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
     {
         if (ChekEdit.Checked == true)
         {
-            string str1 = "Select DISTINCT PPID,PPID From Ordermaster OM,CustomerInfo CI,ProcessProgram P Where OM.OrderID=P.Order_Id And OM.CustomerId=CI.CustomerId And OM.CustomerId=" + ddcustomer.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " and P.Process_id=" + ddprocess.SelectedValue;
+            string str1 = "Select DISTINCT PPID,PPID From Ordermaster OM,CustomerInfo CI,ProcessProgram P Where OM.OrderID=P.Order_Id And OM.CustomerId=CI.CustomerId And OM.CustomerId=" + ddcustomer.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and P.Process_id=" + ddprocess.SelectedValue;
             UtilityModule.ConditionalComboFill(ref ddprocessprogram, str1, true, "--Select--");
             txtprocessprogram.Visible = false;
             lblprocessprogram.Visible = false;
@@ -76,7 +76,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
             string str1 = @"Select OM.OrderId,LocalOrder+' / '+CustomerOrderNo+' / '+CustomerCode+' / '+replace(convert(varchar(11),ProdReqDate,106), ' ','-') as OrderNo 
                           From CustomerInfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And 
                           OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 And 
-                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varCompanyId"] + " And OM.OrderId Not IN(Select Order_Id From ProcessProgram WHERE Process_ID=" + ddprocess.SelectedValue + @") 
+                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And OM.OrderId Not IN(Select Order_Id From ProcessProgram WHERE Process_ID=" + ddprocess.SelectedValue + @") 
                           Group By  OM.Orderid,LocalOrder,CustomerOrderNo,CustomerCode,ProdReqDate Order By ProdReqDate ASC";
             UtilityModule.ConditonalChkBoxListFill(ref chekboxlist, str1);
             lblprocessprogram.Visible = true;
@@ -90,7 +90,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
         string str1 = @"Select OM.OrderId,LocalOrder+' / '+CustomerOrderNo+' / '+CustomerCode+' / '+replace(convert(varchar(11),ProdReqDate,106), ' ','-') as OrderNo 
                           From CustomerInfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And 
                           OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 And 
-                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varCompanyId"] + @" And OM.OrderId Not IN(Select Order_Id From ProcessProgram) 
+                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And OM.OrderId Not IN(Select Order_Id From ProcessProgram) 
                           Group By  OM.Orderid,LocalOrder,CustomerOrderNo,CustomerCode,ProdReqDate Order By ProdReqDate ASC";
         UtilityModule.ConditonalChkBoxListFill(ref chekboxlist, str1);
         DataSet ds = null;
@@ -98,7 +98,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
         try
         {
             fill_ConsumptionGride();
-            string strsql = @"Select Distinct O.orderid,LocalOrder+' / '+Customerorderno +' / '+CustomerCode+' / '+replace(convert(varchar(11),isnull(ProdReqDate,''),106), ' ','-') as OrderNo from ordermaster o inner join OrderDetail OD on OD.OrderId=o.OrderId inner join Customerinfo C on o.Customerid=C.Customerid  inner join processprogram on o.orderid=order_id and ppid=" + ddprocessprogram.SelectedValue + " And C.MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = @"Select Distinct O.orderid,LocalOrder+' / '+Customerorderno +' / '+CustomerCode+' / '+replace(convert(varchar(11),isnull(ProdReqDate,''),106), ' ','-') as OrderNo from ordermaster o inner join OrderDetail OD on OD.OrderId=o.OrderId inner join Customerinfo C on o.Customerid=C.Customerid  inner join processprogram on o.orderid=order_id and ppid=" + ddprocessprogram.SelectedValue + " And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
 
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -179,7 +179,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
             _arrPara[3].Direction = ParameterDirection.InputOutput;
             _arrPara[3].Value = Convert.ToInt32(ppid);
             _arrPara[4].Value = Session["varuserid"].ToString();
-            _arrPara[5].Value = Session["varCompanyId"].ToString();
+            _arrPara[5].Value = Session["varMasterCompanyIDForERP"].ToString();
             int n = chekboxlist.Items.Count;
             for (int i = 0; i < n; i++)
             {
@@ -201,7 +201,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
             _arrPara2[0].Value = OrderId;
             _arrPara2[1].Value = Convert.ToInt32(ppid);
             _arrPara2[2].Value = Session["varuserid"].ToString();
-            _arrPara2[3].Value = Session["varCompanyId"].ToString();
+            _arrPara2[3].Value = Session["varMasterCompanyIDForERP"].ToString();
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "Pro_GetProcessProgQtyDetails", _arrPara2);
 
@@ -263,7 +263,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
                 _arrPara[3].Value = Convert.ToDouble(Qty);
                 _arrPara[4].Value = Convert.ToDouble(ExQty);
                 _arrPara[5].Value = Session["varuserid"].ToString();
-                _arrPara[6].Value = Session["varCompanyId"].ToString();
+                _arrPara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
 
                 SqlHelper.ExecuteNonQuery(tran, CommandType.Text, "Update Top(1) PP_Consumption Set ExtraQty=@ExtraQty Where PPID=" + _arrPara[0].Value + " and OrderId=(Select Order_Id From ProcessProgram Where PPID=" + _arrPara[0].Value + ") and FinishedId=" + _arrPara[1].Value);
 
@@ -286,10 +286,10 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
         try
         {
             string strsql = null;
-            strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=0 And P.MasterCompanyId=" + Session["varCompanyId"];
+            strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=0 And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ChekEdit.Checked == true)
             {
-                strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=" + ddcustomer.SelectedValue + " And P.MasterCompanyId=" + Session["varCompanyId"];
+                strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=" + ddcustomer.SelectedValue + " And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -318,7 +318,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
             txtprocessprogram.Text = "";
             ddprocessprogram.Visible = true;
             lblprocessprogram1.Visible = true;
-            UtilityModule.ConditionalComboFill(ref ddprocessprogram, "select distinct PPID,PPID from processprogram PP inner join OrderMaster  OM on OM.OrderId=PP.Order_Id where Process_Id=" + ddprocess.SelectedValue + " and CustomerId=" + ddcustomer.SelectedValue + " And PP.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddprocessprogram, "select distinct PPID,PPID from processprogram PP inner join OrderMaster  OM on OM.OrderId=PP.Order_Id where Process_Id=" + ddprocess.SelectedValue + " and CustomerId=" + ddcustomer.SelectedValue + " And PP.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         }
         else
         {
@@ -345,7 +345,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
             if (ChekEdit.Checked == true)
             {
                 strsql = @"SELECT PC.FINISHEDID,sum(QTY) QTY,sum(ExtraQty) ExtraQty,IM.ITEM_NAME+'/'+FI2.Quality+'/'+ FI2.ShadeColor Description,OM.LocalOrder ORDERNO  FROM   PP_CONSUMPTION PC INNER JOIN ViewFindFinishedId2 FI2 ON PC.FINISHEDID=FI2.Finishedid 
-                         INNER JOIN ITEM_MASTER IM ON IM.ITEM_ID=FI2.ITEM_ID inner join OrderMaster OM on OM.OrderId=PC.OrderId where PPID=" + ddprocessprogram.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Group BY PC.FINISHEDID,OM.LocalOrder,ITEM_NAME,FI2.Quality,FI2.ShadeColor ";
+                         INNER JOIN ITEM_MASTER IM ON IM.ITEM_ID=FI2.ITEM_ID inner join OrderMaster OM on OM.OrderId=PC.OrderId where PPID=" + ddprocessprogram.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Group BY PC.FINISHEDID,OM.LocalOrder,ITEM_NAME,FI2.Quality,FI2.ShadeColor ";
             }
             else
             {
@@ -420,7 +420,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
                        Sum(PreProdAssignedQty) QTY,[dbo].[GET_ORDER_CONSUMPTION_DEFINE_OR_NOT] (OM.Orderid,JA.Item_Finished_Id) ConsmpOrderDetailId
                        From OrderMaster OM,OrderDetail OD,V_FinishedItemDetailNew IPM,Jobassigns JA 
                        Where OM.Orderid=OD.Orderid And OD.Item_Finished_Id=JA.Item_Finished_Id And OM.Orderid=JA.Orderid And IPM.Item_Finished_Id=JA.Item_Finished_Id And 
-                       PreProdAssignedQty>0 And OM.Orderid=" + orderid + "  And IPM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                       PreProdAssignedQty>0 And OM.Orderid=" + orderid + "  And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                        Group By OM.OrderId,Item_Name,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,OrderUnitID,SizeMtr,SizeFt,SizeInch,Od.flagsize,JA.Item_Finished_Id";
             con.Open();
 
@@ -445,14 +445,14 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
         imgLogo.ImageUrl.DefaultIfEmpty();
-        imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+        imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         if (Session["varCompanyName"] == null)
         {
             Response.Redirect("~/Login.aspx");
@@ -520,7 +520,7 @@ public partial class Masters_Carpet_ProcessProgramNew : System.Web.UI.Page
 
 
             _arrPara[0].Value = ddprocessprogram.SelectedValue;
-            _arrPara[1].Value = Session["varCompanyId"].ToString();
+            _arrPara[1].Value = Session["varMasterCompanyIDForERP"].ToString();
 
             DataSet ds = SqlHelper.ExecuteDataset(tran, CommandType.StoredProcedure, "Pro_GetReportNewConsumpOrder", _arrPara);
 

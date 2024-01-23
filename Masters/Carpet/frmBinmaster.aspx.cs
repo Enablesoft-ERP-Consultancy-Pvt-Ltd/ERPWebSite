@@ -11,7 +11,7 @@ public partial class Masters_Carpet_frmBinmaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -39,7 +39,7 @@ public partial class Masters_Carpet_frmBinmaster : System.Web.UI.Page
             param[2] = new SqlParameter("@Capacity", txtcapacity.Text == "" ? "0" : txtcapacity.Text);
             param[3] = new SqlParameter("@GodownId", DDgodown.SelectedValue);
             param[4] = new SqlParameter("@userid", Session["varuserid"]);
-            param[5] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[6].Direction = ParameterDirection.Output;
             //**************

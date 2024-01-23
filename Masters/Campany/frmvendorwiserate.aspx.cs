@@ -13,7 +13,7 @@ public partial class Masters_Campany_frmvendorwiserate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -78,9 +78,9 @@ public partial class Masters_Campany_frmvendorwiserate : System.Web.UI.Page
         }
 
         string str;
-        str = @"SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
+        str = @"SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
             select ShadecolorId,ShadeColorName from  shadecolor order by ShadeColorName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (tdDesign.Visible == true)
@@ -117,7 +117,7 @@ public partial class Masters_Campany_frmvendorwiserate : System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, txtprodcode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, txtprodcode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             string insert = "insert into vendorwiseitemrate(VendorId,Item_Finished_id,Rate,Userid,Sizeflag,Processid) values (" + ViewState["vendorid"] + "," + varfinishedid + "," + txtrate.Text + "," + Session["varuserid"] + "," +(TDSize.Visible==true?DDsizetype.SelectedValue:"0") + "," + DDprocess.SelectedValue + ")";
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, insert);
             lblmsg.Text = "Data Saved successfully...";
@@ -198,7 +198,7 @@ public partial class Masters_Campany_frmvendorwiserate : System.Web.UI.Page
         }
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref Size, str, true, "--Select--");
     }

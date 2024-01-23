@@ -10,14 +10,14 @@ public partial class Masters_Process_frmEditNextIssueForAnisa : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyID"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             //UtilityModule.ConditionalComboFill(ref ddUnits, "select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + " order by U.unitsId", true, "");
-            if (Session["varcompanyid"].ToString()=="8")
+            if (Session["varMasterCompanyIDForERP"].ToString()=="8")
             {
                 UtilityModule.ConditionalComboFill(ref DDTOProcess, "select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER Where PROCESS_NAME_ID<>1 order by Process_Name", true, "--Plz Select Process--");    
             }
@@ -146,7 +146,7 @@ public partial class Masters_Process_frmEditNextIssueForAnisa : System.Web.UI.Pa
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar,100);
             param[4].Direction = ParameterDirection.Output;
             param[5] = new SqlParameter("@userid", Session["varuserid"]);
-            param[6] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);            
+            param[6] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);            
             
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteNextIssue", param);
 

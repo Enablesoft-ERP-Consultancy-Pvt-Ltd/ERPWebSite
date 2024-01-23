@@ -11,13 +11,13 @@ public partial class Masters_Hissab_PurchaseBillDetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName");
+            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
             if (DDCompanyName.Items.Count > 0)
             {
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -32,9 +32,9 @@ public partial class Masters_Hissab_PurchaseBillDetail : System.Web.UI.Page
         {
             DataSet ds = new DataSet();
             if (DDbillName.SelectedValue == "1")
-                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select empname as party,partyid as partyid,phissabid,billno,Amount,replace(convert(varchar(11),Date,106), ' ','-') as date from PurchaseHissab ph,empinfo e where ph.partyid=e.empid  and phissabid not in(select phissabid from PurchaseBillDetail where BILLStatus=1) and ph.companyid=" + DDCompanyName.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + "");
+                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select empname as party,partyid as partyid,phissabid,billno,Amount,replace(convert(varchar(11),Date,106), ' ','-') as date from PurchaseHissab ph,empinfo e where ph.partyid=e.empid  and phissabid not in(select phissabid from PurchaseBillDetail where BILLStatus=1) and ph.companyid=" + DDCompanyName.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             else if (DDbillName.SelectedValue == "2")
-                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select empname as party,partyid as partyid,phissabid,billno,Amount,replace(convert(varchar(11),Date,106), ' ','-') as date from PurchaseHissab ph,empinfo e where ph.partyid=e.empid and billstatus=1 and phissabid not in(select phissabid from PurchaseBillDetail where BILLStatus=0) and ph.companyid=" + DDCompanyName.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + "");
+                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select empname as party,partyid as partyid,phissabid,billno,Amount,replace(convert(varchar(11),Date,106), ' ','-') as date from PurchaseHissab ph,empinfo e where ph.partyid=e.empid and billstatus=1 and phissabid not in(select phissabid from PurchaseBillDetail where BILLStatus=0) and ph.companyid=" + DDCompanyName.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             DGbillnoDetail.DataSource = ds;
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -56,7 +56,7 @@ public partial class Masters_Hissab_PurchaseBillDetail : System.Web.UI.Page
     public string getgiven(string strVal, string strval1)
     {
         string val = "";
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(payamount),0) from PurchaseBillDetail where phissabid=" + strVal + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(payamount),0) from PurchaseBillDetail where phissabid=" + strVal + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         val = Convert.ToString(Convert.ToDouble(strval1) - Convert.ToDouble(ds.Tables[0].Rows[0][0].ToString()));
         hnbal.Value = val;
         return val;
@@ -92,7 +92,7 @@ public partial class Masters_Hissab_PurchaseBillDetail : System.Web.UI.Page
                     _arrPara[0].Value = 0;
                     _arrPara[1].Value = Convert.ToInt32(((Label)DGbillnoDetail.Rows[i].FindControl("lblphissabidid")).Text);
                     _arrPara[2].Value = DDCompanyName.SelectedValue;
-                    _arrPara[3].Value = Session["varCompanyId"];
+                    _arrPara[3].Value = Session["varMasterCompanyIDForERP"];
                     _arrPara[4].Value = Session["varuserid"];
                     _arrPara[5].Value = ((Label)DGbillnoDetail.Rows[i].FindControl("lblpartyid")).Text;
                     _arrPara[6].Value = DGbillnoDetail.Rows[i].Cells[2].Text;
@@ -164,7 +164,7 @@ public partial class Masters_Hissab_PurchaseBillDetail : System.Web.UI.Page
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select billno as challanno,sum(prd.rate*prd.qty) Amt,replace(convert(varchar(11),receiveDate,106), ' ','-') as date
                      from PurchaseReceiveDetail prd inner join 
                     PurchaseReceiveMaster prm on prd.purchasereceiveid=prm.purchasereceiveid                                          
-                    where prm.billno in(select challanno from Bill_ChallanDetail where billid=" + hnhissabid.Value + " ) and prm.partyid=" + hnpartyid.Value + " And prm.MasterCompanyId=" + Session["varCompanyId"] + "  group by billno,billno1,receiveDate");
+                    where prm.billno in(select challanno from Bill_ChallanDetail where billid=" + hnhissabid.Value + " ) and prm.partyid=" + hnpartyid.Value + " And prm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  group by billno,billno1,receiveDate");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 DGchallanDETAIL.DataSource = ds;

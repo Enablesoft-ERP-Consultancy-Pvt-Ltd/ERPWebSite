@@ -12,7 +12,7 @@ public partial class Masters_Packing_FrmPNMToChampoCarpetOutWardChallan : System
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_Packing_FrmPNMToChampoCarpetOutWardChallan : System
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                             From Companyinfo CI(Nolock)
                             JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-                            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName";
+                            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -66,7 +66,7 @@ public partial class Masters_Packing_FrmPNMToChampoCarpetOutWardChallan : System
                     cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 500);
                     cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;
                     cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                    cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+                    cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                     cmd.Parameters.AddWithValue("@Remark", TxtRemark.Text);
 
                     cmd.ExecuteNonQuery();
@@ -213,7 +213,7 @@ public partial class Masters_Packing_FrmPNMToChampoCarpetOutWardChallan : System
             TDDDIssueNo.Visible = true;
             string str = @"Select Distinct a.IssueNo, a.IssueNo 
                     From StockNoOutWardChallan a(Nolock)
-                    Where MasterCompanyID = " + Session["varCompanyId"] + " And CompanyID = " + DDCompanyName .SelectedValue + @" 
+                    Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + DDCompanyName .SelectedValue + @" 
                     Order By a.IssueNo";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);

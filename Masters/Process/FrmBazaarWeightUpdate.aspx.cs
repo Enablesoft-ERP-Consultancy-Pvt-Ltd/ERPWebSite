@@ -12,13 +12,13 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                             Select UnitID, UnitName From Unit(Nolock) Where UnitID in (1, 2) ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, false, "");
@@ -165,7 +165,7 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
                 param[1] = new SqlParameter("@ReceiveDate", txtBazaarDate.Text);
                 param[2] = new SqlParameter("@DetailData", DetailData);
                 param[3] = new SqlParameter("@userid", Session["varuserid"]);
-                param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[5].Direction = ParameterDirection.Output;
 
@@ -265,7 +265,7 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@ReceiveDate", txtBazaarDate.Text);
             cmd.Parameters.AddWithValue("@DetailData", DetailData);
             cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+            cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.Add("@msg", SqlDbType.VarChar, 500);
             cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
 
@@ -289,7 +289,7 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
             //param[1] = new SqlParameter("@ReceiveDate", txtBazaarDate.Text);
             //param[2] = new SqlParameter("@DetailData", DetailData);
             //param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            //param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            //param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             //param[5].Direction = ParameterDirection.Output;
 

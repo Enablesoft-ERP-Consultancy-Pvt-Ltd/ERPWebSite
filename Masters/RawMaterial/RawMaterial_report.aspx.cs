@@ -13,8 +13,8 @@ public partial class Masters_RawMaterial_RawMaterial_report : System.Web.UI.Page
     static int MasterCompanyId;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -86,7 +86,7 @@ public partial class Masters_RawMaterial_RawMaterial_report : System.Web.UI.Page
     {
         if (TxtProdCode.Text != "")
         {
-            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select item_finished_id from ITEM_PARAMETER_MASTER where productcode='" + TxtProdCode.Text + "' And MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select item_finished_id from ITEM_PARAMETER_MASTER where productcode='" + TxtProdCode.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 Session["item_finished_id"] = ds.Tables[0].Rows[0][0].ToString();

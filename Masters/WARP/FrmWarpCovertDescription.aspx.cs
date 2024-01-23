@@ -12,7 +12,7 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                 From CompanyInfo CI(Nolock)
                 JOIN WARPLOOMMASTER WLM(Nolock) ON WLM.CompanyId = CI.CompanyId 
-                JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And CA.MasterCompanyid = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And CA.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
 
                 Select Distinct D.Departmentid, D.Departmentname 
                 From Department D(Nolock) 
@@ -31,9 +31,9 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
                 Select Distinct PROCESS_NAME_ID,PROCESS_NAME 
                 From Process_Name_Master PNM(Nolock) 
                 JOIN WARPLOOMMASTER WLM(Nolock) ON WLM.Processid = PNM.PROCESS_NAME_ID And WLM.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
-                Where MasterCompanyid = " + Session["varCompanyId"] + @" 
+                Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
 
-                Select CustomerID, CustomerCode + '  ' + CompanyName Customer From Customerinfo CI(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + @" Order By Customer ";
+                Select CustomerID, CustomerCode + '  ' + CompanyName Customer From Customerinfo CI(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By Customer ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -61,7 +61,7 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
                 From Process_Name_Master PNM(Nolock) 
                 JOIN WARPLOOMMASTER WLM(Nolock) ON WLM.Processid = PNM.PROCESS_NAME_ID And WLM.CompanyID = " + DDcompany.SelectedValue + @" 
                     And WLM.DeptId = " + DDDept.SelectedValue + @"
-                Where MasterCompanyid = " + Session["varCompanyId"], true, "--Plz Select--");
+                Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"], true, "--Plz Select--");
     }
     protected void DDProcess_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -401,7 +401,7 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
                 param[14] = new SqlParameter("@AREA", AREA.Text);
                 param[15] = new SqlParameter("@OSIZEFLAG", OSIZEFLAG);
                 param[16] = new SqlParameter("@USERID", Session["varuserid"]);
-                param[17] = new SqlParameter("@MASTERCOMPANYID", Session["varCompanyId"]);
+                param[17] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
                 param[18] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
                 param[18].Direction = ParameterDirection.Output;
 
@@ -564,7 +564,7 @@ public partial class Masters_WARP_FrmWarpCovertDescription : System.Web.UI.Page
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Effectivedate", txtissuedate.Text);
             param[5] = new SqlParameter("@EmpId", DDEmp.SelectedValue);
-            param[6] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[6] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             //****************
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETARTICLEBEAMDESCRIPTION", param);
             GDBeamDescription.DataSource = ds.Tables[0];

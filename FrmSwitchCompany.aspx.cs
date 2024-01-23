@@ -12,7 +12,7 @@ public partial class FrmSwitchCompany : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class FrmSwitchCompany : System.Web.UI.Page
         {
             string strsql = @"Select CI.CompanyId, CI.CompanyName 
             From CompanyInfo CI(Nolock) 
-            JOIN Company_Authentication CA(Nolock) ON CA.MasterCompanyId = " + Session["varCompanyId"] + @" And 
+            JOIN Company_Authentication CA(Nolock) ON CA.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" And 
                 CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserid"] + " Order By CI.CompanyId";
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -62,7 +62,7 @@ public partial class FrmSwitchCompany : System.Web.UI.Page
        
             Str = @"Select CI.CompanyId, case When "+Session["VarCompanyNo"].ToString()+@"=43 then CI.CompanyName else (Select MC.CompanyName From Master_Company MC(Nolock) Where MC.CompanyId = CA.MasterCompanyId) End + Case When IsNull(CI.ShortName, '') = '' Then '' Else '(' + IsNull(CI.ShortName, '')  + ')' End CompanyName 
             From CompanyInfo CI(Nolock) 
-            JOIN Company_Authentication CA(Nolock) ON CA.MasterCompanyId = " + Session["varCompanyId"] + " And CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserid"] + @" 
+            JOIN Company_Authentication CA(Nolock) ON CA.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserid"] + @" 
             Where CI.CompanyId = " + DGSwitchCompany.SelectedDataKey.Value;
              
 

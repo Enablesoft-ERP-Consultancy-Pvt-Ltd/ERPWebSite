@@ -12,6 +12,10 @@ public partial class UserControls_SearchA : System.Web.UI.UserControl
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (!IsPostBack)
         {
             UtilityModule.ConditionalComboFill(ref ddlItem, "select Masterqualityid,Quality from qualitymaster Order by Masterqualityid", true, "Select Item");

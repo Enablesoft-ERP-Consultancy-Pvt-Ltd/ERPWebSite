@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,13 +23,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock)
                         JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                         Select EI.EmpId,EI.EmpName + case When isnull(Ei.empcode,'')='' then '' else ' ['+EI.empcode+']' end as Empname  
                         From EmpInfo  EI 
 						Join EmpProcess EP on EP.EmpId = EI.EmpId and EP.ProcessId = 1 
-                        Where EI.MastercompanyId = " + Session["varcompanyId"] + @" order by EI.EmpName
+                        Where EI.MastercompanyId = " + Session["varMasterCompanyIDForERP"] + @" order by EI.EmpName
                         select CATEGORY_ID,CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM 
-                        Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By CustomerCode
+                        Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CustomerCode
                         SELECT DISTINCT U.UNITSID,U.UNITNAME  FROM UNITS U INNER JOIN UNITS_AUTHENTICATION UA ON  U.UnitsId=UA.UnitsId WHERE UA.USERID=" + Session["varuserid"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -123,14 +123,14 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 //RdConsumptionreport.Visible = false;
                 //TD3.Visible = false;
             }
-            else if (Session["varcompanyId"].ToString() == "41")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "41")
             {
                 TDInternalBucket.Visible = false;
                 TDIssRecConsumpSummary.Visible = false;
                 Td1.Visible = false;
                 TDWeaverOrderStatus.Visible = false;
             }
-            else if (Session["varcompanyId"].ToString() == "42")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "42")
             {
                 TDWeaverAdvancePaymentFolioWise.Visible = true;
                 TDChampoPNMAmtDifference.Visible = false;
@@ -145,7 +145,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDDouraReport.Visible = true;
 
             }
-            else if (Session["varcompanyId"].ToString() == "39")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "39")
             {
                 TDChampoPNMAmtDifference.Visible = false;
                 TDChampoExternalWeaverConsumption.Visible = true;
@@ -159,7 +159,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDWeaverAdvancePaymentFolioWise.Visible = false;
 
             }
-            else if (Session["varcompanyId"].ToString() == "44")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 TDChampoPNMAmtDifference.Visible = false;
                 TDChampoExternalWeaverConsumption.Visible = false;
@@ -173,7 +173,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDWeaverAdvancePaymentFolioWise.Visible = false;
 
             }
-            else if (Session["varcompanyId"].ToString() == "43")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "43")
             {
                 TDChampoPNMAmtDifference.Visible = false;
                 TDChampoExternalWeaverConsumption.Visible = false;
@@ -235,13 +235,13 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         {
             str = @"SELECT distinct PIM.IssueOrderId as orderNo,PIM.Issueorderid as orderid FROM PROCESS_ISSUE_MASTER_1  PIM 
                         Inner join ProcessHissabPayment PHP ON PIM.IssueOrderId=PHP.FolioNo                       
-                        Where PHP.CompanyId=" + DDCompany.SelectedValue + @" And PHP.Processid=1 And PHP.PartyId=" + DDWeaver.SelectedValue + "  And PHP.MasterCompanyId=" + Session["varCompanyId"] + " and PHP.ByFolioStatus=1";
+                        Where PHP.CompanyId=" + DDCompany.SelectedValue + @" And PHP.Processid=1 And PHP.PartyId=" + DDWeaver.SelectedValue + "  And PHP.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and PHP.ByFolioStatus=1";
         }
         else if (RDWeaverHissabReport.Checked == true && DDReportType.SelectedValue == "0")
         {
             str = @"select Distinct Id,cast(AppvNo As Nvarchar)+' / '+replace(convert(varchar(11),AppDate,106), ' ','-')
                     As AppvNo from ProcessHissabApproved PH Inner join ProcessHissabPayment PHP on PH.id=PHP.ApprovalNo
-                    Where PH.CompanyId=" + DDCompany.SelectedValue + @" And PH.Processid=1 And PH.EmpId=" + DDWeaver.SelectedValue + "  And PH.MasterCompanyId=" + Session["varCompanyId"] + " and PHP.ByFolioStatus=0";
+                    Where PH.CompanyId=" + DDCompany.SelectedValue + @" And PH.Processid=1 And PH.EmpId=" + DDWeaver.SelectedValue + "  And PH.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and PHP.ByFolioStatus=0";
         }
         else
         {
@@ -436,7 +436,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         }
         else if (RDinternalFolioDetail.Checked == true)
         {
-            if (Session["varCompanyId"].ToString() == "22")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             {
                 InternalfolioDetailDiamondExport();
             }
@@ -898,7 +898,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             //*****************
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@ReportType", DDReportType.SelectedValue);
-            param[1] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+            param[1] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[2] = new SqlParameter("@FromDate", txtfromDate.Text);
             param[3] = new SqlParameter("@ToDate", txttodate.Text);
             param[4] = new SqlParameter("@where", str);
@@ -1646,7 +1646,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             {
                 if (chksummary.Checked == true)
                 {
-                    if (Session["varCompanyId"].ToString() == "27")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "27")
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeavercarpetrecDetailsummaryAntique.rpt";
                     }
@@ -1672,15 +1672,15 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 }
                 else
                 {
-                    if (Session["varCompanyId"].ToString() == "41")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "41")
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeavercarpetrecDetailSummaryMohdRazi.rpt";
                     }
-                    else if (Session["varCompanyId"].ToString() == "42")
+                    else if (Session["varMasterCompanyIDForERP"].ToString() == "42")
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeavercarpetrecDetailVikramMirzapur.rpt";
                     }
-                    else if (Session["varCompanyId"].ToString() == "39")
+                    else if (Session["varMasterCompanyIDForERP"].ToString() == "39")
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeavercarpetrecDetailIndusKleed.rpt";
                     }
@@ -1735,12 +1735,12 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             param[1] = new SqlParameter("@empid", DDWeaver.SelectedValue);
             param[2] = new SqlParameter("@Asondate", txtfromDate.Text);
             param[3] = new SqlParameter("@where", str);
-            param[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_getweaverrawbalance", param);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "15":
                         Session["rptFileName"] = "~\\Reports\\RptweaverrawbalanceWithAmtBal.rpt";
@@ -2316,7 +2316,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -2810,7 +2810,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             }
             //*****************
             SqlParameter[] param = new SqlParameter[4];
-            param[0] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+            param[0] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[1] = new SqlParameter("@FromDate", txtfromDate.Text);
             param[2] = new SqlParameter("@ToDate", txttodate.Text);
             param[3] = new SqlParameter("@where", str);
@@ -3702,7 +3702,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             //*****************
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
-            param[1] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+            param[1] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[2] = new SqlParameter("@IssueOrderID", DDFolioNo.SelectedValue);
             param[3] = new SqlParameter("@where", str);
 
@@ -4299,7 +4299,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
             }
 
-            if (Session["varCompanyId"].ToString() == "22")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             {
                 if (ChkselectDate.Checked == false)
                 {
@@ -4490,7 +4490,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             param[1] = new SqlParameter("@empid", DDWeaver.SelectedValue);
             param[2] = new SqlParameter("@FromDate", txtfromDate.Text);
             param[3] = new SqlParameter("@ToDate", txttodate.Text);
-            param[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETCHAMPOPNMWEAVINGAMTDIFF", param);
             if (ds.Tables[0].Rows.Count > 0)
@@ -7320,7 +7320,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             ////str = str + " and " + Column2 + "";
             //*****************
             SqlParameter[] param = new SqlParameter[4];
-            param[0] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+            param[0] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[1] = new SqlParameter("@FromDate", txtfromDate.Text);
             param[2] = new SqlParameter("@ToDate", txttodate.Text);
             param[3] = new SqlParameter("@where", str);
@@ -7871,7 +7871,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@fromdate", txtfromDate.Text);
             cmd.Parameters.AddWithValue("@Todate", txttodate.Text);
             cmd.Parameters.AddWithValue("@Dateflag", ChkselectDate.Checked == true ? "1" : "0");
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
 
             DataSet ds = new DataSet();

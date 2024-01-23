@@ -12,7 +12,7 @@ public partial class Masters_Barcode_File_frmonlineloominspection : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
             return;
@@ -71,7 +71,7 @@ public partial class Masters_Barcode_File_frmonlineloominspection : System.Web.U
                 SqlParameter[] param=new SqlParameter[4];
                 param[0] = new SqlParameter("@dt", dt);
                 param[1] = new SqlParameter("@userid", Session["varuserid"]);
-                param[2] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+                param[2] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                 param[3] = new SqlParameter("@msg",SqlDbType.VarChar,100);
                 param[3].Direction = ParameterDirection.Output;
 

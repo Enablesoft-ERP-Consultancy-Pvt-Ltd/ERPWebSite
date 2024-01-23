@@ -13,8 +13,8 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     static int MasterCompanyId;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,14 +22,14 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         if (!IsPostBack)
         {
             ViewState["Prmid"] = 0;
-            Qry = @" select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname
+            Qry = @" select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname
                      select PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From PROCESS_NAME_MASTER PNM inner join UserRightsProcess URP on PNM.PROCESS_NAME_ID=URP.ProcessId and URP.Userid=" + Session["varuserid"] + @"
                      WHere PNM.ProcessType=1  order by PROCESS_NAME
                      Select VarProdCode,VarCompanyNo From MasterSetting 
                      Select ID, BranchName 
                         From BRANCHMASTER BM(nolock) 
                         JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                     Select ConeType, ConeType From ConeMaster Order By SrNo ";
 
             DSQ = SqlHelper.ExecuteDataset(Qry);
@@ -66,7 +66,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             //}
             lablechange();
             //Fill_Temp_OrderNo();
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                
             }
@@ -93,7 +93,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //lblqualityname.Text = ParameterList[0];
         //lbldesignname.Text = ParameterList[1];
         //lblcolorname.Text = ParameterList[2];
@@ -122,13 +122,13 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         {
             str = @"SELECT distinct e.EmpId, e.EmpName  
                         FROM  PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PIM 
-                                            JOIN  EmpInfo e ON pim.Empid = e.EmpId And e.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                                            JOIN  EmpInfo e ON pim.Empid = e.EmpId And e.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                         UNION 
                         Select EI.EmpId, EI.EmpName 
                         From PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PIM(Nolock) 
                         JOIN Employee_ProcessOrderNo EPO(Nolock) ON EPO.IssueOrderId = PIM.IssueOrderId And ProcessID = " + ddProcessName.SelectedValue + @" 
                         JOIN EmpInfo EI(Nolock) ON EI.EmpID = EPO.Empid ";
-            //if (Session["varcompanyid"].ToString() == "28")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "28")
             //{
             //    str = str + " Where PIM.FlagStockNoAttachWithoutRawMaterialIssue = 0";
             //}
@@ -150,7 +150,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         ViewState["Prmid"] = 0;
         //Fill_Grid();
         string str = "";
-        if (Session["varcompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             UtilityModule.ConditionalComboFill(ref ddOrderNo, @"select distinct PM.issueorderid,om.localOrder+'/'+cast(PM.ChallanNo as varchar(100)) as IssueOrderid1 
             From process_issue_master_" + ddProcessName.SelectedValue + @" PM 
@@ -222,7 +222,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     }
     private void OrderNoSelectedIndexChange()
     {
-        if (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             TdDDItemDesignName.Visible = true;
 
@@ -240,17 +240,17 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         }
         else
         {
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
-                UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId,ChalanNo from ProcessRawMaster Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And Processid=" + ddProcessName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Challan No");
+                UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId,ChalanNo from ProcessRawMaster Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And Processid=" + ddProcessName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Challan No");
             }
-            else if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             {
-                UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId, ChalanNo + ' / ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') Challan from ProcessRawMaster Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Challan No");
+                UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId, ChalanNo + ' / ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') Challan from ProcessRawMaster Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Challan No");
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId,Replace(Str(cast(PrmId as varchar))+'/'+ChalanNo ,' ','') from ProcessRawMaster Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And Processid=" + ddProcessName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Challan No");
+                UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId,Replace(Str(cast(PrmId as varchar))+'/'+ChalanNo ,' ','') from ProcessRawMaster Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And Processid=" + ddProcessName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Challan No");
             }
 
         }
@@ -258,7 +258,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //        if (hnissampleorder.Value == "1")
 //        {
 //            UtilityModule.ConditionalComboFill(ref ddCatagory, @"select ICM.Category_id,ICM.CATEGORY_NAME From Item_category_Master  ICM 
-//                                                               inner join CategorySeparate CS on ICM.CATEGORY_ID=Cs.Categoryid and Cs.id=1 and ICM.MasterCompanyid=" + Session["varcompanyid"] + "", true, "Select Category Name");
+//                                                               inner join CategorySeparate CS on ICM.CATEGORY_ID=Cs.Categoryid and Cs.id=1 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Category Name");
 //        }
 //        else
 //        {
@@ -267,7 +267,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            INNER JOIN ITEM_CATEGORY_MASTER ON ITEM_MASTER.CATEGORY_ID = ITEM_CATEGORY_MASTER.CATEGORY_ID 
 //            INNER JOIN CategorySeparate CS on ITEM_CATEGORY_MASTER.Category_id=cs.categoryid and cs.id=1
 //            INNER JOIN PROCESS_CONSUMPTION_DETAIL ON ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFINISHEDID
-//            WHERE PROCESS_CONSUMPTION_DETAIL.ISSUEORDERID =" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + "   And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Category Name");
+//            WHERE PROCESS_CONSUMPTION_DETAIL.ISSUEORDERID =" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + "   And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Category Name");
 //        }
 //        if (ddCatagory.Items.Count > 0)
 //        {
@@ -309,34 +309,34 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     {
         if (ChKForEdit.Checked == true)
         {
-            if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             {
                 TDForCompleteStatus.Visible = true;
             }
             Td7.Visible = true;
             if (ddOrderNo.Items.Count > 0)
             {
-                if (Session["varcompanyId"].ToString() == "9")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                 {
                     UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId,ChalanNo 
                     from ProcessRawMaster 
                     Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And CompanyID = " + ddCompName.SelectedValue + " And BranchID = " + DDBranchName.SelectedValue + @" And 
-                    MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Challan No");
+                    MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Challan No");
                 }
-                else if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+                else if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
                 {
                     TDForCompleteStatus.Visible = true;
                     UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId, ChalanNo + ' / ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') Challan 
                     from ProcessRawMaster 
                     Where TypeFlag = 0 And TranType=0 And CompanyID = " + ddCompName.SelectedValue + " And BranchID = " + DDBranchName.SelectedValue + @" And 
-                    PrOrderId=" + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "Select Challan No");
+                    PrOrderId=" + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Challan No");
                 }
                 else
                 {
                     UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId,Replace(Str(PrmId)+' /'+Str(ChalanNo),' ','') 
                     from ProcessRawMaster 
                     Where TypeFlag = 0 And TranType=0 And PrOrderId=" + ddOrderNo.SelectedValue + " And CompanyID = " + ddCompName.SelectedValue + @" And 
-                    BranchID = " + DDBranchName.SelectedValue + @" And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Challan No");
+                    BranchID = " + DDBranchName.SelectedValue + @" And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Challan No");
                 }
             }
         }
@@ -358,7 +358,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         {
             ViewState["Prmid"] = DDChallanNo.SelectedValue;
 
-            string strsql2 = "select PRMID,ChalanNo from ProcessRawMaster PRM where PRM.TypeFlag = 0 And PRM.Prmid=" + DDChallanNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"];
+            string strsql2 = "select PRMID,ChalanNo from ProcessRawMaster PRM where PRM.TypeFlag = 0 And PRM.Prmid=" + DDChallanNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql2);
 
             if (ds2.Tables[0].Rows.Count > 0)
@@ -376,7 +376,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             }
 
 
-            //string strsql = "select TransportName,BiltyNo,VehicleNo,Remark,isnull(EWayBillNo,'') as EWayBillNo from ProcessRawMaster PRM where PRM.TypeFlag = 0 And PRM.Prmid=" + DDChallanNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"];
+            //string strsql = "select TransportName,BiltyNo,VehicleNo,Remark,isnull(EWayBillNo,'') as EWayBillNo from ProcessRawMaster PRM where PRM.TypeFlag = 0 And PRM.Prmid=" + DDChallanNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 
             //if (ds.Tables[0].Rows.Count > 0)
@@ -407,7 +407,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         //shd.Visible = false;
 //        string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
 //                      " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-//                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+//                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 //        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 //        if (ds.Tables[0].Rows.Count > 0)
 //        {
@@ -429,21 +429,21 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //                            UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
 //                        PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId INNER JOIN
 //                        dbo.color ON dbo.ITEM_PARAMETER_MASTER.COLOR_ID = dbo.color.ColorId
-//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Color--");
+//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Color--");
 //                        }
 //                        break;
 //                    case "2":
 //                        dsn.Visible = true;
 //                        if (hnissampleorder.Value == "1")
 //                        {
-//                            UtilityModule.ConditionalComboFill(ref dddesign, "select designId,designName From design  Where MasterCompanyid=" + Session["varcompanyid"] + " order by designName", true, "--Select Design--");
+//                            UtilityModule.ConditionalComboFill(ref dddesign, "select designId,designName From design  Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by designName", true, "--Select Design--");
 //                        }
 //                        else
 //                        {
 //                            UtilityModule.ConditionalComboFill(ref dddesign, @"SELECT DISTINCT dbo.Design.designId, dbo.Design.designName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
 //                        PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId INNER JOIN
 //                        dbo.Design ON dbo.ITEM_PARAMETER_MASTER.DESIGN_ID = dbo.Design.designId
-//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Design--");
+//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Design--");
 //                        }
 //                        break;
 //                    case "4":
@@ -457,7 +457,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //                            UtilityModule.ConditionalComboFill(ref ddshape, @"SELECT DISTINCT dbo.Shape.ShapeId, dbo.Shape.ShapeName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
 //                        PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId INNER JOIN
 //                        dbo.Shape ON dbo.ITEM_PARAMETER_MASTER.SHAPE_ID = dbo.Shape.ShapeId
-//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Shape--");
+//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Shape--");
 //                        }
 //                        if (ddshape.Items.Count > 0)
 //                        {
@@ -469,14 +469,14 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //                        ChkForMtr.Checked = false;
 //                        if (hnissampleorder.Value == "1")
 //                        {
-//                            UtilityModule.ConditionalComboFill(ref ddsize, "select SizeId,SizeFt From Size WHere shapeid=" + ddshape.SelectedValue + "  and MasterCompanyid=" + Session["varcompanyid"] + " ", true, "Size in Ft");
+//                            UtilityModule.ConditionalComboFill(ref ddsize, "select SizeId,SizeFt From Size WHere shapeid=" + ddshape.SelectedValue + "  and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " ", true, "Size in Ft");
 //                        }
 //                        else
 //                        {
 //                            UtilityModule.ConditionalComboFill(ref ddsize, @"SELECT DISTINCT dbo.Size.SizeId, dbo.Size.SizeFt FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
 //                        PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId INNER JOIN
 //                        dbo.Size ON dbo.ITEM_PARAMETER_MASTER.SIZE_ID = dbo.Size.SizeId
-//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Size in Ft");
+//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Size in Ft");
 //                        }
 //                        break;
 //                    case "6":
@@ -497,17 +497,17 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            string Qry = "";
 //            if (hnissampleorder.Value == "1")
 //            {
-//                Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"] + @"
-//                         select QualityId,QualityName From Quality Where Item_Id=" + dditemname.SelectedItem + " and MasterCompanyid=" + Session["varcompanyId"] + " order by QualityName";
+//                Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+//                         select QualityId,QualityName From Quality Where Item_Id=" + dditemname.SelectedItem + " and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by QualityName";
 //            }
 //            else
 //            {
-//                Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"];
+//                Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 //                Qry = Qry + @" SELECT DISTINCT dbo.Quality.QualityId,dbo.Quality.QualityName
 //                        FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
 //                        PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId
 //                        INNER JOIN dbo.Quality ON dbo.ITEM_PARAMETER_MASTER.QUALITY_ID = dbo.Quality.QualityId
-//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"];
+//                        where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 //            }
 //            DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
 //            UtilityModule.ConditionalComboFillWithDS(ref ddlunit, DSQ, 0, true, "Select Unit");
@@ -529,13 +529,13 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 
 //                    if (hnissampleorder.Value == "1")
 //                    {
-//                        UtilityModule.ConditionalComboFill(ref ddlshade, "select ShadecolorId,ShadeColorName From shadecolor  Where MasterCompanyid=" + Session["varcompanyid"] + " order by ShadeColorName", true, "Select Shadecolor");
+//                        UtilityModule.ConditionalComboFill(ref ddlshade, "select ShadecolorId,ShadeColorName From shadecolor  Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by ShadeColorName", true, "Select Shadecolor");
 //                    }
 //                    else
 //                    {
 //                        UtilityModule.ConditionalComboFill(ref ddlshade, @"SELECT DISTINCT SC.ShadecolorId,SC.ShadeColorName FROM ITEM_PARAMETER_MASTER IPM INNER JOIN
 //                PROCESS_CONSUMPTION_DETAIL PCD ON IPM.ITEM_FINISHED_ID=PCD.IFinishedId INNER JOIN ShadeColor SC ON IPM.SHADECOLOR_ID=SC.ShadecolorId 
-//                Where PCD.Issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " And IPM.Quality_Id=" + dquality.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Shadecolor");
+//                Where PCD.Issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " And IPM.Quality_Id=" + dquality.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Shadecolor");
 //                    }
 
 //                }
@@ -554,7 +554,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //    {
 //        UtilityModule.ConditionalComboFill(ref ddlshade, @"SELECT DISTINCT SC.ShadecolorId,SC.ShadeColorName FROM ITEM_PARAMETER_MASTER IPM INNER JOIN
 //        PROCESS_CONSUMPTION_DETAIL PCD ON IPM.ITEM_FINISHED_ID=PCD.IFinishedId INNER JOIN ShadeColor SC ON IPM.SHADECOLOR_ID=SC.ShadecolorId 
-//        Where PCD.Issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " And IPM.Quality_Id=" + dquality.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Shadecolor");
+//        Where PCD.Issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " And IPM.Quality_Id=" + dquality.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Shadecolor");
 //        fill_qty();
 //    }
     protected void dddesign_SelectedIndexChanged(object sender, EventArgs e)
@@ -626,7 +626,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     //    }
     //    if (quality == 1 && design == 1 && color == 1 && shape == 1 && size == 1 && shadeColor == 1)
     //    {
-    //        int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+    //        int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
     //        string str = "Select Distinct BinNo,BinNo from stock Where CompanyId=" + ddCompName.SelectedValue + " And Godownid=" + ddgodown.SelectedValue + "   and item_finished_id=" + Varfinishedid + " and LotNo='" + ddlotno.SelectedItem.Text + "'";
     //        if (MySession.Stockapply == "True" && ChKForEdit.Checked == false)
     //        {
@@ -682,7 +682,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     //    }
     //    if (quality == 1 && design == 1 && color == 1 && shape == 1 && size == 1 && shadeColor == 1)
     //    {
-    //        int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+    //        int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
     //        string str = "Select Distinct TagNo,Tagno from stock Where CompanyId=" + ddCompName.SelectedValue + " And Godownid=" + ddgodown.SelectedValue + "   and item_finished_id=" + Varfinishedid + " and LotNo='" + ddlotno.SelectedItem.Text + "'";
     //        if (MySession.Stockapply == "True" && ChKForEdit.Checked == false)
     //        {
@@ -736,7 +736,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     //    }
     //    if (quality == 1 && design == 1 && color == 1 && shape == 1 && size == 1 && shadeColor == 1)
     //    {
-    //        int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+    //        int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
     //        string str = "Select Distinct lotno,lotno from stock Where CompanyId=" + ddCompName.SelectedValue + " And Godownid=" + ddgodown.SelectedValue + " and item_finished_id=" + Varfinishedid;
     //        if (MySession.Stockapply == "True" && ChKForEdit.Checked == false)
     //        {
@@ -806,7 +806,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     //        if (quality == 1 && design == 1 && color == 1 && shape == 1 && size == 1 && shadeColor == 1)
     //        {
 
-    //            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+    //            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
     //            ViewState["FinishedID"] = Varfinishedid;
     //            string TagNo = "Without Tag No";
     //            string BinNo = "";
@@ -842,7 +842,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 
             string Str = @"Select Select ISNULL(Sum(IssueQuantity),0) From ProcessRawMaster PRM,ProcessRawTran PRT Where PRM.PRMid=PRT.PRMid And PRM.trantype=0 And PRM.TypeFlag = 0 And 
             PRM.Processid=" + ddProcessName.SelectedValue + " And PRM.Prorderid in (Select IssueOrderid From PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + @" 
-            Where OrderId in (Select Orderid From PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + " Where IssueOrderId=" + ddOrderNo.SelectedValue + ")) And PRTid=0 And PRM.MasterCompanyId=" + Session["varCompanyId"];
+            Where OrderId in (Select Orderid From PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + " Where IssueOrderId=" + ddOrderNo.SelectedValue + ")) And PRTid=0 And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_CheckStockQtyForProcessIssue", parparam);
             if (parparam[4].Value.ToString() == "G")
@@ -871,7 +871,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         //{
         //    //if (txtchalanno.Text != "")
         //    //{
-        //    //    string str = "Select ChalanNo From ProcessRawMaster Where ChalanNo<>'' And TranType=0 And TypeFlag = 0 And ChalanNo='" + txtchalanno.Text + "' and Empid>0 And PRMID<>" + ViewState["Prmid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+        //    //    string str = "Select ChalanNo From ProcessRawMaster Where ChalanNo<>'' And TranType=0 And TypeFlag = 0 And ChalanNo='" + txtchalanno.Text + "' and Empid>0 And PRMID<>" + ViewState["Prmid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         //    //    DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
         //    //    if (ds.Tables[0].Rows.Count > 0)
         //    //    {
@@ -893,7 +893,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     protected void btnsave_Click(object sender, EventArgs e)
     {
 
-        if (Session["varcompanyid"].ToString() == "21")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             string status = "";
             if (txtkitno.Text == "")
@@ -972,7 +972,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
                 dtrecords.Rows.Add(dr);
           //  }
         }
-        //if (Session["varcompanyid"].ToString() == "21")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         //{
         //    if (chkEdit.Checked == false)     // Change when Updated Completed
         //    {
@@ -984,7 +984,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         //    }
         //}
 
-        if (Session["varcompanyid"].ToString() == "22")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22")
         {
             DateTime IssueDate = Convert.ToDateTime(txtdate.Text.ToString());
            // DateTime FolioDate = Convert.ToDateTime(txtFolioIssueDate.Text.ToString());
@@ -1017,7 +1017,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             {
                 SqlParameter[] param = new SqlParameter[16];
                 param[0] = new SqlParameter("@PrmId", SqlDbType.Int);
-                //if (chkEdit.Checked == true && Session["varcompanyid"].ToString() == "21")
+                //if (chkEdit.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "21")
                 //{
                 //    param[0].Value = DDissueno.SelectedValue;
                 //}
@@ -1032,7 +1032,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
                 param[3] = new SqlParameter("@Prorderid", ddOrderNo.SelectedValue);
                 param[4] = new SqlParameter("@issueDate", txtdate.Text);
                 param[5] = new SqlParameter("@userid", Session["varuserid"]);
-                param[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[7] = new SqlParameter("@dtrecords", dtrecords);
                 param[8] = new SqlParameter("@TranType", SqlDbType.TinyInt);
                 param[8].Value = 0;
@@ -1143,7 +1143,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     //            arr[36] = new SqlParameter("@BranchID", SqlDbType.Int);
     //            arr[37] = new SqlParameter("@EWayBillNo", SqlDbType.VarChar, 50);
 
-    //            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+    //            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
     //            arr[0].Value = ViewState["Prmid"];
     //            arr[1].Value = ddCompName.SelectedValue;
@@ -1155,7 +1155,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     //            arr[6].Direction = ParameterDirection.InputOutput;
     //            arr[7].Value = 0;
     //            arr[8].Value = Session["varuserid"].ToString();
-    //            arr[9].Value = Session["varCompanyId"].ToString();
+    //            arr[9].Value = Session["varMasterCompanyIDForERP"].ToString();
     //            arr[10].Value = 0;
     //            arr[20].Value = 0;
     //            if (btnsave.Text == "Update")
@@ -1255,7 +1255,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             {
                 strsql = @"Select PrtId,CATEGORY_NAME,ITEM_NAME,QualityName+ Space(2)+DesignName+ Space(2)+ColorName+ Space(2)+ShapeName+ Space(2)+SizeFt+ Space(2)+ShadeColorName DESCRIPTION,
                              IssueQuantity Qty,LotNo,GodownName,Pt.BinNo,PT.TagNo From Processrawmaster Pm,ProcessRawTran PT,V_FinishedItemDetail VF,GodownMaster GM Where pm.prmid=pt.prmid and  PT.Finishedid=VF.Item_Finished_id And 
-                             PT.GodownId=GM.GodownId And PM.chalanno='" + txtchalanno.Text + "' and PM.Trantype=0 And PM.TypeFlag = 0 And VF.MasterCompanyId=" + Session["varCompanyId"];
+                             PT.GodownId=GM.GodownId And PM.chalanno='" + txtchalanno.Text + "' and PM.Trantype=0 And PM.TypeFlag = 0 And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (ChKForEdit.Checked == true && ddOrderNo.SelectedIndex > 0)
                 {
 
@@ -1266,7 +1266,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             {
                 strsql = @"Select PrtId,CATEGORY_NAME,ITEM_NAME,QualityName+ Space(2)+DesignName+ Space(2)+ColorName+ Space(2)+ShapeName+ Space(2)+SizeFt+ Space(2)+ShadeColorName DESCRIPTION,
                              IssueQuantity Qty,LotNo,GodownName,Pt.BinNo,PT.TagNo From ProcessRawTran PT,V_FinishedItemDetail VF,GodownMaster GM Where PT.Finishedid=VF.Item_Finished_id And 
-                             PT.GodownId=GM.GodownId And PT.PrmID=" + ViewState["Prmid"] + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                             PT.GodownId=GM.GodownId And PT.PrmID=" + ViewState["Prmid"] + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 strsql = strsql + " Order By PrtId";
             }
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -1281,7 +1281,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     }
     protected void txtchalan_ontextchange(object sender, EventArgs e)
     {
-        //string ChalanNo = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(ChalanNo,0) asd from ProcessRawMaster where TypeFlag = 0 And ChalanNo='" + txtchalanno.Text + "' And MasterCompanyId=" + Session["varCompanyId"]));
+        //string ChalanNo = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(ChalanNo,0) asd from ProcessRawMaster where TypeFlag = 0 And ChalanNo='" + txtchalanno.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"]));
         //if (ChalanNo != "")
         //{
         //    txtchalanno.Text = "";
@@ -1359,7 +1359,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //                           PRT.Godownid,PRT.Lotno,PRT.UnitId,CATEGORY_ID,ITEM_ID,QualityId,ColorId,designId,ShapeId,SizeId,ShadecolorId,isnull(Prt.BinNo,'') as BinNo,Prt.Tagno,
 //                           isnull(PRT.TanaBana,'') as TanaBana,isnull(PRT.EstimatedRate,0) as EstimatedRate,prt.conetype,prt.noofcone,prt.coneweight,isnull(PRT.CGSTSGST,0) as CGSTSGST
 //                           FROM ProcessRawMaster PRM,ProcessRawTran PRT,V_FinishedItemDetail IPM
-//                           Where PRM.TypeFlag = 0 And PRM.PRMid=PRT.PRMid And PRT.Finishedid=IPM.ITEM_FINISHED_ID And PRT.PRTid=" + gvdetail.SelectedValue + " ANd PRM.MasterCompanyId=" + Session["varCompanyId"];
+//                           Where PRM.TypeFlag = 0 And PRM.PRMid=PRT.PRMid And PRT.Finishedid=IPM.ITEM_FINISHED_ID And PRT.PRTid=" + gvdetail.SelectedValue + " ANd PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 //            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, sql);
 
 //            ddCatagory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
@@ -1370,7 +1370,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            dquality.SelectedValue = ds.Tables[0].Rows[0]["QualityId"].ToString();
 //            //ItemName_SelectChange();
 
-//            UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"], true, "Select Unit");
+//            UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Unit");
 //            ddlunit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
 
 //            //            if (ql.Visible == true)
@@ -1378,7 +1378,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            //                UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT dbo.Quality.QualityId,dbo.Quality.QualityName
 //            //                FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId
 //            //                INNER JOIN dbo.Quality ON dbo.ITEM_PARAMETER_MASTER.QUALITY_ID = dbo.Quality.QualityId
-//            //                Where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Quallity");
+//            //                Where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Quallity");
 
 //            //                dquality.SelectedValue = ds.Tables[0].Rows[0]["QualityId"].ToString();
 //            //                QualitySelectedIndexChange();
@@ -1407,16 +1407,16 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            {
 //                if (ddlunit.SelectedValue == "1")
 //                {
-//                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "select size");
+//                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "select size");
 //                }
 //                else if (ddlunit.SelectedValue == "2")
 //                {
-//                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "select size");
+//                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "select size");
 //                }
 //                ddsize.SelectedValue = ds.Tables[0].Rows[0]["SizeId"].ToString();
 //            }
 //            string Str;
-//            switch (Session["varcompanyid"].ToString())
+//            switch (Session["varMasterCompanyIDForERP"].ToString())
 //            {
 //                case "9":
 //                    Str = @"SELECT ROUND(SUM(CASE WHEN CalType=0 or Caltype=2 Then Case When UnitId=1 Then (PD.Qty-isnull(CancelQty,0))*PD.Area*(PCD.IQTY+PCD.ILoss) Else (PD.Qty-Isnull(CancelQty,0))*PD.Area*(PCD.IQTY+PCD.ILOss)/10.76391 End Else 
@@ -1450,12 +1450,12 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //                TxtPendQty.Text = (Math.Round(Convert.ToDouble(ds1.Tables[0].Rows[0]["qty"]) - Convert.ToDouble(ds1.Tables[0].Rows[0]["IssQty"]), 3)).ToString();
 //            }
 
-//            ////UtilityModule.ConditionalComboFill(ref ddgodown, "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM,Stock S Where GM.GodownID=S.GodownID And QtyInHand>0 And CompanyId=" + ddCompName.SelectedValue + " And item_finished_id=" + ds.Tables[0].Rows[0]["Finishedid"] + " And GM.MasterCompanyId=" + Session["varCompanyId"] + " Order By GodownName", true, "--Select--");
+//            ////UtilityModule.ConditionalComboFill(ref ddgodown, "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM,Stock S Where GM.GodownID=S.GodownID And QtyInHand>0 And CompanyId=" + ddCompName.SelectedValue + " And item_finished_id=" + ds.Tables[0].Rows[0]["Finishedid"] + " And GM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By GodownName", true, "--Select--");
 
 //            string str1 = "";
-//            str1 = "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GoDownID=GA.GodownID and GA.UserID=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @"
+//            str1 = "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GoDownID=GA.GodownID and GA.UserID=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
 //                    JOIN Stock S ON GM.GodownID=S.GodownID
-//                    Where QtyInHand>0 And CompanyId=" + ddCompName.SelectedValue + " And item_finished_id=" + ds.Tables[0].Rows[0]["Finishedid"] + " And GM.MasterCompanyId=" + Session["varCompanyId"] + @"
+//                    Where QtyInHand>0 And CompanyId=" + ddCompName.SelectedValue + " And item_finished_id=" + ds.Tables[0].Rows[0]["Finishedid"] + " And GM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
 //                    Order By GodownName";
 
 //            UtilityModule.ConditionalComboFill(ref ddgodown, str1, true, "--Select--");
@@ -1524,17 +1524,17 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         //if (TxtProdCode.Text != "" && ddOrderNo.SelectedIndex > 0)
         //{
 
-        //    Str = "select IPM.*,IM.CATEGORY_ID  from ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,PROCESS_CONSUMPTION_DETAIL PCD  WHERE IPM.ITEM_FINISHED_ID = PCD.IFINISHEDID and PCD.ISSUEORDERID =" + ddOrderNo.SelectedValue + " and IPM.ITEM_ID=IM.ITEM_ID and ProductCode='" + TxtProdCode.Text + "' And IPM.MasterCompanyId=" + Session["varCompanyId"];
+        //    Str = "select IPM.*,IM.CATEGORY_ID  from ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,PROCESS_CONSUMPTION_DETAIL PCD  WHERE IPM.ITEM_FINISHED_ID = PCD.IFINISHEDID and PCD.ISSUEORDERID =" + ddOrderNo.SelectedValue + " and IPM.ITEM_ID=IM.ITEM_ID and ProductCode='" + TxtProdCode.Text + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         //    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         //    if (ds.Tables[0].Rows.Count > 0)
         //    {
-        //        string Qry = @"select category_id,category_name from item_category_master Where MasterCompanyId=" + Session["varCompanyId"];
-        //        Qry = Qry + " Select Distinct Item_Id,Item_Name from Item_Master where MasterCompanyId=" + Session["varCompanyId"] + " And Category_Id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString());
-        //        Qry = Qry + "  select qualityid,qualityname from quality where MasterCompanyId=" + Session["varCompanyId"] + " And item_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["ITEM_ID"].ToString());
-        //        Qry = Qry + "  select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName ";
-        //        Qry = Qry + "  SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + " order by colorid";
-        //        Qry = Qry + "  select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Shapeid  ";
-        //        Qry = Qry + "  SELECT SIZEID,SIZEFT fROM SIZE WhERE MasterCompanyId=" + Session["varCompanyId"] + " ANd SHAPEID=" + ddshape.SelectedValue + "";
+        //        string Qry = @"select category_id,category_name from item_category_master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+        //        Qry = Qry + " Select Distinct Item_Id,Item_Name from Item_Master where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And Category_Id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString());
+        //        Qry = Qry + "  select qualityid,qualityname from quality where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And item_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["ITEM_ID"].ToString());
+        //        Qry = Qry + "  select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order  by DesignName ";
+        //        Qry = Qry + "  SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by colorid";
+        //        Qry = Qry + "  select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Shapeid  ";
+        //        Qry = Qry + "  SELECT SIZEID,SIZEFT fROM SIZE WhERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ANd SHAPEID=" + ddshape.SelectedValue + "";
         //        DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
         //        UtilityModule.ConditionalComboFillWithDS(ref ddCatagory, DSQ, 0, true, "select");
         //        ddCatagory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
@@ -1603,7 +1603,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         //        {
         //            sz.Visible = false;
         //        }
-        //        UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Unit");
+        //        UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Unit");
         //    }
         //    else
         //    {
@@ -1683,7 +1683,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            {
 //                Str = @"Select ExtraPercentage PercentageExecssQtyForProcessIss From ProcessConsumptionExtraPercentage(Nolock) 
 //                Where CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + ddProcessName.SelectedValue + @" And 
-//                IssueOrderID = " + ddOrderNo.SelectedValue + " And MasterCompanyID = " + Session["varCompanyId"];
+//                IssueOrderID = " + ddOrderNo.SelectedValue + " And MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 //            }
 //            VarExcessQty = Convert.ToDouble(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str));
         }
@@ -1724,7 +1724,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         string str = "";
         //try
         //{
-        //    int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //    int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //    SqlParameter[] parparam = new SqlParameter[7];
         //    parparam[0] = new SqlParameter("@PrOrderid", ddOrderNo.SelectedValue);
         //    parparam[1] = new SqlParameter("@FinishedID", Varfinishedid);
@@ -1791,7 +1791,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            ddlotno.Items.Clear();
 //            txtstock.Text = "";
 
-//            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+//            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 //            DataSet ds = null;
 //            string Str;
 //            switch (Session["varcompanyNo"].ToString())
@@ -1829,7 +1829,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //                    SqlParameter[] param = new SqlParameter[4];
 //                    param[0] = new SqlParameter("@Processid", ddProcessName.SelectedValue);
 //                    param[1] = new SqlParameter("@Issueorderid", ddOrderNo.SelectedValue);
-//                    param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+//                    param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 //                    param[3] = new SqlParameter("@Item_finished_id", Varfinishedid);
 //                    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVER_FINISHERCONSUMPTIONQTY", param);
 
@@ -1841,11 +1841,11 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //                TxtPendQty.Text = (Math.Round(Convert.ToDouble(ds.Tables[0].Rows[0]["qty"]) - Convert.ToDouble(ds.Tables[0].Rows[0]["IssQty"]), 3)).ToString();
 //            }
 //            // ////****************************
-//            ////string str = @"Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM,Stock S Where GM.GodownID=S.GodownID And QtyInHand>0 And CompanyId=" + ddCompName.SelectedValue + " And item_finished_id=" + Varfinishedid + " And GM.MasterCompanyId=" + Session["varCompanyId"] + @" Order By GodownName
+//            ////string str = @"Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM,Stock S Where GM.GodownID=S.GodownID And QtyInHand>0 And CompanyId=" + ddCompName.SelectedValue + " And item_finished_id=" + Varfinishedid + " And GM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By GodownName
 //            //// select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
-//            string str = @"Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @"
-//                            JOIN Stock S ON GM.GodownID=S.GodownID  Where S.QtyInHand>0 And S.CompanyId=" + ddCompName.SelectedValue + " And S.item_finished_id=" + Varfinishedid + " And GM.MasterCompanyId=" + Session["varCompanyId"] + @" Order By GM.GodownName
+//            string str = @"Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+//                            JOIN Stock S ON GM.GodownID=S.GodownID  Where S.QtyInHand>0 And S.CompanyId=" + ddCompName.SelectedValue + " And S.item_finished_id=" + Varfinishedid + " And GM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By GM.GodownName
 //                           select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
 //            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -1884,11 +1884,11 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     //{
     //    if (ChkForMtr.Checked == false)
     //    {
-    //        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Size in Ft");
+    //        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Size in Ft");
     //    }
     //    else
     //    {
-    //        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Size in Mtr");
+    //        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Size in Mtr");
     //    }
     //}
     private void CHECKVALIDCONTROL()
@@ -2100,19 +2100,19 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
     }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             WayChallanFormatReport();
         }
-        else if (Session["varCompanyId"].ToString() == "9" )
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "9" )
         {
             WayChallanFormatBackReport();
         }
-        else if (Session["varCompanyId"].ToString() == "41")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "41")
         {
             ModRaziFormatReport();
         }
-        else if (Session["varCompanyId"].ToString() == "8")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "8")
         {
             SqlParameter[] _array = new SqlParameter[4];
             _array[0] = new SqlParameter("@IssueOrderId", SqlDbType.Int);
@@ -2144,7 +2144,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
         else
         {
             string str = "";
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "9":
 
@@ -2349,11 +2349,11 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             Where --IsNull(VIM.DEPARTMENTTYPE, 0) = 0 And 
             VIM.COMPANYID = " + ddCompName.SelectedValue + " And VIm.ChallanNo = '" + VarPOrderNo + "'";
 
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = str + @" And VIM.Status <> 'Complete'";
         }
-        if (Session["varcompanyid"].ToString() == "16")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         {
             str = str + " and vim.processid=1";
         }
@@ -2393,7 +2393,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            {
 //                UtilityModule.ConditionalComboFill(ref ddlshade, @"SELECT DISTINCT SC.ShadecolorId,SC.ShadeColorName FROM ITEM_PARAMETER_MASTER IPM INNER JOIN
 //                PROCESS_CONSUMPTION_DETAIL PCD ON IPM.ITEM_FINISHED_ID=PCD.IFinishedId INNER JOIN ShadeColor SC ON IPM.SHADECOLOR_ID=SC.ShadecolorId 
-//                Where PCD.Issueorderid=" + ddOrderNo.SelectedValue + " And IPM.Quality_Id=" + dquality.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Shadecolor");
+//                Where PCD.Issueorderid=" + ddOrderNo.SelectedValue + " And IPM.Quality_Id=" + dquality.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Shadecolor");
 //            }
             //fill_qty();
             //Fill_GodownSelectedChange();
@@ -2421,7 +2421,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 
         try
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "9":
                     ////                    strsql = @"SELECT  VF1.Category_Name,VF1.Item_Name,VF1.QualityName+Space(2)+VF1.DesignName+Space(2)+VF1.ColorName+Space(2)+VF1.ShapeName+Space(2)+
@@ -2435,7 +2435,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
                     ////                            PD.QTY*(OCD.IQTY+OCD.ILoss) END END),3),0)-[dbo].[Get_ProcessIssueQty2] (OCD.IFINISHEDID,PM.Issueorderid," + ddProcessName.SelectedValue + @"),3) PendQty 
                     ////                            FROM PROCESS_CONSUMPTION_DETAIL OCD,PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + @" PD,
                     ////                            V_FinishedItemDetail VF1 Where PM.IssueOrderid=PD.IssueOrderid And OCD.Issueorderid=PD.Issueorderid And OCD.Issue_Detail_Id=PD.Issue_Detail_Id And 
-                    ////                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.Issueorderid=" + ddOrderNo.SelectedValue + " and Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    ////                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.Issueorderid=" + ddOrderNo.SelectedValue + " and Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     ////                            Group By VF1.Category_Name,VF1.Item_Name,VF1.QualityName,VF1.DesignName,VF1.ColorName,VF1.ShapeName,PM.UnitId,VF1.SizeMtr,VF1.SizeFt,
                     ////                            VF1.ShadeColorName,OCD.IFINISHEDID,PM.Issueorderid";
 
@@ -2450,7 +2450,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
                             (PD.QTY-ISNULL(PD.CANCELQTY,0))*(OCD.IQTY+OCD.ILoss) END END),3),0)-[dbo].[Get_ProcessIssueQty2] (OCD.IFINISHEDID,PM.Issueorderid," + ddProcessName.SelectedValue + @"),3) PendQty 
                             FROM PROCESS_CONSUMPTION_DETAIL OCD,PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + @" PD,
                             V_FinishedItemDetail VF1 Where PM.IssueOrderid=PD.IssueOrderid And OCD.Issueorderid=PD.Issueorderid And OCD.Issue_Detail_Id=PD.Issue_Detail_Id And 
-                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.Issueorderid=" + ddOrderNo.SelectedValue + " and Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varCompanyId"] + @"
+                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.Issueorderid=" + ddOrderNo.SelectedValue + " and Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                             Group By VF1.Category_Name,VF1.Item_Name,VF1.QualityName,VF1.DesignName,VF1.ColorName,VF1.ShapeName,PM.UnitId,VF1.SizeMtr,VF1.SizeFt,
                             VF1.ShadeColorName,OCD.IFINISHEDID,PM.Issueorderid";
                     ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -2462,7 +2462,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
                             [dbo].[Get_ProcessIssueQty2] (OCD.IFINISHEDID,PM.Issueorderid," + ddProcessName.SelectedValue + ") IssQty,Round(Isnull(Round(Sum(CASE WHEN PM.UnitId=1 Then PD.Qty*(case when vf.Katiwithexportsize=1 Then vf.Areamtr Else PD.Area End)*OCD.IQTY*1.196 else PD.Qty*(case when vf.Katiwithexportsize=1 Then vf.Actualfullareasqyd Else PD.Area End)*OCD.IQTY END),3),0)-[dbo].[Get_ProcessIssueQty2] (OCD.IFINISHEDID,PM.Issueorderid," + ddProcessName.SelectedValue + @"),3) PendQty 
                             FROM PROCESS_CONSUMPTION_DETAIL OCD,PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + @" PD,
                             V_FinishedItemDetail VF1,V_Finisheditemdetail vf Where PM.IssueOrderid=PD.IssueOrderid And OCD.Issueorderid=PD.Issueorderid And OCD.Issue_Detail_Id=PD.Issue_Detail_Id And 
-                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID and PD.Item_finished_id=vf.item_finished_id And PM.Issueorderid=" + ddOrderNo.SelectedValue + " and  Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varCompanyId"] + @"
+                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID and PD.Item_finished_id=vf.item_finished_id And PM.Issueorderid=" + ddOrderNo.SelectedValue + " and  Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                             Group By VF1.Category_Name,VF1.Item_Name,VF1.QualityName,VF1.DesignName,VF1.ColorName,VF1.ShapeName,PM.UnitId,VF1.SizeMtr,VF1.SizeFt,
                             VF1.ShadeColorName,OCD.IFINISHEDID,PM.Issueorderid";
                     ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -2471,7 +2471,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
                     SqlParameter[] param = new SqlParameter[3];
                     param[0] = new SqlParameter("@Processid", ddProcessName.SelectedValue);
                     param[1] = new SqlParameter("@ISSUEORDERID", ddOrderNo.SelectedValue);
-                    param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
+                    param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
                     ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FILLWEAVER_FINISHERCONSUMPTION", param);
                     #region
                     //                    strsql = @"SELECT VF1.Category_Name,VF1.Item_Name,VF1.QualityName+Space(2)+VF1.DesignName+Space(2)+VF1.ColorName+Space(2)+VF1.ShapeName+Space(2)+
@@ -2483,7 +2483,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
                     //                            PD.Qty*OCD.IQTY END END),3),0)-[dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid),3) PendQty 
                     //                            FROM PROCESS_CONSUMPTION_DETAIL OCD,PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + @" PD,
                     //                            V_FinishedItemDetail VF1,CategorySeparate Cs Where PM.IssueOrderid=PD.IssueOrderid And OCD.Issueorderid=PD.Issueorderid And OCD.Issue_Detail_Id=PD.Issue_Detail_Id And 
-                    //                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.Issueorderid=" + ddOrderNo.SelectedValue + " And VF1.CATEGORY_ID=Cs.CategoryId and Cs.id=1 and Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    //                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.Issueorderid=" + ddOrderNo.SelectedValue + " And VF1.CATEGORY_ID=Cs.CategoryId and Cs.id=1 and Ocd.PROCESSID=" + ddProcessName.SelectedValue + " And VF1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     //                            Group By VF1.Category_Name,VF1.Item_Name,VF1.QualityName,VF1.DesignName,VF1.ColorName,VF1.ShapeName,PM.UnitId,VF1.SizeMtr,VF1.SizeFt,
                     //                            VF1.ShadeColorName,OCD.IFINISHEDID,PM.Issueorderid";
                     //                    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -2509,14 +2509,14 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
 //            //***********Sample
 //            if (hnissampleorder.Value == "1")
 //            {
-//                UtilityModule.ConditionalComboFill(ref dditemname, "select ITEM_ID,ITEM_NAME From Item_Master Where CATEGORY_ID=" + ddCatagory.SelectedValue + " and Mastercompanyid=" + Session["varcompanyId"] + " order by ITEM_NAME", true, "--Select Item--");
+//                UtilityModule.ConditionalComboFill(ref dditemname, "select ITEM_ID,ITEM_NAME From Item_Master Where CATEGORY_ID=" + ddCatagory.SelectedValue + " and Mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by ITEM_NAME", true, "--Select Item--");
 //            }
 //            else
 //            {
 //                UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME FROM 
 //            dbo.ITEM_PARAMETER_MASTER INNER JOIN PROCESS_CONSUMPTION_DETAIL ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = PROCESS_CONSUMPTION_DETAIL.IFinishedId INNER JOIN
 //            dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
-//            Where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " and item_master.category_id=" + ddCatagory.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Item--");
+//            Where PROCESS_CONSUMPTION_DETAIL.issueorderid=" + ddOrderNo.SelectedValue + " and Processid=" + ddProcessName.SelectedValue + " and item_master.category_id=" + ddCatagory.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Item--");
 //            }
 
 //            if (dditemname.Items.Count > 0)
@@ -2542,7 +2542,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             arr[2] = new SqlParameter("@TranType", SqlDbType.Int);
             arr[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             arr[4] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             arr[0].Value = VarPrtID;
             arr[1].Value = 2;
@@ -2655,7 +2655,7 @@ public partial class Masters_process_KitChallanIssue : System.Web.UI.Page
             arr[1] = new SqlParameter("@TranType", SqlDbType.Int);
             arr[2] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[5] = new SqlParameter("@Remark", "");
             arr[6] = new SqlParameter("@ProcessId", ddProcessName.SelectedValue);
 

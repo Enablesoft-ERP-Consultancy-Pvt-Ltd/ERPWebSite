@@ -16,7 +16,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }        
@@ -24,7 +24,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
         if (!IsPostBack)
         {
             UtilityModule.ConditionalComboFill(ref DDState, "select stateid,statename from state_master", true, "--select state--");
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "9"://for hafizia "9"
                     TRMobileState.Visible = true;
@@ -50,7 +50,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -66,7 +66,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
         try
         {
             con.Open();
-            string strsql = "select * from companyinfo where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "select * from companyinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
         catch (Exception ex)
@@ -92,8 +92,8 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
         //CommanFunction.FillCombo(dropDBK1Bank, "select BankId,BankName from Bank ");
         //CommanFunction.FillCombo(dropDBK2Bank, "select BankId,BankName from Bank");
         #endregion
-        string str = @"select SignatoryId,SignatoryName from Signatory where MasterCompanyid=" + Session["varCompanyId"] + @"
-                     select BankId,BankName from Bank where MasterCompanyid=" + Session["varCompanyId"];
+        string str = @"select SignatoryId,SignatoryName from Signatory where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
+                     select BankId,BankName from Bank where MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         CommanFunction.FillComboWithDS(CmbSignatory, ds, 0);
         CommanFunction.FillComboWithDS(dropListBank, ds, 1);
@@ -195,7 +195,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
                 _arrPara[29].Value = txtdecloration1.Text.ToUpper();
                 _arrPara[30].Value = txtdecloration2.Text.ToUpper();
                 _arrPara[31].Value = Session["varuserid"].ToString();
-                _arrPara[32].Value = Session["varCompanyId"].ToString();
+                _arrPara[32].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[33].Value = txtGSTNo.Text;
                 _arrPara[34].Value = txtWebSiteName.Text;
                 _arrPara[35].Value = txtFactoryAddress.Text.ToUpper().Trim();
@@ -377,17 +377,17 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
 
     protected void B_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(dropListBank, "select BankId,BankName from Bank where MasterCompanyId=" + Session["varCompanyId"] + "");
+        CommanFunction.FillCombo(dropListBank, "select BankId,BankName from Bank where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
     }
 
     protected void Button2_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(CmbSignatory, "select SignatoryId,SignatoryName from Signatory where MasterCompanyId=" + Session["varCompanyId"] + "");
+        CommanFunction.FillCombo(CmbSignatory, "select SignatoryId,SignatoryName from Signatory where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
     }
 
     protected void Button4_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(dropListBank, "select BankId,BankName from Bank where MasterCompanyId=" + Session["varCompanyId"] + "");
+        CommanFunction.FillCombo(dropListBank, "select BankId,BankName from Bank where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
     }
     protected void x_Click(object sender, EventArgs e)
     {
@@ -396,7 +396,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
         //CommanFunction.FillCombo(dropDBK1Bank, "select BankId,BankName from Bank ");
         //CommanFunction.FillCombo(dropDBK2Bank, "select BankId,BankName from Bank");
         #endregion
-        string str = "select BankId,BankName from Bank where MasterCompanyId=" + Session["varCompanyId"];
+        string str = "select BankId,BankName from Bank where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         CommanFunction.FillComboWithDS(dropListBank, ds, 0);
         CommanFunction.FillComboWithDS(dropDBK1Bank, ds, 0);
@@ -410,11 +410,11 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
             string strsql;
             if (btnSave.Text == "Update")
             {
-                strsql = "Select isnull(max(CompanyId),0) from CompanyInfo where CompanyId !=" + ViewState["CompanyId"].ToString() + " and CompanyName='" + txtCompName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "Select isnull(max(CompanyId),0) from CompanyInfo where CompanyId !=" + ViewState["CompanyId"].ToString() + " and CompanyName='" + txtCompName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "Select isnull(max(CompanyId),0) from CompanyInfo where CompanyName='" + txtCompName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "Select isnull(max(CompanyId),0) from CompanyInfo where CompanyName='" + txtCompName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             int id = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, strsql));
@@ -493,7 +493,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
     private void report()
     {
         string qry = @"SELECT CompanyName,CompAddr1,CompAddr2,CompAddr3,CompFax,CompTel,RBICode,IECode,PANNr,CSTNo,TinNo,SignatoryName 
-                       FROM CompanyInfo INNER JOIN  Signatory ON CompanyInfo.Sigantory=Signatory.SignatoryId where CompanyInfo.MasterCompanyId=" + Session["varCompanyId"];
+                       FROM CompanyInfo INNER JOIN  Signatory ON CompanyInfo.Sigantory=Signatory.SignatoryId where CompanyInfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -541,7 +541,7 @@ public partial class Masters_Campany_frmCompanyInfo : CustomPage
             _array[0] = new SqlParameter("@CompanyId", dgComapny.DataKeys[e.RowIndex].Value);
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteCompany", _array);
             lblErr1.Visible = true;

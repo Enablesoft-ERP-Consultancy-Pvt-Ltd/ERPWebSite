@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
                            SELECT PROCESS_NAME_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESS_NAME IN('YARN OPENING+MOTTELING','HAND SPINNING','MOTTELING', 'HANK MAKING') ORDER BY PROCESS_NAME 
                            SELECT ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM INNER JOIN CATEGORYSEPARATE CS ON ICM.CATEGORY_ID=CS.CATEGORYID AND CS.ID=1 ORDER BY CATEGORY_NAME
-                           select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + " order by customer";
+                           select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by customer";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 

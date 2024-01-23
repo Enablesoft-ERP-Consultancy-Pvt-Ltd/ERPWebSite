@@ -13,7 +13,7 @@ public partial class Masters_Campany_FrmOrderToReadyForInspection : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_Campany_FrmOrderToReadyForInspection : CustomPage
             DDLInCompanyName.Focus();
             UtilityModule.ConditionalComboFill(ref DDLInCompanyName, @"Select CI.CompanyId, CI.CompanyName 
                     From CompanyInfo CI(Nolock) 
-                    JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + " And CA.MasterCompanyid = " + Session["varCompanyId"] + @" 
+                    JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + " And CA.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By CI.CompanyName", true, "--Select--");
 
             if (DDLInCompanyName.Items.Count > 0)
@@ -49,7 +49,7 @@ public partial class Masters_Campany_FrmOrderToReadyForInspection : CustomPage
         string Str = "";
         Str = @"SELECT Distinct C.CustomerId, CompanyName + '     ' + C.CustomerCode CustomerCode  
                 FROM OrderMaster OM(Nolock) 
-                JOIN Customerinfo C(Nolock)  ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                JOIN Customerinfo C(Nolock)  ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                 Where OM.Status = 0 And OM.Companyid = " + DDLInCompanyName.SelectedValue + " Order By CompanyName + '     ' + C.CustomerCode";
 
         UtilityModule.ConditionalComboFill(ref DDLCustomerCode, Str, true, "Select CustomerCode");
@@ -138,7 +138,7 @@ public partial class Masters_Campany_FrmOrderToReadyForInspection : CustomPage
                 cmd.Parameters.AddWithValue("@Str", Str);
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
-                cmd.Parameters.AddWithValue("@MastercompanyId", Session["varcompanyId"]);
+                cmd.Parameters.AddWithValue("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
 
                 cmd.ExecuteNonQuery();

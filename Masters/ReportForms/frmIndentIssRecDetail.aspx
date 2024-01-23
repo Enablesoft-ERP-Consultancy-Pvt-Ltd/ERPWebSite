@@ -104,7 +104,7 @@
                 TRShadeColor.Visible = true;
                 TRExportExcel.Visible = true;
 
-                if (Session["VarCompanyId"].ToString() == "43")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
                 {
                     TRIndentRecMachineIssQtyWise.Visible = true;
                 }

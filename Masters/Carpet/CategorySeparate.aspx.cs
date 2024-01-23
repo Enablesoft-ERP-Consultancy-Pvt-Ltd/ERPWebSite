@@ -11,13 +11,13 @@ public partial class CategorySeparate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            UtilityModule.ConditionalComboFill(ref DDcategoryName, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_Id", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDcategoryName, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_Id", true, "--SELECT--");
             DDcategorytype.SelectedIndex = 2;
             txtid.Text = "0";
             lablechange();
@@ -31,7 +31,7 @@ public partial class CategorySeparate : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"select DISTINCT ps.Parameter_name from parameter_setting ps where ps.parameter_id='6' And PS.Company_Id=" + Session["varCompanyId"];
+            string strsql = @"select DISTINCT ps.Parameter_name from parameter_setting ps where ps.parameter_id='6' And PS.Company_Id=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             string categoryname = SqlHelper.ExecuteScalar(con, CommandType.Text, strsql).ToString();
             lblcategoryname.Text = categoryname;
@@ -76,7 +76,7 @@ public partial class CategorySeparate : System.Web.UI.Page
                 _arrPara[0].Value = DDcategorytype.SelectedValue;
                 _arrPara[1].Value = DDcategoryName.SelectedValue;
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[2].Value = txtid.Text;
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_CategorySeparate", _arrPara);
                 //  ds.Tables[0].Columns["customerid"].ColumnName = "SerialNo.";
@@ -105,7 +105,7 @@ public partial class CategorySeparate : System.Web.UI.Page
             Lblerror.Visible = true;
             Lblerror.Text = "Value already exit";
         }
-        UtilityModule.ConditionalComboFill(ref DDcategoryName, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_Id", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref DDcategoryName, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_Id", true, "--SELECT--");
     }
     private void Fill_Grid()
     {
@@ -118,7 +118,7 @@ public partial class CategorySeparate : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "Select distinct Sr_no, case when id=0 then 'FinishedItem' else 'RawMaterial' End " + lblcategorytype.Text + ",CATEGORY_NAME AS " +lblcategoryname.Text+" from CategorySeparate cS,ITEM_CATEGORY_MASTER Im Where CS.Categoryid=IM.Category_id and Id=" + DDcategorytype.SelectedValue  +" And IM.MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "Select distinct Sr_no, case when id=0 then 'FinishedItem' else 'RawMaterial' End " + lblcategorytype.Text + ",CATEGORY_NAME AS " +lblcategoryname.Text+" from CategorySeparate cS,ITEM_CATEGORY_MASTER Im Where CS.Categoryid=IM.Category_id and Id=" + DDcategorytype.SelectedValue  +" And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);          
         }
@@ -139,7 +139,7 @@ public partial class CategorySeparate : System.Web.UI.Page
     }
     protected void DDcategorytype_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDcategoryName, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER  Where MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_Id", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref DDcategoryName, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_Id", true, "--SELECT--");
         Fill_Grid();
     }
     protected void Gvcategory_SelectedIndexChanged(object sender, EventArgs e)

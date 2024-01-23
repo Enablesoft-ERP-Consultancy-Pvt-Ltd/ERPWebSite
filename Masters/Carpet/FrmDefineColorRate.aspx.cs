@@ -12,13 +12,13 @@ public partial class FrmDefineColorRate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where mastercompanyId=" + Session["varcompanyId"] + " order by category_name", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " order by category_name", true, "--Select--");
             fillgrid();
         }
     }
@@ -27,7 +27,7 @@ public partial class FrmDefineColorRate : System.Web.UI.Page
     {
         string str = @"select dqr.ID,dqr.Quality_id,dqr.ShadedColor_id,qr.QualityName,sc.ShadeColorName,dqr.rate,dqr.DateAdded from definequalityrate dqr inner join quality qr 
                     on dqr.Quality_id=qr.QualityId inner join ShadeColor sc on 
-                    dqr.Shadedcolor_id=sc.ShadeColorid where dqr.MasterCompany_id=" + Session["varcompanyid"];
+                    dqr.Shadedcolor_id=sc.ShadeColorid where dqr.MasterCompany_id=" + Session["varMasterCompanyIDForERP"];
         if (ddquality.SelectedIndex > 0)
         {
             str = str + " And dqr.Quality_id=" + ddquality.SelectedValue;
@@ -64,7 +64,7 @@ public partial class FrmDefineColorRate : System.Web.UI.Page
             param[1].Value = ddshadecolor.SelectedValue;
             param[2].Value = txtrate.Text;
             param[3].Value = Session["varuserid"].ToString();
-            param[4].Value = Session["varCompanyId"].ToString();
+            param[4].Value = Session["varMasterCompanyIDForERP"].ToString();
             param[5].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "Pro_definequalityrate", param);
             ScriptManager.RegisterStartupScript(Page, GetType(), "alrt", "alert('" + param[5].Value + "');", true);
@@ -84,18 +84,18 @@ public partial class FrmDefineColorRate : System.Web.UI.Page
 
     protected void ddcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddlitem, "select ITEM_ID, ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+        UtilityModule.ConditionalComboFill(ref ddlitem, "select ITEM_ID, ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
     }
 
     protected void ddlitem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddquality, "select Qualityid,QualityName from quality where item_id=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varcompanyId"] + " order by QualityName desc", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddquality, "select Qualityid,QualityName from quality where item_id=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName desc", true, "--Select--");
     }
 
     protected void ddquality_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref ddshadecolor, @"select Distinct Sc.ShadecolorId,Sc.ShadeColorName from item_parameter_master Im inner join shadecolor sc
-                                                            on Im.shadecolor_id=Sc.ShadecolorId where im.Quality_id=" + ddquality.SelectedValue + " and im.mastercompanyId=" + Session["varcompanyId"] + "", true, "--Select--");
+                                                            on Im.shadecolor_id=Sc.ShadecolorId where im.Quality_id=" + ddquality.SelectedValue + " and im.mastercompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         fillgrid();
     }
 

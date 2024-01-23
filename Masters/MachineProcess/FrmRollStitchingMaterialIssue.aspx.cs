@@ -16,21 +16,21 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                            select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and MasterCompanyid=" + Session["varcompanyid"] + @" and PROCESS_NAME='STITCHING' order by PROCESS_NAME_ID
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                            select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" and PROCESS_NAME='STITCHING' order by PROCESS_NAME_ID
                             Select ID, BranchName 
                             From BRANCHMASTER BM(nolock) 
                             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"]+@"
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"]+@"
                             Select EI.EmpId, EI.EmpName  From Empinfo EI(Nolock) JOIN EMPPROCESS EP(Nolock) ON EP.EmpId = EI.EmpId";
 
-                            if (Convert.ToInt32(Session["varcompanyid"]) == 21)
+                            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 21)
                             {
                                 str = str + " And EP.ProcessId = 17 ";
                             }
@@ -97,7 +97,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
 //        {
 //            string str = @"Select RollIssueOtherProcessID, IssueNo 
 //            From RollIssueOtherProcessMatser(Nolock) 
-//            Where MasterCompanyID = " + Session["VarCompanyId"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" 
+//            Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" 
 //            And EmpID = " + DDEmployeeName.SelectedValue + " Order By RollIssueOtherProcessID Desc ";
 
 //            DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -154,7 +154,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
                         Where PRM.MaterialIssuePageTypeId=1 and PRM.TranType=0 and PRM.CompanyID = " + DDcompany.SelectedValue + " and PRM.IssueNoId=" + DDFoliono.SelectedValue + " and PRM.Processid=" + DDprocess.SelectedValue+" and PRM.EmpId="+DDEmployeeName.SelectedValue+" ";
 
             UtilityModule.ConditionalComboFill(ref DDissueno, str, true, "--Plz Select--");
-            if (Session["varcompanyid"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 Fillgrid();
             }
@@ -212,7 +212,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
                 }
             }
             DropDownList DDGodown = ((DropDownList)e.Row.FindControl("DDGodown"));
-            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -334,7 +334,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
     protected void btnsave_Click(object sender, EventArgs e)
     {
         string DetailData = "";
-        if (Session["varcompanyid"].ToString() == "21")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             string status = "";            
 
@@ -428,7 +428,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
             ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Please select atleast one check box');", true);
             return;
         }
-        //if (Session["varcompanyid"].ToString() == "21")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         //{
         //    if (chkEdit.Checked == false)     // Change when Updated Completed
         //    {
@@ -453,7 +453,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
             {
                 SqlParameter[] param = new SqlParameter[14];
                 param[0] = new SqlParameter("@RollStitchingMaterialIssueId", SqlDbType.Int);
-                if (chkEdit.Checked == true && Session["varcompanyid"].ToString() == "21")
+                if (chkEdit.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     param[0].Value = DDissueno.SelectedValue;
                 }
@@ -470,7 +470,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
                 param[4] = new SqlParameter("@IssueNoId", DDFoliono.SelectedValue);
                 param[5] = new SqlParameter("@ChallanDate", txtissuedate.Text);
                 param[6] = new SqlParameter("@userid", Session["varuserid"]);
-                param[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[7] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[8] = new SqlParameter("@DetailData", DetailData);
                 param[9] = new SqlParameter("@TranType", SqlDbType.TinyInt);
                 param[9].Value = 0;
@@ -587,7 +587,7 @@ public partial class Masters_MachineProcess_FrmRollStitchingMaterialIssue : Syst
             TDIssueNo.Visible = true;
             DDissueno.SelectedIndex = -1;
 
-            //if (Session["varcompanyid"].ToString() == "21")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             //{
             //    if (variable.VarWeaverRawMaterialIssueToCompleteStatus == "1" && Session["usertype"].ToString() == "1")
             //    {

@@ -12,13 +12,13 @@ public partial class Masters_MapStencil_FrmMapIssue : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                             Select UnitID, UnitName From Unit(Nolock) Where UnitID in (1, 2) ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, false, "");
@@ -40,11 +40,11 @@ public partial class Masters_MapStencil_FrmMapIssue : System.Web.UI.Page
                 TDEdit.Visible = true;
             }
 
-            //switch (Session["varcompanyId"].ToString())
+            //switch (Session["varMasterCompanyIDForERP"].ToString())
             //{
             //    case "2":
 
-            switch(Session["VarCompanyId"].ToString())
+            switch(Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "30":
                     TDCustomerCode.Visible = false;
@@ -69,7 +69,7 @@ public partial class Masters_MapStencil_FrmMapIssue : System.Web.UI.Page
     }
     protected void DDCompany_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         {
             FillCustomerOrderNo();
         }
@@ -117,7 +117,7 @@ public partial class Masters_MapStencil_FrmMapIssue : System.Web.UI.Page
         {
             string str = "";
             str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI, Department DP Where EI.DepartmentId=DP.DepartmentId 
-                And DP.DepartmentName='DESIGNING' And EI.MasterCompanyId=" + Session["varCompanyId"] + " and isnull(Ei.blacklist,0)=0 order by EI.Empname";
+                And DP.DepartmentName='DESIGNING' And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and isnull(Ei.blacklist,0)=0 order by EI.Empname";
 
             UtilityModule.ConditionalComboFill(ref DDDesignerName, str, true, "--Plz Select--");
         }
@@ -221,7 +221,7 @@ public partial class Masters_MapStencil_FrmMapIssue : System.Web.UI.Page
         //{
         //    goto a;
         //} 
-        if (Session["varCompanyId"].ToString() != "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() != "30")
         {
             if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerCode) == false)
             {
@@ -308,7 +308,7 @@ public partial class Masters_MapStencil_FrmMapIssue : System.Web.UI.Page
                     param[4] = new SqlParameter("@AssignDate", txtAssignDate.Text);
                     param[5] = new SqlParameter("@RequiredDate", txtRequiredDate.Text);
                     param[6] = new SqlParameter("@userid", Session["varuserid"]);
-                    param[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    param[7] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     param[8] = new SqlParameter("@dtrecords", dtrecords);
                     param[9] = new SqlParameter("@MapStencilType", SqlDbType.TinyInt);
                     param[9].Value = DDMapStencilType.SelectedValue;
@@ -397,7 +397,7 @@ public partial class Masters_MapStencil_FrmMapIssue : System.Web.UI.Page
                 txtRequiredDate.Text = ds.Tables[0].Rows[0]["RequiredDate"].ToString();
                 //DDCompany.SelectedValue = ds.Tables[0].Rows[0]["CompanyId"].ToString();
                 DDunit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
-                if (Session["varCompanyId"].ToString() != "30")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "30")
                 {
                     FillCustomercode();
                     DDCustomerCode.SelectedValue = ds.Tables[0].Rows[0]["CustomerId"].ToString();

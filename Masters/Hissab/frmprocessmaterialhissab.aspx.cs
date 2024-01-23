@@ -12,7 +12,7 @@ public partial class Masters_Hissab_frmprocessmaterialhissab : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -191,7 +191,7 @@ public partial class Masters_Hissab_frmprocessmaterialhissab : System.Web.UI.Pag
             param[6] = new SqlParameter("@BillDate", txtbilldate.Text);
             param[7] = new SqlParameter("@Remark", txtremark.Text);
             param[8] = new SqlParameter("@userid", Session["varuserid"]);
-            param[9] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[9] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[10] = new SqlParameter("@dt", dt);
             param[11] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[11].Direction = ParameterDirection.Output;
@@ -255,7 +255,7 @@ public partial class Masters_Hissab_frmprocessmaterialhissab : System.Web.UI.Pag
     {
         ViewState["hissabid"] = DDBillNo.SelectedValue;
         string str = "";
-        str = @"Select BillNo,replace(convert(varchar(11),billdate,106), ' ','-') as Date,Remark,isnull(DeductionAmt,0) as DeductionAmt,isnull(AdditionAmt,0) as AdditionAmt,isnull(NetAmt,0) as NetAmt From RAWMATERIALPROCESSHISSABMASTER Where Hissabid=" + DDBillNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "";
+        str = @"Select BillNo,replace(convert(varchar(11),billdate,106), ' ','-') as Date,Remark,isnull(DeductionAmt,0) as DeductionAmt,isnull(AdditionAmt,0) as AdditionAmt,isnull(NetAmt,0) as NetAmt From RAWMATERIALPROCESSHISSABMASTER Where Hissabid=" + DDBillNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (Ds.Tables[0].Rows.Count > 0)
         {

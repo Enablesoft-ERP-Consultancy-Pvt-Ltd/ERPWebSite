@@ -13,7 +13,7 @@ public partial class Masters_Campany_AddAirport : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -70,7 +70,7 @@ public partial class Masters_Campany_AddAirport : System.Web.UI.Page
                 _arrPara[1].Value = txtAirport.Text;
                 _arrPara[2].Value = ddcountry.SelectedValue;
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[5].Direction = ParameterDirection.Output;
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "pro_Airport", _arrPara);
                 Tran.Commit();
@@ -100,11 +100,11 @@ public partial class Masters_Campany_AddAirport : System.Web.UI.Page
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select AirPortName from Airport where AirPortName='" + ViewState["id"].ToString() + "' and AirPortName='" + txtAirport.Text + "' And  masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select AirPortName from Airport where AirPortName='" + ViewState["id"].ToString() + "' and AirPortName='" + txtAirport.Text + "' And  masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select *  from Airport where CountryName='" + txtAirport.Text + "' And masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select *  from Airport where CountryName='" + txtAirport.Text + "' And masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -149,7 +149,7 @@ public partial class Masters_Campany_AddAirport : System.Web.UI.Page
             {
                 SqlHelper.ExecuteScalar(Tran, CommandType.Text, "delete  from Airport where AirPortId=" + AirPortId + "");
                 DataSet dt = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Airport'," + AirPortId + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Airport'," + AirPortId + ",getdate(),'Delete')");
                 btnsave.Text = "Save";
                 txtAirport.Text = "";
                 lblerr.Visible = true;

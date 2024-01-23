@@ -11,7 +11,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -53,10 +53,10 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code,HSCODE from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by CATEGORY_ID ";
+            string strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code,HSCODE from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CATEGORY_ID ";
             if (tdtxtHSCode.Visible == false)
             {
-                strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by CATEGORY_ID ";
+                strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CATEGORY_ID ";
             }
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -111,7 +111,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
                     _arrPara1[5].Value = chk_5.Checked == true ? 5 : 0;
                     _arrPara1[8].Value = chk_6.Checked == true ? 6 : 0;
                     _arrPara1[9].Value = Session["varuserid"].ToString();
-                    _arrPara1[10].Value = Session["varCompanyId"].ToString();
+                    _arrPara1[10].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara1[11].Value = TxtHSCode.Text;
 
                     int n = ChkBoxList.Items.Count;
@@ -374,7 +374,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
         {
            SqlParameter[] _array = new SqlParameter[5];
            _array[0] = new SqlParameter("@CATEGORYID ", ViewState["id"]);
-            _array[1] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _array[2] = new SqlParameter("@UserId", Session["varuserid"]);
             _array[3] = new SqlParameter("@VarMsg",SqlDbType.NVarChar,500);
             _array[3].Direction = ParameterDirection.Output;
@@ -404,7 +404,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname1.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];

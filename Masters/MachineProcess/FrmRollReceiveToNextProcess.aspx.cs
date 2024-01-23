@@ -13,7 +13,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
     int varcombo = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,12 +22,12 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
             str = @"Select Distinct CI.CompanyId, CI.Companyname 
             From Companyinfo CI(nolock)
             JOIN Company_Authentication CA(nolock) ON CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CI.Companyname 
+            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CI.Companyname 
 
             Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
             From PROCESS_NAME_MASTER PNM(nolock) 
             JOIN RollIssueToNextProcessMaster a(nolock) ON a.ProcessID = PNM.Process_Name_ID 
-            Where PNM.MasterCompanyid = " + Session["varcompanyid"] + @" Order By PNM.Process_Name_ID ";
+            Where PNM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By PNM.Process_Name_ID ";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 0, true, "Select Comp Name");
@@ -59,7 +59,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
     {
         string str = @"Select RollIssueToNextID, IssueNo 
             From RollIssueToNextProcessMaster(Nolock) 
-            Where MasterCompanyID = " + Session["VarCompanyId"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" 
+            Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" 
             Order By RollIssueToNextID Desc ";
 
         DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -90,7 +90,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
             cmd.Parameters.AddWithValue("@CompanyID", ddCompName.SelectedValue);
             cmd.Parameters.AddWithValue("@ProcessID", DDProcessName.SelectedValue);
             cmd.Parameters.AddWithValue("@RollIssueToNextID", DDIssueNo.SelectedValue);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             DataSet ds = new DataSet();
@@ -174,7 +174,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
             arr[4].Value = TxtReceiveDate.Text;
             arr[5].Value = DetailData;
             arr[6].Value = Session["varuserid"];
-            arr[7].Value = Session["varCompanyId"];
+            arr[7].Value = Session["varMasterCompanyIDForERP"];
             arr[8].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_SaveRollReceiveToNextProcess]", arr);
@@ -256,7 +256,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
             param[1] = new SqlParameter("@RollReceiveToNextDetailID", LblRollReceiveToNextDetailID.Text);
             param[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["VarUserId"]);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
             //****************
@@ -296,7 +296,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
         TxtReceiveNo.Text = "";
         string str = @"Select RollReceiveToNextID, ReceiveNo 
             From RollReceiveToNextProcessMaster(nolock) 
-            Where MasterCompanyID = " + Session["VarCompanyId"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @"
+            Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @"
             Order By RollReceiveToNextID Desc";
 
         DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -306,7 +306,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToNextProcess : System
     {
         string str = @"Select a.RollReceiveToNextID, a.ReceiveNo, REPLACE(CONVERT(NVARCHAR(11), a.ReceiveDate, 106), ' ', '-') ReceiveDate 
             From RollReceiveToNextProcessMaster a(Nolock) 
-            Where a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + @" And 
+            Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + @" And 
             a.ProcessID = " + DDProcessName.SelectedValue + " And a.RollReceiveToNextID = " + DDReceiveNo.SelectedValue + @"
             Order By a.RollReceiveToNextID Desc";
 

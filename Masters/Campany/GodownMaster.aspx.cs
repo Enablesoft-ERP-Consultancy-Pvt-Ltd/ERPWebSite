@@ -11,7 +11,7 @@ public partial class Masters_Campany_Term : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Campany_Term : CustomPage
             
             UtilityModule.ConditionalComboFill(ref DDBranchName, @"Select ID, BranchName 
                             From BRANCHMASTER BM(nolock) 
-                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"], false, "");
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"], false, "");
 
             if (DDBranchName.Items.Count == 0)
             {
@@ -32,8 +32,8 @@ public partial class Masters_Campany_Term : CustomPage
             UtilityModule.ConditonalChkBoxListFill(ref ChkBoxListProcessEmployeName, @"Select EI.EmpId, EI.EmpName 
                 From EmpInfo EI(Nolock) 
                 Join EmpProcess EP(Nolock) ON EI.EmpId = EP.EmpId And EP.ProcessID = 5 
-                Where EI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By EI.EmpName");
-            if (Convert.ToInt32(Session["varCompanyId"]) == 42)
+                Where EI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By EI.EmpName");
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
             {
                 TDProcessEmployeeName.Visible = true;
             }
@@ -50,7 +50,7 @@ public partial class Masters_Campany_Term : CustomPage
         DataSet ds = null;
         try
         {
-            string strsql = "Select GodownId SrNo, GodownName, CompanyGodown From GodownMaster(nolock) where MasterCompanyId=" + Session["varCompanyid"];
+            string strsql = "Select GodownId SrNo, GodownName, CompanyGodown From GodownMaster(nolock) where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(strsql);
         }
         catch (Exception ex)
@@ -92,7 +92,7 @@ public partial class Masters_Campany_Term : CustomPage
                 _arrPara[0] = new SqlParameter("@GodawnId", Convert.ToInt32(txtid.Text));
                 _arrPara[1] = new SqlParameter("@GodownName", txtGodawnName.Text.ToUpper());
                 _arrPara[2] = new SqlParameter("@varuserid", Session["varuserid"]);
-                _arrPara[3] = new SqlParameter("@varCompanyId", Session["varCompanyId"]);
+                _arrPara[3] = new SqlParameter("@varCompanyId", Session["varMasterCompanyIDForERP"]);
                 _arrPara[4] = new SqlParameter("@CompanyGodownFlag", ChkForCompanyGodown.Checked == true ? 1 : 0);
                 _arrPara[5] = new SqlParameter("@EmpIDs", EmpID);
                 _arrPara[6] = new SqlParameter("@Msg", SqlDbType.NVarChar, 250);

@@ -15,13 +15,13 @@ public partial class Masters_ReportForms_FrmPurchaseVendorWiseDestini : System.W
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str1 = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+            string str1 = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                             select Distinct g.GoDownID,g.GodownName from GodownMaster g inner join PP_ProcessRawTran prm On g.GoDownID=prm.GoDownID
                             select Distinct PROCESS_NAME_ID,PROCESS_NAME from process_name_master p inner join PP_ProcessRawMaster prm On p.PROCESS_NAME_ID=prm.Processid
                             select Distinct ft.id,ft.FINISHED_TYPE_NAME from FINISHED_TYPE ft inner join V_IndentRawIssue vr On vr.O_FINISHED_TYPE_ID =ft.Id ";

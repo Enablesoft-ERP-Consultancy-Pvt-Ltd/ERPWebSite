@@ -16,7 +16,7 @@ public partial class Default2 : System.Web.UI.Page
     public static string Export = "Y";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             
             Response.Redirect("~/Login.aspx");

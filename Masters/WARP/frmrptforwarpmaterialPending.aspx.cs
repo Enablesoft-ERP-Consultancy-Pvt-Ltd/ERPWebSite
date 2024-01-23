@@ -13,7 +13,7 @@ public partial class Masters_WARP_frmrptforwarpmaterialPending : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,9 +22,9 @@ public partial class Masters_WARP_frmrptforwarpmaterialPending : System.Web.UI.P
             string str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                             Select Ei.EmpId,Ei.EmpName+case when Ei.empcode<>'' Then '['+Ei.empcode+']' Else '' End as Empname from EmpInfo EI inner join Department D on EI.Departmentid=D.DepartmentId 
-                                And D.DepartmentName='WARPING' and Ei.mastercompanyid=" + Session["varcompanyid"] + " order by EmpName";
+                                And D.DepartmentName='WARPING' and Ei.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by EmpName";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
             if (DDcompany.Items.Count > 0)

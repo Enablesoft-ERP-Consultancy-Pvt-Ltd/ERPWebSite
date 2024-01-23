@@ -14,7 +14,7 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
     {
         if (IsPostBack == false)
         {
-            if (Session["varCompanyId"] == null)
+            if (Session["varMasterCompanyIDForERP"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
@@ -23,10 +23,10 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
             txtrecqty.Text = "0";
             txtloss.Text = "0";
             txtrate.Text = "0";
-            UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by PROCESS_NAME", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PROCESS_NAME", true, "--Select--");
             txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varCompanyId"] + " order by GodownName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by GodownName", true, "--Select--");
             lablechange();
             Fill_Grid();
             Session["ReportPath"] = "Reports/rawmaterialprocessrec.rpt";
@@ -38,7 +38,7 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
     {
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
     }
@@ -48,19 +48,19 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
     }
     protected void DDprocessname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by EmpId", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EmpId", true, "--Select--");
     }
     protected void DDreccategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     protected void DDrecitem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm,RawMaterialProcessDetail rmp where rmp.RItem_Finished_id =ipm.ITEM_FINISHED_ID and ipm.item_id=" + DDrecitem.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm,RawMaterialProcessDetail rmp where rmp.RItem_Finished_id =ipm.ITEM_FINISHED_ID and ipm.item_id=" + DDrecitem.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     protected void ddissueno_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where RawMaterialProcessDetail.rmpid=" + ddissueno.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select---");
+        UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where RawMaterialProcessDetail.rmpid=" + ddissueno.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select---");
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
@@ -165,15 +165,15 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
             {
                 if (txtitemcode.Text != "")
                 {
-                    Str = "select IPM.*,IM.CATEGORY_ID from ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM where IPM.ITEM_ID=IM.ITEM_ID and ProductCode='" + txtitemcode.Text + "' And IM.MasterCompanyId=" + Session["varCompanyId"];
+                    Str = "select IPM.*,IM.CATEGORY_ID from ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM where IPM.ITEM_ID=IM.ITEM_ID and ProductCode='" + txtitemcode.Text + "' And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
                     if (ds.Tables[0].Rows.Count > 0)
                     {
-                        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "~Select Description~");
+                        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "~Select Description~");
                         DDrecdescription.SelectedValue = ds.Tables[0].Rows[0]["item_finished_id"].ToString();
-                        UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where RawMaterialProcessDetail.rmpid=" + ddissueno.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select---");
+                        UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where RawMaterialProcessDetail.rmpid=" + ddissueno.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select---");
                         DDreccategory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
-                        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "~Select Item~");
+                        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "~Select Item~");
                         DDrecitem.SelectedValue = ds.Tables[0].Rows[0]["ITEM_ID"].ToString();
 
                     }
@@ -210,7 +210,7 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @" SELECT dbo.RawMaterialProcessRecDetail.RMPR_DETAIL_ID as Sr_No, dbo.RawMaterialProcessRecMaster.RMPR_ID, dbo.CompanyInfo.CompanyName, dbo.EmpInfo.EmpName, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME as " + lblcategoryname.Text + ",dbo.ITEM_MASTER.ITEM_NAME as " + lblitemname.Text + ", dbo.ITEM_PARAMETER_MASTER.DESCRIPTION,GodownMaster_1.GodownName, dbo.RawMaterialProcessRecMaster.Date, dbo.RawMaterialProcessRecDetail.Qty,dbo.RawMaterialProcessRecDetail.Loss, dbo.RawMaterialProcessRecDetail.Rate, dbo.RawMaterialProcessRecMaster.RecNo FROM dbo.RawMaterialProcessRecMaster INNER JOIN dbo.RawMaterialProcessRecDetail ON dbo.RawMaterialProcessRecMaster.RMPR_ID = dbo.RawMaterialProcessRecDetail.RMPR_ID INNER JOIN dbo.CompanyInfo ON dbo.RawMaterialProcessRecMaster.CompanyId = dbo.CompanyInfo.CompanyId INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.RawMaterialProcessRecDetail.ITEM_FINISHED_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + " INNER JOIN dbo.GodownMaster AS GodownMaster_1 ON dbo.RawMaterialProcessRecDetail.GodownId = GodownMaster_1.GoDownID INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID INNER JOIN dbo.ITEM_CATEGORY_MASTER ON dbo.ITEM_MASTER.CATEGORY_ID = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID CROSS JOIN dbo.EmpInfo order by dbo.RawMaterialProcessRecDetail.RMPR_DETAIL_ID";
+            string strsql = @" SELECT dbo.RawMaterialProcessRecDetail.RMPR_DETAIL_ID as Sr_No, dbo.RawMaterialProcessRecMaster.RMPR_ID, dbo.CompanyInfo.CompanyName, dbo.EmpInfo.EmpName, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME as " + lblcategoryname.Text + ",dbo.ITEM_MASTER.ITEM_NAME as " + lblitemname.Text + ", dbo.ITEM_PARAMETER_MASTER.DESCRIPTION,GodownMaster_1.GodownName, dbo.RawMaterialProcessRecMaster.Date, dbo.RawMaterialProcessRecDetail.Qty,dbo.RawMaterialProcessRecDetail.Loss, dbo.RawMaterialProcessRecDetail.Rate, dbo.RawMaterialProcessRecMaster.RecNo FROM dbo.RawMaterialProcessRecMaster INNER JOIN dbo.RawMaterialProcessRecDetail ON dbo.RawMaterialProcessRecMaster.RMPR_ID = dbo.RawMaterialProcessRecDetail.RMPR_ID INNER JOIN dbo.CompanyInfo ON dbo.RawMaterialProcessRecMaster.CompanyId = dbo.CompanyInfo.CompanyId INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.RawMaterialProcessRecDetail.ITEM_FINISHED_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " INNER JOIN dbo.GodownMaster AS GodownMaster_1 ON dbo.RawMaterialProcessRecDetail.GodownId = GodownMaster_1.GoDownID INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID INNER JOIN dbo.ITEM_CATEGORY_MASTER ON dbo.ITEM_MASTER.CATEGORY_ID = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID CROSS JOIN dbo.EmpInfo order by dbo.RawMaterialProcessRecDetail.RMPR_DETAIL_ID";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -254,14 +254,14 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
                       dbo.RawMaterialProcessRecDetail.RMPID, dbo.RawMaterialProcessRecDetail.ITEM_FINISHED_ID, dbo.ITEM_MASTER.ITEM_ID, 
                       dbo.RawMaterialProcessRecDetail.GodownId FROM dbo.ITEM_MASTER INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN
                       dbo.RawMaterialProcessRecMaster INNER JOIN dbo.RawMaterialProcessRecDetail ON dbo.RawMaterialProcessRecMaster.RMPR_ID = dbo.RawMaterialProcessRecDetail.RMPR_ID ON 
-                      dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessRecDetail.ITEM_FINISHED_ID where dbo.RawMaterialProcessRecDetail.RMPR_DETAIL_ID=" + id + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + " ORDER BY RMPR_DETAIL_ID");
+                      dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessRecDetail.ITEM_FINISHED_ID where dbo.RawMaterialProcessRecDetail.RMPR_DETAIL_ID=" + id + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY RMPR_DETAIL_ID");
         try
         {
             if (ds.Tables[0].Rows.Count == 1)
             {
                 DDcompanyname.SelectedValue = ds.Tables[0].Rows[0]["CompanyId"].ToString();
                 DDprocessname.SelectedValue = ds.Tables[0].Rows[0]["ProcessId"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by EmpId", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EmpId", true, "--Select--");
                 DDpartyname.SelectedValue = ds.Tables[0].Rows[0]["VenderId"].ToString();
                 txtdate.Text = ds.Tables[0].Rows[0]["date"].ToString();
                 txtrecno.Text = ds.Tables[0].Rows[0]["RecNo"].ToString();
@@ -272,11 +272,11 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
                 txtloss.Text = ds.Tables[0].Rows[0]["Loss"].ToString();
                 UtilityModule.ConditionalComboFill(ref ddissueno, @"select rmp.rmpid,gp.gatepassno from gatepass gp, RawMaterialProcessMaster rmp where gp.gatepassno=rmp.gatepass and rmp.empid=" + DDpartyname.SelectedValue, true, "--Select--");
                 ddissueno.SelectedValue = ds.Tables[0].Rows[0]["RMPID"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where RawMaterialProcessDetail.rmpid=" + ddissueno.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where RawMaterialProcessDetail.rmpid=" + ddissueno.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDreccategory.SelectedValue = ds.Tables[0].Rows[0]["category_id"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm,RawMaterialProcessDetail rmp where rmp.RItem_Finished_id =ipm.ITEM_FINISHED_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm,RawMaterialProcessDetail rmp where rmp.RItem_Finished_id =ipm.ITEM_FINISHED_ID And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDrecdescription.SelectedValue = ds.Tables[0].Rows[0]["Item_Finished_id"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where MasterCompanyId=" + Session["varCompanyId"] + " And  Category_Id=" + ds.Tables[0].Rows[0]["category_id"].ToString(), true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And  Category_Id=" + ds.Tables[0].Rows[0]["category_id"].ToString(), true, "--Select--");
                 DDrecitem.SelectedValue = ds.Tables[0].Rows[0]["item_id"].ToString();
                 DDgodwonname.SelectedValue = ds.Tables[0].Rows[0]["godownid"].ToString();
             }
@@ -309,15 +309,15 @@ public partial class RawMaterialDyingReceive : System.Web.UI.Page
         txtloss.Text = "0";
         txtrate.Text = "0";
         txtrecno.Text = "";
-        UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by PROCESS_NAME", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PROCESS_NAME", true, "--Select--");
         txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-        UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varCompanyId"] + " order by GodownName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by GodownName", true, "--Select--");
         Fill_Grid();
-        UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by EmpId", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where CategorySeparate.id='1' And ITEM_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm,RawMaterialProcessDetail rmp where rmp.RItem_Finished_id =ipm.ITEM_FINISHED_ID And ipm.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EmpId", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDreccategory, @"SELECT DISTINCT  dbo.ITEM_MASTER.CATEGORY_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.CategorySeparate ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.CategorySeparate.Categoryid INNER JOIN dbo.RawMaterialProcessDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.RawMaterialProcessDetail.RItem_Finished_id where CategorySeparate.id='1' And ITEM_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select distinct ipm.ITEM_FINISHED_ID,ipm.DESCRIPTION from ITEM_PARAMETER_MASTER ipm,RawMaterialProcessDetail rmp where rmp.RItem_Finished_id =ipm.ITEM_FINISHED_ID And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         UtilityModule.ConditionalComboFill(ref ddissueno, @"select rmp.rmpid,gp.gatepassno from gatepass gp, RawMaterialProcessMaster rmp where gp.gatepassno=rmp.gatepass and rmp.empid=" + DDpartyname.SelectedValue, true, "--Select---");
     }
 

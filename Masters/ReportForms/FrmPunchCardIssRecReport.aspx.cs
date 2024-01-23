@@ -15,7 +15,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,20 +24,20 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock) 
                         JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) ON a.CompanyId = CI.CompanyId 
-                        Where CI.MasterCompanyid = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                        Where CI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
 
                         Select Distinct CI.CustomerId, CI.CustomerCode 
                         From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                         JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.PCIIssueid = a.PCIIssueid
                         JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID
                         JOIN CustomerInfo CI(nolock) ON OM.CustomerId = CI.CustomerId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" Order By CI.CustomerCode 
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" Order By CI.CustomerCode 
 
                         Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
                         From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                         JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.PCIIssueid = a.PCIIssueid
                         JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId  
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                         Order By VF.CATEGORY_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -62,7 +62,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             //RDAll.Checked = true;
             RDPunchCardIssueDetail.Checked = true;
 
-            //switch (Session["VarCompanyId"].ToString())
+            //switch (Session["varMasterCompanyIDForERP"].ToString())
             //{
             //    case "30":
             //        TRCustomerCode.Visible = false;
@@ -77,7 +77,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
     protected void BindProcess()
     {
         string str;
-        if (Session["varcompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             str = @"select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER  where process_name_id in(1,16,35)";                    
         }
@@ -98,7 +98,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
                 JOIN PUNCHCARDINDENT_RECEIVEFROMPRODUCTIONORDERDETAIL b(Nolock) ON b.PCIReceiveId = a.PCIReceiveId  
                 INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @" PIM(nolock) ON a.FolioISSUEORDERID=PIM.ISSUEORDERID
                 JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID                   
-                Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By EI.EmpName + '(' + EI.EmpCode + ')'", true, "--Select--");            
 
         }
@@ -108,7 +108,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
                 From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                 INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @" PIM(nolock) ON a.FolioISSUEORDERID=PIM.ISSUEORDERID 
                 JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID 
-                Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By EI.EmpName + '(' + EI.EmpCode + ')'", true, "--Select--");
            
         }
@@ -124,7 +124,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
                         JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.PCIIssueid = a.PCIIssueid
                         JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID
                         JOIN CustomerInfo CI(nolock) ON OM.CustomerId = CI.CustomerId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + " Order By CI.CustomerCode", true, "--Select--");
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + " Order By CI.CustomerCode", true, "--Select--");
 
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
@@ -137,7 +137,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
                         From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                         JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.PCIIssueid = a.PCIIssueid
                         JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID 
-                        Where a.MasterCompanyID = " + Session["varCompanyId"] + @"  And a.CompanyId = " + DDCompany.SelectedValue;       
+                        Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"  And a.CompanyId = " + DDCompany.SelectedValue;       
 
         if (DDCustCode.SelectedIndex > 0)
         {
@@ -183,7 +183,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             From PUNCHCARDINDENT_RECEIVEFROMPRODUCTIONORDERMASTER a(nolock)             
             INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM(nolock) ON a.FolioIssueOrderId=PIM.ISSUEORDERID
             JOIN Empinfo EI(nolock) ON EI.EmpId=a.EmpID   
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And EI.EmpId in(" + DDWeaverName.SelectedValue + ")";
 
             if (DDPOrderNo.SelectedIndex > 0)
@@ -198,7 +198,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
 //            From PUNCHCARDINDENT_RECEIVEFROMPRODUCTIONORDERMASTER a(nolock)             
 //            INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM ON a.FolioIssueOrderId=PIM.ISSUEORDERID
 //            JOIN Empinfo EI(nolock) ON EI.EmpId=a.EmpID   
-//            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+//            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
 //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.FolioIssueOrderId", true, "--Select--");
         }
         else
@@ -209,7 +209,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             --INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
             INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM(nolock) ON a.FolioIssueOrderId=PIM.ISSUEORDERID
             JOIN Empinfo EI(nolock) ON EI.EmpId=a.EmpID   
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And EI.EmpId in(" + DDWeaverName.SelectedValue + ") ";
 
             if (DDPOrderNo.SelectedIndex > 0)
@@ -226,7 +226,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
 //            --INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
 //            INNER JOIN Process_Issue_Master_" + DDProcessName.SelectedValue + @"  PIM ON a.FolioIssueOrderId=PIM.ISSUEORDERID
 //            JOIN Empinfo EI(nolock) ON EI.EmpId=a.EmpID   
-//            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+//            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
 //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.FolioIssueOrderId", true, "--Select--");
         }
 
@@ -245,7 +245,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
             JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.PCIIssueid = a.PCIISSUEID
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And a.IssueOrderid = " + DDChallanNo.SelectedValue + " Order By VF.CATEGORY_NAME ", true, "--Select--");      
 
     }
@@ -260,7 +260,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
             From PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
             JOIN PUNCHCARDINDENT_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.PCIIssueid = a.PCIISSUEID
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -282,7 +282,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -335,7 +335,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             str = str + " And VF.ITEM_ID = " + DDItemName.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -370,7 +370,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -405,7 +405,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -436,7 +436,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -467,7 +467,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -509,7 +509,7 @@ public partial class Masters_ReportForms_FrmPunchCardIssRecReport : System.Web.U
         {
             str = str + " And VF.ShapeID = " + DDShape.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {

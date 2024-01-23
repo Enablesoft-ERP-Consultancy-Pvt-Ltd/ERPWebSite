@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmJobSlip : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_ReportForms_frmJobSlip : System.Web.UI.Page
         if (!IsPostBack)
         {
             txtdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
-           // SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDjob, pWhere: "MasterCompanyid=" + Session["varcompanyId"] + "", pID: "Process_Name_Id", pName: "Process_Name", pFillBlank: true, Selecttext: "--Plz Select Job--");
+           // SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDjob, pWhere: "MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", pID: "Process_Name_Id", pName: "Process_Name", pFillBlank: true, Selecttext: "--Plz Select Job--");
             UtilityModule.ConditionalComboFill(ref DDjob, "select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER order by Process_Name", true, "--Plz Select Process--");
         }
     }

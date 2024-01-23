@@ -10,7 +10,7 @@ public partial class Masters_Payroll_FrmMockdrillEntry : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -19,11 +19,11 @@ public partial class Masters_Payroll_FrmMockdrillEntry : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                             From Companyinfo CI(nolock) 
                             JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                            Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order by CI.CompanyName 
+                            Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order by CI.CompanyName 
                             Select ID, BranchName 
                             From BRANCHMASTER BM(nolock) 
                             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @" 
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
                             Select [Year], [Session] From SESSION(Nolock)  Order By [Year] Desc ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -71,7 +71,7 @@ public partial class Masters_Payroll_FrmMockdrillEntry : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Date", txtfromdate.Text);
             cmd.Parameters.AddWithValue("@Remark", TxtRemark.Text);
             cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 100);
             cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;
 

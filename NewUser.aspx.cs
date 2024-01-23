@@ -12,7 +12,7 @@ public partial class NewUser : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,19 +20,19 @@ public partial class NewUser : System.Web.UI.Page
         {
             //CommanFunction.FillCombo(ddUserType, "Select * from UserType where Id<>1 order by Id");
             string str = "Select * from UserType";
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {               
                     str = str + " Where ID!=6"; 
             }           
                 str = str + " order by Id";
-                if (Session["varCompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     chkbackentry.Visible = true;
                 }
                 else
                 { chkbackentry.Visible = false; }
 
-                if (Session["varCompanyId"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     chkprodcons.Visible = true;
                     chkdevcons.Visible = true;
@@ -72,7 +72,7 @@ public partial class NewUser : System.Web.UI.Page
             _arrPara[3].Value = txtPassword.Text;
             //_arrPara[3].Value = UtilityModule.Encrypt(txtPassword.Text);
             _arrPara[4].Value = txtdepartment.Text.Trim() == "" ? 0 : Convert.ToInt32(txtdepartment.Text);
-            _arrPara[5].Value = Session["varCompanyId"];
+            _arrPara[5].Value = Session["varMasterCompanyIDForERP"];
             _arrPara[6].Value = Session["varuserid"];
             _arrPara[7].Value = 0;
             if (btnSave.Text == "Update")
@@ -129,7 +129,7 @@ public partial class NewUser : System.Web.UI.Page
                 _arrPara[2] = new SqlParameter("@Result", SqlDbType.Int);
 
                 _arrPara[0].Value = txtlogin.Text.Trim().ToUpper();
-                _arrPara[1].Value = Session["varCompanyId"];
+                _arrPara[1].Value = Session["varMasterCompanyIDForERP"];
                 _arrPara[2].Direction = ParameterDirection.Output;
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_ValidateUser", _arrPara);
@@ -167,7 +167,7 @@ public partial class NewUser : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"Select UserId SrNo,UserName,Designation,LoginName,PassWord from NewUserDetail where CompanyId=" + Session["varCompanyId"] + " and UserType!=6 Order By UserId";
+            string strsql = @"Select UserId SrNo,UserName,Designation,LoginName,PassWord from NewUserDetail where CompanyId=" + Session["varMasterCompanyIDForERP"] + " and UserType!=6 Order By UserId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -249,7 +249,7 @@ public partial class NewUser : System.Web.UI.Page
                 chkprodcons.Checked = ds.Tables[0].Rows[0]["canseeProductioncons"].ToString() == "1" ? true : false;
                 chkdevcons.Checked = ds.Tables[0].Rows[0]["canseeDevelopmentcons"].ToString() == "1" ? true : false;
 
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     if (VarUserId == 50)
                     {

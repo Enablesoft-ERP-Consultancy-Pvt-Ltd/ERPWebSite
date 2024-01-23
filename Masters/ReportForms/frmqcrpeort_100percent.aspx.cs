@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,13 +21,13 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
         {
             string str = @"Select CI.CompanyId,CI.CompanyName 
                         From Companyinfo CI,Company_Authentication CA 
-                        Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @"
+                        Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
 
                         SELECT PROCESS_NAME_ID,PROCESS_NAME FROM  PROCESS_NAME_MASTER PNM WHERE PROCESS_NAME NOT LIKE 'AQL%' ORDER BY PROCESS_NAME
 
                         Select Distinct OM.CustomerID, CI.CustomerCode 
                         From OrderMaster OM(Nolock) 
-                        JOIN CustomerInfo CI(Nolock) ON CI.CustomerID = OM.CustomerID And CI.MasterCompanyid = " + Session["varCompanyId"] + @" 
+                        JOIN CustomerInfo CI(Nolock) ON CI.CustomerID = OM.CustomerID And CI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                         Where OM.CompanyId = " + Session["CurrentWorkingCompanyID"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -46,7 +46,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
             ds.Dispose();
             txtfromdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             txttodate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
-            if (Convert.ToInt32(Session["varcompanyId"]) == 16)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16)
             {
                 ChkDATETIMEREPORTFORBAZAR.Visible = true;
             }
@@ -107,7 +107,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                 int row = 0;
 
                 sht.Range("A1:K1").Merge();
-                if (Session["varcompanyId"].ToString() == "45" && DDprocessname.SelectedItem.Text == "RE-WEAVING")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "45" && DDprocessname.SelectedItem.Text == "RE-WEAVING")
                 {
                     sht.Range("A1").SetValue("NON CONFORMING REPORT");
 
@@ -527,7 +527,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     row = 0;
 
                     sht.Range("A1:X1").Merge();
-                    if (Session["varcompanyId"].ToString() == "45" && DDprocessname.SelectedItem.Text == "RE-WEAVING")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "45" && DDprocessname.SelectedItem.Text == "RE-WEAVING")
                     {
                         sht.Range("A1").SetValue("NON CONFORMING REPORT");
                     }
@@ -549,7 +549,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     sht.Range("C3").Value = "STOCK NO.";
                     sht.Range("D3").Value = "UNIT NAME";
 
-                    if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
                     {
                         sht.Column(5).Hide();
                     }
@@ -569,7 +569,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                     sht.Range("N3").Value = "DEFECTS";
                     sht.Range("O3").Value = "DEFECT TYPE";
                     sht.Range("P3").Value = "RESULT";
-                    if (Session["varcompanyId"].ToString() != "45")
+                    if (Session["varMasterCompanyIDForERP"].ToString() != "45")
                     {
                         sht.Range("Q3").Value = "STATUS";
                         sht.Range("R3").Value = "NCM STATUS";
@@ -591,7 +591,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                         sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["Tstockno"]);
                         sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["Units"]);
 
-                        if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
                         {
                             sht.Column(5).Hide();
                         }
@@ -611,7 +611,7 @@ public partial class Masters_ReportForms_frmqcrpeort_100percent : System.Web.UI.
                         sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["defect"]);
                         sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["DEFECTTYPE"]);
                         sht.Range("P" + row).SetValue(ds.Tables[0].Rows[i]["defect"].ToString() == "" ? "PASS" : "FAIL");
-                        if (Session["varcompanyId"].ToString() != "45")
+                        if (Session["varMasterCompanyIDForERP"].ToString() != "45")
                         {
                             sht.Range("Q" + row).SetValue(ds.Tables[0].Rows[i]["STATUS"]);
                             sht.Range("R" + row).SetValue(ds.Tables[0].Rows[i]["NCM STATUS"]);

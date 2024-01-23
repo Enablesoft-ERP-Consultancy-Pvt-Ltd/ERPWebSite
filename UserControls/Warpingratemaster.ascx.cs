@@ -13,13 +13,13 @@ public partial class UserControls_Warpingratemaster : System.Web.UI.UserControl
     static int CategorySeperateId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            if(Session["VarCompanyId"].ToString()=="21")
+            if(Session["varMasterCompanyIDForERP"].ToString()=="21")
             {
                 CategorySeperateId = 1;
                 TDJobName.Visible = true;
@@ -69,7 +69,7 @@ public partial class UserControls_Warpingratemaster : System.Web.UI.UserControl
         TdSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDcategoryName.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDcategoryName.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -104,22 +104,22 @@ public partial class UserControls_Warpingratemaster : System.Web.UI.UserControl
             }
         }
 
-        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDcategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " order by IM.item_name";
+        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDcategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by IM.item_name";
         UtilityModule.ConditionalComboFill(ref DDitemname, stritem, true, "---Select Item----");
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, DropDownList Shade, int Itemid)
     {
 
-        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE MasterCompanyId=" + Session["varCompanyId"];
+        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (Itemid > 0)
         {
             Str = Str + " and ITEM_ID=" + Itemid + "";
         }
         Str = Str + " Order By QUALITYNAME";
-        Str = Str + @" SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
-                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+        Str = Str + @" SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
+                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -157,7 +157,7 @@ public partial class UserControls_Warpingratemaster : System.Web.UI.UserControl
         //size Query
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + DDshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + DDshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref DDsize, str, true, "--SELECT--");
         //
@@ -242,7 +242,7 @@ public partial class UserControls_Warpingratemaster : System.Web.UI.UserControl
 
             for (int i = 0; i < DgDetail.Columns.Count; i++)
             {  
-                if (Session["varcompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     if (DgDetail.Columns[i].HeaderText == "Job_Name" || DgDetail.Columns[i].HeaderText == "Emp_Name")
                     {
@@ -477,7 +477,7 @@ public partial class UserControls_Warpingratemaster : System.Web.UI.UserControl
     protected void JobNameSelectedIndexChanged()
     {
         string str = "";
-        if (Session["VarCompanyId"].ToString()=="21")
+        if (Session["varMasterCompanyIDForERP"].ToString()=="21")
         {
             str = str + @"select EI.EmpId,EI.EmpName + CASE WHEN EI.EMPCODE<>'' THEN ' ['+EI.EMPCODE+']' ELSE '' END AS EMPNAME from empinfo EI inner join Department D 
                            on EI.departmentId=D.DepartmentId Where D.DepartmentName in('WARPING')

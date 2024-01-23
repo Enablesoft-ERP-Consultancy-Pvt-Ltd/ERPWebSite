@@ -12,13 +12,13 @@ public partial class Masters_ReportForms_FrmCustomerOrderReports : System.Web.UI
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            CommanFunction.FillCombo(DDCompany, "Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + " Order by Companyname ");
+            CommanFunction.FillCombo(DDCompany, "Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname ");
 
             if (DDCompany.Items.Count > 0)
             {
@@ -29,12 +29,12 @@ public partial class Masters_ReportForms_FrmCustomerOrderReports : System.Web.UI
             RDDetailDeliveryStatusMaterialBal.Checked = true;
             TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            if (Convert.ToInt32(Session["varCompanyId"]) != 5)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) != 5)
             {
                 RDOrderDeail.Visible = true;
                 RDOrderSummary.Visible = true;
             }
-            if (Session["varCompanyId"].ToString() == "6")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "6")
             {
                 RDComm.Visible = false;
                 RDStockAssign.Visible = false;
@@ -49,14 +49,14 @@ public partial class Masters_ReportForms_FrmCustomerOrderReports : System.Web.UI
     }
     private void CompanySelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = @"Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo 
                 From OrderMaster where CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
 
-        if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = @"Select OrderId, CustomerOrderNo 
                 From OrderMaster 
@@ -82,7 +82,7 @@ public partial class Masters_ReportForms_FrmCustomerOrderReports : System.Web.UI
         if (lblMessage.Text == "")
         {
             int OrderNo = Convert.ToInt32(DDOrderNo.SelectedValue == "" ? "0" : DDOrderNo.SelectedValue);
-            if (Convert.ToInt32(Session["varCompanyId"]) != 5)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) != 5)
             {
 
                 if (RDOrderDeail.Checked == true)
@@ -230,11 +230,11 @@ public partial class Masters_ReportForms_FrmCustomerOrderReports : System.Web.UI
 		VF.SizeFt,U.UnitName,OD.Item_Finished_Id,Sum(OD.QtyRequired) QtyRequired,Sum(OD.QtyRequired*OD.TotalArea) TArea,OD.DispatchDate,OD.OrderUnitId,OM.InspectionDate,'" + TxtFromDate.Text + "' FromDate,'" + TxtToDate.Text + @"' ToDate
 		From OrderMaster OM,CustomerInfo CI,OrderDetail OD,V_FinishedItemDetail VF,Unit U
 		Where OM.CustomerId=CI.CustomerId And OM.Orderid=OD.Orderid And OD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID And OD.OrderUnitId=U.UnitId 
-		And OM.OrderDate>='" + TxtFromDate.Text + "' And OM.OrderDate<='" + TxtToDate.Text + "' And VF.MasterCompanyId=" + Session["varCompanyId"];
+		And OM.OrderDate>='" + TxtFromDate.Text + "' And OM.OrderDate<='" + TxtToDate.Text + "' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
         string str1 = @" Select PD.Item_Finished_Id,Sum(PD.Qty) Qty,Sum(PD.PQty) PQty,PD.Orderid,Sum(PD.RejectQty) RejectQty
 		From PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,OrderMaster OM,CustomerInfo CI Where PM.IssueOrderId=PD.IssueOrderId And PD.OrderId=OM.OrderId And OM.CustomerId=CI.CustomerId  And
-        OM.OrderDate>='" + TxtFromDate.Text + "' And OM.OrderDate<='" + TxtToDate.Text + "' And CI.MasterCompanyId=" + Session["varCompanyId"];
+        OM.OrderDate>='" + TxtFromDate.Text + "' And OM.OrderDate<='" + TxtToDate.Text + "' And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
         if (DDCustCode.SelectedIndex > 0)
         {
@@ -296,12 +296,12 @@ public partial class Masters_ReportForms_FrmCustomerOrderReports : System.Web.UI
     {
         string str, str1;
         str = @"select CI.CompanyName,CustomerCode,CustomerOrderNo,sum(QtyRequired*TotalArea) As TotalArea,UnitName from OrderMaster OM,OrderDetail OD,CustomerInfo CM,CompanyInfo CI,Unit U Where OM.OrderId=OD.OrderId
-                And OM.CustomerId=CM.Customerid and OM.CompanyId=CI.CompanyId And U.UnitId=OD.OrderUnitId And Ci.CompanyId=" + DDCompany.SelectedValue + " And Om.OrderId=" + DDOrderNo.SelectedValue + "  And CM.MasterCompanyId=" + Session["varcompanyId"] + " Group by CI.CompanyName,CustomerCode,CustomerOrderNo,UnitName";
+                And OM.CustomerId=CM.Customerid and OM.CompanyId=CI.CompanyId And U.UnitId=OD.OrderUnitId And Ci.CompanyId=" + DDCompany.SelectedValue + " And Om.OrderId=" + DDOrderNo.SelectedValue + "  And CM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Group by CI.CompanyName,CustomerCode,CustomerOrderNo,UnitName";
 
 
         str1 = @" select E.EmpName,CI.Companyname,IssueOrderId,Sum(Area*Qty) As WeavedArea,Comm,Sum(CommAmt) As Amount,dbo.F_WeaverCommHissab(PD.issueOrderId,E.EmpID,CI.CompanyId,Comm,1) As Advance,
                dbo.F_WeaverRawMatBal(issueOrderId,E.EmpId,Ci.CompanyId,1) As MaterialBalance  from Process_Receive_master_1 PM,Process_Receive_Detail_1 PD,Empinfo E,Companyinfo CI Where PM.Process_Rec_Id=PD.Process_Rec_Id
-               And PM.EmpId=E.EmpId And CI.CompanyId=PM.CompanyId And Pm.CompanyId=" + DDCompany.SelectedValue + " And OrderId=" + DDOrderNo.SelectedValue + " And E.MasterCompanyId=" + Session["varcompanyId"] + " group by E.EmpName,E.EmpID,CI.Companyname,CI.CompanyId,IssueOrderId,Comm";
+               And PM.EmpId=E.EmpId And CI.CompanyId=PM.CompanyId And Pm.CompanyId=" + DDCompany.SelectedValue + " And OrderId=" + DDOrderNo.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by E.EmpName,E.EmpID,CI.Companyname,CI.CompanyId,IssueOrderId,Comm";
 
         DataSet ds = SqlHelper.ExecuteDataset(tran, CommandType.Text, str + str1);
         Session["GetDataset"] = ds;
@@ -316,7 +316,7 @@ public partial class Masters_ReportForms_FrmCustomerOrderReports : System.Web.UI
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

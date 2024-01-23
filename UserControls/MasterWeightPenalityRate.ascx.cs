@@ -12,7 +12,7 @@ public partial class UserControls_MasterWeightPenalityRate : System.Web.UI.UserC
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,7 +32,7 @@ public partial class UserControls_MasterWeightPenalityRate : System.Web.UI.UserC
     }
     private void BindItemName()
     {
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name", true, "--Plz Select--");
 
     }
    
@@ -258,7 +258,7 @@ public partial class UserControls_MasterWeightPenalityRate : System.Web.UI.UserC
     //}
     //private void Report()
     //{
-    //    string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varCompanyId"] + "  ORDER BY ColorName";
+    //    string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY ColorName";
     //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
     //    if (ds.Tables[0].Rows.Count > 0)
     //    {

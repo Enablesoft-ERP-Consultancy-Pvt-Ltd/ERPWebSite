@@ -12,7 +12,7 @@ public partial class UserControls_MasterFourNewParameter : System.Web.UI.UserCon
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -36,7 +36,7 @@ public partial class UserControls_MasterFourNewParameter : System.Web.UI.UserCon
         string Str = @"Select ps.Parameter_Name 
                     From parameter_setting ps(nolock)
                     JOIN master_parameter mp(nolock) ON mp.Parameter_Id = ps.Parameter_Id 
-                    Where ps.company_id = " + Session["varCompanyId"] + " And ps.parameter_id = " + TxtType.Text;
+                    Where ps.company_id = " + Session["varMasterCompanyIDForERP"] + " And ps.parameter_id = " + TxtType.Text;
 
         string Name = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str).ToString();
 
@@ -58,7 +58,7 @@ public partial class UserControls_MasterFourNewParameter : System.Web.UI.UserCon
         {
             string strsql = "Select ID Sr_No, [Name] " + lblcolorname.Text + @" 
             From ContentDescriptionPatternFitSize(Nolock) 
-            Where MasterCompanyID = " + Session["varCompanyId"] + " And [TYPE] = " + TxtType.Text + " Order By [Name]";
+            Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And [TYPE] = " + TxtType.Text + " Order By [Name]";
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         }
@@ -102,7 +102,7 @@ public partial class UserControls_MasterFourNewParameter : System.Web.UI.UserCon
                 _arrPara[3].Value = TxtType.Text;
                 _arrPara[4].Value = btnSave.Text == "Update" ? 1 : 0;
                 _arrPara[5].Value = Session["varuserid"].ToString();
-                _arrPara[6].Value = Session["varCompanyId"].ToString();
+                _arrPara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[7].Value = 0;
                 _arrPara[7].Direction = ParameterDirection.Output;
 

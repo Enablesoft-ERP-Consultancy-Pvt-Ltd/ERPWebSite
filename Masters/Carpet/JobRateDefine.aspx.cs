@@ -11,7 +11,7 @@ public partial class Masters_Process_Default : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -19,8 +19,8 @@ public partial class Masters_Process_Default : System.Web.UI.Page
         {
             lablechange();
             TxtId.Text = "0";
-            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref DDProcess, "Select PROCESS_NAME_ID,PROCESS_NAME From PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDProcess, "Select PROCESS_NAME_ID,PROCESS_NAME From PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             if (DDCompany.Items.Count > 0)
             {
                 DDCompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -31,7 +31,7 @@ public partial class Masters_Process_Default : System.Web.UI.Page
     public void lablechange()
     {
             String[] ParameterList = new String[8];
-            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             lblqualityname.Text = ParameterList[0];
             lbldesignname.Text = ParameterList[1];
             lblcolorname.Text = ParameterList[2];
@@ -110,7 +110,7 @@ public partial class Masters_Process_Default : System.Web.UI.Page
                 _arrpara[14].Direction = ParameterDirection.Output;
                 _arrpara[15].Value = ChMtr.Checked == true ? 1 : 0;
                 _arrpara[16].Value = Session["varuserid"].ToString();
-                _arrpara[17].Value = Session["varCompanyId"].ToString();
+                _arrpara[17].Value = Session["varMasterCompanyIDForERP"].ToString();
                 // SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_JobeRateValidate", _arrpara);
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_JobRateDefine", _arrpara);
 
@@ -156,27 +156,27 @@ public partial class Masters_Process_Default : System.Web.UI.Page
     }
     protected void DDProcessType_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDEmployeeName, "select Distinct EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDEmployeeName, "select Distinct EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     protected void DDEmployeeName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDCategory, "SELECT Distinct CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCategory, "SELECT Distinct CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         Fill_Grid();
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         GetParameters();
 
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
         LblError.Text = "";
-        UtilityModule.ConditionalComboFill(ref DDQuality, "select Qualityid,Qualityname from Quality where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDDesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDColor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDShape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by ShapeName", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDUnit, "SELECT DISTINCT U.UNITID,U.UNITNAME FROM UNIT U,UNIT_TYPE_MASTER UT,ITEM_MASTER IM WHERE U.UNITTYPEID=UT.UNITTYPEID AND UT.UNITTYPEID=IM.UNITTYPEID AND ITEM_ID=" + DDItemName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select Qualityid,Qualityname from Quality where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDDesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order  by DesignName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDColor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDShape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by ShapeName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDUnit, "SELECT DISTINCT U.UNITID,U.UNITNAME FROM UNIT U,UNIT_TYPE_MASTER UT,ITEM_MASTER IM WHERE U.UNITTYPEID=UT.UNITTYPEID AND UT.UNITTYPEID=IM.UNITTYPEID AND ITEM_ID=" + DDItemName.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     private void visiblePerameter()
     {
@@ -252,11 +252,11 @@ public partial class Masters_Process_Default : System.Web.UI.Page
         tdsz.Visible = true;
         if (ChMtr.Checked == false)
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "Select SizeId,SizeFt from Size where Shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select SizeId,SizeFt from Size where Shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "Select SizeId,SizeMtr from Size where Shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select SizeId,SizeMtr from Size where Shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         }
     }
 
@@ -352,7 +352,7 @@ public partial class Masters_Process_Default : System.Web.UI.Page
         {
             con.Open();
             ds = null;
-            string sql = @"Select * from JobeRateDefine where JobeRateId=" + DGJobeRate.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+            string sql = @"Select * from JobeRateDefine where JobeRateId=" + DGJobeRate.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, sql);
 
 
@@ -360,19 +360,19 @@ public partial class Masters_Process_Default : System.Web.UI.Page
             DDProcess.SelectedValue = ds.Tables[0].Rows[0]["ProcessId"].ToString();
             UtilityModule.ConditionalComboFill(ref DDProcessType, "select Distinct ProcessId,ProcessType from ProcessType where ProcessNameid=" + DDProcess.SelectedValue, true, "--Select--");
             DDProcessType.SelectedValue = ds.Tables[0].Rows[0]["ProcessTypeId"].ToString();
-            UtilityModule.ConditionalComboFill(ref DDEmployeeName, "select Distinct EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDEmployeeName, "select Distinct EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             DDEmployeeName.SelectedValue = ds.Tables[0].Rows[0]["EmpId"].ToString();
-            UtilityModule.ConditionalComboFill(ref DDCategory, "SELECT Distinct CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCategory, "SELECT Distinct CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             DDCategory.SelectedValue = ds.Tables[0].Rows[0]["CategoryId"].ToString();
             GetParameters();
-            UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             DDItemName.SelectedValue = ds.Tables[0].Rows[0]["ItemId"].ToString();
-            UtilityModule.ConditionalComboFill(ref DDUnit, "SELECT DISTINCT U.UNITID,U.UNITNAME FROM UNIT U,UNIT_TYPE_MASTER UT,ITEM_MASTER IM WHERE U.UNITTYPEID=UT.UNITTYPEID AND UT.UNITTYPEID=IM.UNITTYPEID AND ITEM_ID=" + DDItemName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDUnit, "SELECT DISTINCT U.UNITID,U.UNITNAME FROM UNIT U,UNIT_TYPE_MASTER UT,ITEM_MASTER IM WHERE U.UNITTYPEID=UT.UNITTYPEID AND UT.UNITTYPEID=IM.UNITTYPEID AND ITEM_ID=" + DDItemName.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             DDUnit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
-            UtilityModule.ConditionalComboFill(ref DDQuality, "select Qualityid,Qualityname from Quality where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "select Qualityid,Qualityname from Quality where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             DDQuality.SelectedValue = ds.Tables[0].Rows[0]["QualityId"].ToString();
             int DesignId = Convert.ToInt32(ds.Tables[0].Rows[0]["DesignId"]);
-            UtilityModule.ConditionalComboFill(ref DDDesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDDesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order  by DesignName", true, "--Select--");
             if (DesignId > 0)
             {
                 CHKDesign.Checked = false;
@@ -386,8 +386,8 @@ public partial class Masters_Process_Default : System.Web.UI.Page
                 DDDesign.SelectedIndex = 0;
             }
             int ColorId = Convert.ToInt16(ds.Tables[0].Rows[0]["ColorId"]);
-            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref DDShape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by ShapeName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDShape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by ShapeName", true, "--Select--");
             if (ColorId > 0)
             {
                 DDColor.Enabled = true;
@@ -405,7 +405,7 @@ public partial class Masters_Process_Default : System.Web.UI.Page
 
 
             int sizeid = Convert.ToInt32(ds.Tables[0].Rows[0]["SizeId"]);
-            UtilityModule.ConditionalComboFill(ref DDSize, "select SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "select SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid", true, "--Select--");
             if (sizeid > 0)
             {
                 CHKSize.Checked = false;
@@ -413,12 +413,12 @@ public partial class Masters_Process_Default : System.Web.UI.Page
                 if (Convert.ToInt32(ds.Tables[0].Rows[0]["SizeUnit"]) == 0)
                 {
                     ChMtr.Checked = true;
-                    UtilityModule.ConditionalComboFill(ref DDSize, "select SizeId,SizeMtr Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid", true, "--Select--");
+                    UtilityModule.ConditionalComboFill(ref DDSize, "select SizeId,SizeMtr Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid", true, "--Select--");
                 }
                 else
                 {
                     ChMtr.Checked = false;
-                    UtilityModule.ConditionalComboFill(ref DDSize, "select SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid", true, "--Select--");
+                    UtilityModule.ConditionalComboFill(ref DDSize, "select SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid", true, "--Select--");
                 }
                 DDSize.SelectedValue = ds.Tables[0].Rows[0]["SizeId"].ToString();
             }

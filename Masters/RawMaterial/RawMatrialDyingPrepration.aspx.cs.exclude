@@ -17,7 +17,7 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
     //int stockck = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -29,12 +29,12 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
             txtrate.Text = "0";
             txtissueqty.Text = "0";
             DDcompanyname.Focus();
-            UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "--Select--");
             DDcompanyname.SelectedIndex = 1;
-            UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by PROCESS_NAME", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PROCESS_NAME", true, "--Select--");
             txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            UtilityModule.ConditionalComboFill(ref DDcustomercode, "Select customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by Customercode", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varCompanyId"] + " order by GodownName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDcustomercode, "Select customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Customercode", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by GodownName", true, "--Select--");
             DDgodwonname.SelectedIndex = 1;
             lablechange();
             Fill_Grid();
@@ -50,7 +50,7 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
         try
         {
             String[] ParameterList = new String[8];
-            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             lblcategoryname.Text = ParameterList[5];
             lblitemname.Text = ParameterList[6];
             lblcategoryname1.Text = lblcategoryname.Text;
@@ -76,7 +76,7 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
     //************************** Fill Party Name **************************************
     protected void DDprocessname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by EmpId", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EmpId", true, "--Select--");
         DDpartyname.Focus();
     }
     protected void DDcustomercode_SelectedIndexChanged(object sender, EventArgs e)
@@ -86,18 +86,18 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
     }
     protected void DDpartyname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDreccategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varCompanyId"], true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDgivencategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varCompanyId"], true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDreccategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDgivencategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select--");
         DDreccategory.Focus();
     }
     protected void DDreccategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDreccategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select--");
         DDrecitem.Focus();
     }
     protected void DDgivencategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDgivenItem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDgivencategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDgivenItem, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + DDgivencategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select--");
         DDgivenItem.Focus();
     }
     // ******************************** Save Button *************************************************
@@ -155,7 +155,7 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @" SELECT distinct dbo.RawMaterialProcessDetail.RMP_Detail_Id as Sr_No, dbo.RawMaterialProcessDetail.RCaregory as " + lblcategoryname.Text + ", dbo.RawMaterialProcessDetail.RItemName as " + lblitemname.Text + ",dbo.RawMaterialProcessDetail.IssQty, dbo.stock.Qtyinhand, dbo.RawMaterialProcessDetail.RecQty,dbo.RawMaterialProcessMaster.Date, dbo.RawMaterialProcessMaster.GatePass, dbo.RawMaterialProcessDetail.Rate,ipm.description as RDescription FROM dbo.RawMaterialProcessDetail INNER JOIN dbo.RawMaterialProcessMaster ON dbo.RawMaterialProcessDetail.RMPId = dbo.RawMaterialProcessMaster.RMPId INNER JOIN dbo.stock ON dbo.RawMaterialProcessDetail.GItem_Finished_id = dbo.stock.ITEM_FINISHED_ID inner join item_parameter_master ipm on ipm.item_finished_id=dbo.RawMaterialProcessDetail.RItem_Finished_id And ipm.MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = @" SELECT distinct dbo.RawMaterialProcessDetail.RMP_Detail_Id as Sr_No, dbo.RawMaterialProcessDetail.RCaregory as " + lblcategoryname.Text + ", dbo.RawMaterialProcessDetail.RItemName as " + lblitemname.Text + ",dbo.RawMaterialProcessDetail.IssQty, dbo.stock.Qtyinhand, dbo.RawMaterialProcessDetail.RecQty,dbo.RawMaterialProcessMaster.Date, dbo.RawMaterialProcessMaster.GatePass, dbo.RawMaterialProcessDetail.Rate,ipm.description as RDescription FROM dbo.RawMaterialProcessDetail INNER JOIN dbo.RawMaterialProcessMaster ON dbo.RawMaterialProcessDetail.RMPId = dbo.RawMaterialProcessMaster.RMPId INNER JOIN dbo.stock ON dbo.RawMaterialProcessDetail.GItem_Finished_id = dbo.stock.ITEM_FINISHED_ID inner join item_parameter_master ipm on ipm.item_finished_id=dbo.RawMaterialProcessDetail.RItem_Finished_id And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -176,13 +176,13 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
     }
     protected void DDrecitem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select item_finished_id,DESCRIPTION from ITEM_PARAMETER_MASTER where ITEM_ID=" + DDrecitem.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select item_finished_id,DESCRIPTION from ITEM_PARAMETER_MASTER where ITEM_ID=" + DDrecitem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select--");
         DDrecdescription.Focus();
     }
     protected void DDgivenItem_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = @"select ipm.item_finished_id,DESCRIPTION from ITEM_PARAMETER_MASTER ipm inner join stock s on ipm.item_finished_id=s.item_finished_id 
-         where ITEM_ID=" + DDgivenItem.SelectedValue + "and godownid=" + DDgodwonname.SelectedValue + "and companyid=" + DDcompanyname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"];
+         where ITEM_ID=" + DDgivenItem.SelectedValue + "and godownid=" + DDgodwonname.SelectedValue + "and companyid=" + DDcompanyname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDgivendescription, str, true, "--Select--");
         DDgivendescription.Focus();
     }
@@ -244,12 +244,12 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
     //***************** Refresh form *******************
     public void refreshform()
     {
-        UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDcompanyname, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "--Select--");
         DDcompanyname.SelectedIndex = 1;
-        UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by PROCESS_NAME", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDprocessname, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PROCESS_NAME", true, "--Select--");
         txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-        UtilityModule.ConditionalComboFill(ref DDcustomercode, "Select customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by Customercode", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varCompanyId"] + " order by GodownName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDcustomercode, "Select customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Customercode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDgodwonname, "Select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by GodownName", true, "--Select--");
         DDgodwonname.SelectedIndex = 1;
         // Fill_Grid();
         txtgatepass.Text = "";
@@ -321,7 +321,7 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
                       dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID INNER JOIN
                       dbo.OrderMaster ON dbo.RawMaterialProcessMaster.Orderid = dbo.OrderMaster.OrderId INNER JOIN
                       dbo.stock ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.stock.ITEM_FINISHED_ID
-                      where RMP_Detail_Id=" + id + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"] + "");
+                      where RMP_Detail_Id=" + id + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         try
         {
             if (ds.Tables[0].Rows.Count == 1)
@@ -331,7 +331,7 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
                 UtilityModule.ConditionalComboFill(ref DDorderno, "select OrderId,CustomerOrderNo from OrderMaster Where CompanyId=" + DDcompanyname.SelectedValue, true, "--Select--");
                 DDorderno.SelectedValue = ds.Tables[0].Rows[0]["Orderid"].ToString();
                 DDprocessname.SelectedValue = ds.Tables[0].Rows[0]["Processid"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by EmpId", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDpartyname, "select EmpId,EmpName from EmpInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EmpId", true, "--Select--");
                 DDpartyname.SelectedValue = ds.Tables[0].Rows[0]["Empid"].ToString();
                 txtdate.Text = ds.Tables[0].Rows[0]["date"].ToString();
                 txtgatepass.Text = ds.Tables[0].Rows[0]["GatePass"].ToString();
@@ -343,25 +343,25 @@ public partial class RawMetrialDyingPrepration : System.Web.UI.Page
                 txtinwardno.Text = ds.Tables[0].Rows[0]["InWardNo"].ToString();
                 txtremark.Text = ds.Tables[0].Rows[0]["Remarks"].ToString();
 
-                UtilityModule.ConditionalComboFill(ref DDreccategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDreccategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDreccategory.SelectedItem.Text = ds.Tables[0].Rows[0]["RCaregory"].ToString();
 
-                UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDrecitem, @"Select Distinct Item_Id,Item_Name from Item_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDrecitem.SelectedItem.Text = ds.Tables[0].Rows[0]["RItemName"].ToString();
 
-                UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select item_finished_id,DESCRIPTION from ITEM_PARAMETER_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDrecdescription, @"select item_finished_id,DESCRIPTION from ITEM_PARAMETER_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDrecdescription.SelectedValue = ds.Tables[0].Rows[0]["RItem_Finished_id"].ToString();
 
                 DDgodwonname.SelectedValue = ds.Tables[0].Rows[0]["godownid"].ToString();
 
-                UtilityModule.ConditionalComboFill(ref DDgivencategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDgivencategory, @"Select icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join CategorySeparate cs on icm.CATEGORY_ID= cs.Categoryid where cs.id=1 And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDgivencategory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
 
-                UtilityModule.ConditionalComboFill(ref DDgivenItem, @"Select Distinct Item_Id,Item_Name from Item_Master Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDgivenItem, @"Select Distinct Item_Id,Item_Name from Item_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDgivenItem.SelectedValue = ds.Tables[0].Rows[0]["ITEM_ID"].ToString();
 
                 UtilityModule.ConditionalComboFill(ref DDgivendescription, @"select ipm.item_finished_id,DESCRIPTION from ITEM_PARAMETER_MASTER ipm inner join stock s on ipm.item_finished_id=s.item_finished_id 
-                 where ipm.MasterCompanyId=" + Session["varCompanyId"] + " And ITEM_ID=" + ds.Tables[0].Rows[0]["ITEM_ID"].ToString() + "and godownid=" + ds.Tables[0].Rows[0]["godownid"].ToString() + "and companyid=" + ds.Tables[0].Rows[0]["Companyid"].ToString(), true, "--Select--");
+                 where ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And ITEM_ID=" + ds.Tables[0].Rows[0]["ITEM_ID"].ToString() + "and godownid=" + ds.Tables[0].Rows[0]["godownid"].ToString() + "and companyid=" + ds.Tables[0].Rows[0]["Companyid"].ToString(), true, "--Select--");
                 DDgivendescription.SelectedValue = ds.Tables[0].Rows[0]["GItem_Finished_id"].ToString();
 
                 Rmp_id.Text = ds.Tables[0].Rows[0]["RMPId"].ToString();

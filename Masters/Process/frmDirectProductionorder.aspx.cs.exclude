@@ -20,7 +20,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
         }
         if (!IsPostBack)
         {
-            string str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid  And EP.Processid=1 And EI.MasterCompanyId=" + Session["varCompanyId"] + @"
+            string str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid  And EP.Processid=1 And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
              select UnitId,UnitName from Unit  Where UnitId in(1,2,4,7)
              select Category_Id,Category_Name from item_category_master Order by Category_Id";
             DataSet ds = new DataSet();
@@ -45,7 +45,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];
@@ -68,7 +68,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
 
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                         FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                        IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                        IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -107,7 +107,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
                 }
             }
         }
-        UtilityModule.ConditionalComboFill(ref dditemname, "select Item_id, Item_Name from Item_Master where Category_Id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Item_Name", true, "---Plz Select----");
+        UtilityModule.ConditionalComboFill(ref dditemname, "select Item_id, Item_Name from Item_Master where Category_Id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Item_Name", true, "---Plz Select----");
 
     }
     private void fillCombo()
@@ -124,11 +124,11 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
         }
         if (TDShape.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddshape, "SELECT ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " order by shapename", true, "--Plz Select--");
+            UtilityModule.ConditionalComboFill(ref ddshape, "SELECT ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by shapename", true, "--Plz Select--");
         }
         if (TDShade.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddshape, "SELECT * from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " order by ShadeColorName", true, "--Plz Select--");
+            UtilityModule.ConditionalComboFill(ref ddshape, "SELECT * from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShadeColorName", true, "--Plz Select--");
         }
     }
     protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
@@ -147,17 +147,17 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
         {
             if (Convert.ToInt32(DDunit.SelectedValue) == 6)
             {
-                UtilityModule.ConditionalComboFill(ref ddsize, "SELECT SizeId,Sizeinch Size_Name from Size where shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Sizeinch", true, "--Plz Select--");
+                UtilityModule.ConditionalComboFill(ref ddsize, "SELECT SizeId,Sizeinch Size_Name from Size where shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Sizeinch", true, "--Plz Select--");
             }
             else if (Convert.ToInt32(DDunit.SelectedValue) == 2)
             {
                 //UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " order by sizeid", true, "--SELECT--");
-                UtilityModule.ConditionalComboFill(ref ddsize, "Select S.Sizeid,SizeFt from Size S Where shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by S.SizeFt", true, "--Plz Select--");
+                UtilityModule.ConditionalComboFill(ref ddsize, "Select S.Sizeid,SizeFt from Size S Where shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by S.SizeFt", true, "--Plz Select--");
             }
             else
             {
                 // UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeMtr Size_Name from Size where shapeid=" + DDShape.SelectedValue + " order by sizeid", true, "--SELECT--");
-                UtilityModule.ConditionalComboFill(ref ddsize, "select S.Sizeid,SizeMtr from Size S where shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by S.SizeMtr", true, "--Plz Select--");
+                UtilityModule.ConditionalComboFill(ref ddsize, "select S.Sizeid,SizeMtr from Size S where shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by S.SizeMtr", true, "--Plz Select--");
             }
 
         }
@@ -174,8 +174,8 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
         try
         {
             DataSet dt;
-            int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
-            DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "select size_Id,SHAPE_ID from Item_Parameter_Master where Item_Finished_Id=" + ItemFinishedId + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+            int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+            DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "select size_Id,SHAPE_ID from Item_Parameter_Master where Item_Finished_Id=" + ItemFinishedId + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 int SizeId = Convert.ToInt32(Ds.Tables[0].Rows[0]["size_Id"]);
@@ -214,7 +214,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
                 {
                     //datatset dt1 = SqlHelper.ExecuteDataset(con, CommandType.Text, "");
                     string str = "";
-                    str = "select WidthFt,LengthFt,HeightFt,WidthMtr,LengthMtr,HeightMtr,AreaFt,AreaMtr from size where sizeid=" + SizeId + " And MasterCompanyId=" + Session["varCompanyId"];
+                    str = "select WidthFt,LengthFt,HeightFt,WidthMtr,LengthMtr,HeightMtr,AreaFt,AreaMtr from size where sizeid=" + SizeId + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
                     if (DDunit.SelectedValue == "2")
                     {
@@ -255,7 +255,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
 
     protected void ddsize_SelectedIndexChanged(object sender, EventArgs e)
     {
-        ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         Area();
         //1 For Fix Weaving
         TxtRate.Text = MasterRate(ItemFinishedId, 1).ToString();
@@ -327,7 +327,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
             {
                 IssueOrderId = 0;
             }
-            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             string str = "select Item_Finished_id From Process_Issue_Detail_1 Where IssueOrderId=" + IssueOrderId + " And Item_Finished_id=" + ItemFinishedId + "";
             DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
             if (ds.Tables[0].Rows.Count > 0)
@@ -467,7 +467,7 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
                         Length + 'x' + Width Size,Area,Rate,Qty,Amount From PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,
                         ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
                         Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
-                        PM.IssueOrderid=" + IssueOrderId + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                        PM.IssueOrderid=" + IssueOrderId + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
 
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
@@ -542,11 +542,11 @@ public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Pa
                      PNM.ShortName,VPI.Rate,VPI.Amount,VPI.UnitId,OM.CUSTOMERORDERNO,CIC.CUSTOMERCODE ,u.unitname,VPI.Comm,CancelQty
                      FROM View_Production_Issue_Order VPI INNER JOIN CompanyInfo CI ON VPI.Companyid=CI.CompanyId INNER JOIN EmpInfo EI ON VPI.Empid=EI.EmpId INNER JOIN 
                      OrderMaster OM ON VPI.Orderid=OM.OrderId INNER JOIN Unit ON VPI.UnitId=Unit.UnitId INNER JOIN PROCESS_NAME_MASTER PNM ON VPI.PROCESSID=PNM.PROCESS_NAME_ID INNER JOIN
-                     CUSTOMERINFO CIC ON CIC.CUSTOMERID=OM.CUSTOMERID inner join unit u on vpi.unitid=u.unitid Where VPI.IssueOrderid=" + IssueOrderId + " And CI.MasterCompanyId=" + Session["varCompanyId"];
+                     CUSTOMERINFO CIC ON CIC.CUSTOMERID=OM.CUSTOMERID inner join unit u on vpi.unitid=u.unitid Where VPI.IssueOrderid=" + IssueOrderId + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         string str = @"SELECT VPIC.QTY,IM.ITEM_ID,IM.ITEM_NAME,VF.Finishedid,VF.Quality,vf.Design,vf.Color,vf.Shape,VF.ShadeColor,VPIC.Issueorderid,vpic.unitname FROM VIEW_PROCESS_ISSUE_CONSUMPTION VPIC INNER JOIN 
-                       ViewFindFinishedId2 VF ON VPIC.FINISHEDID=VF.Finishedid INNER JOIN ITEM_MASTER IM ON VF.ITEM_ID=IM.ITEM_ID And IM.MasterCompanyId=" + Session["varCompanyId"] + " ORDER BY IM.ITEM_ID,VF.Quality,VF.Finishedid";
+                       ViewFindFinishedId2 VF ON VPIC.FINISHEDID=VF.Finishedid INNER JOIN ITEM_MASTER IM ON VF.ITEM_ID=IM.ITEM_ID And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY IM.ITEM_ID,VF.Quality,VF.Finishedid";
         SqlDataAdapter sda = new SqlDataAdapter(str, con);
         DataTable dt = new DataTable();
         sda.Fill(dt);

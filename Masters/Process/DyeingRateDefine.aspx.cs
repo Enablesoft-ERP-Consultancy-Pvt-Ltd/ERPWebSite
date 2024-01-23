@@ -11,7 +11,7 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,14 +20,14 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
             Session["DRateDetailId"] = 0;
             Session["DRateId"] = 0;
             ParameteLabel();
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order by Companyname", true, "--SelectCompany--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname", true, "--SelectCompany--");
             if (DDCompanyName.Items.Count > 0)
             {
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDDyerName, "select EI.EmpId,EmpName from EmpInfo EI inner join EmpProcess EP on EI.EmpId=EP.EmpId where processId=5 And EI.MasterCompanyid=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDDyerName, "select EI.EmpId,EmpName from EmpInfo EI inner join EmpProcess EP on EI.EmpId=EP.EmpId where processId=5 And EI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             fill_grid();
         }
     }
@@ -35,7 +35,7 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         LblQuality.Text = ParameterList[0];
         LblDesign.Text = ParameterList[1];
         LblColor.Text = ParameterList[2];
@@ -48,7 +48,7 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         ddlcategorycange();
-        UtilityModule.ConditionalComboFill(ref DDItem, "select Item_Id,Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDItem, "select Item_Id,Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     private void ddlcategorycange()
     {
@@ -61,7 +61,7 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
 
         string strsql = @"SELECT distinct IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyid=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -102,19 +102,19 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
     }
     private void fill_combo()
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItem.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDDesign, "select DesignId,DesignName from Design Where MasterCompanyid=" + Session["varCompanyId"] + " order by DesignId", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDColor, "select ColorId,ColorName from Color Where MasterCompanyid=" + Session["varCompanyId"] + " order by ColorId", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDColorShade, "select ShadeColorId,ShadeColorName from shadecolor Where MasterCompanyid=" + Session["varCompanyId"] + " order by ShadeColorId", true, "--Select--");
-        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,ShapeName from Shape Where MasterCompanyid=" + Session["varCompanyId"] + " order by ShapeId", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItem.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDDesign, "select DesignId,DesignName from Design Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by DesignId", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDColor, "select ColorId,ColorName from Color Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by ColorId", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDColorShade, "select ShadeColorId,ShadeColorName from shadecolor Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by ShadeColorId", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,ShapeName from Shape Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by ShapeId", true, "--Select--");
     }
     private void fill_size()
     {
         string st = null;
         if (ChkFt.Checked)
-            st = "Select SizeId,SizeFt from  Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"];
+            st = "Select SizeId,SizeFt from  Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
         else
-            st = "Select SizeId,SizeMtr from  Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"];
+            st = "Select SizeId,SizeMtr from  Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--Select--");
     }
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
@@ -148,7 +148,7 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
         try
         {
             string strsql = @"select DRateDetailId,CalType DyingType,EmpName,Item_Name+'/'+isnull(QualityName,'')+'/'+isnull(DesignName,'')+'/'+isnull(ColorName,'')+'/'+isnull(ShadeColorName,'')+'/'+isnull(ShapeName,'') ItemDescription,SizeFt,SizeMtr,FromoQty,ToQty,Rate
-            from DyeingRateMaster DRM inner join EmpInfo EI on DRM.PartyId=EI.Empid inner join V_FinishedItemDetail VF on VF.Item_Finished_Id=DRM.FinishedId inner join Process_CalType DT on DT.CalId=DyeingTypeId where DRM.CompanyId=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyid=" + Session["varCompanyId"];
+            from DyeingRateMaster DRM inner join EmpInfo EI on DRM.PartyId=EI.Empid inner join V_FinishedItemDetail VF on VF.Item_Finished_Id=DRM.FinishedId inner join Process_CalType DT on DT.CalId=DyeingTypeId where DRM.CompanyId=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 
         }
@@ -160,7 +160,7 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
     }
     protected void DDDyerName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct Category_Id,Category_Name from Item_Category_Master ICM inner join CategorySeparate CS on ICM.Category_Id=CS.CategoryId where id=1 And ICM.MasterCompanyid=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct Category_Id,Category_Name from Item_Category_Master ICM inner join CategorySeparate CS on ICM.Category_Id=CS.CategoryId where id=1 And ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         UtilityModule.ConditionalComboFill(ref DDDyeingType, "select CalId,CalType from Process_CalType", true, "--Select--");
     }
     protected void BtnSave_Click(object sender, EventArgs e)
@@ -216,14 +216,14 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
             _arrpara[1].Direction = ParameterDirection.InputOutput;
             _arrpara[1].Value = Session["DRateId"];
             _arrpara[2].Value = DDCompanyName.SelectedValue;
-            _arrpara[3].Value = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TextItemCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            _arrpara[3].Value = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TextItemCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             _arrpara[4].Value = DDDyeingType.SelectedValue;
             _arrpara[5].Value = DDDyerName.SelectedValue;
             _arrpara[6].Value = TxtFQty.Text;
             _arrpara[7].Value = TxtToQty.Text;
             _arrpara[8].Value = TxtRate.Text;
             _arrpara[9].Value = Session["varuserId"];
-            _arrpara[10].Value = Session["varCompanyId"];
+            _arrpara[10].Value = Session["varMasterCompanyIDForERP"];
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_ValidateDyeingRate", _arrpara);
             if (Convert.ToInt32(_arrpara[0].Value) == 0)
             {
@@ -268,16 +268,16 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
                     Quality_Id,Design_Id,Color_Id,ShadeColor_Id,Shape_Id,Size_Id 
                     From DyeingRateMaster 
                     inner join Item_Parameter_Master IPM on Item_Finished_Id=FinishedId 
-                    inner join Item_Master IM on IPM.Item_Id=IM.Item_Id where CompanyId = " + DDCompanyName.SelectedValue + " And DRateDetailId = " + DGDyeingRateDetail.SelectedDataKey.Value + " And IPM.MasterCompanyid=" + Session["varCompanyId"];
+                    inner join Item_Master IM on IPM.Item_Id=IM.Item_Id where CompanyId = " + DDCompanyName.SelectedValue + " And DRateDetailId = " + DGDyeingRateDetail.SelectedDataKey.Value + " And IPM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
-            UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct Category_Id,Category_Name from Item_Category_Master ICM inner join CategorySeparate CS on ICM.Category_Id=CS.CategoryId where id=1 And ICM.MasterCompanyid=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct Category_Id,Category_Name from Item_Category_Master ICM inner join CategorySeparate CS on ICM.Category_Id=CS.CategoryId where id=1 And ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             UtilityModule.ConditionalComboFill(ref DDDyeingType, "select CalId,CalType from Process_CalType", true, "--Select--");
             DDDyerName.SelectedValue = ds.Tables[0].Rows[0]["PartyId"].ToString();
             DDDyeingType.SelectedValue = ds.Tables[0].Rows[0]["DyeingTypeId"].ToString();
             DDCategory.SelectedValue = ds.Tables[0].Rows[0]["Category_Id"].ToString();
             ddlcategorycange();
-            UtilityModule.ConditionalComboFill(ref DDItem, "select Item_Id,Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDItem, "select Item_Id,Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             DDItem.SelectedValue = ds.Tables[0].Rows[0]["Item_Id"].ToString();
             fill_combo();
             DDQuality.SelectedValue = ds.Tables[0].Rows[0]["Quality_Id"].ToString();
@@ -308,7 +308,7 @@ public partial class Masters_Process_DyeingRateDefine : System.Web.UI.Page
             con.Open();
             SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'DyeingRateMaster'," + Session["DRateDetailId"] + ",getdate(),'Delete')");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'DyeingRateMaster'," + Session["DRateDetailId"] + ",getdate(),'Delete')");
             fill_grid();
             Clear();
             Lblmessage.Text = "Data Deleted.............";

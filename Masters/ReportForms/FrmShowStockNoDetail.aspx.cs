@@ -23,7 +23,7 @@ public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -126,7 +126,7 @@ public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
                                 Left Join ordermaster OM(Nolock) on CN.orderid=OM.orderid 
                                 left join Customerinfo CC(Nolock) on OM.customerid=CC.customerid 
                                 left join PROCESS_RECEIVE_DETAIL_1 PRD(Nolock) ON PRD.Process_Rec_Detail_Id = CN.Process_Rec_Detail_Id And PRD.Process_Rec_Id = CN.Process_Rec_id 
-                                Where CN.Item_Finished_id=VF.Item_Finished_id And CN.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And TSTOCKNO in (" + StrNew + ") And VF.MasterCompanyId=" + Session["varCompanyId"] + @"
+                                Where CN.Item_Finished_id=VF.Item_Finished_id And CN.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And TSTOCKNO in (" + StrNew + ") And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                                 UNION ALL
                                 select Replace(cast(ls.StockNo as nvarchar)+'|'+Str(ls.IssueDetailId)+'|'+Str(ls.Process_rec_detail_id)+'|'+Str(ls.ProcessId)+'|0',' ','')  StockNo,ls.TStockNo,
                                 '' EmpName,'' IssueChallanNo,replace(convert(varchar(11),pim.AssignDate,106), ' ','-')OrderDate,'' RecChallanNo,
@@ -264,7 +264,7 @@ public partial class Masters_Campany_FrmShowStockNoDetail : CustomPage
                                 isnull(PM.ChallanNo,PM.IssueOrderId) as IssueOrderId,EI.EmpName,PM.IssueOrderId as OnlyIssueOrderId 
                                 From PROCESS_ISSUE_MASTER_" + VarProcessId + " PM,PROCESS_ISSUE_DETAIL_" + VarProcessId + @" PD,EmpInfo EI 
                                 Where PM.IssueOrderId=PD.IssueOrderId And PM.EmpID=EI.EmpID And Issue_Detail_Id=" + VarIssueDetailId + @" And 
-                                EI.MasterCompanyId=" + Session["varCompanyId"] + "");
+                                EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                             }
                             if (Ds.Tables[0].Rows.Count > 0)
                             {

@@ -11,7 +11,7 @@ public partial class Masters_Order_FrmUpdateOrderConsumption : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,9 +20,9 @@ public partial class Masters_Order_FrmUpdateOrderConsumption : System.Web.UI.Pag
             string Str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                         SELECT Customerid, CompanyName + SPACE(5) + Customercode CompanyName 
-                        From customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName";
+                        From customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -59,7 +59,7 @@ public partial class Masters_Order_FrmUpdateOrderConsumption : System.Web.UI.Pag
                 }
             }
             //Update status
-            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Exec Pro_Updatestatus " + Session["varcompanyId"] + "," + Session["Varuserid"] + ",'Order_Consumption_Detail'," + ddOrderNo.SelectedValue + ",'Consumption Updated'");
+            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Exec Pro_Updatestatus " + Session["varMasterCompanyIDForERP"] + "," + Session["Varuserid"] + ",'Order_Consumption_Detail'," + ddOrderNo.SelectedValue + ",'Consumption Updated'");
             //
             ScriptManager.RegisterStartupScript(Page, GetType(), "a", "alert('Consumption Updated successfully...')", true);
             ddOrderNo.SelectedIndex = 0;

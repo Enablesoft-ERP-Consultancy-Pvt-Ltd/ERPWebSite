@@ -11,7 +11,7 @@ public partial class frmitemcatagory : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -45,10 +45,10 @@ public partial class frmitemcatagory : CustomPage
         DataSet ds = null;
         try
         {
-            string strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code,HSCODE from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by Category_Name ";
+            string strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code,HSCODE from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Category_Name ";
             if (tdtxtHSCode.Visible == false)
             {
-                strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by Category_Name ";
+                strsql = @"select CATEGORY_ID as Sr_No,Category_Name as " + lblcategoryname.Text + ",Code from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Category_Name ";
             }
             ds = SqlHelper.ExecuteDataset(strsql);
         }
@@ -98,7 +98,7 @@ public partial class frmitemcatagory : CustomPage
                     _arrPara1[5].Value = chk_5.Checked == true ? 5 : 0;
                     _arrPara1[8].Value = chk_6.Checked == true ? 6 : 0;
                     _arrPara1[9].Value = Session["varuserid"].ToString();
-                    _arrPara1[10].Value = Session["varCompanyId"].ToString();
+                    _arrPara1[10].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara1[11].Value = TxtHSCode.Text;
                     int n = ChkBoxList.Items.Count;
                     string str = null;
@@ -309,11 +309,11 @@ public partial class frmitemcatagory : CustomPage
             string strsql;
             if (btnSave.Text == "Update")
             {
-                strsql = "select CATEGORY_NAME,code from ITEM_CATEGORY_MASTER where CATEGORY_ID<>" + ViewState["CategoryId"] + " and (CATEGORY_NAME='" + txtcatagory.Text + "') And  MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CATEGORY_NAME,code from ITEM_CATEGORY_MASTER where CATEGORY_ID<>" + ViewState["CategoryId"] + " and (CATEGORY_NAME='" + txtcatagory.Text + "') And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select CATEGORY_NAME,code from ITEM_CATEGORY_MASTER where CATEGORY_NAME='" + txtcatagory.Text + "' And  MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CATEGORY_NAME,code from ITEM_CATEGORY_MASTER where CATEGORY_NAME='" + txtcatagory.Text + "' And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             DataSet ds = SqlHelper.ExecuteDataset(strsql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -343,7 +343,7 @@ public partial class frmitemcatagory : CustomPage
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CATEGORY_ID from ITEM_MASTER where MasterCompanyId=" + Session["varCompanyId"] + " AND  CATEGORY_ID=" + ViewState["CategoryId"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CATEGORY_ID from ITEM_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " AND  CATEGORY_ID=" + ViewState["CategoryId"].ToString()));
             SqlParameter[] _array = new SqlParameter[2];
             _array[0] = new SqlParameter("@CATEGORY_ID", ViewState["CategoryId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
@@ -376,7 +376,7 @@ public partial class frmitemcatagory : CustomPage
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname1.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];

@@ -12,14 +12,14 @@ public partial class Masters_Hissab_Frmadvanceforanisha : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
 
-            UtilityModule.ConditionalComboFill(ref ddjobname, "select process_name_id, process_name from process_name_master where MasterCompanyId=" + Session["varCompanyId"] + " order by process_name", true, "-------SELECT---------");
+            UtilityModule.ConditionalComboFill(ref ddjobname, "select process_name_id, process_name from process_name_master where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by process_name", true, "-------SELECT---------");
             txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy HH:mm:ss");
             //fillgrid();
             

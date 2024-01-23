@@ -15,7 +15,7 @@ public partial class Masters_ReportForms_FrmBunkarReport : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_ReportForms_FrmBunkarReport : System.Web.UI.Page
 
             ViewState["OrderId"] = 0;
 
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
                            SELECT MONTH_ID,MONTH_NAME FROM MONTHTABLE order by Month_Id
                            SELECT YEAR,YEAR AS YEAR1 FROM YEARDATA order by Year";
 
@@ -36,7 +36,7 @@ public partial class Masters_ReportForms_FrmBunkarReport : System.Web.UI.Page
             UtilityModule.ConditionalComboFillWithDS(ref DDYear, ds, 2, true, "--Select--");
             //TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             //TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");          
-            int varcompanyNo = Convert.ToInt16(Session["varcompanyid"].ToString());
+            int varcompanyNo = Convert.ToInt16(Session["varMasterCompanyIDForERP"].ToString());
 
             if (DDMonth.Items.Count > 0)
             {
@@ -262,7 +262,7 @@ public partial class Masters_ReportForms_FrmBunkarReport : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -386,7 +386,7 @@ public partial class Masters_ReportForms_FrmBunkarReport : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
         lblqualityname.Text = ParameterList[0];
@@ -403,7 +403,7 @@ public partial class Masters_ReportForms_FrmBunkarReport : System.Web.UI.Page
         //    TRcustcode.Visible = true;          
         //    ChkForDate.Checked = false;
         //    //ChkForDate_CheckedChanged(sender, e);
-        //    //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName", true, "--Select--");
+        //    //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName", true, "--Select--");
 
         //    BindCategory(); 
 
@@ -478,7 +478,7 @@ public partial class Masters_ReportForms_FrmBunkarReport : System.Web.UI.Page
 
         //*****************
         SqlParameter[] param = new SqlParameter[4];
-        param[0] = new SqlParameter("@MasterCompanyID", Session["VarCompanyId"]);
+        param[0] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
         param[1] = new SqlParameter("@UserID", Session["VarUserId"]);
         param[2] = new SqlParameter("@Where", str);
         param[3] = new SqlParameter("@ContractorId", DDContractorName.SelectedValue);

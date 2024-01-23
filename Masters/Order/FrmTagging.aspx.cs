@@ -13,7 +13,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
         {
             DDLInCompanyName.Focus();
             UtilityModule.ConditionalComboFill(ref DDLInCompanyName, @"select CI.CompanyId,CompanyName From CompanyInfo CI(Nolock),Company_Authentication CA(Nolock) 
-            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
 
             if (DDLInCompanyName.Items.Count > 0)
             {
@@ -90,7 +90,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                     FROM OrderMaster OM(Nolock) 
                     INNER JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
                     INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId 
-                    Where Om.status=0 and OM.Companyid=" + DDLInCompanyName.SelectedValue + " And C.MasterCompanyId=" + Session["varCompanyId"];
+                    Where Om.status=0 and OM.Companyid=" + DDLInCompanyName.SelectedValue + " And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (Session["usertype"].ToString() != "1")
                 {
                     DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Process_Name_id From Process_Name_Master(Nolock) Where process_name_id in(1,16,35) Order By Process_Name_ID");
@@ -112,7 +112,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
 //                    Str = @"SELECT distinct C.CustomerId,(companyName+'     '+C.CustomerCode) CustomerCode  
 //                    FROM OrderMaster OM(Nolock) 
 //                    INNER JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
-//                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @" 
+//                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
 //                    Where  om.status=0 And OM.Companyid=" + DDLInCompanyName.SelectedValue + "";
 //                }
 //                else
@@ -120,7 +120,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                     Str = @"SELECT distinct C.CustomerId,(companyName+'     '+C.CustomerCode) CustomerCode  
                     FROM OrderMaster OM(Nolock) 
                     INNER JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
-                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                     Where (OD.TAG_FLAG is null OR OD.TAG_FLAG=0) and om.status=0 And OM.Companyid=" + DDLInCompanyName.SelectedValue + "";
                // }
             }
@@ -232,7 +232,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 }
             }
 
-            if (Convert.ToInt16(Session["varcompanyid"]) == 44)
+            if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 44)
             {
                 sp = "Pro_Get_Tag_Stock_New";
             }
@@ -280,7 +280,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                     CheckBox Chkboxitem = ((CheckBox)DGOrderDetail.Rows[i].FindControl("Chkboxitem"));
                     if (Chkboxitem.Checked == true)
                     {
-                        if (Convert.ToInt16(Session["varcompanyid"]) == 44)
+                        if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 44)
                         {
                             sp = "Pro_Update_Tag_Stock_new";
                         }
@@ -330,7 +330,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                                 cmd.Parameters.AddWithValue("@PREINTERNALPRODASSIGNEDQTY", lblpreinternalprodassignedqty.Text == "" ? "0" : lblpreinternalprodassignedqty.Text);
                                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
-                                cmd.Parameters.AddWithValue("@MastercompanyId", Session["varcompanyId"]);
+                                cmd.Parameters.AddWithValue("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                                 cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
                                 cmd.Parameters.AddWithValue("Prod_Weaving_Rate", Prod_Weaving_Rate);
                                 cmd.Parameters.AddWithValue("Int_Weaving_Rate", Int_Weaving_Rate);
@@ -369,7 +369,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 }
                 Tran.Commit();
                 //********UPDATE STATUS
-                UtilityModule.updatestatus(Convert.ToInt16(Session["varcompanyid"]), Convert.ToInt16(Session["varuserid"]), "JOBASSIGNS", Convert.ToInt32(DDLOrderNo.SelectedValue), "TAGGING UPDATED.");
+                UtilityModule.updatestatus(Convert.ToInt16(Session["varMasterCompanyIDForERP"]), Convert.ToInt16(Session["varuserid"]), "JOBASSIGNS", Convert.ToInt32(DDLOrderNo.SelectedValue), "TAGGING UPDATED.");
                 //******
                 if (savecnt > 0)
                 {
@@ -590,14 +590,14 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 {
                     Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.CustomerOrderNo+ ' | ' + OM.LocalOrder Else OM.customerorderno End as OrderNo 
                     FROM OrderMaster OM(Nolock) 
-                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Where OM.Companyid=" + DDLInCompanyName.SelectedValue + " And om.status=0 and Om.ORDERFROMSAMPLE=0  and OM.Customerid=" + DDLCustomerCode.SelectedValue;
                 }
                 else
                 {
                     Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.LocalOrder+ ' | ' + OM.CustomerOrderNo Else OM.customerorderno End as OrderNo 
                     FROM OrderMaster OM(Nolock) 
-                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Where OM.Companyid=" + DDLInCompanyName.SelectedValue + " And om.status=0 and Om.ORDERFROMSAMPLE=0  and OM.Customerid=" + DDLCustomerCode.SelectedValue;
                 }
                
@@ -621,7 +621,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                     Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.CustomerOrderNo+ ' | ' + OM.LocalOrder Else OM.customerorderno End as OrderNo 
                     FROM OrderDetail OD(Nolock) 
                     INNER JOIN OrderMaster OM(Nolock) ON OD.OrderId=OM.OrderId 
-                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Where (OD.TAG_FLAG is null OR OD.TAG_FLAG=0) And Om.status=0 and Om.ORDERFROMSAMPLE=0 and OM.Companyid=" + DDLInCompanyName.SelectedValue + " And OM.Customerid=" + DDLCustomerCode.SelectedValue;
                 }
                 else
@@ -629,7 +629,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                     Str = @"SELECT Distinct OM.OrderId,case when " + variable.VarORDERNODROPDOWNWITHLOCALORDER + @"=1 THen OM.LocalOrder+ ' | ' + OM.CustomerOrderNo Else OM.customerorderno End as OrderNo 
                     FROM OrderDetail OD(Nolock) 
                     INNER JOIN OrderMaster OM(Nolock) ON OD.OrderId=OM.OrderId 
-                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    INNER JOIN Customerinfo C(Nolock) ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Where (OD.TAG_FLAG is null OR OD.TAG_FLAG=0) And Om.status=0 and Om.ORDERFROMSAMPLE=0 and OM.Companyid=" + DDLInCompanyName.SelectedValue + " And OM.Customerid=" + DDLCustomerCode.SelectedValue;
                 }
 
@@ -776,7 +776,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
         {
             SqlParameter[] param = new SqlParameter[2];
             param[0] = new SqlParameter("@orderid", DDLOrderNo.SelectedValue);
-            param[1] = new SqlParameter("@mastercompanyid", Session["varcompanyid"].ToString());
+            param[1] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"].ToString());
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETINTERNALPRODSTOCKNO", param);
             if (ds.Tables[0].Rows.Count > 0)
@@ -905,7 +905,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                         arrPara[10] = new SqlParameter("@Internalprodqty", SqlDbType.Int);
                         arrPara[11] = new SqlParameter("@PREINTERNALPRODASSIGNEDQTY", SqlDbType.Int);
                         arrPara[12] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
-                        arrPara[13] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+                        arrPara[13] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                         arrPara[14] = new SqlParameter("@userid", Session["varuserid"]);
 
                         arrPara[0].Value = Convert.ToInt32(strOrderid.Split('|')[0]);
@@ -962,7 +962,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
                 }
             }
             //********UPDATE STATUS
-            UtilityModule.updatestatus(Convert.ToInt16(Session["varcompanyid"]), Convert.ToInt16(Session["varuserid"]), "JOBASSIGNS", Convert.ToInt32(DDLOrderNo.SelectedValue), "TAGGING UPDATED.");
+            UtilityModule.updatestatus(Convert.ToInt16(Session["varMasterCompanyIDForERP"]), Convert.ToInt16(Session["varuserid"]), "JOBASSIGNS", Convert.ToInt32(DDLOrderNo.SelectedValue), "TAGGING UPDATED.");
             //******
             if (savecnt > 0)
             {
@@ -1034,7 +1034,7 @@ public partial class Masters_Order_FrmTagging : CustomPage
             cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 100);
             cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;
             cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MastercompanyId", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
 
             cmd.ExecuteNonQuery();
             Tran.Commit();

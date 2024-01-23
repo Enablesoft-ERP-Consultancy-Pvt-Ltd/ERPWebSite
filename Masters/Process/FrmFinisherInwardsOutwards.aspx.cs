@@ -45,7 +45,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
     static int StockNoItemFinishedId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -68,8 +68,8 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
             txtTotalIssPcs.Enabled = false;
             txtTotalRecPcs.Enabled = false;
 
-            string str = "select Distinct CI.CompanyId,CI.Companyname from CompanyInfo CI INNER JOIN Company_Authentication CA ON CI.CompanyId=CA.CompanyId Where CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order by Companyname";
-            str = str + " select process_name_id,process_name from process_name_master Where MasterCompanyId=" + Session["varCompanyId"] + " and ProcessType=1 and PROCESS_NAME_ID!=1 order by process_name ";
+            string str = "select Distinct CI.CompanyId,CI.Companyname from CompanyInfo CI INNER JOIN Company_Authentication CA ON CI.CompanyId=CA.CompanyId Where CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname";
+            str = str + " select process_name_id,process_name from process_name_master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and ProcessType=1 and PROCESS_NAME_ID!=1 order by process_name ";
             str = str + " select unitid,unitname from unit where unitid in (1,2) ";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 0, true, "--SELECT--");
@@ -83,14 +83,14 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
             ViewState["recid"] = 0;
             UtilityModule.ConditionalComboFillWithDS(ref ddprocess, ds, 1, true, "--SELECT--");
 
-            string str1 = "select process_name_id,process_name from process_name_master Where  MasterCompanyId=" + Session["varCompanyId"] + " and ProcessType=1 and PROCESS_NAME_ID!=1 order by process_name";
+            string str1 = "select process_name_id,process_name from process_name_master Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and ProcessType=1 and PROCESS_NAME_ID!=1 order by process_name";
             DataSet ds1 = SqlHelper.ExecuteDataset(str1);
             UtilityModule.ConditionalComboFillWithDS(ref DDIssueJobType, ds1, 0, true, "--SELECT--");
 
             TxtreceiveDate.Text = DateTime.Now.Date.ToString("dd-MMM-yyyy");
             txtIssueDate.Text = DateTime.Now.Date.ToString("dd-MMM-yyyy");
             txtRequiredDate.Text = DateTime.Now.Date.ToString("dd-MMM-yyyy");
-            int VarCompanyNo = Convert.ToInt32(Session["varCompanyId"].ToString());
+            int VarCompanyNo = Convert.ToInt32(Session["varMasterCompanyIDForERP"].ToString());
 
             hnorderid.Value = "0";
             StockNoMainBazaarChallanNo = 0;
@@ -167,7 +167,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -181,8 +181,8 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
     {
         string sql = "";
         ViewState["recid"] = 0;
-        sql = @"Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + ddprocess.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + "";
-        //UtilityModule.ConditionalComboFill(ref ddemp, "Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + ddprocess.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " order by EI.EmpName", true, "--SELECT--");
+        sql = @"Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + ddprocess.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
+        //UtilityModule.ConditionalComboFill(ref ddemp, "Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + ddprocess.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EI.EmpName", true, "--SELECT--");
         if (ddCompName.SelectedIndex > 0)
         {
             sql = sql + " And PM.CompanyId=" + ddCompName.SelectedValue;
@@ -301,7 +301,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
     {
         string sql = "";
         ViewState["recid"] = 0;
-        //sql = @"Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + DDIssueJobType.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + "";
+        //sql = @"Select Distinct EI.Empid,EI.EmpName From Empinfo EI,process_issue_master_" + DDIssueJobType.SelectedValue + " PM Where EI.EmpId=PM.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
         //sql = sql + "order by EI.EmpName";
 
         sql = @"select EI.EmpId,EI.EmpName from EmpProcess EP INNER JOIN EmpInfo EI ON EP.EmpId=EI.EmpId  where Processid=" + DDIssueJobType.SelectedValue + "";
@@ -664,9 +664,9 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
     }
     private void fill_PenalityQuality()
     {
-        //CommanFunction.FillCombo(ddQualityName, "Select QualityId,QualityName from Quality Where MasterCompanyid=" + Session["varCompanyId"] + " order by QualityName");
+        //CommanFunction.FillCombo(ddQualityName, "Select QualityId,QualityName from Quality Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by QualityName");
 
-        CommanFunction.FillCombo(ddQualityName, "Select ITEM_ID,ITEM_NAME from Item_master Where MasterCompanyid=" + Session["varCompanyId"] + " and CATEGORY_ID=1 order by ITEM_NAME");
+        CommanFunction.FillCombo(ddQualityName, "Select ITEM_ID,ITEM_NAME from Item_master Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CATEGORY_ID=1 order by ITEM_NAME");
 
     }
     protected void ddQualityName_SelectedIndexChanged(object sender, EventArgs e)
@@ -790,7 +790,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
                 _arrpara[2] = new SqlParameter("@ProcessId", ddprocess.SelectedValue);
                 _arrpara[3] = new SqlParameter("@Empid", ddemp.SelectedValue);
                 _arrpara[4] = new SqlParameter("@Companyid", ddCompName.SelectedValue);
-                _arrpara[5] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+                _arrpara[5] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                 _arrpara[6] = new SqlParameter("@Penality", name);
                 _arrpara[7] = new SqlParameter("@Userid", Session["varuserid"]);
                 _arrpara[8] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 100);
@@ -1172,7 +1172,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
                     _arrpara[3] = new SqlParameter("@Empid", ddemp.SelectedValue);
                     _arrpara[4] = new SqlParameter("@Companyid", ddCompName.SelectedValue);
                     _arrpara[5] = new SqlParameter("@TStockNo", txtStockNo.Text);
-                    _arrpara[6] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+                    _arrpara[6] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                     _arrpara[7] = new SqlParameter("@Penality", name);
                     _arrpara[8] = new SqlParameter("@JobName", DDIssueJobType.SelectedValue);
                     _arrpara[9] = new SqlParameter("@FinisherName", DDIssueContractorName.SelectedValue);
@@ -1451,7 +1451,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
             _arrpara[3] = new SqlParameter("@ProcessId", ddprocess.SelectedValue);
             _arrpara[4] = new SqlParameter("@Empid", ddemp.SelectedValue);
             _arrpara[5] = new SqlParameter("@Companyid", ddCompName.SelectedValue);
-            _arrpara[6] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+            _arrpara[6] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
             _arrpara[7] = new SqlParameter("@Userid", Session["varuserid"]);
             _arrpara[8] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 100);
             _arrpara[8].Direction = ParameterDirection.Output;
@@ -1577,7 +1577,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
         array[1].Value = ddprocess.SelectedValue;
         array[2].Value = ddemp.SelectedValue;
 
-        array[3].Value = Session["varcompanyId"];
+        array[3].Value = Session["varMasterCompanyIDForERP"];
         //array[4].Value = ddCompName.SelectedValue;
 
 
@@ -1631,7 +1631,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
         array[1].Value = ddprocess.SelectedValue;
         array[2].Value = ddemp.SelectedValue;
 
-        array[3].Value = Session["varcompanyId"];
+        array[3].Value = Session["varMasterCompanyIDForERP"];
         //array[4].Value = ddCompName.SelectedValue;
 
 
@@ -1752,7 +1752,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
         array[0].Value = Convert.ToInt32(TxtEditChallanNo.Text == "" ? lblLastReceiptNo.Text : TxtEditChallanNo.Text);
         array[1].Value = ddprocess.SelectedValue;
         array[2].Value = ddemp.SelectedValue;
-        array[3].Value = Session["varcompanyId"];
+        array[3].Value = Session["varMasterCompanyIDForERP"];
         array[4].Value = ddCompName.SelectedValue;
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FinisherRawMaterialReport", array);
@@ -1800,7 +1800,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
                     _arrpara[0] = new SqlParameter("@ProcessRecId", ViewState["Process_Rec_Id"]);                   
                     _arrpara[1] = new SqlParameter("@ProcessId", ddprocess.SelectedValue);
                     _arrpara[2] = new SqlParameter("@Userid", Session["varuserid"]);
-                    _arrpara[3] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);                   
+                    _arrpara[3] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);                   
                     _arrpara[4] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 100);
                     _arrpara[4].Direction = ParameterDirection.Output;
 
@@ -1853,7 +1853,7 @@ public partial class Masters_Process_FrmFinisherInwardsOutwards : System.Web.UI.
         array[0].Value = Convert.ToInt32(TxtEditChallanNo.Text == "" ? lblLastReceiptNo.Text : TxtEditChallanNo.Text);
         array[1].Value = ddprocess.SelectedValue;
         array[2].Value = ddemp.SelectedValue;
-        array[3].Value = Session["varcompanyId"];
+        array[3].Value = Session["varMasterCompanyIDForERP"];
         array[4].Value = ddCompName.SelectedValue;
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FinisherIssueRawMaterialReport", array);

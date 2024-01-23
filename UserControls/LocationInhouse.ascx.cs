@@ -11,7 +11,7 @@ public partial class HRUserControls_LocationInhouse : System.Web.UI.UserControl
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -110,7 +110,7 @@ public partial class HRUserControls_LocationInhouse : System.Web.UI.UserControl
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@userid", Session["varuserid"]);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_UPDATELOCATIONINHOUSE", param);
             //*************

@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
                            select Item_id,Item_name from Item_master IM,categoryseparate CS Where IM.category_id=CS.CategoryId And CS.id=0 order by Item_name
                            select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId
                            select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
-                           Select CustomerID, CustomerCode From CustomerInfo Where MasterCompanyid = " + Session["varcompanyid"] + " Order By CustomerCode ";
+                           Select CustomerID, CustomerCode From CustomerInfo Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -39,7 +39,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
             txtToDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             RDRecReport.Checked = true;
             //*************
-            switch (Convert.ToString(Session["varcompanyId"]))
+            switch (Convert.ToString(Session["varMasterCompanyIDForERP"]))
             {
                 case "8":
                     TRLoomBal.Visible = false;
@@ -229,7 +229,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
             FolioWiseMaterialIssWithConsumption();
             return;
         }
-        if (Session["varcompanyId"].ToString() == "8")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "8")
         {
             ReportForanisa();
         }
@@ -335,7 +335,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
 
                     var Onepcslagattotal = ds.Tables[0].Compute("sum(ONEPCSLAGAT)", "prorderid=" + ds1.Tables[0].Rows[i]["prorderid"] + "");
 
-                    if (Session["varcompanyId"].ToString() == "21")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     {
                         sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["LoomNo"]);
                         sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Prorderid"]);
@@ -358,7 +358,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
                     sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Issqty"]);
                     sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["issueshadeqty"]);
                     sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Recqty"]);
-                    if (Session["varcompanyId"].ToString() == "21")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     {
                         sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["ONEPCSLAGAT"]);
                     }
@@ -1282,7 +1282,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
         if (RDFolioWiseMaterialIssWithConsumption.Checked == true)
         {
             TRItemName.Visible = true;
-            string str = "select Item_id,ITEM_NAME From Item_master where MasterCompanyid=" + Session["varcompanyId"] + "";
+            string str = "select Item_id,ITEM_NAME From Item_master where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
             if (DDcategory.SelectedIndex > 0)
             {
                 str = str + " and Category_id=" + DDcategory.SelectedValue;
@@ -1297,7 +1297,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
         else
         {
             UtilityModule.ConditionalComboFill(ref DDArticle, @"select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner join CategorySeparate CS on IM.CATEGORY_ID=CS.Categoryid
-                                                            and CS.id=0 and cs.categoryid=" + DDcategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varcompanyId"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
+                                                            and CS.id=0 and cs.categoryid=" + DDcategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
         }
 
     }
@@ -1306,11 +1306,11 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
         TRDDQuality.Visible = true;
         if (ddItemName.SelectedItem.Text.Trim() != "ALL")
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "ALL");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varCompanyid"] + "  order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityName", true, "ALL");
         }
         DDQuality_SelectedIndexChanged(sender, e);
     }
@@ -1323,10 +1323,10 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
         TRDDShape.Visible = false;
         TRDDSize.Visible = false;
 
-        string qry = @"select DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY DESIGNNAME
-        select COLORID,COLORNAME from color Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY COLORNAME
-        SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY SHADECOLORNAME
-        SELECT SHAPEID, SHAPENAME FROM SHAPE Where MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SHAPENAME";
+        string qry = @"select DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY DESIGNNAME
+        select COLORID,COLORNAME from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY COLORNAME
+        SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY SHADECOLORNAME
+        SELECT SHAPEID, SHAPENAME FROM SHAPE Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SHAPENAME";
         DataSet ds = SqlHelper.ExecuteDataset(qry);
 
         string str = @"select PARAMETER_ID from ITEM_CATEGORY_PARAMETERS where category_id=" + DDcategory.SelectedValue;
@@ -1364,7 +1364,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
     {
         TRDDSize.Visible = true;
-        string str = @"SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE WHERE MasterCompanyId=" + Session["varCompanyid"];
+        string str = @"SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDShape.SelectedIndex > 0)
         {
             str = str + " and SHAPEID=" + DDShape.SelectedValue;
@@ -1467,7 +1467,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
                 sht.Range("O2").Value = "SHADE WISE %";
                 sht.Range("P2").Value = "SHADE WISE CARPET WEIGHT";
                 sht.Range("Q2").Value = "RM BAL. ON THIS FOLIO";
-                if (Session["varcompanyId"].ToString() == "14")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "14")
                 {
                     sht.Range("R2").Value = "BALANCE PCS";
                 }
@@ -1489,7 +1489,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
 
                     var Onepcslagattotal = ds.Tables[0].Compute("sum(ONEPCSLAGAT)", "prorderid=" + ds1.Tables[0].Rows[i]["prorderid"] + "");
 
-                    //if (Session["varcompanyId"].ToString() == "21")
+                    //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     //{
                     //    sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["LoomNo"]);
                     //    sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Prorderid"]);
@@ -1530,7 +1530,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
                     sht.Range("Q" + row).FormulaA1 = "=J" + row + "-P" + row;
                     sht.Cell(row, "Q").Style.NumberFormat.Format = "#,##0.000";
 
-                    if (Session["varcompanyId"].ToString() == "14")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "14")
                     {
                         sht.Range("R" + row).FormulaA1 = "=I" + row + "-K" + row;
                         //sht.Cell(row, "R").Style.NumberFormat.Format = "#,##0.000";
@@ -1687,7 +1687,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
 
                     var Onepcslagattotal = ds.Tables[1].Compute("sum(ONEPCSLAGAT)", "prorderid=" + ds1.Tables[0].Rows[i]["prorderid"] + "");
 
-                    if (Session["varcompanyId"].ToString() == "21")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     {
                         sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["LoomNo"]);
                         sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Prorderid"]);
@@ -1714,7 +1714,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
                     sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Issqty"]);
                     sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["issueshadeqty"]);
                     sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Recqty"]);
-                    if (Session["varcompanyId"].ToString() == "21")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     {
                         sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["ONEPCSLAGAT"]);
                     }
@@ -1740,7 +1740,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
                     //sht.Range("G" + row).SetValue(ds1.Tables[0].Rows[i]["Issqty"]);
                     //sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["issueshadeqty"]);
                     //sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Recqty"]);
-                    //if (Session["varcompanyId"].ToString() == "21")
+                    //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     //{
                     //    sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["ONEPCSLAGAT"]);
                     //}

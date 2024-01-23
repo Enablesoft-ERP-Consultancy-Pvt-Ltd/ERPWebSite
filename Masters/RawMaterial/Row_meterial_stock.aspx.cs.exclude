@@ -12,19 +12,19 @@ public partial class Masters_RawMaterial_Row_meterial_stock : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddCompName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "Select Comp Name");
-            UtilityModule.ConditionalComboFill(ref ddgodown, "select godownid,godownname from godownmaster Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "ALL");
-            UtilityModule.ConditionalComboFill(ref ddCatagory, "select category_id,category_name from item_category_master ic inner join categoryseparate cs on ic.category_id=cs.categoryid where id=1 And ic.MasterCompanyId=" + Session["varCompanyId"] + "", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref ddCompName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "Select Comp Name");
+            UtilityModule.ConditionalComboFill(ref ddgodown, "select godownid,godownname from godownmaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref ddCatagory, "select category_id,category_name from item_category_master ic inner join categoryseparate cs on ic.category_id=cs.categoryid where id=1 And ic.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
             UtilityModule.ConditionalComboFill(ref ddlotno, "Select distinct lotno,lotno from stock Where CompanyId=" + ddCompName.SelectedValue, true, "ALL");
             UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME 
-           FROM    dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID INNER JOIN dbo.ITEM_MASTER ON i.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID And i.MasterCompanyId=" + Session["varCompanyId"], true, "ALL");
-            UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT q.QualityId,q.QualityName  FROM  dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID  INNER JOIN dbo.Quality q ON i.QUALITY_ID = q.QualityId And i.MasterCompanyId=" + Session["varCompanyId"], true, "ALL");
+           FROM    dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID INNER JOIN dbo.ITEM_MASTER ON i.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "ALL");
+            UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT q.QualityId,q.QualityName  FROM  dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID  INNER JOIN dbo.Quality q ON i.QUALITY_ID = q.QualityId And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "ALL");
             ddCompName.SelectedIndex = 1;
             ddgodown.SelectedIndex = 1;
         }
@@ -34,7 +34,7 @@ public partial class Masters_RawMaterial_Row_meterial_stock : System.Web.UI.Page
         UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME 
         FROM    dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID INNER JOIN
         dbo.ITEM_MASTER ON i.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
-        Where  item_master.category_id=" + ddCatagory.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"] + "", true, "ALL");
+        Where  item_master.category_id=" + ddCatagory.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
 
     }
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
@@ -43,7 +43,7 @@ public partial class Masters_RawMaterial_Row_meterial_stock : System.Web.UI.Page
         FROM  dbo.ITEM_PARAMETER_MASTER i INNER JOIN
         stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID
         INNER JOIN dbo.Quality q ON i.QUALITY_ID = q.QualityId
-        where  q.item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"] + "", true, "ALL");
+        where  q.item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
         ql.Visible = true;
     }   
     string strcat, stritem, strgodown, strlotno, strqual, strcolour;

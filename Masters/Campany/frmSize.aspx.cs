@@ -11,14 +11,14 @@ public partial class frmSize : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             UtilityModule.ConditionalComboFill(ref ddunit, "select UnitId,UnitName from Unit  order by UnitName", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref ddshape, "select ShapeId,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " order by ShapeName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddshape, "select ShapeId,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShapeName", true, "--Select--");
             ddunit.SelectedIndex = 1;
             UnitDependControls();
             txtsize.Focus();
@@ -40,7 +40,7 @@ public partial class frmSize : CustomPage
         try
         {
             string strsql = @"SELECT S.*,Sh.ShapeName FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
-                             S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " Order by SizeId";
+                             S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by SizeId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -347,7 +347,7 @@ public partial class frmSize : CustomPage
                 con.Open();
                 if (ddunit.SelectedIndex > 0 && ddshape.SelectedIndex > 0 && txtwidthFt.Text != "" && txtlengthFt.Text != "" && txtwidthMtr.Text != "" && txtlengthMtr.Text != "")
                 {
-                    string Str = "Select * from Size Where MasterCompanyId=" + Session["varCompanyId"] + " And  Unitid=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And WidthFt=" + Convert.ToDouble(txtwidthFt.Text) + " And LengthFt=" + Convert.ToDouble(txtlengthFt.Text) + " And  WidthMtr=" + Convert.ToDouble(txtwidthMtr.Text) + " And LengthMtr=" + Convert.ToDouble(txtlengthMtr.Text) + "";
+                    string Str = "Select * from Size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And  Unitid=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And WidthFt=" + Convert.ToDouble(txtwidthFt.Text) + " And LengthFt=" + Convert.ToDouble(txtlengthFt.Text) + " And  WidthMtr=" + Convert.ToDouble(txtwidthMtr.Text) + " And LengthMtr=" + Convert.ToDouble(txtlengthMtr.Text) + "";
                     if (txtid.Text !="0")
                     {
                         Str = Str + " And Sizeid<>" + Convert .ToInt32 (txtid.Text) + "";
@@ -427,7 +427,7 @@ public partial class frmSize : CustomPage
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         Double VarHeight = txtheightFt.Text != "" ? Convert.ToInt32(txtheightFt.Text) : 0;
-        string strsql = @"Select * from Size Where MasterCompanyId=" + Session["varCompanyId"] + " And UnitId=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And Width='" + txtwidthFt.Text + "' And Length='" + txtlengthFt.Text + "' And HeightFt='" + VarHeight + "' and SizeID !='" + txtid.Text + "'";
+        string strsql = @"Select * from Size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And UnitId=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And Width='" + txtwidthFt.Text + "' And Length='" + txtlengthFt.Text + "' And HeightFt='" + VarHeight + "' and SizeID !='" + txtid.Text + "'";
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -468,7 +468,7 @@ protected void  gdSize_SelectedIndexChanged(object sender, EventArgs e)
     //Session["id"] = id;
     ViewState["id"] = id;
     SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Size WHERE MasterCompanyId=" + Session["varCompanyId"] + " And SizeId=" + id);
+    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Size WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And SizeId=" + id);
     try
     {
         if (ds.Tables[0].Rows.Count == 1)
@@ -572,12 +572,12 @@ protected void  gdSize_SelectedIndexChanged(object sender, EventArgs e)
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select SIZE_ID from ITEM_PARAMETER_MASTER where MasterCompanyId=" + Session["varCompanyId"] + " And SIZE_ID=" + ViewState["id"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select SIZE_ID from ITEM_PARAMETER_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And SIZE_ID=" + ViewState["id"].ToString()));
             if (id <= 0)
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Size where SizeId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
             }
             else
             {

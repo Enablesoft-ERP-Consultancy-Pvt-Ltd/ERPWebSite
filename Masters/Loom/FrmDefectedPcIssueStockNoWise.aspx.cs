@@ -11,7 +11,7 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,11 +20,11 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
             string str = @"select Distinct CI.CompanyId, CI.CompanyName 
             From Companyinfo CI(Nolock)
             JOIN Company_Authentication CA (Nolock) ON CA.CompanyID = CI.CompanyID And CA.UserId=" + Session["varuserId"] + @" 
-            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CI.CompanyName 
+            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
             Select ID, BranchName 
             From BRANCHMASTER BM(nolock) 
             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @" 
+            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
             Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
             From PROCESS_NAME_MASTER PNM(nolock) 
             JOIN UserRightsProcess URP(nolock) ON URP.ProcessID = PNM.PROCESS_NAME_ID And URP.Userid = " + Session["varuserid"] + @" 
@@ -103,7 +103,7 @@ public partial class Masters_Loom_FrmDefectedPcIssueStockNoWise : System.Web.UI.
                 param[5] = new SqlParameter("@Str", Str);
                 param[6] = new SqlParameter("@IssueDate", System.DateTime.Now.ToString("dd-MMM-yyyy"));
                 param[7] = new SqlParameter("@UserID", Session["varuserid"]);
-                param[8] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+                param[8] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                 param[9] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[9].Direction = ParameterDirection.Output;
 

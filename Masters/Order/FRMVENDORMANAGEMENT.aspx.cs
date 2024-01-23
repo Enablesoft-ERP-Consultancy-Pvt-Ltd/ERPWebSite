@@ -12,7 +12,7 @@ public partial class FRMVENDORMANAGEMENT : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class FRMVENDORMANAGEMENT : System.Web.UI.Page
             UtilityModule.ConditionalComboFill(ref ddcompany, @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName", true, "-----SELECT------");
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName", true, "-----SELECT------");
 
             if (ddcompany.Items.Count > 0)
             {
@@ -30,9 +30,9 @@ public partial class FRMVENDORMANAGEMENT : System.Web.UI.Page
                 ddcompany.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref ddcustomer, "select CustomerId, CustomerName from customerinfo  where MasterCompanyId=" + Session["varCompanyId"] + " order by CustomerName", true, "-----SELECT------");
+            UtilityModule.ConditionalComboFill(ref ddcustomer, "select CustomerId, CustomerName from customerinfo  where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CustomerName", true, "-----SELECT------");
             UtilityModule.ConditionalComboFill(ref ddorderno, "select OrderId, CustomerOrderNo from ordermaster order by CustomerOrderNo", true, "-----SELECT------");
-            UtilityModule.ConditionalComboFill(ref ddvendor, "select EmpId,EmpName from EmpInfo where MasterCompanyId=" + Session["varCompanyId"] + " order by EmpName", true, "-----SELECT------");
+            UtilityModule.ConditionalComboFill(ref ddvendor, "select EmpId,EmpName from EmpInfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EmpName", true, "-----SELECT------");
         }
     }
 
@@ -106,7 +106,7 @@ public partial class FRMVENDORMANAGEMENT : System.Web.UI.Page
                 param[4].Value = ddcustomer.SelectedIndex < 0 ? "0" : ddcustomer.SelectedValue;
                 param[5].Value = txtallocatedate.Text;
                 param[6].Direction = ParameterDirection.Output;
-                param[7].Value = Session["varCompanyId"].ToString();
+                param[7].Value = Session["varMasterCompanyIDForERP"].ToString();
                 param[8].Value = txtallocationqty.Text;
                 param[9].Value = lblitem_finished_id.Text;
                 param[10].Direction = ParameterDirection.Output;

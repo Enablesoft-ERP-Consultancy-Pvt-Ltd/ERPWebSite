@@ -12,7 +12,7 @@ public partial class Masters_Process_FrmProcessRecRateUpdate : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,15 +23,15 @@ public partial class Masters_Process_FrmProcessRecRateUpdate : System.Web.UI.Pag
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(Nolock)
                     JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @" 
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
                     Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
                     From Process_Name_Master PNM(Nolock) 
                     JOIN UserRightsProcess URP(Nolock) ON URP.ProcessId = PNM.PROCESS_NAME_ID And URP.Userid = " + Session["varuserId"] + @" 
-                    Where PNM.MasterCompanyid = " + Session["varCompanyId"] + @" 
+                    Where PNM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By PNM.PROCESS_NAME ";
 
             ds = SqlHelper.ExecuteDataset(str);

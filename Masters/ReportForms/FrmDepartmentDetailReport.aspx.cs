@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_FrmDepartmentDetailReport : System.Web.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,18 +23,18 @@ public partial class Masters_ReportForms_FrmDepartmentDetailReport : System.Web.
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock)
                         JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                         Select Distinct a.DepartmentID, D.DepartmentName 
                         From ProcessIssueToDepartmentMaster a(Nolock) 
                         JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
-                        Where a.MastercompanyId = " + Session["varcompanyId"] + @" 
+                        Where a.MastercompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                         Order By D.DepartmentName 
                         Select Distinct CI.CustomerId, CI.CustomerCode 
                         From ProcessIssueToDepartmentMaster a(Nolock) 
                         JOIN ProcessIssueToDepartmentDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
                         JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID 
                         JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId 
-                        Where a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" And a.MasterCompanyID = " + Session["varcompanyId"] + @" 
+                        Where a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
                         Order By CI.CustomerCode ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -58,7 +58,7 @@ public partial class Masters_ReportForms_FrmDepartmentDetailReport : System.Web.
                     From ProcessIssueToDepartmentMaster a(Nolock) 
                     JOIN ProcessIssueToDepartmentDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
                     JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID And OM.CustomerID = " + DDCustCode.SelectedValue + @" 
-                    Where a.CompanyID = " + DDCompany.SelectedValue + @" And a.MasterCompanyID = " + Session["varcompanyId"] + @" 
+                    Where a.CompanyID = " + DDCompany.SelectedValue + @" And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By OM.CustomerOrderNo";
         Str = Str + @" Select Distinct a.DepartmentID, D.DepartmentName 
                     From ProcessIssueToDepartmentMaster a(Nolock)";
@@ -68,7 +68,7 @@ public partial class Masters_ReportForms_FrmDepartmentDetailReport : System.Web.
         }
 
         Str = Str + @" JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
-                    Where a.CompanyID = " + DDCompany.SelectedValue + @" And a.MastercompanyId = " + Session["varcompanyId"] + @" 
+                    Where a.CompanyID = " + DDCompany.SelectedValue + @" And a.MastercompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By D.DepartmentName ";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
@@ -96,7 +96,7 @@ public partial class Masters_ReportForms_FrmDepartmentDetailReport : System.Web.
         {
             str = str + @"  JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID And OM.CustomerId = " + DDCustCode.SelectedValue;
         }
-        str = str + @" Where a.CompanyID = " + DDCompany.SelectedValue + " And a.MasterCompanyID = " + Session["varcompanyId"];
+        str = str + @" Where a.CompanyID = " + DDCompany.SelectedValue + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
         if (DDDepartmentName.Items.Count > 0 && DDDepartmentName.SelectedIndex > 0)
         {
             str = str + @" And a.DepartmentID = " + DDDepartmentName.SelectedValue;

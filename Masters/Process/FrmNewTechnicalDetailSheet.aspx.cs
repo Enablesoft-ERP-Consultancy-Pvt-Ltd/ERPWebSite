@@ -18,7 +18,7 @@ public partial class Masters_Process_FrmNewTechnicalDetailSheet : System.Web.UI.
     public static Boolean fileNoexist = false;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,16 +26,16 @@ public partial class Masters_Process_FrmNewTechnicalDetailSheet : System.Web.UI.
         {
             SetInitialRow();
             ViewState["Id"] = "0";
-            UtilityModule.ConditionalComboFill(ref DDItemName, "SELECT Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varcompanyId"] + " Order by Item_name", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref DDDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN where MasterCompanyId=" + Session["varcompanyid"] + "Order By DESIGNNAME", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT ColorId,ColorName from color where MasterCompanyId=" + Session["varcompanyid"] + "Order By ColorName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDItemName, "SELECT Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Item_name", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order By DESIGNNAME", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT ColorId,ColorName from color where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order By ColorName", true, "--Select--");
 
-            hncomp.Value = Convert.ToString(Session["varCompanyId"]);
+            hncomp.Value = Convert.ToString(Session["varMasterCompanyIDForERP"]);
         }
     }
     protected void BindQuality()
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from quality where Item_id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + "Order By QualityName", true, "-- Pls Select Quality--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from quality where Item_id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order By QualityName", true, "-- Pls Select Quality--");
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -149,7 +149,7 @@ public partial class Masters_Process_FrmNewTechnicalDetailSheet : System.Web.UI.
                 if (box1.Text != "" || box2.Text != "")
                 {
                     string str = @"Insert into NewTechnicalBanaColorPly(FileNo,BanaColor,BanaPly,Userid,Mastercompanyid)
-                   values ('" + txtFileNo.Text + "','" + box1.Text + "','" + box2.Text + "','" + Session["varuserid"] + "','" + Session["varCompanyId"] + "')";
+                   values ('" + txtFileNo.Text + "','" + box1.Text + "','" + box2.Text + "','" + Session["varuserid"] + "','" + Session["varMasterCompanyIDForERP"] + "')";
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
                 }
             }
@@ -326,7 +326,7 @@ public partial class Masters_Process_FrmNewTechnicalDetailSheet : System.Web.UI.
                 _arrpara1[11].Value = txtKhati.Text;
                 _arrpara1[12].Value = txtTarika.Text;
                 _arrpara1[13].Value = txtFrenzes.Text;
-                _arrpara1[14].Value = Session["varCompanyId"];
+                _arrpara1[14].Value = Session["varMasterCompanyIDForERP"];
                 _arrpara1[15].Value = Session["varuserid"];
                 _arrpara1[17].Value = txtFileVersion.Text;
                 _arrpara1[18].Value = txtSRNo.Text;
@@ -499,7 +499,7 @@ public partial class Masters_Process_FrmNewTechnicalDetailSheet : System.Web.UI.
         array[1] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
 
         array[0].Value = txtFileNo.Text;
-        array[1].Value = Session["varcompanyId"];
+        array[1].Value = Session["varMasterCompanyIDForERP"];
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForNewTechnicalDetailSheetReport", array);
 

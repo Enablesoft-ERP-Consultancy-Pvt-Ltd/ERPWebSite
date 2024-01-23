@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,15 +25,15 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             {
                 str = @"select CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["Varuserid"] + "  And CI.MasterCompanyId=" + Session["VarcompanyNo"] + @" Order by CompanyId
                     Select EmpId,EmpName From Empinfo  Where MasterCompanyId=" + Session["varcompanyNo"] + @" Order by Empname
-                     select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM join UserRights_Category sp on im.CATEGORY_ID=sp.Categoryid Where IM.MasterCompanyId=" + Session["varCompanyId"] + " and sp.userid=" + Session["varuserId"] + @" order by CATEGORY_NAME
+                     select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM join UserRights_Category sp on im.CATEGORY_ID=sp.Categoryid Where IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and sp.userid=" + Session["varuserId"] + @" order by CATEGORY_NAME
                 select GM.GODOWNID,GM.GODOWNNAME from GODOWNMASTER GM(NoLock) JOIN  Godown_Authentication GA(NoLock) ON GM.GoDownID=GA.GodownID 
-                Where GM.MasterCompanyId=" + Session["varCompanyId"] + @" and GA.UserId=" + Session["VarUserId"] + " ORDER BY GM.GODOWNNAME";
+                Where GM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" and GA.UserId=" + Session["VarUserId"] + " ORDER BY GM.GODOWNNAME";
             }
             else
             {
                 str = @"select CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["Varuserid"] + "  And CI.MasterCompanyId=" + Session["VarcompanyNo"] + @" Order by CompanyId
                     Select EmpId,EmpName From Empinfo  Where MasterCompanyId=" + Session["varcompanyNo"] + @" Order by Empname
-                    Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CATEGORY_NAME
+                    Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CATEGORY_NAME
                     Select Distinct GM.GoDownID, GM.GodownName  
                     From GateInMaster a(Nolock) 
                     JOIN GateInDetail b(Nolock) ON b.GateInID = a.GateInID 
@@ -51,7 +51,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             UtilityModule.ConditionalComboFillWithDS(ref DDEmpName, ds, 1, true, "Select Employee");
             UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 2, true, "ALL");
             UtilityModule.ConditionalComboFillWithDS(ref DDGodownName, ds, 3, true, "Select Godown No");
-            //UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER " + "WHERE CATEGORY_ID = " + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by ITEM_NAME", true, "ALL");
+            //UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER " + "WHERE CATEGORY_ID = " + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ITEM_NAME", true, "ALL");
             TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyy");
             TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             RDGatePassDetail.Checked = true;
@@ -163,7 +163,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                      JOIN V_FinishedItemDetail vf(NoLock) ON GD.FINISHEDID=vf.Item_Finished_id 
                      JOIN Empinfo EI(NoLock) ON GM.PartyId=EI.EmpId
                      JOIN Unit U ON GD.Unitid=U.UnitId
-                     Where CI.MasterCompanyId=" + Session["varCompanyId"];
+                     Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     if (DDCompany.SelectedIndex > 0)
                     {
                         str = str + " And CI.CompanyId=" + DDCompany.SelectedValue;
@@ -226,7 +226,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                       case when " + DDCompany.SelectedIndex + ">0 then CI.compaddr1 else '' END as Address,case when " + DDCompany.SelectedIndex + @">0 then CI.GstNo else '' END as Gstno,GM.MasterCompanyid
                       from GateOutMaster GM,GateOutDetail GD,Companyinfo CI,Empinfo EI,V_FinishedItemDetail vf
                       Where GM.GateOutId=GD.GateOutId And  GD.FINISHEDID=vf.Item_Finished_id And GM.PartyId=EI.EmpId And GM.CompanyId=CI.CompanyId
-                      And CI.MasterCompanyId=" + Session["varCompanyId"];
+                      And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     if (DDCompany.SelectedIndex > 0)
                     {
                         str = str + " And CI.CompanyId=" + DDCompany.SelectedValue;
@@ -302,7 +302,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                         JOIN Empinfo EI(nolock) ON EI.EmpId = GM.PartyId 
                         JOIN V_FinishedItemDetail VF(nolock) ON VF.Item_Finished_id = GD.FINISHEDID
                         JOIN NewUserDetail NUD(NoLock) ON GM.UserID=NUD.UserId
-                        Where GM.MasterCompanyID = " + Session["varCompanyId"];
+                        Where GM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
                 if (DDCompany.SelectedIndex > 0)
                 {
                     str = str + " And GM.CompanyId=" + DDCompany.SelectedValue;
@@ -373,7 +373,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             }
             if (RDGatePass_inDetail.Checked == true)
             {
-                if (Session["varCompanyId"].ToString() == "14" && chkexcelexport.Checked == true)
+                if (Session["varMasterCompanyIDForERP"].ToString() == "14" && chkexcelexport.Checked == true)
                 {
                     //GatePass_INWithTagNoExcelReport();
                     GatePass_INWithTagNoExcelReportNew();
@@ -385,7 +385,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                       ,case when " + DDCompany.SelectedIndex + ">0 then CI.compaddr1 else '' END as Address,case when " + DDCompany.SelectedIndex + @">0 then CI.GstNo else '' END as Gstno,GM.MasterCompanyId
                       from GateOutMaster GM,GateOutDetail GD,Companyinfo CI,Empinfo EI,V_FinishedItemDetail vf
                       Where GM.GateOutId=GD.GateOutId And  GD.FINISHEDID=vf.Item_Finished_id And GM.PartyId=EI.EmpId And GM.CompanyId=CI.CompanyId
-                      And CI.MasterCompanyId=" + Session["varCompanyId"];
+                      And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     if (DDCompany.SelectedIndex > 0)
                     {
                         str = str + " And CI.CompanyId=" + DDCompany.SelectedValue;
@@ -442,7 +442,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                         ,case when " + DDCompany.SelectedIndex + ">0 then CI.compaddr1 else '' END as Address,case when " + DDCompany.SelectedIndex + @">0 then CI.GstNo else '' END as Gstno,GM.MasterCompanyId
                         from GateInMaster GM,GateInDetail GD,Companyinfo CI,Empinfo EI,V_FinishedItemDetail vf
                         Where GM.GateInId=GD.GateInId And  GD.FINISHEDID=vf.Item_Finished_id And GM.PartyId=EI.EmpId And GM.CompanyId=CI.CompanyId
-                        And CI.MasterCompanyId=" + Session["varCompanyId"];
+                        And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     if (DDCompany.SelectedIndex > 0)
                     {
                         str = str + " And CI.CompanyId=" + DDCompany.SelectedValue;
@@ -802,7 +802,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
     {
         if (DDCategory.SelectedItem.Text.Trim() != "ALL")
         {
-            UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER " + "WHERE CATEGORY_ID = " + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " order by ITEM_NAME", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER " + "WHERE CATEGORY_ID = " + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ITEM_NAME", true, "ALL");
         }
         ddlcategorycange();
     }
@@ -811,11 +811,11 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
         TRDDQuality.Visible = true;
         if (ddItemName.SelectedItem.Text.Trim() != "ALL")
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "ALL");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varCompanyid"] + "  order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityName", true, "ALL");
         }
     }
     private void ddlcategorycange()
@@ -827,7 +827,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             TRDDDesign.Visible = false;
             string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                           " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                          " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                          " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -840,11 +840,11 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
                             break;
                         case "2":
                             TRDDDesign.Visible = true;
-                            UtilityModule.ConditionalComboFill(ref DDDesign, "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order By designName ", true, "ALL");
+                            UtilityModule.ConditionalComboFill(ref DDDesign, "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By designName ", true, "ALL");
                             break;
                         case "3":
                             TRDDColor.Visible = true;
-                            UtilityModule.ConditionalComboFill(ref DDColor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "ALL");
+                            UtilityModule.ConditionalComboFill(ref DDColor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "ALL");
                             break;
                     }
                 }
@@ -980,7 +980,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
     //        cmd.Parameters.AddWithValue("@Todate",TxtToDate.Text);        
     //        cmd.Parameters.AddWithValue("@WhereGatePass", str);
     //        cmd.Parameters.AddWithValue("@WhereGateIn", str2);
-    //        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+    //        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
     //        cmd.Parameters.AddWithValue("@UserId", Session["varUserId"]);
 
     //        DataSet ds = new DataSet();
@@ -1413,7 +1413,7 @@ public partial class Masters_ReportForms_frmGatePass_InDetail_ : System.Web.UI.P
             cmd.Parameters.AddWithValue("@Todate", TxtToDate.Text);
             cmd.Parameters.AddWithValue("@WhereGatePass", str);
             //cmd.Parameters.AddWithValue("@WhereGateIn", str2);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UserId", Session["varUserId"]);
 
             DataSet ds = new DataSet();

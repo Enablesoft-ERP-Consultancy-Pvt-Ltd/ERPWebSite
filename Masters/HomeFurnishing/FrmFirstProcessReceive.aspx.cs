@@ -22,7 +22,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
             }";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -43,10 +43,10 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
             string str = @"select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(Nolock) 
                         JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName                          
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                          
                         Select Distinct PNM.Process_Name_ID, PNM.PROCESS_NAME                      
                         From PROCESS_NAME_MASTER PNM(nolock) 
-                        Where PNM.MASTERCOMPANYID = " + Session["varCompanyId"] + @" and Process_Name='STITCHING' 
+                        Where PNM.MASTERCOMPANYID = " + Session["varMasterCompanyIDForERP"] + @" and Process_Name='STITCHING' 
                         Order By PNM.PROCESS_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -62,7 +62,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
             }
             ProcessNameSelectedChanged();
             txtrecdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
 
                 case "16":
@@ -236,7 +236,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "16":
                 case "28":
@@ -297,7 +297,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
             param[1] = new SqlParameter("@ProcessRecDetailID", lblprocessrecdetailid.Text);
             param[2] = new SqlParameter("@ProcessID ", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
 
@@ -482,7 +482,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 500);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
                 cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+                cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
                 cmd.Parameters.Add("@MaxRejectedGatePassNo", SqlDbType.Int);
                 cmd.Parameters["@MaxRejectedGatePassNo"].Direction = ParameterDirection.InputOutput;
@@ -588,7 +588,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
         ////    cmd.Parameters["@ChallanNo"].Direction = ParameterDirection.Output;
         ////    cmd.Parameters.AddWithValue("@Remarks", "");
         ////    cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-        ////    cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+        ////    cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
         ////    cmd.Parameters.AddWithValue("@DetailTable", DetailTable);
         ////    cmd.Parameters.AddWithValue("@EmpIDS", StrEmpid);
         ////    cmd.Parameters.AddWithValue("@TStockNo", TStockNo);

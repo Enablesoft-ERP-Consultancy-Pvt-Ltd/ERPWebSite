@@ -11,7 +11,7 @@ public partial class Masters_Carpet_AddColor : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Carpet_AddColor : System.Web.UI.Page
             UtilityModule.NewChkBoxListFill(ref ChkForBranch, @"Select BM.ID, BM.BranchName 
                             From BRANCHMASTER BM(nolock) 
                             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + " Order By BM.BranchName ");
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By BM.BranchName ");
             fill_grid();
             txtDepartment.Focus();
         }
@@ -46,7 +46,7 @@ public partial class Masters_Carpet_AddColor : System.Web.UI.Page
     private void CheckDuplicateData()
     {
         DataSet ds = null;
-        string strsql = @"Select DepartmentName from Department Where DepartmentName='" + txtDepartment.Text + "' and DepartmentId !=" + txtid.Text + "  And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select DepartmentName from Department Where DepartmentName='" + txtDepartment.Text + "' and DepartmentId !=" + txtid.Text + "  And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -94,7 +94,7 @@ public partial class Masters_Carpet_AddColor : System.Web.UI.Page
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtDepartment.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[4].Value = ChkShowOrNotInHR.Checked == true ? 1 : 0;
                 _arrPara[5].Value = str5;
 
@@ -124,7 +124,7 @@ public partial class Masters_Carpet_AddColor : System.Web.UI.Page
         DataSet ds = null;
         try
         {
-            string strsql = @"SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varCompanyId"] + " Order By DepartmentName";
+            string strsql = @"SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By DepartmentName";
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         }
         catch (Exception ex)

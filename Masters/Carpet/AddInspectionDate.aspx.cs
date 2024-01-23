@@ -11,7 +11,7 @@ public partial class Masters_Carpet_AddInspectionDate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -41,7 +41,7 @@ public partial class Masters_Carpet_AddInspectionDate : System.Web.UI.Page
                     _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                     _arrPara[1].Value = txtShape.Text.ToUpper();
                     _arrPara[2].Value = Session["varuserid"].ToString();
-                    _arrPara[3].Value = Session["varCompanyId"].ToString();
+                    _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                     con.Open();
                     SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_InspectionDateName", _arrPara);
                     txtid.Text = "0";
@@ -133,7 +133,7 @@ public partial class Masters_Carpet_AddInspectionDate : System.Web.UI.Page
         {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from InspectionDateMaster where Id=" + Session["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Shape'," + Session["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Shape'," + Session["id"].ToString() + ",getdate(),'Delete')");
                 LblError.Visible = true;
                 LblError.Text = "Value Deleted...";
         }

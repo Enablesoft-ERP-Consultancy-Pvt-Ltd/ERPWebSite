@@ -17,7 +17,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             Session["PurchaseReceiveId"] = 0;
             Session["PurchaseReceiveDetailId"] = 0;
             ParameteLabel();
-            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName");
+            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
             DDCompanyName.SelectedIndex = 1;
             TxtReceiveDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             UtilityModule.ConditionalComboFill(ref DDPartyName, "select EmpId,EmpName from EmpInfo", true, "--Select Employee--");
@@ -286,8 +286,8 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        DDCompanyName.SelectedValue = Session["varCompanyId"].ToString();
-        ParameterList = UtilityModule.ParameteLabel(1);//Convert.ToInt32(Session["varCompanyId"]));
+        DDCompanyName.SelectedValue = Session["varMasterCompanyIDForERP"].ToString();
+        ParameterList = UtilityModule.ParameteLabel(1);//Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         LblQuality.Text = ParameterList[0];
         LblDesign.Text = ParameterList[1];
         LblColor.Text = ParameterList[2];
@@ -483,7 +483,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             _arrpara[3].Value = TxtReceiveNo.Text;
             _arrpara[4].Value = TxtReceiveDate.Text;
             _arrpara[5].Value = Session["varuserid"];
-            _arrpara[6].Value = Session["varCompanyId"];
+            _arrpara[6].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[7].Direction = ParameterDirection.InputOutput;
             _arrpara[7].Value = Session["PurchaseReceiveDetailId"];
             _arrpara[8].Value = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TextItemCode, DDColorShade, 0, "");
@@ -853,7 +853,7 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
             SqlTransaction Tran = con.BeginTransaction();
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeletePurchaseReceive", _arrpara);
             DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseReceiveDetail'," + DGPurchaseReceiveDetail.SelectedDataKey.Value + ",getdate(),'Delete')");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseReceiveDetail'," + DGPurchaseReceiveDetail.SelectedDataKey.Value + ",getdate(),'Delete')");
             Tran.Commit();
 
             fill_grid();

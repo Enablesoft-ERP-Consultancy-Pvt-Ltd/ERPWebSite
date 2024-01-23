@@ -12,7 +12,7 @@ public partial class Masters_Carpet_FrmAttachCompanyCustomer : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,12 +21,12 @@ public partial class Masters_Carpet_FrmAttachCompanyCustomer : CustomPage
         {
             UtilityModule.ConditonalChkBoxListFill(ref ChkBoxListCustomerCode, @"Select CI.CustomerID, CI.CustomerCode + '/' + CI.CustomerName CustomerName 
                 From CustomerInfo CI(Nolock) 
-                Where CI.MasterCompanyID = " + Session["varCompanyId"] + @" Order By CustomerName ");
+                Where CI.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By CustomerName ");
 
             string str = @"Select CI.CompanyID, CI.CompanyName 
                 From CompanyInfo CI(Nolock)
                 Join Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                Where CI.MasterCompanyID = " + Session["varCompanyId"] + @"
+                Where CI.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                 Order By CI.CompanyName";
 
             UtilityModule.ConditionalComboFill(ref DDCompanyName, str, true, "---Select---");
@@ -93,7 +93,7 @@ public partial class Masters_Carpet_FrmAttachCompanyCustomer : CustomPage
             param[0] = new SqlParameter("@CompanyID", DDCompanyName.SelectedValue);
             param[1] = new SqlParameter("@CustomerIDs", VarCustomerID);
             param[2] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[3] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 

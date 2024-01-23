@@ -11,7 +11,7 @@ public partial class Masters_Carpet_AddShape : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -30,7 +30,7 @@ public partial class Masters_Carpet_AddShape : System.Web.UI.Page
         try
         {
             con.Open();
-            string shape = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id And Ps.Company_Id=" + Session["varCompanyId"] + "  and  ps.parameter_id='4'").ToString();
+            string shape = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id And Ps.Company_Id=" + Session["varMasterCompanyIDForERP"] + "  and  ps.parameter_id='4'").ToString();
             lblshapeyname.Text = shape;
         }
         catch (Exception ex)
@@ -69,7 +69,7 @@ public partial class Masters_Carpet_AddShape : System.Web.UI.Page
                     _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                     _arrPara[1].Value = txtShape.Text.ToUpper();
                     _arrPara[2].Value = Session["varuserid"].ToString();
-                    _arrPara[3].Value = Session["varCompanyId"].ToString();
+                    _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                     con.Open();
                     SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Shape", _arrPara);
 
@@ -113,7 +113,7 @@ public partial class Masters_Carpet_AddShape : System.Web.UI.Page
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Shape Where ShapeName='" + txtShape.Text + "' and ShapeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Shape Where ShapeName='" + txtShape.Text + "' and ShapeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -140,7 +140,7 @@ public partial class Masters_Carpet_AddShape : System.Web.UI.Page
 
         try
         {
-            string strsql = "select ShapeId as Sr_No,ShapeName  from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " order by ShapeId";
+            string strsql = "select ShapeId as Sr_No,ShapeName  from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShapeId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
 
@@ -168,7 +168,7 @@ public partial class Masters_Carpet_AddShape : System.Web.UI.Page
         {
             SqlParameter[] _array = new SqlParameter[5];
             _array[0] = new SqlParameter("@ShapeId", ViewState["id"]);
-            _array[1] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _array[2] = new SqlParameter("@UserId", Session["varuserid"]);
             _array[3] = new SqlParameter("@VarMsg", SqlDbType.NVarChar, 500);
             _array[3].Direction = ParameterDirection.Output;

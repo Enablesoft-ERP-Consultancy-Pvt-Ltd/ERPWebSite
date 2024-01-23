@@ -17,7 +17,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
     Double Total = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
         {
             SqlParameter[] param = new SqlParameter[3];
             param[0] = new SqlParameter("@PageName", "FrmCostingMaster");
-            param[1] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"]);
+            param[1] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[2] = new SqlParameter("@UserID", Session["varuserId"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETDATA_FOR_PAGELOAD", param);
@@ -65,7 +65,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
             }
             //*************
 
-            if (Session["varcompanyId"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 lblSampleCodeForEdit.Text = "Edit Costing Code";
                 lblddSampleCodeForEdit.Text = "Costing Code";
@@ -107,7 +107,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
                 From CostingItemMaster a(Nolock) 
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = a.Item_Finished_id 
                 LEFT JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = a.CustomerID 
-                Where a.CompanyID = " + DDCompanyName.SelectedValue + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And 
+                Where a.CompanyID = " + DDCompanyName.SelectedValue + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And 
                 a.SampleCode Like '%" + TxtSampleCodeForEdit.Text + @"%'";
         if (DDItemName.SelectedIndex > 0)
         {
@@ -177,17 +177,17 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
                     a.USDVsINR, a.THCPercentage, a.RMUPercentage, a.Interest, a.FOB, a.OverHead, a.SalePrice, a.CurrencyID, a.ExchangeRate, a.PoNo, a.licensePercentage, a.DrawBackPercentage 
                     From CostingItemMaster a(Nolock) 
                     JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = a.Item_Finished_id 
-                    Where a.CompanyID = " + DDCompanyName.SelectedValue + " And a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CostingItemMasterID = " + DDSampleCode.SelectedValue + @"
+                    Where a.CompanyID = " + DDCompanyName.SelectedValue + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CostingItemMasterID = " + DDSampleCode.SelectedValue + @"
 
                     Select Top 1 a.CostingItemMasterID, a.ProcessID, a.SizeType, VF.CATEGORY_ID, VF.ITEM_ID, VF.QualityId, VF.designId, VF.ColorId, VF.ShapeId, VF.SizeId, VF.ShadeColorid, 
                     a.Consumption, a.Rate, a.WastagePercentage, a.ProcessRate, a.ProcessType, a.Amount, a.Interest, a.DyingType 
                     From CostingItemProcessDetail a(Nolock) 
                     JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = a.Item_Finished_id 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CostingItemMasterID = " + DDSampleCode.SelectedValue + @"
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CostingItemMasterID = " + DDSampleCode.SelectedValue + @"
 
                     Select Top 1 a.CostingItemMasterID, a.ProcessID, a.UnitID, a.Rate, a.Amount, a.Remark 
                     From CostingProcessRateDetail a(Nolock)
-                    Where CostingItemProcessDetailFinishedID = 0 And a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CostingItemMasterID = " + DDSampleCode.SelectedValue);
+                    Where CostingItemProcessDetailFinishedID = 0 And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CostingItemMasterID = " + DDSampleCode.SelectedValue);
 
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -357,10 +357,10 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
         }
 
         string str;
-        str = @"SELECT DESIGNID, DESIGNNAME from DESIGN(Nolock) Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-            SELECT COLORID,COLORNAME FROM COLOR(Nolock) Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-            SELECT SHAPEID,SHAPENAME FROM SHAPE(Nolock) Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
-            Select SC.ShadeColorID, SC.ShadeColorName From ShadeColor SC(Nolock) Where SC.MasterCompanyId = " + Session["varCompanyId"] + @" Order By SC.ShadeColorName";
+        str = @"SELECT DESIGNID, DESIGNNAME from DESIGN(Nolock) Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+            SELECT COLORID,COLORNAME FROM COLOR(Nolock) Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+            SELECT SHAPEID,SHAPENAME FROM SHAPE(Nolock) Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
+            Select SC.ShadeColorID, SC.ShadeColorName From ShadeColor SC(Nolock) Where SC.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By SC.ShadeColorName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (tdDesign.Visible == true)
         {
@@ -410,7 +410,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
         }
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S(Nolock) 
-                 Where S.shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where S.shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref Size, str, true, "--Select--");
     }
@@ -440,12 +440,12 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
         if (DDCostingFor.SelectedIndex == 1)
         {
             tdDDCustomerCode.Visible = true;
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "Select C.CustomerID, C.CustomerCode From Customerinfo C(Nolock) Where MasterCompanyid = " + Session["varcompanyId"] + " Order By C.CustomerCode", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "Select C.CustomerID, C.CustomerCode From Customerinfo C(Nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By C.CustomerCode", true, "--Select--");
         }
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() != "16")
+        if (Session["varMasterCompanyIDForERP"].ToString() != "16")
         {
             if (txtsamplecode.Text == "")
             {
@@ -462,7 +462,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
        // SqlTransaction Tran1 = con.BeginTransaction();
         try
         {
-            int item_finished_id = UtilityModule.getItemFinishedId(DDItemName, DDQuality, DDDesign, DDColor, DDshape, DDSize, txtprodcode, DDshade,0, "", Convert.ToInt32(Session["varCompanyId"])); 
+            int item_finished_id = UtilityModule.getItemFinishedId(DDItemName, DDQuality, DDDesign, DDColor, DDshape, DDSize, txtprodcode, DDshade,0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])); 
             string CostingItemMasterData = "";
             string CostingItemProcessDetailData = "";
             string CostingProcessRateDetailData = "";
@@ -496,7 +496,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
             CostingItemMasterData = CostingItemMasterData + DDCurrency.SelectedValue + "|" + ExchangeRate + "|" + PoNo + "|" + licensePercentage + "|" + DrawbackPercentage + "~";
 
             item_finished_id = 0;
-            item_finished_id = UtilityModule.getItemFinishedId(DDItemNameRD, DDQualityRD, DDDesignRD, DDColorRD, DDShapeRD, DDSizeRD, txtItemCodeRD, DDShadeRD,0, "", Convert.ToInt32(Session["varCompanyId"]));
+            item_finished_id = UtilityModule.getItemFinishedId(DDItemNameRD, DDQualityRD, DDDesignRD, DDColorRD, DDShapeRD, DDSizeRD, txtItemCodeRD, DDShadeRD,0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
             string InterestPercentage = TxtInterestPercentage.Text == "" ? "0" : TxtInterestPercentage.Text;
 
@@ -571,7 +571,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
             param[2].Value = CostingItemProcessDetailData;
             param[3].Value = CostingProcessRateDetailData;
             param[4].Value = Session["varuserid"];
-            param[5].Value = Session["varcompanyId"];
+            param[5].Value = Session["varMasterCompanyIDForERP"];
             param[6].Direction = ParameterDirection.Output;
             param[7].Direction = ParameterDirection.InputOutput;
             param[7].Value = txtsamplecode.Text;
@@ -760,7 +760,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
     }
     protected void btnpreview_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() == "16")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         {
             PreviewForChampoClick();
         }
@@ -1661,7 +1661,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
     }
     protected void refreshdesign_Click(object sender, EventArgs e)
     {
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT DESIGNID, DESIGNNAME from DESIGN(Nolock) Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT DESIGNID, DESIGNNAME from DESIGN(Nolock) Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME");
         if (TDDesign.Visible == true)
         {
             UtilityModule.ConditionalComboFillWithDS(ref DDDesign, ds, 0, true, "--Select--");
@@ -1669,7 +1669,7 @@ public partial class Masters_Carpet_FrmCostingMaster : System.Web.UI.Page
     }
     protected void refreshcolor_Click(object sender, EventArgs e)
     {
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT COLORID,COLORNAME FROM COLOR(Nolock) Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT COLORID,COLORNAME FROM COLOR(Nolock) Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME");
         if (TDColor.Visible == true)
         {
             UtilityModule.ConditionalComboFillWithDS(ref DDColor, ds, 0, true, "--Select--");

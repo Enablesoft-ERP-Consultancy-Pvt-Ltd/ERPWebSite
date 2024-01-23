@@ -12,7 +12,7 @@ public partial class Masters_Packing_paking_stock_detail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,10 +22,10 @@ public partial class Masters_Packing_paking_stock_detail : System.Web.UI.Page
             ViewState["PorderpackdetailId"] = 0;
             string Qry = @"select distinct ci.customerid,ci.Customercode + SPACE(5)+CI.CompanyName 
             from customerinfo ci 
-            inner join OrderMaster om on om.customerid=ci.customerid And Ci.MasterCompanyId=" + Session["varCompanyId"] + @" 
+            inner join OrderMaster om on om.customerid=ci.customerid And Ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
             inner join ORDER_CONSUMPTION_DETAIL ocd on ocd.orderid=om.orderid
             inner join Jobassigns JA ON OM.Orderid=JA.Orderid
-            select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order by Companyname";
+            select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname";
             DataSet ds = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref ddcustomercode, ds, 0, true, "Select CustomerCode");
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 1, true, "Select Comp Name");
@@ -38,7 +38,7 @@ public partial class Masters_Packing_paking_stock_detail : System.Web.UI.Page
 
             ddcustomercode.Focus();
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
             LblCompanyName.Text = Session["varCompanyName"].ToString();
             LblUserName.Text = Session["varusername"].ToString();
         }
@@ -58,7 +58,7 @@ public partial class Masters_Packing_paking_stock_detail : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -111,7 +111,7 @@ public partial class Masters_Packing_paking_stock_detail : System.Web.UI.Page
                 v_cartainstock.receiveqty,CompanyInfo.CompanyName,CompanyInfo.CompAddr1,CompanyInfo.CompAddr2,CompanyInfo.CompAddr3,CompanyInfo.CompFax,CompanyInfo.CompTel,
                 CompanyInfo.TinNo,OrderMaster.CustomerOrderNo,OrderMaster.localorder
                 FROM  v_cartainstock INNER JOIN CompanyInfo ON v_cartainstock.companyid=CompanyInfo.CompanyId INNER JOIN OrderMaster ON v_cartainstock.orderid=OrderMaster.OrderId
-                where v_cartainstock.orderid=" + ddorderno.SelectedValue + " And CompanyInfo.MasterCompanyId=" + Session["varCompanyId"];
+                where v_cartainstock.orderid=" + ddorderno.SelectedValue + " And CompanyInfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             Session["dsFileName"] = "~\\ReportSchema\\Rpt_cartain_stockNEW.xsd";
         }
         else
@@ -120,7 +120,7 @@ public partial class Masters_Packing_paking_stock_detail : System.Web.UI.Page
                 CompanyInfo.CompAddr1,CompanyInfo.CompAddr2,CompanyInfo.CompAddr3,CompanyInfo.CompFax,CompanyInfo.CompTel,CompanyInfo.TinNo
                 FROM PakingProcessReceiveDetail INNER JOIN PackingProcessReceiveMaster ON PakingProcessReceiveDetail.PackingReceiveId=PackingProcessReceiveMaster.PackingReceiveId
                 INNER JOIN CompanyInfo ON PackingProcessReceiveMaster.CompanyId=CompanyInfo.CompanyId
-                where PakingProcessReceiveDetail.pdetailid=" + Session["pid"] + " And CompanyInfo.MasterCompanyId=" + Session["varCompanyId"];
+                where PakingProcessReceiveDetail.pdetailid=" + Session["pid"] + " And CompanyInfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             Session["dsFileName"] = "~\\ReportSchema\\Rpt_cartain_stock_detailNEW.xsd";
         }
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);

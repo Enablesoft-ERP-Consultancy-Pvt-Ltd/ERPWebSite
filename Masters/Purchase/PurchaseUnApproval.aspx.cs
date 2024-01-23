@@ -12,7 +12,7 @@ public partial class Masters_Purchase_PurchaseApproval : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Purchase_PurchaseApproval : System.Web.UI.Page
             ViewState["IndentNo"] = null;
             ViewState["PIApprovalId"] = 0;
 
-            CommanFunction.FillCombo(DDCompanyName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order by Companyname");
+            CommanFunction.FillCombo(DDCompanyName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -29,13 +29,13 @@ public partial class Masters_Purchase_PurchaseApproval : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDDepartment, "Select Distinct D.DepartmentId,DepartmentName from Department D,PurchaseIndentMaster PM Where PM.Departmentid=D.Departmentid And  D.masterCompanyId=" + Session["varCompanyId"] + " And FlagApproval=1 order by DepartmentName", true, "--Select Department--");
+            UtilityModule.ConditionalComboFill(ref DDDepartment, "Select Distinct D.DepartmentId,DepartmentName from Department D,PurchaseIndentMaster PM Where PM.Departmentid=D.Departmentid And  D.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And FlagApproval=1 order by DepartmentName", true, "--Select Department--");
             //            TxtApprovalDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
         }
     }
     protected void DDDepartment_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDvendorName, "Select Distinct E.Empid,EmpName   from PurchaseIndentMaster PM,Empinfo E where PM.Partyid=E.EmpId And  FlagApproval=1 and PM.DepartmentId=" + DDDepartment.SelectedValue + " And PM.masterCompanyId=" + Session["varCompanyId"] + " Order BY EmpName", true, "--Select Vendor--");
+        UtilityModule.ConditionalComboFill(ref DDvendorName, "Select Distinct E.Empid,EmpName   from PurchaseIndentMaster PM,Empinfo E where PM.Partyid=E.EmpId And  FlagApproval=1 and PM.DepartmentId=" + DDDepartment.SelectedValue + " And PM.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order BY EmpName", true, "--Select Vendor--");
 
     }
 
@@ -52,7 +52,7 @@ public partial class Masters_Purchase_PurchaseApproval : System.Web.UI.Page
         {
             string strsql;
             strsql = @"select Distinct PIM.PIndentId,PIndentNo+Space(2)+'/'+Replace(Convert(nvarchar(11),Date,106),' ','-') As PIndentNo
-                            From PurchaseIndentMaster PIM     Where  PIM.masterCompanyId=" + Session["varCompanyId"] + " And PIM.EmpId=" + DDpartyName.SelectedValue + " And PIM.PartyId=" + DDvendorName.SelectedValue + " And DepartmentId=" + DDDepartment.SelectedValue + " And FlagApproval=1";
+                            From PurchaseIndentMaster PIM     Where  PIM.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And PIM.EmpId=" + DDpartyName.SelectedValue + " And PIM.PartyId=" + DDvendorName.SelectedValue + " And DepartmentId=" + DDDepartment.SelectedValue + " And FlagApproval=1";
             if (TxtPindentNo.Text != "")
             {
                 strsql = strsql + " And PindentNo='" + TxtPindentNo.Text + "' Order by PindentNo";
@@ -106,7 +106,7 @@ public partial class Masters_Purchase_PurchaseApproval : System.Web.UI.Page
 
     protected void DDvendorName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDpartyName, "Select Distinct E.Empid,EmpName    from PurchaseIndentMaster PM,Empinfo E where PM.EmpId=E.EmpId And  FlagApproval=1 and PM.PartyId=" + DDvendorName.SelectedValue + " And PM.masterCompanyId=" + Session["varCompanyId"] + " And PM.DepartMentId=" + DDDepartment.SelectedValue + " Order BY EmpName", true, "--Select Vendor--");
+        UtilityModule.ConditionalComboFill(ref DDpartyName, "Select Distinct E.Empid,EmpName    from PurchaseIndentMaster PM,Empinfo E where PM.EmpId=E.EmpId And  FlagApproval=1 and PM.PartyId=" + DDvendorName.SelectedValue + " And PM.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And PM.DepartMentId=" + DDDepartment.SelectedValue + " Order BY EmpName", true, "--Select Vendor--");
     }
     protected void DDpartyName_SelectedIndexChanged(object sender, EventArgs e)
     {

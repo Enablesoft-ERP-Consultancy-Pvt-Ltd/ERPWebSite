@@ -12,14 +12,14 @@ public partial class Masters_Hissab_FrmWeaverRawMaterialHissabChampa : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select CompanyId,CompanyName From Companyinfo CI where MasterCompanyid=" + Session["varcompanyId"] + @" order by CompanyId
-                           select EI.EmpId,EI.EmpName + case When isnull(Ei.empcode,'')='' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varcompanyId"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId=1 order by EmpName
+            string str = @"select CompanyId,CompanyName From Companyinfo CI where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyId
+                           select EI.EmpId,EI.EmpName + case When isnull(Ei.empcode,'')='' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId=1 order by EmpName
                           select CATEGORY_ID,CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -85,7 +85,7 @@ public partial class Masters_Hissab_FrmWeaverRawMaterialHissabChampa : System.We
             param[2] = new SqlParameter("@MasterQualityId", DDItemName.SelectedValue);
             param[3] = new SqlParameter("@TranDate", txtfromDate.Text);
             param[4] = new SqlParameter("@MasterQualityName", DDItemName.SelectedItem.Text);
-            param[5] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[5] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@UserId", Session["VarUserid"]);
             //************
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETWEAVERRAWHISSABDETAIL_CHAMPA", param);
@@ -410,7 +410,7 @@ public partial class Masters_Hissab_FrmWeaverRawMaterialHissabChampa : System.We
                 param[9] = new SqlParameter("@NetAmt", txtNetAmount.Text == "" ? "0" : txtNetAmount.Text);
                 param[10] = new SqlParameter("@TranDate", txtfromDate.Text);
                 param[11] = new SqlParameter("@StringDetail", Strdetail);
-                param[12] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+                param[12] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                 param[13] = new SqlParameter("@UserID", Session["varuserid"]);
                 param[14] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                 param[14].Direction = ParameterDirection.Output;
@@ -468,7 +468,7 @@ public partial class Masters_Hissab_FrmWeaverRawMaterialHissabChampa : System.We
 
         //array[0].Value = Convert.ToInt32(DDChallanNo.SelectedValue == "" ? "0" : DDChallanNo.SelectedValue);
         array[0].Value = hnChallanNo.Value;
-        array[1].Value = Session["varcompanyId"];
+        array[1].Value = Session["varMasterCompanyIDForERP"];
         array[2].Value = Session["VarUserId"];
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForWeaverRawMaterialHissabReport", array);

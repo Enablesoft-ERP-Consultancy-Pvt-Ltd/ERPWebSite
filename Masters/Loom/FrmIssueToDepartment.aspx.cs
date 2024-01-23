@@ -13,7 +13,7 @@ public partial class Masters_Loom_FrmIssueToDepartment : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,16 +23,16 @@ public partial class Masters_Loom_FrmIssueToDepartment : System.Web.UI.Page
             string str = @"select Distinct CI.CompanyId,CI.CompanyName 
                     from Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                     Select CustomerId,CustomerCode 
                     From customerinfo(Nolock) 
-                    Where MasterCompanyId = " + Session["varCompanyId"] + @" order by Customercode  
+                    Where MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" order by Customercode  
                     Select UnitId,UnitName From Unit Where Unitid in(1,2)
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
-                    Select DepartmentId, DepartmentName From Department (Nolock) Where MasterCompanyId = " + Session["varCompanyId"] + " Order By DepartmentName ";
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
+                    Select DepartmentId, DepartmentName From Department (Nolock) Where MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By DepartmentName ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -163,7 +163,7 @@ public partial class Masters_Loom_FrmIssueToDepartment : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@Targetdate", txttargetdate.Text);
                 cmd.Parameters.AddWithValue("@DetailData", Str);
                 cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
                 cmd.Parameters.AddWithValue("@OrderID", DDorderNo.SelectedValue);
@@ -216,7 +216,7 @@ public partial class Masters_Loom_FrmIssueToDepartment : System.Web.UI.Page
             From ProcessIssueToDepartmentMaster PM(Nolock)
             JOIN ProcessIssueToDepartmentDetail PD(Nolock) ON PD.IssueOrderid = PM.IssueOrderid 
             JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = PD.ITEM_FINISHED_ID 
-            Where PM.IssueOrderid = " + hnissueorderid.Value + " And PM.MasterCompanyId = " + Session["varCompanyId"] + " Order By PD.IssueDetailId Desc";
+            Where PM.IssueOrderid = " + hnissueorderid.Value + " And PM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By PD.IssueDetailId Desc";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DGOrderdetail.DataSource = ds.Tables[0];
@@ -252,7 +252,7 @@ public partial class Masters_Loom_FrmIssueToDepartment : System.Web.UI.Page
         SqlParameter[] array = new SqlParameter[4];
         array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         array[1] = new SqlParameter("@ProcessId", 1);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         array[3] = new SqlParameter("@REPORTTYPE", 3);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
@@ -451,7 +451,7 @@ public partial class Masters_Loom_FrmIssueToDepartment : System.Web.UI.Page
     {
         string str = @"Select PM.IssueOrderID, DepartmentID 
             From ProcessIssueToDepartmentMaster PM(Nolock)
-            Where PM.MasterCompanyId = " + Session["varCompanyId"] + @" And CompanyID = " + DDcompany.SelectedValue + @" And 
+            Where PM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" And CompanyID = " + DDcompany.SelectedValue + @" And 
             BranchID = " + DDBranchName.SelectedValue + " And ProcessID = 1 And IssueNo = '" + TxtIssueNoEdit.Text + "'";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -485,7 +485,7 @@ public partial class Masters_Loom_FrmIssueToDepartment : System.Web.UI.Page
             string str = @"Select IssueOrderID, IssueNo 
                 From ProcessIssueToDepartmentMaster (Nolock) 
                 Where CompanyID = " + DDcompany.SelectedValue + " And ProcessID = 1 And BranchID = " + DDBranchName.SelectedValue + @" And 
-                DepartmentID = " + DDDepartmentName.SelectedValue + " And MasterCompanyID = " + Session["varCompanyId"] + @" Order By IssueOrderID Desc ";
+                DepartmentID = " + DDDepartmentName.SelectedValue + " And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By IssueOrderID Desc ";
 
             UtilityModule.ConditionalComboFill(ref DDIssueNo, str, true, "--Plz Select--");
 

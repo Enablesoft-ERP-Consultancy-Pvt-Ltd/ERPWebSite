@@ -12,13 +12,13 @@ public partial class Masters_HandSpinning_frmHandspinningreceive : System.Web.UI
     static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                            select PROCESS_NAME_ID,Process_name From process_name_master  where Process_Name='HAND SPINNING' order by PROCESS_NAME 
                            select GoDownID,GodownName From GodownMaster
                            select Godownid From ModuleWiseGodown Where ModuleName='" + Page.Title + "'";
@@ -244,7 +244,7 @@ public partial class Masters_HandSpinning_frmHandspinningreceive : System.Web.UI
                 arr[5].Value = txtchallanNo.Text;
                 arr[6] = new SqlParameter("@RecDate", txtrecdate.Text);
                 arr[7] = new SqlParameter("@userid", Session["varuserid"]);
-                arr[8] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                arr[8] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 arr[9] = new SqlParameter("@dtrecord", dtrecord);
                 arr[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 arr[10].Direction = ParameterDirection.Output;
@@ -364,7 +364,7 @@ public partial class Masters_HandSpinning_frmHandspinningreceive : System.Web.UI
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@ID", lblid.Text);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //***********
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[PRO_DELETEHANDSPINNINGRECEIVE]", arr);
             lblmsg.Text = arr[1].Value.ToString();
@@ -473,7 +473,7 @@ public partial class Masters_HandSpinning_frmHandspinningreceive : System.Web.UI
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@ID", lblid.Text);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[5] = new SqlParameter("@Rate", lblrate.Text == "" ? "0" : lblrate.Text);
             //***********
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_UPDATEHANDSPINNINGRECRATE", arr);

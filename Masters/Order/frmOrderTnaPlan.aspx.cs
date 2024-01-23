@@ -16,7 +16,7 @@ public partial class Masters_Order_frmOrderTnaPlan : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,8 +24,8 @@ public partial class Masters_Order_frmOrderTnaPlan : System.Web.UI.Page
         {
             string str;
             str = @"select CI.CompanyId,CI.CompanyName from CompanyInfo CI inner join Company_Authentication CA on Ci.CompanyId=CA.CompanyId
-                  WHere CI.MasterCompanyid=" + Session["varcompanyid"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName
-                  select CustomerId,customercode+'  '+companyname from customerinfo where MasterCompanyid=" + Session["varcompanyid"] + "  order by CustomerCode";
+                  WHere CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName
+                  select CustomerId,customercode+'  '+companyname from customerinfo where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  order by CustomerCode";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
 

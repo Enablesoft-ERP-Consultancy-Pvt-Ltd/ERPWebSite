@@ -16,7 +16,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
             lablechange();
             ddcategory.Focus();
             string str = @"Select PNM.Process_Name_ID, PNM.Process_Name From Process_Name_Master PNM(Nolock) Where PNM.Process_Name_ID = 29 Order By PNM.Process_Name
-                    Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varCompanyId"] + @"
+                    Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Select ID, Name From RecipeMaster(Nolock) Where EnableDisbleFlag = 1 And ProcessID = 29
                     Select UnitID, UnitName From Unit(Nolock) Order By UnitId
                     Select Val, Type From SizeType(Nolock) Order By Val";
@@ -51,7 +51,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];
@@ -67,7 +67,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
     }
     private void Process_NameSelectedChanged()
     {
-        UtilityModule.ConditionalComboFill(ref DDRecipeName, @"Select ID, Name From RecipeMaster(Nolock) Where ProcessID = " + DDProcessName.SelectedValue + " And MasterCompanyId = " + Session["varCompanyId"], true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDRecipeName, @"Select ID, Name From RecipeMaster(Nolock) Where ProcessID = " + DDProcessName.SelectedValue + " And MasterCompanyId = " + Session["varMasterCompanyIDForERP"], true, "--Select--");
     }
     protected void DDRecipeName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -101,11 +101,11 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
         sz.Visible = false;
         Shd.Visible = false;
         dditemname.Focus();
-        UtilityModule.ConditionalComboFill(ref dditemname, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref dditemname, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
 
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -157,7 +157,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
             switch (DDsizetype.SelectedValue)
             {
                 case "0":
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "Export_Format+'  '+'['+Production_Ft_Format+']'";
@@ -168,7 +168,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
                 case "1":
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "MtrSize+'  '+'['+Production_Mt_Format+']'";
@@ -179,7 +179,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
                 case "2":
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "MtrSize+'  '+'['+Production_Ft_Format+']'";
@@ -190,7 +190,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
                 default:
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "Export_Format+'  '+'['+Production_Ft_Format+']'";
@@ -201,7 +201,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
             }
-            if (Session["varcompanyId"].ToString() == "20")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "20")
             {
                 //Str = "select sizeid," + Size + " as sizeft from QualitySizeNew where shapeid=" + ddshape.SelectedValue + " and QualityId=" + dquality.SelectedValue + " and AddDate <= '" + String.Format("{0:yyyy/MM/dd HH:mm:ss}", Convert.ToDateTime(tbSizeDate.Text == "" ? DateTime.Now.ToString("dd-MMM-yyyy") : tbSizeDate.Text)) + "' AND (UpdateDate > '" + String.Format("{0:yyyy/MM/dd HH:mm:ss}", Convert.ToDateTime(tbSizeDate.Text == "" ? DateTime.Now.ToString("dd-MMM-yyyy") : tbSizeDate.Text)) + "' OR UpdateDate is null)  order by Export_Format";
                 Str = "select sizeid," + Size + " as sizeft from QualitySizeNew where QualityTypeId=" + dditemname.SelectedValue + " and QualityId=" + dquality.SelectedValue + "   order by Export_Format";
@@ -220,7 +220,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
             switch (DDsizetype.SelectedValue)
             {
                 case "0":
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "sizeft+'  '+'['+Prodsizeft+']'";
@@ -231,7 +231,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
                 case "1":
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "sizemtr+'  '+'['+ProdSizemtr+']'";
@@ -242,7 +242,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
                 case "2":
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "sizeinch+'  '+'['+ProdSizeft+']'";
@@ -253,7 +253,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
                 default:
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "4":
                             Size = "sizeft+'  '+'['+Prodsizeft+']'";
@@ -264,7 +264,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                     }
                     break;
             }
-            Str = "select sizeid," + Size + " as sizeft from size where shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by sizeft";
+            Str = "select sizeid," + Size + " as sizeft from size where shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeft";
 
             UtilityModule.ConditionalComboFill(ref ddsize, Str, true, " Select Size");
         }
@@ -294,11 +294,11 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, DropDownList Shade, int Itemid)
     {
-        string strsql = "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By QUALITYNAME 
-                           SELECT DESIGNID,DESIGNNAME from DESIGN where  MasterCompanyId=" + Session["varCompanyId"] + @" order by DesignName
-                            SELECT COLORID,COLORNAME FROM COLOR where  MasterCompanyId=" + Session["varCompanyId"] + @" order by ColorName
-                            SELECT SHAPEID,SHAPENAME FROM SHAPE where  MasterCompanyId=" + Session["varCompanyId"] + @" order by SHAPEID
-                            SELECT ShadecolorId,ShadeColorName FROM ShadeColor  where  MasterCompanyId=" + Session["varCompanyId"] + " order by ShadecolorName";
+        string strsql = "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By QUALITYNAME 
+                           SELECT DESIGNID,DESIGNNAME from DESIGN where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by DesignName
+                            SELECT COLORID,COLORNAME FROM COLOR where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by ColorName
+                            SELECT SHAPEID,SHAPENAME FROM SHAPE where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by SHAPEID
+                            SELECT ShadecolorId,ShadeColorName FROM ShadeColor  where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShadecolorName";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 
@@ -341,7 +341,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                 _arrPara[8] = new SqlParameter("@Msg", SqlDbType.NVarChar, 250);
                 _arrPara[9] = new SqlParameter("@WaitingTime", SqlDbType.Int);
 
-                itemfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                itemfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
                 _arrPara[0].Direction = ParameterDirection.InputOutput;
                 _arrPara[0].Value = 0;
@@ -351,7 +351,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                 _arrPara[4].Value = DDUnit.SelectedValue;
                 _arrPara[5].Value = TxtConsmp.Text;
                 _arrPara[6].Value = Session["varuserid"];
-                _arrPara[7].Value = Session["varCompanyId"];
+                _arrPara[7].Value = Session["varMasterCompanyIDForERP"];
                 _arrPara[8].Direction = ParameterDirection.InputOutput;
                 _arrPara[9].Value = TxtWaitingTime.Text == "" ? "0" : TxtWaitingTime.Text;
 
@@ -419,7 +419,7 @@ public partial class Master_Recipe_FrmCreateRecipe : System.Web.UI.Page
                 _arrPara[1].Value = DDProcessName.SelectedValue;
                 _arrPara[2].Value = DDRecipeName.SelectedValue;
                 _arrPara[3].Value = Session["varuserid"];
-                _arrPara[4].Value = Session["varCompanyId"];
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"];
                 _arrPara[5].Direction = ParameterDirection.InputOutput;
 
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[PRO_DELETE_RECIPEDETAIL]", _arrPara);

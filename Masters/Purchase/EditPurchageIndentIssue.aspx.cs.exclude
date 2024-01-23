@@ -17,7 +17,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             Session["PIndentIssueTranId"] = 0;
             txtpindentissueid.Text = "0";
             txtpindentissuedetailid.Text = "0";
-            UtilityModule.ConditionalComboFill(ref ddCompName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "Select Comp Name");
+            UtilityModule.ConditionalComboFill(ref ddCompName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "Select Comp Name");
             UtilityModule.ConditionalComboFill(ref ddpayement, "Select PaymentId,PaymentName from Payment order by PaymentName", true, "--Select--");
             UtilityModule.ConditionalComboFill(ref dddelivery, "select TermId,TermName from Term order by TermName", true, "--Select--");
             UtilityModule.ConditionalComboFill(ref ddtransprt, "select TransModeid,TransModeName from Transmode order by TransModename", true, "Select Mode");
@@ -44,7 +44,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
         {
             con.Open();
             String[] ParameterList = new String[8];
-            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             lblqualityname.Text = ParameterList[0];
             lbldesignname.Text = ParameterList[1];
             lblcolorname.Text = ParameterList[2];
@@ -398,7 +398,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             arr[5].Value = txtchalanno.Text;
             arr[6].Value = txtdate.Text;
             arr[7].Value = Session["varuserid"].ToString();
-            arr[8].Value = Session["varCompanyId"].ToString();
+            arr[8].Value = Session["varMasterCompanyIDForERP"].ToString();
             //arr[9].Direction = ParameterDirection.InputOutput;
             if (btnsave.Text == "Save")
             {
@@ -613,7 +613,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeletePUrchaseIndentIssue",arr);
             Tran.Commit();
             DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseIndentIssueTran'," + arr[0].Value + ",getdate(),'Delete')");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseIndentIssueTran'," + arr[0].Value + ",getdate(),'Delete')");
         }
         catch (Exception ex)
         {

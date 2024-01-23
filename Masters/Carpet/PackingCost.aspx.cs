@@ -10,7 +10,7 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
                 lblArea.Text = "0";
                 lblGSMC2.Text = "0";
                 TxtPCS.Text = "1";
-                if (Convert.ToInt16(Session["varCompanyId"]) == 2)
+                if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 2)
                 {
                     TxtWaste1.Text = "2";
                     TxtWaste2.Text = "1";
@@ -49,13 +49,13 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
 
                 FILLGRID();
                 TxtPackingType.Text = Request.QueryString["PackingType"];
-                TxtAmount.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT IsNull(Sum(NetCost),0) FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
+                TxtAmount.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT IsNull(Sum(NetCost),0) FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
                 if (Request.QueryString["itemcode"] != "")
                 {
                     tdlblProdCode.Visible = true;
                     tdddProdCode.Visible = true;
-                    int VarFinishedid = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT ITEM_FINISHED_ID FROM ITEM_PARAMETER_MASTER WHERE PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And MasterCompanyId=" + Session["varCompanyId"] + ""));
-                    UtilityModule.ConditionalComboFill(ref ddProdCode, "SELECT DISTINCT PD.IFINISHEDID,PRODUCTCODE from PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD,ITEM_PARAMETER_MASTER IPM WHERE PM.PCMID=PD.PCMID AND IPM.ITEM_FINISHED_ID=PD.IFINISHEDID AND PM.FINISHEDID IN (" + VarFinishedid + ") And IPM.MasterCompanyId=" + Session["varCompanyId"] + " ORDER BY PRODUCTCODE", true, "--SELECT--");
+                    int VarFinishedid = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT ITEM_FINISHED_ID FROM ITEM_PARAMETER_MASTER WHERE PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
+                    UtilityModule.ConditionalComboFill(ref ddProdCode, "SELECT DISTINCT PD.IFINISHEDID,PRODUCTCODE from PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD,ITEM_PARAMETER_MASTER IPM WHERE PM.PCMID=PD.PCMID AND IPM.ITEM_FINISHED_ID=PD.IFINISHEDID AND PM.FINISHEDID IN (" + VarFinishedid + ") And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY PRODUCTCODE", true, "--SELECT--");
                     ddProdCode.SelectedValue = VarFinishedid.ToString();
                 }             
             }
@@ -301,7 +301,7 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
         try
         {
 
-            string strsql = @"SELECT Length,Width,Height,Waste1,Waste2,Ply,Craft,GSM1,GSM2,Rate1,Rate2,Pcs,NetCost,ID Sr_No FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = @"SELECT Length,Width,Height,Waste1,Waste2,Ply,Craft,GSM1,GSM2,Rate1,Rate2,Pcs,NetCost,ID Sr_No FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -368,7 +368,7 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
             _arrpara[13].Value = TxtRate2.Text;
             _arrpara[14].Value = TxtNetcost.Text;
             _arrpara[15].Value = Session["varuserid"];
-            _arrpara[16].Value = Session["varCompanyId"];
+            _arrpara[16].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[17].Value = TxtPCS.Text;
             _arrpara[18].Value = 0;
             if (BtnSave.Text == "UpDate")
@@ -388,7 +388,7 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
             {
                 Insert_Into_Container_Cost(Tran);
             }
-            TxtAmount.Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "SELECT IsNull(Sum(NetCost),0) FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
+            TxtAmount.Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "SELECT IsNull(Sum(NetCost),0) FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
             Tran.Commit();
             ClearData();
          }
@@ -473,20 +473,20 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
         _arrpara[6].Value = 65000;
         _arrpara[7].Value = fnNetCost(Convert.ToDouble(TxtLength.Text==""?"0":TxtLength.Text), Convert.ToDouble(TxtWidth.Text==""?"0":TxtWidth.Text), Convert.ToDouble(TxtHeight.Text), Convert.ToDouble(TxtPCS.Text), 55, 65000);
         _arrpara[8].Value = Session["varuserid"];
-        _arrpara[9].Value = Session["varCompanyId"];
+        _arrpara[9].Value = Session["varMasterCompanyIDForERP"];
         _arrpara[10].Value = 0;
         _arrpara[11].Value = DDunit.SelectedIndex;
 
         SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[dbo].[PRO_CONTAINERCOST]", _arrpara);
-        TxtFrtAmt.Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "SELECT NetCost FROM CONTAINERCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
-        TxtAmount.Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "SELECT IsNull(Sum(NetCost),0) FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
+        TxtFrtAmt.Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "SELECT NetCost FROM CONTAINERCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
+        TxtAmount.Text = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "SELECT IsNull(Sum(NetCost),0) FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGTYPE=" + Request.QueryString["PackingType"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
     }
     protected void DG_SelectedIndexChanged(object sender, EventArgs e)
     {
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND ID=" + DG.SelectedDataKey.Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND ID=" + DG.SelectedDataKey.Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 DDunit.SelectedIndex = Convert.ToInt32(Ds.Tables[0].Rows[0]["UnitId"]);
@@ -511,7 +511,7 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
                 PlyCraftGS1_Texthange();
                 if (Convert.ToInt32(Request.QueryString["PackingType"]) == 3)
                 {
-                    TxtFrtAmt.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT NetCost FROM CONTAINERCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
+                    TxtFrtAmt.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, "SELECT NetCost FROM CONTAINERCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
                 }
                 BtnSave.Text = "UpDate";
                 btnDelete.Visible = true;
@@ -548,7 +548,7 @@ public partial class Masters_Carpet_PackingCost : System.Web.UI.Page
             lblMessage.Text = "";
             SqlHelper.ExecuteNonQuery(con, CommandType.Text, "DELETE PACKINGCOST WHERE ID=" + DG.SelectedDataKey.Value);
             DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PACKINGCOST'," + DG.SelectedDataKey.Value + ",getdate(),'Delete')");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PACKINGCOST'," + DG.SelectedDataKey.Value + ",getdate(),'Delete')");
             ClearData();
             btnDelete.Visible = false;
         }

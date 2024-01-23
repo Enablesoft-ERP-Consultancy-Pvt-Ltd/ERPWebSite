@@ -11,7 +11,7 @@ public partial class Masters_Packing_FrmInvoiceRate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Packing_FrmInvoiceRate : System.Web.UI.Page
             TxtInvoiceId.Text = Request.QueryString["ID"];            
             Fill_Grid();
 
-            if (Session["varCompanyId"].ToString() != "30")
+            if (Session["varMasterCompanyIDForERP"].ToString() != "30")
             {
                 RDAreaWise.Checked = true;
                 if (MySession.InvoiceReportType == "1")
@@ -67,7 +67,7 @@ public partial class Masters_Packing_FrmInvoiceRate : System.Web.UI.Page
             strsql = @"Select Replace(Str(VF.QualityId)+'|'+Str(VF.DesignId)+'|'+Str(VF.ColorId),' ','') Sr_No,PI.Quality as QualityName,PI.Design as DesignName,PI.Color as ColorName,Sum(Pcs) Pcs,
                              Sum(Area) Area,Price,Case When " + VarCalType + @"=0 Then Sum(Area)*Price Else 
                              Sum(Pcs)*Price End Amt From Packing P,PackingInformation PI,V_FinishedItemDetail VF Where P.PackingId=PI.PackingId And 
-                             PI.Finishedid=VF.Item_Finished_id And P.PackingId=" + TxtInvoiceId.Text + "  And P.MasterCompanyId=" + Session["varCompanyId"] + @"
+                             PI.Finishedid=VF.Item_Finished_id And P.PackingId=" + TxtInvoiceId.Text + "  And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                              Group By VF.QualityId,VF.DesignId,VF.ColorId,PI.Quality,PI.Design,PI.Color,Price";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -149,7 +149,7 @@ public partial class Masters_Packing_FrmInvoiceRate : System.Web.UI.Page
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, Str);
                 //DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
                 int dt = Convert.ToInt32(SqlHelper.ExecuteScalar(Tran, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus"));
-                SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PackingInformation'," + arrPara[0].Value + ",getdate(),'Update')");
+                SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PackingInformation'," + arrPara[0].Value + ",getdate(),'Update')");
             }
             Tran.Commit();
             lblmessage.Text = "Data Saved Succeessfully......";

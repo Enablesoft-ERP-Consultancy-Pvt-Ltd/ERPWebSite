@@ -13,7 +13,7 @@ public partial class Masters_Order_FrmAssignOtherOrder : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,7 +23,7 @@ public partial class Masters_Order_FrmAssignOtherOrder : CustomPage
             UtilityModule.ConditionalComboFill(ref DDCompanyName, @"Select CI.CompanyId, CI.CompanyName 
                 From CompanyInfo CI(Nolock)
                 JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId=" + Session["varuserId"] + @"
-                Where CI.MasterCompanyid=" + Session["varCompanyId"] + " order by CI.CompanyName", true, "--Select--");
+                Where CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CI.CompanyName", true, "--Select--");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -240,7 +240,7 @@ public partial class Masters_Order_FrmAssignOtherOrder : CustomPage
                 cmd.Parameters.AddWithValue("@OldOrderID", DDOldOrderNo.SelectedValue);
                 cmd.Parameters.AddWithValue("@Item_Finished_ID", DDDescription.SelectedValue);
                 cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@MastercompanyID", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@MastercompanyID", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@StockNos", Str);
                 cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;

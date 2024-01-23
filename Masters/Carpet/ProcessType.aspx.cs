@@ -9,13 +9,13 @@ public partial class ProcessType : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            UtilityModule.ConditionalComboFill(ref ddprocessname, "select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "~Select Process Name~");
+            UtilityModule.ConditionalComboFill(ref ddprocessname, "select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "~Select Process Name~");
         }
     }
    

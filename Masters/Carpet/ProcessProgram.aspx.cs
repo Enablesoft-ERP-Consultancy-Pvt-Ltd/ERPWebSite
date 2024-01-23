@@ -15,7 +15,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
 
             Session["ViewState"] = "0";
 
-            UtilityModule.ConditionalComboFill(ref ddcompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddcompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
             if (ddcompany.Items.FindByValue(Session["CurrentWorkingCompanyID"].ToString()) != null)
             {
                 ddcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -37,12 +37,12 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             {
                 Tdcustcode.Visible = false;
             }
-            string str = @"Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"];
-            if (Convert.ToInt16(Session["varcompanyId"]) == 16)
+            string str = @"Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+            if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16)
             {
                 str = str + " and Process_name_id in (5, 143)";
             }
-            else if (Convert.ToInt16(Session["varcompanyId"]) == 44)
+            else if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 44)
             {
                 str = str + " and Process_name_id in (12,11,5,18,8,29,54,34,56,55)";
             }
@@ -63,12 +63,12 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                 editandwithoutedit();
             }
 
-            if (Convert.ToInt32(Session["varCompanyId"]) == 16)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16)
             {
                 TDProcessEmployeeName.Visible = true;
             }
 
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 9:  ///Hafizia
                     ChkForItemDetailInExcel.Visible = true;
@@ -87,15 +87,15 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
     {
         if (ddcompany.SelectedIndex > 0)
         {
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 6:  ///Art INdia
-                    UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by Customercode", true, "--Select--");
+                    UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Customercode", true, "--Select--");
                     break;
                 case 42:
                     UtilityModule.ConditionalComboFill(ref ddcustomer, @"SELECT DISTINCT CI.Customerid, CI.Customercode + SPACE(5) + CI.CompanyName Custcode 
                     From Ordermaster OM(Nolock)
-                    JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId And CI.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                    JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId And CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                     JOIN CompanyWiseCustomerDetail CCD(Nolock) ON CCD.CustomerID = CI.CustomerID And CCD.CompanyID = OM.CompanyID 
                     JOIN OrderDetail OD(Nolock) ON OD.OrderId = OM.OrderId And OD.Tag_Flag = 1 
                     JOIN JobAssigns JA(nolock) ON JA.OrderId = OD.OrderId And JA.Item_Finished_Id = OD.Item_Finished_Id 
@@ -104,13 +104,13 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                 case 44:
                     if (Tdcustcode.Visible == true)
                     {
-                        UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode  as Custcode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by Custcode", true, "--Select--");
+                        UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode  as Custcode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Custcode", true, "--Select--");
                     }
                     break;
                 default:
                     if (Tdcustcode.Visible == true)
                     {
-                        UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5) +CompanyName as Custcode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by Custcode", true, "--Select--");
+                        UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5) +CompanyName as Custcode from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 and Companyid=" + ddcompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Custcode", true, "--Select--");
                     }
                     break;
             }
@@ -163,7 +163,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
 
             //            string str1 = @"Select DISTINCT PPID,PPID From Ordermaster OM,CustomerInfo CI,ProcessProgram P 
             //                          Where OM.OrderID=P.Order_Id And OM.CustomerId=CI.CustomerId  
-            //                           And CI.MasterCompanyId=" + Session["varCompanyId"] + @" 
+            //                           And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
             //                           and P.Process_id=" + ddprocess.SelectedValue + " and OM.CompanyiD=" + ddcompany.SelectedValue;
 
             FillProcessprogramNOEdit();
@@ -191,7 +191,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             string str1 = @"Select OM.OrderId,LocalOrder+' / '+CustomerOrderNo+' / '+CustomerCode+' / '+replace(convert(varchar(11),ProdReqDate,106), ' ','-') as OrderNo 
                           From CustomerInfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And 
                           OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 And OM.Companyid=" + ddcompany.SelectedValue + @" and
-                           CI.MasterCompanyId=" + Session["varCompanyId"] + " And OM.OrderId Not IN(Select Order_Id From ProcessProgram WHERE Process_ID=" + ddprocess.SelectedValue + @") ";
+                           CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And OM.OrderId Not IN(Select Order_Id From ProcessProgram WHERE Process_ID=" + ddprocess.SelectedValue + @") ";
             if (ds.Tables[0].Rows.Count > 0)
             {
                 str1 = str1 + " and OM.OrderCategoryId<>" + ds.Tables[0].Rows[0]["OrderCategoryId"];
@@ -213,7 +213,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
         string str1 = @"Select OM.OrderId,LocalOrder+' / '+CustomerOrderNo+' / '+CustomerCode+' / '+replace(convert(varchar(11),ProdReqDate,106), ' ','-') as OrderNo 
                           From CustomerInfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And 
                           OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And (PreProdAssignedQty+INTERNALPRODASSIGNEDQTY)>0 And OD.Tag_Flag=1 And 
-                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varCompanyId"] + @" And OM.OrderId Not IN(Select Order_Id From ProcessProgram) 
+                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And OM.OrderId Not IN(Select Order_Id From ProcessProgram) 
                           Group By  OM.Orderid,LocalOrder,CustomerOrderNo,CustomerCode,ProdReqDate Order By ProdReqDate ASC";
         UtilityModule.ConditonalChkBoxListFill(ref chekboxlist, str1);
         DataSet ds = null;
@@ -221,7 +221,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
         try
         {
             fill_ConsumptionGride();
-            string strsql = @"Select Distinct O.orderid,LocalOrder+' / '+Customerorderno +' / '+CustomerCode+' / '+replace(convert(varchar(11),isnull(ProdReqDate,''),106), ' ','-') as OrderNo from ordermaster o inner join OrderDetail OD on OD.OrderId=o.OrderId inner join Customerinfo C on o.Customerid=C.Customerid  inner join processprogram on o.orderid=order_id and ppid=" + ddprocessprogram.SelectedValue + " And C.MasterCompanyId=" + Session["varCompanyId"] + @" 
+            string strsql = @"Select Distinct O.orderid,LocalOrder+' / '+Customerorderno +' / '+CustomerCode+' / '+replace(convert(varchar(11),isnull(ProdReqDate,''),106), ' ','-') as OrderNo from ordermaster o inner join OrderDetail OD on OD.OrderId=o.OrderId inner join Customerinfo C on o.Customerid=C.Customerid  inner join processprogram on o.orderid=order_id and ppid=" + ddprocessprogram.SelectedValue + " And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                             Select EmpID From ProcessProgramWithEmp(Nolock) Where PPID = " + ddprocessprogram.SelectedValue;
             con.Open();
 
@@ -340,7 +340,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             _arrPara[3].Direction = ParameterDirection.InputOutput;
             _arrPara[3].Value = Convert.ToInt32(ppid);
             _arrPara[4].Value = Session["varuserid"].ToString();
-            _arrPara[5].Value = Session["varCompanyId"].ToString();
+            _arrPara[5].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[6].Value = ddcompany.SelectedValue;
             _arrPara[7].Direction = ParameterDirection.InputOutput;
             _arrPara[7].Value = "";
@@ -373,7 +373,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             }
             //txtprocessprogram.Text = _arrPara[3].Value.ToString();
 
-            //if (Session["VarCompanyId"].ToString() == "30")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "30")
             //{
                 Session["ViewState"] = _arrPara[3].Value.ToString();
             //}
@@ -403,13 +403,13 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                     switch (variable.DyingProgramWithFullArea)
                     {
                         case "1":
-                            if ((Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28" || Session["varcompanyid"].ToString() == "44" || Session["varcompanyid"].ToString() == "39") && ddprocess.SelectedValue.ToString() == "5")
+                            if ((Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "44" || Session["varMasterCompanyIDForERP"].ToString() == "39") && ddprocess.SelectedValue.ToString() == "5")
                             {
                                 Str = Str + @"Select PP.PPID,OFINISHEDID FinishedId,OM.OrderId,OD.OrderDetailId,
                                         Round(CASE WHEN ORDERUNITID in (1, 6) THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY * Case When VF.PoufTypeCategory = 1 Then 1 Else 
                                         Case When OCD.ICalType = 0 OR OCD.ICalType = 2 Then VF.AreaMtr * 1.196 Else 1 End END ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY) * OCD.OQTY * Case When VF.MasterCompanyId in (16, 28) Then 
                                         Case When VF.PoufTypeCategory = 1 Then 1 Else Case When OCD.ICalType = 0 Then Round(VF.AreaFt * 144.0 / 1296, 4, 1) Else 1 End End Else VF.Actualfullareasqyd END END ,5) QTY,
-                                        0.00,1," + Session["varcompanyId"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
+                                        0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
                                         Round(CASE WHEN ORDERUNITID=1  THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OLoss*1.196*Case When VF.PoufTypeCategory = 1 Then 1 Else 
                                         Case When OCD.ICalType = 0 Then VF.AreaMtr Else 1 End END ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY) *OCD.OLoss*Case When VF.PoufTypeCategory = 1 Then 1 Else 
                                         Case When OCD.ICalType = 0 Then VF.Actualfullareasqyd Else 1 End End END, 5) LossQty,
@@ -422,13 +422,13 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
 		                                        And OCD.ORDERDETAILDETAILID = ODD.ORDERDETAILDETAILID 
                                         JOIN JobAssigns js ON Js.OrderId = Od.OrderId And js.ITEM_FINISHED_ID = Od.Item_Finished_Id 
                                         JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = ODD.OrderDetailDetail_Item_Finished_Id 
-                                        WHERE PP.PPID = " + _arrPara[3].Value + " And PP.Process_ID = " + _arrPara[1].Value + " And PP.Order_Id in (" + orderid + ") And PP.MasterCompanyID = " + Session["varCompanyId"];
+                                        WHERE PP.PPID = " + _arrPara[3].Value + " And PP.Process_ID = " + _arrPara[1].Value + " And PP.Order_Id in (" + orderid + ") And PP.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
                             }
-                            else if (Session["varcompanyid"].ToString() == "44")
+                            else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                             {
                                 Str = Str + @"Select PP.PPID,OFINISHEDID FinishedId,OM.OrderId,OD.OrderDetailId,Round(CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY * Case When VF.PoufTypeCategory = 1 Then 1 Else 
                                         Case When OCD.ICalType = 0 OR OCD.ICalType = 2 Then S.AreaMtr * 1.196 Else 1 End END ELSE case when vf.MasterCompanyId=44 then OD.QTYREQUIRED * (OCD.IQTY + OCD.ILoss) else (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY) * OCD.OQTY * Case When VF.MasterCompanyId in (16, 28) Then 
-                                        Case When VF.PoufTypeCategory = 1 Then 1 Else Case When OCD.ICalType = 0 Then Round(S.AreaFt * 144.0 / 1296, 4, 1) Else 1 End End Else S.Actualfullareasqyd END END END ,5) QTY,0.00,1," + Session["varcompanyId"].ToString() + @",
+                                        Case When VF.PoufTypeCategory = 1 Then 1 Else Case When OCD.ICalType = 0 Then Round(S.AreaFt * 144.0 / 1296, 4, 1) Else 1 End End Else S.Actualfullareasqyd END END END ,5) QTY,0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",
                                         Round(CASE WHEN ORDERUNITID=1 THEN 1.196 ELSE 1 End * Case When IPM.MasterCompanyId = 42 Then 
 		                                IsNull((Select Top 1 LossPercentage from QualityLoss QL(Nolock) Where QL.MonthID = Month(GetDate()) And QL.QualityID = VF.QualityID), 0)
 		                                Else OCD.OLoss End, 5) OLoss,
@@ -443,7 +443,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                                         JOIN ORDER_CONSUMPTION_DETAIL OCD(Nolock) ON OCD.ORDERDETAILID=OD.ORDERDETAILID 
                                         JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID 
                                         JOIN JobAssigns js(Nolock) ON Js.OrderId=Od.OrderId and js.ITEM_FINISHED_ID=Od.Item_Finished_Id 
-                                        JOIN ITEM_PARAMETER_MASTER IPM(Nolock) ON OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And IPM.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                                        JOIN ITEM_PARAMETER_MASTER IPM(Nolock) ON OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                                         Left Outer Join SIZE S(Nolock) ON IPM.Size_id=S.Sizeid 
                                         WHERE PPID=" + _arrPara[3].Value + " And ProcessId= " + _arrPara[1].Value;
 
@@ -455,16 +455,16 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                             else
                             {
                                 //                                Str = Str + @"Select PP.PPID,OFINISHEDID FinishedId,OM.OrderId,OD.OrderDetailId,Round(CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.AreaMtr*OCD.OQTY*1.196
-                                //                                          ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY) * OCD.OQTY * Case When IPM.MasterCompanyId in (16, 28) Then Round(S.AreaFt * 144.0 / 1296, 4, 1) Else S.Actualfullareasqyd END END ,5) QTY,0.00,1," + Session["varcompanyId"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
+                                //                                          ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY) * OCD.OQTY * Case When IPM.MasterCompanyId in (16, 28) Then Round(S.AreaFt * 144.0 / 1296, 4, 1) Else S.Actualfullareasqyd END END ,5) QTY,0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
                                 //                                          Round(CASE WHEN ORDERUNITID=1  THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.AreaMtr*OCD.OLoss*1.196 ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.Actualfullareasqyd *OCD.OLoss END ,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid 
                                 //                                          FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,JobAssigns js,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S 
                                 //                                          ON IPM.Size_id=S.Sizeid 
                                 //                                          WHERE Js.OrderId=Od.OrderId and js.ITEM_FINISHED_ID=Od.Item_Finished_Id and OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-                                //                                          PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                                //                                          PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                                 Str = Str + @"Select PP.PPID,OFINISHEDID FinishedId,OM.OrderId,OD.OrderDetailId,Round(CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY * Case When VF.PoufTypeCategory = 1 Then 1 Else 
                                         Case When OCD.ICalType = 0 OR OCD.ICalType = 2 Then S.AreaMtr * 1.196 Else 1 End END ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY) * OCD.OQTY * Case When VF.MasterCompanyId in (16, 28) Then 
-                                        Case When VF.PoufTypeCategory = 1 Then 1 Else Case When OCD.ICalType = 0 Then Round(S.AreaFt * 144.0 / 1296, 4, 1) Else 1 End End Else S.Actualfullareasqyd END END ,5) QTY,0.00,1," + Session["varcompanyId"].ToString() + @",
+                                        Case When VF.PoufTypeCategory = 1 Then 1 Else Case When OCD.ICalType = 0 Then Round(S.AreaFt * 144.0 / 1296, 4, 1) Else 1 End End Else S.Actualfullareasqyd END END ,5) QTY,0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",
                                         Round(CASE WHEN ORDERUNITID=1 THEN 1.196 ELSE 1 End * Case When IPM.MasterCompanyId = 42 Then 
 		                                IsNull((Select Top 1 LossPercentage from QualityLoss QL(Nolock) Where QL.MonthID = Month(GetDate()) And QL.QualityID = VF.QualityID), 0)
 		                                Else OCD.OLoss End, 5) OLoss,
@@ -479,13 +479,13 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                                         JOIN ORDER_CONSUMPTION_DETAIL OCD(Nolock) ON OCD.ORDERDETAILID=OD.ORDERDETAILID 
                                         JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID 
                                         JOIN JobAssigns js(Nolock) ON Js.OrderId=Od.OrderId and js.ITEM_FINISHED_ID=Od.Item_Finished_Id 
-                                        JOIN ITEM_PARAMETER_MASTER IPM(Nolock) ON OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And IPM.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                                        JOIN ITEM_PARAMETER_MASTER IPM(Nolock) ON OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                                         Left Outer Join SIZE S(Nolock) ON IPM.Size_id=S.Sizeid 
                                         WHERE PPID=" + _arrPara[3].Value + " And ProcessId= " + _arrPara[1].Value;
                             }
                             break;
                         default:
-                            switch (Session["varcompanyid"].ToString())
+                            switch (Session["varMasterCompanyIDForERP"].ToString())
                             {
                                 case "9":
                                     Str = Str + @" Select PP.PPID, OFINISHEDID FinishedId, OM.OrderId, OD.OrderDetailId, 
@@ -502,7 +502,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
 										                                                    End
 								                                                    ELSE Case When OCD.MasterCompanyId <>9 Then  OD.QTYREQUIRED*OCD.OQTY Else OD.QTYREQUIRED*OCD.OQTY/10.76391 End 
 		                                                    END 
-                                                    END,5) QTY, 0.00, 1, " + Session["varcompanyId"].ToString() + @", 
+                                                    END,5) QTY, 0.00, 1, " + Session["varMasterCompanyIDForERP"].ToString() + @", 
                                                     Round(CASE WHEN ORDERUNITID = 1 THEN Case When OCD.MasterCompanyId <>9 Then OCD.OLoss*1.196 Else OCD.OLoss*1.196 End  ELSE Case When OCD.Mastercompanyid <>9 Then  OLoss Else OLoss*1.196 End End,5) OLoss, 
                                                     Round(CASE WHEN OrderCalType=0 THEN CASE WHEN ORDERUNITID=1 
                                                     THEN Case When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*S.AreaMtr*OCD.OLoss*1.196 Else OD.QTYREQUIRED*OD.TotalArea*OCD.OLoss * 1.196 End
@@ -516,14 +516,14 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                                                     JOIN ORDER_CONSUMPTION_DETAIL OCD(Nolock) ON OCD.OrderID = OM.OrderID And OCD.ORDERDETAILID = OD.OrderDetailId And OCD.PROCESSID = PP.Process_ID 
                                                     JOIN ITEM_PARAMETER_MASTER IPM(Nolock) ON IPM.ITEM_FINISHED_ID = OD.Item_Finished_Id 
                                                     Left Outer Join SIZE S ON S.Sizeid = IPM.Size_id 
-                                                    Where PP.PPID = " + _arrPara[3].Value + " and PP.Order_Id in (" + orderid + ") And PP.Process_ID = " + _arrPara[1].Value + " And PP.MasterCompanyid = " + Session["varcompanyId"];
+                                                    Where PP.PPID = " + _arrPara[3].Value + " and PP.Order_Id in (" + orderid + ") And PP.Process_ID = " + _arrPara[1].Value + " And PP.MasterCompanyid = " + Session["varMasterCompanyIDForERP"];
 
                                     //                                    Str = Str + @"Select PP.PPID,OFINISHEDID FinishedId,OM.OrderId,OD.OrderDetailId,
                                     //                                        Round(CASE WHEN OrderCalType=0 THEN CASE WHEN ORDERUNITID=1  
                                     //                                        THEN Case When OCD.MasterCompanyId <>9 Then OD.QTYREQUIRED*S.AreaMtr*OCD.OQTY*1.196 
                                     //                                        Else OD.QTYREQUIRED*S.AreaMtr*OCD.OQTY End
                                     //                                        ELSE Case When OCD.MasterCompanyId <>9 Then OD.QTYREQUIRED*S.AreaFt*OCD.OQTY Else OD.QTYREQUIRED*S.AreaFt*OCD.OQTY/10.76391  End END ELSE CASE WHEN ORDERUNITID=1 THEN Case When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*OCD.OQTY*1.196 Else OD.QTYREQUIRED*OCD.OQTY End
-                                    //                                        ELSE Case When OCD.MasterCompanyId <>9 Then  OD.QTYREQUIRED*OCD.OQTY Else OD.QTYREQUIRED*OCD.OQTY/10.76391 End END END,5) QTY,0.00,1," + Session["varcompanyId"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN Case When OCD.MasterCompanyId <>9 Then OCD.OLoss*1.196 Else OCD.OLoss End  ELSE Case When OCD.Mastercompanyid <>9 Then  OLoss Else OLoss/10.76391 End End,5) OLoss,
+                                    //                                        ELSE Case When OCD.MasterCompanyId <>9 Then  OD.QTYREQUIRED*OCD.OQTY Else OD.QTYREQUIRED*OCD.OQTY/10.76391 End END END,5) QTY,0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN Case When OCD.MasterCompanyId <>9 Then OCD.OLoss*1.196 Else OCD.OLoss End  ELSE Case When OCD.Mastercompanyid <>9 Then  OLoss Else OLoss/10.76391 End End,5) OLoss,
                                     //                                        Round(CASE WHEN OrderCalType=0 THEN CASE WHEN ORDERUNITID=1 
                                     //                                        THEN Case When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*S.AreaMtr*OCD.OLoss*1.196 Else OD.QTYREQUIRED*S.AreaMtr*OCD.OLoss End
                                     //                                        ELSE Case  When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*S.AreaFt*OCD.OLoss Else OD.QTYREQUIRED*S.AreaFt*OCD.OLoss/10.76391 END END ELSE CASE WHEN ORDERUNITID=1 THEN Case When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*OCD.OLoss*1.196 Else OD.QTYREQUIRED*OCD.OLoss End
@@ -531,7 +531,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                                     //                                        FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
                                     //                                        WHERE OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
                                     //                                        PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And
-                                    //                                        PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varcompanyId"];
+                                    //                                        PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                                     break;
                                 default:
@@ -540,13 +540,13 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                                         case "1":
                                             Str = Str + @"Select PP.PPID,OFINISHEDID FinishedId,OM.OrderId,OD.OrderDetailId,Round(CASE WHEN OrderCalType=0 THEN CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.AreaMtr*OCD.OQTY*1.196
                                                         ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.AreaFt*OCD.OQTY END ELSE CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY*1.196
-                                                        ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY END END,5) QTY,0.00,1," + Session["varcompanyId"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
+                                                        ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY END END,5) QTY,0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
                                                         Round(CASE WHEN OrderCalType=0 THEN CASE WHEN ORDERUNITID=1 
                                                         THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.AreaMtr*OCD.OLoss*1.196
                                                         ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.AreaFt*OCD.OLoss END ELSE CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OLoss*1.196
                                                         ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OLoss END END,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid,OCD.IUNITID  FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,JobAssigns js,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
                                                         WHERE Js.OrderId=Od.OrderId and js.ITEM_FINISHED_ID=Od.Item_Finished_Id and OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-                                                        PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                                                        PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                                             break;
 
@@ -559,13 +559,13 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                                             }
                                             Str = Str + @"Select PP.PPID,OFINISHEDID FinishedId,OM.OrderId,OD.OrderDetailId,Round(CASE WHEN " + Caltycolum + @"=0  THEN CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.ProdAreaMtr*OCD.OQTY*1.196
                                                         ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.ProdAreaFt*OCD.OQTY END ELSE CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY*1.196
-                                                        ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY END END,5) QTY,0.00,1," + Session["varcompanyId"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
+                                                        ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OQTY END END,5) QTY,0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN OCD.OLoss*1.196 ELSE OLoss End,5) OLoss,
                                                         Round(CASE WHEN OrderCalType=0 THEN CASE WHEN ORDERUNITID=1 
                                                         THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.ProdAreaMtr*OCD.OLoss*1.196
                                                         ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*S.ProdAreaFt*OCD.OLoss END ELSE CASE WHEN ORDERUNITID=1 THEN (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OLoss*1.196
                                                         ELSE (js.PreProdAssignedQty+Js.INTERNALPRODASSIGNEDQTY)*OCD.OLoss END END,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid,OCD.IUNITID  FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,JobAssigns js,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
                                                         WHERE Js.OrderId=Od.OrderId and js.ITEM_FINISHED_ID=Od.Item_Finished_Id and OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-                                                        PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                                                        PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                                             break;
                                     }
@@ -585,7 +585,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                                         ELSE OD.QTYREQUIRED*S.AreaFt*OCD.OLoss END ELSE CASE WHEN ORDERUNITID=1 THEN OD.QTYREQUIRED*OCD.OLoss*1.196
                                         ELSE OD.QTYREQUIRED*OCD.OLoss END END,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid,OCD.IUNITID  FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
                                         WHERE OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-                                        PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                                        PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId in(" + orderid + ") and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     break;
             }
             //
@@ -600,7 +600,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             //                    ELSE OD.QTYREQUIRED*S.AreaMtr*OCD.OLoss*1.196 END ELSE CASE WHEN ORDERUNITID=1 THEN OD.QTYREQUIRED*OCD.OLoss*1.196
             //                    ELSE OD.QTYREQUIRED*OCD.OLoss END END,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
             //                    WHERE OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             //            }
             //            else if (Session["VarcompanyNo"].ToString() == "4")
             //            {
@@ -613,7 +613,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             //                    ELSE js.PreProdAssignedQty*S.ProdAreaFt*OCD.OLoss END ELSE CASE WHEN ORDERUNITID=1 THEN js.PreProdAssignedQty*OCD.OLoss*1.196
             //                    ELSE js.PreProdAssignedQty*OCD.OLoss END END,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,JobAssigns js,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
             //                    WHERE Js.OrderId=Od.OrderId and js.ITEM_FINISHED_ID=Od.Item_Finished_Id and OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             //            }
             //            else if (Session["varcompanyNo"].ToString() == "15")
@@ -626,7 +626,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             //                    ELSE js.PreProdAssignedQty*S.ProdAreaFt*OCD.OLoss END ELSE CASE WHEN ORDERUNITID=1 THEN js.PreProdAssignedQty*OCD.OLoss*1.196
             //                    ELSE js.PreProdAssignedQty*OCD.OLoss END END,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,JobAssigns js,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
             //                    WHERE Js.OrderId=Od.OrderId and js.ITEM_FINISHED_ID=Od.Item_Finished_Id and OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             //            }
             //            else if (Session["varcompanyNo"].ToString() == "9" || Session["varcompanyNo"].ToString() == "14" || Session["varcompanyNo"].ToString() == "8")
@@ -637,7 +637,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             //                            THEN Case When OCD.MasterCompanyId <>9 Then OD.QTYREQUIRED*S.AreaMtr*OCD.OQTY*1.196 
             //                            Else OD.QTYREQUIRED*S.AreaMtr*OCD.OQTY End
             //                            ELSE Case When OCD.MasterCompanyId <>9 Then OD.QTYREQUIRED*S.AreaFt*OCD.OQTY Else OD.QTYREQUIRED*S.AreaFt*OCD.OQTY/10.76391  End END ELSE CASE WHEN ORDERUNITID=1 THEN Case When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*OCD.OQTY*1.196 Else OD.QTYREQUIRED*OCD.OQTY End
-            //                            ELSE Case When OCD.MasterCompanyId <>9 Then  OD.QTYREQUIRED*OCD.OQTY Else OD.QTYREQUIRED*OCD.OQTY/10.76391 End END END,5) QTY,0.00,1," + Session["varcompanyId"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN Case When OCD.MasterCompanyId <>9 Then OCD.OLoss*1.196 Else OCD.OLoss End  ELSE Case When OCD.Mastercompanyid <>9 Then  OLoss Else OLoss/10.76391 End End,5) OLoss,
+            //                            ELSE Case When OCD.MasterCompanyId <>9 Then  OD.QTYREQUIRED*OCD.OQTY Else OD.QTYREQUIRED*OCD.OQTY/10.76391 End END END,5) QTY,0.00,1," + Session["varMasterCompanyIDForERP"].ToString() + @",Round(CASE WHEN ORDERUNITID=1 THEN Case When OCD.MasterCompanyId <>9 Then OCD.OLoss*1.196 Else OCD.OLoss End  ELSE Case When OCD.Mastercompanyid <>9 Then  OLoss Else OLoss/10.76391 End End,5) OLoss,
             //                            Round(CASE WHEN OrderCalType=0 THEN CASE WHEN ORDERUNITID=1 
             //                            THEN Case When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*S.AreaMtr*OCD.OLoss*1.196 Else OD.QTYREQUIRED*S.AreaMtr*OCD.OLoss End
             //                            ELSE Case  When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*S.AreaFt*OCD.OLoss Else OD.QTYREQUIRED*S.AreaFt*OCD.OLoss/10.76391 END END ELSE CASE WHEN ORDERUNITID=1 THEN Case When OCD.Mastercompanyid <>9 Then OD.QTYREQUIRED*OCD.OLoss*1.196 Else OD.QTYREQUIRED*OCD.OLoss End
@@ -645,7 +645,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             //                            FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
             //                            WHERE OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
             //                            PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And
-            //                            PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varcompanyId"];
+            //                            PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             //            }
             //            else
@@ -658,7 +658,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             //                    ELSE OD.QTYREQUIRED*S.AreaFt*OCD.OLoss END ELSE CASE WHEN ORDERUNITID=1 THEN OD.QTYREQUIRED*OCD.OLoss*1.196
             //                    ELSE OD.QTYREQUIRED*OCD.OLoss END END,5) LossQty,Round(CASE WHEN ORDERUNITID=1 THEN OCD.OQTY*1.196 ELSE OCD.OQTY End,5) OQTY,OCD.IFinishedid FROM ORDER_CONSUMPTION_DETAIL OCD,ORDERDETAIL OD,ORDERMASTER OM,PROCESSPROGRAM PP,ITEM_PARAMETER_MASTER IPM Left Outer Join SIZE S ON IPM.Size_id=S.Sizeid 
             //                    WHERE OCD.ORDERDETAILID=OD.ORDERDETAILID And OM.ORDERID=OD.ORDERID AND 
-            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            //                    PP.ORDER_ID=OD.ORDERID and OD.ITEM_FINISHED_ID=IPM.ITEM_FINISHED_ID And PPID=" + _arrPara[3].Value + " and OM.OrderId=" + _arrPara[2].Value + " and ProcessId=" + _arrPara[1].Value + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             //            }
             #endregion
             SqlHelper.ExecuteNonQuery(tran, CommandType.Text, Str);
@@ -718,7 +718,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                 _arrPara[3].Value = Convert.ToDouble(Qty);
                 _arrPara[4].Value = Convert.ToDouble(ExQty);
                 _arrPara[5].Value = Session["varuserid"].ToString();
-                _arrPara[6].Value = Session["varCompanyId"].ToString();
+                _arrPara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
 
                 SqlHelper.ExecuteNonQuery(tran, CommandType.Text, "Update Top(1) PP_Consumption Set ExtraQty=" + _arrPara[4].Value + " Where PPID=" + _arrPara[0].Value + " and OrderId=(Select Order_Id From ProcessProgram Where PPID=" + _arrPara[0].Value + ") and FinishedId=" + _arrPara[1].Value);
 
@@ -740,10 +740,10 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
         try
         {
             string strsql = null;
-            strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=0 And P.MasterCompanyId=" + Session["varCompanyId"];
+            strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=0 And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ChekEdit.Checked == true)
             {
-                strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=" + ddcustomer.SelectedValue + " And P.MasterCompanyId=" + Session["varCompanyId"];
+                strsql = @"Select P.PP_Detail_ID as Sr_No,o.LocalOrder+' / '+customerorderno CustomerOrderNo from processProgram p ,orderMaster o where p.order_id=o.orderid and o.CustomerId=" + ddcustomer.SelectedValue + " And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         }
@@ -795,7 +795,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             if (ChekEdit.Checked == true)
             {
                 strsql = @"SELECT PC.FINISHEDID,sum(QTY) QTY,sum(ExtraQty) ExtraQty,IM.ITEM_NAME+'/'+FI2.Quality+'/'+ FI2.ShadeColor Description,OM.LocalOrder ORDERNO  FROM   PP_CONSUMPTION PC INNER JOIN ViewFindFinishedId2 FI2 ON PC.FINISHEDID=FI2.Finishedid 
-                         INNER JOIN ITEM_MASTER IM ON IM.ITEM_ID=FI2.ITEM_ID inner join OrderMaster OM on OM.OrderId=PC.OrderId where PPID=" + ddprocessprogram.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Group BY PC.FINISHEDID,OM.LocalOrder,ITEM_NAME,FI2.Quality,FI2.ShadeColor ";
+                         INNER JOIN ITEM_MASTER IM ON IM.ITEM_ID=FI2.ITEM_ID inner join OrderMaster OM on OM.OrderId=PC.OrderId where PPID=" + ddprocessprogram.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Group BY PC.FINISHEDID,OM.LocalOrder,ITEM_NAME,FI2.Quality,FI2.ShadeColor ";
             }
             else
             {
@@ -876,7 +876,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             orderid = orderid.TrimStart(',');
             //
             string strsql = null;
-            if (Convert.ToInt32(Session["varCompanyId"]) == 9)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 9)
             {
                 strsql = @"Select Distinct OM.OrderId OrderDetailId,Item_Name+' / '+ isnull(QualityName,'')+' / '+isnull(DesignName,'') +' / '+isnull(ColorName,'')+' / '+
                     isnull(ShapeName,'')+' / '+ Case When OD.flagsize=1 Then isnull(SizeMtr,'') 
@@ -887,11 +887,11 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                     From OrderMaster OM,OrderDetail OD,V_FinishedItemDetail IPM,Jobassigns JA,Mastersetting ms
                     Where OM.Orderid=OD.Orderid And OD.Item_Finished_Id=JA.Item_Finished_Id And OM.Orderid=JA.Orderid And IPM.Item_Finished_Id=JA.Item_Finished_Id And 
                     IPM.Mastercompanyid=ms.varcompanyNo And
-                    PreProdAssignedQty>0 And OM.Orderid in(" + orderid + " ) And IPM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    PreProdAssignedQty>0 And OM.Orderid in(" + orderid + " ) And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Group By OM.OrderId,Item_Name,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,OrderUnitID,SizeMtr,SizeFt,SizeInch,Od.flagsize,JA.Item_Finished_Id";
             }
 
-            else if (Convert.ToInt32(Session["varCompanyId"]) == 42)
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
             {
                 strsql = @"Select OM.OrderId OrderDetailId,Item_Name+' / '+ isnull(QualityName,'')+' / '+isnull(DesignName,'') +' / '+isnull(ColorName,'')+' / '+
                     isnull(ShapeName,'')+' / '+ Case When OD.flagsize=1 Then isnull(SizeMtr,'') 
@@ -905,11 +905,11 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                     JOIN OrderDetail OD(Nolock) ON OM.Orderid=OD.Orderid 
                     JOIN V_FinishedItemDetail IPM(Nolock) ON IPM.ITEM_FINISHED_ID = OD.Item_Finished_Id 
                     JOIN MasterSetting MS(Nolock) ON MS.VarCompanyNo = IPM.MasterCompanyId 
-                    Where OM.Orderid in(" + orderid + ") And IPM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    Where OM.Orderid in(" + orderid + ") And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Group By OM.OrderId,Item_Name,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,OrderUnitID,SizeMtr,SizeFt,SizeInch,Od.flagsize, 
                     OD.Item_Finished_Id ";
             }
-            else if (Convert.ToInt32(Session["varCompanyId"]) == 44)
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
             {
                 strsql = @"Select Distinct OM.OrderId OrderDetailId,Item_Name+' / '+ isnull(QualityName,'')+' / '+isnull(DesignName,'') +' / '+isnull(ColorName,'')+' / '+
                     isnull(ShapeName,'')+' / '+ Case When OD.flagsize=1 Then cast(WidthMtr as varchar)+'x'+cast(LengthMtr as varchar) +case when HeightMtr>0 then 'x'+cast(HeightMtr as varchar) else '' end
@@ -927,7 +927,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                     From OrderMaster OM,OrderDetail OD,V_FinishedItemDetail IPM,Jobassigns JA,Mastersetting ms
                     Where OM.Orderid=OD.Orderid And OD.Item_Finished_Id=JA.Item_Finished_Id And OM.Orderid=JA.Orderid And IPM.Item_Finished_Id=JA.Item_Finished_Id And 
                     IPM.Mastercompanyid=ms.varcompanyNo And (JA.PREPRODASSIGNEDQTY+JA.INTERNALPRODASSIGNEDQTY) > 0 And 
-                    OM.Orderid in(" + orderid + " ) And IPM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    OM.Orderid in(" + orderid + " ) And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Group By OM.OrderId,Item_Name,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,OrderUnitID,SizeMtr,SizeFt,SizeInch,Od.flagsize,
                     JA.Item_Finished_Id,MS.DYEINGPROGRAMWITHEXPORTAREA,MS.DYINGPROGRAMWITHFULLAREA,WidthInch,LengthInch,HeightInch,WidthMtr,LengthMtr,HeightMtr,WidthFt,HeightFt,LengthFt";
             }
@@ -949,7 +949,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                     From OrderMaster OM,OrderDetail OD,V_FinishedItemDetail IPM,Jobassigns JA,Mastersetting ms
                     Where OM.Orderid=OD.Orderid And OD.Item_Finished_Id=JA.Item_Finished_Id And OM.Orderid=JA.Orderid And IPM.Item_Finished_Id=JA.Item_Finished_Id And 
                     IPM.Mastercompanyid=ms.varcompanyNo And (JA.PREPRODASSIGNEDQTY+JA.INTERNALPRODASSIGNEDQTY) > 0 And 
-                    OM.Orderid in(" + orderid + " ) And IPM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    OM.Orderid in(" + orderid + " ) And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Group By OM.OrderId,Item_Name,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,OrderUnitID,SizeMtr,SizeFt,SizeInch,Od.flagsize,
                     JA.Item_Finished_Id,MS.DYEINGPROGRAMWITHEXPORTAREA,MS.DYINGPROGRAMWITHFULLAREA";
             }
@@ -972,16 +972,16 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         if (Session["varCompanyName"] == null)
         {
@@ -1453,7 +1453,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
             int PPID = 0;
             if (txtprocessprogram.Text != "")
             {
-                if (Session["VarCompanyId"].ToString() == "30")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "30")
                 {
                     PPID = Convert.ToInt32(Session["ViewState"].ToString());
                 }
@@ -1541,11 +1541,11 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                     }
                     else
                     {
-                        if (Convert.ToInt32(Session["varCompanyId"]) == 44)
+                        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
                         {
                             Session["rptFileName"] = "~\\Reports\\rptdyeingprogramagni.rpt";
                         }
-                        else if (Convert.ToInt32(Session["varCompanyId"]) == 45)
+                        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 45)
                         {
                             Session["rptFileName"] = "~\\Reports\\rptdyeingprogramnewMWS.rpt";
                         }
@@ -1576,7 +1576,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
     }
     protected void BtnLocalOcReport_Click(object sender, EventArgs e)
     {
-        if (Convert.ToInt32(Session["varCompanyId"]) == 30)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 30)
         {
             Session["ReportPath"] = "Reports/LocalOC.rpt";
             Session["CommanFormula"] = "{NewOrderReport.Orderid}=" + chekboxlist.SelectedValue + "";
@@ -1654,7 +1654,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
         UtilityModule.ConditonalChkBoxListFill(ref ChkBoxListProcessEmployeName, @"Select EI.EmpId, EI.EmpName 
                 From EmpInfo EI 
                 join EmpProcess EP ON EI.EmpId = EP.EmpId 
-                Where processId = " + ddprocess.SelectedValue + "  AND EI.MasterCompanyId = " + Session["varCompanyId"] + @" order by ei.empname");
+                Where processId = " + ddprocess.SelectedValue + "  AND EI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" order by ei.empname");
     }
     protected void btndel_Click(object sender, EventArgs e)
     {
@@ -1677,7 +1677,7 @@ public partial class Masters_Carpet_ProcessProgram : System.Web.UI.Page
                 param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[2].Direction = ParameterDirection.Output;
                 param[3] = new SqlParameter("@userid", Session["varuserid"]);
-                param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DELETEPROCESSPROGRAM", param);
                 if (param[2].Value.ToString() != "")
                 {
