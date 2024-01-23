@@ -1,7 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ERP", ".", "{6B10AB75-F76C-47AE-938E-83ED32714179}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33627.172
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "iexproWebsite(1)", ".", "{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/ERP"
@@ -26,10 +28,13 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{6B10AB75-F76C-47AE-938E-83ED32714179}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6B10AB75-F76C-47AE-938E-83ED32714179}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B53B49A-A0FF-4A56-8ED1-D6625CFE9E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D18B946A-C737-42D8-A5AB-40F97E60274B}
 	EndGlobalSection
 EndGlobal
