@@ -208,7 +208,8 @@ public partial class Login : System.Web.UI.Page
 
                     UtilityModule.DeleteExeFolder();
 
-                    Response.Redirect("main.aspx");
+                    Response.Redirect("Login.aspx");
+                    //Response.Redirect("main.aspx");
                     return;
                 }
 

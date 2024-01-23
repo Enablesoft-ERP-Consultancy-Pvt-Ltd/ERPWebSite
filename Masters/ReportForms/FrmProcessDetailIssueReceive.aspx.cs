@@ -600,6 +600,12 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             return;
         }
 
+        if (RDFinishingRegisterSummary.Checked == true)
+        {
+            FinishingRegisterSummaryReport_CI();
+            return;
+        }
+
         if (lblMessage.Text == "")
         {
             CHECKVALIDCONTROL();
@@ -8842,6 +8848,95 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             ChkForDate.Visible = true;
             TRQualityDesignSizeWiseSummary.Visible = false;
             TRQualitySizeWiseHissabSummary.Visible = false;
+        }
+
+    }
+    protected void FinishingRegisterSummaryReport_CI()
+    {
+        lblMessage.Text = "";
+        try
+        {
+            string str = "", FilterBy = "";
+
+            //if (ddItemName.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Item_id=" + ddItemName.SelectedValue;
+            //    FilterBy = FilterBy + ", Item Name -" + ddItemName.SelectedItem.Text;
+            //}
+            //if (DDQuality.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+            //    FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
+            //}
+            //if (DDDesign.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+            //    FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            //}
+            //if (DDColor.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+            //    FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            //}
+            //if (DDSize.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+            //    FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            //}
+            if (ChkForDate.Checked == true)
+            {
+                str = str + " and PM.ReceiveDate>='" + TxtFromDate.Text + "' and PM.ReceiveDate<='" + TxtToDate.Text + "'";
+                FilterBy = FilterBy + ", From -" + TxtFromDate.Text + " To - " + TxtToDate.Text;
+            }
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("JobWiseProcessReceiveRegisterSummary_CI", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 500;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Processid", DDProcessName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Where", str);
+            cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@DATEFLAG", ChkForDate.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptFinishingProcessRegisterSummary_CI.rpt";
+
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptFinishingProcessRegisterSummary_CI.xsd";
+
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            lblMessage.Text = ex.Message;
         }
 
     }
