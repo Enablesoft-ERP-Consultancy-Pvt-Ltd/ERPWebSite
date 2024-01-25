@@ -1335,6 +1335,10 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeaverSummarySundeep.rpt";
                     }
+                    else if (Session["VarCompanyNo"].ToString() == "43")
+                    {
+                        Session["rptFileName"] = "~\\Reports\\RptWeaverSummaryCI.rpt";
+                    }
                     else
                     {
                         Session["rptFileName"] = "~\\Reports\\RptWeaversummary.rpt";
