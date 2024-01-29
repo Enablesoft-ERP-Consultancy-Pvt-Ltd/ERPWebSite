@@ -733,6 +733,7 @@
                 trFolioNo.Visible = false;
                 Trquality.Visible = false;
                 Trshadecolor.Visible = false;
+                TRForWithoutTDS.Visible = true;
                 
             }
         }        

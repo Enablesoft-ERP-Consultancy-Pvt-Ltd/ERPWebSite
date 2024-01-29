@@ -24,6 +24,7 @@
               <xs:element name="GirahArea" type="xs:decimal" minOccurs="0" />
               <xs:element name="TotalPcs" type="xs:int" minOccurs="0" />
               <xs:element name="Rate" type="xs:double" minOccurs="0" />
+              <xs:element name="Comm" type="xs:double" minOccurs="0" />
               <xs:element name="TotalAmt" type="xs:double" minOccurs="0" />
               <xs:element name="TotalPenality" type="xs:double" minOccurs="0" />
               <xs:element name="TotalCommAmt" type="xs:double" minOccurs="0" />

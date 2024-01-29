@@ -8454,10 +8454,18 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-
                 Session["GetDataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\RptBazaarWiseWeavingRegisterReportCI.xsd";
-                Session["rptFileName"] = "~\\Reports\\RptBazaarWiseWeavingRegisterReportCI.rpt";
+
+                if (ChkForWithoutTDS.Checked == true)
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptBazaarWiseWeavingRegisterReportWithoutTDS_CI.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptBazaarWiseWeavingRegisterReportCI.rpt";
+                }
+               
                 StringBuilder stb = new StringBuilder();
                 stb.Append("<script>");
                 stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
