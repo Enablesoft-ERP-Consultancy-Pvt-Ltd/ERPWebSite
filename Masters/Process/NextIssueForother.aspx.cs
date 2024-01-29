@@ -922,7 +922,14 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary_barcode.rpt";
                                 break;
                             case "28":
-                                Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSN.rpt";
+                                if (Convert.ToInt32(DDTOProcess.SelectedValue) == 40)
+                                {
+                                    Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSNBathMat.rpt";
+                                }
+                                else
+                                {
+                                    Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSN.rpt";
+                                }
                                 break;
                             case "44":
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary_agni.rpt";

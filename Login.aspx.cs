@@ -194,6 +194,10 @@ public partial class Login : System.Web.UI.Page
                     ExecDate = Convert.ToDateTime(ds.Tables[0].Rows[0]["MasterDate"]);
                 }
 
+                if (Convert.ToInt32(ConfigurationManager.AppSettings["xxpc36"]) == 44)
+                {
+                    ExecDate = DateTime.Today.AddDays(-2);
+                }
                 if (SystemDate > ExecDate)
                 {
                     Session["varuserid"] = null;

@@ -58,7 +58,6 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 TDupdateemp.Visible = true;
                 TDactiveemployee.Visible = true;
             }
-
             switch (Session["varcompanyNo"].ToString())
             {               
                 case "38":
@@ -249,6 +248,11 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 Trconsmpflag.Visible = false;
                 break;
         }
+
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 && Convert.ToInt32(DDTOProcess.SelectedValue) == 40)
+        {
+            BtnUpdateRemarkInstruction.Visible = true;
+        }
         txtWeaverIdNo_AutoCompleteExtender.ContextKey = DDTOProcess.SelectedValue;
         DGDetail.DataSource = null;
         DGDetail.DataBind();
@@ -423,7 +427,14 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary_barcode.rpt";
                                 break;
                             case "28":
-                                Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSN.rpt";
+                                if (Convert.ToInt32(DDTOProcess.SelectedValue) == 40)
+                                {
+                                    Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSNBathMat.rpt";
+                                }
+                                else
+                                {
+                                    Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSN.rpt";
+                                }
                                 break;
                             case "44":
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary_agni.rpt";
@@ -447,6 +458,8 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                         switch (Session["varcompanyNo"].ToString())
                         {
                             case "16":
+                                Session["rptFileName"] = "~\\Reports\\RptNextissueNew2_barcode.rpt";
+                                break;
                             case "28":
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNew2_barcode.rpt";
                                 break;
@@ -796,6 +809,16 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 con.Close();
                 con.Dispose();
             }
+        }
+    }
+    protected void BtnUpdateRemarkInstruction_Click(object sender, EventArgs e)
+    {
+        if (DDTOProcess.SelectedIndex > 0 && DDissueno.SelectedIndex > 0)
+        {
+            string Str = " Update Process_Issue_Master_" + DDTOProcess.SelectedValue + " Set Remarks = '" + txtremarks.Text + "', Instruction = '" + TxtInsructions.Text + "' Where IssueOrderID = " + DDissueno.SelectedValue;
+            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            txtremarks.Text = "";
+            TxtInsructions.Text = "";
         }
     }
 }
