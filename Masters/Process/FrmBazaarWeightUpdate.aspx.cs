@@ -234,12 +234,19 @@ public partial class Masters_Process_FrmBazaarWeightUpdate : System.Web.UI.Page
                 txtTotalWeight.Focus();
                 return;
             }
-            if (Chkboxitem.Checked == true && ((Convert.ToDecimal(txtTotalWeight.Text) <= 0) || (Convert.ToDecimal(txtChkPcs.Text) <= 0) || (Convert.ToDecimal(txtChkWeight.Text) <= 0) || (Convert.ToDecimal(txtDryWeight.Text) <= 0)))   // Change when Updated Completed
+            if (Chkboxitem.Checked == true && ((Convert.ToDecimal(txtTotalWeight.Text) <= 0)))   // Change when Updated Completed
             {
-                ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Total Weight/Check Pcs/Check Weight/Dry Weight always greater then zero');", true);
+                ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Total Weight always greater then zero');", true);
                 txtTotalWeight.Focus();
                 return;
             }
+
+            //if (Chkboxitem.Checked == true && ((Convert.ToDecimal(txtTotalWeight.Text) <= 0) || (Convert.ToDecimal(txtChkPcs.Text) <= 0) || (Convert.ToDecimal(txtChkWeight.Text) <= 0) || (Convert.ToDecimal(txtDryWeight.Text) <= 0)))   // Change when Updated Completed
+            //{
+            //    ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Total Weight/Check Pcs/Check Weight/Dry Weight always greater then zero');", true);
+            //    txtTotalWeight.Focus();
+            //    return;
+            //}
         }
 
         if (status == "" || DetailData == "")

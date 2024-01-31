@@ -8843,7 +8843,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             TDexcelExport.Visible = false;
             ChkSummary.Visible = false;
             ChkForComplete.Visible = false;
-            TRForWithoutTDS.Visible = false;
+            TRForWithoutTDS.Visible = true;
             trDates.Visible = true;
             ChkForDate.Visible = true;
             TRQualityDesignSizeWiseSummary.Visible = false;
@@ -8918,7 +8918,14 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                Session["rptFileName"] = "~\\Reports\\RptFinishingProcessRegisterSummary_CI.rpt";
+                if (ChkForWithoutTDS.Checked == true)
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptFinishingProcessRegisterSummaryWithoutTDS_CI.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptFinishingProcessRegisterSummary_CI.rpt";
+                }
 
                 Session["GetDataset"] = ds;
                 Session["dsFileName"] = "~\\ReportSchema\\RptFinishingProcessRegisterSummary_CI.xsd";

@@ -136,6 +136,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     TxtReceiveQty.Text = "200";
                     DGStockDetail.PageSize = 200;
                     TdDyingLotNo.Visible = true;
+                    Tr4.Visible = true;
                     break;
                 case 30:
                     lblStockCarpetNo.Text = "Enter Carpet No";
@@ -576,7 +577,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     _arrpara[5].Value = TxtChallanNo.Text;
                     _arrpara[6].Value = companyid;
 
-                    if(Session["VarCompanyNo"].ToString()=="43")
+                    if (Session["VarCompanyNo"].ToString() == "43" || Session["VarCompanyNo"].ToString() == "16" || Session["VarCompanyNo"].ToString() == "28")
                     {
                         _arrpara[7].Value = TxtRemarks.Text;
                     }
