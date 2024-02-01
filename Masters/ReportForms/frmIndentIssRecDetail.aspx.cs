@@ -138,6 +138,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
                 RDIndentRecPending.Visible = true;
                 RDDyeingHouseLedgerDetail.Visible = true;
             }
+
+            if (Session["VarCompanyNo"].ToString() == "42")
+            {                
+                RDIndentRecPending.Visible = true;                
+            }
         }
     }
 

@@ -211,7 +211,7 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
             }
             UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
 
-            if (Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46")
+            if (Session["VarCompanyNo"].ToString() == "42")
             {
                 if (DDProcessName.SelectedItem.Text == "WEAVING")
                 {
@@ -222,6 +222,19 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
                 {
                     TxtFromDate.Enabled = false;
                     TxtToDate.Enabled = false;
+                }
+            }
+            if (Session["VarCompanyNo"].ToString() == "46")
+            {
+                if (DDProcessName.SelectedItem.Text == "WEAVING")
+                {
+                    TxtFromDate.Enabled = false;
+                    TxtToDate.Enabled = false;
+                }
+                else
+                {
+                    TxtFromDate.Enabled = true;
+                    TxtToDate.Enabled = true;
                 }
             }
         }
@@ -423,7 +436,17 @@ public partial class Masters_Hissab_FrmProcessHissab : System.Web.UI.Page
 
         //if (Session["VarCompanyNo"].ToString() == "42" && DDPOOrderNo.SelectedIndex <= 0 && DDProcessName.SelectedItem.Text.ToUpper()=="WEAVING")
         //{
-        if ((Session["VarCompanyNo"].ToString() == "42" || Session["VarCompanyNo"].ToString() == "46") && DDPOOrderNo.SelectedIndex <= 0)
+        if ((Session["VarCompanyNo"].ToString() == "42") && DDPOOrderNo.SelectedIndex <= 0)
+        {
+            DGDetail.DataSource = null;
+            DGDetail.DataBind();
+
+            lblMessage.Visible = true;
+            lblMessage.Text = "Please Select Issue Challan No for hissab";
+            return;
+        }
+
+        if ((Session["VarCompanyNo"].ToString() == "46") && DDPOOrderNo.SelectedIndex <= 0 && DDProcessName.SelectedItem.Text.ToUpper() == "WEAVING")
         {
             DGDetail.DataSource = null;
             DGDetail.DataBind();
