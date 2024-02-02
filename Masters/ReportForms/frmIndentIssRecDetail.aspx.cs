@@ -788,6 +788,12 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             }
         }
 
+        if (RDHissabPendingIndent.Checked == true)
+        {
+            HissabPendingIndentDetail();
+             return;           
+        }
+
         //*********************
         string str, strsample = "";
         DataSet ds;
@@ -6110,6 +6116,245 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
     }
 
     #endregion
+
+    protected void HissabPendingIndentDetail()
+    {
+        try
+        {
+            //SqlParameter[] param = new SqlParameter[8];
+            //param[0] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
+            //param[1] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
+            //param[2] = new SqlParameter("@Empid", DDEmpName.SelectedValue);
+            //param[3] = new SqlParameter("@indentid", DDIndentNo.SelectedValue);
+            //param[4] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? 1 : 0);
+            //param[5] = new SqlParameter("@fromdate", TxtFromDate.Text);
+            //param[6] = new SqlParameter("@Todate", TxtToDate.Text);
+            //param[7] = new SqlParameter("@Forsample", chksample.Checked == true ? 1 : 0);
+
+            //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETHissabPendingIndentDetail", param);
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_GETHissabPendingIndentDetail", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Processid", DDProcessName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedValue);
+            cmd.Parameters.AddWithValue("@indentid", DDIndentNo.SelectedValue);
+            cmd.Parameters.AddWithValue("@Dateflag", ChkForDate.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@fromdate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@Todate", TxtToDate.Text);
+            cmd.Parameters.AddWithValue("@Forsample", chksample.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            
+            
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                {
+                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                }
+                string Path = "";
+                var xapp = new XLWorkbook();
+                var sht = xapp.Worksheets.Add("sheet1");
+                int row = 0;
+
+                sht.Range("A1:J1").Merge();
+                sht.Range("A1").SetValue(DDCompany.SelectedItem.Text);
+                sht.Range("A2:J2").Merge();
+                sht.Range("A2").SetValue("HISSAB PENDING INDENT" + (ChkForDate.Checked == true ? "(" + TxtFromDate.Text + " TO : " + TxtToDate.Text + "" : ""));
+                sht.Range("A1:J2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                sht.Range("A1:J2").Style.Font.SetBold();
+
+                //Headers
+                sht.Range("A3").Value = "Indent No.";
+                sht.Range("B3").Value = "Indent Date";
+                sht.Range("C3").Value = "Dyer Name";
+                sht.Range("D3").Value = "Item Name";
+                sht.Range("E3").Value = "Shade Name";
+                sht.Range("F3").Value = "Iss Qty";
+                sht.Range("G3").Value = "Rec Qty";
+                sht.Range("H3").Value = "Undyed Qty";
+                sht.Range("I3").Value = "Loss Qty";
+                sht.Range("J3").Value = "Pend. Qty";
+                //sht.Range("K3").Value = "Rate";
+                //sht.Range("L3").Value = "Amount";
+                //sht.Range("M3").Value = "Debit Amt";
+                //sht.Range("N3").Value = "Total Amt";
+                //sht.Range("O3").Value = "Bill No";
+
+                sht.Range("A3:O3").Style.Font.Bold = true;
+
+                row = 4;
+
+                DataTable dtdistinctindent = ds.Tables[0].DefaultView.ToTable(true, "Indentid", "Date", "IndentNo", "Empname", "DebitNote");
+                DataView dvindetnNo = new DataView(dtdistinctindent);
+                dvindetnNo.Sort = "EMpname,Date asc,IndentId,indentNo";
+                DataTable dtdistinct = dvindetnNo.ToTable();
+
+
+                int rowfrom = 0, rowto = 0;
+                string Tamtrow = "", TDebitrow = "", TNetamtrow = "", TOQtyRow = "", TRecQtyRow = "", TUndyedQtyRow = "", TLossQtyRow = "", TPendQtyRow = "";
+                string QualityName = "", Shadename = "";
+                foreach (DataRow dr in dtdistinct.Rows)
+                {
+                    DataView dvdetail = new DataView(ds.Tables[0]);
+                    dvdetail.RowFilter = "Indentid=" + dr["indentid"] + " and Date='" + dr["date"] + "' and IndentNo='" + dr["indentNo"] + "' and empname='" + dr["empname"] + "'";
+                    dvdetail.Sort = "QualityName,ShadecolorName";
+                    DataTable dt = dvdetail.ToTable();
+
+
+
+                    rowfrom = row;
+                    QualityName = ""; Shadename = "";
+                    foreach (DataRow dr1 in dt.Rows)
+                    {
+                        sht.Range("A" + row).SetValue(dr1["IndentNo"]);
+                        sht.Range("B" + row).SetValue(dr1["Date"]);
+                        sht.Range("C" + row).SetValue(dr1["empname"]);
+                        sht.Range("D" + row).SetValue(dr1["qualityName"]);
+                        sht.Range("E" + row).SetValue(dr1["shadecolorname"]);
+                        sht.Range("F" + row).SetValue(dr1["OQTY"]);
+                        sht.Range("G" + row).SetValue(dr1["DYEDQTY"]);
+                        sht.Range("H" + row).SetValue(dr1["UNDYEDQTY"]);
+                        sht.Range("I" + row).SetValue(dr1["Lossqty"]);
+
+                        if (QualityName == "" && Shadename == "")
+                        {
+                            sht.Range("J" + row).FormulaA1 = "=F" + row + '-' + "(G" + row + '+' + "H" + row + '+' + "I" + row + ")";
+                        }
+                        else if (QualityName == dr1["QualityName"].ToString() && Shadename == dr1["shadecolorname"].ToString())
+                        {
+                            sht.Range("J" + row).FormulaA1 = "=J" + (row - 1) + '-' + "(G" + row + '+' + "H" + row + '+' + "I" + row + ")";
+                        }
+                        else
+                        {
+                            sht.Range("J" + row).FormulaA1 = "=F" + row + '-' + "(G" + row + '+' + "H" + row + '+' + "I" + row + ")";
+                        }
+                        //sht.Range("K" + row).SetValue(dr1["RATE"]);
+                        //sht.Range("L" + row).SetValue(dr1["AMount"]);
+                        //sht.Range("M" + row).SetValue(dr1["PenaltyDebitnote"]);
+                        //sht.Range("N" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
+                        //sht.Range("O" + row).SetValue(dr1["BillNo"]);
+
+                        QualityName = dr1["QualityName"].ToString();
+                        Shadename = dr1["Shadecolorname"].ToString();
+
+                        row = row + 1;
+                    }
+
+                    rowto = row - 1;
+
+                    sht.Range("E" + row).SetValue("Total");
+                    sht.Range("F" + row).FormulaA1 = "=SUM(F" + rowfrom + ":F" + rowto + ")";
+                    sht.Range("G" + row).FormulaA1 = "SUM(G" + rowfrom + ":G" + rowto + ")" ;
+                    sht.Range("H" + row).FormulaA1 = "SUM(H" + rowfrom + ":H" + rowto + ")";
+                    sht.Range("I" + row).FormulaA1 = "SUM(I" + rowfrom + ":I" + rowto + ")";
+                    sht.Range("J" + row).FormulaA1 = "SUM(J" + rowfrom + ":J" + rowto + ")";
+                    sht.Range("E" + row + ":J" + row).Style.Font.Bold = true;
+
+                    TOQtyRow = TOQtyRow + "+" + "F" + row;
+                    TRecQtyRow = TRecQtyRow + "+" + "G" + row;
+                    TUndyedQtyRow = TUndyedQtyRow + "+" + "H" + row;
+                    TLossQtyRow = TLossQtyRow + "+" + "I" + row;
+                    TPendQtyRow = TPendQtyRow + "+" + "J" + row;
+
+                    //sht.Range("K" + row).SetValue("Total");
+                    //sht.Range("L" + row).FormulaA1 = "=SUM(L" + rowfrom + ":L" + rowto + ")";
+                    //sht.Range("M" + row).FormulaA1 = "SUM(M" + rowfrom + ":M" + rowto + ")" + '+' + dr["debitnote"];
+                    //sht.Range("N" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
+                    //sht.Range("K" + row + ":N" + row).Style.Font.Bold = true;
+
+                    //Tamtrow = Tamtrow + "+" + "L" + row;
+                    //TDebitrow = TDebitrow + "+" + "M" + row;
+                    //TNetamtrow = TNetamtrow + "+" + "N" + row;
+
+                    row = row + 1;
+                }
+
+                TOQtyRow = TOQtyRow.TrimStart('+');
+                TRecQtyRow = TRecQtyRow.TrimStart('+');
+                TUndyedQtyRow = TUndyedQtyRow.TrimStart('+');
+                TLossQtyRow = TLossQtyRow.TrimStart('+');
+                TPendQtyRow = TPendQtyRow.TrimStart('+');
+
+                //Tamtrow = Tamtrow.TrimStart('+');
+                //TDebitrow = TDebitrow.TrimStart('+');
+                //TNetamtrow = TNetamtrow.TrimStart('+');
+
+
+                //sht.Range("K" + row).SetValue("G. Total");
+                //sht.Range("L" + row).FormulaA1 = "=SUM(" + Tamtrow + ")";
+                //sht.Range("M" + row).FormulaA1 = "=SUM(" + TDebitrow + ")";
+                //sht.Range("N" + row).FormulaA1 = "=SUM(" + TNetamtrow + ")";
+                //sht.Range("K" + row + ":N" + row).Style.Font.Bold = true;
+
+
+                sht.Range("E" + row).SetValue("G. Total");
+                sht.Range("F" + row).FormulaA1 = "=SUM(" + TOQtyRow + ")";
+                sht.Range("G" + row).FormulaA1 = "=SUM(" + TRecQtyRow + ")";
+                sht.Range("H" + row).FormulaA1 = "=SUM(" + TUndyedQtyRow + ")";
+                sht.Range("I" + row).FormulaA1 = "=SUM(" + TLossQtyRow + ")";
+                sht.Range("J" + row).FormulaA1 = "=SUM(" + TPendQtyRow + ")";
+
+                sht.Range("E" + row + ":J" + row).Style.Font.Bold = true;
+
+                using (var a = sht.Range("A3:J" + row))
+                {
+                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                }
+                //*************
+                sht.Columns(1, 15).AdjustToContents();
+                string Fileextension = "xlsx";
+                string name = "HissabPendingIndent";
+                //if (DDEmpName.SelectedIndex > 0)
+                //{
+                //    name = name + "-" + DDEmpName.SelectedItem.Text;
+                //}
+                string filename = UtilityModule.validateFilename("" + name + "_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                Path = Server.MapPath("~/Tempexcel/" + filename);
+                xapp.SaveAs(Path);
+                xapp.Dispose();
+                //Download File
+                Response.ClearContent();
+                Response.ClearHeaders();
+                // Response.Clear();
+                Response.ContentType = "application/vnd.ms-excel";
+                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                Response.WriteFile(Path);
+                // File.Delete(Path);
+                Response.End();
+
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "altdyerled", "alert('No records found for this combination.')", true);
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+
+    }
     //protected void IndentWiseDetailExportExcelNew()
     //{
     //    try
