@@ -8,7 +8,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Text;
 
-public partial class Masters_ReportForms_FrmPropertyMaster : System.Web.UI.Page
+public partial class Masters_ZDevi_FrmPropertyMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
