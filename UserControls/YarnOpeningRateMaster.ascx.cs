@@ -11,7 +11,7 @@ public partial class UserControls_YarnOpeningRateMaster : System.Web.UI.UserCont
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -68,7 +68,7 @@ public partial class UserControls_YarnOpeningRateMaster : System.Web.UI.UserCont
             param[7] = new SqlParameter("@rate", txtRate.Text == "" ? "0" : txtRate.Text);
             param[8] = new SqlParameter("@Effectivedate", txteffectivedate.Text);
             param[9] = new SqlParameter("@userid", Session["varuserid"]);
-            param[10] = new SqlParameter("@Mastercompanyid", Session["Varcompanyid"]);
+            param[10] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[11] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[11].Direction = ParameterDirection.Output;
             param[12] = new SqlParameter("@ORate", TxtORate.Text == "" ? "0" : TxtORate.Text);

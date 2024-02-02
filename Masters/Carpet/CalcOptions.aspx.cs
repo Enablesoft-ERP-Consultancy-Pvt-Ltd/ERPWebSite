@@ -12,7 +12,7 @@ public partial class Masters_Carpet_CalcOptions : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -39,7 +39,7 @@ public partial class Masters_Carpet_CalcOptions : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"SELECT CalcId as Sr_No,CalcName  FROM CalcOptions Where MasterCompanyid=" + Session["varCompanyId"] + "  Order By CalcId";
+            string strsql = @"SELECT CalcId as Sr_No,CalcName  FROM CalcOptions Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  Order By CalcId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns[1].ColumnName = "Calc Name";
@@ -75,7 +75,7 @@ public partial class Masters_Carpet_CalcOptions : CustomPage
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value =txtCalcOption.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_CalcOption", _arrPara);
                 ClearAll();
@@ -107,7 +107,7 @@ public partial class Masters_Carpet_CalcOptions : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from CalcOptions Where CalcName='" + txtCalcOption.Text + "' and CalcId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from CalcOptions Where CalcName='" + txtCalcOption.Text + "' and CalcId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -209,7 +209,7 @@ public partial class Masters_Carpet_CalcOptions : CustomPage
         {
             SqlParameter[] _array = new SqlParameter[5];
             _array[0] = new SqlParameter("@CalcId", ViewState["id"]);
-            _array[1] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _array[2] = new SqlParameter("@UserId", Session["varuserid"]);
             _array[3] = new SqlParameter("@VarMsg", SqlDbType.NVarChar, 500);
             _array[3].Direction = ParameterDirection.Output;

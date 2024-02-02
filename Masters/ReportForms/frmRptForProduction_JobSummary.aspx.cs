@@ -16,7 +16,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
     public static string Export = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,9 +25,9 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
         {
             string str = @"select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER  order by Process_Name
                          select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId
-                         select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=0 and ICM.MasterCompanyid=" + Session["varcompanyid"] + @"
+                         select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=0 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
                          select Val,Type from Sizetype
-                         Select CustomerID, CustomerCode From CustomerInfo Where MasterCompanyid = " + Session["varcompanyid"] + " Order By CustomerCode ";
+                         Select CustomerID, CustomerCode From CustomerInfo Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDjob, ds, 0, true, "--Plz Select Process--");
@@ -40,7 +40,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             txtToDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
 
             //*************
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     TRcategoty.Visible = false;
@@ -78,7 +78,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             ForProcessWiseSummary();
             return;
         }
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "8":
                 Showreportforanisa();
@@ -133,7 +133,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             array[2].Value = txtToDate.Text;
             array[3].Value = Session["CurrentWorkingCompanyID"];
             array[4].Value = Session["varuserId"];
-            array[5].Value = Session["varcompanyId"];
+            array[5].Value = Session["varMasterCompanyIDForERP"];
             array[6].Value = DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue;
 
             ds = SqlHelper.ExecuteDataset(con, CommandType.StoredProcedure, "[Pro_ForProduction_JobSummary]", array);
@@ -223,7 +223,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             cmd.Parameters.AddWithValue("@ToDate", txtToDate.Text);
             cmd.Parameters.AddWithValue("@Companyid", Session["CurrentWorkingCompanyID"]);
             cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UnitsId", DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue);
             cmd.Parameters.AddWithValue("@Where", str);
             cmd.Parameters.AddWithValue("@excelexport", chkexport.Checked == true ? "1" : "0");
@@ -251,7 +251,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 }
                 else if (chkexport.Checked == true && chkwithstockdetail.Checked == true)
                 {
-                    switch (Session["VarCompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "22":
                             if (ChkForSummaryDetail.Checked == true)
@@ -275,7 +275,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 else
                 {
                     Session["dsFileName"] = "~\\ReportSchema\\RptProduction_JobSummary.xsd";
-                    if (Session["VarCompanyId"].ToString() == "21")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     {
                         if (Session["UserType"].ToString() != "1")
                         {
@@ -329,7 +329,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             cmd.Parameters.AddWithValue("@ToDate", txtToDate.Text);
             cmd.Parameters.AddWithValue("@Companyid", Session["CurrentWorkingCompanyID"]);
             cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UnitsId", DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue);
             cmd.Parameters.AddWithValue("@category", DDCategory.SelectedIndex <= 0 ? "0" : DDCategory.SelectedValue);
             cmd.Parameters.AddWithValue("@item", ddItemName.SelectedIndex <= 0 ? "0" : ddItemName.SelectedValue);
@@ -476,7 +476,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
     protected void DDjob_SelectedIndexChanged(object sender, EventArgs e)
     {
        
-        switch (Session["VarCompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "22":
                 if (DDjob.SelectedItem.Text.ToUpper() == "WEAVING")
@@ -552,7 +552,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
         TRDDSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -586,16 +586,16 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             }
         }
 
-        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " order by IM.item_name";
+        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by IM.item_name";
         UtilityModule.ConditionalComboFill(ref ddItemName, stritem, true, "---Select Item----");
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, int Itemid)
     {
-        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By QUALITYNAME
-                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
-                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By QUALITYNAME
+                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
+                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -635,7 +635,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
         //size Query
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");
         //
@@ -695,7 +695,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
         cmd.Parameters.AddWithValue("@ToDate", txtToDate.Text);
         cmd.Parameters.AddWithValue("@Companyid", Session["CurrentWorkingCompanyID"]);
         cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         cmd.Parameters.AddWithValue("@UnitsId", DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue);
         cmd.Parameters.AddWithValue("@Where", str);
         cmd.Parameters.AddWithValue("@ChkForMtr", ChkForMtrSize.Checked == true ? 1 : 0); 
@@ -833,7 +833,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             sht.Range("I2").Value = "WEIGHT";
             sht.Range("J2").Value = "EMPLOYEE";
             sht.Range("K2").Value = "CHECKED BY";
-            if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             {
                 sht.Column(12).Hide();
                 sht.Column(13).Hide();
@@ -847,7 +847,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             sht.Range("O2").Value = "HSN CODE";
             sht.Range("P2").Value = "EMP GSTNO";
 
-            if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             {
                 sht.Range("Q2").Value = "PARTY CHALLANNO"; 
             }
@@ -874,7 +874,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["WEIGHT"]);
                 sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Employee"]);
                 sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["checkedby"]);
-                if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
                 {
                     sht.Column(12).Hide();
                     sht.Column(13).Hide();
@@ -888,7 +888,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 sht.Range("O" + row).SetValue(ds1.Tables[0].Rows[i]["HsnCode"]);
                 sht.Range("P" + row).SetValue(ds1.Tables[0].Rows[i]["EmpGstNo"]);
 
-                if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
                 {
                     sht.Range("Q" + row).SetValue(ds1.Tables[0].Rows[i]["PartyChallanNo"]);                    
                 }
@@ -1157,7 +1157,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             sht.Range("I2").Value = "LENGTH";
             sht.Range("J2").Value = "QTY";
             sht.Range("K2").Value = "AREA";
-            if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             {
                 sht.Column(11).Hide();
                 sht.Column(12).Hide();
@@ -1170,7 +1170,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 sht.Range("N2").Value = "CHECKED BY";
             }
             sht.Range("O2").Value = "USER NAME";
-            if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             {
                 sht.Column(16).Hide();
                 sht.Column(17).Hide();
@@ -1182,7 +1182,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             }
 
             sht.Range("R2").Value = "DEFECTS";
-            if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             {
                 sht.Column(19).Hide();
             }
@@ -1194,7 +1194,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             sht.Range("U2").Value = "INSPECTED BY";
             sht.Range("V2").Value = "INSPECTION DATE";
 
-            if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             {
                 sht.Range("W2").Value = "PARTY CHALLANNO";
             }
@@ -1202,7 +1202,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             {
                 sht.Column(23).Hide();                
             }
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 sht.Range("X2").Value = "QC COMMENT";
             }
@@ -1229,7 +1229,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["LENGTH"]);
                 sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Recqty"]);
                 sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["AREA"]);
-                if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
                 {
                     sht.Column(11).Hide();
                     sht.Column(12).Hide();
@@ -1246,7 +1246,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                     sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["checkedby"]);
                 }
                 sht.Range("O" + row).SetValue(ds1.Tables[0].Rows[i]["username"]);
-                if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
                 {
                     sht.Range("P" + row).SetValue("");
                     sht.Range("Q" + row).SetValue("");
@@ -1257,7 +1257,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                     sht.Range("Q" + row).SetValue(ds1.Tables[0].Rows[i]["Amount"]);
                 }
                 sht.Range("R" + row).SetValue(ds1.Tables[0].Rows[i]["Defect"]);
-                if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
                 {
                     sht.Range("S" + row).SetValue("");
                 }
@@ -1269,7 +1269,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
                 sht.Range("U" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_UserID"]);
                 sht.Range("V" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_Date"]);
 
-                if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
                 {
                     sht.Range("W" + row).SetValue(ds1.Tables[0].Rows[i]["PartyChallanNo"]);
                                     
@@ -1504,7 +1504,7 @@ public partial class Masters_ReportForms_frmRptForProduction_JobSummary : System
             cmd.Parameters.AddWithValue("@ToDate", txtToDate.Text);
             cmd.Parameters.AddWithValue("@Companyid", Session["CurrentWorkingCompanyID"]);
             cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UnitsId", DDUnitName.SelectedIndex <= 0 ? "0" : DDUnitName.SelectedValue);
             cmd.Parameters.AddWithValue("@Where", str);
             cmd.Parameters.AddWithValue("@DetailWithAllProcess", ChkDetailWithAllProcess.Checked == true ? "1" : "0");           

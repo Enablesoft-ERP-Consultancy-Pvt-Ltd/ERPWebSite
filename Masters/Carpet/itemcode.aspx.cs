@@ -12,23 +12,23 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
           lablechange();
-          UtilityModule.ConditionalComboFill(ref DDCategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_ID", true, "--Select--");
+          UtilityModule.ConditionalComboFill(ref DDCategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_ID", true, "--Select--");
           DDCategory.Focus();
           if (DDCategory.Items.Count > 0)
           {
               DDCategory.SelectedIndex = 1;
           }
-          UtilityModule.ConditionalComboFill(ref DDItemName, "Select Item_Id,Item_Name from Item_Master Where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+          UtilityModule.ConditionalComboFill(ref DDItemName, "Select Item_Id,Item_Name from Item_Master Where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
           ErrorMessage.Visible = false;
           imgLogo.ImageUrl.DefaultIfEmpty();
-          imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+          imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
           LblCompanyName.Text = Session["varCompanyName"].ToString();
           LblUserName.Text = Session["varusername"].ToString();
           CommanFunction.FillCombo(DDUnit, "select UnitId,UnitName from Unit where UnitTypeId=1"); 
@@ -44,7 +44,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
         try
         {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         subquality.Text="SUB_" + ParameterList[0];
         qualitycode.Text= ParameterList[0];
@@ -63,14 +63,14 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         TxtFinishedid.Text = "Category=" + DDCategory.SelectedValue.ToString();
-        UtilityModule.ConditionalComboFill(ref DDItemName, "Select Item_Id,Item_Name from Item_Master Where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "" , true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "Select Item_Id,Item_Name from Item_Master Where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "" , true, "--Select--");
        // fill_grid1();        
     }
 
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
         txtqlt.Text = "Item=" + DDItemName.SelectedValue + "&Category=" + DDCategory.SelectedValue.ToString();
-        UtilityModule.ConditionalComboFill(ref DdQuality, @"SELECT QualityId,QualityName FROM Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DdQuality, @"SELECT QualityId,QualityName FROM Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         fill_grid();
         ErrorMessage.Visible = false;
     }
@@ -80,7 +80,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
        try
        {
-           TxtCode.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select Item_Code from Item_Master IM INNER JOIN Quality Q ON IM.Item_Id=Q.Item_Id Where Q.Qualityid=" + DdQuality.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
+           TxtCode.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select Item_Code from Item_Master IM INNER JOIN Quality Q ON IM.Item_Id=Q.Item_Id Where Q.Qualityid=" + DdQuality.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
        }
        catch (Exception ex)
         {
@@ -113,7 +113,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
         try
         {
             con.Open();
-            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "Select distinct Q.QualityId Quality_Id,Item_Name,QualityName SubItemName from Item_Master IM,CategorySeparate CS,Quality Q Where IM.Category_Id=CS.CategoryId And IM.Item_Id=Q.Item_Id And CS.Id=1 And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Item_Name"); 
+            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "Select distinct Q.QualityId Quality_Id,Item_Name,QualityName SubItemName from Item_Master IM,CategorySeparate CS,Quality Q Where IM.Category_Id=CS.CategoryId And IM.Item_Id=Q.Item_Id And CS.Id=1 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Item_Name"); 
         }
 
         catch (Exception ex)
@@ -137,7 +137,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
     SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
     DataSet ds = null;
     DataSet ds1 = null;
-    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT SUBQUANTITY,QUANTITY,qualityid,qualitycode,UnitId from qualitycodemaster where qualitycodeid=" + Gditemcode.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+    ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT SUBQUANTITY,QUANTITY,qualityid,qualitycode,UnitId from qualitycodemaster where qualitycodeid=" + Gditemcode.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
     ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT Quality_Id,Percentage from qualitycodeDetail where qualitycodeid=" + Gditemcode.SelectedValue + " Order By Quality_Id");
     try
     {
@@ -145,7 +145,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
         {
            // DDItemName.Text = ds.Tables[0].Rows[0]["typeid"].ToString();
             //UtilityModule.ConditionalComboFill(ref DdQuality, "SELECT  distinct   dbo.Quality.QualityId, dbo.Quality.QualityName FROM  dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID = dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN dbo.Quality ON dbo.ITEM_PARAMETER_MASTER.QUALITY_ID = dbo.Quality.QualityId where dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID=" + DDItemName.SelectedValue, true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref DdQuality, @"SELECT QualityId,QualityName FROM Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DdQuality, @"SELECT QualityId,QualityName FROM Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             TxtCode.Text = ds.Tables[0].Rows[0]["qualitycode"].ToString();
             DdQuality.SelectedValue = ds.Tables[0].Rows[0]["qualityId"].ToString();
             DDUnit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
@@ -188,7 +188,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
         TxtCode.Visible = true;
         Txtitemcode.Visible = true;
         VALIDATE__CODE();
-        string Str = "Select * from qualityCodeMaster Where Item_Id=" + DDItemName.SelectedValue + " And Qualityid=" + DdQuality.SelectedValue + " And SubQuantity='" + Txtitemcode.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+        string Str = "Select * from qualityCodeMaster Where Item_Id=" + DDItemName.SelectedValue + " And Qualityid=" + DdQuality.SelectedValue + " And SubQuantity='" + Txtitemcode.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
        if (Btnsave.Text == "Update")
        {
            Str = Str + @" And QualityCodeid<>" + Gditemcode.SelectedValue + "";
@@ -225,7 +225,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
                     _arrPara[4].Value = TxtQuantity.Text;
                     _arrPara[5].Value = TxtCode.Text;
                     _arrPara[6].Value = Session["varuserid"].ToString();
-                    _arrPara[7].Value = Session["varCompanyId"].ToString();
+                    _arrPara[7].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara[8].Value = DDUnit.SelectedValue;
 
                     if (Btnsave.Text == "Update")
@@ -269,7 +269,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
        SqlCommand cmd = new SqlCommand();
        Txtitemcode.Text = null;
        TxtCode.Text = null;
-       string str= SqlHelper.ExecuteScalar(con, CommandType.Text, "Select Item_Code from Item_Master IM INNER JOIN Quality Q ON IM.Item_Id=Q.Item_Id Where Q.Qualityid=" + DdQuality.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"]).ToString();
+       string str= SqlHelper.ExecuteScalar(con, CommandType.Text, "Select Item_Code from Item_Master IM INNER JOIN Quality Q ON IM.Item_Id=Q.Item_Id Where Q.Qualityid=" + DdQuality.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"]).ToString();
        int n = Gvitemdetail.Rows.Count;
        int sum = 0;
        int a;       
@@ -349,7 +349,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
            con.Open();
            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, @"Select QM.QualityCodeId as Sr_No,Q.QualityName as "+lblqualityname.Text+@",QM.SubQuantity as "+subquality.Text+@",
                 QM.QualityCode as "+qualitycode.Text+@",QM.Quantity from Item_Master I,Quality Q,QualityCodeMaster QM Where I.Item_Id=QM.Item_Id And
-                Q.Qualityid=QM.Qualityid And QM.Item_Id=" + DDItemName .SelectedValue + " And I.MasterCompanyId=" + Session["varCompanyId"]);
+                Q.Qualityid=QM.Qualityid And QM.Item_Id=" + DDItemName .SelectedValue + " And I.MasterCompanyId=" + Session["varMasterCompanyIDForERP"]);
        }
 
        catch (Exception ex)
@@ -438,7 +438,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
            int catgid = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, "select max(CATEGORY_ID) from ITEM_CATEGORY_MASTER"));
            int srno = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, " select  ISnull (max(Sr_No),0)+1 from CategorySeparate"));
 
-           string str2 = "insert into CategorySeparate values(" + srno + ",0," + catgid + "," + Session["varuserid"] + "," + Session["varCompanyId"] + ")";
+           string str2 = "insert into CategorySeparate values(" + srno + ",0," + catgid + "," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ")";
            SqlHelper.ExecuteNonQuery(con, CommandType.Text, str2);
        }
 
@@ -454,7 +454,7 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
            con.Dispose();
        }
 
-       UtilityModule.ConditionalComboFill(ref DDCategory, "Select DISTINCT CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_ID", true, "--Select--");
+       UtilityModule.ConditionalComboFill(ref DDCategory, "Select DISTINCT CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_ID", true, "--Select--");
        if (DDCategory.Items.Count > 0)
        {
            DDCategory.SelectedIndex = 1;
@@ -462,17 +462,17 @@ public partial class Masters_Carpet_itemcode : System.Web.UI.Page
    }
    protected void refreshitem_Click(object sender, EventArgs e)
    {
-       UtilityModule.ConditionalComboFill(ref DDItemName, "Select Item_Id,Item_Name from Item_Master Where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+       UtilityModule.ConditionalComboFill(ref DDItemName, "Select Item_Id,Item_Name from Item_Master Where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
    }
    protected void refreshquality_Click(object sender, EventArgs e)
    {
-       UtilityModule.ConditionalComboFill(ref DdQuality, @"SELECT QualityId,QualityName FROM Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+       UtilityModule.ConditionalComboFill(ref DdQuality, @"SELECT QualityId,QualityName FROM Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
    }
    protected void BtnLogout_Click(object sender, EventArgs e)
    {
        UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
        Session["varuserid"] = null;
-       Session["varCompanyId"] = null;
+       Session["varMasterCompanyIDForERP"] = null;
        string message = "you are successfully loggedout..";
        Response.Redirect("~/Login.aspx?Message=" + message + "");
    }

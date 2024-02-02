@@ -16,7 +16,7 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,7 +26,7 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
             Session["OrderDetailId"] = 0;
             Session["val"] = 0;
             logo();
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -34,11 +34,11 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
             TxtOrderDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtDeliveryDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select * From PROCESS_NAME_MASTER PNM,Process_UserType PUT,UserType UT,
-            NewUserDetail NUD Where PNM.PROCESS_NAME_ID=PUT.PRocessID And PUT.ID=UT.ID And ApprovalFlag=1 and UT.ID=NUD.UserType And VarUserId=" + Session["varuserid"] + " And PNM.MasterCompanyId=" + Session["varCompanyId"] + "");
+            NewUserDetail NUD Where PNM.PROCESS_NAME_ID=PUT.PRocessID And PUT.ID=UT.ID And ApprovalFlag=1 and UT.ID=NUD.UserType And VarUserId=" + Session["varuserid"] + " And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 BtnForApprovalOrder.Visible = true;
@@ -63,7 +63,7 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
                 string strsql = @"select OD.OrderDetailId as Sr_No,od.ourcode,od.buyercode,VF.CATEGORY_NAME CATEGORY,VF.ITEM_NAME ITEMNAME,VF.QUALITYNAME+SPACE(2)+VF.DESIGNNAME+SPACE(2)+VF.COLORNAME+SPACE(2)+SHAPENAME+SPACE(2)+
                 CASE WHEN od.orderUnitId=1 THEN VF.SIZEMTR ELSE VF.SIZEFT END DESCRIPTION,od.Qtyrequired as Qty ,od.totalArea as Area,OD.Remarks as PPInstruction ,od.photo as photo,vf.item_finished_id
                 from ordermaster om,orderdetail od,V_FINISHEDITEMDETAIL VF
-                where om.orderid=od.orderid and OD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID and OM.OrderId=" + ddorderno.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By OD.OrderDetailId";
+                where om.orderid=od.orderid and OD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID and OM.OrderId=" + ddorderno.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By OD.OrderDetailId";
                 ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
@@ -189,7 +189,7 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
             str = @"UPDATE orderDETAIL Set Remarks='" + Txtremark.Text + "',pro_flag=1,UPDATE_FLAG=0 where orderdetailid=" + Session["id"] + "";
         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'orderDETAIL'," + Session["id"] + ",getdate(),'Update')");
+        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'orderDETAIL'," + Session["id"] + ",getdate(),'Update')");
         tr1.Style.Add("Display", "none");
         Txtremark.Text = "";
         refreshform();
@@ -275,7 +275,7 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
                             input_Item,VF2.CATEGORY_NAME +','+VF2.ITEM_NAME+','+VF2.QUALITYNAME+','+VF2.DESIGNNAME+SPACE(2)+VF2.COLORNAME+SPACE(2)+vf2.SHAPENAME+SPACE(2)
                             output_item,pm.process_name,oc.iqty input_qty,oc.iloss input_loss,oc.irate as input_rate,oc.oqty as output_qnt,oc.orate as output_rate 
                             from V_FinishedItemDetail vf ,ORDER_CONSUMPTION_DETAIL oc,V_FinishedItemDetail vf1,V_FinishedItemDetail vf2,process_name_master pm
-                            where oc.finishedid=vf.item_finished_id and oc.ifinishedid=vf1.item_finished_id and oc.ofinishedid=vf2.item_finished_id and oc.processid=pm.process_name_id and orderdetailid=" + Session["id"] + " ANd VF.MasterCompanyId=" + Session["varCompanyId"];
+                            where oc.finishedid=vf.item_finished_id and oc.ifinishedid=vf1.item_finished_id and oc.ofinishedid=vf2.item_finished_id and oc.processid=pm.process_name_id and orderdetailid=" + Session["id"] + " ANd VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds2 = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             if (ds2.Tables[0].Rows.Count > 0)
             {
@@ -351,16 +351,16 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -400,7 +400,7 @@ public partial class Masters_Order_Draft_order : System.Web.UI.Page
             _arrPara[0].Value = ddorderno.SelectedValue;
             _arrPara[1].Value = 10;
             _arrPara[2].Value = Session["varuserid"].ToString();
-            _arrPara[3].Value = Session["varCompanyId"].ToString();
+            _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[4].Value = DateTime.Now.ToString("dd-MMM-yyyy");
             _arrPara[5].Value = "";
             con.Open();

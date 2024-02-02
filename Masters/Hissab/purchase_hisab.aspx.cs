@@ -12,13 +12,13 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName");
+            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -27,8 +27,8 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
             }
 
             UtilityModule.ConditionalComboFill(ref DDPartyName, @"Select Distinct EI.EmpId,EI.EmpName from EmpInfo EI,PurchaseReceiveMaster PII Where EI.Empid=PII.Partyid And Challan_status=0 And 
-                PII.CompanyID = " + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + @" Union 
-                Select Distinct EI.EmpId,EI.EmpName from EmpInfo EI,PurchaseHissab PH Where EI.Empid=PH.Partyid And billstatus=0 And PH.CompanyID = " + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName", true, "--Select Employee--");
+                PII.CompanyID = " + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Union 
+                Select Distinct EI.EmpId,EI.EmpName from EmpInfo EI,PurchaseHissab PH Where EI.Empid=PH.Partyid And billstatus=0 And PH.CompanyID = " + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName", true, "--Select Employee--");
             TDBillNo.Visible = false;
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtBillDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -50,7 +50,7 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
     {
         if (DDPartyName.SelectedIndex > 0 && ChkEditOrder.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDBillNo, "Select PhissabId,BillNo From PurchaseHissab Where billstatus=0 And CompanyId=" + DDCompanyName.SelectedValue + " And PartyID=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Bill No--");
+            UtilityModule.ConditionalComboFill(ref DDBillNo, "Select PhissabId,BillNo From PurchaseHissab Where billstatus=0 And CompanyId=" + DDCompanyName.SelectedValue + " And PartyID=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Bill No--");
         }
     }
     protected void ChkEditOrder_CheckedChanged(object sender, EventArgs e)
@@ -90,7 +90,7 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
     protected void DDBillNo_SelectedIndexChanged(object sender, EventArgs e)
     {
         ViewState["phissabid"] = DDBillNo.SelectedValue;
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select BillNo,Amount,replace(convert(varchar(11),Date,106), ' ','-') Date,Remark,BillAmt,replace(convert(varchar(11),BillDate,106), ' ','-') BillDate,DebitAmt,isnull(DeductionAmt,0) as DeductionAmt From PurchaseHissab Where Phissabid=" + DDBillNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select BillNo,Amount,replace(convert(varchar(11),Date,106), ' ','-') Date,Remark,BillAmt,replace(convert(varchar(11),BillDate,106), ' ','-') BillDate,DebitAmt,isnull(DeductionAmt,0) as DeductionAmt From PurchaseHissab Where Phissabid=" + DDBillNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
             Textbillno.Text = Ds.Tables[0].Rows[0]["BillNo"].ToString();
@@ -111,12 +111,12 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
         //        string Str = @"Select prm.purchasereceiveid,billno as challanno,isnull(Round(sum(((Qty-isnull(ReturnQty,0))*Rate+(Qty-isnull(ReturnQty,0))*Rate*vat/100+(Qty-isnull(ReturnQty,0))*Rate*cst/100)-Penalty),0),0) total,0 Flag
         //                    From PurchaseReceiveDetail prd inner join PurchaseReceiveMaster prm on prd.purchasereceiveid=prm.purchasereceiveid left outer join V_PurchaseReturnQty V On prm.PurchaseReceiveid=V.PurchaseReceiveId                                          
         //                    Where prm.partyid=" + DDPartyName.SelectedValue + " and prm.companyid=" + DDCompanyName.SelectedValue + @" And 
-        //                    Challan_status=0 And Prm.MasterCompanyId=" + Session["varCompanyId"] + @" And prm.PurchaseReceiveId not in (Select purchasereceiveid From Bill_ChallanDetail) 
+        //                    Challan_status=0 And Prm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And prm.PurchaseReceiveId not in (Select purchasereceiveid From Bill_ChallanDetail) 
         //                    Group By prm.purchasereceiveid,billno";
         string Str = @"select PurchaseReceiveId,Challanno,isnull(Round(Sum(total),0),0) + Freight Total, 0 flag,
                 dbo.F_DebitAmtForPurchase(CompanyId,PartyId,PurchaseReceiveId,MasterCompanyId) DebitAmt 
                 From V_PurchaseHissabDetail(nolock) Where partyId=" + DDPartyName.SelectedValue + " And CompanyId=" + DDCompanyName.SelectedValue + @" And
-                Challan_Status=0 And MasterCompanyId=" + Session["varCompanyId"] + @" And 
+                Challan_Status=0 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And 
                 PurchaseReceiveId not in (select PurchaseReceiveId From Bill_ChallanDetail(nolock)) 
                 group by PurchaseReceiveId,ChallanNo,CompanyId,MasterCompanyId,PartyId, Freight";
         if (ChkEditOrder.Checked == true && DDBillNo.SelectedIndex > 0)
@@ -125,7 +125,7 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
                     dbo.F_DebitAmtForPurchase(CompanyId,PartyId,PurchaseReceiveId,MasterCompanyId) DebitAmt
                     From V_PurchaseHissabDetail(nolock)
                     Where purchasereceiveid in (Select purchasereceiveid From Bill_ChallanDetail(nolock) Where billid=" + DDBillNo.SelectedValue + @") And 
-                    MasterCompanyId=" + Session["varCompanyId"] + @" 
+                    MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                     Group By purchasereceiveid,Challanno,CompanyId,MasterCompanyId,Partyid, Freight";
         }
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
@@ -191,7 +191,7 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
     }
     private void CheckDuplicateBillNo()
     {
-        string Str = "Select * From PurchaseHissab Where BillNo='" + Textbillno.Text + "' And PartyID=" + DDPartyName.SelectedValue + " And PhissabId<>" + ViewState["phissabid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+        string Str = "Select * From PurchaseHissab Where BillNo='" + Textbillno.Text + "' And PartyID=" + DDPartyName.SelectedValue + " And PhissabId<>" + ViewState["phissabid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -234,7 +234,7 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
                 _arrPara[0].Direction = ParameterDirection.InputOutput;
                 _arrPara[0].Value = ViewState["phissabid"];
                 _arrPara[1].Value = DDCompanyName.SelectedValue;
-                _arrPara[2].Value = Session["varCompanyId"];
+                _arrPara[2].Value = Session["varMasterCompanyIDForERP"];
                 _arrPara[3].Value = Session["varuserid"];
                 _arrPara[4].Value = Textbillno.Text;
                 _arrPara[5].Value = DDPartyName.SelectedValue;

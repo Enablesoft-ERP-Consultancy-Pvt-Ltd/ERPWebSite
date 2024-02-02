@@ -13,7 +13,7 @@ public partial class Masters_Loom_FrmMasterPCIssRecOnFolio : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Loom_FrmMasterPCIssRecOnFolio : System.Web.UI.Page
         {
             string str = @"select CI.CompanyId,CompanyName 
                         From CompanyInfo CI(Nolock) 
-                        inner Join Company_Authentication CA(Nolock) on CA.CompanyId = CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                        inner Join Company_Authentication CA(Nolock) on CA.CompanyId = CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                         Select Unitsid,Unitname from Units(Nolock) order by unitname
                         Select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' Empname 
                         From EmpInfo EI(Nolock) 
@@ -102,7 +102,7 @@ public partial class Masters_Loom_FrmMasterPCIssRecOnFolio : System.Web.UI.Page
             param[4] = new SqlParameter("@ProcessID", 1);
             param[5] = new SqlParameter("@IssRecFlag", DDIssRecType.SelectedValue);
             param[6] = new SqlParameter("@TstockNo", txtstockno.Text);
-            param[7] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[7] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[8] = new SqlParameter("@UserID", Session["varuserid"]);
             param[9] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[9].Direction = ParameterDirection.Output;
@@ -178,7 +178,7 @@ public partial class Masters_Loom_FrmMasterPCIssRecOnFolio : System.Web.UI.Page
             param[1] = new SqlParameter("@IssueOrderID", IssueOrderID);
             param[2] = new SqlParameter("@ProcessID", 1);
             param[3] = new SqlParameter("@IssRecFlag", DDIssRecType.SelectedValue);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@UserID", Session["varuserid"]);
 
             param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);

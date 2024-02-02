@@ -16,21 +16,20 @@ public partial class Masters_Carpet_FrmDebitnote : System.Web.UI.Page
         string qry = "";
         if (!IsPostBack)
         {
-
-            if (Session["varCompanyId"] == null)
+            if (Session["varMasterCompanyIDForERP"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
             ViewState["ID"] = 0;
             ChkPurchase.Checked = true;
-            UtilityModule.ConditionalComboFill(ref ddCompName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "Select Comp Name");
+            UtilityModule.ConditionalComboFill(ref ddCompName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "Select Comp Name");
             if (ddCompName.Items.Count > 0)
             {
                 ddCompName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 ddCompName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDCustomer, "Select Customerid,customercode from customerinfo Where MasterCompanyID=" + Session["varCompanyId"] + " order by customercode", true, "Select Comp Name");
+            UtilityModule.ConditionalComboFill(ref DDCustomer, "Select Customerid,customercode from customerinfo Where MasterCompanyID=" + Session["varMasterCompanyIDForERP"] + " order by customercode", true, "Select Comp Name");
             if (ChkPurchase.Checked == true)
             {
                 qry = @"Select Distinct ITEM_FINISHED_ID,ProductCode from Item_Parameter_Master IPM, PurchaseIndentIssuetran PIT
@@ -156,7 +155,7 @@ public partial class Masters_Carpet_FrmDebitnote : System.Web.UI.Page
         SqlParameter[] _param = new SqlParameter[13];
         _param[0] = new SqlParameter("@ID", ViewState["ID"]);
         _param[0].Direction = ParameterDirection.InputOutput;
-        _param[1] = new SqlParameter("@CompanyID", Session["varCompanyId"]);
+        _param[1] = new SqlParameter("@CompanyID", Session["varMasterCompanyIDForERP"]);
         _param[2] = new SqlParameter("@FinishedID", DDItemCode.SelectedValue);
         _param[3] = new SqlParameter("@Finished_Type", DDFinish.SelectedValue);
         _param[4] = new SqlParameter("@OrderID", ddOrder.SelectedValue);

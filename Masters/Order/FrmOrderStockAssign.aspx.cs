@@ -12,7 +12,7 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
         if (!IsPostBack)
         {
             ChkEdit.Checked = false;
-            CommanFunction.FillCombo(DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName");
+            CommanFunction.FillCombo(DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
 
             if (DDCompany.Items.Count > 0)
             {
@@ -36,7 +36,7 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
     }
     private void CompanySelectedIndexChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDcustomer, " Select customerid,customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by customercode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDcustomer, " Select customerid,customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by customercode", true, "--Select--");
     }
 
     protected void DDcustomer_SelectedIndexChanged(object sender, EventArgs e)
@@ -61,7 +61,7 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
 
         cmd.Parameters.AddWithValue("@OrderId", DDOrder.SelectedValue);
         cmd.Parameters.AddWithValue("@VarUserid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@VarMasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@VarMasterCompanyId", Session["varMasterCompanyIDForERP"]);
         cmd.Parameters.AddWithValue("@CompanyId", DDCompany.SelectedValue);
 
         DataSet ds = new DataSet();
@@ -108,7 +108,7 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
                         parparam[1] = new SqlParameter("@FinishedID", DGForAssign.DataKeys[i].Value);
                         parparam[2] = new SqlParameter("@AssignQTY", sAssignQty);
                         parparam[3] = new SqlParameter("@Userid", Session["varuserId"].ToString().Trim());
-                        parparam[4] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"].ToString().Trim());
+                        parparam[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"].ToString().Trim());
                         parparam[5] = new SqlParameter("@LotNo", LotNumber);
                         parparam[6] = new SqlParameter("@Companyid", DDCompany.SelectedValue);
                         parparam[7] = new SqlParameter("@TagNo", TagNumber);
@@ -143,7 +143,7 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
 
         _arrpara[0].Value = DDOrder.SelectedValue;
         _arrpara[1].Value = Session["varuserid"];
-        _arrpara[2].Value = Session["varCompanyId"];
+        _arrpara[2].Value = Session["varMasterCompanyIDForERP"];
         _arrpara[3].Value = DDCompany.SelectedValue;
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_OrderConsmpStockIssAssignQtyForReport", _arrpara);
@@ -244,8 +244,8 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
 
         SqlParameter[] param = new SqlParameter[5];
         param[0] = new SqlParameter("@LotNo", TxtLotNo.Text);
-        param[1] = new SqlParameter("@UserID", Session["varCompanyId"]);
-        param[2] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+        param[1] = new SqlParameter("@UserID", Session["varMasterCompanyIDForERP"]);
+        param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetOrderStockAssignQtyLotNoWise", param);
 
@@ -292,7 +292,7 @@ public partial class Masters_Order_FrmOrderStockAssign : System.Web.UI.Page
 
             cmd.Parameters.AddWithValue("@OrderId", DDOrder.SelectedValue);
             cmd.Parameters.AddWithValue("@VarUserid", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@VarMasterCompanyId", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@VarMasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@CompanyId", DDCompany.SelectedValue);
             cmd.Parameters.AddWithValue("@IFinishedId", lblIFinishedId.Text);
 

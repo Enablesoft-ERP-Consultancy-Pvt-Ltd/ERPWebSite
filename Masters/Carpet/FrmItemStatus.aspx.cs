@@ -12,13 +12,13 @@ public partial class Masters_Carpet_FrmItemStatus : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDItemCategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from CategorySeparate CS,ITEM_CATEGORY_MASTER IM ,UserRights_Category UC  Where IM.Category_Id=UC.Categoryid And UC.UserId=" + Session["varuserid"] + " And IM.Category_Id=CS.CategoryId And IM.MasterCompanyId= " + Session["varCompanyId"] + "  Order by CATEGORY_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDItemCategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from CategorySeparate CS,ITEM_CATEGORY_MASTER IM ,UserRights_Category UC  Where IM.Category_Id=UC.Categoryid And UC.UserId=" + Session["varuserid"] + " And IM.Category_Id=CS.CategoryId And IM.MasterCompanyId= " + Session["varMasterCompanyIDForERP"] + "  Order by CATEGORY_NAME", true, "--SELECT--");
         if (DDItemCategory.Items.Count > 0)
             {
                 lablechange();
@@ -32,7 +32,7 @@ public partial class Masters_Carpet_FrmItemStatus : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];
@@ -44,7 +44,7 @@ public partial class Masters_Carpet_FrmItemStatus : System.Web.UI.Page
     }
     private void fill_grid()
     {
-        string str = "select CATEGORY_NAME+'  '+ITEM_NAME+'  '+QualityName+'  '+designName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName+'  '+SizeMtr Description,ITEM_FINISHED_ID as finishedid from V_FinishedItemDetail Where CATEGORY_ID=" + DDItemCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+        string str = "select CATEGORY_NAME+'  '+ITEM_NAME+'  '+QualityName+'  '+designName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName+'  '+SizeMtr Description,ITEM_FINISHED_ID as finishedid from V_FinishedItemDetail Where CATEGORY_ID=" + DDItemCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDItemName.Visible == true && DDItemName.SelectedIndex > 0)
         {
             str = str + " and ITEM_ID=" + DDItemName.SelectedValue + "";
@@ -94,7 +94,7 @@ public partial class Masters_Carpet_FrmItemStatus : System.Web.UI.Page
         TDSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                         FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                        IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDItemCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                        IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDItemCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -123,29 +123,29 @@ public partial class Masters_Carpet_FrmItemStatus : System.Web.UI.Page
                 }
             }
         }
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDItemCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Item_Name", true, "---SELECT----");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDItemCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Item_Name", true, "---SELECT----");
     }
     private void fillCombo()
     {
         if (TdDESIGN.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDDesign, "select DesignId,designName from Design Where MasterCompanyId=" + Session["varCompanyid"] + " order by designname", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDDesign, "select DesignId,designName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by designname", true, "--SELECT--");
         }
         if (TDColor.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varCompanyid"] + "  order by ColorName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDColor, "SELECT  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by ColorName", true, "--SELECT--");
         }
         if (TDShape.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,ShapeName from shape Where MasterCompanyid=" + Session["varCompanyId"] + " order by shapename", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,ShapeName from shape Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by shapename", true, "--SELECT--");
         }
         if (TDSize.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeFt Size_Name from Size Where MasterCompanyid=" + Session["varCompanyId"] + "  order by Sizeft", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeFt Size_Name from Size Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  order by Sizeft", true, "--SELECT--");
         }
         if (TDShadeColor.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddshadecolor, "SELECT ShadecolorId,ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " order by ShadeColorName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddshadecolor, "SELECT ShadecolorId,ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShadeColorName", true, "--SELECT--");
         }
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
@@ -155,7 +155,7 @@ public partial class Masters_Carpet_FrmItemStatus : System.Web.UI.Page
     }
     private void ItemSelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by QualityName", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "--SELECT--");
     }
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -164,7 +164,7 @@ public partial class Masters_Carpet_FrmItemStatus : System.Web.UI.Page
     }
     private void shapeselectedindexchange()
     {
-        UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Sizeft", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Sizeft", true, "--SELECT--");
         fill_grid();
     }
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)

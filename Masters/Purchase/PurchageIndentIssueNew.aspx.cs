@@ -20,10 +20,10 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
         //  DataRow dr = AllEnums.MasterTables.Mastersetting.ToTable().Select()[0];
         //Purchasecode = dr["purchasecode"].ToString();
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -38,15 +38,15 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             int VarCompanyNo = Convert.ToInt32(Session["varCompanyno"].ToString());
             hncompid.Value = VarCompanyNo.ToString();
             string Qry = @"Select Distinct CI.CompanyId,CompanyName from Companyinfo CI(nolock),Company_Authentication CA(nolock) 
-            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by CompanyName 
-            Select PaymentId,PaymentName from Payment(nolock) Where MasterCompanyId=" + Session["varCompanyId"] + @" order by PaymentName
-            select TermId,TermName from Term(nolock) Where MasterCompanyId=" + Session["varCompanyId"] + @" order by TermName
-            select TransModeid,TransModeName from Transmode(nolock) Where MasterCompanyId=" + Session["varCompanyId"] + @" order by TransModename
+            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by CompanyName 
+            Select PaymentId,PaymentName from Payment(nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PaymentName
+            select TermId,TermName from Term(nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TermName
+            select TransModeid,TransModeName from Transmode(nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TransModename
             select purchasecode,smssetting,flagforsampleorder,varprodcode from Mastersetting(nolock)
             Select ID, BranchName 
             From BRANCHMASTER BM(nolock) 
             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @";select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
+            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @";select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 			union all
 			select 2 as id,isnull(CompAddr2,'') as compaddr from CompanyInfo
 			union all
@@ -65,11 +65,11 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             UtilityModule.ConditionalComboFillWithDS(ref dddelivery, DSQ, 2, true, "--Select--");
             UtilityModule.ConditionalComboFillWithDS(ref ddtransprt, DSQ, 3, true, "Select Mode");
             UtilityModule.ConditionalComboFill(ref DDCurrency, "select CurrencyId,CurrencyName from currencyinfo order by CurrencyName", true, "--Plz Select Currency--");
-            if (Session["varcompanyid"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 UtilityModule.ConditionalComboFillWithDS(ref ddlDeliveryAddress, DSQ, 6, true, "Select Address");
             }
-            //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.Currencyinfo, DDCurrency, pWhere: "MasterCompanyId=" + Session["varcompanyId"] + "", pID: "CurrencyId", pName: "CurrencyName", pFillBlank: true, Selecttext: "--Plz Select Currency--");
+            //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.Currencyinfo, DDCurrency, pWhere: "MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", pID: "CurrencyId", pName: "CurrencyName", pFillBlank: true, Selecttext: "--Plz Select Currency--");
             ViewState["purchasecode"] = DSQ.Tables[4].Rows[0]["purchasecode"].ToString();
 
             UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, DSQ, 5, false, "");
@@ -286,7 +286,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 }
             }
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select * From PROCESS_NAME_MASTER PNM,Process_UserType PUT,UserType UT,
-            NewUserDetail NUD Where PNM.PROCESS_NAME_ID=PUT.PRocessID And PUT.ID=UT.ID And ApprovalFlag=1 and UT.ID=NUD.UserType And PROCESS_NAME_ID=10 And PNM.MasterCompanyId=" + Session["varCompanyId"] + "");
+            NewUserDetail NUD Where PNM.PROCESS_NAME_ID=PUT.PRocessID And PUT.ID=UT.ID And ApprovalFlag=1 and UT.ID=NUD.UserType And PROCESS_NAME_ID=10 And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 btnpriview.Visible = false;
@@ -302,7 +302,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
 //        if (Convert.ToInt32(Session["varCompanyno"]) == 16 || Convert.ToInt32(Session["varCompanyno"]) == 28)
 //        {
 //            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select IsNull(ShortName, '') ShortName From BranchMaster(Nolock) 
-//                Where CompanyID = " + ddCompName.SelectedValue + " And ID = " + DDBranchName.SelectedValue + " And MasterCompanyId = " + Session["varCompanyId"] + "");
+//                Where CompanyID = " + ddCompName.SelectedValue + " And ID = " + DDBranchName.SelectedValue + " And MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + "");
 //            if (Ds.Tables[0].Rows.Count > 0)
 //            {
 //                ViewState["purchasecode"] = Ds.Tables[0].Rows[0]["ShortName"].ToString();
@@ -317,7 +317,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         {
             con.Open();
             String[] ParameterList = new String[8];
-            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             lblqualityname.Text = ParameterList[0];
             lbldesignname.Text = ParameterList[1];
             lblcolorname.Text = ParameterList[2];
@@ -342,7 +342,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     }
     protected void FIlllegalvendor()
     {
-        string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+        string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
         if (Session["varCompanyno"].ToString() != "6")
         {
             Str = Str + "  AND DM.Departmentname='PURCHASE'";
@@ -360,7 +360,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     {
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select BranchAddress CompanyAddress 
             From BRANCHMASTER(Nolock) Where CompanyId = " + ddCompName.SelectedValue + " ANd ID = " + DDBranchName.SelectedValue);
-        if (Session["varcompanyid"].ToString() != "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() != "44")
         {
             txtDeliveryAddress.Text = ds.Tables[0].Rows[0]["CompanyAddress"].ToString();
         }
@@ -368,13 +368,13 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     private void ddcustomercodechanged()
     {
         string Str = "";
-        int VarApprovalFlag = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ApprovalFlag from Process_Name_Master Where Process_Name_Id=10 And MasterCompanyId=" + Session["varCompanyId"] + ""));
+        int VarApprovalFlag = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ApprovalFlag from Process_Name_Master Where Process_Name_Id=10 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
         if (ChkEditOrder.Checked == true)
         {
 //            if (Session["varcompanyno"].ToString() == "7")
 //            {
 //                Str = @"Select Distinct OM.OrderId,LocalOrder+ ' / ' +CustomerOrderNo+'/ '+isnull(op.Purhasername,' ') from OrderMaster OM,Jobassigns JA,PurchaseIndentIssue PII,OrderProcessPlanning OP
-//                      Where OM.Orderid=JA.Orderid and OP.OrderId=OM.OrderId and om.status=0 and op.processid=1 And CustomerId=" + ddcustomercode.SelectedValue + " And OM.Orderid=PII.Orderid And PII.Companyid=" + ddCompName.SelectedValue + " And PII.MasterCompanyId=" + Session["varCompanyId"] + "";
+//                      Where OM.Orderid=JA.Orderid and OP.OrderId=OM.OrderId and om.status=0 and op.processid=1 And CustomerId=" + ddcustomercode.SelectedValue + " And OM.Orderid=PII.Orderid And PII.Companyid=" + ddCompName.SelectedValue + " And PII.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 //            }
 //            else if (Session["varcompanyno"].ToString() == "16" || Session["varcompanyno"].ToString() == "28")
 //            {
@@ -387,10 +387,10 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
 //            else
 //            {
 //                Str = @"Select Distinct OM.OrderId,LocalOrder+ ' / ' +CustomerOrderNo from OrderMaster OM,Jobassigns JA,PurchaseIndentIssue PII 
-//                      Where OM.Orderid=JA.Orderid and om.status=0 And CustomerId=" + ddcustomercode.SelectedValue + " And OM.Orderid=PII.Orderid And PII.CompanyId=" + ddCompName.SelectedValue + " And PII.MasterCompanyId=" + Session["varCompanyId"] + "";
+//                      Where OM.Orderid=JA.Orderid and om.status=0 And CustomerId=" + ddcustomercode.SelectedValue + " And OM.Orderid=PII.Orderid And PII.CompanyId=" + ddCompName.SelectedValue + " And PII.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
             Str = @"Select Distinct OM.OrderId,CustomerOrderNo+ ' / ' +LocalOrder from OrderMaster OM,Jobassigns JA,PurchaseIndentIssue PII 
-                      Where OM.Orderid=JA.Orderid and om.status=0  And OM.Orderid=PII.Orderid And PII.CompanyId=" + ddCompName.SelectedValue + " And PII.MasterCompanyId=" + Session["varCompanyId"] + "";
+                      Where OM.Orderid=JA.Orderid and om.status=0  And OM.Orderid=PII.Orderid And PII.CompanyId=" + ddCompName.SelectedValue + " And PII.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
           //  }
             if (VarApprovalFlag == 1)
             {
@@ -481,7 +481,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         }
         //if (ChkEditOrder.Checked == true)
         //{
-        //    UtilityModule.ConditionalComboFill(ref ddempname, "select empid,empname from empinfo where MasterCompanyId=" + Session["varCompanyId"] + " And empid in(select distinct partyid from PurchaseIndentIssue where orderid=" + ddorderno.SelectedValue + ") Order By empname", true, "--Select--");
+        //    UtilityModule.ConditionalComboFill(ref ddempname, "select empid,empname from empinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And empid in(select distinct partyid from PurchaseIndentIssue where orderid=" + ddorderno.SelectedValue + ") Order By empname", true, "--Select--");
         //    Fill_Grid();
         //}
         if (hncunsp.Value == "1")
@@ -492,7 +492,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             inner join ITEM_PARAMETER_MASTER ipm on ipm.item_id=im.item_id  
             inner join OrderLocalConsumption  OCD on OCD.FINISHEDID=ipm.ITEM_FINISHED_ID 
             inner join UserRights_Category UC on icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @" 
-            where OCD.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varCompanyId"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
+            where OCD.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
 
             TDGridShow.Visible = true;
 
@@ -512,7 +512,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             string str = string.Empty;
             if (chkcustomervise.Checked == true)
             {
-                switch (Session["varcompanyid"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "6":
                         str = @"SELECT distinct CATEGORY_ID,Category_Name   
@@ -542,7 +542,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     default:
                         if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                         {
-                            str = "select distinct category_id,category_name from ITEM_CATEGORY_MASTER icm inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") And icm.MasterCompanyId=" + Session["varCompanyId"] + " Order By category_name ";
+                            str = "select distinct category_id,category_name from ITEM_CATEGORY_MASTER icm inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By category_name ";
                         }
                         else
                         {
@@ -560,7 +560,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             {
                 UtilityModule.ConditionalComboFill(ref ddCatagory, @"Select distinct icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join ITEM_MASTER im on 
             icm.CATEGORY_ID=im.CATEGORY_ID inner join ITEM_PARAMETER_MASTER ipm on ipm.item_id=im.item_id  inner join ORDER_CONSUMPTION_DETAIL OCD on 
-            OCD.IFINISHEDID=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where OCD.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varCompanyId"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
+            OCD.IFINISHEDID=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where OCD.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
             }
             Fill_GridForLocalConsump();
             TDGridShow.Visible = true;
@@ -628,7 +628,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         
         if (chkcustomervise.Checked)
         {
-            if (Session["varcompanyid"].ToString() != "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() != "44")
             {
                 ddCatagory.Enabled = false;
                 dditemname.Enabled = false;
@@ -663,13 +663,13 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             if (hncompid.Value == "7" || hncompid.Value == "3" || hncompid.Value == "10")
             {
                 UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid,ci.Customercode + SPACE(5)+CI.CompanyName from customerinfo ci 
-                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" inner join OrderLocalConsumption  ocd on ocd.orderid=om.orderid
+                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" inner join OrderLocalConsumption  ocd on ocd.orderid=om.orderid
                 inner join Jobassigns JA ON OM.Orderid=JA.Orderid ", true, "Select CustomerCode");
             }
             else if (hncompid.Value == "6")
             {
                 UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid,ci.Customercode from customerinfo ci 
-                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" inner join ORDER_CONSUMPTION_DETAIL ocd on ocd.orderid=om.orderid
+                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" inner join ORDER_CONSUMPTION_DETAIL ocd on ocd.orderid=om.orderid
                 inner join Jobassigns JA ON OM.Orderid=JA.Orderid  ", true, "Select CustomerCode");
             }
             else
@@ -677,23 +677,23 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 if (Session["withoutBOM"].ToString() == "1")
                 {
                     UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid,ci.Customercode + SPACE(5)+CI.CompanyName from customerinfo ci 
-                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" inner join OrderLocalConsumption  ocd on ocd.orderid=om.orderid
+                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" inner join OrderLocalConsumption  ocd on ocd.orderid=om.orderid
                 inner join Jobassigns JA ON OM.Orderid=JA.Orderid ", true, "Select CustomerCode");
                 }
                 else
                 {
-                    if (Session["varCompanyId"].ToString() == "44")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                     {
                         UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid, ci.Customercode as Code
                             From customerinfo ci 
-                            join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" And OM.CompanyID = " + ddCompName.SelectedValue + @" 
+                            join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And OM.CompanyID = " + ddCompName.SelectedValue + @" 
                             join Jobassigns JA ON OM.Orderid=JA.Orderid 
                             Order By ci.Customercode  ", true, "Select CustomerCode");
                     }
                     else {
                         UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid, ci.Customercode + SPACE(5) + CI.CompanyName Code
                             From customerinfo ci 
-                            join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" And OM.CompanyID = " + ddCompName.SelectedValue + @" 
+                            join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And OM.CompanyID = " + ddCompName.SelectedValue + @" 
                             join Jobassigns JA ON OM.Orderid=JA.Orderid 
                             Order By ci.Customercode + SPACE(5) + CI.CompanyName  ", true, "Select CustomerCode");
                     
@@ -703,7 +703,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             }
 
 
-            //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+            //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
             //if (Session["varCompanyno"].ToString() != "6")
             //{
             //    Str = Str + "  AND DM.Departmentname='PURCHASE'";
@@ -711,7 +711,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             //Str = Str + "  Order By empname ";
 
 
-            string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+            string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
             if (Session["varCompanyno"].ToString() != "6")
             {
                 Str = Str + "  AND DM.Departmentname='PURCHASE'";
@@ -734,20 +734,20 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             string str = "";
             if (variable.VarPURCHASEORDER_INDENTOTHERVENDOR == "1")
             {
-                //str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where  EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0 and EI.Partytype=0";
+                //str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where  EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0 and EI.Partytype=0";
                 //str = str + "  AND DM.Departmentname='PURCHASE'";
                 //str = str + "  Order By empname ";
 
-                str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where  EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0 and EI.Partytype=0";
+                str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where  EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0 and EI.Partytype=0";
                 str = str + "  AND DM.Departmentname='PURCHASE'";
                 str = str + "  Group by EI.empid,EI.empname,EI.EmpCode";
                 str = str + "  Order By empname ";
             }
             else
             {
-                //str = "select distinct ei.empid ,empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varCompanyId"] + " Order By empname ";
+                //str = "select distinct ei.empid ,empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By empname ";
 
-                str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varCompanyId"] + "";
+                str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
                 str = str + "  Group by EI.empid,EI.empname,EI.EmpCode";
                 str = str + "  Order By empname ";
             }
@@ -764,7 +764,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 chkindentvise.Checked = false;
                 btnopen.Visible = false;
                 UtilityModule.ConditionalComboFill(ref ddcustomercode, @"select distinct ci.customerid,ci.Customercode + SPACE(5)+CI.CompanyName from customerinfo ci 
-                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" inner join OrderLocalConsumption  ocd on ocd.orderid=om.orderid
+                inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" inner join OrderLocalConsumption  ocd on ocd.orderid=om.orderid
                 inner join Jobassigns JA ON OM.Orderid=JA.Orderid ", true, "Select CustomerCode");
             }
         }
@@ -779,7 +779,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             PQty.Visible = false;
             btnopen.Visible = true;
             
-            //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid  Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+            //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid  Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
             //switch (Session["varcompanyNo"].ToString())
             //{
             //    case "6":
@@ -791,7 +791,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             //Str = Str + "  Order By EI.empname ";
             //UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
 
-            string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid  Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+            string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid  Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
             switch (Session["varcompanyNo"].ToString())
             {
                 case "6":
@@ -804,7 +804,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             Str = Str + "  Order By EI.empname ";
             UtilityModule.ConditionalComboFill(ref ddempname, Str, true, "--Select Party--");
 
-            UtilityModule.ConditionalComboFill(ref ddCatagory, "select distinct category_id,category_name from ITEM_CATEGORY_MASTER icm inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") And icm.MasterCompanyId=" + Session["varCompanyId"] + " Order By category_name ", true, "Select Category");
+            UtilityModule.ConditionalComboFill(ref ddCatagory, "select distinct category_id,category_name from ITEM_CATEGORY_MASTER icm inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By category_name ", true, "Select Category");
 
             if (Session["varcompanyno"].ToString() == "20")
             {
@@ -828,7 +828,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     }
     private void EmpNameSelectedChange(object sender = null)
     {
-        int VarApprovalFlag = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ApprovalFlag from Process_Name_Master Where Process_Name_Id=10 And MasterCompanyId=" + Session["varCompanyId"] + ""));
+        int VarApprovalFlag = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ApprovalFlag from Process_Name_Master Where Process_Name_Id=10 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
         string Str = "";
         if (chkindentvise.Checked == true)
         {
@@ -860,7 +860,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             }
             else
             {
-                Str = "select distinct PIndentId,pindentno from PurchaseIndentMaster where partyid=" + ddempname.SelectedValue + "And Companyid=" + ddCompName.SelectedValue + " AND FlagApproval <> 0 And MasterCompanyId=" + Session["varCompanyId"] + "  Order By pindentno ";
+                Str = "select distinct PIndentId,pindentno from PurchaseIndentMaster where partyid=" + ddempname.SelectedValue + "And Companyid=" + ddCompName.SelectedValue + " AND FlagApproval <> 0 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By pindentno ";
                 UtilityModule.ConditionalComboFill(ref ddindentno, Str, true, "Select IndentNo");
             }
 
@@ -876,14 +876,14 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 {
                     Str = @"Select pindentissueid,challanno from PurchaseIndentIssue 
                         Where Status='Complete' And orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + @" And 
-                        CompanyId=" + ddCompName.SelectedValue + " And IsNull(BranchID, 0) = " + DDBranchName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                        CompanyId=" + ddCompName.SelectedValue + " And IsNull(BranchID, 0) = " + DDBranchName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 }
                 else
                 {
                     Str = @"Select pindentissueid,challanno 
                     from PurchaseIndentIssue 
                     where Status='Pending' And orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + @" And 
-                    CompanyId=" + ddCompName.SelectedValue + " And IsNull(BranchID, 0) = " + DDBranchName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                    CompanyId=" + ddCompName.SelectedValue + " And IsNull(BranchID, 0) = " + DDBranchName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 }
                 if (VarApprovalFlag == 1)
                 {
@@ -899,14 +899,14 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 {
                     UtilityModule.ConditionalComboFill(ref ddlchalanno, @"select pindentissueid,challanno 
                     From PurchaseIndentIssue 
-                    where Status='Complete' And partyid=" + ddempname.SelectedValue + " ANd MasterCompanyId=" + Session["varCompanyId"] + @" And 
+                    where Status='Complete' And partyid=" + ddempname.SelectedValue + " ANd MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And 
                     CompanyId=" + ddCompName.SelectedValue + " And IsNull(BranchID, 0) = " + DDBranchName.SelectedValue + " Order By pindentissueid desc", true, "--Select--.");
                 }
                 else
                 {
                     UtilityModule.ConditionalComboFill(ref ddlchalanno, @"select pindentissueid,challanno 
                     from PurchaseIndentIssue 
-                    where Status='Pending' And partyid=" + ddempname.SelectedValue + " ANd MasterCompanyId=" + Session["varCompanyId"] + @" And 
+                    where Status='Pending' And partyid=" + ddempname.SelectedValue + " ANd MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And 
                     CompanyId=" + ddCompName.SelectedValue + " And IsNull(BranchID, 0) = " + DDBranchName.SelectedValue + " Order By pindentissueid desc", true, "--Select--.");
                 }
             }
@@ -917,7 +917,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         }
         if (TDPoNoNew.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDPoNoNew, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Complete' And partyid=" + ddempname.SelectedValue + " And CompanyId=" + ddCompName.SelectedValue + " ANd MasterCompanyId=" + Session["varCompanyId"] + " Order By challanno ", true, "--Select--.");
+            UtilityModule.ConditionalComboFill(ref DDPoNoNew, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Complete' And partyid=" + ddempname.SelectedValue + " And CompanyId=" + ddCompName.SelectedValue + " ANd MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By challanno ", true, "--Select--.");
         }
     }
     protected void ddindentno_SelectedIndexChanged(object sender, EventArgs e)
@@ -940,16 +940,16 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             UtilityModule.ConditionalComboFill(ref ddlchalanno, str, true, "--Select--.");
             //if (ChkForComplete.Checked == true)
             //{
-            //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Complete' And  partyid=" + ddempname.SelectedValue + " and indentid=" + ddindentno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by challanno ", true, "--Select--.");
+            //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Complete' And  partyid=" + ddempname.SelectedValue + " and indentid=" + ddindentno.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by challanno ", true, "--Select--.");
             //}
             //else
             //{
-            //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Pending' And  partyid=" + ddempname.SelectedValue + " and indentid=" + ddindentno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by challanno ", true, "--Select--.");
+            //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Pending' And  partyid=" + ddempname.SelectedValue + " and indentid=" + ddindentno.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by challanno ", true, "--Select--.");
             //}
         }
         UtilityModule.ConditionalComboFill(ref ddCatagory, @" select distinct icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm 
         inner join ITEM_MASTER im on icm.CATEGORY_ID=im.CATEGORY_ID inner join ITEM_PARAMETER_MASTER ipm on ipm.item_id=im.item_id
-        inner join PurchaseIndentDetail pim on pim.finishedid=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where pim.pindentid=" + ddindentno.SelectedValue + " And icm.MasterCompanyId=" + Session["varCompanyId"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
+        inner join PurchaseIndentDetail pim on pim.finishedid=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where pim.pindentid=" + ddindentno.SelectedValue + " And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
         //if (hncompid.Value == "6")
         //{
         //    TDGridShow.Visible = true;
@@ -960,7 +960,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     }
     protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             if (ddCatagory.SelectedValue == "10")
             {
@@ -982,19 +982,19 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         if (chkindentvise.Checked)
         {
             UtilityModule.ConditionalComboFill(ref dditemname, @"select distinct im.item_id,im.item_name from ITEM_MASTER im  inner join ITEM_PARAMETER_MASTER ipm on im.item_id=ipm.item_id
-            inner join PurchaseIndentDetail pid on ipm.ITEM_FINISHED_ID=pid.FinishedId where pid.PIndentId=" + ddindentno.SelectedValue + " and im.category_id=" + ddCatagory.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By im.item_name ", true, "Select Item");
+            inner join PurchaseIndentDetail pid on ipm.ITEM_FINISHED_ID=pid.FinishedId where pid.PIndentId=" + ddindentno.SelectedValue + " and im.category_id=" + ddCatagory.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By im.item_name ", true, "Select Item");
         }
         else if (chkcustomervise.Checked)
         {
             if (hncunsp.Value == "1")
             {
                 UtilityModule.ConditionalComboFill(ref dditemname, @"select distinct im.item_id,im.item_name from ITEM_MASTER im  inner join ITEM_PARAMETER_MASTER ipm  on im.item_id=ipm.item_id
-                inner join OrderLocalConsumption  ocm on ipm.ITEM_FINISHED_ID=OCM.FinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By im.item_name ", true, "Select Item");
+                inner join OrderLocalConsumption  ocm on ipm.ITEM_FINISHED_ID=OCM.FinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By im.item_name ", true, "Select Item");
             }
             else
             {
                 string str = string.Empty;
-                switch (Session["varcompanyid"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "6":
                         str = @"SELECT distinct ITEM_ID,ITEM_NAME   
@@ -1005,12 +1005,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     default:
                         if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                         {
-                            str = "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name ";
+                            str = "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name ";
                         }
                         else
                         {
                             str = @"select distinct im.item_id,im.item_name from ITEM_MASTER im  inner join ITEM_PARAMETER_MASTER ipm  on im.item_id=ipm.item_id
-                                inner join ORDER_CONSUMPTION_DETAIL ocm on ipm.ITEM_FINISHED_ID=OCM.IFinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By im.item_name ";
+                                inner join ORDER_CONSUMPTION_DETAIL ocm on ipm.ITEM_FINISHED_ID=OCM.IFinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By im.item_name ";
                         }
                         break;
                 }
@@ -1019,7 +1019,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref dditemname, "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name ", true, "Select Item");
+            UtilityModule.ConditionalComboFill(ref dditemname, "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name ", true, "Select Item");
         }
     }
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
@@ -1033,39 +1033,39 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             if (chkindentvise.Checked)
             {
                 UtilityModule.ConditionalComboFill(ref dquality, @"select distinct qualityid, qualityname from quality q inner join ITEM_PARAMETER_MASTER ipm on q.qualityid=ipm.quality_id
-                inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID where pid.PIndentId=" + ddindentno.SelectedValue + " and q.item_id=" + dditemname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By qualityname ", true, "Select Item");
+                inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID where pid.PIndentId=" + ddindentno.SelectedValue + " and q.item_id=" + dditemname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By qualityname ", true, "Select Item");
             }
             else if (chkcustomervise.Checked)
             {
                 if (hncunsp.Value == "1")
                 {
                     UtilityModule.ConditionalComboFill(ref dquality, @" select distinct qualityid, qualityname from quality q inner join ITEM_PARAMETER_MASTER ipm on q.qualityid=ipm.quality_id
-                    inner join OrderLocalConsumption  ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID where ocm.orderid=" + ddorderno.SelectedValue + " and q.item_id=" + dditemname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By qualityname ", true, "Select Item");
+                    inner join OrderLocalConsumption  ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID where ocm.orderid=" + ddorderno.SelectedValue + " and q.item_id=" + dditemname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By qualityname ", true, "Select Item");
                 }
                 else
                 {
                     if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                     {
-                        UtilityModule.ConditionalComboFill(ref dquality, "select distinct qualityid, qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By qualityname ", true, "Select Item");
+                        UtilityModule.ConditionalComboFill(ref dquality, "select distinct qualityid, qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By qualityname ", true, "Select Item");
                     }
                     else
                     {
                         UtilityModule.ConditionalComboFill(ref dquality, @" select distinct qualityid, qualityname from quality q inner join ITEM_PARAMETER_MASTER ipm on q.qualityid=ipm.quality_id
-                    inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID where ocm.orderid=" + ddorderno.SelectedValue + " and q.item_id=" + dditemname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By qualityname ", true, "Select Item");
+                    inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID where ocm.orderid=" + ddorderno.SelectedValue + " and q.item_id=" + dditemname.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By qualityname ", true, "Select Item");
                     }
                 }
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref dquality, "select distinct qualityid, qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By qualityname ", true, "Select Item");
+                UtilityModule.ConditionalComboFill(ref dquality, "select distinct qualityid, qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By qualityname ", true, "Select Item");
             }
             //if (Convert.ToInt32(Session["varCompanyno"]) == 14)
             //{
-            //    UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT distinct  u.UnitTypeID as UnitId,u.UnitType as UnitName FROM ITEM_MASTER i INNER JOIN  UNIT_TYPE_MASTER u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"] + " Order By u.UnitType", true, "Select Unit");
+            //    UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT distinct  u.UnitTypeID as UnitId,u.UnitType as UnitName FROM ITEM_MASTER i INNER JOIN  UNIT_TYPE_MASTER u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By u.UnitType", true, "Select Unit");
             //}
             //else 
             //{
-                UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT distinct u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"] + " Order By u.UnitName ", true, "Select Unit");
+                UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT distinct u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By u.UnitName ", true, "Select Unit");
             //}
             if (hncompid.Value == "7")
             {
@@ -1100,7 +1100,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             shd.Visible = false;
             string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                           " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                          " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                          " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -1117,7 +1117,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             {
                                 UtilityModule.ConditionalComboFill(ref dddesign, @"select distinct designId, designName from Design d
                                 inner join ITEM_PARAMETER_MASTER ipm on d.designId=ipm.design_Id inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID
-                                Where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By designName ", true, "--Select Design--");
+                                Where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By designName ", true, "--Select Design--");
                             }
                             else if (chkcustomervise.Checked)
                             {
@@ -1125,12 +1125,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                 {
                                     UtilityModule.ConditionalComboFill(ref dddesign, @"select distinct designId, designName from Design d  inner join ITEM_PARAMETER_MASTER ipm on d.designId=ipm.design_Id
                                     inner join OrderLocalConsumption  ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID
-                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By designName ", true, "--Select Design--");
+                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By designName ", true, "--Select Design--");
                                 }
                                 else
                                 {
                                     string str = string.Empty;
-                                    switch (Session["varcompanyid"].ToString())
+                                    switch (Session["varMasterCompanyIDForERP"].ToString())
                                     {
                                         case "6":
                                             str = @"SELECT distinct designId,designName   
@@ -1141,13 +1141,13 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                         default:
                                             if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                                             {
-                                                str = "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order By designName ";
+                                                str = "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By designName ";
                                             }
                                             else
                                             {
                                                 str = @"select distinct designId, designName from Design d inner join ITEM_PARAMETER_MASTER ipm on d.designId=ipm.design_Id
                                                     inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID
-                                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By designName ";
+                                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By designName ";
                                             }
                                             break;
                                     }
@@ -1157,7 +1157,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref dddesign, "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order By designName ", true, "Select Design");
+                                UtilityModule.ConditionalComboFill(ref dddesign, "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By designName ", true, "Select Design");
                             }
                             break;
                         case "3":
@@ -1166,7 +1166,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             {
                                 UtilityModule.ConditionalComboFill(ref ddcolor, @"select distinct colorid, colorname from color c
                                 inner join ITEM_PARAMETER_MASTER ipm on c.colorId=ipm.color_Id inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID
-                                where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "--Select Color--");
+                                where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "--Select Color--");
                             }
                             else if (chkcustomervise.Checked)
                             {
@@ -1174,12 +1174,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                 {
                                     UtilityModule.ConditionalComboFill(ref ddcolor, @" select distinct colorid, colorname from color c inner join ITEM_PARAMETER_MASTER ipm on c.colorid=ipm.color_Id
                                     inner join OrderLocalConsumption  ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID
-                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "--Select Color--");
+                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "--Select Color--");
                                 }
                                 else
                                 {
                                     string str = string.Empty;
-                                    switch (Session["varcompanyid"].ToString())
+                                    switch (Session["varMasterCompanyIDForERP"].ToString())
                                     {
                                         case "6":
                                             str = @"SELECT distinct ColorId,ColorName
@@ -1190,13 +1190,13 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                         default:
                                             if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                                             {
-                                                str = "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ";
+                                                str = "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ";
                                             }
                                             else
                                             {
                                                 str = @"select distinct colorid, colorname from color c inner join ITEM_PARAMETER_MASTER ipm on c.colorid=ipm.color_Id
                                                     inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID
-                                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ";
+                                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ";
                                             }
                                             break;
                                     }
@@ -1206,7 +1206,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "Select Color");
+                                UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "Select Color");
                             }
                             break;
                         case "4":
@@ -1215,7 +1215,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             {
                                 UtilityModule.ConditionalComboFill(ref ddshape, @"select distinct ShapeId, ShapeName from shape s inner join ITEM_PARAMETER_MASTER ipm on s.ShapeId=ipm.shape_Id
                                 inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID
-                                Where pid.PIndentId= " + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By ShapeName ", true, "--Select Shape--");
+                                Where pid.PIndentId= " + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShapeName ", true, "--Select Shape--");
                             }
                             else if (chkcustomervise.Checked)
                             {
@@ -1223,12 +1223,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                 {
                                     UtilityModule.ConditionalComboFill(ref ddshape, @"select distinct ShapeId, ShapeName from shape s  inner join ITEM_PARAMETER_MASTER ipm on s.shapeid=ipm.shape_Id
                                     inner join OrderLocalConsumption ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID
-                                    Where ocm.orderid= " + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By ShapeName ", true, "--Select Shape--");
+                                    Where ocm.orderid= " + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShapeName ", true, "--Select Shape--");
                                 }
                                 else
                                 {
                                     string str = string.Empty;
-                                    switch (Session["varcompanyid"].ToString())
+                                    switch (Session["varMasterCompanyIDForERP"].ToString())
                                     {
                                         case "6":
                                             str = @"SELECT distinct ShapeId,ShapeName
@@ -1239,13 +1239,13 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                         default:
                                             if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                                             {
-                                                str = "select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varCompanyId"] + "  Order By ShapeName ";
+                                                str = "select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By ShapeName ";
                                             }
                                             else
                                             {
                                                 str = @"select distinct ShapeId, ShapeName from shape s  inner join ITEM_PARAMETER_MASTER ipm on s.shapeid=ipm.shape_Id
                                                     inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID
-                                                    Where ocm.orderid= " + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By ShapeName ";
+                                                    Where ocm.orderid= " + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShapeName ";
                                             }
                                             break;
                                     }
@@ -1254,7 +1254,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref ddshape, "select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varCompanyId"] + "  Order By ShapeName ", true, "Select Shape");
+                                UtilityModule.ConditionalComboFill(ref ddshape, "select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By ShapeName ", true, "Select Shape");
                             }
                             break;
                         case "5":
@@ -1267,7 +1267,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             {
                                 UtilityModule.ConditionalComboFill(ref ddlshade, @"select distinct ShadecolorId, ShadeColorName from ShadeColor s inner join ITEM_PARAMETER_MASTER ipm on s.ShadecolorId=ipm.Shadecolor_Id
                                 inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID
-                                Where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
+                                Where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName ", true, "Select ShadeColor");
                             }
                             else if (chkcustomervise.Checked)
                             {
@@ -1276,12 +1276,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                 {
                                     UtilityModule.ConditionalComboFill(ref ddlshade, @"select distinct ShadecolorId, ShadeColorName from ShadeColor s   inner join ITEM_PARAMETER_MASTER ipm on s.ShadecolorId=ipm.Shadecolor_Id
                                     inner join OrderLocalConsumption  ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID
-                                    where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
+                                    where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName ", true, "Select ShadeColor");
                                 }
                                 else
                                 {
                                     string str = string.Empty;
-                                    switch (Session["varcompanyid"].ToString())
+                                    switch (Session["varMasterCompanyIDForERP"].ToString())
                                     {
                                         case "6":
                                             str = @"SELECT distinct ShadecolorId,ShadeColorName
@@ -1292,23 +1292,23 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                         default:
                                             if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                                             {
-                                                str = "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ";
+                                                str = "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName ";
                                             }
                                             else
                                             {
                                                 str = @"select distinct ShadecolorId, ShadeColorName from ShadeColor s   inner join ITEM_PARAMETER_MASTER ipm on s.ShadecolorId=ipm.Shadecolor_Id
                                                     inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID
-                                                    where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ";
+                                                    where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName ";
                                             }
                                             break;
                                     }
                                     UtilityModule.ConditionalComboFill(ref ddlshadeNew, str, true, "Select ShadeColor");
                                 }
-                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
+                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName ", true, "Select ShadeColor");
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "Select ShadeColor");
+                                UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName ", true, "Select ShadeColor");
                             }
                             break;
                         case "10":
@@ -1317,7 +1317,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             {
                                 UtilityModule.ConditionalComboFill(ref ddcolor, @"select distinct colorid, colorname from color c
                                 inner join ITEM_PARAMETER_MASTER ipm on c.colorId=ipm.color_Id inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID
-                                where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "--Select Color--");
+                                where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "--Select Color--");
                             }
                             else if (chkcustomervise.Checked)
                             {
@@ -1325,25 +1325,25 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                                 {
                                     UtilityModule.ConditionalComboFill(ref ddcolor, @" select distinct colorid, colorname from color c inner join ITEM_PARAMETER_MASTER ipm on c.colorid=ipm.color_Id
                                     inner join OrderLocalConsumption  ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID
-                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "--Select Color--");
+                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "--Select Color--");
                                 }
                                 else
                                 {
                                     if (variable.VarCUSTOMERWISEPURCHASEWITHOUTBOM == "1")
                                     {
-                                        UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "Select Color");
+                                        UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "Select Color");
                                     }
                                     else
                                     {
                                         UtilityModule.ConditionalComboFill(ref ddcolor, @" select distinct colorid, colorname from color c inner join ITEM_PARAMETER_MASTER ipm on c.colorid=ipm.color_Id
                                     inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID
-                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "--Select Color--");
+                                    Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "--Select Color--");
                                     }
                                 }
                             }
                             else
                             {
-                                UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "Select Color");
+                                UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "Select Color");
                             }
                             break;
                     }
@@ -1403,7 +1403,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
 
                 }
                 DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select IsNull(Hscode, '') hsn From Quality(Nolock) 
-                Where item_id = " + dditemname.SelectedValue + " And qualityid = " + dquality.SelectedValue + " And MasterCompanyId = " + Session["varCompanyId"] + "");
+                Where item_id = " + dditemname.SelectedValue + " And qualityid = " + dquality.SelectedValue + " And MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + "");
                 if (Ds.Tables[0].Rows.Count > 0)
                 {
                     if (string.IsNullOrEmpty(Ds.Tables[0].Rows[0]["hsn"].ToString()))
@@ -1467,7 +1467,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         TxtTotalAmount.Text = "";
         txtremarks.Text = "";
         TxtLotNo.Text = "";
-        if (Session["varcompanyid"].ToString() != "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() != "44")
         {
             txtDeliveryAddress.Text = "";
         }
@@ -1509,7 +1509,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //    {
     //        if (Session["ProdCodeValidation"].ToString() == "1" && TxtProdCode.Text != "")
     //        {
-    //            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select Top(1)PIT.ImagePath From Item_Parameter_Master IM, PurchaseIndentIssueTran PIT where Productcode='" + TxtProdCode.Text + "' And IM.Item_Finished_id=PIT.Finishedid And IM.MasterCompanyId=" + Session["varCompanyId"] + " and od.Item_Finished_Id=im.Item_Finished_id and Pindentissuetranid=" + Pindentissuetranid + "");
+    //            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select Top(1)PIT.ImagePath From Item_Parameter_Master IM, PurchaseIndentIssueTran PIT where Productcode='" + TxtProdCode.Text + "' And IM.Item_Finished_id=PIT.Finishedid And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and od.Item_Finished_Id=im.Item_Finished_id and Pindentissuetranid=" + Pindentissuetranid + "");
     //            if (ds.Tables[0].Rows.Count > 0)
     //            {
     //                string targetPath = Server.MapPath("../../PurchaseImage/d" + Pindentissuetranid + "PindentIssueImage.gif");
@@ -1533,8 +1533,8 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //        }
     //        else
     //        {
-    //            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select PIT.ImagePath from PurchaseIndentIssueTran PIT,Item_Parameter_master IPM where IPM.ITEM_FINISHED_ID= PIT.FINISHEDID AND PIT.Pindentissuetranid=" + Pindentissuetranid + " And .MasterCompanyId=" + Session["varCompanyId"] + "");
-    //            //SqlHelper.ExecuteNonQuery(myConnection, CommandType.Text, "UPDATE DRAFT_ORDER_DETAIL SET PHOTO=MII.PHOTO FROM MAIN_ITEM_IMAGE MII WHERE DRAFT_ORDER_DETAIL.ITEM_FINISHED_ID=MII.FINISHEDID AND ORDERDETAILID=" + OrderDetailId + " And MII.MasterCompanyId=" + Session["varCompanyId"] + "");
+    //            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select PIT.ImagePath from PurchaseIndentIssueTran PIT,Item_Parameter_master IPM where IPM.ITEM_FINISHED_ID= PIT.FINISHEDID AND PIT.Pindentissuetranid=" + Pindentissuetranid + " And .MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
+    //            //SqlHelper.ExecuteNonQuery(myConnection, CommandType.Text, "UPDATE DRAFT_ORDER_DETAIL SET PHOTO=MII.PHOTO FROM MAIN_ITEM_IMAGE MII WHERE DRAFT_ORDER_DETAIL.ITEM_FINISHED_ID=MII.FINISHEDID AND ORDERDETAILID=" + OrderDetailId + " And MII.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
     //            if (ds.Tables[0].Rows.Count > 0)
     //            {
     //                string targetPath = Server.MapPath("../../PurchaseImage/d" + Pindentissuetranid + "PindentIssueImage.gif");
@@ -1578,11 +1578,11 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             con.Open();
             SqlTransaction tran = con.BeginTransaction();
 
-            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             int varfinishedIDNew = varfinishedid;
             if (chkcustomervise.Checked == true && TDshdNew.Visible == true)
             {
-                varfinishedIDNew = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, tran, ddlshadeNew, "", Convert.ToInt32(Session["varCompanyId"]));
+                varfinishedIDNew = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, tran, ddlshadeNew, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             }
             if (Convert.ToInt32(ViewState["PIndentIssueId"]) > 0)
             {
@@ -1732,7 +1732,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     }
                     arr[6].Value = txtdate.Text;
                     arr[7].Value = Session["varuserid"].ToString();
-                    arr[8].Value = Session["varCompanyId"].ToString();
+                    arr[8].Value = Session["varMasterCompanyIDForERP"].ToString();
                     arr[9].Direction = ParameterDirection.InputOutput;
                     arr[9].Value = ViewState["PIndentIssueTranId"];
                     arr[10].Value = varfinishedid;
@@ -1770,7 +1770,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     arr[41].Value = txtVendorRefDate.Text == "" ? System.DateTime.Now.ToString("dd-MMM-yyyy") : txtVendorRefDate.Text;
                     arr[42].Value = txtTypeofForm.Text;
                     arr[43].Value = txtMill.Text;
-                    if (Session["varcompanyid"].ToString() == "44")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                     {
                         arr[44].Value = ddlDeliveryAddress.SelectedItem.Text;
                     }
@@ -1831,7 +1831,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     }
                     DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select MII.PHOTO from MAIN_ITEM_IMAGE mii,purchaseindentissuetran PIT where 
                         PIT.FINISHEDID=MII.FINISHEDID AND PIT.Pindentissuetranid=" + ViewState["PIndentIssueTranId"] + @" 
-                        And MII.MasterCompanyId=" + Session["varCompanyId"] + "");
+                        And MII.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     if (ds.Tables[0].Rows.Count > 0)
                     {
 
@@ -1920,17 +1920,17 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             string strsql;
             if (btnsave.Text == "Update")
             {
                 strsql = @"select *  from PurchaseIndentIssue pis  inner join PurchaseIndentIssuetran psit on pis.pindentissueid=psit.pindentissueid
-                where pis.MasterCompanyId=" + Session["varCompanyId"] + " And  psit.finishedid=" + Varfinishedid + "and pis.challanno=" + txtchalanno.Text + "and pindentissuetranid !=" + Convert.ToInt32(txtpindentissuedetailid.Text);
+                where pis.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And  psit.finishedid=" + Varfinishedid + "and pis.challanno=" + txtchalanno.Text + "and pindentissuetranid !=" + Convert.ToInt32(txtpindentissuedetailid.Text);
             }
             else
             {
                 strsql = @"select *  from PurchaseIndentIssue pis  inner join PurchaseIndentIssuetran psit on pis.pindentissueid=psit.pindentissueid
-                where psit.finishedid=" + Varfinishedid + "and pis.challanno=" + txtchalanno.Text + " And pis.MasterCompanyId=" + Session["varCompanyId"];
+                where psit.finishedid=" + Varfinishedid + "and pis.challanno=" + txtchalanno.Text + " And pis.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -2010,7 +2010,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                          FROM ITEM_MASTER im INNER JOIN ITEM_CATEGORY_MASTER icm ON im.CATEGORY_ID = icm.CATEGORY_ID INNER JOIN ITEM_PARAMETER_MASTER IPM ON im.ITEM_ID = IPM.ITEM_ID 
                          INNER JOIN PurchaseIndentIssueTran pist ON IPM.ITEM_FINISHED_ID = pist.Finishedid inner join " + view2 + @" IPM1 on IPM.Item_Finished_Id=IPM1.Finishedid 
                          inner join PurchaseIndentIssue pii on pii.pindentissueid=pist.pindentissueid
-                         Where pii.pindentissueid=" + ViewState["PIndentIssueId"] + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                         Where pii.pindentissueid=" + ViewState["PIndentIssueId"] + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (chkindentvise.Checked == true)
                 {
                     strsql = strsql + " and Pist.Pindentid=" + ddindentno.SelectedValue;
@@ -2027,7 +2027,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                         FROM ITEM_MASTER im INNER JOIN ITEM_CATEGORY_MASTER icm  ON im.CATEGORY_ID = icm.CATEGORY_ID 
                         INNER JOIN ITEM_PARAMETER_MASTER IPM ON im.ITEM_ID = IPM.ITEM_ID INNER JOIN PurchaseIndentIssueTran pist ON IPM.ITEM_FINISHED_ID = pist.Finishedid
                         Inner Join  " + view2 + @" IPM1 on IPM.Item_Finished_Id=IPM1.Finishedid inner join PurchaseIndentIssue pii on 
-                        pii.pindentissueid=pist.pindentissueid where pist.pindentissueid=" + ViewState["PIndentIssueId"] + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                        pii.pindentissueid=pist.pindentissueid where pist.pindentissueid=" + ViewState["PIndentIssueId"] + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -2073,22 +2073,22 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             ITEM_CATEGORY_MASTER INNER JOIN  ITEM_MASTER ON ITEM_CATEGORY_MASTER.CATEGORY_ID = ITEM_MASTER.CATEGORY_ID INNER JOIN
             ITEM_PARAMETER_MASTER ON ITEM_MASTER.ITEM_ID = ITEM_PARAMETER_MASTER.ITEM_ID ON 
             PurchaseIndentIssueTran.Finishedid = ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID 
-            Where PurchaseIndentIssueTran.Pindentissuetranid=" + gddetail.SelectedValue + " And PurchaseIndentIssue.Companyid = " + ddCompName.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varCompanyId"];
+            Where PurchaseIndentIssueTran.Pindentissuetranid=" + gddetail.SelectedValue + " And PurchaseIndentIssue.Companyid = " + ddCompName.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, sql);
             txtpindentissueid.Text = ds.Tables[0].Rows[0]["pindentissueid"].ToString();
             txtpindentissuedetailid.Text = ds.Tables[0].Rows[0]["Pindentissuetranid"].ToString();
             ddempname.SelectedValue = ds.Tables[0].Rows[0]["partyid"].ToString();
             txtdate.Text = Convert.ToDateTime(ds.Tables[0].Rows[0]["date"].ToString()).ToString("dd-MMM-yyyy");
-            string Qry = @"select distinct category_id,category_name from ITEM_CATEGORY_MASTER icm inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @") And icm.MasterCompanyId=" + Session["varCompanyId"] + @" Order By category_name 
-            select item_id,item_name  from ITEM_MASTER where category_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString()) + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By item_name 
-            select distinct qualityid, qualityname from quality where item_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["item_id"].ToString()) + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By qualityname
-            SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["item_id"].ToString()) + " And i.MasterCompanyId=" + Session["varCompanyId"] + @" Order By u.UnitName            
-            select distinct designId, designName from Design Where MasterCompanyId=" + Session["varCompanyId"] + @"  Order By designName
-            select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By colorname
-            select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By ShapeName
-            select distinct SizeId, SizeFt from Size Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By SizeFt
-            select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + "  Order By ShadeColorName";
+            string Qry = @"select distinct category_id,category_name from ITEM_CATEGORY_MASTER icm inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @") And icm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By category_name 
+            select item_id,item_name  from ITEM_MASTER where category_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString()) + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By item_name 
+            select distinct qualityid, qualityname from quality where item_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["item_id"].ToString()) + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By qualityname
+            SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + Convert.ToInt32(ds.Tables[0].Rows[0]["item_id"].ToString()) + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By u.UnitName            
+            select distinct designId, designName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  Order By designName
+            select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By colorname
+            select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By ShapeName
+            select distinct SizeId, SizeFt from Size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SizeFt
+            select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By ShadeColorName";
             DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref ddCatagory, DSQ, 0, true, "Select Category");
             ddCatagory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
@@ -2108,10 +2108,10 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             ddshape.SelectedValue = ds.Tables[0].Rows[0]["SHAPE_ID"].ToString();
             ddsize.SelectedValue = ds.Tables[0].Rows[0]["SIZE_ID"].ToString();
             ddlshade.SelectedValue = ds.Tables[0].Rows[0]["SHADECOLOR_ID"].ToString();
-            Qry = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname
-                  Select PaymentId,PaymentName from Payment Where MasterCompanyId=" + Session["varCompanyId"] + @" order by PaymentName
-                  select TermId,TermName from Term Where MasterCompanyId=" + Session["varCompanyId"] + @" order by TermName
-                  select TransModeid,TransModeName from Transmode Where MasterCOmpanyId=" + Session["varCompanyId"] + " order by TransModename";
+            Qry = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname
+                  Select PaymentId,PaymentName from Payment Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PaymentName
+                  select TermId,TermName from Term Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TermName
+                  select TransModeid,TransModeName from Transmode Where MasterCOmpanyId=" + Session["varMasterCompanyIDForERP"] + " order by TransModename";
             DSQ = SqlHelper.ExecuteDataset(Qry);
 
             //UtilityModule.ConditionalComboFillWithDS(ref ddCompName, DSQ, 0, true, "Select Comp Name");
@@ -2326,12 +2326,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 SqlTransaction Tran = con.BeginTransaction();
                 try
                 {
-                    int finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"])));
+                    int finishedid = Convert.ToInt32(UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
                     if (finishedid > 0)
                     {
 
-                        string Qry = @"select isnull(sum(Qty),0) Qty,isnull(sum(rate),0) as rate From PurchaseIndentMaster PIM inner join PurchaseIndentDetail PID on PIM.PIndentId=PID.PIndentId inner join PurchaseIndentApproval PIA on PIA.PIndentNo=PIM.PIndentNo where PIM.PIndentid=" + ddindentno.SelectedValue + " and FinishedId=" + finishedid + " And PIM.MasterCompanyId=" + Session["varCompanyId"] + @"
-                                       select isnull(sum(Quantity),0) Qty From PurchaseIndentIssue PII inner join PurchaseIndentIssueTran PIT on PIT.PIndentIssueId=PII.PIndentIssueId where IndentId=" + ddindentno.SelectedValue + " and FinishedId=" + finishedid + " And PII.MasterCompanyId=" + Session["varCompanyId"] + @"
+                        string Qry = @"select isnull(sum(Qty),0) Qty,isnull(sum(rate),0) as rate From PurchaseIndentMaster PIM inner join PurchaseIndentDetail PID on PIM.PIndentId=PID.PIndentId inner join PurchaseIndentApproval PIA on PIA.PIndentNo=PIM.PIndentNo where PIM.PIndentid=" + ddindentno.SelectedValue + " and FinishedId=" + finishedid + " And PIM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                                       select isnull(sum(Quantity),0) Qty From PurchaseIndentIssue PII inner join PurchaseIndentIssueTran PIT on PIT.PIndentIssueId=PII.PIndentIssueId where IndentId=" + ddindentno.SelectedValue + " and FinishedId=" + finishedid + " And PII.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                                        select isnull(UnitId,0),ImageName from PurchaseIndentDetail where PIndentId=" + ddindentno.SelectedValue + " and FinishedId=" + finishedid;
                         DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
                         TxtApprovedQty.Text = DSQ.Tables[0].Rows[0][0].ToString();
@@ -2392,7 +2392,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         {
             strsql = @"select distinct SizeId, " + Str + @" from Size s inner join ITEM_PARAMETER_MASTER ipm on s.SizeId=ipm.size_Id
             inner join PurchaseIndentDetail pid on pid.finishedid=ipm.ITEM_FINISHED_ID
-            where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"];
+            where pid.PIndentId=" + ddindentno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ddshape.SelectedIndex > 0)
             {
                 strsql = strsql + " And s.shapeId=" + ddshape.SelectedValue;
@@ -2407,7 +2407,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             {
                 strsql = @"select distinct SizeId, " + Str + @" from Size s inner join ITEM_PARAMETER_MASTER ipm on s.SizeId=ipm.size_Id
                 inner join OrderLocalConsumption  ocm on ocm.finishedid=ipm.ITEM_FINISHED_ID
-                Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"];
+                Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (ddshape.SelectedIndex > 0)
                 {
                     strsql = strsql + " And s.shapeId=" + ddshape.SelectedValue;
@@ -2419,7 +2419,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             else
             {
                 string str = string.Empty;
-                switch (Session["varcompanyid"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "6":
                         str = @"SELECT distinct SizeId," + Str + @" 
@@ -2435,7 +2435,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     default:
                         str = @"select distinct SizeId, " + Str + @" from Size s inner join ITEM_PARAMETER_MASTER ipm on s.SizeId=ipm.size_Id
                                  inner join ORDER_CONSUMPTION_DETAIL ocm on ocm.ifinishedid=ipm.ITEM_FINISHED_ID
-                                 Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"];
+                                 Where ocm.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         if (ddshape.SelectedIndex > 0)
                         {
                             str = str + " And s.shapeId=" + ddshape.SelectedValue;
@@ -2449,7 +2449,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         }
         else
         {
-            strsql = "select distinct SizeId, " + Str + @" from Size Where MasterCompanyId=" + Session["varCompanyId"];
+            strsql = "select distinct SizeId, " + Str + @" from Size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ddshape.SelectedIndex > 0)
             {
                 strsql = strsql + " And shapeId=" + ddshape.SelectedValue;
@@ -2468,7 +2468,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         fill_text();
         //if (Session["varcompanyNo"].ToString() == "12")
         //{
-        //  int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //  int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //  TxtRate.Text = UtilityModule.getItemRate(Convert.ToInt16(ddempname.SelectedValue), varfinishedid, "PURCHASE").ToString();
         //}
         TxtRate.Focus();
@@ -2478,7 +2478,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         fill_text();
         //if (Session["varcompanyNo"].ToString() == "12")
         //{
-        //  int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //  int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //  TxtRate.Text = UtilityModule.getItemRate(Convert.ToInt16(ddempname.SelectedValue), varfinishedid, "PURCHASE").ToString();
         //}
         TxtRate.Focus();
@@ -2521,7 +2521,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         if (txtqty.Text != "")
         {
             DataSet ds = new DataSet();
-           if (Session["varCompanyId"].ToString() == "44")
+           if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 extraqty = Convert.ToDouble(string.IsNullOrEmpty(txtextraqty.Text) ? "0" : txtextraqty.Text);
                 //if (ddCatagory.SelectedValue == "10")
@@ -2578,7 +2578,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         //if (Session["varcompanyNo"].ToString() == "12")
         //{
         //    Double rate;
-        //    int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //    int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //    rate = UtilityModule.getItemRate(Convert.ToInt16(ddempname.SelectedValue), varfinishedid, "PURCHASE");
         //    lblerrormessage.Visible = false;
         //    lblerrormessage.Text = "";
@@ -2650,7 +2650,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             ds = null;
             string sql = "";
 
-            sql = "select PIndentId,PIndentNo,PartyId,DepartmentId,CompanyId from PurchaseIndentMaster where FlagApproval=1 And CompanyId = " + ddCompName.SelectedValue + " and PIndentNo='" + TxtIndentNo.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+            sql = "select PIndentId,PIndentNo,PartyId,DepartmentId,CompanyId from PurchaseIndentMaster where FlagApproval=1 And CompanyId = " + ddCompName.SelectedValue + " and PIndentNo='" + TxtIndentNo.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -2672,7 +2672,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 }
                 else
                 {
-                    sql = "select distinct PIndentId,pindentno from PurchaseIndentMaster where companyid=" + ddCompName.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By pindentno ";
+                    sql = "select distinct PIndentId,pindentno from PurchaseIndentMaster where companyid=" + ddCompName.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By pindentno ";
                 }
 
                 UtilityModule.ConditionalComboFill(ref ddindentno, sql, true, "Select IndentNo");
@@ -2681,30 +2681,30 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
 
                 UtilityModule.ConditionalComboFill(ref ddCatagory, @" select distinct icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm 
                 inner join ITEM_MASTER im on icm.CATEGORY_ID=im.CATEGORY_ID inner join ITEM_PARAMETER_MASTER ipm on ipm.item_id=im.item_id
-                inner join PurchaseIndentDetail pim on pim.finishedid=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where pim.pindentid=" + ddindentno.SelectedValue + " And im.MasterCompanyId=" + Session["varCompanyId"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
+                inner join PurchaseIndentDetail pim on pim.finishedid=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where pim.pindentid=" + ddindentno.SelectedValue + " And im.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By icm.CATEGORY_NAME ", true, "Select Category");
                 ddCatagory.SelectedIndex = 1;
                 ddlcategorycange();
                 if (chkindentvise.Checked)
                 {
                     UtilityModule.ConditionalComboFill(ref dditemname, @"select distinct im.item_id,im.item_name from ITEM_MASTER im  inner join ITEM_PARAMETER_MASTER ipm on im.item_id=ipm.item_id
-                    inner join PurchaseIndentDetail pid on ipm.ITEM_FINISHED_ID=pid.FinishedId where pid.PIndentId=" + ddindentno.SelectedValue + " and im.category_id=" + ddCatagory.SelectedValue + " And im.MasterCompanyId=" + Session["varCompanyId"] + " Order By im.item_name ", true, "Select Item");
+                    inner join PurchaseIndentDetail pid on ipm.ITEM_FINISHED_ID=pid.FinishedId where pid.PIndentId=" + ddindentno.SelectedValue + " and im.category_id=" + ddCatagory.SelectedValue + " And im.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By im.item_name ", true, "Select Item");
                 }
                 else if (chkcustomervise.Checked)
                 {
                     if (hncunsp.Value == "1")
                     {
                         UtilityModule.ConditionalComboFill(ref dditemname, @"select distinct im.item_id,im.item_name from ITEM_MASTER im  inner join ITEM_PARAMETER_MASTER ipm  on im.item_id=ipm.item_id
-                        inner join ORDER_CONSUMPTION_DETAIL ocm on ipm.ITEM_FINISHED_ID=ocm.FinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varCompanyId"] + " Order By im.item_name ", true, "Select Item");
+                        inner join ORDER_CONSUMPTION_DETAIL ocm on ipm.ITEM_FINISHED_ID=ocm.FinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By im.item_name ", true, "Select Item");
                     }
                     else
                     {
                         UtilityModule.ConditionalComboFill(ref dditemname, @"select distinct im.item_id,im.item_name from ITEM_MASTER im  inner join ITEM_PARAMETER_MASTER ipm  on im.item_id=ipm.item_id
-                        inner join OrderLocalConsumption  ocm on ipm.ITEM_FINISHED_ID=ocm.FinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varCompanyId"] + " Order By im.item_name ", true, "Select Item");
+                        inner join OrderLocalConsumption  ocm on ipm.ITEM_FINISHED_ID=ocm.FinishedId where im.CATEGORY_ID=" + ddCatagory.SelectedValue + " and ocm.orderid=" + ddorderno.SelectedValue + " And im.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By im.item_name ", true, "Select Item");
                     }
                 }
                 else
                 {
-                    UtilityModule.ConditionalComboFill(ref dditemname, "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name ", true, "Select Item");
+                    UtilityModule.ConditionalComboFill(ref dditemname, "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name ", true, "Select Item");
                 }
                 Label1.Text = "";
             }
@@ -2731,21 +2731,21 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             {
                 ddCatagory.SelectedIndex = 1;
                 //                Str = @"select IPM.*,IM.CATEGORY_ID,cs.id from ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,CategorySeparate cs where IPM.ITEM_ID=IM.ITEM_ID and im.CATEGORY_ID=cs.Categoryid
-                //                  and ProductCode='" + TxtProdCode.Text + "' And IPM.MasterCompanyId=" + Session["varCompanyId"];
-                Str = @"select IPM.*,IM.CATEGORY_ID,cs.id, IsNull(PHOTO,'') PHOTO from ITEM_MASTER IM,CategorySeparate cs, ITEM_PARAMETER_MASTER IPM LEFT OUTER JOIN MAIN_ITEM_IMAGE MII ON IPM.ITEM_FINISHED_ID=MII.FINISHEDID  where IPM.ITEM_ID=IM.ITEM_ID and im.CATEGORY_ID=cs.Categoryid  and ProductCode='" + TxtProdCode.Text + "' And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                //                  and ProductCode='" + TxtProdCode.Text + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+                Str = @"select IPM.*,IM.CATEGORY_ID,cs.id, IsNull(PHOTO,'') PHOTO from ITEM_MASTER IM,CategorySeparate cs, ITEM_PARAMETER_MASTER IPM LEFT OUTER JOIN MAIN_ITEM_IMAGE MII ON IPM.ITEM_FINISHED_ID=MII.FINISHEDID  where IPM.ITEM_ID=IM.ITEM_ID and im.CATEGORY_ID=cs.Categoryid  and ProductCode='" + TxtProdCode.Text + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                 ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
                 if (ds1.Tables[0].Rows.Count > 0)
                 {
                     string Qry = @"SELECT dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME  FROM  dbo.CategorySeparate INNER JOIN
                     dbo.ITEM_CATEGORY_MASTER ON dbo.CategorySeparate.Categoryid = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID inner join UserRights_Category UC 
-                    on(ITEM_CATEGORY_MASTER.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @") And ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" Order By ITEM_CATEGORY_MASTER.CATEGORY_NAME 
-                    Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["CATEGORY_ID"].ToString()) + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By Item_Name 
-                    select qualityid,qualityname from quality where item_id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["ITEM_ID"].ToString()) + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By qualityname 
-                    select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By DesignName
-                    SELECT  ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By ColorName
-                    select  Shapeid,ShapeName from Shape Where MasterCompanyid=" + Session["varCompanyId"] + @" Order by ShapeName
-                    SELECT  SIZEID,SIZEFT fROM SIZE WhERE SHAPEID=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["SHAPE_ID"].ToString()) + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By SIZEFT
+                    on(ITEM_CATEGORY_MASTER.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + @") And ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By ITEM_CATEGORY_MASTER.CATEGORY_NAME 
+                    Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["CATEGORY_ID"].ToString()) + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Item_Name 
+                    select qualityid,qualityname from quality where item_id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["ITEM_ID"].ToString()) + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By qualityname 
+                    select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DesignName
+                    SELECT  ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By ColorName
+                    select  Shapeid,ShapeName from Shape Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by ShapeName
+                    SELECT  SIZEID,SIZEFT fROM SIZE WhERE SHAPEID=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["SHAPE_ID"].ToString()) + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SIZEFT
                     ";
                     if (ChkWithoutOrder.Checked == true)
                     {
@@ -2757,7 +2757,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     Where OCD.I_FINISHED_TYPE_ID=FT.ID AND ORDERID=" + ddorderno.SelectedValue + " AND IFINISHEDID=" + ds1.Tables[0].Rows[0]["Item_Finished_id"] + " ORDER BY OCD.PCMDID";
                     }
                     Qry = Qry + @"
-                    SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["ITEM_ID"].ToString()) + " And i.MasterCompanyId=" + Session["varCompanyId"] + " Order By u.UnitName ";
+                    SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + Convert.ToInt32(ds1.Tables[0].Rows[0]["ITEM_ID"].ToString()) + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By u.UnitName ";
                     DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
                     UtilityModule.ConditionalComboFillWithDS(ref ddCatagory, DSQ, 0, true, "Select Catagory");
                     ddCatagory.SelectedValue = ds1.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
@@ -2798,7 +2798,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                             {
                                 TxtRate.Text = DSQ.Tables[1].Rows[0][0].ToString();
                             }
-                            DataSet dsqty = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Isnull(sum(quantity) ,0)from PurchaseIndentIssueTran pt inner join PurchaseIndentIssue pi On   pi.PindentIssueid=pt.PindentIssueid where pi.orderid=" + ddorderno.SelectedValue + " and Finishedid=" + ds1.Tables[0].Rows[0]["Item_Finished_id"] + " And pi.MasterCompanyId=" + Session["varCompanyId"] + "");
+                            DataSet dsqty = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Isnull(sum(quantity) ,0)from PurchaseIndentIssueTran pt inner join PurchaseIndentIssue pi On   pi.PindentIssueid=pt.PindentIssueid where pi.orderid=" + ddorderno.SelectedValue + " and Finishedid=" + ds1.Tables[0].Rows[0]["Item_Finished_id"] + " And pi.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                             txtqty.Text = Convert.ToString(Convert.ToDouble(DSQ.Tables[0].Rows[0][0].ToString()) - Convert.ToDouble(dsqty.Tables[0].Rows[0][0].ToString()));
                         }
                         fill_text();
@@ -2871,7 +2871,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     }
     protected void ChkEditOrder_CheckedChanged(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"].ToString() == "7")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "7")
         {
             chkcustomervise.Checked = true;
             ddcustomercode.SelectedIndex = 1;
@@ -2890,11 +2890,11 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 BtnUpdateGSTType.Visible = true;
             }
 
-            if (Session["varCompanyId"].ToString() != "7")
+            if (Session["varMasterCompanyIDForERP"].ToString() != "7")
             {
                 chkcustomervise.Checked = false;
             }
-            if (Session["varCompanyId"].ToString() == "2")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "2")
             {
                 chkcustomervise.Checked = true;
             }
@@ -2932,7 +2932,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 }
             }
             BtnOrderComplete.Visible = true;
-            if (Session["varcompanyid"].ToString() == "6")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "6")
             {
                 switch (Session["varuserid"].ToString())
                 {
@@ -2952,7 +2952,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             }
             if (Session["usertype"].ToString() == "1")
             {
-                if (Session["varcompanyid"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     TDCheckForComplete.Visible = true;
                 }
@@ -3007,7 +3007,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             string str2 = @"Select companyid,partyid,orderid,indentid,challanno,date,duedate,pindentissueid,remarks,PayeMentTermId,TranportModeId,DeliveryTermId,isnull(ManualChallanNo,'') as ManualChallanNo, CustomerID,requestby,requestfor 
             From PurchaseIndentIssue(Nolock) 
             Where companyid = " + ddCompName.SelectedValue + " And IsNull(BranchID, 0) = " + DDBranchName.SelectedValue + @" And 
-            Challanno='" + txtchalan_no.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+            Challanno='" + txtchalan_no.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ChkForComplete.Checked == true)
             {
                 str2 = str2 + " And Status = 'complete' ";
@@ -3041,7 +3041,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     chkcustomervise.Checked = false;
                     OnCheckedChange();
                 }
-                string st3 = "select customerid from ordermaster where orderid in(select orderid from PurchaseIndentIssue where MasterCompanyId=" + Session["varCompanyId"] + " And pindentissueid=" + dt2.Tables[0].Rows[0]["pindentissueid"].ToString() + ")";
+                string st3 = "select customerid from ordermaster where orderid in(select orderid from PurchaseIndentIssue where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And pindentissueid=" + dt2.Tables[0].Rows[0]["pindentissueid"].ToString() + ")";
                 dt3 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, st3);
                 if (dt3.Tables[0].Rows.Count > 0)
                 {
@@ -3058,11 +3058,11 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 ddempname.SelectedValue = dt2.Tables[0].Rows[0]["partyid"].ToString();
                 if (ChkForComplete.Checked == true)
                 {
-                    UtilityModule.ConditionalComboFill(ref ddlchalanno, "Select PindentIssueid,challanno from PurchaseIndentIssue Where Status='Complete' And Companyid=" + ddCompName.SelectedValue + " And Partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By Challanno", true, "--Select--.");
+                    UtilityModule.ConditionalComboFill(ref ddlchalanno, "Select PindentIssueid,challanno from PurchaseIndentIssue Where Status='Complete' And Companyid=" + ddCompName.SelectedValue + " And Partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Challanno", true, "--Select--.");
                 }
                 else
                 {
-                    UtilityModule.ConditionalComboFill(ref ddlchalanno, "Select PindentIssueid,challanno from PurchaseIndentIssue Where Status='Pending' And Companyid=" + ddCompName.SelectedValue + " And Partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By Challanno", true, "--Select--.");
+                    UtilityModule.ConditionalComboFill(ref ddlchalanno, "Select PindentIssueid,challanno from PurchaseIndentIssue Where Status='Pending' And Companyid=" + ddCompName.SelectedValue + " And Partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Challanno", true, "--Select--.");
                 }
 
                 ddlchalanno.SelectedValue = dt2.Tables[0].Rows[0]["pindentissueid"].ToString();
@@ -3081,13 +3081,13 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 {
                     UtilityModule.ConditionalComboFill(ref ddCatagory, @"Select distinct icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join ITEM_MASTER im on 
                     icm.CATEGORY_ID=im.CATEGORY_ID inner join ITEM_PARAMETER_MASTER ipm on ipm.item_id=im.item_id  inner join OrderLocalConsumption  OCD on 
-                    OCD.IFINISHEDID=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where OCD.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By icm.CATEGORY_NAME", true, "Select Category");
+                    OCD.IFINISHEDID=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where OCD.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By icm.CATEGORY_NAME", true, "Select Category");
                 }
                 else if (ddorderno.Items.Count > 0)
                 {
                     UtilityModule.ConditionalComboFill(ref ddCatagory, @"Select distinct icm.CATEGORY_ID,icm.CATEGORY_NAME from ITEM_CATEGORY_MASTER icm inner join ITEM_MASTER im on 
                     icm.CATEGORY_ID=im.CATEGORY_ID inner join ITEM_PARAMETER_MASTER ipm on ipm.item_id=im.item_id  inner join ORDER_CONSUMPTION_DETAIL OCD on 
-                    OCD.IFINISHEDID=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where OCD.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varCompanyId"] + " Order By icm.CATEGORY_NAME", true, "Select Category");
+                    OCD.IFINISHEDID=ipm.ITEM_FINISHED_ID inner join UserRights_Category UC on(icm.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where OCD.orderid=" + ddorderno.SelectedValue + " And ipm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By icm.CATEGORY_NAME", true, "Select Category");
                 }
                 // int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarCompanyNo From MasterSetting"));
                 ViewState["PIndentIssueId"] = dt2.Tables[0].Rows[0]["pindentissueid"].ToString();
@@ -3108,7 +3108,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     {
         txtchalan_no.Text = ddlchalanno.SelectedItem.Text;
         txtchalanno.Text = ddlchalanno.SelectedItem.Text;
-        if (Session["varCompanyId"].ToString() == "7")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "7")
         {
             DataSet dt9 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select replace(convert(varchar(11),date,106),' ','-'),Remark from PurchaseTracking where tablename='PurchaseIndentIssue' and ptrackid=" + ddlchalanno.SelectedValue + " order by date desc ");
             if (dt9.Tables[0].Rows.Count > 0)
@@ -3118,7 +3118,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             }
         }
         DataSet dt8 = new DataSet();
-        string str2 = "select pindentissueid,orderid,indentid,convert(varchar(11),Date,106) as Date,convert(varchar(11),duedate,106) as duedate,remarks,PayeMentTermId,TranportModeId,DeliveryTermId,isnull(ManualChallanNo,'') as ManualChallanNo,DeliveryAddress,requestby,requestfor from PurchaseIndentIssue where pindentissueid=" + ddlchalanno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+        string str2 = "select pindentissueid,orderid,indentid,convert(varchar(11),Date,106) as Date,convert(varchar(11),duedate,106) as duedate,remarks,PayeMentTermId,TranportModeId,DeliveryTermId,isnull(ManualChallanNo,'') as ManualChallanNo,DeliveryAddress,requestby,requestfor from PurchaseIndentIssue where pindentissueid=" + ddlchalanno.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         dt8 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
         if (dt8.Tables[0].Rows.Count > 0)
         {
@@ -3130,7 +3130,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             ddtransprt.SelectedValue = dt8.Tables[0].Rows[0]["TranportModeId"].ToString();
             dddelivery.SelectedValue = dt8.Tables[0].Rows[0]["DeliveryTermId"].ToString();
             txtManualChallanNo.Text = dt8.Tables[0].Rows[0]["ManualChallanNo"].ToString();
-            if (Session["varcompanyid"].ToString() != "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() != "44")
             {
                 txtDeliveryAddress.Text = dt8.Tables[0].Rows[0]["DeliveryAddress"].ToString();
             }
@@ -3305,7 +3305,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 arr1[10].Value = Convert.ToDouble(((TextBox)gddetail.Rows[i].FindControl("TXTcst")).Text);
                 arr1[11].Value = txtremarks.Text;
                 arr1[12].Value = Session["varuserid"].ToString();
-                arr1[13].Value = Session["varCompanyId"].ToString();
+                arr1[13].Value = Session["varMasterCompanyIDForERP"].ToString();
                 arr1[14].Value = Convert.ToDouble(((TextBox)gddetail.Rows[i].FindControl("Txtcancel")).Text);
                 if (txtNextdate.Visible == false || Tdnextdate.Visible == false)
                 {
@@ -3371,12 +3371,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     }
     private void report()
     {
-        if (Convert.ToInt32(Session["varCompanyId"]) == 2)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 2)
         {
             Session["ReportPath"] = "Reports/PurchaseIndentIssDestini_1NEW.rpt";
             Session["CommanFormula"] = "{V_PIndentIssueReport_1.PIndentIssueId}=" + ViewState["PIndentIssueId"] + "";
         }
-        else if (Convert.ToInt32(Session["varCompanyId"]) == 6)//For ArtIndia
+        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 6)//For ArtIndia
         {
             if (DDPreviewType.SelectedValue == "0")
             {
@@ -3391,12 +3391,12 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 Session["ReportPath"] = "Reports/PurchaseIndentIssArtWithoutimgNEW.rpt";
             }
         }
-        else if (Convert.ToInt16(Session["varcompanyId"]) == 9) //Hafizia
+        else if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 9) //Hafizia
         {
             Session["ReportPath"] = "Reports/PurchaseIndentIssNEWForHafizia.rpt";
 
         }
-        else if (Convert.ToInt32(Session["varCompanyId"]) == 20)//For MaltiRugs
+        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 20)//For MaltiRugs
         {
             if (DDPreviewType.SelectedValue == "0")
             {
@@ -3412,7 +3412,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 Session["ReportPath"] = "Reports/PurchaseIndentIssWithoutimgNEW.rpt";
             }
         }
-        else if (Convert.ToInt32(Session["varCompanyId"]) == 27)//For AntiquePanipat
+        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27)//For AntiquePanipat
         {
             if (DDPreviewType.SelectedValue == "0")
             {
@@ -3428,7 +3428,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 Session["ReportPath"] = "Reports/PurchaseIndentIssWithoutimgNEW.rpt";
             }
         }
-        else if (Convert.ToInt32(Session["varCompanyId"]) == 22)//For DiamondExport
+        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 22)//For DiamondExport
         {
             if (DDPreviewType.SelectedValue == "0")
             {
@@ -3454,7 +3454,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 Session["ReportPath"] = "Reports/PurchaseIndentIssWithoutimgNEW.rpt";
             }
         }
-        else if (Convert.ToInt32(Session["varCompanyId"]) == 21)//For Kaysons Agra
+        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 21)//For Kaysons Agra
         {
             if (DDPreviewType.SelectedValue == "0")
             {
@@ -3470,7 +3470,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 Session["ReportPath"] = "Reports/PurchaseIndentIssWithoutimgNEWKaysons.rpt";
             }
         }
-        else if (Convert.ToInt32(Session["varCompanyId"]) == 44)//For Agni
+        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)//For Agni
         {
             if (DDPreviewType.SelectedValue == "0")
             {
@@ -3570,7 +3570,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 Tran.Commit();
 
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseIndentIssueTran'," + pid + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseIndentIssueTran'," + pid + ",getdate(),'Delete')");
 
                 Fill_Grid();
 
@@ -3578,7 +3578,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 {
                     if (gddetail.Rows.Count == 0)
                     {
-                        string str = "select pindentissueid,challanno from PurchaseIndentIssue where  orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"];
+                        string str = "select pindentissueid,challanno from PurchaseIndentIssue where  orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         if (ChkForComplete.Checked == true)
                         {
                             str = str + " and Status='Complete'";
@@ -3591,11 +3591,11 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                         UtilityModule.ConditionalComboFill(ref ddlchalanno, str, true, "--Select--.");
                         //if (ChkForComplete.Checked == true)
                         //{
-                        //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Complete' And orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " Order By challanno ", true, "--Select--.");
+                        //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Complete' And orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By challanno ", true, "--Select--.");
                         //}
                         //else
                         //{
-                        //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Pending' And orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " Order By challanno ", true, "--Select--.");
+                        //    UtilityModule.ConditionalComboFill(ref ddlchalanno, "select pindentissueid,challanno from PurchaseIndentIssue where Status='Pending' And orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By challanno ", true, "--Select--.");
                         //}
 
                     }
@@ -3699,7 +3699,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     //                    FROM V_ConsumptionQtyAndPurchaseQtyAgni VC
                     //                    JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = vc.finishedid 
                     //                    --LEFT JOIN DefinePurchaseItemUserWise b(Nolock) ON b.ITEM_FINISHED_ID = vc.finishedid And b.OrderID = VC.OrderID 
-                    //                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @" --And b.UserID = " + Session["varuserid"] + @"
+                    //                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" --And b.UserID = " + Session["varuserid"] + @"
                     //                    Group by VF.ITEM_FINISHED_ID, VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShadeColorName, VF.ShapeName,VF.Item_Finished_Id, VF.Qualityid,
                     //                    VF.Colorid, VF.designid, VF.shapeid, VF.shadecolorid, VF.category_id, VF.item_id, VF.sizeid, VC.finished_type_id, VC.Unitid ,oshadeid ,vf.MasterCompanyId
                     //                    Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
@@ -3711,7 +3711,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     //                    FROM V_ConsumptionQtyAndPurchaseQtyAgni VC
                     //                    JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = vc.finishedid 
                     //                    --LEFT JOIN DefinePurchaseItemUserWise b(Nolock) ON b.ITEM_FINISHED_ID = vc.finishedid And b.OrderID = VC.OrderID 
-                    //                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @" --And b.UserID = " + Session["varuserid"] + @"
+                    //                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" --And b.UserID = " + Session["varuserid"] + @"
                     //                    Group by  VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName,VF.ShapeName, VF.Qualityid,
                     //                    VF.Colorid, VF.designid, VF.shapeid,  VF.category_id, VF.item_id, VF.sizeid, VC.Unitid ,vf.MasterCompanyId, VC.finished_type_id,vc.finishedid
                     //                    Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
@@ -3720,7 +3720,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                         strsql = @"SELECT  Category_Name+'  '+ITEM_NAME +'  '+QualityName+'  '+DesignName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName  Description,sum(Quantity) as qty,VF.Item_Finished_Id as finishedid,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,sizeid,OD.UnitId ,'0' as thanlength,flagsize,Isnull(Rate,0) As IRate,0 As I_FINISHED_Type_ID ,'' AS Remark,0 as IWeight,'' as itemremark
                 FROM PurchaseIndentIssue pim inner join  PurchaseIndentIssueTran OD on pim.PindentIssueid=od.PindentIssueid Inner JOIN V_FinishedItemDetail VF ON OD.FinishedId=VF.Item_Finished_Id 
                 INNER JOIN ITEM_PARAMETER_MASTER IPM ON OD.FinishedId=IPM.Item_Finished_Id 
-                Where pim.pindentid=" + ViewState["PIndentIssueTranId"] + " And VF.MasterCompanyId=" + Session["varCompanyId"] + @"
+                Where pim.pindentid=" + ViewState["PIndentIssueTranId"] + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 Group by Category_Name,VF.ITEM_NAME ,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,VF.Item_Finished_Id ,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,sizeid,OD.UnitId,flagsize,Rate,IPM.DESCRIPTION  ";
                     }
                     else
@@ -3731,7 +3731,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     FROM V_ConsumptionQtyAndPurchaseQtyAgni VC
                     JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = vc.finishedid 
                     --LEFT JOIN DefinePurchaseItemUserWise b(Nolock) ON b.ITEM_FINISHED_ID = vc.finishedid And b.OrderID = VC.OrderID 
-                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @" --And b.UserID = " + Session["varuserid"] + @"
+                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" --And b.UserID = " + Session["varuserid"] + @"
                     Group by  VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName,VF.ShapeName, VF.Qualityid,
                     VF.Colorid, VF.designid, VF.shapeid,  VF.category_id, VF.item_id, VF.sizeid, VC.Unitid ,vf.MasterCompanyId, VC.finished_type_id
                     Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0)";
@@ -3746,7 +3746,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     FROM V_ConsumptionAndPurchaseQtyForChampoPNM VC
                     JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = vc.finishedid 
                     --LEFT JOIN DefinePurchaseItemUserWise b(Nolock) ON b.ITEM_FINISHED_ID = vc.finishedid And b.OrderID = VC.OrderID 
-                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @" --And b.UserID = " + Session["varuserid"] + @"
+                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" --And b.UserID = " + Session["varuserid"] + @"
                     Group by VF.ITEM_FINISHED_ID, VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShadeColorName, VF.ShapeName,VF.Item_Finished_Id, VF.Qualityid,
                     VF.Colorid, VF.designid, VF.shapeid, VF.shadecolorid, VF.category_id, VF.item_id, VF.sizeid, VC.finished_type_id, VC.Unitid 
                     Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
@@ -3759,7 +3759,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     '' Remark, '' ItemRemark, 0 IRate, 0 Iweight, VF.ITEM_FINISHED_ID FinishedID  
                     FROM V_ConsumptionAndPurchaseQtyForChampoPNM VC
                     JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = vc.finishedid 
-                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varCompanyId"] + @"  
+                    Where VC.ORDERID = " + ddorderno.SelectedValue + @" And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @"  
                     Group by VF.ITEM_FINISHED_ID, VF.Category_Name, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShadeColorName, VF.ShapeName,VF.Item_Finished_Id, VF.Qualityid,
                     VF.Colorid, VF.designid, VF.shapeid, VF.shadecolorid, VF.category_id, VF.item_id, VF.sizeid, VC.finished_type_id, VC.Unitid 
                     Having  isnull(sum(VC.consumptionqty),0) > isnull(sum(VC.purchaseqty),0) 
@@ -3770,10 +3770,10 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     strsql = @"SELECT  Category_Name+'  '+ITEM_NAME +'  '+QualityName+'  '+DesignName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName  Description,sum(Qty) as qty,VF.Item_Finished_Id as finishedid,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,sizeid,OD.UnitId ,'0' as thanlength,flagsize,Isnull(Rate,0) As IRate,0 As I_FINISHED_Type_ID ,PIM.Remark AS Remark,0 as IWeight,itemremark as itemremark
                 FROM PurchaseIndentMaster pim inner join  PurchaseIndentDetail OD on pim.pindentid=od.pindentid Inner JOIN V_FinishedItemDetail VF ON OD.FinishedId=VF.Item_Finished_Id 
                 INNER JOIN ITEM_PARAMETER_MASTER IPM ON OD.FinishedId=IPM.Item_Finished_Id 
-                Where pim.pindentid=" + ddindentno.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + @"
+                Where pim.pindentid=" + ddindentno.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 Group by Category_Name,VF.ITEM_NAME ,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,VF.Item_Finished_Id ,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,sizeid,OD.UnitId,flagsize,pim.remark,Rate,itemremark,IPM.DESCRIPTION  ";
                 }
-                else if (chkcustomervise.Checked == true && Session["varcompanyId"].ToString() == "6")
+                else if (chkcustomervise.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "6")
                {
                     strsql = @" SELECT Category_Name+'  '+ITEM_NAME +'  '+QualityName+'  '+DesignName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName  Description,
                     vd.ITEM_FINISHED_ID,sum(consumptionqty) as qty,sum(purchaseqty),vd.Item_Finished_Id as finishedid,Unitid as UnitId,
@@ -3783,7 +3783,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     Group by vd.ITEM_FINISHED_ID,Category_Name,ITEM_NAME,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,vd.Item_Finished_Id,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vd.item_id,sizeid,finished_type_id,Unitid
                     Having  isnull(sum(consumptionqty),0)>isnull(sum(purchaseqty),0) Order By vd.ITEM_FINISHED_ID";
                 }
-                else if (chkcustomervise.Checked == true && Session["varcompanyId"].ToString() == "42")
+                else if (chkcustomervise.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "42")
                 {
                     strsql = @" SELECT Category_Name+'  '+ITEM_NAME +'  '+QualityName+'  '+DesignName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName  Description,
                     vd.ITEM_FINISHED_ID,sum(consumptionqty) as qty,sum(purchaseqty),vd.Item_Finished_Id as finishedid,Unitid as UnitId,
@@ -3793,7 +3793,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     Group by vd.ITEM_FINISHED_ID,Category_Name,ITEM_NAME,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,vd.Item_Finished_Id,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vd.item_id,sizeid,finished_type_id,Unitid
                     Having  isnull(sum(consumptionqty),0)>isnull(sum(purchaseqty),0) Order By vd.ITEM_FINISHED_ID";
                 }
-                else if (Session["varcompanyId"].ToString() != "6" && chkindentvise.Checked == false)
+                else if (Session["varMasterCompanyIDForERP"].ToString() != "6" && chkindentvise.Checked == false)
                 {
                     strsql = @" SELECT Category_Name+'  '+ITEM_NAME +'  '+QualityName+'  '+DesignName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName  Description,
                     vd.ITEM_FINISHED_ID,sum(consumptionqty) as qty,sum(purchaseqty),vd.Item_Finished_Id as finishedid,Unitid as UnitId,
@@ -3809,7 +3809,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                     strsql = @"SELECT  Category_Name+'  '+ITEM_NAME +'  '+QualityName+'  '+DesignName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName  Description,sum(Qty) as qty,VF.Item_Finished_Id as finishedid,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,sizeid,OD.UnitId ,'0' as thanlength,flagsize,Isnull(Rate,0) As IRate,0 As I_FINISHED_Type_ID ,PIM.Remark AS Remark,0 as IWeight,itemremark as itemremark
                 FROM PurchaseIndentMaster pim inner join  PurchaseIndentDetail OD on pim.pindentid=od.pindentid Inner JOIN " + view + @" VF ON OD.FinishedId=VF.Item_Finished_Id 
                 INNER JOIN ITEM_PARAMETER_MASTER IPM ON OD.FinishedId=IPM.Item_Finished_Id 
-                Where pim.pindentid=" + ddindentno.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + @"
+                Where pim.pindentid=" + ddindentno.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 Group by Category_Name,VF.ITEM_NAME ,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,VF.Item_Finished_Id ,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,sizeid,OD.UnitId,flagsize,pim.remark,Rate,itemremark,IPM.DESCRIPTION  ";
                 }
 
@@ -3820,7 +3820,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 CASE WHEN OD.SizeUnit=1 Then SizeMtr Else SizeFt End Description,sum(Qty) As Qty,VF.Item_Finished_Id as finishedid,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,sizeid,OD.UNitId ,od.thanlength,0 as flagsize,0 As IRate,0 As I_FINISHED_Type_ID,od.Remark as Remark,0 as IWeight,'' as itemremark, 0  Iweight
                 FROM OrderLocalConsumption OD Inner JOIN " + view + @" VF ON OD.FinishedId=VF.Item_Finished_Id 
                 INNER JOIN ITEM_PARAMETER_MASTER IPM ON OD.FinishedId=IPM.Item_Finished_Id 
-                Where OrderId=" + ddorderno.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + @"
+                Where OrderId=" + ddorderno.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 Group by Category_Name,ITEM_NAME,QualityName,DesignName,ColorName,ShadeColorName,ShapeName,SizeUnit,SizeMtr,SizeFt,shapeid,shadecolorid,category_id,vf.item_id,sizeid,VF.Item_Finished_Id,Qualityid,designid,VF.COlorid,OD.UNitId,thanlength,od.remark ";
             }
             if (strsql != "")
@@ -3845,7 +3845,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     protected void btnpriview_Click(object sender, EventArgs e)
     {
         report();
-        ////ViewState["VarCompanyNo"] = Session["varCompanyId"];
+        ////ViewState["VarCompanyNo"] = Session["varMasterCompanyIDForERP"];
         //Report1();
         ReportData();
     }
@@ -3857,7 +3857,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         SqlParameter[] array = new SqlParameter[7];
         array[0] = new SqlParameter("@PIndentIssueId", ViewState["PIndentIssueId"]);
         array[1] = new SqlParameter("@UserName", Session["UserName"]);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         //array[2] = new SqlParameter("@MasterCompanyId", 2);
         array[3] = new SqlParameter("@UserId", Session["varuserId"]);
         array[4] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
@@ -3873,7 +3873,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetPurchaseIndentIssNEW", array);
 
         Session["dsFileName"] = array[6].Value;
-        //switch (Convert.ToInt16(Session["varcompanyId"]))
+        //switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
         //{
         //    case 9:
 
@@ -3929,7 +3929,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
         }
         //Update ReportCount value in MasterTable
-        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update PurchaseIndentIssue set ReportCount=isnull(ReportCount,0)+1 where PIndentIssueId=" + ViewState["PIndentIssueId"] + " And MasterCompanyId=" + Session["varcompanyId"] + "");
+        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update PurchaseIndentIssue set ReportCount=isnull(ReportCount,0)+1 where PIndentIssueId=" + ViewState["PIndentIssueId"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         //
 
 
@@ -3952,7 +3952,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //    private void Report1()
     //    {
     //        string qry = "";
-    //        switch (Convert.ToInt16(Session["varcompanyId"]))
+    //        switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
     //        {
     //            case 9:
     //                qry = @"SELECT VCI.CompanyName,VCI.CompanyAddress,VCI.CompanyPhoneNo,VCI.CompanyFaxNo, VCI.TinNo,VEI.EmpName,VEI.EmpAddress,VEI.EmpPhoneNo,VEI.EmpMobile,
@@ -3964,7 +3964,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //                  case when VF.Sizeid>0 Then (case when VPIR.flagsize=0 then 'Ft' when VPIR.flagsize=1 then 'Mtr' else 'Inch' end) Else '' ENd  flagsize,T.TermName,P.PaymentName,
     //                  TM.transmodeName,VPIR.Formno,VPIR.vat,vpir.remark,vpir.NetAmount,VPIR.CanQty,
     //                  ALI.Legalname,ALI.RegisterAddress,ALI.TINNo as LITinNo,ALI.CSTNo As LICstNo,isnull(VPIR.CurrencyName,'') as CurrencyName,VPIR.SupplierRef,VPIR.VendorRef,VPIR.TypeofForm,VPIR.Mill
-    //                  ," + Session["varcompanyId"] + @" as MastercompanyId,VEI.EmpTiNo,VCI.GSTIN,VEI.EMPGSTIN  FROM V_PIndentIssueReport VPIR INNER JOIN V_Companyinfo VCI ON VPIR.Companyid=VCI.CompanyId Left outer Join AddLegalInformation ALI on ALI.COmpanyId=VCI.CompanyId INNER JOIN 
+    //                  ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId,VEI.EmpTiNo,VCI.GSTIN,VEI.EMPGSTIN  FROM V_PIndentIssueReport VPIR INNER JOIN V_Companyinfo VCI ON VPIR.Companyid=VCI.CompanyId Left outer Join AddLegalInformation ALI on ALI.COmpanyId=VCI.CompanyId INNER JOIN 
     //                  V_EmployeeInfo VEI ON VPIR.Partyid=VEI.EmpId INNER JOIN 
     //                  V_FinishedItemDetail VF ON VPIR.FinishedId=VF.ITEM_FINISHED_ID LEFT OUTER JOIN FINISHED_TYPE FT ON VPIR.Finished_type_id=FT.ID left outer join 
     //                  Ordermaster om on om.orderid=VPIR.orderid left outer join Customerinfo cm on cm.customerid=om.customerid left outer join 
@@ -3972,15 +3972,15 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //                  Customerinfo cmm on pid.customercode=cmm.customerid left outer join Ordermaster omm on pid.orderid=omm.orderid inner join 
     //                  unit u On u.unitid=VPIR.unitid left outer join v_purchaseIndent piid On piid.PIndentId=pid.PIndentId and VPIR.FinishedId=piid.FinishedId Left Outer Join 
     //                  Term T ON VPIR.DeliveryTermid=T.TermId Left Outer Join Payment P ON VPIR.PayementTermId=P.PaymentId Left Outer Join 
-    //                  TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varcompanyId"];
+    //                  TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
     //                Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssNEWForHafizia.xsd";
     //                break;
     //            case 2:
     //                qry = @"SELECT V_PIndentIssueReport_1.customerOrderNo,V_PIndentIssueReport_1.Challanno,V_PIndentIssueReport_1.Date,V_PIndentIssueReport_1.DueDate,V_PIndentIssueReport_1.Remarks,V_PIndentIssueReport_1.Rate,V_PIndentIssueReport_1.Quantity,V_PIndentIssueReport_1.Amount,V_PIndentIssueReport_1.unitid,V_PIndentIssueReport_1.InDescription,CompanyInfo.CompanyName,CompanyInfo.CompAddr1,CompanyInfo.CompAddr2,CompanyInfo.CompAddr3,CompanyInfo.CompFax,CompanyInfo.CompTel,CompanyInfo.TinNo,CompanyInfo.Email,EmpInfo.EmpName,EmpInfo.Mobile,V_PIndentIssueReport_1.weight,V_PIndentIssueReport_1.Delivery_Date,V_PIndentIssueReport_1.LocalOrder,OrderMaster.CustomerOrderNo,V_PIndentIssueReport_1.itemremark
-    //            ," + Session["varcompanyId"] + @" as MastercompanyId,'' As Photo FROM   V_PIndentIssueReport_1 INNER JOIN CompanyInfo ON V_PIndentIssueReport_1.Companyid=CompanyInfo.CompanyId
+    //            ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId,'' As Photo FROM   V_PIndentIssueReport_1 INNER JOIN CompanyInfo ON V_PIndentIssueReport_1.Companyid=CompanyInfo.CompanyId
     //            INNER JOIN EmpInfo ON V_PIndentIssueReport_1.Partyid=EmpInfo.EmpId
     //            INNER JOIN OrderMaster ON V_PIndentIssueReport_1.Orderid=OrderMaster.OrderId
-    //            Where V_PIndentIssueReport_1.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport_1.MasterCompanyId=" + Session["varCompanyId"];
+    //            Where V_PIndentIssueReport_1.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport_1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
     //                Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssDestini_1New.xsd";
     //                break;
     //            default:
@@ -3994,7 +3994,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //                omm.localorder as loc ,u.UnitName as UnitId,case When isnull(piid.ImageName,'')='' Then VPIR.ImagePath Else piid.ImageName End As  photo ,
     //                case when Vf.sizeid>0 Then (case when VPIR.flagsize=0 then 'Ft' when VPIR.flagsize=1 then 'Mtr' else 'Inch' end) Else '' End  flagsize,T.TermName,P.PaymentName,
     //                TM.transmodeName,VPIR.Formno,VPIR.vat,vpir.remark,vpir.NetAmount,VPIR.CanQty,VPIR.ReportCount,VPIR.RevisedStatus
-    //                ," + Session["varcompanyId"] + @" as MastercompanyId,'" + Session["UserName"] + @"' As Username,OM.CustomerOrderNo As DirectCustOrder,Om.LocalOrder As DirectCustLocalOrder,VF.ProductCode as ProductCode,VEI.EmpAddress2,VEI.EmpAddress3,VCI.CompAddr2,VCI.CompAddr3,VCI.GSTIN,VEI.EMPGSTIN
+    //                ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId,'" + Session["UserName"] + @"' As Username,OM.CustomerOrderNo As DirectCustOrder,Om.LocalOrder As DirectCustLocalOrder,VF.ProductCode as ProductCode,VEI.EmpAddress2,VEI.EmpAddress3,VCI.CompAddr2,VCI.CompAddr3,VCI.GSTIN,VEI.EMPGSTIN
     //                FROM V_PIndentIssueReport VPIR INNER JOIN V_Companyinfo VCI ON VPIR.Companyid=VCI.CompanyId INNER JOIN 
     //                V_EmployeeInfo VEI ON VPIR.Partyid=VEI.EmpId INNER JOIN 
     //                V_FinishedItemDetail VF ON VPIR.FinishedId=VF.ITEM_FINISHED_ID LEFT OUTER JOIN FINISHED_TYPE FT ON VPIR.Finished_type_id=FT.ID left outer join 
@@ -4003,7 +4003,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //                Customerinfo cmm on pid.customercode=cmm.customerid left outer join Ordermaster omm on pid.orderid=omm.orderid inner join 
     //                unit u On u.unitid=VPIR.unitid left outer join v_purchaseIndent piid On piid.PIndentId=pid.PIndentId and VPIR.FinishedId=piid.FinishedId Left Outer Join 
     //                Term T ON VPIR.DeliveryTermid=T.TermId Left Outer Join Payment P ON VPIR.PayementTermId=P.PaymentId Left Outer Join 
-    //                TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varCompanyId"];
+    //                TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
     //                    Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssNEW.xsd";
     //                }
     //                else
@@ -4012,9 +4012,9 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //                             V_Companyinfo.TinNo,V_EmployeeInfo.EmpName,V_EmployeeInfo.EmpAddress,V_EmployeeInfo.EmpPhoneNo,V_EmployeeInfo.EmpMobile,V_EmployeeInfo.EmpFax,V_PIndentIssueReport.Challanno,V_PIndentIssueReport.Date,V_PIndentIssueReport.Destination,V_FinishedItemDetail.CATEGORY_NAME + '/' +V_FinishedItemDetail.ITEM_NAME As ITEM_NAME,V_FinishedItemDetail.QualityName,V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDetail.ShadeColorName,V_FinishedItemDetail.ShapeName,V_FinishedItemDetail.SizeMtr,V_PIndentIssueReport.FeightRate,V_PIndentIssueReport.Remarks,V_PIndentIssueReport.Quantity,V_PIndentIssueReport.LotNo,Payment.PaymentName,V_PIndentIssueReport.AgentName,Term.TermName,V_PIndentIssueReport.PIndentIssueTranId,V_PIndentIssueReport.PindentIssueid,FINISHED_TYPE.FINISHED_TYPE_NAME,
     //                            V_PIndentIssueReport.Amount,V_PIndentIssueReport.ExciseDuty,V_PIndentIssueReport.EduCess,V_PIndentIssueReport.CST,V_PIndentIssueReport.PSGST,V_PIndentIssueReport.PIGST,V_PIndentIssueReport.SGST,V_PIndentIssueReport.IGST,
     //                            CanQty,ReportCount,RevisedStatus
-    //                             ," + Session["varcompanyId"] + @" as MastercompanyId,V_FinishedItemDetail.ProductCode as ProductCode,V_PIndentIssueReport.ImagePath As  photo,V_Companyinfo.GSTIN,V_EmployeeInfo.EMPGSTIN FROM   V_PIndentIssueReport INNER JOIN V_Companyinfo ON V_PIndentIssueReport.Companyid=V_Companyinfo.CompanyId INNER JOIN V_EmployeeInfo ON V_PIndentIssueReport.Partyid=V_EmployeeInfo.EmpId INNER JOIN V_FinishedItemDetail ON V_PIndentIssueReport.FinishedId=V_FinishedItemDetail.ITEM_FINISHED_ID LEFT OUTER JOIN Payment ON V_PIndentIssueReport.PayementTermId=Payment.PaymentId LEFT OUTER JOIN Term ON V_PIndentIssueReport.DeliveryTermid=Term.TermId
+    //                             ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId,V_FinishedItemDetail.ProductCode as ProductCode,V_PIndentIssueReport.ImagePath As  photo,V_Companyinfo.GSTIN,V_EmployeeInfo.EMPGSTIN FROM   V_PIndentIssueReport INNER JOIN V_Companyinfo ON V_PIndentIssueReport.Companyid=V_Companyinfo.CompanyId INNER JOIN V_EmployeeInfo ON V_PIndentIssueReport.Partyid=V_EmployeeInfo.EmpId INNER JOIN V_FinishedItemDetail ON V_PIndentIssueReport.FinishedId=V_FinishedItemDetail.ITEM_FINISHED_ID LEFT OUTER JOIN Payment ON V_PIndentIssueReport.PayementTermId=Payment.PaymentId LEFT OUTER JOIN Term ON V_PIndentIssueReport.DeliveryTermid=Term.TermId
     //                             LEFT OUTER JOIN FINISHED_TYPE ON V_PIndentIssueReport.Finished_type_id=FINISHED_TYPE.ID
-    //                             Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varCompanyId"];
+    //                             Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
     //                    Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIss_withoutratNew.xsd";
     //                }
     //                break;
@@ -4058,7 +4058,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
     //            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
     //        }
     //        //Update ReportCount value in MasterTable
-    //        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update PurchaseIndentIssue set ReportCount=isnull(ReportCount,0)+1 where PIndentIssueId=" + ViewState["PIndentIssueId"] + " And MasterCompanyId=" + Session["varcompanyId"] + "");
+    //        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update PurchaseIndentIssue set ReportCount=isnull(ReportCount,0)+1 where PIndentIssueId=" + ViewState["PIndentIssueId"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
     //        //
     //    }
     private void Report1Sendpdf()
@@ -4073,7 +4073,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             view4 = "V_FinishedItemDetail";
         }
         string qry = "";
-        switch (Convert.ToInt16(Session["varcompanyId"]))
+        switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
         {
             case 9:
                 qry = @"SELECT VCI.CompanyName,VCI.CompanyAddress,VCI.CompanyPhoneNo,VCI.CompanyFaxNo, VCI.TinNo,VEI.EmpName,VEI.EmpAddress,VEI.EmpPhoneNo,VEI.EmpMobile,
@@ -4085,7 +4085,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                   case when VPIR.flagsize=0 then 'Ft' when VPIR.flagsize=1 then 'Mtr' else 'Inch' end  flagsize,T.TermName,P.PaymentName,
                   TM.transmodeName,VPIR.Formno,VPIR.vat,vpir.remark,vpir.NetAmount,VPIR.CanQty,
                   ALI.Legalname,ALI.RegisterAddress,ALI.TINNo as LITinNo,ALI.CSTNo As LICstNo,VPIR.CurrencyName,VPIR.SupplierRef,VPIR.VendorRef,VPIR.TypeofForm,VPIR.Mill
-                  ," + Session["varcompanyId"] + @" as MastercompanyId   FROM V_PIndentIssueReport VPIR INNER JOIN V_Companyinfo VCI ON VPIR.Companyid=VCI.CompanyId Left outer Join AddLegalInformation ALI on ALI.COmpanyId=VCI.CompanyId INNER JOIN 
+                  ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId   FROM V_PIndentIssueReport VPIR INNER JOIN V_Companyinfo VCI ON VPIR.Companyid=VCI.CompanyId Left outer Join AddLegalInformation ALI on ALI.COmpanyId=VCI.CompanyId INNER JOIN 
                   V_EmployeeInfo VEI ON VPIR.Partyid=VEI.EmpId INNER JOIN 
                   V_FinishedItemDetail VF ON VPIR.FinishedId=VF.ITEM_FINISHED_ID LEFT OUTER JOIN FINISHED_TYPE FT ON VPIR.Finished_type_id=FT.ID left outer join 
                   Ordermaster om on om.orderid=VPIR.orderid left outer join Customerinfo cm on cm.customerid=om.customerid left outer join 
@@ -4093,15 +4093,15 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                   Customerinfo cmm on pid.customercode=cmm.customerid left outer join Ordermaster omm on pid.orderid=omm.orderid inner join 
                   unit u On u.unitid=VPIR.unitid left outer join v_purchaseIndent piid On piid.PIndentId=pid.PIndentId and VPIR.FinishedId=piid.FinishedId Left Outer Join 
                   Term T ON VPIR.DeliveryTermid=T.TermId Left Outer Join Payment P ON VPIR.PayementTermId=P.PaymentId Left Outer Join 
-                  TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varcompanyId"];
+                  TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssNEWForHafizia.xsd";
                 break;
             case 2:
                 qry = @"SELECT V_PIndentIssueReport_1.customerOrderNo,V_PIndentIssueReport_1.Challanno,V_PIndentIssueReport_1.Date,V_PIndentIssueReport_1.DueDate,V_PIndentIssueReport_1.Remarks,V_PIndentIssueReport_1.Rate,V_PIndentIssueReport_1.Quantity,V_PIndentIssueReport_1.Amount,V_PIndentIssueReport_1.unitid,V_PIndentIssueReport_1.InDescription,CompanyInfo.CompanyName,CompanyInfo.CompAddr1,CompanyInfo.CompAddr2,CompanyInfo.CompAddr3,CompanyInfo.CompFax,CompanyInfo.CompTel,CompanyInfo.TinNo,CompanyInfo.Email,EmpInfo.EmpName,EmpInfo.Mobile,V_PIndentIssueReport_1.weight,V_PIndentIssueReport_1.Delivery_Date,V_PIndentIssueReport_1.LocalOrder,OrderMaster.CustomerOrderNo,V_PIndentIssueReport_1.itemremark
-            ," + Session["varcompanyId"] + @" as MastercompanyId FROM   V_PIndentIssueReport_1 INNER JOIN CompanyInfo ON V_PIndentIssueReport_1.Companyid=CompanyInfo.CompanyId
+            ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId FROM   V_PIndentIssueReport_1 INNER JOIN CompanyInfo ON V_PIndentIssueReport_1.Companyid=CompanyInfo.CompanyId
             INNER JOIN EmpInfo ON V_PIndentIssueReport_1.Partyid=EmpInfo.EmpId
             INNER JOIN OrderMaster ON V_PIndentIssueReport_1.Orderid=OrderMaster.OrderId
-            Where V_PIndentIssueReport_1.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport_1.MasterCompanyId=" + Session["varCompanyId"];
+            Where V_PIndentIssueReport_1.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport_1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssDestini_1New.xsd";
                 break;
             default:
@@ -4115,7 +4115,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 omm.localorder as loc ,u.UnitName as UnitId,piid.ImageName photo ,
                 case when VPIR.flagsize=0 then 'Ft' when VPIR.flagsize=1 then 'Mtr' else 'Inch' end  flagsize,T.TermName,P.PaymentName,
                 TM.transmodeName,VPIR.Formno,VPIR.vat,vpir.remark,vpir.NetAmount,VPIR.CanQty,VPIR.ReportCount,VPIR.RevisedStatus
-                ," + Session["varcompanyId"] + @" as MastercompanyId,'" + Session["UserName"] + @"' As Username,OM.CustomerOrderNo As DirectCustOrder,Om.LocalOrder As DirectCustLocalOrder FROM V_PIndentIssueReport VPIR INNER JOIN V_Companyinfo VCI ON VPIR.Companyid=VCI.CompanyId INNER JOIN 
+                ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId,'" + Session["UserName"] + @"' As Username,OM.CustomerOrderNo As DirectCustOrder,Om.LocalOrder As DirectCustLocalOrder FROM V_PIndentIssueReport VPIR INNER JOIN V_Companyinfo VCI ON VPIR.Companyid=VCI.CompanyId INNER JOIN 
                 V_EmployeeInfo VEI ON VPIR.Partyid=VEI.EmpId INNER JOIN 
                 " + view4 + @" VF ON VPIR.FinishedId=VF.ITEM_FINISHED_ID LEFT OUTER JOIN FINISHED_TYPE FT ON VPIR.Finished_type_id=FT.ID left outer join 
                 Ordermaster om on om.orderid=VPIR.orderid left outer join Customerinfo cm on cm.customerid=om.customerid left outer join 
@@ -4123,7 +4123,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                 Customerinfo cmm on pid.customercode=cmm.customerid left outer join Ordermaster omm on pid.orderid=omm.orderid inner join 
                 unit u On u.unitid=VPIR.unitid left outer join v_purchaseIndent piid On piid.PIndentId=pid.PIndentId and VPIR.FinishedId=piid.FinishedId Left Outer Join 
                 Term T ON VPIR.DeliveryTermid=T.TermId Left Outer Join Payment P ON VPIR.PayementTermId=P.PaymentId Left Outer Join 
-                TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varCompanyId"];
+                TransMode TM ON VPIR.TranportModeId=TM.transmodeId Where VPIR.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And VPIR.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssNEW.xsd";
                 }
                 else
@@ -4132,9 +4132,9 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
                              V_Companyinfo.TinNo,V_EmployeeInfo.EmpName,V_EmployeeInfo.EmpAddress,V_EmployeeInfo.EmpPhoneNo,V_EmployeeInfo.EmpMobile,V_EmployeeInfo.EmpFax,V_PIndentIssueReport.Challanno,V_PIndentIssueReport.Date,V_PIndentIssueReport.Destination,VF.CATEGORY_NAME + '/' +VF.ITEM_NAME As ITEM_NAME,VF.QualityName,VF.designName,VF.ColorName,VF.ShadeColorName,VF.ShapeName,VF.SizeMtr,
                             V_PIndentIssueReport.FeightRate,V_PIndentIssueReport.Remarks,V_PIndentIssueReport.Quantity,V_PIndentIssueReport.LotNo,Payment.PaymentName,V_PIndentIssueReport.AgentName,Term.TermName,V_PIndentIssueReport.PIndentIssueTranId,V_PIndentIssueReport.PindentIssueid,FINISHED_TYPE.FINISHED_TYPE_NAME,V_PIndentIssueReport.Amount,V_PIndentIssueReport.ExciseDuty,V_PIndentIssueReport.EduCess,V_PIndentIssueReport.CST,V_PIndentIssueReport.PSGST,V_PIndentIssueReport.PIGST,V_PIndentIssueReport.SGST,V_PIndentIssueReport.IGST,
                             CanQty,ReportCount,RevisedStatus
-                              ," + Session["varcompanyId"] + @" as MastercompanyId FROM   V_PIndentIssueReport INNER JOIN V_Companyinfo ON V_PIndentIssueReport.Companyid=V_Companyinfo.CompanyId INNER JOIN V_EmployeeInfo ON V_PIndentIssueReport.Partyid=V_EmployeeInfo.EmpId INNER JOIN " + view4 + @" VF ON V_PIndentIssueReport.FinishedId=VF.ITEM_FINISHED_ID LEFT OUTER JOIN Payment ON V_PIndentIssueReport.PayementTermId=Payment.PaymentId LEFT OUTER JOIN Term ON V_PIndentIssueReport.DeliveryTermid=Term.TermId
+                              ," + Session["varMasterCompanyIDForERP"] + @" as MastercompanyId FROM   V_PIndentIssueReport INNER JOIN V_Companyinfo ON V_PIndentIssueReport.Companyid=V_Companyinfo.CompanyId INNER JOIN V_EmployeeInfo ON V_PIndentIssueReport.Partyid=V_EmployeeInfo.EmpId INNER JOIN " + view4 + @" VF ON V_PIndentIssueReport.FinishedId=VF.ITEM_FINISHED_ID LEFT OUTER JOIN Payment ON V_PIndentIssueReport.PayementTermId=Payment.PaymentId LEFT OUTER JOIN Term ON V_PIndentIssueReport.DeliveryTermid=Term.TermId
                                LEFT OUTER JOIN FINISHED_TYPE ON V_PIndentIssueReport.Finished_type_id=FINISHED_TYPE.ID
-                Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varCompanyId"];
+                Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIss_withoutratNew.xsd";
                 }
                 break;
@@ -4145,7 +4145,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         SqlDataAdapter sda = new SqlDataAdapter(qry, ErpGlobal.DBCONNECTIONSTRING);
         DataSet ds = new DataSet();
         sda.Fill(ds);
-        if (Session["varCompanyId"].ToString() == "6" && DDPreviewType.SelectedIndex != 1)
+        if (Session["varMasterCompanyIDForERP"].ToString() == "6" && DDPreviewType.SelectedIndex != 1)
         {
             ds.Tables[0].Columns.Add("ImageName", typeof(System.Byte[]));
             foreach (DataRow dr in ds.Tables[0].Rows)
@@ -4174,7 +4174,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
         }
         //Update ReportCount value in MasterTable
-        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update PurchaseIndentIssue set ReportCount=isnull(ReportCount,0)+1 where PIndentIssueId=" + ViewState["PIndentIssueId"] + " And MasterCompanyId=" + Session["varcompanyId"] + "");
+        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update PurchaseIndentIssue set ReportCount=isnull(ReportCount,0)+1 where PIndentIssueId=" + ViewState["PIndentIssueId"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         //
     }
     //protected void DGShowConsumption_RowCreated(object sender, GridViewRowEventArgs e)
@@ -4289,7 +4289,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             ddCatagory.SelectedValue = category;
             ddlcategorycange();
             ddlcategorychange1();
-            if (Session["varCompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 if (category == "10")
                 {
@@ -4315,7 +4315,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             TxtProdCode.Text = dquality.SelectedItem.Text;
             Fill_Quantity();
         }
-        UtilityModule.ConditionalComboFill(ref ddFinish_Type, "select Distinct Id,FINISHED_TYPE_NAME from FINISHED_Type Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddFinish_Type, "select Distinct Id,FINISHED_TYPE_NAME from FINISHED_Type Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         if (dddesign.Visible == true)
         {
             dddesign.SelectedValue = design;
@@ -4457,21 +4457,21 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         DataSet ds;
         if (chkcustomervise.Checked == true)
         {
-            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(quantity-IsNull(piit.CanQty, 0)),0) from PurchaseIndentIssueTran piit,PurchaseIndentIssue pii where pii.PindentIssueid=piit.PindentIssueid and  finishedid=" + strval + " and Finished_Type_Id=" + strval1 + " and piit.orderid=" + ddorderno.SelectedValue + " And pii.MasterCompanyid=" + Session["varCompanyId"] + "");
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(quantity-IsNull(piit.CanQty, 0)),0) from PurchaseIndentIssueTran piit,PurchaseIndentIssue pii where pii.PindentIssueid=piit.PindentIssueid and  finishedid=" + strval + " and Finished_Type_Id=" + strval1 + " and piit.orderid=" + ddorderno.SelectedValue + " And pii.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "");
             val = ds.Tables[0].Rows[0][0].ToString();
         }
         if (chkindentvise.Checked == true)
         {
-            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(quantity-IsNull(piit.CanQty, 0)),0) from PurchaseIndentIssueTran piit,PurchaseIndentIssue pii where pii.PindentIssueid=piit.PindentIssueid and  finishedid=" + strval + "  and  piit.pindentId=" + ddindentno.SelectedValue + " And pii.MasterCompanyid=" + Session["varCompanyId"] + "");
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(quantity-IsNull(piit.CanQty, 0)),0) from PurchaseIndentIssueTran piit,PurchaseIndentIssue pii where pii.PindentIssueid=piit.PindentIssueid and  finishedid=" + strval + "  and  piit.pindentId=" + ddindentno.SelectedValue + " And pii.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "");
             val = ds.Tables[0].Rows[0][0].ToString();
         }
         return val;
     }
     protected void refreshEmp_Click(object sender, EventArgs e)
     {
-        //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.DepartmentId Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+        //string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.DepartmentId Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
 
-        string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.DepartmentId Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+        string Str = "select EI.empid,EI.empname+(case when EI.Empcode<>'' Then  '('+Ei.empcode+')' Else '' End) as empname from empinfo EI inner join Department DM on EI.Departmentid=DM.DepartmentId Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
         if (Session["varCompanyno"].ToString() != "6")
         {
             Str = Str + "  AND DM.DepartmentName='PURCHASE'";
@@ -4558,7 +4558,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
         try
         {
             report();
-            // ViewState["VarCompanyNo"] = Session["varCompanyId"];
+            // ViewState["VarCompanyNo"] = Session["varMasterCompanyIDForERP"];
             Report1Sendpdf();
         }
         catch (Exception ex)
@@ -4597,7 +4597,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             Btnforsms.Enabled = false;
             if (Convert.ToString(ViewState["PIndentIssueId"]) != "" || Convert.ToString(ViewState["PIndentIssueId"]) != "0")
             {
-                UtilityModule.SendmessageToWeaver_Vendor_Finisher(MasterTableName: "PurchaseIndentIssue", DetailTable: "PurchaseIndentIssueTran", UniqueColName: "PIndentIssueId", EmpIdColName: "Partyid", OrderId: Convert.ToInt64(ViewState["PIndentIssueId"]), OrderNo: "PIndentIssueId", MasterCompanyId: Convert.ToInt16(Session["varcompanyId"]), FinishedidColName: "Finishedid", QtyCOlName: "quantity", ReqByDate: "Delivery_Date", JobName: "Purchase");
+                UtilityModule.SendmessageToWeaver_Vendor_Finisher(MasterTableName: "PurchaseIndentIssue", DetailTable: "PurchaseIndentIssueTran", UniqueColName: "PIndentIssueId", EmpIdColName: "Partyid", OrderId: Convert.ToInt64(ViewState["PIndentIssueId"]), OrderNo: "PIndentIssueId", MasterCompanyId: Convert.ToInt16(Session["varMasterCompanyIDForERP"]), FinishedidColName: "Finishedid", QtyCOlName: "quantity", ReqByDate: "Delivery_Date", JobName: "Purchase");
             }
             Btnforsms.Enabled = true;
             lblerrormessage.Visible = true;
@@ -4657,7 +4657,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
 
     Line:
         string code = "";
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "20":
                 code = ViewState["purchasecode"].ToString() + maxid.ToString();
@@ -4792,7 +4792,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             param[1] = new SqlParameter("@OldEmpId", ddempname.SelectedValue);
             param[2] = new SqlParameter("@EmpId", DDlegalvendor.SelectedValue);
             param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
 
@@ -4831,7 +4831,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             param[0] = new SqlParameter("@PIndentIssueId", ddlchalanno.SelectedValue);
             param[1] = new SqlParameter("@GSTType", DDGSType.SelectedValue);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 
@@ -4956,7 +4956,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             TxtIndentNo.Text = "";
             UtilityModule.ConditionalComboFill(ref ddcustomercode, @"Select Distinct OM.CustomerID, CI.CustomerCode + SPACE(5) + CI.CompanyName 
                 From OrderMaster OM(Nolock)
-                JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId And CI.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId And CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                 Where OM.CompanyId = " + ddCompName.SelectedValue + @" 
                 Order By CI.CustomerCode + SPACE(5) + CI.CompanyName ", true, "Select CustomerCode");
 
@@ -5039,7 +5039,7 @@ public partial class Masters_Purchase_PurchageIndentIssueNew : System.Web.UI.Pag
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //******
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_CANCELPRODUCTIONORDER", param);
             //******

@@ -11,13 +11,13 @@ public partial class Masters_Campany_FrmTodoManagement : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "Select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " Order by CompanyName", true, "----Select Company----");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "Select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by CompanyName", true, "----Select Company----");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -33,7 +33,7 @@ public partial class Masters_Campany_FrmTodoManagement : System.Web.UI.Page
     }
     private void CompanySelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDUserName, "Select UserId,UserName+' -- '+LoginName from NewUserDetail Where Companyid=" + Session["varCompanyId"], true, "----Select ----");
+        UtilityModule.ConditionalComboFill(ref DDUserName, "Select UserId,UserName+' -- '+LoginName from NewUserDetail Where Companyid=" + Session["varMasterCompanyIDForERP"], true, "----Select ----");
     }
     protected void DDUserName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -130,7 +130,7 @@ public partial class Masters_Campany_FrmTodoManagement : System.Web.UI.Page
     private void Fill_Grid()
     {
         ViewState["SrNo"] = 0;
-        string Str = "Select SrNo,WorkToDo,Remark,Case When PriorityLevel=0 Then 'Normal' Else Case When PriorityLevel=1 Then 'Urgent' Else 'Top Urgent' End End PriorityLevel,replace(convert(varchar(11),DueDate,106), ' ','-') DueDate,JobStatus From ManagmentToDo Where MasterCompanyId=" + Session["varCompanyId"] + " And CompanyId=" + DDCompanyName.SelectedValue + " And UserID=" + DDUserName.SelectedValue;
+        string Str = "Select SrNo,WorkToDo,Remark,Case When PriorityLevel=0 Then 'Normal' Else Case When PriorityLevel=1 Then 'Urgent' Else 'Top Urgent' End End PriorityLevel,replace(convert(varchar(11),DueDate,106), ' ','-') DueDate,JobStatus From ManagmentToDo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CompanyId=" + DDCompanyName.SelectedValue + " And UserID=" + DDUserName.SelectedValue;
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         DGToDoManagment.DataSource = Ds.Tables[0];
         DGToDoManagment.DataBind();

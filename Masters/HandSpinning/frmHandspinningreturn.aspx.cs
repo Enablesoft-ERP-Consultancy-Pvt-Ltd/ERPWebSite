@@ -12,15 +12,15 @@ public partial class Masters_HandSpinning_frmHandspinningreturn : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and Process_name='Hand Spinning' and mastercompanyid=" + Session["varcompanyid"] + @" order by PROCESS_NAME
-                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varcompanyid"] + @" order by GodownName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and Process_name='Hand Spinning' and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME
+                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by GodownName
                            select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -174,7 +174,7 @@ public partial class Masters_HandSpinning_frmHandspinningreturn : System.Web.UI.
                 param[6] = new SqlParameter("@userid", Session["varuserid"]);
                 param[7] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[7].Direction = ParameterDirection.Output;
-                param[8] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                param[8] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[9] = new SqlParameter("@issuemasterid", DDissueno.SelectedValue);
                 param[10] = new SqlParameter("@BinNo", TDBinNo.Visible == true ? DDBinNo.SelectedItem.Text : "");
                 param[11] = new SqlParameter("@Processid", DDProcessName.SelectedValue);

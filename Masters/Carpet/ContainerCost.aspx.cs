@@ -10,7 +10,7 @@ public partial class Masters_Carpet_ContainerCost : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,12 +23,12 @@ public partial class Masters_Carpet_ContainerCost : System.Web.UI.Page
                 TxtLength.Focus();
                 con.Open();
                 //int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, "Select VarCompanyNo From MasterSetting"));
-                txtVarCompanyNo.Text = Session["varCompanyId"].ToString();
-                switch (Convert.ToInt16(Session["varCompanyId"]))
+                txtVarCompanyNo.Text = Session["varMasterCompanyIDForERP"].ToString();
+                switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
                 {
                 case 2:
                         TxtPackingType.Text = Request.QueryString["PackingType"];
-                        DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM CONTAINERCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID And IPM.MasterCompanyId=" + Session["varCompanyId"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "'");
+                        DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM CONTAINERCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "'");
                         if (Ds.Tables[0].Rows.Count > 0)
                         {
                             TxtLength.Text = Ds.Tables[0].Rows[0]["length"].ToString();
@@ -44,7 +44,7 @@ public partial class Masters_Carpet_ContainerCost : System.Web.UI.Page
                         }
                         else
                         {
-                            Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGtYPE=3 AND IPM.MasterCompanyId=" + Session["varCompanyId"] + "  AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "'");
+                            Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM PACKINGCOST PC,ITEM_PARAMETER_MASTER IPM WHERE PC.FINISHEDID=IPM.ITEM_FINISHED_ID AND PACKINGtYPE=3 AND IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  AND IPM.PRODUCTCODE='" + Request.QueryString["itemcode"] + "'");
                             if (Ds.Tables[0].Rows.Count > 0)
                             {
                                 TxtLength.Text = Ds.Tables[0].Rows[0]["length"].ToString();
@@ -58,7 +58,7 @@ public partial class Masters_Carpet_ContainerCost : System.Web.UI.Page
                         }
                         break;
                 case 3:
-                        Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM CONTAINERCOST Where MasterCompanyId=" + Session["varCompanyId"] + " And DraftOrderDetailId='" + Request.QueryString["itemcode"] + "'");
+                        Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT * FROM CONTAINERCOST Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And DraftOrderDetailId='" + Request.QueryString["itemcode"] + "'");
                         if (Ds.Tables[0].Rows.Count > 0)
                         {
                             DDunit.SelectedIndex = Convert.ToInt32(Ds.Tables[0].Rows[0]["UnitId"]);
@@ -235,8 +235,8 @@ public partial class Masters_Carpet_ContainerCost : System.Web.UI.Page
             _arrpara[6].Value = TxtContainerCost.Text;
             _arrpara[7].Value = TxtNetcost.Text;
             _arrpara[8].Value = Session["varuserid"];
-            _arrpara[9].Value = Session["varCompanyId"];
-            if (Convert.ToInt32(Session["varCompanyId"]) == 2)
+            _arrpara[9].Value = Session["varMasterCompanyIDForERP"];
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 2)
             {
                 _arrpara[0].Value = Request.QueryString["itemcode"]; 
                 _arrpara[10].Value = 0;

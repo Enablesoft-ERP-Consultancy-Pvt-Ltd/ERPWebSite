@@ -1,43 +1,25 @@
-﻿using IExpro.Core.Common;
-using IExpro.Core.Models;
-using IExpro.Web.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Xml;
+using System.Data;
+using System.Data.SqlClient;
 
-using IExpro.Web.Pages;
-
-
-public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
+public partial class Masters_Process_frmAddItemProcess : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-
-
-            var result = ((ProcessType[])Enum.GetValues(typeof(ProcessType))).Select(x => new SelectedList { ItemId = (int)x, ItemName = x.ToString() });
-
-            rdbtnLst.DataSource = result;
-            rdbtnLst.DataBind();
-            rdbtnLst.SelectedIndex = 0;
-
-
-
-
             UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
-            lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
-            switch (Session["varcompanyid"].ToString())
+            lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     TDquality.Visible = false;
@@ -47,11 +29,6 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
                     TDquality.Visible = true;
                     TDDesign.Visible = true;
                     break;
-
-
-
-
-
             }
             //
             if (TDquality.Visible == true)
@@ -62,60 +39,22 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
     }
     protected void Fillselectprocess()
     {
-        SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        SqlParameter[] param = new SqlParameter[6];
-
-        param[0] = new SqlParameter("@Flag", SqlDbType.Int);
-        param[0].Direction = ParameterDirection.Input;
-        param[0].Value = 2;
-
-        param[1] = new SqlParameter("@CompanyId", SqlDbType.VarChar);
-        param[1].Direction = ParameterDirection.Input;
-        param[1].Value = Convert.ToInt32(Session["varcompanyid"]);
-
-        param[2] = new SqlParameter("@ItemId", SqlDbType.Int);
-        param[2].Direction = ParameterDirection.Input;
-        param[2].Value = Convert.ToInt32(Request.QueryString["a"]);
-
-        param[3] = new SqlParameter("@QualityId", SqlDbType.Int);
-        param[3].Direction = ParameterDirection.Input;
-        param[3].Value = Convert.ToInt32(DDQuality.SelectedValue);
-
-        param[4] = new SqlParameter("@DesignId", SqlDbType.Int);
-        param[4].Direction = ParameterDirection.Input;
-        param[4].Value = Convert.ToInt32(DDDesign.SelectedValue);
-
-
-        param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 200);
-        param[5].Direction = ParameterDirection.Output;
-
-
-
-
-        List<ItemList> lstselected = new List<ItemList>();
-
-        using (var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "ProcessSequenceProc", param))
+        string str = @"select PNM.process_Name_id,PNM.Process_Name from Process_name_Master PNM,Item_Process IP
+                      Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
+        if (DDQuality.SelectedIndex > 0)
         {
-            while (reader.Read())
-            {
-                ItemList _obj = new ItemList();
-
-                _obj.Index = reader["SeqNo"] != null ? Convert.ToInt32(reader["SeqNo"]) : 0;
-                int ProcessId = reader["process_Name_id"] != null ? Convert.ToInt32(reader["process_Name_id"]) : 0;
-                int _processType = reader["ProcessType"] != null ? Convert.ToInt32(reader["ProcessType"]) : 0;
-                _obj.ItemId = reader["ProcessType"].ToString() + '-' + reader["process_Name_id"].ToString();
-                _obj.ItemName = '(' + ((ProcessType)_processType).ToString() + ") " + reader["Process_Name"].ToString();
-                lstselected.Add(_obj);
-            }
-            lstSelectProcess.DataSource = lstselected;
-            lstSelectProcess.DataValueField = "ItemId";
-            lstSelectProcess.DataTextField = "ItemName";
-            lstSelectProcess.DataBind();
+            str = str + " and IP.QualityId=" + DDQuality.SelectedValue;
         }
-
-
-
-
+        if (DDDesign.SelectedIndex > 0)
+        {
+            str = str + " and IP.DesignId=" + DDDesign.SelectedValue;
+        }
+        else
+        {
+            str = str + " and IP.DesignId=0";
+        }
+        str = str + "  order by IP.SeqNo";
+        UtilityModule.ConditonalListFill(ref lstSelectProcess, str);
     }
     protected void btngo_Click(object sender, EventArgs e)
     {
@@ -123,13 +62,10 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
         {
             if (lstProcess.Items[i].Selected)
             {
-                var lstItem = new ListItem('(' + rdbtnLst.SelectedItem.Text + ") " + lstProcess.Items[i].Text, rdbtnLst.SelectedValue + '-' + lstProcess.Items[i].Value);
-
                 //Check if process Already Exists
-                if (!lstSelectProcess.Items.Contains(lstItem))
+                if (!lstSelectProcess.Items.Contains(lstProcess.Items[i]))
                 {
-                    //lstItem.Attributes.Add("ProcessType", rdbtnLst.SelectedValue); 
-                    lstSelectProcess.Items.Add(lstItem);
+                    lstSelectProcess.Items.Add(new ListItem(lstProcess.Items[i].Text, lstProcess.Items[i].Value));
                 }
             }
         }
@@ -140,7 +76,7 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
 
         foreach (ListItem liItems in lstSelectProcess.Items)
         {
-            if (liItems.Selected)
+            if (liItems.Selected == true)
             {
                 lstselected.Add(liItems);
             }
@@ -157,23 +93,6 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
-
-
-        XmlDocument doc = new XmlDocument();
-        XmlElement el = (XmlElement)doc.AppendChild(doc.CreateElement("ProcessItems"));
-        for (int i = 0; i < lstSelectProcess.Items.Count; i++)
-        {
-            XmlElement elm = doc.CreateElement("ProcessItem");
-            elm.InnerText = lstSelectProcess.Items[i].Text;
-            var itemValue = lstSelectProcess.Items[i].Value.Split('-');
-            int seqNo = i + 1;
-            elm.SetAttribute("SeqNO", seqNo.ToString());
-            elm.SetAttribute("ProcessType", itemValue[0]);
-            elm.SetAttribute("ProcessId", itemValue[1]);
-            el.AppendChild(elm);
-        }
-
-        Console.WriteLine();
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         if (con.State == ConnectionState.Closed)
         {
@@ -182,29 +101,47 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] array = new SqlParameter[8];
-            array[0] = new SqlParameter("@Flag", SqlDbType.Int);
-            array[1] = new SqlParameter("@CreatedBy", SqlDbType.Int);
-            array[2] = new SqlParameter("@CompanyId", SqlDbType.Int);
-            array[3] = new SqlParameter("@QualityId", SqlDbType.Int);
-            array[4] = new SqlParameter("@DesignId", SqlDbType.Int);
-            array[5] = new SqlParameter("@ProcessXml", SqlDbType.Xml);
-            array[6] = new SqlParameter("@Msg", SqlDbType.VarChar, 200);
-            array[7] = new SqlParameter("@ItemId", SqlDbType.Int);
+            SqlParameter[] array = new SqlParameter[7];
+            array[0] = new SqlParameter("@Itemid", SqlDbType.Int);
+            array[1] = new SqlParameter("@UserId", SqlDbType.Int);
+            array[2] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
+            array[3] = new SqlParameter("@ProcessId_SeqNO", SqlDbType.VarChar, 100);
+            array[4] = new SqlParameter("@Msg", SqlDbType.VarChar, 50);
+            array[5] = new SqlParameter("@QualityId", SqlDbType.Int);
+            array[6] = new SqlParameter("@DesignId", SqlDbType.Int);
 
-            array[0].Value = 1;
+            array[0].Value = Request.QueryString["a"];
             array[1].Value = Session["varuserid"];
-            array[2].Value = Session["varcompanyId"];
-            array[3].Value = Convert.ToInt32(DDQuality.SelectedValue);
-            array[4].Value = Convert.ToInt32(DDDesign.SelectedValue);
-            array[5].Value = doc.OuterXml;
-            array[6].Direction = ParameterDirection.Output;
+            array[2].Value = Session["varMasterCompanyIDForERP"];
 
-            array[7].Value = Request.QueryString["a"];
+            string str = "";
+            string strnew = "";
+            // find ProcessId And SeqNo
+            int seqNo = 0;
+            for (int i = 0; i < lstSelectProcess.Items.Count; i++)
+            {
+
+                seqNo += 1;
+                str = lstSelectProcess.Items[i].Value + "," + seqNo;
+                if (strnew == "")
+                {
+                    strnew = str;
+                }
+                else
+                {
+                    strnew = strnew + "|" + str;
+
+                }
+
+            }
+            array[3].Value = strnew;
+            array[4].Direction = ParameterDirection.Output;
+            array[5].Value = TDquality.Visible == false ? "0" : DDQuality.SelectedValue;
+            array[6].Value = TDDesign.Visible == false ? "0" : (DDDesign.SelectedIndex > 0 ? DDDesign.SelectedValue : "0");
             //Save Data
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "ProcessSequenceProc", array);
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveItem_Process", array);
             Tran.Commit();
-            lblMessage.Text = array[6].Value.ToString();
+            lblMessage.Text = array[4].Value.ToString();
         }
         catch (Exception ex)
         {
@@ -237,23 +174,4 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
     {
         Fillselectprocess();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

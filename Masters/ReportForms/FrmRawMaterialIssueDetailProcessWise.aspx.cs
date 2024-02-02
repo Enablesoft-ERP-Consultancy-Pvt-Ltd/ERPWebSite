@@ -14,17 +14,17 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By PROCESS_NAME
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME
                         select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM JOIN CategorySeparate CS ON ICM.CATEGORY_ID=Cs.Categoryid and Cs.id=1
                         select val,type from sizetype
-                        select  UnitsId,UnitName from  units with(nolock) Where Mastercompanyid=" + Session["varcompanyid"] + @"";
+                        select  UnitsId,UnitName from  units with(nolock) Where Mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @"";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);
             UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 1, true, "--Select--");
@@ -136,7 +136,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
         {
             string str;
 
-            str = "select distinct vf.QualityId,vf.QualityName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where Vf.Mastercompanyid=" + Session["varcompanyid"];
+            str = "select distinct vf.QualityId,vf.QualityName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where Vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             if (ddItemName.SelectedIndex > 0)
             {
                 str = str + " And Vf.Item_Id=" + ddItemName.SelectedValue;
@@ -145,7 +145,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
 
             //if (RDRawMaterial.Checked == true)
             //{
-            //    str = "select distinct vf.QualityId,vf.QualityName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where Vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.QualityId,vf.QualityName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where Vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And Vf.Item_Id=" + ddItemName.SelectedValue;
@@ -155,7 +155,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             //}
             //else if (DDProcessName.SelectedIndex > 0)
             //{
-            //    str = "select distinct vf.QualityId,vf.QualityName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   Vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.QualityId,vf.QualityName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   Vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And Vf.Item_Id=" + ddItemName.SelectedValue;
@@ -164,7 +164,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             //}
             //else
             //{
-            //    str = "select QualityId,QualityName from quality Where Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select QualityId,QualityName from quality Where Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And Item_Id=" + ddItemName.SelectedValue;
@@ -186,7 +186,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
         string str;
         if (TRDDDesign.Visible == true)
         {
-            str = "select distinct vf.designId,vf.designName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            str = "select distinct vf.designId,vf.designName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             if (ddItemName.SelectedIndex > 0)
             {
                 str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -199,7 +199,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
 
             //if (RDRawMaterial.Checked == true)
             //{
-            //    str = "select distinct vf.designId,vf.designName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.designId,vf.designName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -212,7 +212,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             //}
             //else if (DDProcessName.SelectedIndex > 0)
             //{
-            //    str = "select distinct vf.designId,vf.designName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.designId,vf.designName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -225,7 +225,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             //}
             //else
             //{
-            //    str = "select distinct vf.designId,vf.designName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.designId,vf.designName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -244,7 +244,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
         string str;
         if (TRDDColor.Visible == true)
         {
-            str = "select distinct vf.colorid,vf.ColorName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            str = "select distinct vf.colorid,vf.ColorName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             if (ddItemName.SelectedIndex > 0)
             {
                 str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -261,7 +261,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
 
             //if (RDRawMaterial.Checked == true)
             //{
-            //    str = "select distinct vf.colorid,vf.ColorName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.colorid,vf.ColorName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -278,7 +278,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             //}
             //else if (DDProcessName.SelectedIndex > 0)
             //{
-            //    str = "select distinct vf.colorid,vf.colorname from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.colorid,vf.colorname from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -295,7 +295,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             //}
             //else
             //{
-            //    str = "select distinct vf.colorid,vf.colorname from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.colorid,vf.colorname from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -318,7 +318,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
         string str;
         if (TRDDShape.Visible == true)
         {
-            str = "select distinct vf.ShapeId,vf.ShapeName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            str = "select distinct vf.ShapeId,vf.ShapeName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             if (ddItemName.SelectedIndex > 0)
             {
                 str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -327,7 +327,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
 
             //if (DDProcessName.SelectedIndex > 0)
             //{
-            //    str = "select distinct vf.ShapeId,vf.ShapeName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.ShapeId,vf.ShapeName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -337,7 +337,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             //}
             //else
             //{
-            //    str = "select distinct vf.ShapeId,vf.ShapeName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+            //    str = "select distinct vf.ShapeId,vf.ShapeName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
             //    if (ddItemName.SelectedIndex > 0)
             //    {
             //        str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -383,7 +383,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
         {
             if (DDProcessName.SelectedIndex > 0)
             {
-                str = "select distinct vf.SizeId,vf." + strSize + " as Size from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.SizeId,vf." + strSize + " as Size from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -408,7 +408,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
             }
             else
             {
-                str = "select distinct vf.SizeId,vf." + strSize + " as Size from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.SizeId,vf." + strSize + " as Size from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -598,7 +598,7 @@ public partial class Masters_ReportForms_FrmRawMaterialIssueDetailProcessWise : 
 
                     //var Onepcslagattotal = ds.Tables[0].Compute("sum(ONEPCSLAGAT)", "prorderid=" + ds1.Tables[0].Rows[i]["prorderid"] + "");
 
-                    //if (Session["varcompanyId"].ToString() == "21")
+                    //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     //{
                     //    sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["LoomNo"]);
                     //    sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Prorderid"]);

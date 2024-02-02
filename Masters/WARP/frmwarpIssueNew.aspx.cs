@@ -12,7 +12,7 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx"); 
         }
@@ -21,11 +21,11 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
             string str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                             Select D.Departmentid,D.Departmentname from Department D Where D.DepartmentName='WARPING' order by Departmentname
-                            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varcompanyid"] + @"
-                            Select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + @" order by customer
-                            Select UnitsID, UnitName From Units(Nolock) Where MasterCompanyId = " + Session["varcompanyid"] + @" Order By UnitName ";
+                            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
+                            Select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by customer
+                            Select UnitsID, UnitName From Units(Nolock) Where MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By UnitName ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
 
@@ -505,7 +505,7 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Effectivedate", txtissuedate.Text);
             param[5] = new SqlParameter("@EmpId", DDEmp.SelectedValue);
-            param[6] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[6] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             //****************
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETARTICLEBEAMDESCRIPTION", param);
             GvBeamDesc.DataSource = ds.Tables[0];

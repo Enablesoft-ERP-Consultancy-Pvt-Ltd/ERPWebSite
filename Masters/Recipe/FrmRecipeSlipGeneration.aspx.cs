@@ -12,7 +12,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
         {
             string Str = @"Select CI.CompanyId, CI.CompanyName 
                 From CompanyInfo CI(Nolock)
-                JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + " And CA.MasterCompanyid = " + Session["varCompanyId"] + @" 
+                JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + " And CA.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                 Order By CI.CompanyName
                 Select ID, [Name] From RecipeMaster (Nolock) Where MasterCompanyID = 16 Order By [Name] ";
 
@@ -55,7 +55,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
             Str = @"Select Distinct a.ProcessID, PNM.PROCESS_NAME 
                 From RecipeSlipGenerationMaster a(Nolock) 
                 JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = a.ProcessID 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" 
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" 
                 Order By PNM.PROCESS_NAME ";
         }
         else
@@ -63,7 +63,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
             Str = @"Select Distinct PNM.Process_Name_Id, PNM.Process_Name 
                 From PROCESS_NAME_MASTER PNM(Nolock)
                 JOIN RecipeMaster RM(Nolock) ON RM.ProcessID = PNM.PROCESS_NAME_ID 
-                Where PNM.MasterCompanyId = " + Session["varCompanyId"] + " Order By PNM.Process_Name";
+                Where PNM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By PNM.Process_Name";
         }
         UtilityModule.ConditionalComboFill(ref DDProcessName, Str, true, "--SELECT--");
         if (DDProcessName.Items.Count > 0)
@@ -86,7 +86,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
         {
             if (ChkForEdit.Checked == true)
             {
-                string Str = @"Select Distinct SlipNo, SlipNo SlipNo1 From RecipeSlipGenerationMaster(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + @" And 
+                string Str = @"Select Distinct SlipNo, SlipNo SlipNo1 From RecipeSlipGenerationMaster(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And 
                 CompanyID = " + DDCompanyName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + " Order By SlipNo";
                 UtilityModule.ConditionalComboFill(ref DDSlipNo, Str, true, "--SELECT--");
             }
@@ -132,7 +132,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@Toprocessid", DDProcessName.SelectedValue);
                     cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
                     cmd.Parameters.AddWithValue("@TODate", TxtToDate.Text);
-                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     cmd.Parameters.AddWithValue("@ReceipeID", DDRecipeName.SelectedValue);
 
                     DataSet Ds = new DataSet();
@@ -214,7 +214,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
             _arrpara1[5] = new SqlParameter("@ToDate", TxtToDate.Text);
             _arrpara1[6] = new SqlParameter("@StockNo", StockNo);
             _arrpara1[7] = new SqlParameter("@Userid", Session["varuserid"]);
-            _arrpara1[8] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            _arrpara1[8] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             _arrpara1[9] = new SqlParameter("@Message", SqlDbType.NVarChar, 250);
             _arrpara1[9].Direction = ParameterDirection.Output;
 
@@ -272,7 +272,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,
                 @"Select Top 1 CompanyID, ProcessID, SlipNo, Replace(Convert(Varchar(11), SlipDate, 106), ' ', '-') SlipDate, 
                 Replace(Convert(Varchar(11), FromDate, 106), ' ', '-') FromDate, Replace(Convert(Varchar(11), ToDate, 106), ' ', '-') ToDate 
-                From RecipeSlipGenerationMaster(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + " And CompanyID = " + DDCompanyName.SelectedValue + " And SlipNo = " + TxtSlipNoForEdit.Text);
+                From RecipeSlipGenerationMaster(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + DDCompanyName.SelectedValue + " And SlipNo = " + TxtSlipNoForEdit.Text);
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 DDProcessName.SelectedValue = Ds.Tables[0].Rows[0]["ProcessID"].ToString();
@@ -350,7 +350,7 @@ public partial class Masters_Recipe_FrmRecipeSlipGeneration : System.Web.UI.Page
             param[1] = new SqlParameter("@CompanyID", DDCompanyName.SelectedValue);
             param[2] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
 

@@ -11,17 +11,17 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname
-                          Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            string str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname
+                          Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                           SELECT dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME  FROM  dbo.CategorySeparate INNER JOIN
                           dbo.ITEM_CATEGORY_MASTER ON dbo.CategorySeparate.Categoryid = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID inner join UserRights_Category UC on(UC.CategoryId=ITEM_CATEGORY_MASTER.Category_Id And UC.UserId=" + Session["varuserid"] + @")
-                          WHERE ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varCompanyId"] + @" And CategorySeparate.id=1
+                          WHERE ITEM_CATEGORY_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And CategorySeparate.id=1
                         Select Distinct OM.CustomerId, CI.CustomerCode  
                         From OrderMaster OM(Nolock)
                         JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId 
@@ -48,7 +48,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
 
             txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
 
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "9":
                     TxtChallanNo.Enabled = true;
@@ -82,7 +82,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
     }
     protected void CompanySelectedIndex()
     {
-        string str = "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + "";
+        string str = "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
         //if (Session["varcompanyNo"].ToString() != "8")
         //{
         //    str = str + " And  CI.CompanyId<>" + DDFCompName.SelectedValue + "";
@@ -108,7 +108,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
         TDShade.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                      " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                     " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                     " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -118,32 +118,32 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
                 {
                     case "1":
                         TDQuality.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref dquality, "select Qualityid,Qualityname from Quality Where MasterCompanyId=" + Session["varCompanyId"], true, "--Select Quality--");
+                        UtilityModule.ConditionalComboFill(ref dquality, "select Qualityid,Qualityname from Quality Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Quality--");
                         break;
                     case "2":
                         TDDesign.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref dddesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName ", true, "Select Design");
+                        UtilityModule.ConditionalComboFill(ref dddesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order  by DesignName ", true, "Select Design");
                         break;
                     case "3":
                         TDColor.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddcolor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + " order by colorname", true, "--Select Color--");
+                        UtilityModule.ConditionalComboFill(ref ddcolor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by colorname", true, "--Select Color--");
                         break;
                     case "4":
                         TDShape.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by ShapeName", true, "--Select Shape--");
+                        UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by ShapeName", true, "--Select Shape--");
                         break;
                     case "5":
                         TDSize.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid ", true, "Size in Ft");
+                        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid ", true, "Size in Ft");
                         break;
                     case "6":
                         TDShade.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddlshade, "select shadecolorid,shadecolorname from shadecolor Where MasterCompanyId=" + Session["varCompanyId"] + " order by shadecolorname", true, "Select Shadecolor");
+                        UtilityModule.ConditionalComboFill(ref ddlshade, "select shadecolorid,shadecolorname from shadecolor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by shadecolorname", true, "Select Shadecolor");
                         break;
                 }
             }
         }
-        UtilityModule.ConditionalComboFill(ref dditemname, "Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Item_Name", true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref dditemname, "Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Item_Name", true, "--Select Item--");
     }
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -183,11 +183,11 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
         }
         if (ddshape.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid," + strSize + " from size Where MasterCompanyId=" + Session["varCompanyId"] + " And shapeid=" + ddshape.SelectedValue + " order by sizeid ", true, "Size in Ft");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid," + strSize + " from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And shapeid=" + ddshape.SelectedValue + " order by sizeid ", true, "Size in Ft");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid," + strSize + " from size Where MasterCompanyId=" + Session["varCompanyId"] + "  order by sizeid ", true, "Size in Ft");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid," + strSize + " from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by sizeid ", true, "Size in Ft");
         }
     }
     protected void DDsizetype_SelectedIndexChanged(object sender, EventArgs e)
@@ -197,7 +197,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
     protected void DDFGodown_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
-        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
         if (TDFBinNo.Visible == true)
         {
@@ -210,7 +210,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
             //ViewState["FID"] = ItemFinishedId;
 
             str = "select Distinct LotNo,LotNo From Stock  Where Companyid=" + DDFCompName.SelectedValue + " And Item_Finished_Id=" + ItemFinishedId + " And Godownid=" + DDFGodown.SelectedValue + @" and Round(Qtyinhand,3)>0
-               Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName";
+               Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -222,7 +222,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
     protected void ddlotno_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
-        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         if (MySession.TagNowise == "1")
         {
             DDTagNo.SelectedIndex = -1;
@@ -257,7 +257,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
         {
             con.Open();
         }
-        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
@@ -299,7 +299,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
             _array[10].Direction = ParameterDirection.InputOutput;
             _array[10].Value = TxtChallanNo.Text;
             _array[11].Direction = ParameterDirection.Output;
-            _array[12].Value = Session["VarcompanyId"];
+            _array[12].Value = Session["varMasterCompanyIDForERP"];
             _array[13].Value = DDunit.SelectedValue;
             _array[14].Value = TDTagNo.Visible == true ? DDTagNo.SelectedItem.Text : "Without Tag No";
             _array[15].Value = Session["varuserid"];
@@ -583,7 +583,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
         {
             if (variable.VarCHECKBINCONDITION == "1")
             {
-                int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 UtilityModule.FillBinNO(DDTBinNo, Convert.ToInt32(DDTGodown.SelectedValue), ItemFinishedId, New_Edit: 0);
             }
             else
@@ -598,7 +598,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
     }
     protected void DDTagNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         txtstock.Text = UtilityModule.getstockQty(DDFCompName.SelectedValue, DDFGodown.SelectedValue, ddlotno.SelectedItem.Text, ItemFinishedId, DDTagNo.SelectedItem.Text, BinNo: (TDFBinNo.Visible == true ? DDFBinNo.SelectedItem.Text : "")).ToString();
     }
     protected void DGStockTransfer_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -629,7 +629,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "16":
                     Session["rptFileName"] = "~\\Reports\\RptstockTransfernew.rpt";
@@ -659,7 +659,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
 
     protected void DDFBinNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //ViewState["FID"] = ItemFinishedId;
         string str = "";
         str = "select Distinct LotNo,LotNo From Stock  Where Companyid=" + DDFCompName.SelectedValue + " And Item_Finished_Id=" + ItemFinishedId + " And Godownid=" + DDFGodown.SelectedValue + @" and Round(Qtyinhand,3)>0";
@@ -667,7 +667,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
         {
             str = str + " and BinNo='" + DDFBinNo.SelectedItem.Text + "'";
         }
-        str = str + "  Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName";
+        str = str + "  Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -693,7 +693,7 @@ public partial class Masters_RawMaterial_frmStocktransfer : System.Web.UI.Page
                 //    DGOrderConsmption.Columns[i].Visible = false;
                 //}
 
-                if (Session["varcompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     if (DGOrderConsmption.Columns[i].HeaderText == "Already TransferQty" || DGOrderConsmption.Columns[i].HeaderText == "Bal Qty")
                     {

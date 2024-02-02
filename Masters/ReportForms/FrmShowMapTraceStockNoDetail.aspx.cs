@@ -23,7 +23,7 @@ public partial class Masters_ReportForms_FrmShowMapTraceStockNoDetail : CustomPa
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }

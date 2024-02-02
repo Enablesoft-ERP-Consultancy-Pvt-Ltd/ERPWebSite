@@ -12,15 +12,15 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveFromMachine : Syst
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName 
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                            select UnitsId,UnitName from Units order by UnitName
-                            select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and MasterCompanyid=" + Session["varcompanyid"] + @" and Process_Name='WEAVING' order by PROCESS_NAME_ID
+                            select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" and Process_Name='WEAVING' order by PROCESS_NAME_ID
                             select MachineNoId,MachineNoName From MachineNoMaster(Nolock) order by MachineNoName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -47,11 +47,11 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveFromMachine : Syst
 //            if (Session["VarCompanyNo"].ToString() == "21")
 //            {
 //                str2 = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  
-//                Where  GM.GodownName in('SPARE TANA','YARN OPENING TANA','TANA HOUSE') and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName ";
+//                Where  GM.GodownName in('SPARE TANA','YARN OPENING TANA','TANA HOUSE') and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName ";
 //            }
 //            else
 //            {
-//                str2 = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName ";
+//                str2 = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName ";
 //            }
 //            DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
 
@@ -183,7 +183,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveFromMachine : Syst
             param[6] = new SqlParameter("@ReceiveNo", txtReceiveNo.Text);
             param[7] = new SqlParameter("@ReceiveDate", txtReceiveDate.Text);
             param[8] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[9] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[9] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[10] = new SqlParameter("@StringDetail", Strdetail);
             param[11] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[11].Direction = ParameterDirection.Output;
@@ -306,7 +306,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveFromMachine : Syst
     {
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@MaterialIssueId",DDIssueNo.SelectedValue);
-        param[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+        param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[2] = new SqlParameter("@UserId", Session["VarUserid"]);
         //************
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetIssueMaterialOnMachineDetail", param);
@@ -334,7 +334,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveFromMachine : Syst
 
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@MaterialReceiveId", hnMaterialReceiveId.Value);
-        param[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+        param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[2] = new SqlParameter("@UserId", Session["VarUserid"]);
         //************
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetMaterialReceiveFromMachineDetail", param);
@@ -386,7 +386,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveFromMachine : Syst
             param[2] = new SqlParameter("@MaterialIssueId", lblMaterialIssueId.Text);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@UserId", Session["VarUserid"]);
             //************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteMaterialReceiveFromMachine", param);

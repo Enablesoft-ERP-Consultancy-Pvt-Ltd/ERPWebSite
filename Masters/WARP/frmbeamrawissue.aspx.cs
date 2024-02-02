@@ -11,7 +11,7 @@ public partial class Masters_WARP_frmbeamrawissue : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,9 +20,9 @@ public partial class Masters_WARP_frmbeamrawissue : System.Web.UI.Page
             string str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                            select D.Departmentid,D.Departmentname from Department D Where D.DepartmentName='WARPING' order by Departmentname
-                           select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varcompanyid"];
+                           select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -97,7 +97,7 @@ public partial class Masters_WARP_frmbeamrawissue : System.Web.UI.Page
             DropDownList DDGodown = ((DropDownList)e.Row.FindControl("DDGodown"));
 
             UtilityModule.ConditionalComboFill(ref DDGodown, "select GoDownID,GodownName from GodownMaster order by GodownName", true, "--Plz Select--");
-            if (Session["varcompanyid"].ToString() == "14")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "14")
             {
                 //Store Godown
 

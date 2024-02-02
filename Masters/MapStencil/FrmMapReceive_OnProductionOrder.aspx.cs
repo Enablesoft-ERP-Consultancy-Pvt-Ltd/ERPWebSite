@@ -12,13 +12,13 @@ public partial class Masters_MapStencil_FrmMapReceive_OnProductionOrder : System
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                            select UnitsId,UnitName from Units order by UnitName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -200,7 +200,7 @@ public partial class Masters_MapStencil_FrmMapReceive_OnProductionOrder : System
                 cmd.Parameters.AddWithValue("@Receivedate", txtReceivedate.Text);
                 cmd.Parameters.AddWithValue("@MapStencilType", DDMapStencilType.SelectedValue);
                 cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@dtrecords", dtrecords);
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;

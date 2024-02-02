@@ -12,21 +12,21 @@ public partial class Masters_ReportForms_VendorAllocationReport : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
 
-            UtilityModule.ConditionalComboFill(ref ddlCompanyname, "select Companyid, CompanyName from companyinfo where MasterCompanyId=" + Session["varCompanyId"] + "  order by CompanyName ", true, "-------SELECT---------");
+            UtilityModule.ConditionalComboFill(ref ddlCompanyname, "select Companyid, CompanyName from companyinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by CompanyName ", true, "-------SELECT---------");
             if (ddlCompanyname.Items.Count > 0)
             {
                 ddlCompanyname.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 ddlCompanyname.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref ddvendorname, "select EmpId, EmpName from empinfo where MasterCompanyId=" + Session["varCompanyId"] + "  order by EmpName ", true, "-------SELECT---------");
+            UtilityModule.ConditionalComboFill(ref ddvendorname, "select EmpId, EmpName from empinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by EmpName ", true, "-------SELECT---------");
             UtilityModule.ConditionalComboFill(ref DDMonth, "select Month_id, Month_Name from MonthTable ", true, "----select----");
             UtilityModule.ConditionalComboFill(ref DDyear, "select year,year year1 from session order by Year desc", true, "----select----");
 

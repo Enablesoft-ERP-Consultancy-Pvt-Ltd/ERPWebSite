@@ -16,14 +16,14 @@ public partial class Masters_Process_FrmUpdateFinishingProcessConsumption : Syst
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and Process_Name_id<>1 and MasterCompanyid=" + Session["varcompanyid"] + " order by PROCESS_NAME_ID";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=1 and Process_Name_id<>1 and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by PROCESS_NAME_ID";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
 
@@ -79,7 +79,7 @@ public partial class Masters_Process_FrmUpdateFinishingProcessConsumption : Syst
                         INNER JOIN ViewFindFinishedidItemidQDCSS IPM ON PD.Item_Finished_ID=IPM.FinishedId 
                         INNER JOIN Item_Master IM ON IM.Item_Id=IPM.Item_Id
                         INNER JOIN ITEM_CATEGORY_MASTER ICM ON IM.Category_Id=ICM.Category_Id                        
-                        Where PM.IssueOrderid=" + DDFoliono.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                        Where PM.IssueOrderid=" + DDFoliono.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DGOrderdetail.DataSource = ds.Tables[0];
@@ -92,7 +92,7 @@ public partial class Masters_Process_FrmUpdateFinishingProcessConsumption : Syst
         SqlParameter[] param = new SqlParameter[4];
         param[0] = new SqlParameter("@issueorderid", DDFoliono.SelectedValue);
         param[1] = new SqlParameter("@ProcessId", DDprocess.SelectedValue);
-        param[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+        param[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[3] = new SqlParameter("@UserId", Session["VarUserId"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FILLFINISHINGPROCESSCONSUMPTION", param);

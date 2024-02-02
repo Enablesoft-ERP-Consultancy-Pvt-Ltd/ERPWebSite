@@ -13,14 +13,14 @@ public partial class Masters_Packing_FrmOtherDocs : System.Web.UI.Page
     string Msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             Clear();
-            UtilityModule.ConditionalComboFill(ref DDcmpName, "select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order by Companyname", true, "--Select");
+            UtilityModule.ConditionalComboFill(ref DDcmpName, "select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname", true, "--Select");
 
             if (DDcmpName.Items.Count > 0)
             {
@@ -142,12 +142,12 @@ public partial class Masters_Packing_FrmOtherDocs : System.Web.UI.Page
 
 //            Strsql = @"Select Ci.Companyname,isnull(InvoiceAmount,0) InvoiceAmount,isnull(TotalRolls,0) NoOfRolls ,sum(cast(p.Totalpcs as int) * cast(p.TotalArea as int)) as  Area,
 //            Sum(cast(TotalPcs as int)) Pcs from CustomerInfo Ci,Invoice I,v_packingmaster P Where P.Packingid=I.Packingid and Ci.CustomerId=I.Cosigneeid 
-//            and I.Packingid=" + DDInvoiceNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " group by InvoiceAmount,TotalRolls,Ci.Companyname ";
+//            and I.Packingid=" + DDInvoiceNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by InvoiceAmount,TotalRolls,Ci.Companyname ";
 
             Strsql = @"Select Ci.Companyname,isnull(InvoiceAmount,0) InvoiceAmount,isnull(sum(PI.TotalRoll),0) NoOfRolls ,sum((PI.Area)) as  Area,
             Sum(cast(PI.TotalPcs as int)) Pcs From CustomerInfo Ci JOIN Invoice I ON Ci.CustomerId=I.Cosigneeid 
 			JOIN PackingInformation PI ON PI.Packingid=I.Packingid  
-            Where PI.Packingid=" + DDInvoiceNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " group by InvoiceAmount,Ci.Companyname ";
+            Where PI.Packingid=" + DDInvoiceNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by InvoiceAmount,Ci.Companyname ";
 
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, Strsql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -249,7 +249,7 @@ public partial class Masters_Packing_FrmOtherDocs : System.Web.UI.Page
     protected void DDSession_SelectedIndexChanged(object sender, EventArgs e)
     {
         string Str = @" Select PM.Packingid,PM.Tinvoiceno+space(2)+'Dated'+space(2)+Convert(nvarchar,Packingdate,106) From Packing PM,   
-                       Invoice I Where PM.PackingID=I.InvoiceId  AND PM.ConsignorID=" + DDcmpName.SelectedValue + " AND  I.InvoiceYear=" + DDSession.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                       Invoice I Where PM.PackingID=I.InvoiceId  AND PM.ConsignorID=" + DDcmpName.SelectedValue + " AND  I.InvoiceYear=" + DDSession.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDInvoiceNo, Str, true, "--Select--");
 
     }

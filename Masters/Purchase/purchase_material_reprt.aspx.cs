@@ -11,7 +11,7 @@ public partial class Masters_Purchase_purchase_material_reprt : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,10 +32,10 @@ public partial class Masters_Purchase_purchase_material_reprt : System.Web.UI.Pa
                 tdcustomer.Visible = true;
             }
 
-            string qry = @"select empid,empname from empinfo Where MasterCompanyId=" + Session["varCompanyId"] + @"
-            select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname
+            string qry = @"select empid,empname from empinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+            select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname
             select distinct ci.customerid,ci.Customercode from customerinfo ci 
-            Inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" inner join ORDER_CONSUMPTION_DETAIL ocd on ocd.orderid=om.orderid
+            Inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" inner join ORDER_CONSUMPTION_DETAIL ocd on ocd.orderid=om.orderid
             Inner join Jobassigns JA ON OM.Orderid=JA.Orderid";
             DataSet ds = SqlHelper.ExecuteDataset(qry);
             UtilityModule.ConditionalComboFillWithDS(ref dsuppl, ds, 0, true, "--Select--");
@@ -113,7 +113,7 @@ public partial class Masters_Purchase_purchase_material_reprt : System.Web.UI.Pa
                   V_FinishedItemDetail.AreaMtr,OrderMaster.OrderId,OrderMaster.LocalOrder,OrderDetail.OrderUnitId
                   FROM  OrderDetail INNER JOIN OrderMaster ON OrderDetail.OrderId=OrderMaster.OrderId INNER JOIN
                   V_FinishedItemDetail ON OrderDetail.Item_Finished_Id=V_FinishedItemDetail.ITEM_FINISHED_ID
-                  Where ordermaster.orderid=" + ddOrderno.SelectedValue + " And V_FinishedItemDetail.MasterCompanyId=" + Session["varCompanyId"];
+                  Where ordermaster.orderid=" + ddOrderno.SelectedValue + " And V_FinishedItemDetail.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             str = @"SELECT V_Raw_Matrial_CONSUMPTION.item_description,V_Raw_Matrial_CONSUMPTION.qualityname,V_Raw_Matrial_CONSUMPTION.IQTY,V_Raw_Matrial_CONSUMPTION.IUNITID,V_Raw_Matrial_CONSUMPTION.Totqty,V_Raw_Matrial_CONSUMPTION.qty,V_Raw_Matrial_CONSUMPTION.prate,V_Raw_Matrial_CONSUMPTION.orderid
                   FROM  V_Raw_Matrial_CONSUMPTION Where orderid=" + ddOrderno.SelectedValue + "";
             Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmaterial_stockNEW.xsd";

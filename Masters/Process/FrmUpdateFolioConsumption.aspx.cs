@@ -12,7 +12,7 @@ public partial class Masters_Process_FrmUpdateFolioConsumption : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }

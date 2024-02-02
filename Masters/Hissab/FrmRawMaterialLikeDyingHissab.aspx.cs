@@ -14,13 +14,13 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
     string Msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName");
+            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -35,7 +35,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
             txttodate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             ViewState["Hissabid"] = 0;
 
-            if (Convert.ToInt32(Session["varCompanyId"]) == 16 || Convert.ToInt32(Session["varCompanyId"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
                 BtnDeductionAmountDetail.Visible = true;
             }
@@ -64,12 +64,12 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
         if (chksample.Checked == true)
         {
             UtilityModule.ConditionalComboFill(ref DDProcess, @"select Distinct PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From SampleDyeingmaster SM inner Join PROCESS_NAME_MASTER PNM on SM.processid=PNM.PROCESS_NAME_ID
-                               and SM.Mastercompanyid=" + Session["varcompanyid"] + " and SM.Companyid=" + DDCompanyName.SelectedValue + " order by Process_name", true, "--Select Process--");
+                               and SM.Mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " and SM.Companyid=" + DDCompanyName.SelectedValue + " order by Process_name", true, "--Select Process--");
         }
         else
         {
             UtilityModule.ConditionalComboFill(ref DDProcess, @"Select Distinct PROCESS_NAME_ID,PROCESS_NAME from ProcessProgram PP,OrderMaster OM,Process_Name_Master PNM
-        Where PP.Order_Id=OM.OrderId And PP.Process_Id=PNM.Process_Name_Id And OM.Companyid=" + DDCompanyName.SelectedValue + " And PNM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Process--");
+        Where PP.Order_Id=OM.OrderId And PP.Process_Id=PNM.Process_Name_Id And OM.Companyid=" + DDCompanyName.SelectedValue + " And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Process--");
         }
         DDProcess.SelectedValue = "5";
         FillEmployee();
@@ -82,11 +82,11 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
     {
         if (chksample.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDPartyName, "select Distinct Ei.EmpId,Ei.EmpName From SampleDyeingmaster SM inner join EmpInfo EI on SM.empid=Ei.EmpId and Sm.Companyid=" + DDCompanyName.SelectedValue + " AND Sm.processid=" + DDProcess.SelectedValue + " and sm.Mastercompanyid=" + Session["varcompanyid"] + " order by Ei.empname", true, "--Select Employee--");
+            UtilityModule.ConditionalComboFill(ref DDPartyName, "select Distinct Ei.EmpId,Ei.EmpName From SampleDyeingmaster SM inner join EmpInfo EI on SM.empid=Ei.EmpId and Sm.Companyid=" + DDCompanyName.SelectedValue + " AND Sm.processid=" + DDProcess.SelectedValue + " and sm.Mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by Ei.empname", true, "--Select Employee--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EI.EmpId,EI.EmpName from EmpInfo EI,View_Indent_Rec_Detail VIRD Where EI.EmpId=VIRD.EmpId And ProcessId=" + DDProcess.SelectedValue + " And CompanyId=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " order by Empname", true, "--Select Employee--");
+            UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EI.EmpId,EI.EmpName from EmpInfo EI,View_Indent_Rec_Detail VIRD Where EI.EmpId=VIRD.EmpId And ProcessId=" + DDProcess.SelectedValue + " And CompanyId=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Empname", true, "--Select Employee--");
         }
     }
     protected void DDPartyName_SelectedIndexChanged(object sender, EventArgs e)
@@ -99,7 +99,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
     {
         if (DDPartyName.SelectedIndex > 0 && ChkEditOrder.Checked == true)
         {
-            string str = "Select HissabId,BillNo From RawMaterialPreprationHissab Where billstatus =0 And CompanyId=" + DDCompanyName.SelectedValue + " And Processid=" + DDProcess.SelectedValue + " And PartyID=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+            string str = "Select HissabId,BillNo From RawMaterialPreprationHissab Where billstatus =0 And CompanyId=" + DDCompanyName.SelectedValue + " And Processid=" + DDProcess.SelectedValue + " And PartyID=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (chksample.Checked == true)
             {
                 str = str + "  and hissabtype=1";
@@ -131,7 +131,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                         From V_GetRawmaterialPreparationHissabDetail VHD
                         Left outer join V_RawmaterialHissabdone RMD on VHD.ProcessRec_Prmid=RMD.ProcessRec_PrmId And Rmd.IndentID = VHD.INDENTID and RMD.Hissabtype=0
                         Where Rmd.ProcessRec_PrmId is null  And VHD.CompanyId=" + DDCompanyName.SelectedValue + " And VHD.ProcessID=" + DDProcess.SelectedValue + " And VHD.EmpId=" + DDPartyName.SelectedValue;
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "27":
                 break;
@@ -187,7 +187,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                         _array[3].Value = DDProcess.SelectedValue;
                         _array[4].Value = DDPartyName.SelectedValue;
                         _array[5].Value = DDCompanyName.SelectedValue;
-                        _array[6].Value = Session["varcompanyId"];
+                        _array[6].Value = Session["varMasterCompanyIDForERP"];
                         _array[7].Direction = ParameterDirection.Output;//For DebitAmt
 
                         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "pro_GetDyingAMount", _array);
@@ -211,7 +211,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 vs.Indentid,0 as flag,vs.ProcessRec_prmid
                 From V_sampleHissabDetail VS left join  V_RawmaterialHissabdone VHD on VHD.ProcessRec_PrmId=VS.ProcessRec_Prmid and VHD.Hissabtype=1 and Vs.Indentid=VHD.IndentID
                 Where vs.Companyid=" + DDCompanyName.SelectedValue + " and vs.Processid=" + DDProcess.SelectedValue + " and vs.empid=" + DDPartyName.SelectedValue + @" and VHD.ProcessRec_PrmId is null ";
-        switch (Session["varcompanyid"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "27":
                 break;
@@ -266,7 +266,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                         _array[3].Value = DDProcess.SelectedValue;
                         _array[4].Value = DDPartyName.SelectedValue;
                         _array[5].Value = DDCompanyName.SelectedValue;
-                        _array[6].Value = Session["varcompanyId"];
+                        _array[6].Value = Session["varMasterCompanyIDForERP"];
                         _array[7].Direction = ParameterDirection.Output;//For DebitAmt
 
                         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "pro_GetDyingAMountSample", _array);
@@ -326,7 +326,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 _array[3].Value = DDProcess.SelectedValue;
                 _array[4].Value = DDPartyName.SelectedValue;
                 _array[5].Value = DDCompanyName.SelectedValue;
-                _array[6].Value = Session["varcompanyId"];
+                _array[6].Value = Session["varMasterCompanyIDForERP"];
                 _array[7].Direction = ParameterDirection.Output;//For DebitAmt
 
                 SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "pro_GetDyingAMountSample", _array);
@@ -374,7 +374,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 _array[3].Value = DDProcess.SelectedValue;
                 _array[4].Value = DDPartyName.SelectedValue;
                 _array[5].Value = DDCompanyName.SelectedValue;
-                _array[6].Value = Session["varcompanyId"];
+                _array[6].Value = Session["varMasterCompanyIDForERP"];
                 _array[7].Direction = ParameterDirection.Output;//For DebitAmt
 
                 SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "pro_GetDyingAMount", _array);
@@ -382,7 +382,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 DebitAmt = DebitAmt + Convert.ToDouble(_array[7].Value);
             }
         }
-        if ((Convert.ToInt32(Session["varCompanyId"]) == 16) || (Convert.ToInt32(Session["varCompanyId"]) == 28))
+        if ((Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16) || (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28))
         {
             for (int i = 0; i < DGIndentDetail.Rows.Count; i++)
             {
@@ -421,7 +421,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
     }
     private void CheckDuplicateBillNo()
     {
-        string Str = "Select * From RawMaterialPreprationHissab Where BillNo='" + Textbillno.Text + "' And PartyID=" + DDPartyName.SelectedValue + " And HissabId <> " + ViewState["Hissabid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+        string Str = "Select * From RawMaterialPreprationHissab Where BillNo='" + Textbillno.Text + "' And PartyID=" + DDPartyName.SelectedValue + " And HissabId <> " + ViewState["Hissabid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -443,7 +443,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
             {
                 if (DGIndentDetail.Columns[i].HeaderText == "Total Amount")
                 {
-                    if (Session["varcompanyId"].ToString() == "42")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "42")
                     {
                         DGIndentDetail.Columns[i].Visible = false;
                     }
@@ -514,7 +514,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 _arrPara[6].Value = TxtDate.Text;
                 _arrPara[7].Value = txtremark.Text;
                 _arrPara[8].Value = Session["varuserid"];
-                _arrPara[9].Value = Session["varCompanyId"];
+                _arrPara[9].Value = Session["varMasterCompanyIDForERP"];
                 for (int i = 0; i < DGIndentDetail.Rows.Count; i++)
                 {
                     if (((CheckBox)DGIndentDetail.Rows[i].FindControl("Chkbox")).Checked == true)
@@ -636,7 +636,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
     protected void DDBillNo_SelectedIndexChanged(object sender, EventArgs e)
     {
         ViewState["Hissabid"] = DDBillNo.SelectedValue;
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select BillNo,Round(Amount,2) Amount,replace(convert(varchar(11),Date,106), ' ','-') as Date,Remark,ConsumedDyes,Vat,Sat,Round(DebitAmt,2) DebitAmt,isnull(AdditionAmt,0) as AdditionAmt,isnull(DeductionAmt,0) as DeductionAmt,isnull(Gst,0) as Gst From RawMaterialPreprationHissab Where Hissabid=" + DDBillNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select BillNo,Round(Amount,2) Amount,replace(convert(varchar(11),Date,106), ' ','-') as Date,Remark,ConsumedDyes,Vat,Sat,Round(DebitAmt,2) DebitAmt,isnull(AdditionAmt,0) as AdditionAmt,isnull(DeductionAmt,0) as DeductionAmt,isnull(Gst,0) as Gst From RawMaterialPreprationHissab Where Hissabid=" + DDBillNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
             Textbillno.Text = Ds.Tables[0].Rows[0]["BillNo"].ToString();
@@ -744,7 +744,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
         }
         else
         {
-            if (Convert.ToInt32(Session["varCompanyId"]) == 16 || Convert.ToInt32(Session["varCompanyId"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
 //                str = @" Select CI.Companyname, CI.CompAddr1, CI.CompAddr2, CI.CompAddr3, CI.CompTel, a.BillNo, a.Date ReceiveDate, EI.EmpName, '' ITEM_NAME, '' QualityName, '' designName, '' ColorName, '' ShadeColorName,
 //                        '' ShapeName, '' Size, 0 Recqty, 0 Lossqty, 0 rate, a.TotalAmt Total,'' Processrec_prmid, PNM.Process_Name, a.AdditionAmt, a.DeductionAmt, a.GST, 
@@ -768,7 +768,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
 
                 Session["rptFileName"] = "~\\Reports\\rptBillDetailsNewChampo.rpt";
             }
-            else if (Convert.ToInt32(Session["varCompanyId"]) == 42)
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
             {
                 SqlParameter[] param = new SqlParameter[1];
                 param[0] = new SqlParameter("@HissabID", ViewState["Hissabid"]);
@@ -928,7 +928,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
                 INNER JOIN OrderMaster OM ON OM.Orderid=IM.OrderId
                 INNER JOIN Companyinfo CI ON PM.CompanyId=CI.CompanyId
                 INNER JOIN Process_Name_Master PNM ON PM.ProcessId=PNM.PROCESS_NAME_ID
-                Where PM.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId=" + DDCompanyName.SelectedValue + " And PM.Processid=" + DDProcess.SelectedValue + "  And PM.EmpId= " + DDPartyName.SelectedValue;
+                Where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId=" + DDCompanyName.SelectedValue + " And PM.Processid=" + DDProcess.SelectedValue + "  And PM.EmpId= " + DDPartyName.SelectedValue;
         if (IndentID != "")
         {
             str = str + " And PT.IndentID in (" + IndentID + ")";
@@ -957,7 +957,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
         inner join PP_ProcessRawMaster PRM ON PRM.prmId=PT.IssPrmId
         left outer Join V_IndentRawReturnQty V  on V.prmId=Pt.PrmId and V.prtId=PT.prtId
         INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-        Where PRM.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId = " + DDCompanyName.SelectedValue + " And PM.Processid=" + DDProcess.SelectedValue + "  And PM.EmpId= " + DDPartyName.SelectedValue;
+        Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId = " + DDCompanyName.SelectedValue + " And PM.Processid=" + DDProcess.SelectedValue + "  And PM.EmpId= " + DDPartyName.SelectedValue;
         if (IndentID != "")
         {
             str = str + " And PT.IndentID in (" + IndentID + ")";
@@ -985,7 +985,7 @@ public partial class Masters_Hissab_FrmRawMaterialLikeDyingHissab : System.Web.U
     protected void BtnDeductionAmountDetail_Click(object sender, EventArgs e)
     {
         string IndentIDs = "";
-        if ((Convert.ToInt32(Session["varCompanyId"]) == 16) || (Convert.ToInt32(Session["varCompanyId"]) == 28))
+        if ((Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16) || (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28))
         {
             for (int i = 0; i < DGIndentDetail.Rows.Count; i++)
             {

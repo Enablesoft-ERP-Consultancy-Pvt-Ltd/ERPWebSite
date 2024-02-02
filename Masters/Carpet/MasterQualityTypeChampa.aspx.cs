@@ -12,7 +12,7 @@ public partial class Masters_Carpet_MasterQualityTypeChampa : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -40,7 +40,7 @@ public partial class Masters_Carpet_MasterQualityTypeChampa : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select MasterQualityTypeId,MasterQualityTypeName from MasterQualityType where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "select MasterQualityTypeId,MasterQualityTypeName from MasterQualityType where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             strsql = strsql + " order by MasterQualityTypeName";
             con.Open();
@@ -68,7 +68,7 @@ public partial class Masters_Carpet_MasterQualityTypeChampa : CustomPage
         ViewState["id"] = id;
         txtid.Text = "0";
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select MasterQualityTypeId ,MasterQualityTypeName  from MasterQualityType where MasterQualityTypeId=" + id + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select MasterQualityTypeId ,MasterQualityTypeName  from MasterQualityType where MasterQualityTypeId=" + id + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         try
         {
 
@@ -116,7 +116,7 @@ public partial class Masters_Carpet_MasterQualityTypeChampa : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select MasterQualityTypeId,MasterQualityTypeName from MasterQualityType Where MasterQualityTypeName='" + txtMasterQualityType.Text+ "' and MasterQualityTypeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select MasterQualityTypeId,MasterQualityTypeName from MasterQualityType Where MasterQualityTypeName='" + txtMasterQualityType.Text+ "' and MasterQualityTypeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -157,7 +157,7 @@ public partial class Masters_Carpet_MasterQualityTypeChampa : CustomPage
 
                     _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                     _arrPara[1].Value = txtMasterQualityType.Text.ToUpper();
-                    _arrPara[2].Value = Session["varCompanyId"].ToString();
+                    _arrPara[2].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara[3].Value = Session["varuserid"].ToString();                 
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SaveMasterQualityType", _arrPara);
@@ -206,7 +206,7 @@ public partial class Masters_Carpet_MasterQualityTypeChampa : CustomPage
     //}
     //private void Report()
     //{
-    //    string qry = @"  SELECT designName  FROM   Design where MasterCompanyid=" + Session["varCompanyId"] + "  ORDER BY designName";
+    //    string qry = @"  SELECT designName  FROM   Design where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY designName";
     //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
     //    if (ds.Tables[0].Rows.Count > 0)
     //    {
@@ -232,7 +232,7 @@ public partial class Masters_Carpet_MasterQualityTypeChampa : CustomPage
         {
             SqlParameter[] _array = new SqlParameter[5];
             _array[0] = new SqlParameter("@MasterQualityTypeId", ViewState["id"]);
-            _array[1] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _array[2] = new SqlParameter("@UserId", Session["varuserid"]);
             _array[3] = new SqlParameter("@VarMsg", SqlDbType.NVarChar, 500);
             _array[3].Direction = ParameterDirection.Output;

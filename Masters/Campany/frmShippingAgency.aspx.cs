@@ -11,9 +11,9 @@ public partial class Masters_Campany_frmShippingAgency : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
-            //  Response.Redirect("~/Login.aspx");
+            Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
@@ -54,7 +54,7 @@ public partial class Masters_Campany_frmShippingAgency : System.Web.UI.Page
             array[4].Value = txtFaxno.Text;
             array[5].Value = txtEmail.Text;
             array[6].Value = Session["varUserId"];
-            array[7].Value = Session["VarcompanyId"];
+            array[7].Value = Session["varMasterCompanyIDForERP"];
             array[8].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_ShippingAgency", array);

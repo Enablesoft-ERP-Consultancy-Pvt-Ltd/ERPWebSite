@@ -12,7 +12,7 @@ public partial class Masters_RawMaterial_Frmfinishingmaterialpreparation : Syste
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -163,7 +163,7 @@ public partial class Masters_RawMaterial_Frmfinishingmaterialpreparation : Syste
                 param[7] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[7].Direction = ParameterDirection.Output;
                 param[8] = new SqlParameter("@userid", Session["varuserid"]);
-                param[9] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[9] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SAVEFINISHINGMATERIALPREPARATION", param);
 

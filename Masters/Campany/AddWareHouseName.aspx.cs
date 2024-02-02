@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddWareHouseName : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,7 +24,7 @@ public partial class Masters_Campany_AddWareHouseName : System.Web.UI.Page
     }
     protected void GetCustomerWareHouseCode()
     {
-        string strsql = "select WareHouseId,WareHouseCode,CI.CustomerCode,WHM.CustomerId from WareHouseMaster WHM JOIN CustomerInfo CI ON WHM.CustomerId=CI.CustomerId  Where WHM.MastercompanyId=" + Session["varCompanyId"] + @" 
+        string strsql = "select WareHouseId,WareHouseCode,CI.CustomerCode,WHM.CustomerId from WareHouseMaster WHM JOIN CustomerInfo CI ON WHM.CustomerId=CI.CustomerId  Where WHM.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                         And  WareHouseId=" + Request.QueryString["a"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -42,7 +42,7 @@ public partial class Masters_Campany_AddWareHouseName : System.Web.UI.Page
     protected void fill_grid()
     {
 
-        //string strsql = "select couriername,AcNo,detailid from couriermaster Where MastercompanyId=" + Session["varCompanyId"] + " And  CustomerId=" + Request.QueryString["a"];
+        //string strsql = "select couriername,AcNo,detailid from couriermaster Where MastercompanyId=" + Session["varMasterCompanyIDForERP"] + " And  CustomerId=" + Request.QueryString["a"];
         //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 
 
@@ -60,7 +60,7 @@ public partial class Masters_Campany_AddWareHouseName : System.Web.UI.Page
 
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@UserID", Session["VarUserId"]);
-        param[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+        param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[2] = new SqlParameter("@WareHouseId", Request.QueryString["a"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FILLWAREHOUSENAME", param);
@@ -98,7 +98,7 @@ public partial class Masters_Campany_AddWareHouseName : System.Web.UI.Page
             _arrPara[0].Value = lblCustomerId.Text;
             _arrPara[1].Value = Request.QueryString["a"].ToString();
             _arrPara[2].Value = txtWareHouseName.Text.ToUpper();
-            _arrPara[3].Value = Session["varCompanyId"].ToString();
+            _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[4].Value =  Session["varuserid"].ToString();
             _arrPara[5].Direction = ParameterDirection.InputOutput;
 

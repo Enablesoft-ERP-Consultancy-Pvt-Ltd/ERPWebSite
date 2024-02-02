@@ -12,7 +12,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,12 +20,12 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
         {
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     from Companyinfo CI, Company_Authentication CA 
-                    Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName 
+                    Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
 
                     Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
                     From AnyItemIssueMasterDetail a 
                     JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
                     Order By VF.CATEGORY_NAME 
 
                     Select Val,Type from Sizetype
@@ -33,13 +33,13 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
                     Select Distinct a.DepartmentID, D.DepartmentName  
                     From AnyItemIssueMasterDetail a
                     JOIN Department D ON D.DepartmentId = a.DepartmentID 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
                     Order By D.DepartmentName 
 
                     Select Distinct a.EmpID, EI.EmpName + case when Isnull(Ei.Empcode, '') = '' Then '' Else '[' + EI.Empcode + ']'  End EmpName 
                     From AnyItemIssueMasterDetail a
                     JOIN EmpInfo EI ON EI.EmpId = a.EmpID 
-                    Where a.MasterCompanyID =" + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
+                    Where a.MasterCompanyID =" + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
                     Order By EmpName ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -63,7 +63,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
         string Str = @"Select Distinct a.EmpID, EI.EmpName + case when Isnull(Ei.Empcode, '') = '' Then '' Else '[' + EI.Empcode + ']'  End EmpName 
                     From AnyItemIssueMasterDetail a
                     JOIN EmpInfo EI ON EI.EmpId = a.EmpID 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
                     And a.DepartmentID = " + DDDepartment.SelectedValue + @"
                     Order By EmpName ";
         UtilityModule.ConditionalComboFill(ref DDEmployeeName, Str, true, "--Plz Select--");
@@ -74,7 +74,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
         string Str = @"Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
                     From AnyItemIssueMasterDetail a 
                     JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + @" 
                     And a.DepartmentID = " + DDDepartment.SelectedValue + " And a.EmpID = " + DDEmployeeName.SelectedValue + @" 
                     Order By VF.CATEGORY_NAME ";
         UtilityModule.ConditionalComboFill(ref DDCategory, Str, true, "--Plz Select--");
@@ -97,7 +97,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
         TRDDSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] Where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] Where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -131,7 +131,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
         string stritem = @"Select Distinct VF.ITEM_ID, VF.ITEM_NAME
                     From AnyItemIssueMasterDetail a 
                     JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
         if (DDDepartment.SelectedIndex > 0)
         {
             stritem = stritem + " And a.DepartmentID = " + DDDepartment.SelectedValue;
@@ -154,7 +154,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
                 From AnyItemIssueMasterDetail a 
                 JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
 	                And VF.ITEM_ID = " + ddItemName.SelectedValue + @" 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
         if (DDDepartment.SelectedIndex > 0)
         {
             Str = Str + " And a.DepartmentID = " + DDDepartment.SelectedValue;
@@ -169,7 +169,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
                 From AnyItemIssueMasterDetail a 
                 JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
 	                And VF.ITEM_ID = " + ddItemName.SelectedValue + @" 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
         if (DDDepartment.SelectedIndex > 0)
         {
             Str = Str + " And a.DepartmentID = " + DDDepartment.SelectedValue;
@@ -184,7 +184,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
                 From AnyItemIssueMasterDetail a 
                 JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
 	                And VF.ITEM_ID = " + ddItemName.SelectedValue + @" 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
         if (DDDepartment.SelectedIndex > 0)
         {
             Str = Str + " And a.DepartmentID = " + DDDepartment.SelectedValue;
@@ -199,7 +199,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
                 From AnyItemIssueMasterDetail a 
                 JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
 	                And VF.ITEM_ID = " + ddItemName.SelectedValue + @" 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
         if (DDDepartment.SelectedIndex > 0)
         {
             Str = Str + " And a.DepartmentID = " + DDDepartment.SelectedValue;
@@ -214,7 +214,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
                 From AnyItemIssueMasterDetail a 
                 JOIN V_FinishedItemDetail VF ON VF.ITEM_FINISHED_ID = a.Item_Finished_ID And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
 	                And VF.ITEM_ID = " + ddItemName.SelectedValue + @" 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + Session["CurrentWorkingCompanyID"];
         if (DDDepartment.SelectedIndex > 0)
         {
             Str = Str + " And a.DepartmentID = " + DDDepartment.SelectedValue;
@@ -260,7 +260,7 @@ public partial class Masters_ReportForms_FrmAnyItemReport : System.Web.UI.Page
         //size Query
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");
 

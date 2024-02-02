@@ -15,7 +15,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,20 +24,20 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock) 
                         JOIN MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) ON a.CompanyId = CI.CompanyId 
-                        Where CI.MasterCompanyid = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                        Where CI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
 
                         Select Distinct CI.CustomerId, CI.CustomerCode 
                         From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                         JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.Issueid = a.ISSUEID
                         JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID
                         JOIN CustomerInfo CI(nolock) ON OM.CustomerId = CI.CustomerId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" Order By CI.CustomerCode 
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" Order By CI.CustomerCode 
 
                         Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
                         From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                         JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.Issueid = a.ISSUEID
                         JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId  
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                         Order By VF.CATEGORY_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -60,7 +60,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
             txttodate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             RDAll.Checked = true;
 
-            switch (Session["VarCompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "30":
                     TRCustomerCode.Visible = false;
@@ -76,14 +76,14 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
     {
         if (RDReceive.Checked == true)
         {
-            if (Session["varCompanyId"].ToString() == "30")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "30")
             {
                 UtilityModule.ConditionalComboFill(ref DDWeaverName, @"Select Distinct EI.EmpID, EI.EmpName + '(' + EI.EmpCode + ')' EmpName
                 From MAP_ReceiveONPRODUCTIONORDERMASTER a(nolock)
                 JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL b(Nolock) ON b.RecID = a.RecID  
                 INNER JOIN Process_Issue_Master_1 PIM ON b.ISSUEORDERID=PIM.ISSUEORDERID
                  JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID                   
-                Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By EI.EmpName + '(' + EI.EmpCode + ')'", true, "--Select--");
             }
             else
@@ -93,20 +93,20 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
                 JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL b(Nolock) ON b.RecID = a.RecID  
                 INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON b.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
                 JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo)                
-                Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By VE.EmpName + '(' + VE.EmpIdNo + ')'", true, "--Select--");
             }
 
         }
         else
         {
-            if (Session["varCompanyId"].ToString() == "30")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "30")
             {
                 UtilityModule.ConditionalComboFill(ref DDWeaverName, @"Select Distinct EI.EmpID, EI.EmpName + '(' + EI.EmpCode + ')' EmpName
                 From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                 INNER JOIN Process_Issue_Master_1 PIM ON a.ISSUEORDERID=PIM.ISSUEORDERID 
                 JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID 
-                Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By EI.EmpName + '(' + EI.EmpCode + ')'", true, "--Select--");
             }
             else
@@ -115,7 +115,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
                 From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                 INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
                 JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo)  
-                Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
+                Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 
                 Order By VE.EmpName + '(' + VE.EmpIdNo + ')'", true, "--Select--");
             }
         }
@@ -131,7 +131,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
                         JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.Issueid = a.ISSUEID
                         JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID
                         JOIN CustomerInfo CI(nolock) ON OM.CustomerId = CI.CustomerId 
-                        Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + " Order By CI.CustomerCode", true, "--Select--");
+                        Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + " Order By CI.CustomerCode", true, "--Select--");
 
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
@@ -144,14 +144,14 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
                         From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                         JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.Issueid = a.ISSUEID
                         JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID 
-                        Where a.MasterCompanyID = " + Session["varCompanyId"] + @"  And a.CompanyId = " + DDCompany.SelectedValue;
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+                        Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"  And a.CompanyId = " + DDCompany.SelectedValue;
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             Str = @"Select Distinct b.OrderId, OM.CustomerOrderNo 
                         From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
                         JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.Issueid = a.ISSUEID
                         JOIN OrderMaster OM(Nolock) ON OM.Orderid = b.OrderID And OM.Status = 0 
-                        Where a.MasterCompanyID = " + Session["varCompanyId"] + @"  And a.CompanyId = " + DDCompany.SelectedValue;                        
+                        Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"  And a.CompanyId = " + DDCompany.SelectedValue;                        
         }
 
         if (DDCustCode.SelectedIndex > 0)
@@ -174,7 +174,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         //            JOIN MAP_ReceiveONPRODUCTIONORDERDETAIL b(Nolock) ON b.RecID = a.RecID  
         //            INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON b.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
         //            JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo) 
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+        //            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
         //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.RecId", true, "--Select--");
         //        }
         //        else
@@ -183,18 +183,18 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         //            From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
         //            INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
         //            JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo) 
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+        //            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
         //            And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.IssueId", true, "--Select--");
         //        }
 
-        if (Session["varCompanyId"].ToString() == "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         {
             UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select distinct a.IssueOrderid, cast( PIM.ChallanNo as varchar) as ChallanNo
             From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
             --INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
             INNER JOIN Process_Issue_Master_1 PIM ON a.ISSUEORDERID=PIM.ISSUEORDERID
             JOIN Empinfo EI(nolock) ON EI.EmpId=PIM.EmpID   
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.IssueOrderid", true, "--Select--");
         }
         else
@@ -203,7 +203,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
             From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
             INNER JOIN V_GETCOMMASEPARATEEMPLOYEE VE ON a.ISSUEORDERID=VE.ISSUEORDERID AND VE.PROCESSID=1
             JOIN Empinfo EI(nolock) ON EI.EmpCode in( VE.EmpIdNo) 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And EI.EmpId in(" + DDWeaverName.SelectedValue + ") Order By a.IssueOrderid", true, "--Select--");
         }
 
@@ -218,14 +218,14 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
             From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
             JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.Issueid = a.ISSUEID
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
             And a.IssueOrderid = " + DDChallanNo.SelectedValue + " Order By VF.CATEGORY_NAME ", true, "--Select--");
 
         //        UtilityModule.ConditionalComboFill(ref DDCategory, @"Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
         //            From MAP_ISSUEMASTER a(nolock) 
         //            JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
         //            JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId 
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
+        //            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue + @" 
         //            And a.ID = " + DDChallanNo.SelectedValue + " Order By VF.CATEGORY_NAME ", true, "--Select--");
 
     }
@@ -239,14 +239,14 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         //            From MAP_ISSUEMASTER a(nolock) 
         //            JOIN MAP_ISSUEDETAIL b(nolock) ON b.Masterid = a.ID
         //            JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
-        //            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        //            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
 
         string Str = @"Select Distinct VF.ITEM_ID, VF.ITEM_NAME 
             From MAP_ISSUEONPRODUCTIONORDERMASTER a(nolock) 
             JOIN MAP_ISSUEONPRODUCTIONORDERDETAIL b(nolock) ON b.Issueid = a.ISSUEID
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = b.ItemFinishedId And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" 
-            Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+            Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -265,7 +265,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -318,7 +318,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         {
             str = str + " And VF.ITEM_ID = " + DDItemName.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -351,7 +351,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -384,7 +384,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -413,7 +413,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -442,7 +442,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         {
             str = str + " And VF.QualityID = " + DDQuality.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -482,7 +482,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
         {
             str = str + " And VF.ShapeID = " + DDShape.SelectedValue;
         }
-        str = str + " Where a.MasterCompanyid = " + Session["varCompanyId"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
+        str = str + " Where a.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" AND a.CompanyId = " + DDCompany.SelectedValue;
 
         if (DDChallanNo.SelectedIndex > 0)
         {
@@ -525,7 +525,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
     protected void ForAllClick()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "30" || Session["varCompanyId"].ToString() == "38")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30" || Session["varMasterCompanyIDForERP"].ToString() == "38")
         {
             str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName,U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
                         a.IssueDate, OM.CustomerOrderNo,  
@@ -667,7 +667,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
     protected void ForIssueClick()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "30" || Session["varCompanyId"].ToString() == "38")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30" || Session["varMasterCompanyIDForERP"].ToString() == "38")
         {
             str = @"SELECT CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, PRM.ISSUEORDERID FOLIONO, EI.EmpName, U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
                         a.IssueDate, OM.CustomerOrderNo, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 
@@ -821,7 +821,7 @@ public partial class Masters_ReportForms_FrmWeaverMapIssRecReport : System.Web.U
     protected void ForReceiveClick()
     {
         string str = "";
-        if (Session["varCompanyId"].ToString() == "30" || Session["varCompanyId"].ToString() == "38")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30" || Session["varMasterCompanyIDForERP"].ToString() == "38")
         {
             str = @"Select CI.CompanyName, isnull(CU.CustomerCode,'') as CustomerCode, EI.EmpName, U.UnitName, a.ChallanNo, CASE WHEN a.MapStencilType = 1 Then 'MAP' ELSE 'TRACE' END MAPType, 
                     a.ReceiveDate, OM.CustomerOrderNo,OM.LocalOrder, VF.ITEM_NAME, VF.QualityName, VF.DesignName, VF.ColorName, VF.ShapeName, 

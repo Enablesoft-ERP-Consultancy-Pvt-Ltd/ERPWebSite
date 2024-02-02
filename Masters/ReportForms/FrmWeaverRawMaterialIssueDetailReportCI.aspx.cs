@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialIssueDetailReportCI
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -49,7 +49,7 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialIssueDetailReportCI
         _array[1].Value = 1;
         _array[2].Value = 0; //For Issue
         _array[3].Value = DDCompany.SelectedValue;
-        _array[4].Value = Session["varCompanyId"].ToString();
+        _array[4].Value = Session["varMasterCompanyIDForERP"].ToString();
         _array[5].Value = Session["VarUserId"].ToString();
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_WeaverRawMaterialIssuedDetail_ChallanNoWiseCI", _array);

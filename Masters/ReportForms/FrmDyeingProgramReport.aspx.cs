@@ -12,18 +12,18 @@ public partial class Masters_ReportForms_FrmDyeingProgramReport : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
             if (DDCompany.Items.Count > 0)
             {
                 DDCompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDCompany.Enabled = false;
-                UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5) +CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + DDCompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by CustomerId", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5) +CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + DDCompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CustomerId", true, "--Select--");
             }
 
             txtfromDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
@@ -34,7 +34,7 @@ public partial class Masters_ReportForms_FrmDyeingProgramReport : System.Web.UI.
     {
         if (DDCompany.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + DDCompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " order by CustomerId", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddcustomer, "SELECT DISTINCT CI.Customerid,CI.Customercode + SPACE(5)+CompanyName from customerinfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 and Companyid=" + DDCompany.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CustomerId", true, "--Select--");
         }
     }
     protected void ddcustomer_SelectedIndexChanged(object sender, EventArgs e)
@@ -46,7 +46,7 @@ public partial class Masters_ReportForms_FrmDyeingProgramReport : System.Web.UI.
 //        string str1 = @"Select OM.OrderId,LocalOrder+' / '+CustomerOrderNo+' / '+CustomerCode+' / '+replace(convert(varchar(11),ProdReqDate,106), ' ','-') as OrderNo 
 //                          From CustomerInfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And 
 //                          OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 And 
-//                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varCompanyId"] + " And OM.OrderId Not IN(Select Order_Id From ProcessProgram WHERE Process_ID=" + ddprocess.SelectedValue + @") 
+//                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And OM.OrderId Not IN(Select Order_Id From ProcessProgram WHERE Process_ID=" + ddprocess.SelectedValue + @") 
 //                          Group By  OM.Orderid,LocalOrder,CustomerOrderNo,CustomerCode,ProdReqDate Order By ProdReqDate ASC";
         string str = "";
         if (ChkselectDate.Checked == true)
@@ -57,7 +57,7 @@ public partial class Masters_ReportForms_FrmDyeingProgramReport : System.Web.UI.
         string str1 = @"Select OM.OrderId,LocalOrder+' / '+CustomerOrderNo+' / '+CustomerCode+' / '+replace(convert(varchar(11),ProdReqDate,106), ' ','-') as OrderNo 
                           From CustomerInfo CI,Ordermaster OM,OrderDetail OD,JobAssigns JA Where OM.Status = 0 And CI.Customerid=OM.Customerid And OD.OrderId=OM.OrderId And 
                           OD.OrderId=JA.OrderId And OD.Item_Finished_Id=JA.Item_Finished_Id And PreProdAssignedQty>0 And OD.Tag_Flag=1 And 
-                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varCompanyId"] + str +@" 
+                          OM.CustomerId=" + ddcustomer.SelectedValue + @" And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + str +@" 
                           Group By  OM.Orderid,LocalOrder,CustomerOrderNo,CustomerCode,ProdReqDate Order By ProdReqDate ASC";
         UtilityModule.ConditonalChkBoxListFill(ref chekboxlist, str1);
     }
@@ -95,7 +95,7 @@ public partial class Masters_ReportForms_FrmDyeingProgramReport : System.Web.UI.
 
             _arrPara[0].Value = OrderId;           
             _arrPara[1].Value = Session["varuserid"].ToString();
-            _arrPara[2].Value = Session["varCompanyId"].ToString();
+            _arrPara[2].Value = Session["varMasterCompanyIDForERP"].ToString();
             //_arrPara[3].Value = 1;
 
             ds = SqlHelper.ExecuteDataset(Tran, CommandType.StoredProcedure, "Pro_GetReportDyeingProcessProgQtyDetails", _arrPara);

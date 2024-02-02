@@ -15,14 +15,14 @@ public partial class Masters_ReportForms_FrmFinisherTdsDetails : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack != true)
         {
-            string str = @"select CompanyId,CompanyName From Companyinfo CI where MasterCompanyid=" + Session["varcompanyId"] + @" order by CompanyId
-                           select EI.EmpId,EI.EmpName + case When isnull(Ei.empcode,'')='' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varcompanyId"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId not in(1,5,9) order by EmpName
+            string str = @"select CompanyId,CompanyName From Companyinfo CI where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyId
+                           select EI.EmpId,EI.EmpName + case When isnull(Ei.empcode,'')='' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId not in(1,5,9) order by EmpName
                            select Process_Name_id,Process_Name from Process_Name_Master where Process_Name_id<>1 and ProcessType=1 ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 

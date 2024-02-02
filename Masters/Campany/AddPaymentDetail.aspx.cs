@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddPaymentDetail : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Campany_AddPaymentDetail : CustomPage
          SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
          try
          {
-             string strsql = "SELECT PaymentId as SrNo,	PaymentName,PaymentDescription from Payment where MasterCompanyId=" + Session["varCompanyid"];
+             string strsql = "SELECT PaymentId as SrNo,	PaymentName,PaymentDescription from Payment where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
              con.Open();
              ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
          }
@@ -123,7 +123,7 @@ public partial class Masters_Campany_AddPaymentDetail : CustomPage
                 _arrPara[1].Value = txtPayment.Text.ToUpper();
                 _arrPara[2].Value = txtdescription.Text.ToUpper();
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_PAYMENT", _arrPara);
             }
@@ -174,11 +174,11 @@ public partial class Masters_Campany_AddPaymentDetail : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select PaymentName from Payment where PaymentId!='" + ViewState["id"].ToString() + "' and  PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select PaymentName from Payment where PaymentId!='" + ViewState["id"].ToString() + "' and  PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select PaymentName from Payment where PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select PaymentName from Payment where PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -215,7 +215,7 @@ public partial class Masters_Campany_AddPaymentDetail : CustomPage
         {
             SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Payment where PaymentId=" + ViewState["id"].ToString());
             DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PaymentId'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PaymentId'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
             lbl.Visible = true;
             lbl.Text = "Value Deleted.....";
             

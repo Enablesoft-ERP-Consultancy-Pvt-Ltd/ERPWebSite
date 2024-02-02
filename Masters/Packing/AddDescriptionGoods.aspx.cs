@@ -11,7 +11,7 @@ public partial class Masters_Packing_AddDescriptionGoods : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -43,7 +43,7 @@ public partial class Masters_Packing_AddDescriptionGoods : System.Web.UI.Page
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from GoodsDesc Where GoodsName='" + TxtDescriptionOfGoods.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from GoodsDesc Where GoodsName='" + TxtDescriptionOfGoods.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -75,7 +75,7 @@ public partial class Masters_Packing_AddDescriptionGoods : System.Web.UI.Page
                 _arrPara[0].Value = 0;
                 _arrPara[1].Value = TxtDescriptionOfGoods.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Goods_Description", _arrPara);
                 ClearAll();
@@ -113,7 +113,7 @@ public partial class Masters_Packing_AddDescriptionGoods : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = @"Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns["GoodsName"].ColumnName = "Goods Name";

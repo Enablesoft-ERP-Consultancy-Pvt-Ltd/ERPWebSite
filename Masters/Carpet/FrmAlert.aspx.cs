@@ -12,7 +12,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -50,7 +50,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
             if (Request.QueryString["VarFlag"] == "6")
             {
                 trVarFlag6.Visible = true;
-                UtilityModule.ConditionalComboFill(ref DDUserName, "Select UserId,UserName+' -- '+LoginName from NewUserDetail Where Companyid=" + Session["varCompanyId"], true, "----Select ----");
+                UtilityModule.ConditionalComboFill(ref DDUserName, "Select UserId,UserName+' -- '+LoginName from NewUserDetail Where Companyid=" + Session["varMasterCompanyIDForERP"], true, "----Select ----");
                 Fill_GridToDoManagment();
                 logo();
                 BtnRefresh.Visible = true;
@@ -76,7 +76,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
     private void Fill_GridToDoManagment()
     {
         string Str = @"Select SrNo,ND.UserName,WorkToDo,Remark,Case When PriorityLevel=0 Then 'Normal' Else Case When PriorityLevel=1 Then 'Urgent' Else 'Top Urgent' End End PriorityLevel,replace(convert(varchar(11),DueDate,106), ' ','-') DueDate,
-        DATEDIFF(day, DueDate, GETDATE()) LateByDays,JobStatus From ManagmentToDo MTD,NewUserDetail ND Where MTD.Userid=ND.Userid And MasterCompanyId=" + Session["varCompanyId"];
+        DATEDIFF(day, DueDate, GETDATE()) LateByDays,JobStatus From ManagmentToDo MTD,NewUserDetail ND Where MTD.Userid=ND.Userid And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Distinct UserId From FormName F,UserRights UR Where F.MEnuID=UR.MenuID And NavigateURL='../Masters/Campany/FrmTodoManagement.aspx' And Userid=" + Session["varuserid"]);
         if (Ds.Tables[0].Rows.Count == 0)
         {
@@ -101,7 +101,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
             Str = @"Select CI.CustomerCode,OM.LocalOrder+' / '+OM.CustomerOrderNo OrderNo,replace(convert(varchar(11),OM.OrderDate,106), ' ','-') OrderDate,
             replace(convert(varchar(11),OM.ProdReqDate,106), ' ','-') ProdReqDate,VF.ITEM_NAME ItemName,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName Shape,Case When OM.OrderUnitId=1 Then VF.SizeMtr Else SizeFt End Size,PreProdAssignedQty+ProdDemageQty-((IsNull(Sum(PD.Qty),0))-IsNull(Sum(PD.RejectQty),0)-IsNull(Sum(PD.CancellQty),0)) Qty
             From OrderMaster OM,customerinfo CI,V_FinishedItemDetail VF,JobAssigns JA LEFT OUTER JOIN PROCESS_ISSUE_DETAIL_" + VarProcessId + @" PD ON PD.OrderId=JA.OrderId And 
-            PD.Item_Finished_Id=JA.Item_Finished_Id Where OM.CustomerId=CI.CustomerId And OM.OrderId=JA.OrderId And JA.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID And CI.MasterCompanyId=" + Session["varCompanyId"] + @"
+            PD.Item_Finished_Id=JA.Item_Finished_Id Where OM.CustomerId=CI.CustomerId And OM.OrderId=JA.OrderId And JA.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
             Group By CI.Customercode,OM.LocalOrder,OM.CustomerOrderNo,VF.ITEM_NAME,VF.QualityName,VF.designName,VF.ColorName,VF.ShapeName,
             OM.OrderUnitId,VF.SizeMtr,SizeFt,JA.Item_Finished_Id,PreProdAssignedQty,OM.OrderId,ProdDemageQty,OM.OrderDate,OM.ProdReqDate
             Having PreProdAssignedQty+ProdDemageQty>((IsNull(Sum(PD.Qty),0))-IsNull(Sum(PD.RejectQty),0)-IsNull(Sum(PD.CancellQty),0)) Order By CI.Customercode,OM.OrderId";
@@ -113,7 +113,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
         Case When OM.OrderUnitId=1 Then VF.SizeMtr Else SizeFt End Size,SupplierQty-((IsNull(Sum(PD.Qty),0))-IsNull(Sum(PD.RejectQty),0)-IsNull(Sum(PD.CancellQty),0)) Qty
         From OrderMaster OM,customerinfo CI,V_FinishedItemDetail VF,JobAssigns JA LEFT OUTER JOIN PROCESS_ISSUE_DETAIL_" + VarProcessId + @" PD ON PD.OrderId=JA.OrderId And 
         PD.Item_Finished_Id=JA.Item_Finished_Id Where OM.CustomerId=CI.CustomerId And OM.OrderId=JA.OrderId And JA.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID And 
-        SupplierQty>0 And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Group By CI.Customercode,OM.LocalOrder,OM.CustomerOrderNo,VF.ITEM_NAME,VF.QualityName,VF.designName,VF.ColorName,VF.ShapeName,
+        SupplierQty>0 And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Group By CI.Customercode,OM.LocalOrder,OM.CustomerOrderNo,VF.ITEM_NAME,VF.QualityName,VF.designName,VF.ColorName,VF.ShapeName,
         OM.OrderUnitId,VF.SizeMtr,SizeFt,JA.Item_Finished_Id,OM.OrderId,SupplierQty,OM.OrderDate,OM.ProdReqDate
         Having SupplierQty>((IsNull(Sum(PD.Qty),0))-IsNull(Sum(PD.RejectQty),0)-IsNull(Sum(PD.CancellQty),0)) Order By CI.Customercode,OM.OrderId";
         }
@@ -123,7 +123,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select Distinct CI.CompanyName,EI.EmpName,PIM.SupplyOrderNo IssueOrderId,replace(convert(varchar(11),PIM.AssignDate,106), ' ','-') AssignDate,
         replace(convert(varchar(11),PID.ReqByDate,106), ' ','-') ReqDate From PROCESS_ISSUE_MASTER_" + VarProcessId + " PIM,PROCESS_ISSUE_DETAIL_" + VarProcessId + @" PID,CompanyInfo CI,EmpInfo EI
-        Where PIM.IssueOrderId=PID.IssueOrderId And PIM.Companyid=CI.CompanyId And PIM.Empid=EI.Empid And PQty>0 And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName");
+        Where PIM.IssueOrderId=PID.IssueOrderId And PIM.Companyid=CI.CompanyId And PIM.Empid=EI.Empid And PQty>0 And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName");
         DGForProductionPending.DataSource = ds;
         DGForProductionPending.DataBind();
     }
@@ -137,7 +137,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
     private void Fill_GridForPurchaseApproval()
     {
         DataSet ds = null;
-        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select CI.CompanyName,D.DepartmentName,EI.EmpName PartyName,PIM.PIndentNo,replace(convert(varchar(11),PIM.Date,106), ' ','-') Date From PurchaseIndentMaster PIM,CompanyInfo CI,EmpInfo EI,Department D Where PIM.CompanyId=CI.CompanyId And PIM.PartyId=EI.EmpId And PIM.DepartmentId=D.DepartmentId And CI.MasterCompanyId=" + Session["varCompanyId"] + " And PIndentId not in (Select PIndentNo From PurchaseIndentApproval)");
+        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select CI.CompanyName,D.DepartmentName,EI.EmpName PartyName,PIM.PIndentNo,replace(convert(varchar(11),PIM.Date,106), ' ','-') Date From PurchaseIndentMaster PIM,CompanyInfo CI,EmpInfo EI,Department D Where PIM.CompanyId=CI.CompanyId And PIM.PartyId=EI.EmpId And PIM.DepartmentId=D.DepartmentId And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And PIndentId not in (Select PIndentNo From PurchaseIndentApproval)");
         DGPurchaseApproval.DataSource = ds;
         DGPurchaseApproval.DataBind();
     }
@@ -146,7 +146,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
         DataSet ds = null;
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select CI.CompanyName,EI.EmpName PartyName,PIM.PIndentNo,replace(convert(varchar(11),PIM.Date,106), ' ','-') Date,VPI.ApprovalDate,ApprovedBy,ApprovalNo 
              From CompanyInfo CI,EmpInfo EI,PurchaseIndentMaster PIM,View_PurchaseIndentQty VPI Left Outer Join View_PurchaseIndentIssueQty VPII ON 
-             VPI.PIndentId=VPII.IndentID And VPI.FinishedId=VPII.FinishedID Where PIM.CompanyId=CI.CompanyId And PIM.PartyId=EI.EmpId And VPI.PIndentId=PIM.PIndentId And CI.MasterCompanyId=" + Session["varCompanyId"] + @"
+             VPI.PIndentId=VPII.IndentID And VPI.FinishedId=VPII.FinishedID Where PIM.CompanyId=CI.CompanyId And PIM.PartyId=EI.EmpId And VPI.PIndentId=PIM.PIndentId And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
              Group By CI.CompanyName,EI.EmpName,PIM.PIndentNo,PIM.Date,VPI.ApprovalDate,IndentQty,VPI.ApprovedBy,VPI.ApprovalNo  Having IndentQty>Sum(IsNull(IssQty,0))");
         DGPurchaseOrder.DataSource = ds;
         DGPurchaseOrder.DataBind();
@@ -154,7 +154,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT Distinct PII.PIndentIssueID,CI.CompanyName,EI.EmpName,PII.ChallanNo,
         replace(convert(varchar(11),PII.Date,106), ' ','-') Date,replace(convert(varchar(11),PII.DueDate,106), ' ','-') DueDate
         FROM PurchaseIndentIssue PII INNER JOIN View_PurchaseOrderQty VPO ON PII.PIndentIssueID=VPO.PIndentIssueID INNER JOIN
-        EmpInfo EI ON PII.PartyID=EI.EmpId INNER JOIN CompanyInfo CI ON PII.CompanyID=CI.CompanyId And CI.MasterCompanyId=" + Session["varCompanyId"] + @" LEFT OUTER JOIN 
+        EmpInfo EI ON PII.PartyID=EI.EmpId INNER JOIN CompanyInfo CI ON PII.CompanyID=CI.CompanyId And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" LEFT OUTER JOIN 
         View_PurchaseRecQty VPR ON VPO.PIndentIssueID=VPR.PIndentIssueID AND VPO.FinishedID=VPR.FinishedId Group By 
         PII.PIndentIssueID,CI.CompanyName,EI.EmpName,PII.ChallanNo,PII.Date,PII.DueDate,VPO.PIssQty Having VPO.PIssQty>SUM(Isnull(VPR.PRecQty,0)) Order By EI.EmpName");
         DGPurchaseOrderPending.DataSource = ds;
@@ -299,10 +299,10 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
     }
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -311,7 +311,7 @@ public partial class Masters_Carpet_FrmAlert : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

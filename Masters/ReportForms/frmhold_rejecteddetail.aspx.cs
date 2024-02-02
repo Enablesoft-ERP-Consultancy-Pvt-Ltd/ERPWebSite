@@ -12,7 +12,7 @@ public partial class Masters_ReportForms_frmhold_rejecteddetail : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }

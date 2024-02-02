@@ -11,7 +11,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
             TxtLocalOrderNo.Enabled = true;
             UtilityModule.ConditionalComboFill(ref ddordertype, "select OrderCategoryId,OrderCategory from OrderCategory order by OrderCategory", true, "Select OrderCategory");
             ddordertype.SelectedValue = "1";
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -30,7 +30,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo where Customercode<>'' And MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo where Customercode<>'' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
             TxtOrderDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtDeliveryDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             Txtcustorderdt.Text = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -122,7 +122,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
             string strsql = @"select OD.OrderDetailId,VF.ITEM_NAME AS ITEM_NAME,QualityName+'--' +DesignName+'--'+ColorName+'--'+ShapeName+'--'+
             CASE WHEN OD.ORDERUnitId=1 Then SizeMtr Else SizeFt End Description,OD.TotalArea Area,OD.QtyRequired Qty,OD.UnitRate Rate,
             Round(Od.Amount,2) Amount,OD.Remark,'" + TxtOrderDate.Text + @"' As DispatchDate,OrderCaltype From OrderDetail OD,V_FinishedItemDetail VF
-            Where OD.Item_Finished_Id=VF.Item_Finished_Id And OrderId=" + DDFromOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"]+@"
+            Where OD.Item_Finished_Id=VF.Item_Finished_Id And OrderId=" + DDFromOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"]+@"
             Order by QualityName ";
 
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -160,7 +160,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                             CASE WHEN OD.ORDERUnitId=1 Then SizeMtr Else SizeFt End Description,OD.TotalArea*OD.QtyRequired Area,OD.QtyRequired Qty,OD.UnitRate As Rate,
                             Round(Od.Amount,2) Amount From OrderDetail OD,V_FinishedItemDetail VF,ITEM_PARAMETER_MASTER IPM,Unit U,CurrencyInfo Ci
                             where OD.Item_Finished_Id=VF.Item_Finished_Id  And OD.Item_Finished_Id=IPM.Item_Finished_Id
-                             And U.UnitId=OD.OrderUnitId And Ci.CurrencyId=Od.CurrencyId And OrderId=" + Session["order_id"] + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                             And U.UnitId=OD.OrderUnitId And Ci.CurrencyId=Od.CurrencyId And OrderId=" + Session["order_id"] + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         return ds;
@@ -406,7 +406,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                 Ds1 = SqlHelper.ExecuteDataset(tran, CommandType.Text, "Select * From JobAssigns Where OrderId=" + Ds.Tables[0].Rows[0]["OrderId"] + " And Item_Finished_ID=" + Ds.Tables[0].Rows[0]["Item_Finished_ID"] + "");
                 if (Ds1.Tables[0].Rows.Count > 0)
                 {
-                    Ds2 = SqlHelper.ExecuteDataset(tran, CommandType.Text, "Select Process_Name_Id,Process_Name From Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name_Id");
+                    Ds2 = SqlHelper.ExecuteDataset(tran, CommandType.Text, "Select Process_Name_Id,Process_Name From Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Process_Name_Id");
                     if (Ds2.Tables[0].Rows.Count > 0)
                     {
                         for (int i = 0; i < Ds2.Tables[0].Rows.Count; i++)
@@ -453,7 +453,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
                     _arrpara[0].Value = VarDetailId;
                     _arrpara[1].Value = 1;
                     _arrpara[2].Direction = ParameterDirection.Output;
-                    _arrpara[3].Value = Session["varcompanyid"];
+                    _arrpara[3].Value = Session["varMasterCompanyIDForERP"];
                     _arrpara[4].Value = Session["varuserid"];
                     if (DGOrderDetail.Rows.Count == 1)
                     {
@@ -492,7 +492,7 @@ public partial class Masters_Order_FrmOrderCopy : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

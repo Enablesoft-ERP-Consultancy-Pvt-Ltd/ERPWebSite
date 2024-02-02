@@ -12,7 +12,7 @@ public partial class Masters_Campany_AddCurrencies : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -42,7 +42,7 @@ public partial class Masters_Campany_AddCurrencies : CustomPage
         try
         {
             con.Open();
-            string strsql = "Select CurrencyId,CurrencyName,CurrencyTypeRs,CurrencyTypePs,CurrentRateRefRs from  CurrencyInfo where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "Select CurrencyId,CurrencyName,CurrencyTypeRs,CurrencyTypePs,CurrentRateRefRs from  CurrencyInfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns["CurrencyId"].ColumnName = "Sr.No";
             ds.Tables[0].Columns["CurrencyName"].ColumnName = "Curency Name";
@@ -91,7 +91,7 @@ public partial class Masters_Campany_AddCurrencies : CustomPage
                 _arrpara[3].Value = txtpaise.Text.ToUpper();
                 _arrpara[4].Value = Convert.ToDouble(txtConversionRateAsPerRs.Text);
                 _arrpara[5].Value = Session["varuserid"].ToString();
-                _arrpara[6].Value = Session["varCompanyId"].ToString();
+                _arrpara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
 
                 _arrpara[7].Value = trPAYINSTRUCTION.Visible == true ? TXTPAYMENTINSTRUCTION.Text : "";
                 _arrpara[8].Value = trBENEFICIARYBANK.Visible == true ? TXTBENEFICIARYBANK.Text : "";
@@ -153,7 +153,7 @@ public partial class Masters_Campany_AddCurrencies : CustomPage
     {
         BtnSave.Text = "Update";
         txtid.Text = dgcurrency.SelectedRow.Cells[0].Text;
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CurrencyId,currencyName,currencytypeRs,currencytypePs,currentRateRefRs,PAYINSTRUCTION,BENEFICIARY_BANK,REMARKS from CurrencyInfo where MasterCompanyId= " + Session["varCompanyId"] + " And  CurrencyId=" + dgcurrency.SelectedRow.Cells[0].Text);
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CurrencyId,currencyName,currencytypeRs,currencytypePs,currentRateRefRs,PAYINSTRUCTION,BENEFICIARY_BANK,REMARKS from CurrencyInfo where MasterCompanyId= " + Session["varMasterCompanyIDForERP"] + " And  CurrencyId=" + dgcurrency.SelectedRow.Cells[0].Text);
         if (Ds.Tables[0].Rows.Count > 0)
         {
             ViewState["id"] = txtid.Text;
@@ -200,11 +200,11 @@ public partial class Masters_Campany_AddCurrencies : CustomPage
             string strsql;
             if (BtnSave.Text == "Update")
             {
-                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyId !=" + dgcurrency.SelectedValue + " and CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyid=" + Session["varCompanyId"];
+                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyId !=" + dgcurrency.SelectedValue + " and CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyid=" + Session["varCompanyId"];
+                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             int id = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, strsql));
@@ -238,12 +238,12 @@ public partial class Masters_Campany_AddCurrencies : CustomPage
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CurrencyId from customerinfo where MasterCompanyId=" + Session["varCompanyId"] + " And CurrencyId=" + ViewState["id"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CurrencyId from customerinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CurrencyId=" + ViewState["id"].ToString()));
             if (id <= 0)
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from CurrencyInfo where CurrencyId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'CurrencyInfo'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'CurrencyInfo'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 lblerr.Visible = true;
                 lblerr.Text = "Value Deleted...........";
             }

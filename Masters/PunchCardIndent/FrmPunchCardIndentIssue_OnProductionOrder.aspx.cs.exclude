@@ -1,0 +1,1036 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductionOrder : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
+        if (!IsPostBack)
+        {
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           SELECT Distinct CI.CustomerId,CI.CustomerCode CustomerCode From CustomerInfo CI,JobAssigns J,OrderMaster OM Where CI.Customerid=OM.Customerid And OM.Orderid=J.Orderid Order By CI.CustomerCode
+                           select unitid,unitname from unit where unitid in (1,2,4,6,7)";
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+            UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
+            UtilityModule.ConditionalComboFillWithDS(ref DDCustomerCode, ds, 1, true, "--Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDunit, ds, 2, true, "--Select--");
+            if (DDcompany.Items.Count > 0)
+            {
+                DDcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
+                DDcompany.Enabled = false;
+            }
+
+           
+            txtissuedate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+
+           
+            switch (Session["varMasterCompanyIDForERP"].ToString())
+            {
+                case "30":
+                   
+                    //FillFolioEmployee(sender);
+                    break;
+                default:
+                    ;                   
+                    break;
+            }
+            Fill_Temp_OrderNo();
+            DDCustomerCode.Focus();
+
+            if (Session["canedit"].ToString() == "1")
+            {
+                TDEdit.Visible = true;
+            }
+
+            hnissueid.Value = "0";
+            hnissueorderid.Value = "0";
+        }
+    }
+    private void Fill_Temp_OrderNo()
+    {
+        string strinsert = "", str = "";
+        SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "DELETE TEMP_PROCESS_ISSUE_MASTER_NEW");
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
+        {
+            str = "Select Process_name_id from PROCESS_NAME_MASTER Where Process_name_id in(1,16,35)";
+        }
+        else
+        {
+            str = "Select Process_name_id from PROCESS_NAME_MASTER Where Process_name_id=1";
+        }
+
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        if (Ds.Tables[0].Rows.Count > 0)
+        {
+            for (int i = 0; i < Ds.Tables[0].Rows.Count; i++)
+            {
+                str = "Insert into TEMP_PROCESS_ISSUE_MASTER_NEW select Pm.Companyid,Om.CustomerId,Pd.Orderid," + Ds.Tables[0].Rows[i]["Process_Name_Id"] + ",PM.Empid,Pm.issueorderid,PM.ChallanNO from PROCESS_ISSUE_MASTER_" + Ds.Tables[0].Rows[i]["Process_Name_Id"] + " PM inner join PROCESS_ISSUE_DETAIL_" + Ds.Tables[0].Rows[i]["Process_Name_Id"] + " PD on PM.IssueOrderId=PD.IssueOrderId  inner join OrderMaster OM on Om.OrderId=Pd.Orderid Where PM.Status<>'canceled'";
+                strinsert = strinsert + "  " + str;
+            }
+            if (strinsert != "")
+            {
+                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strinsert);
+            }
+        }
+        Ds.Dispose();
+    }
+    private void ParameteLabel()
+    {
+        String[] ParameterList = new String[8];
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+        //lblcategoryname.Text = ParameterList[5];
+        //lblitemname.Text = ParameterList[6];
+    }
+    protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (Tddropdowncustcode.Visible == true)
+        {
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT distinct CI.CustomerId,CI.CustomerCode From CustomerInfo CI,JobAssigns J,OrderMaster OM Where CI.Customerid=OM.Customerid And OM.Orderid=J.Orderid order by CI.CustomerCode", true, "--Select--");
+        }
+        else
+        {
+            CustomerCodeSelectedChange();
+
+        }
+    }
+    protected void DDCustomerCode_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        CustomerCodeSelectedChange();
+    }
+    private void CustomerCodeSelectedChange()
+    {
+        //SqlConnection con = new SqlConnection();
+        string str = @"Select  Distinct OM.OrderId,OM.LocalOrder+' / '+OM.CustomerOrderNo from OrderMaster OM,JobAssigns J Where OM.Orderid=J.Orderid And OM.CompanyId=" + DDcompany.SelectedValue + " and Om.ORDERFROMSAMPLE=0 ";
+        if (Tddropdowncustcode.Visible == true)
+        {
+            str = str + "  and OM.Customerid=" + DDCustomerCode.SelectedValue;
+        }
+        str = str + " order by OM.Orderid ";
+        UtilityModule.ConditionalComboFill(ref DDCustomerOrderNumber, str, true, "--Select--");
+    }
+
+    protected void DDCustomerOrderNumber_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (variable.VarMANYCUSTOMERORDERISSUE_SINGLEPRODUCTIONORDERNO == "0")
+        {
+            CustomerOrderNumberSelectedChange();
+        }
+        if (variable.VarMANYCUSTOMERORDERISSUE_SINGLEPRODUCTIONORDERNO == "1")
+        {
+            //CheckDuplicateCustomerId();
+            CategoryselectedindexChanged();
+        }
+    }
+    private void CustomerOrderNumberSelectedChange()
+    {
+        string str;
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
+        {
+            str = @"select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER  where process_name_id in(1,16,35)
+                    SELECT Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_MASTER IM INNER JOIN ITEM_CATEGORY_MASTER ICM ON IM.CATEGORY_ID = ICM.CATEGORY_ID INNER JOIN OrderDetail OD ON IM.ITEM_ID = OD.ITEM_ID INNER JOIN OrderMaster OM ON OD.OrderId = OM.OrderId inner Join JobAssigns JA ON JA.OrderId=OD.OrderId where  OD.Item_Finished_Id=JA.Item_Finished_Id  and OM.OrderId=" + DDCustomerOrderNumber.SelectedValue;
+        }
+        else
+        {
+            str = @"select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where Process_Name_id=1
+                       SELECT Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_MASTER IM INNER JOIN ITEM_CATEGORY_MASTER ICM ON IM.CATEGORY_ID = ICM.CATEGORY_ID INNER JOIN OrderDetail OD ON IM.ITEM_ID = OD.ITEM_ID INNER JOIN OrderMaster OM ON OD.OrderId = OM.OrderId inner Join JobAssigns JA ON JA.OrderId=OD.OrderId where  OD.Item_Finished_Id=JA.Item_Finished_Id  and OM.OrderId=" + DDCustomerOrderNumber.SelectedValue;
+        }
+        DataSet ds = new DataSet();
+        ds = SqlHelper.ExecuteDataset(str);
+        UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 0, true, "--Select--");
+        if (Session["varMasterCompanyIDForERP"].ToString() == "20")
+        {
+            DDProcessName.Enabled = false;
+            if (DDProcessName.Items.Count > 0)
+            {
+                DDProcessName.SelectedIndex = 1;
+                ProcessSelectedChange();
+            }
+        }
+        UtilityModule.ConditionalComboFillWithDS(ref DDCategoryName, ds, 1, true, "--Select--");
+        if (DDCategoryName.Items.Count > 0)
+        {
+            DDCategoryName.SelectedIndex = 1;
+            CategoryselectedindexChanged();
+
+        }
+
+    }
+    protected void DDProcessName_SelectedIndexChanged1(object sender, EventArgs e)
+    {
+        ProcessSelectedChange();
+    }
+    private void ProcessSelectedChange()
+    {
+        UtilityModule.ConditionalComboFill(ref DDEmployeeName, "Select Distinct EI.EmpId,EI.EmpName from EmpInfo EI,PROCESS_ISSUE_Master_" + DDProcessName.SelectedValue + " PM Where PM.EmpId=Ei.EmpId and PM.Status<>'Canceled' Order By EI.EmpName", true, "--Select--");
+        txtissuedate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+        //TxtRequiredDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+
+    }
+    protected void DDEmployeeName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        EmployeeSelectedChange();
+    }
+    private void EmployeeSelectedChange()
+    {
+        string str = "";
+        if (variable.VarLoomNoGenerated == "1")
+        {
+            str = @"select Distinct PM.IssueOrderId,PM.ChallanNo from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM 
+                    inner join PROCESS_ISSUE_Detail_" + DDProcessName.SelectedValue + @" PD on Pm.issueorderid=Pd.issueorderid
+                    Left join LoomstockNo ls on pm.issueorderid=Ls.issueorderid And ls.ProcessID = " + DDProcessName.SelectedValue + @"
+                    where ls.issueorderid is null and  PM.Empid=" + DDEmployeeName.SelectedValue + " and PM.CompanyId=" + DDcompany.SelectedValue + @" 
+                    and PD.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and PM.Status<>'canceled' order by PM.Issueorderid";
+        }
+        else
+        {
+            str = @"select Distinct PM.IssueOrderId,PM.ChallanNo from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_ISSUE_Detail_" + DDProcessName.SelectedValue + @" PD 
+                where PM.Empid=" + DDEmployeeName.SelectedValue + " and PM.CompanyId=" + DDcompany.SelectedValue + @" and PM.IssueOrderId=PD.IssueOrderId 
+                and PD.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and PM.Status<>'canceled' order by PM.Issueorderid";
+        }
+        UtilityModule.ConditionalComboFill(ref DDPOrderNo, str, true, "--Select--");
+    }
+
+    protected void DDCategoryName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        CategoryselectedindexChanged();
+    }
+    protected void CategoryselectedindexChanged()
+    {
+        if (Session["varMasterCompanyIDForERP"].ToString() == "6")
+        {
+            string STR;
+            if (variable.VarNewQualitySize == "1")
+            {
+                STR = @"SELECT DISTINCT VF.ITEM_ID,VF.ITEM_NAME FROM OrderDetail OD,JobAssigns JA,V_FinishedItemDetailNew VF Where JA.OrderId=OD.OrderId AND 
+                      OD.Item_Finished_Id=JA.Item_Finished_Id AND OD.Item_Finished_Id=VF.Item_Finished_Id AND VF.CATEGORY_ID=" + DDCategoryName.SelectedValue + @" AND 
+                      OD.OrderId=" + DDCustomerOrderNumber.SelectedValue + @" AND JA.Item_Finished_Id in (Select JA.Item_Finished_Id from JobAssigns JA LEFT OUTER JOIN 
+                     PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD ON PD.OrderId=JA.OrderId And PD.Item_Finished_Id=JA.Item_Finished_Id and pd.issueorderid=" + DDPOrderNo.SelectedValue + @"
+                     Where JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " Group By JA.Item_Finished_Id,PreProdAssignedQty)";
+            }
+            else
+            {
+                STR = @"SELECT DISTINCT VF.ITEM_ID,VF.ITEM_NAME FROM OrderDetail OD,JobAssigns JA,V_FinishedItemDetail VF Where JA.OrderId=OD.OrderId AND 
+                      OD.Item_Finished_Id=JA.Item_Finished_Id AND OD.Item_Finished_Id=VF.Item_Finished_Id AND VF.CATEGORY_ID=" + DDCategoryName.SelectedValue + @" AND 
+                      OD.OrderId=" + DDCustomerOrderNumber.SelectedValue + @" AND JA.Item_Finished_Id in (Select JA.Item_Finished_Id from JobAssigns JA LEFT OUTER JOIN 
+                     PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD ON PD.OrderId=JA.OrderId And PD.Item_Finished_Id=JA.Item_Finished_Id and pd.issueorderid=" + DDPOrderNo.SelectedValue + @"
+                     Where JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " Group By JA.Item_Finished_Id,PreProdAssignedQty)";
+            }
+            UtilityModule.ConditionalComboFill(ref DDItemName, STR, true, "---Select---");
+        }
+        else
+        {
+            string str = "SELECT Distinct OD.ITEM_ID,IM.ITEM_NAME FROM OrderMaster OM INNER JOIN OrderDetail OD ON OM.OrderId = OD.OrderId INNER JOIN ITEM_MASTER IM ON OD.ITEM_ID = IM.ITEM_ID where IM.CATEGORY_ID=" + DDCategoryName.SelectedValue + " and OM.OrderId=" + DDCustomerOrderNumber.SelectedValue + "";
+            if (DDItemName.SelectedIndex > 0)
+            {
+                str = str + " and IM.Item_Id= " + DDItemName.SelectedValue + "";
+            }
+
+            UtilityModule.ConditionalComboFill(ref DDItemName, str, true, "---Select---");
+
+            //UtilityModule.ConditionalComboFill(ref DDItemName, "SELECT Distinct OD.ITEM_ID,IM.ITEM_NAME FROM OrderMaster OM INNER JOIN OrderDetail OD ON OM.OrderId = OD.OrderId INNER JOIN ITEM_MASTER IM ON OD.ITEM_ID = IM.ITEM_ID where IM.CATEGORY_ID=" + DDCategoryName.SelectedValue + " and OM.OrderId=" + DDCustomerOrderNumber.SelectedValue, true, "---Select---");
+
+        }
+        if (DDItemName.Items.Count > 0)
+        {
+            DDItemName.SelectedIndex = 1;
+            dditemname_chage();
+        }
+    }
+    protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        dditemname_chage();
+    }
+    private void dditemname_chage()
+    {
+        string size = "";
+        if ( (variable.VarWEAVERPURCHASEORDER_FULLAREA == "1"))
+        {
+            switch (DDunit.SelectedValue)
+            {
+                case "6":
+                    size = "Sizeinch";
+                    break;
+                case "1":
+                    size = "Sizemtr";
+                    break;
+                default:
+                    size = "Sizeft";
+                    break;
+            }
+        }
+        else if (variable.VarProductionSizeItemWise == "1")
+        {
+            switch (DDunit.SelectedValue.ToString())
+            {
+                case "6":
+                    size = "Sizeinch";
+                    break;
+                case "1":
+                    size = "ItemProdSizeMtr";
+                    break;
+                default:
+                    size = "ItemProdSizeFt";
+                    break;
+            }
+
+        }
+        else
+        {
+            switch (DDunit.SelectedValue)
+            {
+                case "6":
+                    size = "Sizeinch";
+                    break;
+                case "1":
+                    size = "ProdSizeMtr";
+                    break;
+                default:
+                    size = "ProdSizeFt";
+                    break;
+            }
+        }
+        string STR = "";
+        if (variable.VarProductionSizeItemWise == "1")
+        {
+
+            STR = @"Select Distinct JA.Item_Finished_Id,IPM.QualityName+Space(2)+IPM.DesignName+Space(2)+IPM.ColorName+Space(2)+IPM.ShapeName+Space(2)+IPM.ShadeColorName+Space(5)+ " + size + @" Description 
+                        from JobAssigns JA inner join OrderDetail Od ON JA.Item_Finished_Id=Od.Item_Finished_Id 
+                        inner join Item_Master IM ON IM.Item_Id=OD.Item_Id 
+                        inner join V_FinishedItemDetail IPM On IPM.ITEM_FINISHED_ID=JA.Item_Finished_Id 
+                        JOIN SizeAttachedWithItem SA ON IPM.SizeId=SA.SizeId and SA.ItemId=IM.ITEM_ID
+                        LEFT JOIN  View_Process_Issue_Detail VPD ON JA.Item_Finished_Id=VPD.Item_Finished_Id and VPD.PROCESS_NAME_ID=" + DDProcessName.SelectedValue + @" 
+                        Where JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and OD.Item_Id=" + DDItemName.SelectedValue + " ";
+
+            UtilityModule.ConditionalComboFill(ref DDDescription, STR, true, "--Select--");
+        }
+        else
+        {
+            if (Session["varMasterCompanyIDForERP"].ToString() == "6")
+            {
+
+                STR = "Select distinct JA.Item_Finished_Id,QDCS+Space(5)+ Case When 6=" + DDunit.SelectedValue + " Then Isnull(" + size + ",'') Else Case When 1=" + DDunit.SelectedValue + @" Then Isnull(" + size + ",'') Else Isnull(" + size + @",'') End End Description 
+                     From JobAssigns JA inner join OrderDetail Od ON JA.Item_Finished_Id=Od.Item_Finished_Id inner join ViewFindFinishedidItemidQDCSS IPM On 
+                     IPM.FinishedId=JA.Item_Finished_Id inner join Item_Master IM ON IM.Item_Id=IPM.Item_Id Where JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + @" And 
+                     IPM.Item_Id=" + DDItemName.SelectedValue + @" AND JA.Item_Finished_Id in (Select JA.Item_Finished_Id from JobAssigns JA LEFT OUTER JOIN 
+                     PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD ON PD.OrderId=JA.OrderId And PD.Item_Finished_Id=JA.Item_Finished_Id 
+                     Where JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + "  and pd.issueorderid=" + DDPOrderNo.SelectedValue + " Group By JA.Item_Finished_Id,PreProdAssignedQty)";
+
+                UtilityModule.ConditionalComboFill(ref DDDescription, STR, true, "--Select--");
+            }
+            else
+            {
+                if (variable.VarNewQualitySize == "1")
+                {
+                    ////STR = "Select Distinct JA.Item_Finished_Id,QDCS+Space(5)+ " + size + " End Description from JobAssigns JA inner join OrderDetail Od ON JA.Item_Finished_Id=Od.Item_Finished_Id inner join Item_Master IM ON IM.Item_Id=OD.Item_Id inner join ViewFindFinishedidItemidQDCSSNew IPM On IPM.FinishedId=JA.Item_Finished_Id left JOIN PROCESS_ISSUE_DETAIL_16 PD ON JA.Item_Finished_Id=PD.Item_Finished_Id Where   JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and OD.Item_Id=" + DDItemName.SelectedValue + " and PD.Item_Finished_Id is  null";
+
+                    STR = "Select Distinct JA.Item_Finished_Id,QDCS+Space(5)+ " + size + " End Description from JobAssigns JA inner join OrderDetail Od ON JA.Item_Finished_Id=Od.Item_Finished_Id inner join Item_Master IM ON IM.Item_Id=OD.Item_Id inner join ViewFindFinishedidItemidQDCSSNew IPM On IPM.FinishedId=JA.Item_Finished_Id LEFT JOIN  View_Process_Issue_Detail VPD ON JA.Item_Finished_Id=VPD.Item_Finished_Id and VPD.PROCESS_NAME_ID=" + DDProcessName.SelectedValue + " Where   JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and OD.Item_Id=" + DDItemName.SelectedValue + " and PD.Item_Finished_Id is  null";
+                }
+                else
+                {
+                    //////STR = "Select Distinct JA.Item_Finished_Id,QDCS+Space(5)+ " + size + " Description from JobAssigns JA inner join OrderDetail Od ON JA.Item_Finished_Id=Od.Item_Finished_Id inner join Item_Master IM ON IM.Item_Id=OD.Item_Id inner join ViewFindFinishedidItemidQDCSS IPM On IPM.FinishedId=JA.Item_Finished_Id left JOIN PROCESS_ISSUE_DETAIL_16 PD ON JA.Item_Finished_Id=PD.Item_Finished_Id Where   JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and OD.Item_Id=" + DDItemName.SelectedValue + "and PD.Item_Finished_Id is  null";
+                    //STR = "Select Distinct JA.Item_Finished_Id,QDCS+Space(5)+ " + size + " Description from JobAssigns JA inner join OrderDetail Od ON JA.Item_Finished_Id=Od.Item_Finished_Id inner join Item_Master IM ON IM.Item_Id=OD.Item_Id inner join ViewFindFinishedidItemidQDCSS IPM On IPM.FinishedId=JA.Item_Finished_Id left JOIN PROCESS_ISSUE_DETAIL_16 PD ON JA.Item_Finished_Id=PD.Item_Finished_Id Where   JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and OD.Item_Id=" + DDItemName.SelectedValue + " ";
+
+                    STR = "Select Distinct JA.Item_Finished_Id,QDCS+Space(5)+ " + size + " Description from JobAssigns JA inner join OrderDetail Od ON JA.Item_Finished_Id=Od.Item_Finished_Id inner join Item_Master IM ON IM.Item_Id=OD.Item_Id inner join ViewFindFinishedidItemidQDCSS IPM On IPM.FinishedId=JA.Item_Finished_Id LEFT JOIN  View_Process_Issue_Detail VPD ON JA.Item_Finished_Id=VPD.Item_Finished_Id and VPD.PROCESS_NAME_ID=" + DDProcessName.SelectedValue + " Where   JA.OrderId=" + DDCustomerOrderNumber.SelectedValue + " and OD.Item_Id=" + DDItemName.SelectedValue + " ";
+                }
+                UtilityModule.ConditionalComboFill(ref DDDescription, STR, true, "--Select--");
+            }
+        }
+
+    }
+    protected void DDPOrderNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        POrderNoSelectedChange();
+
+    }
+    private void POrderNoSelectedChange()
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+            string sqlstr = "Select replace(convert(varchar(11),AssignDate,106), ' ','-') as AssignDate,UnitId,Remarks,Instruction,CalType,Item_Finished_Id,Rate,Qty, replace(convert(varchar(11),ReqByDate,106), ' ','-') as ReqByDate,FlagFixOrWeight,isnull(PURCHASEFLAG,0) as Purchaseflag From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD Where PM.IssueOrderId=PD.IssueOrderId And PM.IssueOrderId=" + DDPOrderNo.SelectedValue + " and PM.Status<>'Canceled'";
+            con.Open();
+            DataSet DS = SqlHelper.ExecuteDataset(con, CommandType.Text, sqlstr);
+            if (DS.Tables[0].Rows.Count > 0)
+            {
+                //TxtRequiredDate.Text = DS.Tables[0].Rows[0]["ReqByDate"].ToString();
+                //TxtAssignDate.Text = DS.Tables[0].Rows[0]["AssignDate"].ToString();
+                //DDunit.SelectedValue = DS.Tables[0].Rows[0]["UnitId"].ToString();
+                //DDcaltype.SelectedValue = DS.Tables[0].Rows[0]["CalType"].ToString();
+                //TxtInstructions.Text = DS.Tables[0].Rows[0]["Instruction"].ToString();
+                //TxtRemarks.Text = DS.Tables[0].Rows[0]["Remarks"].ToString();
+                //ViewState["IssueOrderid"] = DDPOrderNo.SelectedValue;
+                //ViewState["ProcessId"] = DDProcessName.SelectedValue;
+                //hnIssueOrderId.Value = DDPOrderNo.SelectedValue;
+                //hnpurchasefolio.Value = DS.Tables[0].Rows[0]["Purchaseflag"].ToString();
+                //if (DS.Tables[0].Rows[0]["FlagFixOrWeight"] == "0")
+                //{
+                //    ChkForFix.Checked = true;
+                //}
+
+            }
+            else
+            {
+                ViewState["IssueOrderid"] = "0";
+            }
+            //Fill_Grid();
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Process/EditProcessIssue.aspx");
+            lblmessage.Text = ex.Message;
+            lblmessage.Visible = true;
+        }
+        finally
+        {
+            con.Close();
+        }
+    }
+    protected void DDunit_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //DDItemName.SelectedIndex = '0';
+        if (DDDescription.SelectedIndex > 0)
+        {
+            DDDescription_SelectedIndexChanged(sender, e);
+        }
+    }
+    protected void DDDescription_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //TxtLength.Text = "";
+        //TxtWidth.Text = "";
+        //TxtArea.Text = "";
+        //TxtTotalQty.Text = "";
+        //TxtPreQuantity.Text = "";
+        //fill_QuantityRequired();
+        //Area();
+        //MASTER_RATE();
+        //TxtCommission.Text = UtilityModule.Fill_Comm(Convert.ToInt32(DDDescription.SelectedValue)).ToString();
+    }
+    protected void txtfolionoedit_TextChanged(object sender, EventArgs e)
+    {
+        if (txtfolionoedit.Text != "")
+        {
+            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,
+            @"Select * from TEMP_PROCESS_ISSUE_MASTER_NEW Where Companyid = " + DDcompany.SelectedValue + " And ChallanNo = '" + txtfolionoedit.Text + "'");
+            if (Ds.Tables[0].Rows.Count > 0)
+            {
+                DDCustomerCode.SelectedValue = Ds.Tables[0].Rows[0]["Customerid"].ToString();
+                //hnCustomerId.Value = Ds.Tables[0].Rows[0]["Customerid"].ToString();
+                CustomerCodeSelectedChange();
+                DDCustomerOrderNumber.SelectedValue = Ds.Tables[0].Rows[0]["Orderid"].ToString();
+                CustomerOrderNumberSelectedChange();
+                DDProcessName.SelectedValue = Ds.Tables[0].Rows[0]["ProcessId"].ToString();
+                ProcessSelectedChange();
+                DDEmployeeName.SelectedValue = Ds.Tables[0].Rows[0]["Empid"].ToString();
+                EmployeeSelectedChange();
+                if (DDPOrderNo.Items.FindByValue(Ds.Tables[0].Rows[0]["IssueOrderid"].ToString()) != null)
+                {
+                    DDPOrderNo.SelectedValue = Ds.Tables[0].Rows[0]["IssueOrderid"].ToString();
+                    POrderNoSelectedChange();
+                }
+
+            }
+            else
+            {
+                txtfolionoedit.Text = "";
+                txtfolionoedit.Focus();
+                lblmessage.Visible = true;
+                lblmessage.Text = "Pls Enter Correct Order No";
+            }
+        }
+    }
+
+    protected void FillIssueNo()
+    {
+//        string str = @"select IssueId,ChallanNo from Map_IssueOnProductionOrderMaster MIM
+//                       Where MIM.CompanyId=" + DDcompany.SelectedValue + " and MIM.IssueOrderId=" + DDFolioNo.SelectedValue + @" 
+//                        and  MIM.MapStencilType=" + DDMapStencilType.SelectedValue + @" ";
+
+//        UtilityModule.ConditionalComboFill(ref DDIssueNo, str, true, "--Plz Select--");
+
+    }
+    protected void DDIssueNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //hnissueid.Value = DDIssueNo.SelectedValue;
+        //FillissueGrid();
+    }
+    protected void chkEdit_CheckedChanged(object sender, EventArgs e)
+    {
+        //if (chkEdit.Checked == true)
+        //{
+        //    TDIssueNo.Visible = true;
+        //}
+        //else
+        //{
+        //    TDIssueNo.Visible = false;
+        //    DDIssueNo.Items.Clear();
+        //}
+        //txtIssueNo.Text = "";
+        //hnissueid.Value = "0";
+
+        //DG.DataSource = null;
+        //DG.DataBind();
+
+        //gvdetail.DataSource = null;
+        //gvdetail.DataBind();
+    }
+//    protected void DDFolioEmployee_SelectedIndexChanged(object sender, EventArgs e)
+//    {
+//        string str = "";
+//        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+//        if (con.State == ConnectionState.Closed)
+//        {
+//            con.Open();
+//        }
+//        try
+//        {
+//            if (DDFolioEmployee.SelectedIndex > 0)
+//            {
+////                str = @"select EI.Empid,Pm.IssueOrderId,PM.ChallanNo  from dbo.PROCESS_ISSUE_MASTER_1 PM inner join dbo.PROCESS_ISSUE_DETAIL_1 PD
+////                        on PM.IssueOrderId=Pd.IssueOrderId  and Pd.PQty>0                       
+////                        inner join EmpInfo EI on Ei.EmpId=PM.Empid
+////                        And EI.empid=" + DDFolioEmployee.SelectedValue;
+
+
+////                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+////                if (ds.Tables[0].Rows.Count > 0)
+////                {
+////                    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "AlertEmp", "alert('Folio -" + ds.Tables[0].Rows[0]["ChallanNo"] + " Already pending at this ID No..');", true);
+////                    return;
+////                }
+
+//                fillFolio(sender);
+
+//                ////txtWeaverIdNo.Text = "";
+
+
+//               // ds.Dispose();
+//            }
+//           // // txtWeaverIdNo.Focus();
+
+//        }
+//        catch (Exception ex)
+//        {
+//            lblmessage.Visible = true;
+//            lblmessage.Text = ex.Message;
+//        }
+//        finally
+//        {
+//            con.Dispose();
+//            con.Close();
+//        }
+//    }
+//    protected void DDemployee_SelectedIndexChanged(object sender, EventArgs e)
+//    {
+//        string str = "";
+//        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+//        if (con.State == ConnectionState.Closed)
+//        {
+//            con.Open();
+//        }
+//        try
+//        {
+//            if (DDemployee.SelectedIndex > 0)
+//            {
+//                str = @"select EMp.Empid,Pm.IssueOrderId  from dbo.PROCESS_ISSUE_MASTER_1 PM inner join dbo.PROCESS_ISSUE_DETAIL_1 PD
+//                        on PM.IssueOrderId=Pd.IssueOrderId  and Pd.PQty>0
+//                        inner join  dbo.Employee_ProcessOrderNo EMP on EMP.IssueOrderId=PM.IssueOrderId and EMP.ProcessId=1
+//                        inner join EmpInfo EI on Ei.EmpId=EMP.Empid
+//                        And EI.empid=" + DDemployee.SelectedValue;
+
+
+//                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+//                if (ds.Tables[0].Rows.Count > 0)
+//                {
+//                    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "AlertEmp", "alert('Folio -" + ds.Tables[0].Rows[0]["IssueOrderId"] + " Already pending at this ID No..');", true);
+//                    return;
+//                }
+
+//                if (listWeaverName.Items.FindByValue(DDemployee.SelectedValue) == null)
+//                {
+
+//                    listWeaverName.Items.Add(new ListItem(DDemployee.SelectedItem.Text, DDemployee.SelectedValue));
+//                }
+
+//                //txtWeaverIdNo.Text = "";
+
+
+//                ds.Dispose();
+//            }
+//            // txtWeaverIdNo.Focus();
+
+//        }
+//        catch (Exception ex)
+//        {
+//            lblmessage.Visible = true;
+//            lblmessage.Text = ex.Message;
+//        }
+//        finally
+//        {
+//            con.Dispose();
+//            con.Close();
+//        }
+//    }
+//    protected void fillFolio(object sender = null)
+//    {
+//        string str;
+//        // txtloomid.Text = DDLoomNo.SelectedValue;
+
+//        str = @"select Distinct PIM.IssueOrderId,PIM.ChallanNo from Process_issue_master_1 PIM
+//                   left join Employee_ProcessOrderNo EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1
+//                   Where PIM.CompanyId=" + DDcompany.SelectedValue + " and PIM.EmpId=" + DDFolioEmployee.SelectedValue + "";
+//        //if (chkcomplete.Checked == true)
+//        //{
+//        //    str = str + " and PIM.Status='Complete'";
+//        //}
+//        //else
+//        //{
+//        str = str + " and PIM.Status='Pending'";
+//        //}
+//        //if (txteditempid.Text != "")
+//        //{
+//        //    str = str + " and EMP.EMPID=" + txteditempid.Text + "";
+//        //}
+//        if (txtfolionoedit.Text != "")
+//        {
+//            str = str + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
+//        }
+//        str = str + " order by PIM.IssueOrderId";
+//         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+//         UtilityModule.ConditionalComboFillWithDS(ref DDFolioNo, ds, 0, true, "--Plz Select--");
+//        if (ds.Tables[0].Rows.Count > 0)
+//        {
+//            if (DDFolioNo.Items.Count > 0)
+//            {
+//                if (DDFolioNo.Items.FindByValue(ds.Tables[0].Rows[0]["IssueOrderId"].ToString()) != null)
+//                {
+//                    DDFolioNo.SelectedValue = ds.Tables[0].Rows[0]["IssueOrderId"].ToString();
+//                }
+//                DDFolioNo_SelectedIndexChanged(sender, new EventArgs());
+//            }
+//        }
+//        //UtilityModule.ConditionalComboFill(ref DDFolioNo, str, true, "--Plz Select--");
+        
+
+       
+//    }
+
+//    protected void DDLoomNo_SelectedIndexChanged(object sender, EventArgs e)
+//    {
+//        string str;
+//        // txtloomid.Text = DDLoomNo.SelectedValue;
+
+//        str = @"select Distinct PIM.IssueOrderId,isnull(PIM.ChallanNo,PIM.IssueOrderId) from Process_issue_master_1 PIM
+//                   left join Employee_ProcessOrderNo EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMp.ProcessId=1
+//                   Where PIM.CompanyId=" + DDcompany.SelectedValue + " and PIM.Units=" + DDProdunit.SelectedValue + " and PIM.LoomId=" + DDLoomNo.SelectedValue;
+//        //if (chkcomplete.Checked == true)
+//        //{
+//        //    str = str + " and PIM.Status='Complete'";
+//        //}
+//        //else
+//        //{
+//        str = str + " and PIM.Status='Pending'";
+//        //}
+//        //if (txteditempid.Text != "")
+//        //{
+//        //    str = str + " and EMP.EMPID=" + txteditempid.Text + "";
+//        //}
+//        if (txtfolionoedit.Text != "")
+//        {
+//            //str = str + " and PIM.issueorderid=" + txtfolionoedit.Text + "";
+//            str = str + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
+//        }
+//        str = str + " order by PIM.IssueOrderId";
+//        UtilityModule.ConditionalComboFill(ref DDFolioNo, str, true, "--Plz Select--");
+//        if (DDFolioNo.Items.Count > 0)
+//        {
+//            DDFolioNo.SelectedIndex = 1;
+//            DDFolioNo_SelectedIndexChanged(sender, new EventArgs());
+//        }
+
+//        //employee
+//        str = @"select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' as Empname from EmpInfo EI inner join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION'
+//        and EI.Status='P' and EI.Blacklist=0 order by Empname";
+//        UtilityModule.ConditionalComboFill(ref DDemployee, str, true, "--Plz select--");
+//    }
+//    protected void DDFolioNo_SelectedIndexChanged(object sender, EventArgs e)
+//    {
+//        hnissueid.Value = "0";
+//        hnissueorderid.Value = DDFolioNo.SelectedValue;
+//        FillGrid();       
+//    }
+//    protected void btnSearch_Click(object sender, EventArgs e)
+//    {
+//        //if (txtgetvalue.Text != "")
+//        //{
+//        //    FillWeaver();
+//        //}
+//    }
+//    //protected void btnsearchedit_Click(object sender, EventArgs e)
+//    //{
+//    //    FIllProdUnit(sender);
+//    //}
+//    protected void FIllProdUnit(object sender = null)
+//    {
+
+//        string str = @"select Distinct U.UnitsId,U.UnitName,PIm.CompanyId From Process_issue_master_1 PIM inner Join  Units U on PIM.Units=U.UnitsId
+//                        inner join Employee_ProcessOrderNo EMP on PIM.Issueorderid=EMP.IssueOrderId and EMP.ProcessId=1
+//                        Where PIM.Companyid=" + DDcompany.SelectedValue;
+
+//        //if (txteditempid.Text != "")
+//        //{
+//        //    str = str + " and EMP.EMPID=" + txteditempid.Text;
+//        //}
+//        if (txtfolionoedit.Text != "")
+//        {
+//            str = str + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
+//            //str = str + " and EMP.Issueorderid=" + txtfolionoedit.Text;
+//        }
+//        str = str + " order by Unitname";
+//        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+//        UtilityModule.ConditionalComboFillWithDS(ref DDProdunit, ds, 0, true, "--Plz Select--");
+//        if (ds.Tables[0].Rows.Count > 0)
+//        {
+//            if (DDcompany.Items.FindByValue(ds.Tables[0].Rows[0]["CompanyId"].ToString()) != null)
+//            {
+//                DDcompany.SelectedValue = ds.Tables[0].Rows[0]["CompanyId"].ToString();
+//            }
+//        }
+
+//        //UtilityModule.ConditionalComboFill(ref DDProdunit, str, true, "--Plz Select--");
+//        if (DDProdunit.Items.Count > 0)
+//        {
+//            DDProdunit.SelectedIndex = 1;
+//            DDProdunit_SelectedIndexChanged(sender, new EventArgs());
+//        }
+
+//    }
+//    protected void FillFolioEmployee(object sender = null)
+//    {
+//        string str = "";
+//        //employee
+//        str = @"select distinct EI.EmpId,EI.Empcode+' ['+EI.Empname+']' as Empname from EmpInfo EI inner join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION'
+//                JOIN EmpProcess EP ON EI.EmpId=EP.EmpId JOIN Process_Issue_Master_1 PIM ON EI.EmpId=PIM.EmpId
+//                Where EI.Status='P' and EI.Blacklist=0 and EP.ProcessId=1  ";
+//        if (txtfolionoedit.Text != "")
+//        {
+//            str = str + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
+//        }
+//        str = str + " order by Empname";
+//        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+//        UtilityModule.ConditionalComboFillWithDS(ref DDFolioEmployee, ds, 0, true, "--Plz Select--");
+
+//        //UtilityModule.ConditionalComboFill(ref DDFolioEmployee, str, true, "--Plz select--");
+
+//        if (txtfolionoedit.Text != "")
+//        {
+//            if (DDFolioEmployee.Items.Count > 0)
+//            {
+//                if (ds.Tables[0].Rows.Count > 0)
+//                {
+//                    if (DDFolioEmployee.Items.FindByValue(ds.Tables[0].Rows[0]["EmpId"].ToString()) != null)
+//                    {
+//                        DDFolioEmployee.SelectedValue = ds.Tables[0].Rows[0]["EmpId"].ToString();
+//                    }
+//                }
+
+//                if (DDFolioEmployee.SelectedIndex > 0)
+//                {
+//                    DDFolioEmployee_SelectedIndexChanged(sender, new EventArgs());
+//                }
+
+//            }
+//        }
+       
+//    }
+    
+    protected void DDMapStencilType_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        //if (chkEdit.Checked == true)
+        //{
+        //    FillIssueNo();
+        //}
+        //txtIssueNo.Text = "";
+        //hnissueid.Value = "0";
+
+        //DG.DataSource = null;
+        //DG.DataBind();
+
+        //gvdetail.DataSource = null;
+        //gvdetail.DataBind();
+
+    }
+    protected void txtMapStencilstockno_TextChanged(object sender, EventArgs e)
+    {
+        //lblmessage.Text = "";
+        //try
+        //{
+        //    SqlParameter[] param = new SqlParameter[6];
+        //    param[0] = new SqlParameter("@CompanyId", DDcompany.SelectedValue);
+        //    param[1] = new SqlParameter("@MapStencilType", DDMapStencilType.SelectedValue);
+        //    param[2] = new SqlParameter("@IssueOrderId", DDFolioNo.SelectedValue);
+        //    param[3] = new SqlParameter("@MSStockno", txtMapStencilstockno.Text);
+        //    param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+        //    param[4].Direction = ParameterDirection.Output;
+
+        //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETMAPRECEIVEDETAIL_WITHMAPSTOCKNO", param);
+        //    if (param[4].Value.ToString() != "")
+        //    {
+        //        lblmessage.Text = param[4].Value.ToString();
+        //        DG.DataSource = null;
+        //        DG.DataBind();
+        //    }
+        //    else
+        //    {
+        //        DG.DataSource = ds.Tables[0];
+        //        DG.DataBind();
+        //        for (int i = 0; i < DG.Rows.Count; i++)
+        //        {
+        //            CheckBox Chkboxitem = (CheckBox)DG.Rows[i].FindControl("Chkboxitem");
+        //            TextBox txtqty = (TextBox)DG.Rows[i].FindControl("txtqty");
+        //            Chkboxitem.Checked = true;
+        //            txtqty.Text = "1";
+        //        }
+        //        btnsave_Click(sender, new EventArgs());
+        //        DG.DataSource = null;
+        //        DG.DataBind();
+        //        txtMapStencilstockno.Text = "";
+        //    }
+        //    txtMapStencilstockno.Focus();
+        //}
+        //catch (Exception ex)
+        //{
+        //    lblmessage.Text = ex.Message;
+        //}
+    }
+    protected void btnsave_Click(object sender, EventArgs e)
+    {
+        ////if (txtloomid.Text == "" || txtloomid.Text == "0")
+        ////{
+        ////    ScriptManager.RegisterStartupScript(Page, GetType(), "loomid", "alert('Please select Loom No.');", true);
+        ////    return;
+        ////}
+
+        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        //if (con.State == ConnectionState.Closed)
+        //{
+        //    con.Open();
+        //}
+        ////**************Sql Table
+        //DataTable dtrecords = new DataTable();
+        //dtrecords.Columns.Add("Itemfinishedid", typeof(int));
+        //dtrecords.Columns.Add("MapReceiveQty", typeof(int));
+        //dtrecords.Columns.Add("Qty", typeof(int));
+        //dtrecords.Columns.Add("MapStencilNo", typeof(int));
+        //dtrecords.Columns.Add("OrderId", typeof(int));
+        ////**************
+        //for (int i = 0; i < DG.Rows.Count; i++)
+        //{
+        //    CheckBox Chkboxitem = ((CheckBox)DG.Rows[i].FindControl("Chkboxitem"));
+        //    TextBox txtqty = ((TextBox)DG.Rows[i].FindControl("txtqty"));
+        //    if (Chkboxitem.Checked == true && (txtqty.Text != "" && txtqty.Text != "0"))
+        //    {
+        //        Label lblitemfinishedid = ((Label)DG.Rows[i].FindControl("lblitemfinishedid"));
+        //        Label lblReceiveQty = ((Label)DG.Rows[i].FindControl("lblReceiveQty"));
+        //        Label lblMapStencilNo = ((Label)DG.Rows[i].FindControl("lblMapStencilNo"));
+        //        Label lblorderid = ((Label)DG.Rows[i].FindControl("lblorderid"));
+
+        //        //********Data Row
+        //        DataRow dr = dtrecords.NewRow();
+        //        dr["Itemfinishedid"] = lblitemfinishedid.Text;
+        //        dr["MapReceiveQty"] = lblReceiveQty.Text;
+        //        dr["Qty"] = txtqty.Text;
+        //        dr["MapStencilNo"] = lblMapStencilNo.Text;
+        //        dr["OrderId"] = lblorderid.Text;
+        //        dtrecords.Rows.Add(dr);
+        //    }
+        //}
+        //if (dtrecords.Rows.Count > 0)
+        //{
+        //    SqlTransaction Tran = con.BeginTransaction();
+        //    try
+        //    {
+
+        //        //******
+        //        SqlCommand cmd = new SqlCommand("PRO_SAVEMAPTRACENO_ONPRODUCTIONORDER", con, Tran);
+        //        cmd.CommandType = CommandType.StoredProcedure;
+        //        cmd.CommandTimeout = 30000;
+        //        cmd.Parameters.Add("@issueid", SqlDbType.Int);
+        //        cmd.Parameters["@issueid"].Direction = ParameterDirection.InputOutput;
+        //        cmd.Parameters["@issueid"].Value = hnissueid.Value;
+        //        cmd.Parameters.AddWithValue("@Companyid", DDcompany.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@ProductionUnitId", DDProdunit.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@LoomNoId", DDLoomNo.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@IssueOrderId", DDFolioNo.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@Issuedate", txtissuedate.Text);
+        //        cmd.Parameters.AddWithValue("@MapStencilType", DDMapStencilType.SelectedValue);
+        //        cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
+        //        cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
+        //        cmd.Parameters.AddWithValue("@dtrecords", dtrecords);
+        //        cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
+        //        cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
+        //        cmd.Parameters.AddWithValue("@MSStockno", txtMapStencilstockno.Text);
+        //        cmd.Parameters.Add("@ChallanNo", SqlDbType.VarChar,30);
+        //        cmd.Parameters["@ChallanNo"].Direction = ParameterDirection.InputOutput;
+        //        cmd.Parameters["@ChallanNo"].Value = "";
+        //        cmd.ExecuteNonQuery();
+        //        if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
+        //        {
+        //            lblmessage.Text = cmd.Parameters["@msg"].Value.ToString();
+        //            Tran.Rollback();
+        //        }
+        //        else
+        //        {
+        //            lblmessage.Text = "Data Saved Successfully.";
+        //            Tran.Commit();
+        //            //txtfoliono.Text = cmd.Parameters["@FolioNo"].Value.ToString(); //param[5].Value.ToString();
+        //            hnissueid.Value = cmd.Parameters["@issueid"].Value.ToString();// param[0].Value.ToString();
+        //            txtIssueNo.Text = cmd.Parameters["@ChallanNo"].Value.ToString();
+        //            FillissueGrid();
+        //        }
+        //        //******
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Tran.Rollback();
+        //        lblmessage.Text = ex.Message;
+        //    }
+        //    finally
+        //    {
+        //        con.Dispose();
+        //        con.Close();
+        //    }
+        //}
+        //else
+        //{
+        //    ScriptManager.RegisterStartupScript(Page, GetType(), "save1", "alert('Please select atleast one check box to save data.');", true);
+        //}
+    }
+
+    protected void FillissueGrid()
+    {
+//        string str = @"select MIM.IssueId,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,
+//                        CASE WHEN MSSN.UnitID = 2 THEN VF.SIZEFT ELSE VF.SIZEMTR END As Size,
+//                        MID.IssueDetailId,MIM.IssueOrderId,MID.ItemFinishedID,MIM.CompanyId,MIM.ProductionUnitId,MIM.LoomNoId,MIM.MapStencilType,MIM.ChallanNo,
+//                        Replace(CONVERT(nvarchar(11),MIM.IssueDate,106),' ','-') as IssueDate,
+//                        1 as Qty,MSSN.MSStockNo,MSSN.MapStencilNo
+//                        from Map_IssueOnProductionOrderMaster MIM INNER JOIN Map_IssueOnProductionOrderDetail MID ON MIM.IssueId=MID.IssueId 
+//                        INNER JOIN V_FinishedItemDetail VF ON MID.ItemFinishedId=VF.Item_Finished_Id
+//                        INNER JOIN OrderDetail OD ON MID.OrderId=OD.OrderID and MID.ItemFinishedId=OD.Item_Finished_id
+//                        INNER JOIN Map_StencilStockNo_Detail MSSND ON MIM.IssueId=MSSND.IssueID and MID.IssueDetailId=MSSND.IssueDetailId
+//                        INNER JOIN Map_StencilStockNo MSSN ON MSSND.MapStencilNo=MSSN.MapStencilNo
+//                        where MIM.CompanyId=" + DDcompany.SelectedValue + " ";
+//        ////where MIM.ID=" + hnissueid.Value;
+//        //if (txtEditIssueNo.Text != "")
+//        //{
+//        //    str = str + " and MIM.ChallanNo='" + txtEditIssueNo.Text + "'";
+//        //}
+//        //else
+//        //{
+//        str = str + " and MIM.IssueID=" + hnissueid.Value + "";
+//        //}
+
+//        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+//        gvdetail.DataSource = ds.Tables[0];
+//        gvdetail.DataBind();
+    }
+    protected void RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        //if (e.Row.RowType == DataControlRowType.DataRow && gvdetail.EditIndex == e.Row.RowIndex)
+        //{
+        //    DropDownList DDMapType = (DropDownList)e.Row.FindControl("DDMapType");
+
+        //    string str = @"select ID,MapType from MapType order by MapType";
+
+        //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        //    UtilityModule.ConditionalComboFillWithDS(ref DDMapType, ds, 0, true, "--Plz Select--");
+
+        //    string selectedMapIssueType = DataBinder.Eval(e.Row.DataItem, "MapIssueType").ToString();
+        //    DDMapType.Items.FindByValue(selectedMapIssueType).Selected = true;
+
+        //}
+    }
+
+    protected void gvdetail_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        //SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        //if (con.State == ConnectionState.Closed)
+        //{
+        //    con.Open();
+        //}
+        //SqlTransaction Tran = con.BeginTransaction();
+        //try
+        //{
+        //    //Label lblhqty = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblhqty");
+        //    Label lblIssueId = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblIssueId");
+        //    Label lblIssueDetailId = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblIssueDetailId");
+        //    Label lblMapStencilNo = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblMapStencilNo");
+
+        //    Label lblQty = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblQty");
+        //    Label lblItemFinishedId = (Label)gvdetail.Rows[e.RowIndex].FindControl("lblItemFinishedId");
+
+        //    SqlParameter[] param = new SqlParameter[6];
+        //    param[0] = new SqlParameter("@IssueId", lblIssueId.Text);
+        //    param[1] = new SqlParameter("@IssueDetailid", lblIssueDetailId.Text);
+        //    param[2] = new SqlParameter("@Qty", lblQty.Text);
+        //    param[3] = new SqlParameter("@ItemFinishedId", lblItemFinishedId.Text);
+        //    param[4] = new SqlParameter("@MapStencilNo", lblMapStencilNo.Text);
+        //    param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+        //    param[5].Direction = ParameterDirection.Output;
+        //    //****************
+        //    SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DELETEMAPISSUE_ONPRODUCTIONORDER", param);
+        //    lblmessage.Text = param[5].Value.ToString();
+        //    Tran.Commit();
+        //    FillissueGrid();
+        //    //***************
+        //}
+        //catch (Exception ex)
+        //{
+        //    lblmessage.Text = ex.Message;
+        //    Tran.Rollback();
+        //}
+        //finally
+        //{
+        //    con.Dispose();
+        //    con.Close();
+        //}
+    }
+
+    protected void btnPreview_Click(object sender, EventArgs e)
+    {
+        //SqlParameter[] param = new SqlParameter[2];
+        //param[0] = new SqlParameter("@CompanyId", DDcompany.SelectedValue);
+        //param[1] = new SqlParameter("@IssueID", hnissueid.Value);
+        ////************
+        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_WeaverMapIssueReport", param);
+        //if (ds.Tables[0].Rows.Count > 0)
+        //{
+        //    //Session["rptFileName"] = "~\\Reports\\RptWeaverMapIssue.rpt";
+        //    Session["rptFileName"] = "~\\Reports\\RptWeaverMapIssueDuplicate.rpt";
+        //    Session["Getdataset"] = ds;
+        //    Session["dsFileName"] = "~\\ReportSchema\\RptWeaverMapIssue.xsd";
+        //    StringBuilder stb = new StringBuilder();
+        //    stb.Append("<script>");
+        //    stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+        //    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        //}
+        //else
+        //{
+        //    ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
+        //}
+
+    }
+}

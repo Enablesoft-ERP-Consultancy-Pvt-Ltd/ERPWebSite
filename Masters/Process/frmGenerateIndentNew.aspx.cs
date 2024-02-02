@@ -13,7 +13,7 @@ public partial class Masters_Process_frmGenerateIndentNew : System.Web.UI.Page
     public static string Item_Finished_id, Flagsize, Unitid;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -300,7 +300,7 @@ public partial class Masters_Process_frmGenerateIndentNew : System.Web.UI.Page
                 param[5] = new SqlParameter("@IndentNo", SqlDbType.VarChar, 50);
                 param[5].Direction = ParameterDirection.InputOutput;
                 param[5].Value = TxtIndentNo.Text.ToUpper();
-                param[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[7] = new SqlParameter("@userid", Session["varuserid"]);
                 param[8] = new SqlParameter("@ReqDate", TxtReqDate.Text);
                 param[9] = new SqlParameter("@orderwiseflag", (TDppno.Visible == true ? 0 : 1));

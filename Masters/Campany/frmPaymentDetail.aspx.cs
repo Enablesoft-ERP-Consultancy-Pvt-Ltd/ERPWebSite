@@ -11,7 +11,7 @@ public partial class Masters_Campany_frmPaymentDetail : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,7 +32,7 @@ public partial class Masters_Campany_frmPaymentDetail : CustomPage
         DataSet ds = null;
         try
         {
-            string strsql = "SELECT PaymentId as SrNo,	PaymentName,PaymentDescription from Payment Where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "SELECT PaymentId as SrNo,	PaymentName,PaymentDescription from Payment Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(strsql);
         }
         catch (Exception ex)
@@ -109,7 +109,7 @@ public partial class Masters_Campany_frmPaymentDetail : CustomPage
                 _arrPara[1].Value = txtPayment.Text.ToUpper();
                 _arrPara[2].Value = txtdescription.Text.ToUpper();
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_PAYMENT", _arrPara);
                 Tran.Commit();
                 lbl.Visible = true;
@@ -162,11 +162,11 @@ public partial class Masters_Campany_frmPaymentDetail : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select PaymentName from Payment where PaymentId!='" + ViewState["PaymentId"].ToString() + "' and  PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select PaymentName from Payment where PaymentId!='" + ViewState["PaymentId"].ToString() + "' and  PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select PaymentName from Payment where PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select PaymentName from Payment where PaymentName='" + txtPayment.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             DataSet ds = SqlHelper.ExecuteDataset(strsql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -200,7 +200,7 @@ public partial class Masters_Campany_frmPaymentDetail : CustomPage
             _array[0] = new SqlParameter("@PaymentId", ViewState["PaymentId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeletePayment", _array);
             Tran.Commit();

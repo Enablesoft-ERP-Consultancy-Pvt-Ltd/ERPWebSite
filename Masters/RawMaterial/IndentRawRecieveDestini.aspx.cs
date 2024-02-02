@@ -14,19 +14,19 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
     static int MasterCompanyID;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyID = Convert.ToInt16(Session["varCompanyId"]);
+        MasterCompanyID = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
         if (!IsPostBack)
         {
-            if (Session["varCompanyId"] == null)
+            if (Session["varMasterCompanyIDForERP"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
             ViewState["masterid"] = 0;
             txtprmid.Text = "0";
             TXTPRTID.Text = "0";
-            UtilityModule.ConditionalComboFill(ref ddCompName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "Select Comp Name");
-            UtilityModule.ConditionalComboFill(ref ddProcessName, " Select Distinct PROCESS_NAME_ID,process_name from PROCESS_NAME_MASTER pm inner join IndentMaster im on pm.PROCESS_NAME_ID=im.processid And pm.MasterCompanyId=" + Session["varCompanyId"] + " order by PROCESS_NAME_ID", true, "Select Process Name");
-            UtilityModule.ConditionalComboFill(ref ddgodown, "Select godownid,godownname from godownmaster Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select GodownName");
+            UtilityModule.ConditionalComboFill(ref ddCompName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "Select Comp Name");
+            UtilityModule.ConditionalComboFill(ref ddProcessName, " Select Distinct PROCESS_NAME_ID,process_name from PROCESS_NAME_MASTER pm inner join IndentMaster im on pm.PROCESS_NAME_ID=im.processid And pm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PROCESS_NAME_ID", true, "Select Process Name");
+            UtilityModule.ConditionalComboFill(ref ddgodown, "Select godownid,godownname from godownmaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select GodownName");
             if (ddCompName.Items.Count > 0)
             {
                 ddCompName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -51,7 +51,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         LblQuality.Text = ParameterList[0];
         LblDesign.Text = ParameterList[1];
         LblColor.Text = ParameterList[2];
@@ -71,13 +71,13 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
                 PP_ProcessRecTran PRT  on PRT.IndentId=IM.IndentId inner join 
                 PP_ProcessRecMaster PRM ON PRM.PRMID=PRT.PRMID inner join
                 indentdetail id On id.indentid=im.indentid inner join
-                ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  And IM.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId=" + ddCompName.SelectedValue;
+                ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId=" + ddCompName.SelectedValue;
             //            UtilityModule.ConditionalComboFill(ref ddindent, @"select distinct IM.IndentId,IndentNo+' ('+om.localorder+'   '+customerorderno+')'
             //                                                             from IndentMaster IM inner join 
             //                                                             PP_ProcessRecTran PRT  on PRT.IndentId=IM.IndentId inner join 
             //                                                             PP_ProcessRecMaster PRM ON PRM.PRMID=PRT.PRMID inner join
             //                                                             indentdetail id On id.indentid=im.indentid inner join
-            //                                                             ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  And IM.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Indent No");
+            //                                                             ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Indent No");
         }
         else
         {
@@ -86,13 +86,13 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
                     PP_ProcessRawTran PRT  on PRT.IndentId=IM.IndentId inner join 
                     PP_ProcessRawMaster PRM ON PRM.PRMID=PRT.PRMID inner join
                     indentdetail id On id.indentid=im.indentid inner join
-                    ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  and  IM.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId=" + ddCompName.SelectedValue;
+                    ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  and  IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId=" + ddCompName.SelectedValue;
             //            UtilityModule.ConditionalComboFill(ref ddindent, @"select distinct IM.IndentId,IndentNo+' ('+om.localorder+'   '+customerorderno+')'
             //                                                             from IndentMaster IM inner join 
             //                                                             PP_ProcessRawTran PRT  on PRT.IndentId=IM.IndentId inner join 
             //                                                             PP_ProcessRawMaster PRM ON PRM.PRMID=PRT.PRMID inner join
             //                                                             indentdetail id On id.indentid=im.indentid inner join
-            //                                                             ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  and  IM.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Indent No");
+            //                                                             ordermaster om on om.orderid=id.orderid where PRM.ProcessId=" + ddProcessName.SelectedValue + "  and  IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Indent No");
         }
         if (txtcode.Text != "")
         {
@@ -131,9 +131,9 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
     protected void ddindent_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (ChkEditOrder.Checked == true)
-            UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct E.EmpId,E.EmpName FROM EmpInfo E,PP_ProcessRecMaster ppm ,PP_ProcessRectran ppt where ppm.empid=e.empid and ppm.PRMid=ppt.PRMid and ppt.indentid=" + ddindent.SelectedValue + "  And ppm.Processid=" + ddProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + " And ppm.CompanyId=" + ddCompName.SelectedValue, true, "Select Emp");
+            UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct E.EmpId,E.EmpName FROM EmpInfo E,PP_ProcessRecMaster ppm ,PP_ProcessRectran ppt where ppm.empid=e.empid and ppm.PRMid=ppt.PRMid and ppt.indentid=" + ddindent.SelectedValue + "  And ppm.Processid=" + ddProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And ppm.CompanyId=" + ddCompName.SelectedValue, true, "Select Emp");
         else
-            UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct E.EmpId,E.EmpName FROM IndentMaster IM INNER JOIN  EmpInfo E ON IM.PartyId=E.EmpId And IM.Processid=" + ddProcessName.SelectedValue + " and im.indentid=" + ddindent.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Emp");
+            UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct E.EmpId,E.EmpName FROM IndentMaster IM INNER JOIN  EmpInfo E ON IM.PartyId=E.EmpId And IM.Processid=" + ddProcessName.SelectedValue + " and im.indentid=" + ddindent.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Emp");
 
     }
     private void ddindent_selectchange()
@@ -155,7 +155,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
                       FROM  dbo.ITEM_MASTER INNER JOIN dbo.ITEM_PARAMETER_MASTER ON dbo.ITEM_MASTER.ITEM_ID = dbo.ITEM_PARAMETER_MASTER.ITEM_ID INNER JOIN
                       dbo.ITEM_CATEGORY_MASTER ON dbo.ITEM_MASTER.CATEGORY_ID = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID INNER JOIN
                       dbo.IndentDetail INNER JOIN dbo.IndentMaster ON dbo.IndentDetail.IndentId = dbo.IndentMaster.IndentID ON 
-                      dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId where dbo.IndentMaster.partyid=" + ddempname.SelectedValue + " and IndentMaster.processid=" + ddProcessName.SelectedValue + " and  dbo.Indentmaster.IndentId=" + ddindent.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "Select Category Name");
+                      dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId where dbo.IndentMaster.partyid=" + ddempname.SelectedValue + " and IndentMaster.processid=" + ddProcessName.SelectedValue + " and  dbo.Indentmaster.IndentId=" + ddindent.SelectedValue + " And ITEM_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Category Name");
         Fill_Grid_Show();
     }
     private void ddlcategorycange()
@@ -174,7 +174,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
         shd.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -190,7 +190,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
                         UtilityModule.ConditionalComboFill(ref dddesign, @"SELECT DISTINCT dbo.Design.designId, dbo.Design.designName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
                       dbo.Design ON dbo.ITEM_PARAMETER_MASTER.DESIGN_ID = dbo.Design.designId
-                       WHERE  dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Design--");
+                       WHERE  dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Design--");
                         break;
 
                     case "3":
@@ -198,7 +198,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
                         UtilityModule.ConditionalComboFill(ref ddcolor, @"SELECT DISTINCT dbo.color.ColorId, dbo.color.ColorName FROm dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
                       dbo.color ON dbo.ITEM_PARAMETER_MASTER.COLOR_ID = dbo.color.ColorId
-                      WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Color--");
+                      WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Color--");
                         break;
 
                     case "4":
@@ -206,14 +206,14 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
                         UtilityModule.ConditionalComboFill(ref ddshape, @"SELECT DISTINCT dbo.Shape.ShapeId, dbo.Shape.ShapeName  FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
                       dbo.Shape ON dbo.ITEM_PARAMETER_MASTER.SHAPE_ID = dbo.Shape.ShapeId
-                      WHERE dbo.IndentDetail.IndentId = " + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Shape--");
+                      WHERE dbo.IndentDetail.IndentId = " + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Shape--");
                         break;
                     case "5":
                         sz.Visible = true;
                         UtilityModule.ConditionalComboFill(ref ddsize, @"SELECT DISTINCT dbo.Size.SizeId, dbo.Size.SizeFt FROM dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
                       dbo.Size ON dbo.ITEM_PARAMETER_MASTER.SIZE_ID = dbo.Size.SizeId
-                       WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "Size in Ft");
+                       WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Size in Ft");
                         break;
                     case "6":
                         shd.Visible = true;
@@ -225,24 +225,24 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
     {
         txtcode.Text = "";
-        UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"], true, "Select Unit");
+        UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Unit");
         ddlunit.SelectedIndex = 1;
         ddlshade.Items.Clear();
         UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT dbo.Quality.QualityId,dbo.Quality.QualityName
                      FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
                       dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
                       dbo.Quality ON dbo.ITEM_PARAMETER_MASTER.QUALITY_ID = dbo.Quality.QualityId
-                     WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + "and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "Select Quallity");
+                     WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + "and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Quallity");
 
         UtilityModule.ConditionalComboFill(ref dddesign, @"Select Distinct Designid,DesignName   From Item_Parameter_Master IM,Design D,pp_ProcessRawTran PT
-                                                         Where IM.Item_Finished_id=PT.Finishedid And IM.Design_ID=D.Designid And PT.PRMID=" + ddindent.SelectedValue + " and pt.itemid=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "Select Design");
+                                                         Where IM.Item_Finished_id=PT.Finishedid And IM.Design_ID=D.Designid And PT.PRMID=" + ddindent.SelectedValue + " and pt.itemid=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Design");
     }
     protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN
         dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
         dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
-        WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " AND dbo.ITEM_MASTER.CATEGORY_ID =" + ddCatagory.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Item--");
+        WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " AND dbo.ITEM_MASTER.CATEGORY_ID =" + ddCatagory.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Item--");
         ddlcategorycange();
     }
     protected void save_detail(int Flag)
@@ -284,7 +284,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
             arr[4].Value = txtdate.Text;
 
             arr[5].Value = Convert.ToInt32(TXTPRTID.Text);
-            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[6].Value = ItemFinishedId;
             arr[7].Value = Convert.ToInt32(ddgodown.SelectedValue);
             arr[8].Value = txtrec.Text;
@@ -338,7 +338,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             string str = null;
             if (btnsave.Text == "Update")
             {
@@ -377,7 +377,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
     {
         if (ddProcessName.SelectedValue == "9")
         {
-            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @" select ifinishedid,(sum(Recqty)+10)*ConQty as rec,sum(issueqty),OFINISHEDID,O_FINISHED_Type_ID from v_IndentissueAndConsumption
            Where indentid=" + ddindent.SelectedValue + " and OFINISHEDID=" + ItemFinishedId + " and O_FINISHED_Type_ID=" + ddFinish_Type.SelectedValue + " group by ifinishedid,OFINISHEDID,O_FINISHED_Type_ID,ConQty having (sum(Recqty)+10)*ConQty >sum(issueqty)");
             if (ds.Tables[0].Rows.Count > 0)
@@ -430,7 +430,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
             txtgatepass.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, str).ToString();
 
             SqlTransaction Tran = con.BeginTransaction();
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             int prt = Convert.ToInt32(SqlHelper.ExecuteScalar(Tran, CommandType.Text, "select isnull(max(PRTid),0) from PP_ProcessRecTran"));
             try
             {
@@ -501,12 +501,12 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
             //            string strsql = @"SELECT ICM.CATEGORY_NAME,IM.ITEM_NAME,VF.QDCS+Space(2)+FT.Finished_Type_Name as Description,GM.GodownName, PPRT.RecQuantity,PPRT.PRTid as PRTID,PPRT.PRMid as PRMID
             //            FROM dbo.ITEM_MASTER IM,ITEM_PARAMETER_MASTER IPM,ITEM_CATEGORY_MASTER ICM,GodownMaster GM,PP_ProcessRecTran PPRT,ViewFindFinishedidItemidQDCSS VF,
             //            FINISHED_TYPE FT WHERE IM.ITEM_ID=IPM.ITEM_ID AND IM.CATEGORY_ID=ICM.CATEGORY_ID And GM.GoDownID=PPRT.Godownid AND IPM.ITEM_FINISHED_ID=PPRT.Finishedid AND 
-            //            IPM.Item_Finished_ID=VF.Finishedid And FT.ID=PPRT.Finish_Type And PPRT.prmid=" + ViewState["masterid"] + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            //            IPM.Item_Finished_ID=VF.Finishedid And FT.ID=PPRT.Finish_Type And PPRT.prmid=" + ViewState["masterid"] + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             string strsql = @"SELECT ICM.CATEGORY_NAME,IM.ITEM_NAME,VF.QDCS+Space(2)+FT.Finished_Type_Name as Description,GM.GodownName, PPRT.RecQuantity,PPRT.PRTid as PRTID,PPRT.PRMid as PRMID
             FROM dbo.ITEM_MASTER IM,ITEM_PARAMETER_MASTER IPM,ITEM_CATEGORY_MASTER ICM,GodownMaster GM,PP_ProcessRecTran PPRT,ViewFindFinishedidItemidQDCSS VF,
             FINISHED_TYPE FT, PP_ProcessRecMaster PPM WHERE IM.ITEM_ID=IPM.ITEM_ID AND IM.CATEGORY_ID=ICM.CATEGORY_ID And GM.GoDownID=PPRT.Godownid AND IPM.ITEM_FINISHED_ID=PPRT.Finishedid AND 
-            IPM.Item_Finished_ID=VF.Finishedid And FT.ID=PPRT.Finish_Type AND PPM.prmid=PPRT.prmid And PPM.PRMid=" + ViewState["masterid"] + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            IPM.Item_Finished_ID=VF.Finishedid And FT.ID=PPRT.Finish_Type AND PPM.prmid=PPRT.prmid And PPM.PRMid=" + ViewState["masterid"] + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -594,7 +594,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
         fill_qty();
         UtilityModule.ConditionalComboFill(ref ddlshade, @"SELECT DISTINCT dbo.ShadeColor.ShadecolorId, dbo.ShadeColor.ShadeColorName FROM   dbo.ITEM_PARAMETER_MASTER INNER JOIN
                          dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN  dbo.ShadeColor ON dbo.ITEM_PARAMETER_MASTER.SHADECOLOR_ID = dbo.ShadeColor.ShadecolorId
-                         WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Item_Id=" + dditemname.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Quality_Id=" + dquality.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "Select ShadeColor");
+                         WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Item_Id=" + dditemname.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Quality_Id=" + dquality.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select ShadeColor");
         fill_Order_qty();
     }
     private void fill_qty()
@@ -633,7 +633,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
         {
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
             con.Open();
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             UtilityModule.ConditionalComboFill(ref ddFinish_Type, @"SELECT Distinct ID.O_FINISHED_TYPE_ID,FT.FINISHED_TYPE_NAME from IndentDetail ID,FINISHED_TYPE FT 
                     Where ID.O_FINISHED_TYPE_ID=FT.ID AND OFINISHEDID=" + Varfinishedid + " And IndentId=" + ddindent.SelectedValue + "", true, "Finish Type");
             if (ddFinish_Type.Items.Count > 0)
@@ -683,14 +683,14 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
         {
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
             con.Open();
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, txtcode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             DataSet ds;
             string Str;
             if (ddProcessName.SelectedValue == "9")
                 Str = @"SELECT  IsNull(SUM(Quantity),0) as IssueQuantity FROM VIEW_INDENTRECQTY Where OFinishedId=" + Varfinishedid + "  And Indentid=" + ddindent.SelectedValue;
             else
             {
-                if (Session["varCompanyId"].ToString() == "2")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "2")
                 {
                     Str = "select isnull(sum(issueQuantity),0) as issuequantity from V_IndentRawIssue_Destini where indentid=" + ddindent.SelectedValue + " and finishedid=" + Varfinishedid + " ";
                     //Str = @"SELECT  IsNull(SUM(Quantity),0) as IssueQuantity FROM VIEW_INDENTRECQTY Where OFinishedId=" + Varfinishedid + "  And Indentid=" + ddindent.SelectedValue;
@@ -795,38 +795,38 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
         string Str;
         if (txtcode.Text != "")
         {
-            Str = "SELECT DISTINCT IM.Category_Id,IPM.* FROM  ITEM_PARAMETER_MASTER IPM INNER JOIN IndentDetail ID ON IPM.ITEM_FINISHED_ID = ID.OFinishedId inner join Item_Master IM on IM.Item_Id=IPM.Item_Id  WHERE ID.IndentId = " + ddindent.SelectedValue + " and  ProductCode='" + txtcode.Text + "' And IPM.MasterCompanyId=" + Session["varCompanyId"];
+            Str = "SELECT DISTINCT IM.Category_Id,IPM.* FROM  ITEM_PARAMETER_MASTER IPM INNER JOIN IndentDetail ID ON IPM.ITEM_FINISHED_ID = ID.OFinishedId inner join Item_Master IM on IM.Item_Id=IPM.Item_Id  WHERE ID.IndentId = " + ddindent.SelectedValue + " and  ProductCode='" + txtcode.Text + "' And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             if (ds.Tables[0].Rows.Count > 0)
             {
                 ddCatagory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
                 ddlcategorycange();
                 UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_PARAMETER_MASTER.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
-                      WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " AND dbo.ITEM_MASTER.CATEGORY_ID =" + ddCatagory.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "--Select Item--");
+                      WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " AND dbo.ITEM_MASTER.CATEGORY_ID =" + ddCatagory.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--Select Item--");
                 dditemname.SelectedValue = ds.Tables[0].Rows[0]["ITEM_ID"].ToString();
-                UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"], true, "Select Unit");
+                UtilityModule.ConditionalComboFill(ref ddlunit, "SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i INNER JOIN  Unit u ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Unit");
                 ddlunit.SelectedIndex = 1;
                 ddlshade.Items.Clear();
                 UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT dbo.Quality.QualityId,dbo.Quality.QualityName FROM  dbo.ITEM_PARAMETER_MASTER INNER JOIN dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
                      dbo.Quality ON dbo.ITEM_PARAMETER_MASTER.QUALITY_ID = dbo.Quality.QualityId
-                     WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + "and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "Select Quallity");
+                     WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + "and quality.item_id=" + dditemname.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Quallity");
                 //UtilityModule.ConditionalComboFill(ref dddesign, @"Select Distinct Designid,DesignName   From Item_Parameter_Master IM,Design D,pp_ProcessRawTran PT Where IM.Item_Finished_id=PT.Finishedid And IM.Design_ID=D.Designid And PT.PRMID=" + ddindent.SelectedValue + " and pt.itemid=" + dditemname.SelectedValue, true, "Select Design");
-                UtilityModule.ConditionalComboFill(ref dquality, "select qualityid,qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "Select Quallity");
+                UtilityModule.ConditionalComboFill(ref dquality, "select qualityid,qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Quallity");
                 dquality.SelectedValue = ds.Tables[0].Rows[0]["QUALITY_ID"].ToString();
                 string str = "Select Distinct Designid,DesignName   From Item_Parameter_Master IM,Design D,pp_ProcessRawTran PT Where IM.Item_Finished_id=PT.Finishedid And IM.Design_ID=D.Designid";
                 UtilityModule.ConditionalComboFill(ref dddesign, str, true, "--Select Design--");
                 dddesign.SelectedValue = ds.Tables[0].Rows[0]["DESIGN_ID"].ToString();
                 fill_qty();
-                UtilityModule.ConditionalComboFill(ref ddcolor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + " order by colorid", true, "--Select Color--");
+                UtilityModule.ConditionalComboFill(ref ddcolor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by colorid", true, "--Select Color--");
                 ddcolor.SelectedValue = ds.Tables[0].Rows[0]["COLOR_ID"].ToString();
-                UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Shapeid", true, "--Select Shape--");
+                UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Shapeid", true, "--Select Shape--");
                 ddshape.SelectedValue = ds.Tables[0].Rows[0]["SHAPE_ID"].ToString();
-                UtilityModule.ConditionalComboFill(ref ddsize, "SELECT SIZEID,SIZEFT fROM SIZE WhERE SHAPEID=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "--SELECT SIZE--");
+                UtilityModule.ConditionalComboFill(ref ddsize, "SELECT SIZEID,SIZEFT fROM SIZE WhERE SHAPEID=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "--SELECT SIZE--");
                 ddsize.SelectedValue = ds.Tables[0].Rows[0]["SIZE_ID"].ToString();
                 UtilityModule.ConditionalComboFill(ref ddlshade, @"SELECT DISTINCT dbo.ShadeColor.ShadecolorId, dbo.ShadeColor.ShadeColorName FROM   dbo.ITEM_PARAMETER_MASTER INNER JOIN
                 dbo.IndentDetail ON dbo.ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID = dbo.IndentDetail.OFinishedId INNER JOIN
                 dbo.ShadeColor ON dbo.ITEM_PARAMETER_MASTER.SHADECOLOR_ID = dbo.ShadeColor.ShadecolorId
-                WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Item_Id=" + dditemname.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Quality_Id=" + dquality.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varCompanyId"], true, "Select ShadeColor");
+                WHERE dbo.IndentDetail.IndentId =" + ddindent.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Item_Id=" + dditemname.SelectedValue + " and dbo.ITEM_PARAMETER_MASTER.Quality_Id=" + dquality.SelectedValue + " And ITEM_PARAMETER_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select ShadeColor");
                 ddlshade.SelectedValue = ds.Tables[0].Rows[0]["SHADECOLOR_ID"].ToString();
                 Session["finishedid"] = ds.Tables[0].Rows[0]["Item_Finished_id"].ToString();
                 //ddgodown.SelectedIndex = 1;
@@ -944,7 +944,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
     private void Show_Report()
     {
         //int VarCompanyId = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarCompanyNo From MasterSetting"));
-        if (Convert.ToInt16(Session["varCompanyId"]) == 2)
+        if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 2)
         {
             Session["ReportPath"] = "Reports/IndentRawRecDestini.rpt";
         }
@@ -964,7 +964,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
         DGSHOWDATA.DataSource = "";
         if (ddindent.SelectedIndex > 0)
         {
-            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Distinct ProductCode from IndentDetail ID,ITEM_PARAMETER_MASTER IPM WHERE ID.OFINISHEDID=IPM.ITEM_FINISHED_ID And ID.IndentId=" + ddindent.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"]);
+            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Distinct ProductCode from IndentDetail ID,ITEM_PARAMETER_MASTER IPM WHERE ID.OFINISHEDID=IPM.ITEM_FINISHED_ID And ID.IndentId=" + ddindent.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"]);
             DGSHOWDATA.DataSource = Ds;
             DGSHOWDATA.DataBind();
             if (DGSHOWDATA.Rows.Count > 0)
@@ -1042,9 +1042,9 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
                 ddProcessName.SelectedValue = DS.Tables[0].Rows[0]["processid"].ToString();
                 txtdate.Text = DS.Tables[0].Rows[0]["DATE1"].ToString();
                 //txtchalanno.Text = DS.Tables[0].Rows[0]["challanno"].ToString();
-                UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct E.EmpId,E.EmpName FROM IndentMaster IM ,EmpInfo E,PP_ProcessRecMaster ppm where ppm.empid=e.empid and  IM.PartyId=E.EmpId And IM.Processid=" + ddProcessName.SelectedValue + " ANd IM.MasterCompanyId=" + Session["varCompanyId"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Emp");
+                UtilityModule.ConditionalComboFill(ref ddempname, "SELECT distinct E.EmpId,E.EmpName FROM IndentMaster IM ,EmpInfo E,PP_ProcessRecMaster ppm where ppm.empid=e.empid and  IM.PartyId=E.EmpId And IM.Processid=" + ddProcessName.SelectedValue + " ANd IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IM.CompanyId=" + ddCompName.SelectedValue, true, "Select Emp");
                 ddempname.SelectedValue = DS.Tables[0].Rows[0]["empid"].ToString();
-                UtilityModule.ConditionalComboFill(ref ddindent, @"SELECT distinct IndentId, IndentNo FROM dbo.IndentMaster  where dbo.IndentMaster.indentid in(select distinct indentid from PP_ProcessRecTran ) and dbo.IndentMaster.partyid=" + ddempname.SelectedValue + " and dbo.IndentMaster.processid=" + ddProcessName.SelectedValue + " And IndentMaster.MasterCompanyId=" + Session["varCompanyId"] + " And IndentMaster.CompanyId=" + ddCompName.SelectedValue, true, "Select Order No");
+                UtilityModule.ConditionalComboFill(ref ddindent, @"SELECT distinct IndentId, IndentNo FROM dbo.IndentMaster  where dbo.IndentMaster.indentid in(select distinct indentid from PP_ProcessRecTran ) and dbo.IndentMaster.partyid=" + ddempname.SelectedValue + " and dbo.IndentMaster.processid=" + ddProcessName.SelectedValue + " And IndentMaster.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And IndentMaster.CompanyId=" + ddCompName.SelectedValue, true, "Select Order No");
                 DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select distinct indentid from PP_ProcessRecTran where prmid=" + DS.Tables[0].Rows[0]["prmid"].ToString() + "");
                 ddindent.SelectedValue = ds1.Tables[0].Rows[0][0].ToString();
                 ddindent_selectchange();
@@ -1145,7 +1145,7 @@ public partial class Masters_RawMaterial_IndentRawRecieveDestini : System.Web.UI
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_IndentReceiveDeleteRow", _arrpara);
             Tran.Commit();
             DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseReceiveDetail'," + Varprtid + ",getdate(),'Delete')");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseReceiveDetail'," + Varprtid + ",getdate(),'Delete')");
             Fill_Grid();
             Fill_Grid_Show();
         }

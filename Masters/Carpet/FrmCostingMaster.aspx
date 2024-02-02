@@ -144,7 +144,7 @@
                             return false;
                         }
                     }
-                    if (Session["varcompanyId"].ToString() != "44") {
+                    if (Session["varMasterCompanyIDForERP"].ToString() != "44") {
                         if ($("#<%=TxtDescription.ClientID %>")) {
                             var selectedindex = $("#<%=TxtDescription.ClientID %>").attr('value');
                             if (selectedindex == "") {

@@ -15,14 +15,14 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
     static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            string Str = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
-                           Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name ";
+            string Str = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
+                           Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Process_Name ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, true, "--SELECT--");
@@ -39,7 +39,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
                 Chkedit.Visible = true;
             }
 
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "41":
                     TRApprovalAmt.Visible = true;
@@ -177,7 +177,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
         string Str;
         //if (DDProcessName.SelectedIndex > 0)
         //{
-        //    Str = "Select Distinct E.EmpId,E.EmpName From EmpInfo E,ProcessHissabApproved PHA Where E.Empid=PHA.Empid And PHA.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + " order by Empname";
+        //    Str = "Select Distinct E.EmpId,E.EmpName From EmpInfo E,ProcessHissabApproved PHA Where E.Empid=PHA.Empid And PHA.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Empname";
         //    UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
         //}
 
@@ -196,7 +196,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
         {
             if (DDProcessName.SelectedIndex > 0)
             {
-                Str = "Select Distinct PM.EmpId,E.EmpName + case when isnull(e.empcode,'')<>'' then ' ['+ E.empcode+']' else '' end empname From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo E Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=E.EmpId And E.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName";
+                Str = "Select Distinct PM.EmpId,E.EmpName + case when isnull(e.empcode,'')<>'' then ' ['+ E.empcode+']' else '' end empname From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo E Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=E.EmpId And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName";
                 UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
             }
         }
@@ -204,7 +204,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
         {
             if (DDProcessName.SelectedIndex > 0)
             {
-                Str = "Select Distinct E.EmpId,E.EmpName + case when isnull(e.empcode,'')<>'' then ' ['+ E.empcode+']' else '' end EMpname From EmpInfo E,ProcessHissabApproved PHA Where E.Empid=PHA.Empid And PHA.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + " order by Empname";
+                Str = "Select Distinct E.EmpId,E.EmpName + case when isnull(e.empcode,'')<>'' then ' ['+ E.empcode+']' else '' end EMpname From EmpInfo E,ProcessHissabApproved PHA Where E.Empid=PHA.Empid And PHA.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Empname";
                 UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
             }
         }
@@ -213,7 +213,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
     {
         Clear();
         //        string Str = "Select Id,cast(AppvNo As Nvarchar)+' / '+replace(convert(varchar(11),AppDate,106), ' ','-') As AppvNo  from ProcessHissabApproved Where CompanyId=" + DDCompanyName.SelectedValue + @" And 
-        //        Processid=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + "  And MasterCompanyId=" + Session["varCompanyId"] + " Order by AppDate";
+        //        Processid=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + "  And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by AppDate";
         string Str;
         if (Chkedit.Checked == true)
         {
@@ -221,13 +221,13 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             {
                 Str = @"SELECT distinct PIM.IssueOrderId as orderNo,PIM.Issueorderid as orderid FROM PROCESS_ISSUE_MASTER_1  PIM 
                         Inner join ProcessHissabPayment PHP ON PIM.IssueOrderId=PHP.FolioNo                       
-                        Where PHP.CompanyId=" + DDCompanyName.SelectedValue + @" And PHP.Processid=1 And PHP.PartyId=" + DDEmployerName.SelectedValue + "  And PHP.MasterCompanyId=" + Session["varCompanyId"] + " and PHP.ByFolioStatus=1";
+                        Where PHP.CompanyId=" + DDCompanyName.SelectedValue + @" And PHP.Processid=1 And PHP.PartyId=" + DDEmployerName.SelectedValue + "  And PHP.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and PHP.ByFolioStatus=1";
             }
             else
             {
                 Str = @"select Distinct Id,cast(AppvNo As Nvarchar)+' / '+replace(convert(varchar(11),AppDate,106), ' ','-')
                     As AppvNo from ProcessHissabApproved PH Inner join ProcessHissabPayment PHP   on  PH.id=PHP.ApprovalNo
-                    Where PH.CompanyId=" + DDCompanyName.SelectedValue + @" And PH.Processid=" + DDProcessName.SelectedValue + " And PH.EmpId=" + DDEmployerName.SelectedValue + "  And PH.MasterCompanyId=" + Session["varCompanyId"] + " and PHP.ByFolioStatus=0";
+                    Where PH.CompanyId=" + DDCompanyName.SelectedValue + @" And PH.Processid=" + DDProcessName.SelectedValue + " And PH.EmpId=" + DDEmployerName.SelectedValue + "  And PH.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and PHP.ByFolioStatus=0";
             }
         }
         else
@@ -241,7 +241,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             {
                 Str = @"select Id,cast(AppvNo As Nvarchar)+' / '+replace(convert(varchar(11),AppDate,106), ' ','-')
                      As AppvNo from ProcessHissabApproved PH   Where PH.CompanyId=" + DDCompanyName.SelectedValue + @" And 
-                     PH.Processid=" + DDProcessName.SelectedValue + " And PH.EmpId=" + DDEmployerName.SelectedValue + "  And PH.MasterCompanyId=" + Session["varCompanyId"] + " group by Id,AppvNo,AppDate having IsNull(Round(Sum(NetAmt),0),0)>dbo.F_GetHissabpayment(id)";
+                     PH.Processid=" + DDProcessName.SelectedValue + " And PH.EmpId=" + DDEmployerName.SelectedValue + "  And PH.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by Id,AppvNo,AppDate having IsNull(Round(Sum(NetAmt),0),0)>dbo.F_GetHissabpayment(id)";
             }
         }
 
@@ -300,7 +300,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             BtnSave.Visible = false;
             BtnUpdate.Visible = true;
             Str = @"SELECT SrNo,VoucherNo from  processhissabpayment PHP  Where PHP.CompanyId=" + DDCompanyName.SelectedValue + @" And PHP.Processid=1 
-                    And PHP.PartyId=" + DDEmployerName.SelectedValue + "  And PHP.MasterCompanyId=" + Session["varCompanyId"] + " and PHP.ByFolioStatus=1 And PHP.FolioNo=" + DDApprvNo.SelectedValue + "";
+                    And PHP.PartyId=" + DDEmployerName.SelectedValue + "  And PHP.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and PHP.ByFolioStatus=1 And PHP.FolioNo=" + DDApprvNo.SelectedValue + "";
 
             UtilityModule.ConditionalComboFill(ref DDVoucherNo, Str, true, "--SELECT--");
         }
@@ -383,7 +383,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
                 _arrpara1[6].Value = DDTrType.SelectedValue == "1" ? TxtAmt.Text : "0";
                 _arrpara1[7].Value = DDTrType.SelectedValue == "0" ? TxtAmt.Text : "0";
                 _arrpara1[8].Value = Session["varuserid"];
-                _arrpara1[9].Value = Session["varCompanyId"];
+                _arrpara1[9].Value = Session["varMasterCompanyIDForERP"];
                 _arrpara1[10].Value = TxtNarration.Text.Trim().ToString();
                 _arrpara1[11].Value = System.DateTime.Now.ToString("dd-MMM-yyyy");
                 _arrpara1[12].Value = ChkAdvanceAmt.Checked == true ? 1 : 0;
@@ -445,7 +445,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             {
                 //if (ChkAdvanceAmt.Checked == true)
                 //{
-                //    str = "select Round(Advance,2) As Advance From V_AvailableAdvance Where EmpId=" + DDEmployerName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " And CompanyId=" + DDCompanyName.SelectedValue + "";
+                //    str = "select Round(Advance,2) As Advance From V_AvailableAdvance Where EmpId=" + DDEmployerName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CompanyId=" + DDCompanyName.SelectedValue + "";
                 //    ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
                 //    if (ds.Tables[0].Rows.Count > 0)
                 //    {
@@ -526,7 +526,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             _arrpara1[11].Value = DDTrType.SelectedValue == "1" ? TxtAmt.Text : "0";
             _arrpara1[12].Value = DDTrType.SelectedValue == "0" ? TxtAmt.Text : "0";
             _arrpara1[13].Value = Session["varuserid"];
-            _arrpara1[14].Value = Session["varCompanyId"];
+            _arrpara1[14].Value = Session["varMasterCompanyIDForERP"];
             _arrpara1[15].Value = "1";
             _arrpara1[16].Value = TxtNarration.Text.Trim().ToString();
             _arrpara1[17].Value = System.DateTime.Now.ToString("dd-MMM-yyyy");
@@ -559,7 +559,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             ChkAdvanceAmt_CheckedChanged(sender, e);
             Fill_Grid();
 
-            if (Session["varcompanyid"].ToString() == "41")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "41")
             {
                 BindGridApprovalAmt();
             }
@@ -583,12 +583,12 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
         {
             Bname.Visible = true;
             chqNo.Visible = true;
-            UtilityModule.ConditionalComboFill(ref DDBankName, "Select BankId,BankName from Bank Where MasterCompanyId=" + Session["varCompanyId"] + " order by BankName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDBankName, "Select BankId,BankName from Bank Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by BankName", true, "--SELECT--");
 
             if (Session["varCompanyNo"].ToString() == "41")
             {
                 TDPaymentTransferMode.Visible = true;
-                UtilityModule.ConditionalComboFill(ref DDPaymentTransferMode, "Select PaymentTransferModeId,PaymentTransferMode from PaymentTransferMode Where MasterCompanyId=" + Session["varCompanyId"] + " order by PaymentTransferMode", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref DDPaymentTransferMode, "Select PaymentTransferModeId,PaymentTransferMode from PaymentTransferMode Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PaymentTransferMode", true, "--SELECT--");
             }
         }
         else
@@ -640,14 +640,14 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
                             Case When PHP.chqCash=0 Then 'Cash' Else 'Bank' End chqCash,Crdr,isnull(PHA.Tds,0) as TdsPercentage,isnull(round((PHP.Amount*PHA.Tds/100),2),0) as TdsAmt,
                             isnull(round((PHP.Amount-(PHP.Amount*PHA.Tds/100)),2),0) as AmountAfterTds 
                         from processhissabpayment PHP(NoLock) JOIN ProcessHissabApproved PHA(NoLock) ON PHP.ApprovalNo=PHA.AppvNo
-                        where PHP.CompanyID=" + DDCompanyName.SelectedValue + " and PHP.ProcessId=" + DDProcessName.SelectedValue + " and PHP.PartyId=" + DDEmployerName.SelectedValue + " And " + ColumnName + "=" + DDApprvNo.SelectedValue + "  And " + Where + " and PHP.MasterCompanyId=" + Session["varCompanyId"] + @"
+                        where PHP.CompanyID=" + DDCompanyName.SelectedValue + " and PHP.ProcessId=" + DDProcessName.SelectedValue + " and PHP.PartyId=" + DDEmployerName.SelectedValue + " And " + ColumnName + "=" + DDApprvNo.SelectedValue + "  And " + Where + " and PHP.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 Select Round(IsNull(Sum(DrAmt),0),0) DrAmt,Round(IsNull(Sum(CrAmount),0),0) CrAmount,Round(IsNull(Sum(CrAmount-DrAmt),0),0) BalAmount From " + view + @" Where CompanyId=" + DDCompanyName.SelectedValue + " And Processid=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And Id=" + DDApprvNo.SelectedValue + " and Id!=0";
         }
         else
         {
             strsql = @"Select SrNo,case when ByFolioStatus=1 then FolioNo else ApprovalNo end as ApprovalNo,CONVERT(CHAR(12),Date, 106)as Date,VoucherNo,Round(Amount,0) Amount,
                         Case When chqCash=0 Then 'Cash' Else 'Bank' End chqCash,Crdr,0 as TdsAmt,0 as AmountAfterTds
-                        from processhissabpayment where CompanyID=" + DDCompanyName.SelectedValue + " and ProcessId=" + DDProcessName.SelectedValue + " and PartyId=" + DDEmployerName.SelectedValue + " And " + ColumnName + "=" + DDApprvNo.SelectedValue + "  And " + Where + " and MasterCompanyId=" + Session["varCompanyId"] + @"
+                        from processhissabpayment where CompanyID=" + DDCompanyName.SelectedValue + " and ProcessId=" + DDProcessName.SelectedValue + " and PartyId=" + DDEmployerName.SelectedValue + " And " + ColumnName + "=" + DDApprvNo.SelectedValue + "  And " + Where + " and MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 Select Round(IsNull(Sum(DrAmt),0),0) DrAmt,Round(IsNull(Sum(CrAmount),0),0) CrAmount,Round(IsNull(Sum(CrAmount-DrAmt),0),0) BalAmount From " + view + @" Where CompanyId=" + DDCompanyName.SelectedValue + " And Processid=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And Id=" + DDApprvNo.SelectedValue + " and Id!=0";
         }
        
@@ -665,7 +665,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
     protected void Preview_Click(object sender, EventArgs e)
     {
         DataSet DS = null;
-        DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from V_HissabPayment where ApprovalNo=" + DDApprvNo.SelectedItem.Text + " And ProcessId=" + DDProcessName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from V_HissabPayment where ApprovalNo=" + DDApprvNo.SelectedItem.Text + " And ProcessId=" + DDProcessName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
 
         if (DS.Tables[0].Rows.Count > 0)
         {
@@ -700,7 +700,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             param[2] = new SqlParameter("@processid", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@partyid", DDEmployerName.SelectedValue);
             param[4] = new SqlParameter("@approvalNo", DDApprvNo.SelectedValue);
-            param[5] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@userid", Session["varuserid"]);
             param[7] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[7].Direction = ParameterDirection.Output;
@@ -711,7 +711,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
             Tran.Commit();
 
             //            string del = @"Delete from processhissabpayment Where SrNo=" + key + " And CompanyID=" + DDCompanyName.SelectedValue + " And ProcessId=" + DDProcessName.SelectedValue + " and PartyId=" + DDEmployerName.SelectedValue + @" 
-            //                           Select * From ProcessHissabPayment Where CompanyID=" + DDCompanyName.SelectedValue + " And ProcessId=" + DDProcessName.SelectedValue + " and PartyId=" + DDEmployerName.SelectedValue + " And ApprovalNo=" + DDApprvNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+            //                           Select * From ProcessHissabPayment Where CompanyID=" + DDCompanyName.SelectedValue + " And ProcessId=" + DDProcessName.SelectedValue + " and PartyId=" + DDEmployerName.SelectedValue + " And ApprovalNo=" + DDApprvNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             //            DataSet Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, del);
 
@@ -872,7 +872,7 @@ public partial class Masters_Hissab_FrmProcessHissabPayment : System.Web.UI.Page
                 lblAdvance.Visible = true;
                 TDuseadvanceamt.Visible = true;
 
-                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Round(Advance,2) As Advance From V_AvailableAdvance Where EmpId=" + DDEmployerName.SelectedValue + " And MasterCompanyId=" + Session["VarCompanyId"] + " And CompanyId=" + DDCompanyName.SelectedValue + "");
+                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Round(Advance,2) As Advance From V_AvailableAdvance Where EmpId=" + DDEmployerName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CompanyId=" + DDCompanyName.SelectedValue + "");
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     lblAdvance.Text = ds.Tables[0].Rows[0]["Advance"].ToString();

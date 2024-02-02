@@ -12,7 +12,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
             string Str = @"Select CI.CompanyId, CI.CompanyName 
                     From CompanyInfo CI(Nolock) 
                     JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyid = " + Session["varCompanyId"] + @" Order By CI.CompanyName ";
+                    Where CI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName ";
 
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -38,7 +38,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             CheckForEditSelectedChanges();
             ViewState["Hissab_No"] = 0;
-            //    if (Convert.ToInt16(Session["varcompanyId"]) == 16)
+            //    if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16)
             //    {
             //        BtnSaveAllOneTime.Visible = true;
             //        BtnSaveAllProcessWise.Visible = true;
@@ -58,7 +58,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
             Str = @"Select Distinct PNM.Process_Name_Id, PNM.Process_Name 
             From HomeFurnishingOrderHissab PH(Nolock) 
             JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.Process_Name_Id = PH.ProcessId 
-            Where PH.CompanyID = " + DDCompanyName.SelectedValue + " And PH.MasterCompanyId=" + Session["varCompanyId"] + " Order By PNM.Process_Name";
+            Where PH.CompanyID = " + DDCompanyName.SelectedValue + " And PH.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By PNM.Process_Name";
         }
         else
         {
@@ -86,7 +86,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
                 Str = @"Select Distinct EI.EmpId, EI.EmpName + Case When IsNull(EI.EmpCode, '') <> '' Then ' [' + EI.EmpCode + ']' Else '' End EmpName 
                 From HomeFurnishingOrderHissab PH(Nolock) 
                 JOIN EmpInfo EI(Nolock) ON EI.EmpID = PH.EmpID And EI.Blacklist = 0 
-                Where PH.CommPaymentFlag = 0 And PH.CompanyID = " + DDCompanyName.SelectedValue + " And PH.MasterCompanyId = " + Session["varcompanyId"] + @" And 
+                Where PH.CommPaymentFlag = 0 And PH.CompanyID = " + DDCompanyName.SelectedValue + " And PH.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" And 
                 PH.ProcessId = " + DDProcessName.SelectedValue + " Order By EmpName";
             }
             else
@@ -342,7 +342,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
             param[0] = new SqlParameter("@Hissab_No", ViewState["Hissab_No"]);
             param[1] = new SqlParameter("@processid", DDProcessName.SelectedValue);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 
@@ -438,7 +438,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
     }
     protected void ButtonBtnSaveAllProcessWise()
     {
-        if (Convert.ToInt16(Session["varcompanyId"]) == 16 && Convert.ToInt16(Session["varuserid"]) == 57 && ChkForEdit.Checked == false)
+        if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16 && Convert.ToInt16(Session["varuserid"]) == 57 && ChkForEdit.Checked == false)
         {
             BtnSaveAllProcessWise.Visible = true;
         }
@@ -484,7 +484,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
             cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
             cmd.Parameters.AddWithValue("@AdditionAmt", 0);
             cmd.Parameters.AddWithValue("@DeductionAmt", 0);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
             cmd.ExecuteNonQuery();
             ViewState["Hissab_No"] = cmd.Parameters["@HissabNo"].Value.ToString();
@@ -550,7 +550,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
             cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
             //cmd.Parameters.AddWithValue("@AdditionAmt", txtAdditionAmt.Text == "" ? "0" : txtAdditionAmt.Text);
             //cmd.Parameters.AddWithValue("@DeductionAmt", txtDeductionAmt.Text == "" ? "0" : txtDeductionAmt.Text);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
             cmd.ExecuteNonQuery();
             ViewState["Hissab_No"] = cmd.Parameters["@HissabNo"].Value.ToString();
@@ -610,7 +610,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionHissab : 
             cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
             //cmd.Parameters.AddWithValue("@AdditionAmt", txtAdditionAmt.Text == "" ? "0" : txtAdditionAmt.Text);
             //cmd.Parameters.AddWithValue("@DeductionAmt", txtDeductionAmt.Text == "" ? "0" : txtDeductionAmt.Text);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
             cmd.ExecuteNonQuery();
             ViewState["Hissab_No"] = cmd.Parameters["@HissabNo"].Value.ToString();

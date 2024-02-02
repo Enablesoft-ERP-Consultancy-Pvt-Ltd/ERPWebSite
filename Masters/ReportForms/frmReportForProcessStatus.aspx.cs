@@ -12,14 +12,14 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By PROCESS_NAME
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME
                         select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER
                         select val,type from sizetype";
             DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -43,7 +43,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             {
                 DDProcessName_SelectedIndexChanged(sender, e);
             }
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "16":
                 case "14":
@@ -169,7 +169,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             string str;
             if (RDRawMaterial.Checked == true)
             {
-                str = "select distinct vf.QualityId,vf.QualityName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where Vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.QualityId,vf.QualityName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where Vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And Vf.Item_Id=" + ddItemName.SelectedValue;
@@ -179,7 +179,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else if (DDProcessName.SelectedIndex > 0)
             {
-                str = "select distinct vf.QualityId,vf.QualityName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   Vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.QualityId,vf.QualityName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   Vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And Vf.Item_Id=" + ddItemName.SelectedValue;
@@ -188,7 +188,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else
             {
-                str = "select QualityId,QualityName from quality Where Mastercompanyid=" + Session["varcompanyid"];
+                str = "select QualityId,QualityName from quality Where Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And Item_Id=" + ddItemName.SelectedValue;
@@ -212,7 +212,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
         {
             if (RDRawMaterial.Checked == true)
             {
-                str = "select distinct vf.designId,vf.designName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.designId,vf.designName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -225,7 +225,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else if (DDProcessName.SelectedIndex > 0)
             {
-                str = "select distinct vf.designId,vf.designName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.designId,vf.designName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where   vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -238,7 +238,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else
             {
-                str = "select distinct vf.designId,vf.designName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.designId,vf.designName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -259,7 +259,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
         {
             if (RDRawMaterial.Checked == true)
             {
-                str = "select distinct vf.colorid,vf.ColorName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.colorid,vf.ColorName from ProcessRawTran PT inner Join V_FinishedItemDetail vf on Pt.Finishedid=vf.ITEM_FINISHED_ID Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -276,7 +276,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else if (DDProcessName.SelectedIndex > 0)
             {
-                str = "select distinct vf.colorid,vf.colorname from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.colorid,vf.colorname from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -293,7 +293,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else
             {
-                str = "select distinct vf.colorid,vf.colorname from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.colorid,vf.colorname from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -318,7 +318,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
         {
             if (DDProcessName.SelectedIndex > 0)
             {
-                str = "select distinct vf.ShapeId,vf.ShapeName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.ShapeId,vf.ShapeName from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -328,7 +328,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else
             {
-                str = "select distinct vf.ShapeId,vf.ShapeName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.ShapeId,vf.ShapeName from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -375,7 +375,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
         {
             if (DDProcessName.SelectedIndex > 0)
             {
-                str = "select distinct vf.SizeId,vf." + strSize + " as Size from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.SizeId,vf." + strSize + " as Size from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD inner join V_FinishedItemDetail vf on Pd.Item_Finished_Id=vf.ITEM_FINISHED_ID Where  vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;
@@ -400,7 +400,7 @@ public partial class Masters_ReportForms_frmReportForProcessStatus : System.Web.
             }
             else
             {
-                str = "select distinct vf.SizeId,vf." + strSize + " as Size from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varcompanyid"];
+                str = "select distinct vf.SizeId,vf." + strSize + " as Size from V_FinishedItemDetail vf Where vf.Mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 if (ddItemName.SelectedIndex > 0)
                 {
                     str = str + " And vf.Item_Id=" + ddItemName.SelectedValue;

@@ -16,7 +16,7 @@ public partial class Masters_Carpet_frmcostingDefine : System.Web.UI.Page
     Double Total = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -101,9 +101,9 @@ public partial class Masters_Carpet_frmcostingDefine : System.Web.UI.Page
         }
 
         string str;
-        str = @"SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME";
+        str = @"SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (tdDesign.Visible == true)
         {
@@ -149,7 +149,7 @@ public partial class Masters_Carpet_frmcostingDefine : System.Web.UI.Page
         }
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref Size, str, true, "--Select--");
     }
@@ -202,14 +202,14 @@ public partial class Masters_Carpet_frmcostingDefine : System.Web.UI.Page
             //*******************
             param[0].Direction = ParameterDirection.InputOutput;
             param[0].Value = ViewState["Id"];
-            int item_finished_id = UtilityModule.getItemFinishedId(DDItemName, DDQuality, DDDesign, DDColor, DDshape, DDSize, txtprodcode, Tran, DDshade, "", Convert.ToInt32(Session["varCompanyId"])); ;
+            int item_finished_id = UtilityModule.getItemFinishedId(DDItemName, DDQuality, DDDesign, DDColor, DDshape, DDSize, txtprodcode, Tran, DDshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])); ;
             param[1].Value = item_finished_id;
             param[2].Value = txtsamplecode.Text;
             param[3].Value = DDCostingFor.SelectedValue;
             int item_finished_id_Detail = 0;
             if (DDCategoryRD.SelectedIndex > 0 && DDItemNameRD.SelectedIndex > 0)
             {
-                item_finished_id_Detail = UtilityModule.getItemFinishedId(DDItemNameRD, DDQualityRD, DDDesignRD, DDColorRD, DDShapeRD, DDSizeRD, txtItemCodeRD, Tran, DDShadeRD, "", Convert.ToInt32(Session["varCompanyId"])); ;
+                item_finished_id_Detail = UtilityModule.getItemFinishedId(DDItemNameRD, DDQualityRD, DDDesignRD, DDColorRD, DDShapeRD, DDSizeRD, txtItemCodeRD, Tran, DDShadeRD, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])); ;
             }
             param[4].Value = item_finished_id_Detail;
             param[5].Value = txtRate.Text == "" ? "0" : txtRate.Text;
@@ -220,7 +220,7 @@ public partial class Masters_Carpet_frmcostingDefine : System.Web.UI.Page
             param[10].Value = txtProcessQty.Text == "" ? "0" : txtProcessQty.Text;
             param[11].Value = txtProcessAmount.Text == "" ? "0" : txtProcessAmount.Text;
             param[12].Value = Session["varuserid"];
-            param[13].Value = Session["varcompanyId"];
+            param[13].Value = Session["varMasterCompanyIDForERP"];
             param[14].Direction = ParameterDirection.Output;
             param[15].Value = DDsizetype.SelectedValue;
             param[16].Value = DDSizeTypeRD.SelectedValue;

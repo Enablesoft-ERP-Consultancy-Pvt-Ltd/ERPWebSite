@@ -13,20 +13,20 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
     static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CI.masterCompanyId=" + Session["varcompanyId"] + " And CA.UserId=" + Session["varuserid"] + " Order by CompanyName", false, "");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CI.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CA.UserId=" + Session["varuserid"] + " Order by CompanyName", false, "");
             if (DDCompanyName.Items.Count > 0)
             {
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDCompanyName.Enabled = false;
             }
 
-            // SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDProcessName, pWhere: "MasterCompanyId=" + Session["varcompanyId"] + "", pID: "Process_Name_Id", pName: "Process_Name", pFillBlank: true, Selecttext: "--Plz Select Process--");
+            // SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDProcessName, pWhere: "MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", pID: "Process_Name_Id", pName: "Process_Name", pFillBlank: true, Selecttext: "--Plz Select Process--");
             UtilityModule.ConditionalComboFill(ref DDProcessName, "select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER Where PROCESS_NAME_ID<>1 order by Process_Name", true, "--Plz Select Process--");
             txtDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             RDForProduction.Checked = true;
@@ -46,7 +46,7 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
     }
     protected void DDProcessName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDParty, "select EI.EmpId,EI.EmpName+'/'+EI.Address from Empinfo EI,Empprocess EP Where EI.EmpId=EP.EmpId And EP.Processid=" + DDProcessName.SelectedValue + " And EI.masterCompanyId=" + Session["varcompanyId"] + " Order by EI.Empname", true, "--Plz Select Party name--");
+        UtilityModule.ConditionalComboFill(ref DDParty, "select EI.EmpId,EI.EmpName+'/'+EI.Address from Empinfo EI,Empprocess EP Where EI.EmpId=EP.EmpId And EP.Processid=" + DDProcessName.SelectedValue + " And EI.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by EI.Empname", true, "--Plz Select Party name--");
 
         if (RDForJoborder.Checked == true && DDProcessName.SelectedValue == "5")
         {
@@ -86,7 +86,7 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
         }
         if (RDForPurchase.Checked == true)
         {
-            str = "select PurchaseReceiveId,BillNo from PurchaseReceivemaster Where Challan_Status=0 And CompanyId=" + DDCompanyName.SelectedValue + " And PartyId=" + DDParty.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + " Order by PurchaseReceiveId";
+            str = "select PurchaseReceiveId,BillNo from PurchaseReceivemaster Where Challan_Status=0 And CompanyId=" + DDCompanyName.SelectedValue + " And PartyId=" + DDParty.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by PurchaseReceiveId";
         }
         UtilityModule.ConditionalComboFill(ref DDBillNo, str, true, "--Plz Select Order No.--");
     }
@@ -174,7 +174,7 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
             _array[6].Value = txtDebitAmt.Text;
             _array[7].Value = txtremarks.Text;
             _array[8].Value = Session["varuserId"];
-            _array[9].Value = Session["varcompanyId"];
+            _array[9].Value = Session["varMasterCompanyIDForERP"];
             _array[10].Direction = ParameterDirection.Output;
             int Type = 0;
             if (RDForProduction.Checked == true)
@@ -344,7 +344,7 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
     //        param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
     //        param[3].Direction = ParameterDirection.Output;
     //        param[4] = new SqlParameter("@userid", Session["varuserid"].ToString());
-    //        param[5] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+    //        param[5] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
 
     //        SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteDebitNote", param);
     //        lblMessage.Text = param[3].Value.ToString();
@@ -452,7 +452,7 @@ public partial class Masters_Hissab_frmprocessWiseDebitNote : System.Web.UI.Page
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@userid", Session["varuserid"].ToString());
-            param[5] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteDebitNote", param);
             lblMessage.Text = param[3].Value.ToString();

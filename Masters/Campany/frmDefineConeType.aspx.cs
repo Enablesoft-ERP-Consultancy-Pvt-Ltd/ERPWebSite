@@ -18,8 +18,7 @@ public partial class Masters_Campany_frmDefineConeType : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -31,9 +30,9 @@ public partial class Masters_Campany_frmDefineConeType : System.Web.UI.Page
         if (!IsPostBack)
         {
 
-            // UtilityModule.ConditionalComboFill(ref DDQuality, "select Q.QualityId,Q.QualityName from Quality Q,Item_Master IM Where  IM.Item_id=Q.Item_id And Im.Category_Id=2 And Q.MasterCompanyId=" + Session["varcompanyId"] + "  order by QualityName", true, "--Plz Select Quality--");
+            // UtilityModule.ConditionalComboFill(ref DDQuality, "select Q.QualityId,Q.QualityName from Quality Q,Item_Master IM Where  IM.Item_id=Q.Item_id And Im.Category_Id=2 And Q.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityName", true, "--Plz Select Quality--");
             UtilityModule.ConditionalComboFill(ref DDItem, @"select Distinct Item_id,Item_name  from Item_Master IM,Item_Category_master ICM,categoryseparate CS 
-                                                            Where Im.Category_Id=ICM.Category_Id And ICM.Category_Id=CS.CategoryId And Cs.Id=1 And IM.MastercompanyId=" + Session["varcompanyId"] + "", true, "--Plz Select Item--");
+                                                            Where Im.Category_Id=ICM.Category_Id And ICM.Category_Id=CS.CategoryId And Cs.Id=1 And IM.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Plz Select Item--");
 
             //UtilityModule.ConditionalComboFill(ref DDGodown, "select Godownid,GodownName from GodownMaster Order by GodownName", true, "--Plz Select Godown--");
 
@@ -68,13 +67,13 @@ public partial class Masters_Campany_frmDefineConeType : System.Web.UI.Page
             _array[0].Direction = ParameterDirection.InputOutput;
             _array[0].Value = 0;
             _array[1].Value = txtConeType.Text.ToUpper();
-            int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, DDColours, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, DDColours, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             _array[2].Value = Varfinishedid;
             _array[3].Value = txtQty.Text;
             _array[4].Value = 1;// DDGodown.SelectedValue fix
             _array[5].Value = DDLotNo.SelectedIndex <= 0 ? "" : DDLotNo.SelectedItem.Text;
             _array[6].Value = Session["varuserid"];
-            _array[7].Value = Session["varcompanyId"];
+            _array[7].Value = Session["varMasterCompanyIDForERP"];
             _array[8].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveConeType", _array);
@@ -130,7 +129,7 @@ public partial class Masters_Campany_frmDefineConeType : System.Web.UI.Page
     }
     protected void DDItem_SelectedIndexChanged(object sender, EventArgs e)
     {
-         UtilityModule.ConditionalComboFill(ref DDQuality, "select Q.QualityId,Q.QualityName from Quality Q,Item_Master IM Where  IM.Item_id=Q.Item_id And Im.Item_id=" + DDItem.SelectedValue +" And Q.MasterCompanyId=" + Session["varcompanyId"] + "  order by QualityName", true, "--Plz Select Quality--");
+         UtilityModule.ConditionalComboFill(ref DDQuality, "select Q.QualityId,Q.QualityName from Quality Q,Item_Master IM Where  IM.Item_id=Q.Item_id And Im.Item_id=" + DDItem.SelectedValue +" And Q.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityName", true, "--Plz Select Quality--");
                 //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.Quality, DDQuality, pWhere: "Item_Id=" + DDItem.SelectedValue + "", pID: "QualityId", pName: "QualityName", pFillBlank: true, Selecttext: "--Plz Select Quality--");
     }
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
@@ -146,7 +145,7 @@ public partial class Masters_Campany_frmDefineConeType : System.Web.UI.Page
     protected void FIll_LotNo()
     {
 
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, DDColours, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, DDColours, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
         UtilityModule.ConditionalComboFill(ref DDLotNo, "select LotNo,LotNo from Stock Where Item_Finished_id=" + Varfinishedid + @" And CompanyId=1 And Godownid=1
                                                         And Qtyinhand>0 Order by StockId", true, "--Plz Select Lot No.");

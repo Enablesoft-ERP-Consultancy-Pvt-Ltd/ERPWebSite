@@ -10,7 +10,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -142,7 +142,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
             param[2] = new SqlParameter("@startDate", txtstartdate.Text);
             param[3] = new SqlParameter("@CompDate", txtcompdate.Text);
             param[4] = new SqlParameter("@userid", Session["varuserid"]);
-            param[5] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@Detailid", SqlDbType.Int);
             param[6].Value = 0;
             param[7] = new SqlParameter("@itemid", DDitemname.SelectedValue);
@@ -279,7 +279,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
                 SqlParameter[] param = new SqlParameter[3];
                 param[0] = new SqlParameter("@dtpack", dtpack);
                 param[1] = new SqlParameter("@userid", Session["varuserid"]);
-                param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 //***********
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SavePackplan_Stockno", param);
                 Tran.Commit();
@@ -398,7 +398,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
             param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[2].Direction = ParameterDirection.Output;
             param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //*********
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Deletepackingplansinglerow", param);
             lblmsg.Text = param[2].Value.ToString();
@@ -496,7 +496,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
                 SqlParameter[] param = new SqlParameter[3];
                 param[0] = new SqlParameter("@dtunpack", dtunpack);
                 param[1] = new SqlParameter("@userid", Session["varuserid"]);
-                param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 //***********
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveUnPackplan_Stockno", param);
                 Tran.Commit();
@@ -635,7 +635,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
             param[0] = new SqlParameter("@Plandetailid", lbldetailid.Text);
             param[1] = new SqlParameter("@Planpcs", txteditplanpcs.Text == "" ? "0" : txteditplanpcs.Text);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             //**********
@@ -671,7 +671,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@BatchNo", txtbatchno.Text);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             //***********
@@ -705,7 +705,7 @@ public partial class Masters_Packing_frmpackingplanweekly : System.Web.UI.Page
     protected void DDcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref DDitemname, @"select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner join CategorySeparate CS on IM.CATEGORY_ID=CS.Categoryid
-                                                            and CS.id=0 and cs.categoryid=" + DDcategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varcompanyId"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
+                                                            and CS.id=0 and cs.categoryid=" + DDcategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
     }
     protected void FillData()
     {

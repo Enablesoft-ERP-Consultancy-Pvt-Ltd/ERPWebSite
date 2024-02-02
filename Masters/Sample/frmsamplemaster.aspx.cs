@@ -15,7 +15,7 @@ public partial class Masters_Sample_frmsamplemaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -70,7 +70,7 @@ public partial class Masters_Sample_frmsamplemaster : System.Web.UI.Page
             param[8] = new SqlParameter("@Fabric", txtFabric.Text);
             param[9] = new SqlParameter("@Description", txtdesc.Text);
             param[10] = new SqlParameter("@userid", Session["varuserid"]);
-            param[11] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[11] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[12] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[12].Direction = ParameterDirection.Output;
             param[13] = new SqlParameter("@Samplecode", SqlDbType.VarChar, 50);

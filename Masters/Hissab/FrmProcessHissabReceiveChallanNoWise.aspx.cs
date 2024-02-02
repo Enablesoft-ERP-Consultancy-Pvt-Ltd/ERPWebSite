@@ -14,15 +14,15 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
     static string btnclickflag = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                         Select [Year] YearID, [Year] From YearData(Nolock) Order By [Year] Desc 
-                         Delete TEMP_HISSAB_WISE_CONSUMPTION Where Userid=" + Session["varuserid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+                         Delete TEMP_HISSAB_WISE_CONSUMPTION Where Userid=" + Session["varuserid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -41,7 +41,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             CheckForEditSelectedChanges();
             ViewState["Hissab_No"] = 0;
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
 
                 case 43: //for Carpet International
@@ -73,12 +73,12 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         {
             Str = @"Select Distinct PNM.Process_Name_Id, PNM.Process_Name 
             from PROCESS_HISSAB PH(Nolock) 
-            JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.Process_Name_Id = PH.ProcessId And PNM.MasterCompanyId = " + Session["varCompanyId"] + @" 
+            JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.Process_Name_Id = PH.ProcessId And PNM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
             Where PH.CompanyID = " + DDCompanyName.SelectedValue + " And PH.YearID = " + DDYear.SelectedValue + " Order By PNM.Process_Name";
         }
         else
         {
-            Str = "Select Process_Name_Id, Process_Name from PROCESS_NAME_MASTER(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name";
+            Str = "Select Process_Name_Id, Process_Name from PROCESS_NAME_MASTER(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Process_Name";
 
         }
         UtilityModule.ConditionalComboFill(ref DDProcessName, Str, true, "--SELECT--");
@@ -117,7 +117,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             {
                 Str = @"Select Distinct EI.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName 
                 From PROCESS_HISSAB PH(NoLock) 
-                JOIN EmpInfo EI(NoLock) ON EI.EmpID = PH.EmpId And EI.Blacklist = 0 And EI.MasterCompanyId=" + Session["varcompanyId"] + @" 
+                JOIN EmpInfo EI(NoLock) ON EI.EmpID = PH.EmpId And EI.Blacklist = 0 And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                 Where PH.CompanyId=" + DDCompanyName.SelectedValue + " And PH.CommPaymentFlag = 0  And PH.ProcessId=" + DDProcessName.SelectedValue + @" 
                 And PH.YearID = " + DDYear.SelectedValue + @" Order By EmpName";
             }
@@ -125,7 +125,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             {
                 if (variable.VarFinishingNewModuleWise == "1")
                 {
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "28":
                         case "22":
@@ -139,7 +139,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                         default:
                             if (DDProcessName.SelectedValue == "1")
                             {
-                                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.Blacklist=0 Order By EmpName";
+                                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.Blacklist=0 Order By EmpName";
                             }
                             else
                             {
@@ -151,7 +151,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                 }
                 else
                 {
-                    Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI(NoLock) Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.Blacklist=0 Order By EmpName";
+                    Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI(NoLock) Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.Blacklist=0 Order By EmpName";
                 }
 
             }
@@ -181,7 +181,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         }
         if (DDProcessName.SelectedIndex > 0)
         {
-            if (DDProcessName.SelectedItem.Text == "WEAVING" && Session["VarCompanyId"].ToString() == "43")
+            if (DDProcessName.SelectedItem.Text == "WEAVING" && Session["varMasterCompanyIDForERP"].ToString() == "43")
             {
                 TDPoOrderNo.Visible = false;
                 FillReceiveChallanNo();
@@ -227,7 +227,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
         if (DDCompanyName.SelectedIndex > 0 && DDProcessName.SelectedIndex > 0 && DDEmployerName.SelectedIndex > 0 && ChkForEdit.Checked == false)
         {
             BtnShowData.Visible = true;
-            //if (Convert.ToInt16(Session["varcompanyId"]) == 16)
+            //if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16)
             //{
             //    BtnShowData.Visible = false;
             //}
@@ -251,7 +251,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             {
                 if (DGDetail.Columns[i].HeaderText == "Bonus Amt" || DGDetail.Columns[i].HeaderText == "Material Amt")
                 {
-                    if (Session["varcompanyId"].ToString() == "42")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "42")
                     {
                         DGDetail.Columns[i].Visible = true;
                     }
@@ -305,7 +305,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     ////                    PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,PROCESS_STOCK_DETAIL PSD,CARPETNUMBER CN,V_FinishedItemDetail VF 
                     ////                    WHERE PM.Process_Rec_ID=PD.Process_Rec_ID AND PD.PROCESS_REC_DETAIL_ID=PSD.ReceiveDetailId And CN.StockNo=PSD.StockNo 
                     ////                    And PD.Item_Finished_Id=VF.Item_Finished_Id And PD.QualityType<>3   And PSD.HissabFlag=0 AND PM.COMPANYID=" + DDCompanyName.SelectedValue + " And PSD.ToProcessId=" + DDProcessName.SelectedValue + @" AND 
-                    ////                    PM.EMPID=" + DDEmployerName.SelectedValue + " AND PM.ReceiveDate>='" + TxtFromDate.Text.ToString() + "' and PM.ReceiveDate<='" + TxtToDate.Text.ToString() + "' And VF.MasterCompanyId=" + Session["varCompanyId"];
+                    ////                    PM.EMPID=" + DDEmployerName.SelectedValue + " AND PM.ReceiveDate>='" + TxtFromDate.Text.ToString() + "' and PM.ReceiveDate<='" + TxtToDate.Text.ToString() + "' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                     ////                    if (DDPOOrderNo.SelectedIndex > 0)
                     ////                    {
                     ////                        Str = Str + " And PD.IssueOrderid=" + DDPOOrderNo.SelectedValue + "";
@@ -321,7 +321,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     //param[2] = new SqlParameter("@Empid", DDEmployerName.SelectedValue);
                     //param[3] = new SqlParameter("@FromDate", TxtFromDate.Text);
                     //param[4] = new SqlParameter("@TODate", TxtToDate.Text);
-                    //param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    //param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     //param[6] = new SqlParameter("@Issueorderid", DDPOOrderNo.SelectedIndex > 0 ? DDPOOrderNo.SelectedValue : "0");
                     //param[7] = new SqlParameter("@orderid", DDsrno.SelectedIndex > 0 ? DDsrno.SelectedValue : "0");
 
@@ -341,7 +341,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
                     cmd.Parameters.AddWithValue("@Empid", DDEmployerName.SelectedValue);
                     cmd.Parameters.AddWithValue("@FromDate", System.DateTime.Now.ToString("dd-MMM-yyyy"));
                     cmd.Parameters.AddWithValue("@TODate", System.DateTime.Now.ToString("dd-MMM-yyyy"));
-                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     cmd.Parameters.AddWithValue("@Issueorderid", DDPOOrderNo.SelectedIndex > 0 ? DDPOOrderNo.SelectedValue : "0");
                     cmd.Parameters.AddWithValue("@orderid", DDsrno.SelectedIndex > 0 ? DDsrno.SelectedValue : "0");
                     //cmd.Parameters.AddWithValue("@Item_Finished_Id", DDItemDescription.SelectedIndex > 0 ? DDItemDescription.SelectedValue : "0");
@@ -833,7 +833,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             param[0] = new SqlParameter("@Hissab_No", ViewState["Hissab_No"]);
             param[1] = new SqlParameter("@processid", DDProcessName.SelectedValue);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 
@@ -860,7 +860,7 @@ public partial class Masters_Hissab_FrmProcessHissabReceiveChallanNoWise : Syste
             }
             //            string Str = "Update Process_Stock_Detail Set HissabFlag=0 Where StockNo in (Select StockNo From PROCESS_HISSAB Where HissabNo in (" + ViewState["Hissab_No"] + ")) And ToProcessId=" + DDProcessName.SelectedValue + @"
             //                          Delete PROCESS_HISSAB Where HissabNo in (" + ViewState["Hissab_No"] + @")
-            //                          Exec Pro_Updatestatus " + Session["varcompanyId"] + "," + Session["Varuserid"] + ",'PROCESS_HISSAB'," + ViewState["Hissab_No"] + ",'Hissab Slip deleted..'";
+            //                          Exec Pro_Updatestatus " + Session["varMasterCompanyIDForERP"] + "," + Session["Varuserid"] + ",'PROCESS_HISSAB'," + ViewState["Hissab_No"] + ",'Hissab Slip deleted..'";
 
 
             //            SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, Str);

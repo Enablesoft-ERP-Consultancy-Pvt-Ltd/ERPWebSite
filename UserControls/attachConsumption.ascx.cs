@@ -11,12 +11,14 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (!IsPostBack)
         {
-
             UtilityModule.ConditionalComboFill(ref DDCategoryname, "select ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0", true, "--Plz Select--");
             UtilityModule.ConditionalComboFill(ref DDACategory, "select ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0", true, "--Plz Select--");
-
 
             string str = "Select Process_Name_id,Process_Name from process_Name_Master order by process_Name";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -119,9 +121,9 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
         }
 
         string str;
-        str = @"SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME";
+        str = @"SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (tdDesign.Visible == true)
         {
@@ -155,14 +157,14 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
                 UtilityModule.ConditionalComboFill(ref DDDesign, @"select Distinct V.DesignId,DesignName As Designname  
                                 from ITEM_PARAMETER_MASTER  IM inner join Design V on Im.DESIGN_ID=V.designId 
                                 inner join CustomerDesign CD on CD.DesignId=V.designId and Im.Item_Id=" + dditem.SelectedValue + @" and 
-                                    IM.QUALITY_ID=" + ddquality.SelectedValue + " and V.masterCompanyId=" + Session["varcompanyId"] + " order by designname", true, "--SELECT--");
+                                    IM.QUALITY_ID=" + ddquality.SelectedValue + " and V.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by designname", true, "--SELECT--");
 
             }
             else
             {
                 //                UtilityModule.ConditionalComboFill(ref DDDesign, @"select Distinct V.DesignId,DesignName+Space(2)+isnull(DesignNameAtoC,'') As Designname
-                //                                                             from Design V Left Outer Join CustomerDesign CD on V.DesignId=CD.DesignId And CustomerId=" + DDCustomerCode.SelectedValue + " Where V.MasterCompanyId=" + Session["varCompanyId"] + " order by designname", true, "--SELECT--");
-                UtilityModule.ConditionalComboFill(ref DDDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By DESIGNNAME", true, "--SELECT--");
+                //                                                             from Design V Left Outer Join CustomerDesign CD on V.DesignId=CD.DesignId And CustomerId=" + DDCustomerCode.SelectedValue + " Where V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by designname", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref DDDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By DESIGNNAME", true, "--SELECT--");
             }
         }
 
@@ -172,7 +174,7 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
 
         fillColor(DDItemName, DDQuality, DDDesign, DDColor, TDColor);    
         
-        //if (Session["varcompanyId"].ToString() == "4")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "4")
         //{
         //    fillColor(ddItemName, ddQuality, ddDesign, ddColor, Color);
         //}
@@ -187,14 +189,14 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
 
                 UtilityModule.ConditionalComboFill(ref DDColor, @"select Distinct C.ColorId,C.ColorName As ColorName from ITEM_PARAMETER_MASTER  IM inner join Color c on
                                                                      Im.COLOR_ID=C.ColorId inner join CustomerColor  CC on CC.ColorId=C.ColorId
-                                                                      and Im.Item_Id=" + dditem.SelectedValue + " and IM.QUALITY_ID=" + ddquality.SelectedValue + " and DESIGN_ID=" + DDDesign.SelectedValue + " and C.MasterCompanyId=" + Session["varCompanyId"] + " order by ColorName", true, "--SELECT--");
+                                                                      and Im.Item_Id=" + dditem.SelectedValue + " and IM.QUALITY_ID=" + ddquality.SelectedValue + " and DESIGN_ID=" + DDDesign.SelectedValue + " and C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ColorName", true, "--SELECT--");
 
             }
             else
             {
                 //                UtilityModule.ConditionalComboFill(ref DDColor, @"select Distinct C.ColorId,C.ColorName+space(2)+isnull(CC.ColorNameToC,'') As ColorName
-                //                                                             from Color C Left Outer Join CustomerColor CC on C.ColorId=CC.ColorId And CustomerId=" + DDCustomerCode.SelectedValue + " Where C.MasterCompanyId=" + Session["varCompanyId"] + " order by ColorName", true, "--SELECT--");
-                UtilityModule.ConditionalComboFill(ref DDColor, "SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By COLORNAME", true, "--SELECT--");
+                //                                                             from Color C Left Outer Join CustomerColor CC on C.ColorId=CC.ColorId And CustomerId=" + DDCustomerCode.SelectedValue + " Where C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ColorName", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref DDColor, "SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By COLORNAME", true, "--SELECT--");
             }
         }
     }
@@ -225,7 +227,7 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
         }
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + Shape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref Size, str, true, "--Select--");
     }
@@ -265,7 +267,7 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
                     inner join V_FinishedItemDetail vfOut on vfOut.ITEM_FINISHED_ID=Pcd.OFINISHEDID
                     inner join Unit Uinput on Uinput.UnitId=pcd.IUNITID
                     inner join unit Uoutput on Uoutput.UnitId=pcd.OUNITID
-                    inner join V_FinishedItemDetail vf on vf.ITEM_FINISHED_ID=pcm.FINISHEDID Where PCM.MastercompanyId=" + Session["varcompanyId"] + " and vf.CATEGORY_ID=" + DDCategoryname.SelectedValue + " and vf.item_id=" + DDItemName.SelectedValue;
+                    inner join V_FinishedItemDetail vf on vf.ITEM_FINISHED_ID=pcm.FINISHEDID Where PCM.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + " and vf.CATEGORY_ID=" + DDCategoryname.SelectedValue + " and vf.item_id=" + DDItemName.SelectedValue;
         if (DDQuality.SelectedIndex > 0)
         {
             str = str + " and vf.qualityid=" + DDQuality.SelectedValue;
@@ -452,7 +454,7 @@ public partial class UserControls_attachConsumption : System.Web.UI.UserControl
         {
             lblerrormsg.Text = "";
             int PCMID = 0;
-            int AttachFinishedid = UtilityModule.getItemFinishedId(DDAItem, DDAQuality, DDADesign, DDAColor, DDAShape, DDASize, txtAProdCode, DDAshade, chkAForAllDesign, chkAForallColor, chkAForallSize, "", Convert.ToInt32(Session["varCompanyId"]));
+            int AttachFinishedid = UtilityModule.getItemFinishedId(DDAItem, DDAQuality, DDADesign, DDAColor, DDAShape, DDASize, txtAProdCode, DDAshade, chkAForAllDesign, chkAForallColor, chkAForallSize, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             SqlParameter[] param = new SqlParameter[18];
             param[0] = new SqlParameter("@EPCMID", SqlDbType.Int);
             param[1] = new SqlParameter("@EPCMDID", SqlDbType.Int);

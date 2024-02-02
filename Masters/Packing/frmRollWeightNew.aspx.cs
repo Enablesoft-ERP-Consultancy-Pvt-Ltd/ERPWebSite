@@ -12,7 +12,7 @@ public partial class Masters_Packing_frmRollWeightNew : System.Web.UI.Page
     string Msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -105,7 +105,7 @@ public partial class Masters_Packing_frmRollWeightNew : System.Web.UI.Page
 
             SqlParameter[] param = new SqlParameter[4];            
             param[0] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[1] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[1] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[2] = new SqlParameter("@StringDetail", Strdetail);
             param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 200);
             param[3].Direction = ParameterDirection.Output;

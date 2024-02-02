@@ -12,7 +12,7 @@ public partial class UserControls_MasterDyerColorRate : System.Web.UI.UserContro
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -264,7 +264,7 @@ public partial class UserControls_MasterDyerColorRate : System.Web.UI.UserContro
     }
     private void Report()
     {
-        string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varCompanyId"] + "  ORDER BY ColorName";
+        string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY ColorName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
         {

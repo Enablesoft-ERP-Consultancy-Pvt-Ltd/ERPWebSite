@@ -15,7 +15,7 @@ public partial class Masters_Order_frmpreproductionmeeting : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,8 +24,8 @@ public partial class Masters_Order_frmpreproductionmeeting : System.Web.UI.Page
             SetInitialRow_Constructionyarndetail();
             SetInitialRow_Tolerence();
             string str = @"select CI.CompanyId,CI.CompanyName from CompanyInfo CI inner join Company_Authentication CA on Ci.CompanyId=CA.CompanyId
-                      WHere CI.MasterCompanyid=" + Session["varcompanyid"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName
-                      select CustomerId,customercode+'  '+companyname from customerinfo where MasterCompanyid=" + Session["varcompanyid"] + @"  order by CustomerCode
+                      WHere CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName
+                      select CustomerId,customercode+'  '+companyname from customerinfo where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"  order by CustomerCode
                       select PROCESS_NAME_ID,PROCESS_NAME From Process_Name_Master Where ProcessType=1 order by SeqNo,process_name";
 
 

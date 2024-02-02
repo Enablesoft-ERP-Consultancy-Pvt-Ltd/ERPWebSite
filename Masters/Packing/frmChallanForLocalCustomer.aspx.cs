@@ -11,7 +11,7 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -19,12 +19,12 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
         {
             DataSet ds = null;
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And 
-                            CA.UserId=" + Session["varuserId"] + @" And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                            select CustomerId,CustomerCode From Customerinfo Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+                            CA.UserId=" + Session["varuserId"] + @" And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                            select CustomerId,CustomerCode From Customerinfo Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                             select Val,Type from sizetype
                             select ICM.CATEGORY_ID,ICM.CATEGORY_NAME 
                             from ITEM_CATEGORY_MASTER ICM 
-                            inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=0 And CS.MasterCompanyid=" + Session["varcompanyId"];
+                            inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=0 And CS.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "--Select Company Name--");
@@ -46,7 +46,7 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDitemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + DDCategory.SelectedValue + " And MasterCompanyid=" + Session["varcompanyId"] + "", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDitemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + DDCategory.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--Plz Select--");
         Fillcombo();
     }
     protected void Fillcombo()
@@ -66,7 +66,7 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
 
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -79,15 +79,15 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
                         break;
                     case "2":
                         TDDesign.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDDesign, "select DesignId,Designname from Design Where MasterCompanyid=" + Session["varcompanyid"] + " Order by Designname", true, "--Plz Select--");
+                        UtilityModule.ConditionalComboFill(ref DDDesign, "select DesignId,Designname from Design Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by Designname", true, "--Plz Select--");
                         break;
                     case "3":
                         TDColor.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDColor, "select ColorId,ColorName from color Where MasterCompanyid=" + Session["varcompanyid"] + " Order by ColorName", true, "--Plz Select--");
+                        UtilityModule.ConditionalComboFill(ref DDColor, "select ColorId,ColorName from color Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by ColorName", true, "--Plz Select--");
                         break;
                     case "4":
                         TDShape.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,Shapename from Shape Where MasterCompanyid=" + Session["varcompanyid"] + " Order by Shapename", true, "--Plz Select--");
+                        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,Shapename from Shape Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by Shapename", true, "--Plz Select--");
                         break;
                     case "5":
                         TDSize.Visible = true;
@@ -104,12 +104,12 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
     }
     protected void DDitemName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDitemName.SelectedValue + " And MasterCompanyid=" + Session["varcompanyId"] + " Order by QualityName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDitemName.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by QualityName", true, "--Plz Select--");
     }
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = string.Empty;
-        str = "select Sizeid,case When 0=" + DDSizetype.SelectedValue + " Then Sizeft Else Case When 1=" + DDSizetype.SelectedValue + " Then Sizemtr Else case when 2=" + DDSizetype.SelectedValue + " Then Sizeinch Else Sizeft End End End As Size from size Where ShapeId=" + DDShape.SelectedValue + " And MastercompanyId=" + Session["varcompanyId"];
+        str = "select Sizeid,case When 0=" + DDSizetype.SelectedValue + " Then Sizeft Else Case When 1=" + DDSizetype.SelectedValue + " Then Sizemtr Else case when 2=" + DDSizetype.SelectedValue + " Then Sizeinch Else Sizeft End End End As Size from size Where ShapeId=" + DDShape.SelectedValue + " And MastercompanyId=" + Session["varMasterCompanyIDForERP"];
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--Plz Select--");
     }
     protected void DDSizetype_SelectedIndexChanged(object sender, EventArgs e)
@@ -141,7 +141,7 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
 
             //Assign value
             param[0].Value = DDOrderNo.SelectedIndex <= 0 ? "0" : DDOrderNo.SelectedValue;
-            int ItemFinishedId = UtilityModule.getItemFinishedId(DDitemName, DDQuality, DDDesign, DDColor, DDShape, DDSize, txtProdCode, DDshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int ItemFinishedId = UtilityModule.getItemFinishedId(DDitemName, DDQuality, DDDesign, DDColor, DDShape, DDSize, txtProdCode, DDshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             param[1].Value = DDCategory.SelectedIndex <= 0 ? "0" : DDCategory.SelectedValue;
             param[2].Value = DDitemName.SelectedIndex <= 0 ? "0" : DDitemName.SelectedValue;
             param[3].Value = DDQuality.SelectedIndex <= 0 ? "0" : DDQuality.SelectedValue;
@@ -233,7 +233,7 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
                 param[9].Value = DDOrderNo.SelectedIndex <= 0 ? "0" : DDOrderNo.SelectedValue;
                 param[10].Value = txtPackQty.Text == "" ? "0" : txtPackQty.Text;
                 param[11].Value = Session["varuserid"];
-                param[12].Value = Session["varcompanyid"];
+                param[12].Value = Session["varMasterCompanyIDForERP"];
                 param[13].Direction = ParameterDirection.Output;
                 param[14].Value = DDSizetype.SelectedIndex < 0 ? "0" : DDSizetype.SelectedValue;
 
@@ -309,7 +309,7 @@ public partial class Masters_Packing_frmChallanForLocalCustomer : System.Web.UI.
                 param[6].Value = DDCustomerCode.SelectedIndex <= 0 ? "0" : DDCustomerCode.SelectedValue;
                 param[7].Value = DDOrderNo.SelectedIndex <= 0 ? "0" : DDOrderNo.SelectedValue;
                 param[8].Value = Session["varuserid"];
-                param[9].Value = Session["varcompanyid"];
+                param[9].Value = Session["varMasterCompanyIDForERP"];
                 param[10].Direction = ParameterDirection.Output;
                 param[11].Value = DDSizetype.SelectedIndex < 0 ? "0" : DDSizetype.SelectedValue;
 

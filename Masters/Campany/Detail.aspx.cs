@@ -12,7 +12,7 @@ public partial class Masters_Campany_Detail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -100,7 +100,7 @@ public partial class Masters_Campany_Detail : System.Web.UI.Page
             _arrpara[2].Value = txtresiaddress.Text;
             _arrpara[3].Value = txttelno.Text;
             _arrpara[4].Value = Session["varuserid"].ToString();
-            _arrpara[5].Value = Session["varcompanyid"].ToString();
+            _arrpara[5].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrpara[6].Direction = ParameterDirection.InputOutput;
 
             if (btnSave.Text == "Update")

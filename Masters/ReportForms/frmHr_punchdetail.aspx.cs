@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,18 +22,18 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock) 
                         JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order by CI.CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order by CI.CompanyName 
                         Select Distinct D.DepartmentId, D.DepartmentName 
                         From Department D(Nolock)
                         JOIN DepartmentBranch DB(Nolock) ON DB.DepartmentID = D.DepartmentId 
                         JOIN BranchUser BU(Nolock) ON BU.BranchID = DB.BranchID And BU.UserID = " + Session["varuserId"] + @" 
-                        Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                        Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                         Order By D.DepartmentName 
                         Select Designationid,Designation From HR_Designationmaster order by Designation 
                         Select ID, BranchName 
                         From BRANCHMASTER BM(nolock) 
                         JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                         SELECT DIVISIONID, DIVISION FROM HR_DIVISIONMASTER(Nolock) ORDER BY DISPSEQNO,DIVISION ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -73,15 +73,15 @@ public partial class Masters_ReportForms_frmHr_punchdetail : System.Web.UI.Page
 
             int UserType=1;
             
-            if (Convert.ToInt16(Session["varCompanyId"]) == 16 && Convert.ToInt16(Session["varuserId"]) == 85)
+            if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16 && Convert.ToInt16(Session["varuserId"]) == 85)
             {
                 UserType = 0;
             }
-            if (Convert.ToInt16(Session["varCompanyId"]) == 16 && Convert.ToInt16(Session["varuserId"]) == 139)
+            if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16 && Convert.ToInt16(Session["varuserId"]) == 139)
             {
                 UserType = 0;
             }
-            if (Convert.ToInt16(Session["varCompanyId"]) == 16 && UserType == 1)
+            if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16 && UserType == 1)
             {
                 DDreporttype.Items.Add(new ListItem("Actual Performance Summary Report", "13"));
                 DDreporttype.Items.Add(new ListItem("Actual Performance Detail Report", "14"));

@@ -11,13 +11,13 @@ public partial class Masters_Loom_frmProductionReceiveLoom : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName                           
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                           
                            select UnitsId,UnitName from Units order by UnitName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -172,7 +172,7 @@ public partial class Masters_Loom_frmProductionReceiveLoom : System.Web.UI.Page
                 str = str + " and PM.ChallanNo='" + txtfoliono.Text + "'";
             }
         }
-        if (Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = str + " and PM.IssueOrderId in (Select IssueOrderID From Process_Issue_Detail_1 Where OrderID < 730)";
         }
@@ -769,7 +769,7 @@ public partial class Masters_Loom_frmProductionReceiveLoom : System.Web.UI.Page
                     break;
             }
         }
-        if (Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = str + " and PM.IssueOrderId in (Select IssueOrderID From Process_Issue_Detail_1 Where OrderID < 730)";
         }
@@ -899,7 +899,7 @@ public partial class Masters_Loom_frmProductionReceiveLoom : System.Web.UI.Page
             {
                 GridViewRow grv = lnk.NamingContainer as GridViewRow;
                 Label lblitemcode = (Label)grv.FindControl("lblitemcode");
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "28":
                         break;

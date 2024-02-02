@@ -14,7 +14,7 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
     static int index = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyNo"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -529,7 +529,7 @@ public partial class Masters_RawMaterial_frmIndentRawMaterialReturn : System.Web
             arr[0] = new SqlParameter("@DetailId", SqlDbType.Int);           
             arr[1] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             arr[2] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             arr[0].Value = DetailId;           
             arr[1].Direction = ParameterDirection.Output;

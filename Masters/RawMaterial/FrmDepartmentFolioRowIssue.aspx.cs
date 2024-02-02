@@ -13,8 +13,8 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
     static int MasterCompanyId;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
             Qry = @" Select Distinct CI.CompanyId, Companyname 
                     From Companyinfo CI(Nolock)
                     JOIN Company_Authentication CA(Nolock) ON CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname 
+                    Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname 
                     Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
                     From DEPARTMENTRAWISSUEMASTER DIM(Nolock)
                     JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = DIM.PROCESSID 
@@ -36,7 +36,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                     Select ConeType, ConeType From ConeMaster(Nolock) Order By SrNo ";
 
             DSQ = SqlHelper.ExecuteDataset(Qry);
@@ -90,7 +90,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];
@@ -145,7 +145,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
         {
             UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId, ChallanNo + ' / ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') Challan 
             From DepartmentProcessRawMaster 
-            Where FlagType = 1 And TranType = 0 And IssueOrderID = " + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Select Challan No");
+            Where FlagType = 1 And TranType = 0 And IssueOrderID = " + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Select Challan No");
         }
         UtilityModule.ConditionalComboFill(ref ddCatagory, @"
                     Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
@@ -177,7 +177,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
             {
                 strsql = @"Select PrtId,CATEGORY_NAME,ITEM_NAME,QualityName+ Space(2)+DesignName+ Space(2)+ColorName+ Space(2)+ShapeName+ Space(2)+SizeFt+ Space(2)+ShadeColorName DESCRIPTION,
                              Qty,LotNo,'' GodownName,'' BinNo,PT.TagNo From DepartmentProcessRawMaster Pm,DepartmentProcessRawTran PT,V_FinishedItemDetail VF Where pm.prmid=pt.prmid and  PT.Item_Finished_id=VF.Item_Finished_id And 
-                             PM.challanno='" + txtchalanno.Text + "' and PM.Trantype=0 And PM.FlagType = 1 And VF.MasterCompanyId=" + Session["varCompanyId"];
+                             PM.challanno='" + txtchalanno.Text + "' and PM.Trantype=0 And PM.FlagType = 1 And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (ChKForEdit.Checked == true && ddOrderNo.SelectedIndex > 0)
                 {
 
@@ -188,7 +188,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
             {
                 strsql = @"Select PrtId,CATEGORY_NAME,ITEM_NAME,QualityName+ Space(2)+DesignName+ Space(2)+ColorName+ Space(2)+ShapeName+ Space(2)+SizeFt+ Space(2)+ShadeColorName DESCRIPTION,
                              Qty,LotNo,'' GodownName,'' BinNo,PT.TagNo From DepartmentProcessRawTran PT,V_FinishedItemDetail VF Where PT.Item_Finished_id=VF.Item_Finished_id And 
-                             PT.PrmID=" + ViewState["Prmid"] + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                             PT.PrmID=" + ViewState["Prmid"] + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         }
@@ -233,7 +233,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
         shd.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM(Nolock) inner join PARAMETER_MASTER PM(Nolock) on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -293,7 +293,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
         if (dditemname.SelectedIndex >= 0)
         {
             string Qry = "";
-                Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i(Nolock) INNER JOIN  Unit u(Nolock) ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varCompanyId"];
+                Qry = @" SELECT u.UnitId,u.UnitName  FROM ITEM_MASTER i(Nolock) INNER JOIN  Unit u(Nolock) ON i.UnitTypeID = u.UnitTypeID where item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 Qry = Qry + @" Select Distinct VF.QualityID, VF.QualityName 
                         From PROCESS_CONSUMPTION_DETAIL PCD(Nolock) 
                         JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = PCD.IFINISHEDID AND VF.CATEGORY_ID = " + ddCatagory.SelectedValue + " And VF.ITEM_ID = " + dditemname.SelectedValue + @" 
@@ -418,7 +418,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
                 UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId, ChallanNo + ' / ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') Challan 
                     from DepartmentProcessRawMaster 
                     Where FlagType = 1 And TranType=0 And CompanyID = " + ddCompName.SelectedValue + " And BranchID = " + DDBranchName.SelectedValue + @" And 
-                    IssueOrderID=" + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"], true, "Select Challan No");
+                    IssueOrderID=" + ddOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "Select Challan No");
             }
         }
         else
@@ -438,7 +438,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
         {
             ViewState["Prmid"] = DDChallanNo.SelectedValue;
 
-            string strsql2 = "select PRMID,ChallanNo from DepartmentProcessRawMaster PRM where PRM.FlagType = 1 And PRM.Prmid = " + DDChallanNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varCompanyId"];
+            string strsql2 = "select PRMID,ChallanNo from DepartmentProcessRawMaster PRM where PRM.FlagType = 1 And PRM.Prmid = " + DDChallanNo.SelectedValue + " And PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql2);
 
             if (ds2.Tables[0].Rows.Count > 0)
@@ -457,7 +457,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
         {
             if (txtchalanno.Text != "")
             {
-                string str = "Select ChallanNo From DepartmentProcessRawMaster Where ChallanNo<>'' And TranType=0 And FlagType = 1 And ChallanNo='" + txtchalanno.Text + "' and Empid>0 And PRMID<>" + ViewState["Prmid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+                string str = "Select ChallanNo From DepartmentProcessRawMaster Where ChallanNo<>'' And TranType=0 And FlagType = 1 And ChallanNo='" + txtchalanno.Text + "' and Empid>0 And PRMID<>" + ViewState["Prmid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
@@ -512,7 +512,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
                 arr[19] = new SqlParameter("@QTY", SqlDbType.Float);
                 arr[20] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);               
 
-                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
                 arr[0].Value = ViewState["Prmid"];
                 arr[0].Direction = ParameterDirection.InputOutput;
@@ -526,7 +526,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
                 arr[7].Direction = ParameterDirection.InputOutput;
                 arr[8].Value = 0;
                 arr[9].Value = Session["varuserid"].ToString();
-                arr[10].Value = Session["varCompanyId"].ToString();
+                arr[10].Value = Session["varMasterCompanyIDForERP"].ToString();
                 arr[11].Value = 1;
                 arr[12].Direction = ParameterDirection.InputOutput;
                 arr[13].Value = Varfinishedid;
@@ -577,7 +577,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
     }
     protected void txtchalan_ontextchange(object sender, EventArgs e)
     {
-        string ChalanNo = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(ChallanNo,0) asd from DepartmentProcessRawMaster where FlagType = 1 And ChallanNo='" + txtchalanno.Text + "' And MasterCompanyId=" + Session["varCompanyId"]));
+        string ChalanNo = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(ChallanNo,0) asd from DepartmentProcessRawMaster where FlagType = 1 And ChallanNo='" + txtchalanno.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"]));
         if (ChalanNo != "")
         {
             txtchalanno.Text = "";
@@ -716,7 +716,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
         //*************************
         if (quality == 1 && design == 1 && color == 1 && shape == 1 && size == 1 && shadeColor == 1)
         {
-            Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         }
         return Varfinishedid;
     }
@@ -750,11 +750,11 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
     {
         if (ChkForMtr.Checked == false)
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Size in Ft");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Size in Ft");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "Size in Mtr");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "Size in Mtr");
         }
     }
     private void CHECKVALIDCONTROL()
@@ -972,7 +972,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
             INNER JOIN VIEW_PROCESS_ISSUE_DETAIL VID(nolock) ON VIM.ISSUEORDERID=VID.ISSUEORDERID AND VIM.PROCESSID=VID.PROCESS_NAME_ID AND VIM.STATUS<>'CANCELED'
             INNER JOIN ORDERMASTER OM ON VID.ORDERID=OM.ORDERID 
             WHere IsNull(VIM.DEPARTMENTTYPE, 0) = 1 And VIM.COMPANYID = " + ddCompName.SelectedValue + " And VIm.ChallanNo='" + VarPOrderNo + "'";
-        if (Session["varcompanyid"].ToString() == "16")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         {
             str = str + " and vim.processid=1";
         }
@@ -1046,7 +1046,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
         JOIN PROCESS_ISSUE_DETAIL_" + ddProcessName.SelectedValue + @" PD ON PM.ISSUEORDERID=PD.ISSUEORDERID 
         JOIN PROCESS_CONSUMPTION_DETAIL OCD ON OCD.ISSUEORDERID=PD.ISSUEORDERID AND OCD.ISSUE_DETAIL_ID=PD.ISSUE_DETAIL_ID AND OCD.PROCESSID=" + ddProcessName.SelectedValue + @"
         JOIN V_FINISHEDITEMDETAIL VF1 ON VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID 
-        JOIN CATEGORYSEPARATE CS ON VF1.CATEGORY_ID=CS.CATEGORYID AND CS.ID=1  AND VF1.MASTERCOMPANYID= " + Session["varcompanyid"] + @" 
+        JOIN CATEGORYSEPARATE CS ON VF1.CATEGORY_ID=CS.CATEGORYID AND CS.ID=1  AND VF1.MASTERCOMPANYID= " + Session["varMasterCompanyIDForERP"] + @" 
         JOIN V_FINISHEDITEMDETAIL VF ON PD.ITEM_FINISHED_ID = VF.ITEM_FINISHED_ID 
         WHERE PM.ISSUEORDERID=" + ddOrderNo.SelectedValue + @"
         GROUP BY VF1.CATEGORY_NAME,VF1.ITEM_NAME,VF1.QUALITYNAME,VF1.DESIGNNAME,VF1.COLORNAME,VF1.SHAPENAME,PM.UNITID,VF1.SIZEMTR,VF1.SIZEFT,
@@ -1074,7 +1074,7 @@ public partial class Masters_RawMaterial_FrmDepartmentFolioRowIssue : System.Web
             arr[2] = new SqlParameter("@TranType", SqlDbType.Int);
             arr[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             arr[4] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[6] = new SqlParameter("@FlagType", SqlDbType.Int);
 
             arr[0].Value = VarPrtID;

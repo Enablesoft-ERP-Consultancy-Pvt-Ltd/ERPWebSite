@@ -11,14 +11,14 @@ public partial class Masters_ReportForms_frmjobpayment : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select PROCESS_NAME_ID,PROCESS_NAME From Process_name_Master Where ProcessType=1 and MasterCompanyid=" + Session["varcompanyid"] + @" order by PROCESS_NAME
-                        select UnitsId,UnitName From Units Where MasterCompanyId=" + Session["varcompanyid"] + @" order by UnitName
+            string str = @"select PROCESS_NAME_ID,PROCESS_NAME From Process_name_Master Where ProcessType=1 and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME
+                        select UnitsId,UnitName From Units Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by UnitName
                         select Month_Id,Month_Name from MonthTable order by Month_Id
                         select Year,Year as year1 From YearData order by Year1";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);

@@ -29,16 +29,16 @@ public partial class Masters_Inspection_frminspection : System.Web.UI.Page
     }
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select CI.CompanyId,CI.CompanyName from CompanyInfo CI inner join Company_Authentication CA on Ci.CompanyId=CA.CompanyId
-                  WHere CI.MasterCompanyid=" + Session["varcompanyid"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName";
+                  WHere CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName";
             UtilityModule.ConditionalComboFill(ref DDcompanyName, str, true, "Plz Select--");
-            UtilityModule.ConditionalComboFill(ref ddCategoryName, "SELECT CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyid=" + Session["varCompanyId"] + " order by CATEGORY_NAME", true, "---Select---");
+            UtilityModule.ConditionalComboFill(ref ddCategoryName, "SELECT CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CATEGORY_NAME", true, "---Select---");
 
             if (DDcompanyName.Items.Count > 0)
             {
@@ -835,7 +835,7 @@ public partial class Masters_Inspection_frminspection : System.Web.UI.Page
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                if (Convert.ToInt32(Session["varcompanyid"]) == 45)
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 45)
                 {
                     Session["rptFileName"] = "~\\Reports\\rptrawyarninspectionMWS.rpt";
                 }
@@ -875,7 +875,7 @@ public partial class Masters_Inspection_frminspection : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 
@@ -924,7 +924,7 @@ public partial class Masters_Inspection_frminspection : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 
@@ -967,7 +967,7 @@ public partial class Masters_Inspection_frminspection : System.Web.UI.Page
     {
         Session["totaltest"] = null;
         Session["TOTALCHECKPOINT"] = null;
-        UtilityModule.ConditionalComboFill(ref ddItemName, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By ITEM_NAME", true, "---Select --");
+        UtilityModule.ConditionalComboFill(ref ddItemName, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ITEM_NAME", true, "---Select --");
 
     }
     protected void Page_Unload(object sender, EventArgs e)

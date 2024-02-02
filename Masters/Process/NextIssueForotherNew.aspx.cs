@@ -17,8 +17,8 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
     static decimal WashingByWeight = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
             return;
@@ -31,7 +31,7 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By CompanyName", true, "--SelectCompany");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CompanyName", true, "--SelectCompany");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -41,7 +41,7 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
 
             logo();
             string str;
-            if (Session["varcompanyId"].ToString() == "8")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "8")
             {
                 str = @"select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER Where PROCESS_NAME_ID<>1 order by Process_Name  ";
             }
@@ -55,7 +55,7 @@ public partial class Masters_Process_NextIssueForotherNew : System.Web.UI.Page
             str = str + @" Select UnitId,unitName from Unit where UnitId in(1,2,6) order by UnitId
                         Select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId
                         Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
-                        Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"]+@"
+                        Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"]+@"
 select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf.designid<>0 order by vf.designName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -84,7 +84,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
             }
 
             string str2 = "";
-            str2 = @"select CustomerId,CustomerCode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by Customercode ";
+            str2 = @"select CustomerId,CustomerCode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode ";
             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
             UtilityModule.ConditionalComboFillWithDS(ref DDcustcode, ds2, 0, true, "--Plz Select--");
 
@@ -96,7 +96,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
             BtnPreview.Enabled = false;
             DDFromProcess.Focus();
             ViewState["IssueOrderid"] = 0;
-            int VarCompanyNo = Convert.ToInt32(Session["varCompanyId"].ToString());
+            int VarCompanyNo = Convert.ToInt32(Session["varMasterCompanyIDForERP"].ToString());
             switch (VarCompanyNo)
             {
                 case 1:
@@ -260,9 +260,9 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     private void logo()
     {
         imgLogo.ImageUrl.DefaultIfEmpty();
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -277,7 +277,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     {
         ViewState["IssueOrderid"] = 0;
         TxtIssueDate.Enabled = true;
-        UtilityModule.ConditionalComboFill(ref DDTOProcess, "select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER where PROCESS_Name_ID != " + ViewState["FromProcessId"] + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By PROCESS_NAME", true, "--Select Process--");
+        UtilityModule.ConditionalComboFill(ref DDTOProcess, "select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER where PROCESS_Name_ID != " + ViewState["FromProcessId"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By PROCESS_NAME", true, "--Select Process--");
     }
     protected void DDTOProcess_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -298,8 +298,8 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
         {
             DDQuality.SelectedIndex = -1;
         }
-        ////string str = "Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid And EP.Processid=" + DDTOProcess.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"];
-        //str = "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_NAME";
+        ////string str = "Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid And EP.Processid=" + DDTOProcess.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+        //str = "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And CS.Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_NAME";
         //DataSet ds = new DataSet();
         //ds = SqlHelper.ExecuteDataset(str);
 
@@ -359,7 +359,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                 TxtRateNew.Text = "";
                 break;
             case "WASHING BY WEIGHT":
-                switch (Session["varcompanyid"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "16":
                     case "44":
@@ -373,7 +373,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                 }
                 break;
             case "FOR DISPATCHED":
-                switch (Session["varcompanyid"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "16":
                     case "44":
@@ -396,7 +396,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                 UtilityModule.ConditionalComboFill(ref DDreworkof, "select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER Where PROCESS_NAME not in('Weaving','RE-WORK') order by Process_Name", false, "");
                 break;
             case "PACKING":
-                switch (Session["varcompanyid"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "8":
                         TDDatestamp.Visible = false;
@@ -447,13 +447,13 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
         //ddlcategorycange();
         if (TDitemName.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By Item_Name", true, "---Select Item----");
+            UtilityModule.ConditionalComboFill(ref DDItemName, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Item_Name", true, "---Select Item----");
         }
         string Str = @"select Distinct Q.QualityId,q.QualityName+' ['+Im.Item_Name+']' as QualityName 
                     From ITEM_MASTER IM(Nolock) 
                     join CategorySeparate CS(Nolock) on IM.CATEGORY_ID=cs.Categoryid and cs.id=0  and Cs.Categoryid=" + DDCategory.SelectedValue + @" 
                     join Quality Q(Nolock) on IM.ITEM_ID=q.Item_Id  
-                    Where Im.mastercompanyid=" + Session["varcompanyid"] + " order by Qualityname";
+                    Where Im.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by Qualityname";
         if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
         {
             Str = @"Select Distinct VF.QualityId, VF.QualityName + ' [' + VF.Item_Name + ']' QualityName 
@@ -468,7 +468,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
         FindFromProcessId(Convert.ToInt16(DDItemName.SelectedValue), Convert.ToInt16(DDTOProcess.SelectedValue));
-        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QualityName", true, "--Select Quality--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QualityName", true, "--Select Quality--");
         //fill_gride();
 
     }
@@ -491,15 +491,15 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                         break;
                     case "2":
                         tddesign1.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDDesign, "Select DesignId,Designname from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order by DesignName", true, "--Select Design--");
+                        UtilityModule.ConditionalComboFill(ref DDDesign, "Select DesignId,Designname from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by DesignName", true, "--Select Design--");
                         break;
                     case "3":
                         tdColor1.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDColor, "select  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ColorName", true, "--Select Color--");
+                        UtilityModule.ConditionalComboFill(ref DDColor, "select  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ColorName", true, "--Select Color--");
                         break;
                     case "4":
                         tdShape1.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " order By ShapeName", true, "--Select Shape--");
+                        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order By ShapeName", true, "--Select Shape--");
                         break;
                     case "5":
                         tdsize1.Visible = true;
@@ -571,9 +571,9 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     //                      From Process_Receive_MASTER_" + ViewState["FromProcessId"] + " PRM,Process_Receive_Detail_" + ViewState["FromProcessId"] + @" PRD,
     //                      V_FinishedItemDetail VF,Process_Stock_Detail PSD,CarpetNumber CN Where CN.Pack=0 And PRD.QualityType<>3 And PRM.Process_Rec_ID=PRD.Process_Rec_ID And 
     //                      PRD.Process_Rec_Detail_Id=PSD.ReceiveDetailId And VF.Item_Finished_Id=PRD.Item_Finished_Id And CN.Item_Finished_id=PRD.Item_Finished_Id And 
-    //                      PSD.StockNo=CN.StockNo And VF.Category_Id=" + DDCategory.SelectedValue + " And CN.CurrentProStatus=" + ViewState["FromProcessId"] + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+    //                      PSD.StockNo=CN.StockNo And VF.Category_Id=" + DDCategory.SelectedValue + " And CN.CurrentProStatus=" + ViewState["FromProcessId"] + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
     //        string str = " Group By VF.CATEGORY_NAME,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,CN.Item_Finished_Id,CN.OrderId,VF.ProdSizeMtr,VF.ProdSizeFt,VF.ProdLengthMtr,VF.ProdLengthFt,VF.ProdWidthMtr,VF.ProdWidthFt,VF.ProdAreaMtr,VF.ProdAreaFt";
-    //        if (Session["varCompanyId"].ToString() == "5")
+    //        if (Session["varMasterCompanyIDForERP"].ToString() == "5")
     //        {
     //            strsql = @"Select '' Stock,VF.CATEGORY_NAME,VF.Item_Name,VF.QualityName+'  '+VF.DesignName+'  '+VF.ColorName+'  '+VF.ShapeName+'  '+Case When " + VarUnit + @"=1 Then VF.SizeMtr Else VF.SizeFt End Description,
     //                      CN.Item_Finished_Id,Count(CN.Item_Finished_Id) as Qty,CN.OrderId,0 RDI,Case When " + VarUnit + "=1 Then VF.WidthMtr Else VF.WidthFt End Width,Case When " + VarUnit + @"=1 Then VF.LengthMtr Else VF.LengthFt End Length,
@@ -581,7 +581,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     //                      From Process_Receive_MASTER_" + ViewState["FromProcessId"] + " PRM,Process_Receive_Detail_" + ViewState["FromProcessId"] + @" PRD,
     //                      V_FinishedItemDetail VF,Process_Stock_Detail PSD,CarpetNumber CN Where CN.Pack=0 And PRD.QualityType<>3 And PRM.Process_Rec_ID=PRD.Process_Rec_ID And 
     //                      PRD.Process_Rec_Detail_Id=PSD.ReceiveDetailId And VF.Item_Finished_Id=PRD.Item_Finished_Id And CN.Item_Finished_id=PRD.Item_Finished_Id And
-    //                      PSD.StockNo=CN.StockNo And VF.Category_Id=" + DDCategory.SelectedValue + " And CN.CurrentProStatus=" + ViewState["FromProcessId"] + " And ToProcessId=" + ViewState["FromProcessId"] + " And PRM.CompanyId=1 And VF.MasterCompanyId=" + Session["varCompanyId"];
+    //                      PSD.StockNo=CN.StockNo And VF.Category_Id=" + DDCategory.SelectedValue + " And CN.CurrentProStatus=" + ViewState["FromProcessId"] + " And ToProcessId=" + ViewState["FromProcessId"] + " And PRM.CompanyId=1 And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
     //            str = " Group By VF.CATEGORY_NAME,VF.Item_Name,VF.QualityName,VF.DesignName,VF.ColorName,VF.ShapeName,CN.Item_Finished_Id,CN.OrderId,VF.SizeMtr,VF.SizeFt,VF.LengthMtr,VF.LengthFt,VF.WidthMtr,VF.WidthFt,VF.AreaMtr,VF.AreaFt";
     //        }
     //        if (DDItemName.SelectedIndex > 0)
@@ -636,7 +636,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     {
         string StrSize = "vf.SizeMtr + ' ' + vf.shapename";
         string str = "";
-        if (Session["varcompanyId"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -663,13 +663,13 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
 
             }
         }
-        if (Session["varcompanyId"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
         {
             StrSize = "vf.Sizeft + ' ' + vf.shapename";
 
         }
 
-        if (Session["varcompanyId"].ToString() == "38")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "38")
         {
             StrSize = "vf.Sizeft + ' ' + vf.shapename";
 
@@ -702,11 +702,11 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     {
         if (DDUnit.SelectedValue == "2")
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeFt from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By SizeFt", true, "--Select Size--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeFt from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SizeFt", true, "--Select Size--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeMtr from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By SizeFt", true, "--Select Size--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeMtr from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SizeFt", true, "--Select Size--");
         }
     }
     private void fill_DetailGride()
@@ -722,7 +722,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                         isnull(PD.Bonus,0) as Bonus,isnull(PD.BonusAmt,0) as BonusAmt  
                         From PROCESS_ISSUE_MASTER_" + DDTOProcess.SelectedValue + @" PM,PROCESS_ISSUE_DETAIL_" + DDTOProcess.SelectedValue + @" PD,
                         ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And 
-                        IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And PM.IssueOrderid=" + ViewState["IssueOrderid"] + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id desc";
+                        IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And PM.IssueOrderid=" + ViewState["IssueOrderid"] + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id desc";
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
@@ -803,7 +803,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
             //                        Vf.QualityName,Vf.designName,Vf.ColorName,Case When Vf.shapeid=1 Then '' Else Left(vf.shapename,1) End  as Shapename,
             //                        PID.Width+' x ' +PID.Length as Size,PID.qty,PID.Qty*PID.area as Area,PIM.UnitId,PID.Rate,PID.Issue_Detail_Id,
             //                        (Select * from [dbo].[Get_StockNoIssue_Detail_Wise](PID.Issue_Detail_Id," + DDTOProcess.SelectedValue + @")) TStockNo,PIM.Instruction,PID.Item_Finished_Id,
-            //                        case when " + Session["varcompanyId"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '''' end as FolioNo,
+            //                        case when " + Session["varMasterCompanyIDForERP"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '''' end as FolioNo,
             //                        isnull(PID.JobIssueWeight,0) as JobIssueWeight, PID.Amount 
             //                        From PROCESS_ISSUE_MASTER_" + DDTOProcess.SelectedValue + @" PIM 
             //                        Join PROCESS_ISSUE_DETAIL_" + DDTOProcess.SelectedValue + @" PID on PIM.IssueOrderId=PID.IssueOrderId
@@ -819,7 +819,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                         Vf.QualityName,Vf.designName,Vf.ColorName,Case When Vf.shapeid=1 Then '' Else Left(vf.shapename,1) End  as Shapename,
                         PID.Width+' x ' +PID.Length as Size,PID.qty,PID.Qty*PID.area as Area,PIM.UnitId,PID.Rate,PID.Issue_Detail_Id,
                         (Select * from [dbo].[Get_StockNoIssue_Detail_Wise](PID.Issue_Detail_Id," + DDTOProcess.SelectedValue + @")) TStockNo,PIM.Instruction,PIM.Remarks,PID.Item_Finished_Id,
-                        case when " + Session["varcompanyId"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '' end as FolioNo,
+                        case when " + Session["varMasterCompanyIDForERP"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '' end as FolioNo,
                         isnull(PID.JobIssueWeight,0) as JobIssueWeight, PID.Amount,PID.GSTTYPE,
                         Case When PID.GSTTYPE=1 Then isnull(round(PID.AMOUNT*PID.CGST/100+  PID.AMOUNT*PID.SGST/100,3),0) else 0 end SGST,
                         Case When PID.GSTTYPE=2 Then isnull(round(PID.AMOUNT*PID.IGST/100,2),0) else 0 end IGST,
@@ -940,7 +940,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
         JOIN V_NextProcessIssueReport ON PROCESS_NAME_MASTER.PROCESS_NAME_ID=V_NextProcessIssueReport.PROCESSID 
         JOIN V_Companyinfo ON V_NextProcessIssueReport.Companyid=V_Companyinfo.CompanyId 
         JOIN V_EmployeeInfo ON V_NextProcessIssueReport.Empid=V_EmployeeInfo.EmpId
-        where V_NextProcessIssueReport.IssueOrderId= " + ViewState["IssueOrderid"] + " And PROCESS_NAME_MASTER.MasterCompanyId=" + Session["varCompanyId"] + " And V_Companyinfo.CompanyId=" + DDCompanyName.SelectedValue;
+        where V_NextProcessIssueReport.IssueOrderId= " + ViewState["IssueOrderid"] + " And PROCESS_NAME_MASTER.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And V_Companyinfo.CompanyId=" + DDCompanyName.SelectedValue;
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -1166,7 +1166,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                     _arrpara[38].Value = TDPacktype.Visible == false ? "0" : DDPacktype.SelectedValue;
                     _arrpara[39].Value = TDarticleNo.Visible == false ? "" : DDarticleno.SelectedValue;
                     _arrpara[40].Value = TDBatchNo.Visible == false ? "" : DDbatchNo.SelectedItem.Text;
-                    _arrpara[41].Value = Session["varcompanyid"];
+                    _arrpara[41].Value = Session["varMasterCompanyIDForERP"];
                     _arrpara[42].Direction = ParameterDirection.Output;
                     _arrpara[43].Direction = ParameterDirection.Output;
 
@@ -1324,7 +1324,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
             {
                 if (DGDetail.Columns[i].HeaderText == "Bonus")
                 {
-                    if (Convert.ToInt32(Session["varcompanyId"]) == 42)
+                    if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
                     {
                         DGDetail.Columns[i].Visible = true;
                     }
@@ -1366,7 +1366,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             param[5] = new SqlParameter("@userid", Session["varuserid"]);
-            param[6] = new SqlParameter("@mastercompanyId", Session["varcompanyid"]);
+            param[6] = new SqlParameter("@mastercompanyId", Session["varMasterCompanyIDForERP"]);
             param[7] = new SqlParameter("@issrecstatus", ChkForIssue_Receive.Checked == true ? 1 : 0);
             //****************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DELETENEXTISSUEFOROTHER", param);
@@ -1615,7 +1615,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -1809,7 +1809,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
         //param[5] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
         //param[5].Direction = ParameterDirection.Output;
         //param[6] = new SqlParameter("@userid", Session["varuserid"]);
-        //param[7] = new SqlParameter("@MastercompanyId", Session["varcompanyid"]);
+        //param[7] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
         //param[8] = new SqlParameter("@ToDate", txtgetdataupto.Text);
 
         //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETSTOCKDETAIL_FORFINISHER", param);
@@ -1831,7 +1831,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
         cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
         cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MastercompanyId", Session["varcompanyid"]);
+        cmd.Parameters.AddWithValue("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
         cmd.Parameters.AddWithValue("@ToDate", txtgetdataupto.Text);
         cmd.Parameters.AddWithValue("@QualityID", DDQuality.SelectedValue);
         cmd.Parameters.AddWithValue("@DesignID", DDDesign.SelectedValue);
@@ -1966,7 +1966,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
         {
             if (txtWeaverIdNo.Text != "")
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "8":
                         str = @"select Emp.Empid from process_issue_Master_" + DDTOProcess.SelectedValue + " PM,Process_issue_Detail_" + DDTOProcess.SelectedValue + @" PD,Employee_ProcessOrderNo EMP,Empinfo EI
@@ -1976,7 +1976,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
 
                         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
-                        if (Session["varcompanyid"].ToString() != "14")
+                        if (Session["varMasterCompanyIDForERP"].ToString() != "14")
                         {
                             if (ds.Tables[0].Rows.Count > 0)
                             {
@@ -2005,12 +2005,12 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
 
                         if (ds.Tables[0].Rows.Count > 0)
                         {
-                            if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                            if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                             {
                                 SqlParameter[] param = new SqlParameter[4];
                                 param[0] = new SqlParameter("@CardNo", txtWeaverIdNo.Text);
                                 param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                                param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                                param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                                 param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                                 param[3].Direction = ParameterDirection.Output;
                                 //*************
@@ -2019,7 +2019,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                                 if (dsnew.Tables[0].Rows.Count == 0)
                                 {
                                     ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                                    if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                                    if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                                     {
                                         txtWeaverIdNoscan.Text = "";
                                         txtWeaverIdNoscan.Focus();
@@ -2065,12 +2065,12 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+            if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
             {
                 SqlParameter[] param = new SqlParameter[4];
                 param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                 param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                 param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                 param[3].Direction = ParameterDirection.Output;
                 //*************
@@ -2079,7 +2079,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
                 if (dsnew.Tables[0].Rows.Count == 0)
                 {
                     ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                    if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                     {
                         txtWeaverIdNoscan.Text = "";
                         txtWeaverIdNoscan.Focus();
@@ -2185,7 +2185,7 @@ select Distinct vf.designId,vf.designName From V_FinishedItemDetail vf where  vf
     protected void DDorderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str;
-        if (Session["varcompanyId"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             //DataSet ds7 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Consmp_type,customerid  from ordermaster where orderid=" + ddorderno.SelectedValue + "");
             //if (ds7.Tables[0].Rows.Count > 0)

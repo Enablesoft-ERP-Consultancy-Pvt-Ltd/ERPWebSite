@@ -11,19 +11,18 @@ public partial class Masters_Campany_frmitemspecification : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
         }
     }
     protected void ddcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dditem, "select ITEM_ID,ITEM_NAME from item_master where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + " order by ITEM_NAME", true, "--Select ItemName--");
+        UtilityModule.ConditionalComboFill(ref dditem, "select ITEM_ID,ITEM_NAME from item_master where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ITEM_NAME", true, "--Select ItemName--");
 
     }
     protected void BtnShowData_Click(object sender, EventArgs e)
@@ -38,7 +37,7 @@ public partial class Masters_Campany_frmitemspecification : System.Web.UI.Page
         try
         {
 
-            str = @"select Item_Id,QualityName,QualityId  from Quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"];
+            str = @"select Item_Id,QualityName,QualityId  from Quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -95,7 +94,7 @@ public partial class Masters_Campany_frmitemspecification : System.Web.UI.Page
             _arrpara[1].Value = ddcategory.SelectedValue;
 
             _arrpara[4].Value = Session["varuserid"].ToString();
-            _arrpara[5].Value = Session["varCompanyId"].ToString();
+            _arrpara[5].Value = Session["varMasterCompanyIDForERP"].ToString();
 
             //Delete existing Record
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "Delete from Employee_ItemDetail Where ItemId=" + dditem.SelectedValue + "");
@@ -107,8 +106,8 @@ public partial class Masters_Campany_frmitemspecification : System.Web.UI.Page
                     _arrpara[2].Value = ((Label)DGDetail.Rows[i].FindControl("lblitemid")).Text;
                     _arrpara[3].Value = ((Label)DGDetail.Rows[i].FindControl("lblqualityid")).Text;
 
-                    strinsert = strinsert + " insert into Employee_ItemDetail(EmpId,CategoryId,ItemId,QualityId,UserId,MasterCompanyId)values(" + _arrpara[0].Value + "," + _arrpara[1].Value + "," + _arrpara[2].Value + "," + _arrpara[3].Value + ", " + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ")";
-                    //SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "insert into Employee_ItemDetail(EmpId,CategoryId,ItemId,QualityId,UserId,MasterCompanyId)values(" + _arrpara[0].Value + "," + _arrpara[1].Value + "," + _arrpara[2].Value + "," + _arrpara[3].Value + ", " + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ")");
+                    strinsert = strinsert + " insert into Employee_ItemDetail(EmpId,CategoryId,ItemId,QualityId,UserId,MasterCompanyId)values(" + _arrpara[0].Value + "," + _arrpara[1].Value + "," + _arrpara[2].Value + "," + _arrpara[3].Value + ", " + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ")";
+                    //SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "insert into Employee_ItemDetail(EmpId,CategoryId,ItemId,QualityId,UserId,MasterCompanyId)values(" + _arrpara[0].Value + "," + _arrpara[1].Value + "," + _arrpara[2].Value + "," + _arrpara[3].Value + ", " + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ")");
                 }
             }
             if (strinsert!="")

@@ -11,7 +11,7 @@ public partial class Masters_Campany_ParameterSetting : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_Campany_ParameterSetting : System.Web.UI.Page
         DataSet ds = null;
         try
         {
-            string sqlstr = "Select Parameter_Id,Parameter_Name from Parameter_Setting where Company_Id=" + Session["varCompanyId"];
+            string sqlstr = "Select Parameter_Id,Parameter_Name from Parameter_Setting where Company_Id=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(sqlstr);
             int n = ds.Tables[0].Rows.Count;
             if (n > 0)
@@ -102,7 +102,7 @@ public partial class Masters_Campany_ParameterSetting : System.Web.UI.Page
             _arrpara[8] = new SqlParameter("@Shape", SqlDbType.NVarChar, 20);
             _arrpara[9] = new SqlParameter("@Size", SqlDbType.NVarChar, 20);
 
-            _arrpara[0].Value = Session["varCompanyId"];
+            _arrpara[0].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[1].Value = Session["varuserid"];
             _arrpara[2].Value = TxtCategory.Text.ToUpper();
             _arrpara[3].Value = TxtItem.Text.ToUpper();

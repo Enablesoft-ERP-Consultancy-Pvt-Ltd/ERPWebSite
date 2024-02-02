@@ -216,6 +216,12 @@
                                     <asp:DropDownList ID="DDcompany" runat="server" CssClass="dropdown" Width="130px">
                                     </asp:DropDownList>
                                 </td>
+                                <td class="tdstyle">
+                                    <asp:Label ID="Label33" runat="server" Text="Branch Name" CssClass="labelbold"></asp:Label>
+                                    <br />
+                                    <asp:DropDownList CssClass="dropdown" ID="DDBranchName" Width="120" runat="server">
+                                    </asp:DropDownList>
+                                </td>
                                 <td>
                                     <asp:Label ID="Label10" runat="server" Text="Process Name" CssClass="labelbold"></asp:Label>
                                     <br />
@@ -351,6 +357,13 @@
                                     <asp:ListItem Value="0">Area Wise</asp:ListItem>
                                 </asp:DropDownList>
                             </td>
+                            <td id="TDDepartmentName" runat="server" visible="false">
+                                <asp:Label ID="Label16" CssClass="labelbold" Text="Department Name" runat="server" />
+                                <br />
+                                <asp:DropDownList ID="DDDepartmentName" runat="server" CssClass="dropdown" AutoPostBack="true"
+                                    Width="150px" OnSelectedIndexChanged="DDDepartmentName_SelectedIndexChanged">
+                                </asp:DropDownList>
+                            </td>
                         </tr>
                     </table>
                     <div style="width: 60%; float: left;">
@@ -360,6 +373,13 @@
                                     <asp:Label ID="Label5" runat="server" Text="Buyer" CssClass="labelbold"></asp:Label><br />
                                     <asp:DropDownList ID="DDcustcode" runat="server" CssClass="dropdown" Width="150px"
                                         AutoPostBack="true" OnSelectedIndexChanged="DDcustcode_SelectedIndexChanged">
+                                    </asp:DropDownList>
+                                </td>
+                                <td id="TDDepartmentIssueNo" runat="server" visible="false">
+                                    <asp:Label ID="Label17" CssClass="labelbold" Text="Department Issue No" runat="server" />
+                                    <br />
+                                    <asp:DropDownList ID="DDDepartmentIssueNo" runat="server" CssClass="dropdown" AutoPostBack="true"
+                                        Width="150px" OnSelectedIndexChanged="DDDepartmentIssueNo_SelectedIndexChanged">
                                     </asp:DropDownList>
                                 </td>
                                 <td>
@@ -440,8 +460,8 @@
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Height">
                                                 <ItemTemplate>
-                                                    <asp:TextBox ID="txtheight" Text='<%#Bind("height") %>' Width="80px" runat="server" Font-Size="Small"
-                                                        Font-Bold="true" />
+                                                    <asp:TextBox ID="txtheight" Text='<%#Bind("height") %>' Width="80px" runat="server"
+                                                        Font-Size="Small" Font-Bold="true" />
                                                 </ItemTemplate>
                                             </asp:TemplateField>
                                             <asp:TemplateField HeaderText="Area">

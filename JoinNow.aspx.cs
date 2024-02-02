@@ -13,7 +13,7 @@ public partial class JoinNow : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         btncreate.Attributes.Add("onclick", "return pwdvalidate()");
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }

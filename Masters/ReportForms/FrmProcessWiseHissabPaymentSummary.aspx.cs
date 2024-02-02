@@ -15,14 +15,14 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabPaymentSummary : Sy
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By PROCESS_NAME";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -46,7 +46,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabPaymentSummary : Sy
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDcompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDcompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName", true, "--Select--");
         }
 
         if (Session["VarCompanyNo"].ToString() == "42")
@@ -102,7 +102,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabPaymentSummary : Sy
             param[1] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);           
             param[2] = new SqlParameter("@FromDate", txtFromdate.Text);
             param[3] = new SqlParameter("@ToDate", txttodate.Text);
-            param[4] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+            param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@UserId", Session["VarUserId"]);
             param[6] = new SqlParameter("@where", str);
             param[7] = new SqlParameter("@DateFlag", ChkForDate.Checked==true ? "1" : "0");
@@ -153,7 +153,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabPaymentSummary : Sy
             param[1] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
             param[2] = new SqlParameter("@FromDate", txtFromdate.Text);
             param[3] = new SqlParameter("@ToDate", txttodate.Text);
-            param[4] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+            param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@UserId", Session["VarUserId"]);
             param[6] = new SqlParameter("@where", str);
             param[7] = new SqlParameter("@DateFlag", ChkForDate.Checked == true ? "1" : "0");

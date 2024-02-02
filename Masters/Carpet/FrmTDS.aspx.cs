@@ -11,7 +11,7 @@ public partial class Masters_Carpet_FrmTDS : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -49,7 +49,7 @@ public partial class Masters_Carpet_FrmTDS : CustomPage
                 _arrPara[3].Value = TxtMinimumAmount.Text;
                 _arrPara[4].Value = TxtFromDate.Text;
                 _arrPara[5].Value = Session["varuserid"].ToString();
-                _arrPara[6].Value = Session["varCompanyId"].ToString();
+                _arrPara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_TDS_MASTER", _arrPara);
                 Tran.Commit();
                 ClearAll();
@@ -99,7 +99,7 @@ public partial class Masters_Carpet_FrmTDS : CustomPage
     private void Fill_Grid()
     {
         
-        string str = "SELECT TM.ID Sr_No,TYPE,TDS,MINAMT,Replace(Convert(VarChar(11),FROMDATE,106), ' ','-') FROMDATE,Replace(Convert(VarChar(11),ENDDATE,106), ' ','-') ENDDATE FROM TDS_MASTER TM,TDSType TT WHERE TM.TYPEID=TT.ID  And MasterCompanyid=" + Session["varCompanyId"] + "";
+        string str = "SELECT TM.ID Sr_No,TYPE,TDS,MINAMT,Replace(Convert(VarChar(11),FROMDATE,106), ' ','-') FROMDATE,Replace(Convert(VarChar(11),ENDDATE,106), ' ','-') ENDDATE FROM TDS_MASTER TM,TDSType TT WHERE TM.TYPEID=TT.ID  And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (DDType.SelectedIndex!=-1)
         {
             str=str + "  and TM.TYPEID=" + DDType.SelectedValue;

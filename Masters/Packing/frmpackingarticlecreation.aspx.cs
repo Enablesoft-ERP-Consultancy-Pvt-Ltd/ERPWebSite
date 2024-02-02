@@ -14,14 +14,14 @@ public partial class Masters_Packing_frmpackingarticlecreation : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
-                           select ShapeId,ShapeName From shape Where mastercompanyid=" + Session["varcompanyid"] + @"
+                           select ShapeId,ShapeName From shape Where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @"
                            select ID,PackingType From Packingtype order by PackingType";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcategory, ds, 0, true, "--Plz Select--");
@@ -34,7 +34,7 @@ public partial class Masters_Packing_frmpackingarticlecreation : System.Web.UI.P
             }
             SetInitialRow();
 
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 22: //for DiamondExport
                     TableGridData.Visible = true;
@@ -261,7 +261,7 @@ public partial class Masters_Packing_frmpackingarticlecreation : System.Web.UI.P
             param[11] = new SqlParameter("@volume_roll", txtvolroll.Text);
             param[12] = new SqlParameter("@Pcs_roll", txtpcsroll.Text);
             param[13] = new SqlParameter("@userid", Session["varuserid"]);
-            param[14] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[14] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //Table Type
             param[15] = new SqlParameter("@dtrate", dtrate);
             //*********
@@ -404,7 +404,7 @@ public partial class Masters_Packing_frmpackingarticlecreation : System.Web.UI.P
     protected void DDcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref DDitemname, @"select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner join CategorySeparate CS on IM.CATEGORY_ID=CS.Categoryid
-                                                            and CS.id=0 and cs.categoryid=" + DDcategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varcompanyId"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
+                                                            and CS.id=0 and cs.categoryid=" + DDcategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
     }
     protected void DGDetail_RowDataBound(object sender, GridViewRowEventArgs e)
     {

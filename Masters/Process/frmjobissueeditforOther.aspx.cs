@@ -13,13 +13,13 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                          select U.UnitsId,U.UnitName from Units U inner join Units_authentication UA on U.unitsId=UA.UnitsId and UA.Userid=" + Session["varuserid"] + @" order by U.unitsId
                          select PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From PROCESS_NAME_MASTER PNM inner join UserRightsProcess URP on PNM.PROCESS_NAME_ID=URP.ProcessId and URP.Userid=" + Session["varuserid"] + @"
                         WHere PNM.ProcessType=1 and PNM.PROCESS_NAME_ID<>1 order by PROCESS_NAME";
@@ -53,12 +53,11 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 }
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDTOProcess, ds, 2, true, "---Plz Select---");
-            if (Convert.ToInt32(Session["varCompanyId"]) == 16 || Convert.ToInt32(Session["varCompanyId"]) == 28 || Convert.ToInt32(Session["varCompanyId"]) == 44 || Convert.ToInt32(Session["varCompanyId"]) == 43)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 43)
             {
                 TDupdateemp.Visible = true;
                 TDactiveemployee.Visible = true;
             }
-
             switch (Session["varcompanyNo"].ToString())
             {               
                 case "38":
@@ -213,7 +212,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             param[5] = new SqlParameter("@userid", Session["varuserid"]);
-            param[6] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[6] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteNextIssueForother", param);
 
@@ -248,6 +247,11 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
             default:
                 Trconsmpflag.Visible = false;
                 break;
+        }
+
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 && Convert.ToInt32(DDTOProcess.SelectedValue) == 40)
+        {
+            BtnUpdateRemarkInstruction.Visible = true;
         }
         txtWeaverIdNo_AutoCompleteExtender.ContextKey = DDTOProcess.SelectedValue;
         DGDetail.DataSource = null;
@@ -342,7 +346,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
             //                        Vf.QualityName,Vf.designName,Vf.ColorName,Case When Vf.shapeid=1 Then '' Else Left(vf.shapename,1) End  as Shapename,
             //                        PID.Width+' x ' +PID.Length as Size,PID.qty,PID.Qty*PID.area as Area,PIM.UnitId,PID.Rate,PID.Issue_Detail_Id,
             //                        (Select * from [dbo].[Get_StockNoIssue_Detail_Wise](PID.Issue_Detail_Id," + DDTOProcess.SelectedValue + @")) TStockNo,PIM.Instruction,PID.Item_Finished_Id,
-            //                        case when " + Session["varcompanyId"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '''' end as FolioNo,
+            //                        case when " + Session["varMasterCompanyIDForERP"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '''' end as FolioNo,
             //                        isnull(PID.JobIssueWeight,0) as JobIssueWeight
             //                        From PROCESS_ISSUE_MASTER_" + DDTOProcess.SelectedValue + " PIM inner Join PROCESS_ISSUE_DETAIL_" + DDTOProcess.SelectedValue + @" PID on PIM.IssueOrderId=PID.IssueOrderId
             //                        inner join CompanyInfo CI on PIM.Companyid=CI.CompanyId
@@ -356,7 +360,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
 //                        Vf.QualityName,Vf.designName,Vf.ColorName,Case When Vf.shapeid=1 Then '' Else Left(vf.shapename,1) End  as Shapename,
 //                        PID.Width+' x ' +PID.Length as Size,PID.qty,PID.Qty*PID.area as Area,PIM.UnitId,PID.Rate,PID.Issue_Detail_Id,
 //                        (Select * from [dbo].[Get_StockNoIssue_Detail_Wise](PID.Issue_Detail_Id," + DDTOProcess.SelectedValue + @")) TStockNo,PIM.Instruction,PID.Item_Finished_Id,
-//                        case when " + Session["varcompanyId"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '' end as FolioNo,
+//                        case when " + Session["varMasterCompanyIDForERP"].ToString() + @"=27 then DBO.F_GetFolioNoByOrderIdItemFinishedId(PID.ITEM_FINISHED_ID,PID.issueorderid," + DDTOProcess.SelectedValue + @") else '' end as FolioNo,
 //                        isnull(PID.JobIssueWeight,0) as JobIssueWeight, PID.Amount,PID.GSTTYPE,
 //                        Case When PID.GSTTYPE=1 Then isnull(round(PID.AMOUNT*PID.CGST/100+  PID.AMOUNT*PID.SGST/100,3),0) else 0 end SGST,
 //                        Case When PID.GSTTYPE=2 Then isnull(round(PID.AMOUNT*PID.IGST/100,2),0) else 0 end IGST,
@@ -389,7 +393,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
         cmd.Parameters.AddWithValue("@IssueOrderID", hnissueorderid.Value);
         cmd.Parameters.AddWithValue("@ProcessID", DDTOProcess.SelectedValue);
         cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varcompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = new DataSet();
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -423,7 +427,14 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary_barcode.rpt";
                                 break;
                             case "28":
-                                Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSN.rpt";
+                                if (Convert.ToInt32(DDTOProcess.SelectedValue) == 40)
+                                {
+                                    Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSNBathMat.rpt";
+                                }
+                                else
+                                {
+                                    Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryWithHSN.rpt";
+                                }
                                 break;
                             case "44":
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary_agni.rpt";
@@ -447,6 +458,8 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                         switch (Session["varcompanyNo"].ToString())
                         {
                             case "16":
+                                Session["rptFileName"] = "~\\Reports\\RptNextissueNew2_barcode.rpt";
+                                break;
                             case "28":
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNew2_barcode.rpt";
                                 break;
@@ -500,7 +513,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 lnkdel.Visible = false;
             }
 
-            if (Convert.ToInt32(Session["varcompanyId"]) == 43)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 43)
             {
                 LinkButton lnkdel2 = (LinkButton)e.Row.FindControl("lnkdel");
                 if (Session["usertype"].ToString() != "1")
@@ -536,7 +549,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
             {
                 if (DGDetail.Columns[i].HeaderText == "Bonus")
                 {
-                    if (Convert.ToInt32(Session["varcompanyId"]) == 42)
+                    if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
                     {
                         DGDetail.Columns[i].Visible = true;
                     }
@@ -628,7 +641,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@dtrecord", dtrecord);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioEmployee", param);
@@ -701,7 +714,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Processid", DDTOProcess.SelectedValue);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioActiveStatus", param);
             Tran.Commit();
@@ -796,6 +809,16 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 con.Close();
                 con.Dispose();
             }
+        }
+    }
+    protected void BtnUpdateRemarkInstruction_Click(object sender, EventArgs e)
+    {
+        if (DDTOProcess.SelectedIndex > 0 && DDissueno.SelectedIndex > 0)
+        {
+            string Str = " Update Process_Issue_Master_" + DDTOProcess.SelectedValue + " Set Remarks = '" + txtremarks.Text + "', Instruction = '" + TxtInsructions.Text + "' Where IssueOrderID = " + DDissueno.SelectedValue;
+            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            txtremarks.Text = "";
+            TxtInsructions.Text = "";
         }
     }
 }

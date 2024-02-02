@@ -13,7 +13,7 @@ public partial class Masters_Process_frmDaura : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -102,9 +102,9 @@ public partial class Masters_Process_frmDaura : System.Web.UI.Page
     protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref DDWeaver, "select Distinct EI.EmpId,EI.EmpName from Process_Issue_Master_1 PM,Empinfo EI Where PM.EmpId=EI.EmpId ", true, "--Select Weaver--");
-        string str = @"select QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varcompanyId"] + @"
-                     select DesignId,DesignName from Design Where MasterCompanyid=" + Session["varcompanyId"] + @"
-                     select SizeId,SizeMtr from Size where MasterCompanyid=" + Session["varcompanyid"] + "";
+        string str = @"select QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                     select DesignId,DesignName from Design Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
+                     select SizeId,SizeMtr from Size where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -164,7 +164,7 @@ public partial class Masters_Process_frmDaura : System.Web.UI.Page
                     array[3].Value = ((TextBox)gdLoomDetail.Rows[i].FindControl("txtremark")).Text;
                     array[4].Value = txtrunningLoom.Text == "" ? "0" : txtrunningLoom.Text;
                     array[5].Value = Session["varuserId"];
-                    array[6].Value = Session["varcompanyId"];
+                    array[6].Value = Session["varMasterCompanyIDForERP"];
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "pro_Daura", array);
                     ViewState["ID"] = array[0].Value.ToString();

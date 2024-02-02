@@ -14,13 +14,13 @@ public partial class Masters_ReportForms_FrmGateInOutRegisterReport : System.Web
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -54,7 +54,7 @@ public partial class Masters_ReportForms_FrmGateInOutRegisterReport : System.Web
     protected void btnPreview_Click(object sender, EventArgs e)
     {
         GateInOutRegisterReport();
-        //switch (Session["varcompanyid"].ToString())
+        //switch (Session["varMasterCompanyIDForERP"].ToString())
         //{
         //    case "14":
         //        QCreport();

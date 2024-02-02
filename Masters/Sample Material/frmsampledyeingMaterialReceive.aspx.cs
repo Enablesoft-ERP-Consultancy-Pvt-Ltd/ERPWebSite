@@ -12,20 +12,20 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
     public static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and mastercompanyid=" + Session["varcompanyid"] + @" order by PROCESS_NAME 
-                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME 
+                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select Godownid From ModuleWiseGodown Where ModuleName='" + Page.Title + @"' 
                            Select ID, BranchName 
                                 From BRANCHMASTER BM(nolock) 
                                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -213,7 +213,7 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
                 arr[5].Value = txtchallanNo.Text;
                 arr[6] = new SqlParameter("@RecDate", txtrecdate.Text);
                 arr[7] = new SqlParameter("@userid", Session["varuserid"]);
-                arr[8] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                arr[8] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 arr[9] = new SqlParameter("@dtrecord", dtrecord);
                 arr[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 arr[10].Direction = ParameterDirection.Output;
@@ -274,7 +274,7 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
     protected void FillGridReceive()
     {
         string str = @"select SM.id as Issueid,SD.Detailid as IssueDetailid,dbo.F_getItemDescription(SD.Ifinishedid,SD.iflagsize) as Iitemdescription,
-                    dbo.F_getItemDescription(SD.Rfinishedid,SD.Rflagsize) as Ritemdescription,SD.RecLotNo,case when " + Session["varcompanyId"].ToString() + @"=16 Then '' else SD.RecTagno end as RecTagno,SD.issueqty as Issuedqty,dbo.F_getsamplereceiveqty(SD.Detailid) as Receivedqty,
+                    dbo.F_getItemDescription(SD.Rfinishedid,SD.Rflagsize) as Ritemdescription,SD.RecLotNo,case when " + Session["varMasterCompanyIDForERP"].ToString() + @"=16 Then '' else SD.RecTagno end as RecTagno,SD.issueqty as Issuedqty,dbo.F_getsamplereceiveqty(SD.Detailid) as Receivedqty,
                     SD.Rate,sd.Rfinishedid,SD.unitid,SD.Rflagsize,SD.ifinishedid,isnull(PCT.CalType,'') as RecCalType
                     From SampleDyeingMaster SM inner join SampleDyeingDetail SD on SM.ID=SD.masterid 
                     LEFT JOIN Process_CalType PCT ON SD.caltype=PCT.CalId
@@ -385,11 +385,11 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if (Session["VarCompanyId"].ToString() == "22")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingreceiveDiamond.rpt";
             }
-            else if (Session["VarCompanyId"].ToString() == "43")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "43")
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingreceiveCI.rpt";
             }
@@ -490,7 +490,7 @@ public partial class Masters_Sample_Material_frmsampledyeingMaterialReceive : Sy
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@ID", lblid.Text);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //***********
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeletesampledyeingReceive", arr);
             lblmsg.Text = arr[1].Value.ToString();

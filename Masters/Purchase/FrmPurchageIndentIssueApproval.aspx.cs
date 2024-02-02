@@ -13,7 +13,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
     static string rowindexforPreview;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
         {
             lblMessage.Visible = false;
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EmpId,EmpName From EmpInfo EI,PurchaseIndentIssue PII Where PII.Partyid=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order BY EmpName", true, "--Select Employee--");
+            UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EmpId,EmpName From EmpInfo EI,PurchaseIndentIssue PII Where PII.Partyid=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order BY EmpName", true, "--Select Employee--");
             if (DDPartyName.Items.Count > 0)
             {
                 DDChallanNo.Focus();
@@ -35,7 +35,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
     private void PartySelectedIndexChange()
     {
         UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PIndentIssueId,ChallanNo+'  /  '+Replace(Convert(VarChar(11),Date,106), ' ','-') From PurchaseIndentIssue Where PIndentIssueId Not in 
-        (Select PIndentIssueId From Purchase_Approval) And PartyId=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By ChallanNo", true, "--Select Order No--");
+        (Select PIndentIssueId From Purchase_Approval) And PartyId=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ChallanNo", true, "--Select Order No--");
         Fill_Grid();
     }
     protected void btnSave_Click(object sender, EventArgs e)
@@ -59,7 +59,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
                 _arrPara[0].Value = DDChallanNo.SelectedValue;
                 _arrPara[1].Value = 10;
                 _arrPara[2].Value = Session["varuserid"];
-                _arrPara[3].Value = Session["varCompanyId"];
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"];
                 _arrPara[4].Value = TxtDate.Text;
                 _arrPara[5].Value = txtRemarks.Text;
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_Purchase_Order_Approval", _arrPara);
@@ -113,7 +113,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
     {
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select PII.PIndentIssueId Sr_No,ChallanNo+'  /  '+Replace(Convert(VarChar(11),PII.Date,106), ' ','-') ChallanNo,
         Replace(Convert(VarChar(11),PA.Date,106), ' ','-') Date,PA.Remarks From PurchaseIndentIssue PII,Purchase_Approval PA Where PII.PIndentIssueId=PA.PIndentIssueId And 
-        PII.Partyid=" + DDPartyName.SelectedValue + " And PII.MasterCompanyId=" + Session["varCompanyId"] + "");
+        PII.Partyid=" + DDPartyName.SelectedValue + " And PII.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         DG.DataSource = ds;
         DG.DataBind();
     }
@@ -190,7 +190,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
                        Customerinfo cmm on pid.customercode=cmm.customerid left outer join 
                        Ordermaster omm on pid.orderid=omm.orderid inner join 
                        unit u On u.unitid=V_PIndentIssueReport.unitid
-                      Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varCompanyId"];
+                      Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssNEW.xsd";
             }
             else
@@ -198,7 +198,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
                 qry = @" SELECT V_Companyinfo.CompanyName,V_Companyinfo.CompanyAddress,V_Companyinfo.CompanyPhoneNo,V_Companyinfo.CompanyFaxNo,V_Companyinfo.TinNo,V_EmployeeInfo.EmpName,V_EmployeeInfo.EmpAddress,V_EmployeeInfo.EmpPhoneNo,V_EmployeeInfo.EmpMobile,V_EmployeeInfo.EmpFax,V_PIndentIssueReport.Challanno,V_PIndentIssueReport.Date,V_PIndentIssueReport.Destination,V_FinishedItemDetail.ITEM_NAME,V_FinishedItemDetail.QualityName,V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDetail.ShadeColorName,V_FinishedItemDetail.ShapeName,V_FinishedItemDetail.SizeMtr,V_PIndentIssueReport.FeightRate,V_PIndentIssueReport.Remarks,V_PIndentIssueReport.Quantity,V_PIndentIssueReport.LotNo,Payment.PaymentName,V_PIndentIssueReport.AgentName,Term.TermName,V_PIndentIssueReport.PIndentIssueTranId,V_PIndentIssueReport.PindentIssueid,FINISHED_TYPE.FINISHED_TYPE_NAME,V_PIndentIssueReport.Amount,V_PIndentIssueReport.ExciseDuty,V_PIndentIssueReport.EduCess,V_PIndentIssueReport.CST
                       FROM   V_PIndentIssueReport INNER JOIN V_Companyinfo ON V_PIndentIssueReport.Companyid=V_Companyinfo.CompanyId INNER JOIN V_EmployeeInfo ON V_PIndentIssueReport.Partyid=V_EmployeeInfo.EmpId INNER JOIN V_FinishedItemDetail ON V_PIndentIssueReport.FinishedId=V_FinishedItemDetail.ITEM_FINISHED_ID LEFT OUTER JOIN Payment ON V_PIndentIssueReport.PayementTermId=Payment.PaymentId LEFT OUTER JOIN Term ON V_PIndentIssueReport.DeliveryTermid=Term.TermId
                       LEFT OUTER JOIN FINISHED_TYPE ON V_PIndentIssueReport.Finished_type_id=FINISHED_TYPE.ID
-                      Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varCompanyId"];
+                      Where V_PIndentIssueReport.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIss_withoutratNew.xsd";
             }
         }
@@ -208,7 +208,7 @@ public partial class Masters_Purchase_FrmPurchageIndentIssueApproval : CustomPag
                   FROM   V_PIndentIssueReport_1 INNER JOIN CompanyInfo ON V_PIndentIssueReport_1.Companyid=CompanyInfo.CompanyId
                   INNER JOIN EmpInfo ON V_PIndentIssueReport_1.Partyid=EmpInfo.EmpId
                   INNER JOIN OrderMaster ON V_PIndentIssueReport_1.Orderid=OrderMaster.OrderId
-                  Where V_PIndentIssueReport_1.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport_1.MasterCompanyId=" + Session["varCompanyId"];
+                  Where V_PIndentIssueReport_1.PIndentIssueId=" + ViewState["PIndentIssueId"] + " And V_PIndentIssueReport_1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             Session["dsFileName"] = "~\\ReportSchema\\PurchaseIndentIssDestini_1New.xsd";
 
 

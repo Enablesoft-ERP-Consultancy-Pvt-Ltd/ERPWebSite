@@ -11,7 +11,7 @@ public partial class Masters_Payroll_frmsalarymaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,12 +20,12 @@ public partial class Masters_Payroll_frmsalarymaster : System.Web.UI.Page
             string str = @"Select CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(Nolock) 
                         JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" And 
-                            CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                            CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
                         Select Distinct D.DepartmentId, D.DepartmentName 
                         From Department D(Nolock)
                         JOIN DepartmentBranch DB(Nolock) ON DB.DepartmentID = D.DepartmentId 
                         JOIN BranchUser BU(Nolock) ON BU.BranchID = DB.BranchID And BU.UserID = " + Session["varuserId"] + @" 
-                        Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                        Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                         Order By D.DepartmentName 
                         SELECT Designationid, Designation From HR_Designationmaster(Nolock) order by Designation 
                         Select EmpId, EmpCode + '-' + EmpName Emp 
@@ -45,7 +45,7 @@ public partial class Masters_Payroll_frmsalarymaster : System.Web.UI.Page
             str = str + @" Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, true, "--Plz Select--");

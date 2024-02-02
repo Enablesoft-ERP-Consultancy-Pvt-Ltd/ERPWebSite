@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_frmreportyarnopening : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,8 +22,8 @@ public partial class Masters_ReportForms_frmreportyarnopening : System.Web.UI.Pa
         {
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"                           
                            select Ei.EmpId,Ei.EmpName+case when Ei.empcode<>'' Then '['+Ei.empcode+']' Else '' End as Empname from EmpInfo EI inner join Department D on EI.Departmentid=D.DepartmentId 
-                           and D.DepartmentName='YARN OPENING' and Ei.mastercompanyid=" + Session["varcompanyid"] + @" order by EmpName
-                           select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + " order by customer";
+                           and D.DepartmentName='YARN OPENING' and Ei.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by EmpName
+                           select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by customer";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -56,7 +56,7 @@ public partial class Masters_ReportForms_frmreportyarnopening : System.Web.UI.Pa
         }
         else if (RDissuerecdetail.Checked == true)
         {
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 IssuereceivedetailKaysons();
             }
@@ -236,7 +236,7 @@ public partial class Masters_ReportForms_frmreportyarnopening : System.Web.UI.Pa
             sht.Range("I2").Value = "Wt.(kg)";
             sht.Range("J2").Value = "No of Cones";
 
-            if (Session["varcompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 sht.Column(11).Hide();
                 sht.Column(12).Hide();
@@ -273,7 +273,7 @@ public partial class Masters_ReportForms_frmreportyarnopening : System.Web.UI.Pa
                 sht.Range("H" + row).SetValue(ds1.Tables[0].Rows[i]["TagNo"]);
                 sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Recqty"]);
                 sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Noofcone"]);
-                if (Session["varcompanyId"].ToString() != "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "21")
                 {
                     sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Rate"]);
                     sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["Amount"]);
@@ -1267,7 +1267,7 @@ public partial class Masters_ReportForms_frmreportyarnopening : System.Web.UI.Pa
     protected void DDcustcode_SelectedIndexChanged(object sender, EventArgs e)
     {
         string Str="";
-        if (Convert.ToInt32(Session["varcompanyId"]) == 16 || Convert.ToInt32(Session["varcompanyId"]) == 28)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
         {
             Str =@"select orderid,CustomerOrderNo orderno 
             from ordermaster 

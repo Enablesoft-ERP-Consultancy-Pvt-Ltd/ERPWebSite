@@ -11,7 +11,7 @@ public partial class Masters_Carpet_AddProcess : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -46,7 +46,7 @@ public partial class Masters_Carpet_AddProcess : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string sqlstr = "Select PROCESS_NAME_ID as ID,PROCESS_NAME,ShortName from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyid"] + " Order by PROCESS_NAME_ID";
+            string sqlstr = "Select PROCESS_NAME_ID as ID,PROCESS_NAME,ShortName from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by PROCESS_NAME_ID";
             DS = SqlHelper.ExecuteDataset(con, CommandType.Text, sqlstr);
 
         }
@@ -79,11 +79,11 @@ public partial class Masters_Carpet_AddProcess : CustomPage
             string sqlstr;
             if (btnsave.Text == "Update")
             {
-                sqlstr = "Select Isnull(PROCESS_NAME_ID,0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' and PROCESS_NAME_ID !=" + DGCreateProcess.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                sqlstr = "Select Isnull(PROCESS_NAME_ID,0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' and PROCESS_NAME_ID !=" + DGCreateProcess.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                sqlstr = "Select Isnull(max(PROCESS_NAME_ID),0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                sqlstr = "Select Isnull(max(PROCESS_NAME_ID),0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             int Processid = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, sqlstr));
             if (Processid > 0)
@@ -128,15 +128,15 @@ public partial class Masters_Carpet_AddProcess : CustomPage
                     string sqlstr = "Update PROCESS_NAME_MASTER set PROCESS_NAME='" + (TxtProcessName.Text).ToUpper() + "',ShortName='" + (TxtShortName.Text).ToUpper() + "' where PROCESS_NAME_ID=" + DGCreateProcess.SelectedValue;
                     SqlHelper.ExecuteNonQuery(con, CommandType.Text, sqlstr);
                     DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PROCESS_NAME_MASTER'," + DGCreateProcess.SelectedValue + ",getdate(),'Update')");
+                    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PROCESS_NAME_MASTER'," + DGCreateProcess.SelectedValue + ",getdate(),'Update')");
                 }
                 else
                 {
                     int id = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, "Select isnull(Max(PROCESS_NAME_ID),0)+1 From PROCESS_NAME_MASTER"));
-                    string sqlstr = "Insert into PROCESS_NAME_MASTER (PROCESS_NAME_ID,PROCESS_NAME,ShortName,UserId,MasterCompanyId,Processtype) values (" + id + ",'" + TxtProcessName.Text.ToUpper() + "','" + TxtShortName.Text.ToUpper() + "'," + Session["varuserid"] + "," + Session["varCompanyId"] + ",0)";
+                    string sqlstr = "Insert into PROCESS_NAME_MASTER (PROCESS_NAME_ID,PROCESS_NAME,ShortName,UserId,MasterCompanyId,Processtype) values (" + id + ",'" + TxtProcessName.Text.ToUpper() + "','" + TxtShortName.Text.ToUpper() + "'," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ",0)";
                     SqlHelper.ExecuteNonQuery(con, CommandType.Text, sqlstr);
                     DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PROCESS_NAME_MASTER'," + id + ",getdate(),'Insert')");
+                    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PROCESS_NAME_MASTER'," + id + ",getdate(),'Insert')");
                 }
                 btnsave.Text = "Save";
                 TxtProcessName.Text = "";

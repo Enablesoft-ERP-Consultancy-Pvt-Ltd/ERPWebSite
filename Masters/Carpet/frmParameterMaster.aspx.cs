@@ -11,7 +11,7 @@ public partial class Masters_Carpet_frmParameterMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -34,7 +34,7 @@ public partial class Masters_Carpet_frmParameterMaster : System.Web.UI.Page
 
         try
         {
-            string strsql = "select * from PARAMETER_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " order by PARAMETER_ID";
+            string strsql = "select * from PARAMETER_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PARAMETER_ID";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
 
@@ -67,7 +67,7 @@ public partial class Masters_Carpet_frmParameterMaster : System.Web.UI.Page
     {
          string id = gvParamerter.SelectedDataKey.Value.ToString();
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PARAMETER_MASTER where PARAMETER_ID=" + id + " And MasterCompanyId=" + Session["varCompanyId"] +"");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PARAMETER_MASTER where PARAMETER_ID=" + id + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] +"");
    try
    {
     if (ds.Tables[0].Rows.Count == 1)

@@ -11,13 +11,13 @@ public partial class Masters_Process_FrmMasterDyeingReceiveDetailDiamond : Syste
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, false, "");
 
@@ -123,7 +123,7 @@ public partial class Masters_Process_FrmMasterDyeingReceiveDetailDiamond : Syste
                 param[8] = new SqlParameter("@LotNo", txtLotNo.Text);
                 param[9] = new SqlParameter("@RecQty", txtRecQty.Text); 
                 param[10] = new SqlParameter("@userid", Session["varuserid"]);
-                param[11] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[11] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[12] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[12].Direction = ParameterDirection.Output;
 
@@ -369,7 +369,7 @@ public partial class Masters_Process_FrmMasterDyeingReceiveDetailDiamond : Syste
             param[0] = new SqlParameter("@DRID", lblDRID.Text);
             param[1] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
             param[2] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[3] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             //****************

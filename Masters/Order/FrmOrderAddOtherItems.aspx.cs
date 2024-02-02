@@ -11,15 +11,14 @@ public partial class Masters_Order_FrmOrderAddOtherItems : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             VarID.Value = "0";
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -27,7 +26,7 @@ public partial class Masters_Order_FrmOrderAddOtherItems : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
                 CompanySelectedChange();
             }
-            UtilityModule.ConditionalComboFill(ref DDCurrency, "SELECT CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CurrencyName", true, "-SELECT-");
+            UtilityModule.ConditionalComboFill(ref DDCurrency, "SELECT CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CurrencyName", true, "-SELECT-");
             DescriptionWithValueChange();
         }
     }
@@ -37,7 +36,7 @@ public partial class Masters_Order_FrmOrderAddOtherItems : System.Web.UI.Page
     }
     private void CompanySelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDCustomerCode, @"SELECT Distinct CI.Customerid,CI.CompanyName + SPACE(5)+CI.Customercode From OrderMaster OM,OrderDetail OD,Customerinfo CI Where OM.OrderId=OD.OrderId And OM.CustomerID=CI.CustomerID And OM.CompanyId=" + DDCompanyName.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref DDCustomerCode, @"SELECT Distinct CI.Customerid,CI.CompanyName + SPACE(5)+CI.Customercode From OrderMaster OM,OrderDetail OD,Customerinfo CI Where OM.OrderId=OD.OrderId And OM.CustomerID=CI.CustomerID And OM.CompanyId=" + DDCompanyName.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
         if (DDCustomerCode.Items.Count > 0)
         {
             DDCustomerCode.SelectedIndex = 1;
@@ -71,8 +70,8 @@ public partial class Masters_Order_FrmOrderAddOtherItems : System.Web.UI.Page
     }
     private void FillShowGrid()
     {
-        string Str = @"Select ID,GroupName,BuyerCode,OurCode,Description,Unit,Qty,Rate,Amount From OrderExtraItemDetail Where Type=0 And OrderId=" + DDOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @"
-                Union Select ID,GroupName,BuyerCode,OurCode,DescriptionValueText Description,Unit,Qty,Rate,DescriptionValue Amount From OrderExtraItemDetail Where Type=1 And OrderId=" + DDOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+        string Str = @"Select ID,GroupName,BuyerCode,OurCode,Description,Unit,Qty,Rate,Amount From OrderExtraItemDetail Where Type=0 And OrderId=" + DDOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                Union Select ID,GroupName,BuyerCode,OurCode,DescriptionValueText Description,Unit,Qty,Rate,DescriptionValue Amount From OrderExtraItemDetail Where Type=1 And OrderId=" + DDOrderNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         DGOrderDetail.DataSource = Ds;
@@ -162,7 +161,7 @@ public partial class Masters_Order_FrmOrderAddOtherItems : System.Web.UI.Page
         try
         {
             string sql = @"Select ID,OrderId,CalType,CurrencyId,GroupName,BuyerCode,OurCode,Description,Unit,Qty,Rate,Amount,Type,DescriptionValueText,DescriptionValue 
-            From OrderExtraItemDetail Where OrderId=" + DDOrderNo.SelectedValue + " And Id=" + DGOrderDetail.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+            From OrderExtraItemDetail Where OrderId=" + DDOrderNo.SelectedValue + " And Id=" + DGOrderDetail.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);
             if (ds.Tables[0].Rows.Count > 0)

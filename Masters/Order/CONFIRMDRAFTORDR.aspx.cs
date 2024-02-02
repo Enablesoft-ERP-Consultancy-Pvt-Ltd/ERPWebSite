@@ -19,7 +19,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
     {
         // DataRow dr = AllEnums.MasterTables.Mastersetting.ToTable().Select()[0];
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -30,7 +30,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
             ViewState["DraftOrderNo"] = 0;
             logo();
             SqlParameter[] _array = new SqlParameter[2];
-            _array[0] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _array[0] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _array[1] = new SqlParameter("@VarUserId", Session["varuserId"]);
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FillCompany_CustomerCode", _array);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, true, "--SELECT--");
@@ -112,7 +112,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            UtilityModule.ConditionalComboFill(ref DDOrderUnit, "SELECT UnitId,UnitName from Unit Where MasterCompanyId=" + Session["varCompanyId"] + " order by UnitId", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDOrderUnit, "SELECT UnitId,UnitName from Unit Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by UnitId", true, "--SELECT--");
             DDOrderUnit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
             TxtOrderDate.Text = ds.Tables[0].Rows[0]["OrderDate"].ToString();
             TxtDeliveryDate.Text = ds.Tables[0].Rows[0]["DeliveryDate"].ToString();
@@ -169,7 +169,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
     //***************************Fill the Customer Code***************************************************************************
     protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
     }
     protected void DDCustomerCode_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -470,7 +470,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
     {
         DGOrderDetail.DataSource = GetDetail();
         DGOrderDetail.DataBind();
-        if (Session["varCompanyId"].ToString() == "2")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "2")
         {
             DGOrderDetail.Columns[9].Visible = false;
         }
@@ -490,14 +490,14 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
                 strsql = @"SELECT DD.OrderDetailId as Sr_No,VF.CATEGORY_NAME CATEGORY,VF.ITEM_NAME ITEMNAME,VF.QUALITYNAME+SPACE(2)+VF.DESIGNNAME+SPACE(2)+
                 VF.COLORNAME+SPACE(2)+SHAPENAME+SPACE(2)+CASE WHEN DD.OrderUnitId=1 THEN VF.SIZEMTR + 'Mtr' ELSE Case When dd.OrderUnitId=2 Then VF.SIZEFT + 'ft' Else case When dd.OrderunitId=6 Then vf.Sizeinch +' Inch' Else '' End End END DESCRIPTION,DD.QtyRequired Qty,DD.UnitRate RATE,
                 DD.QtyRequired*DD.TotalArea AREA,DD.AMOUNT,QM.SUBQUANTITY SUBQUALITY,'' BTNCONSUMPTION,'' BTNEXPENCE,'' BTNPACKING,DD.TotalArea as area1,OrderCalType FROM ORDERMASTER DM,V_FINISHEDITEMDETAIL VF,
-                ORDERDETAIL DD LEFT OUTER JOIN QUALITYCODEMASTER QM ON DD.QUALITYCODEID=QM.QUALITYCODEID WHERE DM.ORDERID=DD.ORDERID AND DD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID AND DM.DRAFTORDERID=" + DDCustOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By DD.OrderDetailId";
+                ORDERDETAIL DD LEFT OUTER JOIN QUALITYCODEMASTER QM ON DD.QUALITYCODEID=QM.QUALITYCODEID WHERE DM.ORDERID=DD.ORDERID AND DD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID AND DM.DRAFTORDERID=" + DDCustOrderNo.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By DD.OrderDetailId";
             }
             else
             {
                 strsql = @"SELECT DD.OrderDetailId as Sr_No,VF.CATEGORY_NAME CATEGORY,VF.ITEM_NAME ITEMNAME,VF.QUALITYNAME+SPACE(2)+VF.DESIGNNAME+SPACE(2)+VF.COLORNAME+
                 SPACE(2)+SHAPENAME+SPACE(2)+CASE WHEN DD.UnitId=1 THEN VF.SIZEMTR + 'Mtr' ELSE Case When dd.UnitId=2 Then  VF.SIZEFT+ 'ft' Else Case When dd.unitId=6 Then sizeinch + 'Inch'  Else '' End END END DESCRIPTION,DD.QTY,DD.RATE,DD.QTY*DD.AREA AREA,DD.AMOUNT,
                 QM.SUBQUANTITY SUBQUALITY,'' BTNCONSUMPTION,'' BTNEXPENCE,'' BTNPACKING,DD.AREA as area1,OrderCalType FROM DRAFT_ORDER_MASTER DM,V_FINISHEDITEMDETAIL VF,DRAFT_ORDER_DETAIL DD 
-                LEFT OUTER JOIN QUALITYCODEMASTER QM ON DD.QUALITYCODEID=QM.QUALITYCODEID WHERE DM.ORDERID=DD.ORDERID AND DD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID AND DM.ORDERID=" + ViewState["DraftOrderNo"] + " And Vf.MasterCompanyId=" + Session["varCompanyId"] + " Order By DD.OrderDetailId";
+                LEFT OUTER JOIN QUALITYCODEMASTER QM ON DD.QUALITYCODEID=QM.QUALITYCODEID WHERE DM.ORDERID=DD.ORDERID AND DD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID AND DM.ORDERID=" + ViewState["DraftOrderNo"] + " And Vf.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By DD.OrderDetailId";
             }
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             int n = ds.Tables[0].Rows.Count;
@@ -536,7 +536,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
             string strsql = @"SELECT ITEM_MASTER.ITEM_ID, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME, dbo.Lablecustomer.Itemid, dbo.Lablecustomer.CustomerId AS customerid, 
                             dbo.ITEM_MASTER.ITEM_NAME FROM dbo.Lablecustomer INNER JOIN dbo.ITEM_MASTER ON dbo.Lablecustomer.Itemid = dbo.ITEM_MASTER.ITEM_ID INNER JOIN
                             dbo.ITEM_CATEGORY_MASTER ON dbo.ITEM_MASTER.CATEGORY_ID = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID
-                            Where dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME='ACCESSORIES ITEM' and customerid=" + DDCustomerCode.SelectedValue + " And Item_Master.MasterCompanyId=" + Session["varCompanyId"];
+                            Where dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME='ACCESSORIES ITEM' and customerid=" + DDCustomerCode.SelectedValue + " And Item_Master.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -563,7 +563,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
             string strsql = @"SELECT dbo.ITEM_MASTER.ITEM_ID, dbo.LabelOrder.Orderid, dbo.ITEM_MASTER.ITEM_NAME, dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID, 
                             dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME FROM dbo.ITEM_CATEGORY_MASTER INNER JOIN dbo.ITEM_MASTER ON dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID=dbo.ITEM_MASTER.CATEGORY_ID INNER JOIN
                             dbo.LabelOrder ON dbo.ITEM_MASTER.ITEM_ID = dbo.LabelOrder.ItemId
-                            Where orderid=" + DDCustOrderNo.SelectedValue + " And Item_Master.MasterCompanyId=" + Session["varCompanyId"];
+                            Where orderid=" + DDCustOrderNo.SelectedValue + " And Item_Master.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             //  ds.Tables[0].Columns["customerid"].ColumnName = "SerialNo.";
@@ -591,7 +591,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
             string strsql = @"SELECT dbo.ITEM_MASTER.ITEM_ID,dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME, dbo.Lablecustomer.Itemid,dbo.Lablecustomer.CustomerId AS customerid, 
                             dbo.ITEM_MASTER.ITEM_NAME FROM dbo.Lablecustomer INNER JOIN dbo.ITEM_MASTER ON dbo.Lablecustomer.Itemid=dbo.ITEM_MASTER.ITEM_ID INNER JOIN
                             dbo.ITEM_CATEGORY_MASTER ON dbo.ITEM_MASTER.CATEGORY_ID = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID
-                            Where dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME='ACCESSORIES ITEM' and customerid=" + DDCustomerCode.SelectedValue + " And Item_Master.MasterCompanyId=" + Session["varCompanyId"];
+                            Where dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME='ACCESSORIES ITEM' and customerid=" + DDCustomerCode.SelectedValue + " And Item_Master.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -613,16 +613,16 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy"); ;
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy"); ;
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -650,7 +650,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
                    VF1.shapeName+Space(2)+Case When DOD.UnitID=1 Then VF1.SizeMtr Else VF1.SizeFt End Description,U1.UnitName,OQTY,ORATE,DD.Orderid,DD.OrderDetailId
                    FROM DRAFT_ORDER_MASTER DM,DRAFT_ORDER_DETAIL DOD,DRAFT_ORDER_CONSUMPTION_DETAIL DD,V_FinishedItemDetail VF,V_FinishedItemDetail VF1,Unit U,Unit U1
                    Where DM.Orderid=DD.Orderid And DM.ORDERID=DOD.ORDERID And DD.ORDERDETAILID=DOD.ORDERDETAILID And DD.IFinishedid=VF.Item_Finished_id And DD.OFinishedid=VF1.Item_Finished_id And U.UnitId=DD.IUnitId And U1.UnitId=DD.OUnitId
-                   And DD.OrderDetailId=" + DGOrderDetail.DataKeys[0].Value + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                   And DD.OrderDetailId=" + DGOrderDetail.DataKeys[0].Value + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, Str);
         }
         catch (Exception ex)
@@ -679,7 +679,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
                   VF1.shapeName+Space(2)+Case When DOD.UnitID=1 Then VF1.SizeMtr Else VF1.SizeFt End ODescription,U1.UnitName OUnitName,OQTY,ORATE
                   FROM DRAFT_ORDER_MASTER DM,DRAFT_ORDER_DETAIL DOD,DRAFT_ORDER_CONSUMPTION_DETAIL DD,V_FinishedItemDetail VF,V_FinishedItemDetail VF1,Unit U,Unit U1,PROCESS_NAME_MASTER PM
                   Where DM.Orderid=DD.Orderid And DM.ORDERID=DOD.ORDERID And DD.ORDERDETAILID=DOD.ORDERDETAILID And DD.IFinishedid=VF.Item_Finished_id And DD.OFinishedid=VF1.Item_Finished_id And U.UnitId=DD.IUnitId And U1.UnitId=DD.OUnitId And
-			      PM.PROCESS_NAME_ID=DD.PROCESSID And DD.OrderDetailId=" + row.Cells[0].Text + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+			      PM.PROCESS_NAME_ID=DD.PROCESSID And DD.OrderDetailId=" + row.Cells[0].Text + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             DGConsumption.DataSource = ds;
             DGConsumption.DataBind();
@@ -687,7 +687,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
         else if (Convert.ToInt32(Session["FunctionType"]) == 2)
         {
             Str = @"SELECT Str(DOC.CWOEID)+'|'+str(DOC.ORDERDETAILID) CWOEID,EN.CHARGENAME,DOC.PERCENTAGE FROM DRAFT_ORDER_CUSTWISEOTHEREXPENCE DOC,EXPENSENAME EN 
-                  WHERE DOC.EXPID=EN.EXPID AND ORDERDETAILID=" + row.Cells[0].Text + " And EN.MasterCompanyId=" + Session["varCompanyId"];
+                  WHERE DOC.EXPID=EN.EXPID AND ORDERDETAILID=" + row.Cells[0].Text + " And EN.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             DGExpence.DataSource = ds;
             DGExpence.DataBind();
@@ -695,7 +695,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
         else if (Convert.ToInt32(Session["FunctionType"]) == 3)
         {
             Str = @"SELECT Str(PRMCID)+'|'+str(ORDERDETAILID) PRMCID,INNERAMT,MIDDLEAMT,MASTERAMT,OTHERAMT,CONTAINERAMT FROM DRAFT_ORDER_PACKING_AND_OTHERMATERIAL_COST 
-                  WHERE ORDERDETAILID=" + row.Cells[0].Text + " And MasterCompanyId=" + Session["varCompanyId"];
+                  WHERE ORDERDETAILID=" + row.Cells[0].Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
             DGPacking.DataSource = ds;
             DGPacking.DataBind();
@@ -795,10 +795,10 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
         //UtilityModule.ConditionalComboFill(ref ddlByAirSea, "select TransModeid,TransModeName from Transmode order by TransModename", true, "--Select--");
         //UtilityModule.ConditionalComboFill(ref ddlPortOfLoading, "Select GoodsReceiptId, StationName from GoodsReceipt order by StationName", true, "--Select--");
         #endregion
-        STR = @"select TermId,TermName from Term Where MasterCompanyId=" + Session["varCompanyId"] + @" order by TermName 
-             Select PaymentId,PaymentName from Payment Where MasterCompanyId=" + Session["varCompanyId"] + @" order by PaymentName
-             select TransModeid,TransModeName from Transmode Where MasterCompanyId=" + Session["varCompanyId"] + @" order by TransModename
-             Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varCompanyId"] + " order by StationName";
+        STR = @"select TermId,TermName from Term Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TermName 
+             Select PaymentId,PaymentName from Payment Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PaymentName
+             select TransModeid,TransModeName from Transmode Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TransModename
+             Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by StationName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, STR);
         UtilityModule.ConditionalComboFillWithDS(ref ddDeliveryTerms, ds, 0, true, "--SELECT--");
         UtilityModule.ConditionalComboFillWithDS(ref ddPaymentMode, ds, 1, true, "--SELECT--");
@@ -1052,7 +1052,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
         //        Str = Str + @",OD.PHOTO IMAGE,OD.QtyRequired OQTY,PKGInstruction,LBGInstruction,[dbo].[GET_CMB](PM.FINISHEDID) CBM,OD.Remarks,OD.OurCode,BuyerCode,OD.DESCRIPTION,
         //                    OD.weight FROM PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD,ORDERMASTER OM,ORDERDETAIL OD,ITEM_PARAMETER_MASTER IPM,ITEM_PARAMETER_MASTER IPM1,
         //                    FINISHED_TYPE FT WHERE PM.PCMID=PD.PCMID AND OM.OrderId=OD.OrderId And PM.FINISHEDID=OD.ITEM_FINISHED_ID AND PM.FINISHEDID=IPM.ITEM_FINISHED_ID AND 
-        //                    PD.IFINISHEDID=IPM1.ITEM_FINISHED_ID AND PD.O_FINISHED_TYPE_ID=FT.ID AND PD.PROCESSINPUTID=0 AND OM.DRAFTORDERID=" + ViewState["DraftOrderNo"] + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+        //                    PD.IFINISHEDID=IPM1.ITEM_FINISHED_ID AND PD.O_FINISHED_TYPE_ID=FT.ID AND PD.PROCESSINPUTID=0 AND OM.DRAFTORDERID=" + ViewState["DraftOrderNo"] + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         #endregion
         string Str = "CREATE VIEW VIEW_PERFORMAINVOICEFORDESTINI AS ";
         //DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT DISTINCT PROCESSID,PROCESS_NAME FROM PROCESSCONSUMPTIONMASTER PM,PROCESS_NAME_MASTER PNM WHERE PM.PROCESSID=PNM.PROCESS_NAME_ID AND FINISHEDID IN (SELECT ITEM_FINISHED_ID FROM DRAFT_ORDER_DETAIL WHERE ORDERID=" + ViewState["orderid"] + ")");
@@ -1068,7 +1068,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
                     LBGInstruction,[dbo].[GET_CMB](PM.FINISHEDID) CBM,DOD.Remarks,DOD.OurCode,BuyerCode,DOD.DESCRIPTION,
                     DOD.weight FROM DRAFT_ORDER_CONSUMPTION_DETAIL PM,DRAFT_ORDER_DETAIL DOD,ITEM_PARAMETER_MASTER IPM,ITEM_PARAMETER_MASTER IPM1,FINISHED_TYPE FT
                         WHERE  PM.Orderdetailid=DOD.Orderdetailid AND PM.FINISHEDID=IPM.ITEM_FINISHED_ID AND PM.IFINISHEDID=IPM1.ITEM_FINISHED_ID AND PM.O_FINISHED_TYPE_ID=FT.ID 
-                    AND PM.PROCESSINPUTID=0 AND DOD.ORDERID=" + ViewState["DraftOrderNo"] + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                    AND PM.PROCESSINPUTID=0 AND DOD.ORDERID=" + ViewState["DraftOrderNo"] + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         SqlHelper.ExecuteDataset(con, CommandType.Text, Str);
         con.Close();
         Session["ReportPath"] = "Reports/RptPerFormaInvoiceDestini3New.rpt";
@@ -1249,7 +1249,7 @@ public partial class Masters_Order_CONFIRMDRAFTORDR : System.Web.UI.Page
         }
         Str = Str + ",1 InnerPacking,2 MiddlePacking,3 MasterPacking";
         Str = Str + @",DOD.PHOTO IMAGE,DOD.QtyRequired OQTY,PKGInstruction,LBGInstruction,[dbo].[GET_CMB](PD.FINISHEDID) CBM,Remarks,dod.OurCode,BuyerCode,DOD.DESCRIPTION,dod.weight,CATEGORY_NAME+' '+ITEM_NAME+' '+QualityName+' '+designName+' '+ColorName+' '+ShadeColorName+' '+ShapeName as pdescription
-        From  ORDER_CONSUMPTION_DETAIL PD,ORDERDETAIL DOD,ITEM_PARAMETER_MASTER IPM,ITEM_PARAMETER_MASTER IPM1,FINISHED_TYPE FT,V_FinishedItemDetail vd WHERE pd.orderid=dod.orderid and  Pd.FINISHEDID=DOD.ITEM_FINISHED_ID AND Pd.FINISHEDID=IPM.ITEM_FINISHED_ID AND PD.IFINISHEDID=IPM1.ITEM_FINISHED_ID AND vd.item_finished_id=pd.IFINISHEDID AND PD.O_FINISHED_TYPE_ID=FT.ID AND PD.PROCESSINPUTID=0 AND DOD.ORDERID=" + ViewState["orderid"] + " And vd.MasterCompanyId=" + Session["varCompanyId"];
+        From  ORDER_CONSUMPTION_DETAIL PD,ORDERDETAIL DOD,ITEM_PARAMETER_MASTER IPM,ITEM_PARAMETER_MASTER IPM1,FINISHED_TYPE FT,V_FinishedItemDetail vd WHERE pd.orderid=dod.orderid and  Pd.FINISHEDID=DOD.ITEM_FINISHED_ID AND Pd.FINISHEDID=IPM.ITEM_FINISHED_ID AND PD.IFINISHEDID=IPM1.ITEM_FINISHED_ID AND vd.item_finished_id=pd.IFINISHEDID AND PD.O_FINISHED_TYPE_ID=FT.ID AND PD.PROCESSINPUTID=0 AND DOD.ORDERID=" + ViewState["orderid"] + " And vd.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         SqlHelper.ExecuteDataset(con, CommandType.Text, Str);
         con.Close();
         Session["CommanFormula"] = "{VIEW_PERFORMAINVOICEFORDESTINI.Orderid}=" + ViewState["orderid"] + "";

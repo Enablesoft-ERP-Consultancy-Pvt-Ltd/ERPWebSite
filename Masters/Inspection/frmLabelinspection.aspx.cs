@@ -15,7 +15,7 @@ public partial class Masters_Inspection_frmLabelinspection : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,11 +26,11 @@ public partial class Masters_Inspection_frmLabelinspection : System.Web.UI.Page
                 SetInitialRow();
             }
             string str = @"select CI.CompanyId,CI.CompanyName from CompanyInfo CI inner join Company_Authentication CA on Ci.CompanyId=CA.CompanyId
-                    Where CI.MasterCompanyid=" + Session["varcompanyid"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName 
+                    Where CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName 
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -50,7 +50,7 @@ public partial class Masters_Inspection_frmLabelinspection : System.Web.UI.Page
                 return;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, " Select customerid,customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by customercode", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, " Select customerid,customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by customercode", true, "--Select--");
 
             txtdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
 
@@ -429,7 +429,7 @@ public partial class Masters_Inspection_frmLabelinspection : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 
@@ -471,7 +471,7 @@ public partial class Masters_Inspection_frmLabelinspection : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 

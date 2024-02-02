@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddTerm : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Campany_AddTerm : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select TermId SrNo,TermName from Term where MasterCompanyId=" + Session["varCompanyid"];
+            string strsql = "select TermId SrNo,TermName from Term where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -69,7 +69,7 @@ public partial class Masters_Campany_AddTerm : CustomPage
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtTerm.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_TERM", _arrPara);
                 txtid.Text = "0";
@@ -148,11 +148,11 @@ public partial class Masters_Campany_AddTerm : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select TermName from Term where TermId!='" + ViewState["id"].ToString() + "' and  TermName='" + txtTerm.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select TermName from Term where TermId!='" + ViewState["id"].ToString() + "' and  TermName='" + txtTerm.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select TermName from Term where TermName='" + txtTerm.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select TermName from Term where TermName='" + txtTerm.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -189,7 +189,7 @@ public partial class Masters_Campany_AddTerm : CustomPage
         {
             SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Term where TermId=" + ViewState["id"].ToString());
             DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'TermId'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'TermId'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
             Label1.Visible = true;
             Label1.Text = "Value Deleted............";
         }

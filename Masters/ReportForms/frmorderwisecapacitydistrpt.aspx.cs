@@ -13,13 +13,13 @@ public partial class Masters_ReportForms_frmorderwisecapacitydistrpt : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDcategory, "select Category_id, Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varCompanyId"] + "", true, "---select---");
+            UtilityModule.ConditionalComboFill(ref DDcategory, "select Category_id, Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---select---");
             UtilityModule.ConditionalComboFill(ref DDyear, "select year,year year1 from session order by Year desc", true, "----select----");
             UtilityModule.ConditonalChkBoxListFill(ref checkmonth, "select month_id,Month_Name from Monthtable");
          

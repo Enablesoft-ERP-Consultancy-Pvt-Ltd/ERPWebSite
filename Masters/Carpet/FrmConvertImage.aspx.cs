@@ -19,7 +19,10 @@ public partial class Masters_Carpet_FrmConvertImage : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
     }
     protected void Button1_Click(object sender, EventArgs e)
     {

@@ -15,7 +15,7 @@ public partial class Masters_Carpet_FrmPPDyerShadeColorAttach : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,9 +24,9 @@ public partial class Masters_Carpet_FrmPPDyerShadeColorAttach : System.Web.UI.Pa
             logo();
 
             string Str = @"Select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA 
-            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
-            Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"];
-            if (Convert.ToInt16(Session["varcompanyId"]) == 16)
+            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
+            Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+            if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16)
             {
                 Str = Str + " and Process_name_id in (5, 143)";
             }
@@ -197,7 +197,7 @@ public partial class Masters_Carpet_FrmPPDyerShadeColorAttach : System.Web.UI.Pa
             _arrPara[0].Value = ddprocessprogram.SelectedValue;
             _arrPara[1].Value = DDDyerName.SelectedValue;
             _arrPara[2].Value = Session["varuserid"].ToString();
-            _arrPara[3].Value = Session["varCompanyId"].ToString();
+            _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
 
             string FinishedID = "";
             for (int i = 0; i < ChkBoxListProcessItemDetail.Items.Count; i++)
@@ -238,17 +238,17 @@ public partial class Masters_Carpet_FrmPPDyerShadeColorAttach : System.Web.UI.Pa
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
 
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         if (Session["varCompanyName"] == null)
         {

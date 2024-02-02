@@ -15,21 +15,21 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             TRlotNo.Visible = false;
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname ";
-                if(Session["varCompanyId"].ToString()=="44")
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname ";
+                if(Session["varMasterCompanyIDForERP"].ToString()=="44")
                 {
-                    str+="Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME  From PROCESS_NAME_MASTER PNM(Nolock) Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varCompanyId"] + " Order By PNM.PROCESS_NAME "; 
+                    str+="Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME  From PROCESS_NAME_MASTER PNM(Nolock) Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By PNM.PROCESS_NAME "; 
                 }
                 else
                 {
-                       str+="SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('WEAVING','STITCHING','CUTTING', 'PANEL MAKING', 'FILLER MAKING', 'FILLAR MOUTH CLOSING', 'FILLER BHARAI', 'FILLER PALTI', 'FILLER CUTTING', 'PANEL PRESS', 'LABEL TAGGING', 'FILLER JOB WORK', 'FILLER FILLING+MOUTH CLOSING', 'SLIDER PLATING ON ZIPPER') And MasterCompanyId=" + Session["varCompanyId"] + @" Order By PROCESS_NAME";
+                       str+="SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('WEAVING','STITCHING','CUTTING', 'PANEL MAKING', 'FILLER MAKING', 'FILLAR MOUTH CLOSING', 'FILLER BHARAI', 'FILLER PALTI', 'FILLER CUTTING', 'PANEL PRESS', 'LABEL TAGGING', 'FILLER JOB WORK', 'FILLER FILLING+MOUTH CLOSING', 'SLIDER PLATING ON ZIPPER') And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
                 }
 
                 str += " select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
@@ -48,7 +48,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                 DDCompany.Enabled = false;
             }
 
-            int varcompanyNo = Convert.ToInt16(Session["varcompanyid"].ToString());
+            int varcompanyNo = Convert.ToInt16(Session["varMasterCompanyIDForERP"].ToString());
             switch (varcompanyNo)
             {
                 case 8:                   
@@ -74,7 +74,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName", true, "--Select--");
         }
         ////  EmpSelectedChanged();
         //if (RDHomeFurnishingRecDetail.Checked == true )
@@ -144,7 +144,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
 
                 Str1 = @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME from HomeFurnishingOrderMaster HFOM(NoLocK)  JOIN HomeFurnishingOrderDetail HFOD(NoLock)  ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF(NoLock)  ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF(NoLock)  ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -156,7 +156,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                 Str1 = @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID 
                          JOIN CategorySeparate cs(NoLock) on VF.CATEGORY_ID=CS.Categoryid and CS.id=0
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -168,7 +168,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                 Str1 = @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID 
                          JOIN CategorySeparate cs(NoLock) on VF.CATEGORY_ID=CS.Categoryid and CS.id=0
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -200,7 +200,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                 {
                     if (ChkForIssRecSummary.Checked == true)
                     {
-                        if (Session["varCompanyId"].ToString() == "44")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                         {
                             HomeFurnishingIssueRecReport_agni();
                         }
@@ -211,7 +211,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                     }
                     else
                     {
-                        if (Session["varCompanyId"].ToString() == "44")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                         {
                             HomeFurnishingIssueDetailReport_agni();
                         }
@@ -338,7 +338,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
             cmd.Parameters.AddWithValue("@where", str);
             cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             cmd.ExecuteNonQuery();
             ad.Fill(ds);
@@ -517,7 +517,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         cmd.Parameters.AddWithValue("@where", str);
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -710,7 +710,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         cmd.Parameters.AddWithValue("@where", str);
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -890,7 +890,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         cmd.Parameters.AddWithValue("@where", str);
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -1069,7 +1069,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         cmd.Parameters.AddWithValue("@where", str);
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -1255,7 +1255,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         cmd.Parameters.AddWithValue("@where", str);
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -1456,7 +1456,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         cmd.Parameters.AddWithValue("@where", str);
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -1643,7 +1643,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
         cmd.Parameters.AddWithValue("@where", str);
         cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -1785,7 +1785,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -1802,7 +1802,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.QualityId,VF.QualityName from HomeFurnishingOrderMaster HFOM JOIN HomeFurnishingOrderDetail HFOD ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -1812,7 +1812,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.QualityId,VF.QualityName from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID                         
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -1822,7 +1822,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.QualityId,VF.QualityName from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID                          
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -1842,7 +1842,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         }
         else
         {
-            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varCompanyId"] +" and vf.qualityname<>''";
+            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] +" and vf.qualityname<>''";
             if (DDCategory.SelectedIndex > 0)
             {
                 Str1 = Str1 + " And VF.Category_id=" + DDCategory.SelectedValue;
@@ -1877,7 +1877,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.ITEM_ID,VF.ITEM_NAME from HomeFurnishingOrderMaster HFOM JOIN HomeFurnishingOrderDetail HFOD ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -1887,7 +1887,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ITEM_ID,VF.ITEM_NAME from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID                         
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -1897,7 +1897,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ITEM_ID,VF.ITEM_NAME from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID                          
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -1948,13 +1948,13 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                         TRDDShadeColor.Visible = true;
 
                         //                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from View_StockTranGetPassDetail PM,
-                        //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         //                        if (DDCategory.SelectedIndex > 0)
                         //                        {
                         //                            Str1 = Str1 + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
                         //                        }
                         //                        Str1 = Str1 + " Order BY VF.shadecolorname ";
-                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " and vf.shadecolorname<>''";
+                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and vf.shadecolorname<>''";
                         if (DDCategory.SelectedIndex > 0)
                         {
                             Str1 = Str1 + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
@@ -1991,7 +1991,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.designId,VF.designName from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2001,7 +2001,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.designId,VF.designName from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID                         
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2011,7 +2011,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.designId,VF.designName from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID                          
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2038,7 +2038,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.ColorId,VF.ColorName from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2048,7 +2048,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ColorId,VF.ColorName from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID                         
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2058,7 +2058,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ColorId,VF.ColorName from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID                          
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2086,7 +2086,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.ShapeId,VF.ShapeName from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2096,7 +2096,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ShapeId,VF.ShapeName from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID                         
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2106,7 +2106,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ShapeId,VF.ShapeName from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID                          
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2133,7 +2133,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.ShadecolorId,VF.ShadeColorName from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2143,7 +2143,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ShadecolorId,VF.ShadeColorName from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID                         
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2153,7 +2153,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.ShadecolorId,VF.ShadeColorName from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID                          
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2179,7 +2179,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
         lblqualityname.Text = ParameterList[0];
@@ -2202,7 +2202,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.SizeId,VF." + strSize + @" as size from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
-                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        JOIN V_FinishedItemDetail VF(NoLock) ON HFOD.OrderDetailDetail_FinishedID=VF.Item_Finished_ID Where HFOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2212,7 +2212,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.SizeId,VF." + strSize + @" as size from PROCESS_ISSUE_MASTER_13 PIM(NoLock) JOIN PROCESS_ISSUE_DETAIL_13 PID(NoLock) ON PIM.IssueOrderID=PID.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON PID.ITEM_FINISHED_ID=VF.Item_Finished_ID                         
-                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where PIM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PIM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2222,7 +2222,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             {
                 Str1 = @"Select Distinct VF.SizeId,VF." + strSize + @" as size from HomeFurnishingMakingOrderMaster HFMOM(NoLock) JOIN HomeFurnishingMakingOrderDetail HFMOD(NoLock) ON HFMOM.IssueOrderID=HFMOD.IssueOrderID
                          JOIN V_FinishedItemDetail VF(NoLock) ON HFMOD.ITEM_FINISHED_ID=VF.Item_Finished_ID                          
-                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                         Where HFMOM.ProcessId=" + DDProcessName.SelectedValue + " HFMOM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2260,7 +2260,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
     //        TRProcessName.Visible = true;
     //        ChkForDate.Checked = false;           
 
-    //        //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName", true, "--Select--");
+    //        //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName", true, "--Select--");
     //    }
     //}
     protected void ChkForDate_CheckedChanged(object sender, EventArgs e)

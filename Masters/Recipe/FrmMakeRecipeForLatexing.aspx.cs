@@ -15,7 +15,7 @@ public partial class Masters_Recipe_FrmMakeRecipeForLatexing : System.Web.UI.Pag
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,11 +24,11 @@ public partial class Masters_Recipe_FrmMakeRecipeForLatexing : System.Web.UI.Pag
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(Nolock) 
                     JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
                     Select Distinct a.ProcessID, PNM.PROCESS_NAME 
                     From RecipeSlipGenerationMaster a(Nolock) 
                     JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = a.ProcessID 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.CompanyID = 1";
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And a.CompanyID = 1";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -60,7 +60,7 @@ public partial class Masters_Recipe_FrmMakeRecipeForLatexing : System.Web.UI.Pag
         hnissueid.Value = "0";
         string str = @"Select Distinct a.SlipNo, a.SlipNo SlipNo1
                     From RecipeSlipGenerationMaster a(Nolock) 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
                     a.ProcessID = " + DDProcessName.SelectedValue + " Order By a.SlipNo";
 
         UtilityModule.ConditionalComboFill(ref DDSlipNo, str, true, "--Plz Select--");
@@ -75,7 +75,7 @@ public partial class Masters_Recipe_FrmMakeRecipeForLatexing : System.Web.UI.Pag
         string str = @"Select a.ID, RM.Name 
                 From RecipeSlipGenerationMaster a(Nolock) 
                 JOIN RecipeMaster RM(Nolock) ON RM.ID = a.RecipeMasterID 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
                 a.ProcessID = " + DDProcessName.SelectedValue + " And a.SlipNo = " + DDSlipNo.SelectedValue + @" 
                 Order By RM.Name";
         UtilityModule.ConditionalComboFill(ref DDRecipeName, str, true, "--Plz Select--");
@@ -107,8 +107,8 @@ public partial class Masters_Recipe_FrmMakeRecipeForLatexing : System.Web.UI.Pag
         JOIN RecipeDetail RD(Nolock) ON RD.ReceipeNameID = RSGM.RecipeMasterID And RD.Item_Finished_ID = RSGC.Item_Finished_ID 
         Where RSGM.CompanyID = " + DDCompanyName.SelectedValue + " And RSGM.ProcessID = " + DDProcessName.SelectedValue + @" And 
         RSGM.SlipNo = " + DDSlipNo.SelectedValue + " And RSGM.ID = " + DDRecipeName.SelectedValue + @" 
-        And VF.MasterCompanyId = " + Session["varCompanyId"] + @" Order By RD.ID 
-        Select UnitID, UnitName From Unit(Nolock) Where MasterCompanyID = " + Session["varCompanyId"];
+        And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By RD.ID 
+        Select UnitID, UnitName From Unit(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         
@@ -168,7 +168,7 @@ public partial class Masters_Recipe_FrmMakeRecipeForLatexing : System.Web.UI.Pag
             param[5] = new SqlParameter("@IssueNo", txtissueno.Text);
             param[6] = new SqlParameter("@IssueDate", txtissuedate.Text);
             param[7] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[8] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[8] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[9] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[9].Direction = ParameterDirection.Output;
             param[10] = new SqlParameter("@Item_Finished_ID", DDDescription.SelectedValue);

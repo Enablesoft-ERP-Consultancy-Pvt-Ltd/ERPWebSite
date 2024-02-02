@@ -15,14 +15,14 @@ public partial class Masters_ReportForms_Frm12EmpReport : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
 
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                            select UnitsId,UnitName from Units order by UnitName
                            select Month_Id,Month_Name from MonthTable 
                            select Year,Year from YearData";
@@ -81,7 +81,7 @@ public partial class Masters_ReportForms_Frm12EmpReport : System.Web.UI.Page
         // array[1] = new SqlParameter("@Todate", TxtToDate.Text);
         array[0] = new SqlParameter("@FromDate", DDMonth.SelectedValue);
         array[1] = new SqlParameter("@Todate", DDYear.SelectedValue);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         array[3] = new SqlParameter("@UserId", Session["varuserId"]);
         array[4] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
         array[4].Direction = ParameterDirection.Output;
@@ -142,7 +142,7 @@ public partial class Masters_ReportForms_Frm12EmpReport : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -150,7 +150,7 @@ public partial class Masters_ReportForms_Frm12EmpReport : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //lblcategoryname.Text = ParameterList[5];
         //lblitemname.Text = ParameterList[6];
         //lblqualityname.Text = ParameterList[0];

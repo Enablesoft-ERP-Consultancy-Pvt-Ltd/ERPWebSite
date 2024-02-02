@@ -12,7 +12,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
 
             TxtAssignDate.Text = (DateTime.Now).ToString("dd-MMM-yyyy");
             TxtRequiredDate.Text = (DateTime.Now).ToString("dd-MMM-yyyy");
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CompanyName", true, "--Select--");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -38,9 +38,9 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
 
             DataSet ds = new DataSet();
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-            string str = @" select unitid,unitname from unit Where MasterCompanyId=" + Session["varCompanyId"] + @"
-                            Select TermId,TermName from Term Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By TermName 
-                            Select PaymentId,PaymentName from Payment Where MasterCompanyId=" + Session["varCompanyId"] + " order by PaymentName ";
+            string str = @" select unitid,unitname from unit Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                            Select TermId,TermName from Term Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By TermName 
+                            Select PaymentId,PaymentName from Payment Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PaymentName ";
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDunit, ds, 0, true, "--Select--");
             CommanFunction.FillComboWithDS(DDFreight, ds, 1);
@@ -84,7 +84,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
     }
     private void CompanySelectedChange()
     {
-        String Str = "Select Distinct CI.Customerid,CI.Customercode  from CustomerInfo CI,JobAssigns J,OrderMaster OM Where CI.Customerid=OM.Customerid And OM.Orderid=J.Orderid And SupplierQty>0 And CI.MasterCompanyId=" + Session["varCompanyId"];
+        String Str = "Select Distinct CI.Customerid,CI.Customercode  from CustomerInfo CI,JobAssigns J,OrderMaster OM Where CI.Customerid=OM.Customerid And OM.Orderid=J.Orderid And SupplierQty>0 And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ChkForEdit.Checked == true)
         {
             Str = Str + " And OM.Orderid in (Select OrderID From Process_Issue_Detail_9)";
@@ -106,7 +106,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
         String Str = "Select Distinct OM.OrderId,OM.LocalOrder+' / '+OM.CustomerOrderNo from OrderMaster OM,JobAssigns J Where OM.Orderid=J.Orderid and om.status=0 And SupplierQty>0 And OM.Customerid=" + DDCustomerCode.SelectedValue;
         if (Session["varcompanyno"].ToString() == "7")
         {
-            Str = "Select Distinct OM.OrderId,OM.LocalOrder+' / '+OM.CustomerOrderNo from OrderMaster OM,JobAssigns J,V_FinishedItemDetail v ,UserRights_Category uc Where OM.Orderid=J.Orderid and v.item_finished_id=j.Item_Finished_Id and uc.CategoryId=v.CATEGORY_ID and om.status=0 And SupplierQty>0 and uc.userid=" + Session["varuserid"] + " And OM.Customerid=" + DDCustomerCode.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"];
+            Str = "Select Distinct OM.OrderId,OM.LocalOrder+' / '+OM.CustomerOrderNo from OrderMaster OM,JobAssigns J,V_FinishedItemDetail v ,UserRights_Category uc Where OM.Orderid=J.Orderid and v.item_finished_id=j.Item_Finished_Id and uc.CategoryId=v.CATEGORY_ID and om.status=0 And SupplierQty>0 and uc.userid=" + Session["varuserid"] + " And OM.Customerid=" + DDCustomerCode.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         }
         if (ChkForEdit.Checked == false)
         {
@@ -134,7 +134,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
     private void CustomerOrderNumberSelectedChange()
     {
         ChkForConsumption.Checked = false;
-        UtilityModule.ConditionalComboFill(ref DDProcessName, "SELECT DISTINCT PROCESS_Name_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESS_NAME_ID=9 And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDProcessName, "SELECT DISTINCT PROCESS_Name_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESS_NAME_ID=9 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         if (DDCustomerOrderNumber.SelectedIndex > 0)
         {
             DDunit.SelectedValue = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select OrderUnitId from OrderDetail Where OrderId=" + DDCustomerOrderNumber.SelectedValue + "").ToString();
@@ -188,7 +188,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
                          OD.QualityCodeId=QM.QualityCodeId INNER JOIN
                          V_FinishedItemDetail AS VF ON OD.Item_Finished_Id=VF.ITEM_FINISHED_ID INNER JOIN JobAssigns AS J ON OD.Item_Finished_Id=J.ITEM_FINISHED_ID AND 
                          OD.OrderId=J.OrderId LEFT OUTER JOIN SUPPLY_ARTICLE_NO SAO ON OM.CustomerId=SAO.CustomerId AND OD.Item_Finished_Id=SAO.Finishedid
-                         WHERE OM.OrderId=" + DDCustomerOrderNumber.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + @" Group By VF.Item_Finished_Id,Category_Name,Item_Name,QualityName,ShadeColorName,
+                         WHERE OM.OrderId=" + DDCustomerOrderNumber.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Group By VF.Item_Finished_Id,Category_Name,Item_Name,QualityName,ShadeColorName,
                          DesignName,ColorName,ShapeName,SizeMtr,SizeFt,SAO.ArticleNo,OD.ArticalNo,SubQuantity,SizeInch Having Sum(SupplierQty)>0";
         }
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
@@ -220,11 +220,11 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
         if (ChkForEdit.Checked == true)
         {
             UtilityModule.ConditionalComboFill(ref DDEmployeeName, "Select  distinct EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " pim,PROCESS_ISSUE_Detail_" + DDProcessName.SelectedValue + " pid Where EI.Empid=EP.Empid  and pim.Empid=ei.Empid and pim.IssueOrderId=pid.IssueOrderId and pid.orderid=" + DDCustomerOrderNumber.SelectedValue + @"
-            And EP.Processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " ANd Pim.CompanyId=" + DDCompanyName.SelectedValue + "  order by ei.empname", true, "--Select--");
+            And EP.Processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ANd Pim.CompanyId=" + DDCompanyName.SelectedValue + "  order by ei.empname", true, "--Select--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDEmployeeName, "Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid  And EP.Processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " order by ei.empname", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDEmployeeName, "Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid  And EP.Processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ei.empname", true, "--Select--");
         }
     }
     protected void DDEmployeeName_SelectedIndexChanged(object sender, EventArgs e)
@@ -590,9 +590,9 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
                 DDCustomerCode.SelectedValue = Ds.Tables[0].Rows[0]["CustomerId"].ToString();
                 CustomerCodeSelectedChange();
                 DDCustomerOrderNumber.SelectedValue = Ds.Tables[0].Rows[0]["OrderId"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDProcessName, "SELECT DISTINCT PROCESS_Name_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESS_NAME_ID=9 And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDProcessName, "SELECT DISTINCT PROCESS_Name_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESS_NAME_ID=9 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 DDProcessName.SelectedValue = Ds.Tables[0].Rows[0]["ProcessId"].ToString();
-                UtilityModule.ConditionalComboFill(ref DDEmployeeName, "Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid  And EP.Processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " order by ei.empname", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDEmployeeName, "Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid  And EP.Processid=" + DDProcessName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ei.empname", true, "--Select--");
                 DDEmployeeName.SelectedValue = Ds.Tables[0].Rows[0]["EmpId"].ToString();
                 TxtAssignDate.Text = Ds.Tables[0].Rows[0]["AssignDate"].ToString();
                 TxtRequiredDate.Text = Ds.Tables[0].Rows[0]["ReqByDate"].ToString();
@@ -628,7 +628,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
                 OD.QualityCodeId=QM.QualityCodeId INNER JOIN
                 V_FinishedItemDetail AS VF ON OD.Item_Finished_Id=VF.ITEM_FINISHED_ID INNER JOIN JobAssigns AS J ON OD.Item_Finished_Id=J.ITEM_FINISHED_ID AND 
                 OD.OrderId=J.OrderId LEFT OUTER JOIN SUPPLY_ARTICLE_NO SAO ON OM.CustomerId=SAO.CustomerId AND OD.Item_Finished_Id=SAO.Finishedid
-                WHERE OM.OrderId=0 And VF.MasterCompanyId=" + Session["varCompanyId"] + @" Group By VF.Item_Finished_Id,Category_Name,Item_Name,QualityName,
+                WHERE OM.OrderId=0 And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Group By VF.Item_Finished_Id,Category_Name,Item_Name,QualityName,
                 DesignName,ColorName,ShapeName,SizeMtr,SizeFt,SAO.ArticleNo,OD.ArticalNo,SubQuantity";
 
                 DataSet DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sqlstr);
@@ -649,7 +649,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
         {
             DDCustomerCode.SelectedIndex = 0;
         }
-        if (DDCustomerCode.Items.Count > 0 && Convert.ToInt32(Session["varCompanyId"]) == 7)
+        if (DDCustomerCode.Items.Count > 0 && Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 7)
         {
             DDCustomerCode.SelectedIndex = 1;
             CustomerCodeSelectedChange();
@@ -742,7 +742,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
                          OD.QualityCodeId=QM.QualityCodeId INNER JOIN
                          V_FinishedItemDetail AS VF ON OD.Item_Finished_Id=VF.ITEM_FINISHED_ID INNER JOIN JobAssigns AS J ON OD.Item_Finished_Id=J.ITEM_FINISHED_ID AND 
                          OD.OrderId=J.OrderId LEFT OUTER JOIN SUPPLY_ARTICLE_NO SAO ON OM.CustomerId=SAO.CustomerId AND OD.Item_Finished_Id=SAO.Finishedid
-                         WHERE J.SupplierQty>0 And OM.OrderId=" + DDCustomerOrderNumber.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + @" Group By VF.Item_Finished_Id,Category_Name,Item_Name,QualityName,
+                         WHERE J.SupplierQty>0 And OM.OrderId=" + DDCustomerOrderNumber.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Group By VF.Item_Finished_Id,Category_Name,Item_Name,QualityName,
                          DesignName,ColorName,ShapeName,SizeMtr,SizeFt,SAO.ArticleNo,OD.ArticalNo,SubQuantity,sizeinch";
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
@@ -771,7 +771,7 @@ public partial class Masters_ProcessIssue_FrmSupplyOrder : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

@@ -11,7 +11,7 @@ public partial class Masters_RawMaterial_FrmAnyItemIssue : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_RawMaterial_FrmAnyItemIssue : System.Web.UI.Page
             string str = @"Select CI.CompanyId,CompanyName 
                         From CompanyInfo CI 
                         JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                        CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                        CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                         Select D.Departmentid, D.DepartmentName 
                         From Department D Order By D.DepartmentName                         
                         Select Distinct EI.EmpId, EI.EmpName + case when isnull(EI.empcode, '') <> '' Then ' [' + EI.empcode + ']' Else '' End EmpName 
@@ -141,7 +141,7 @@ public partial class Masters_RawMaterial_FrmAnyItemIssue : System.Web.UI.Page
             param[6] = new SqlParameter("@StockID", ViewState["STOCKID"]);
             param[7] = new SqlParameter("@Remarks", (TxtRemark.Text).Trim());
             param[8] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[9] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"]);
+            param[9] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[10] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[10].Direction = ParameterDirection.Output;
 

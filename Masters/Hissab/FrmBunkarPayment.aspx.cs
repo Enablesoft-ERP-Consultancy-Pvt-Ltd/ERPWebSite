@@ -22,7 +22,7 @@ public partial class Masters_Hissab_FrmBunkarPayment : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -30,7 +30,7 @@ public partial class Masters_Hissab_FrmBunkarPayment : System.Web.UI.Page
         {
             BindContractor();
 
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                            Select VarCompanyNo,VarProdCode From MasterSetting 
                            SELECT MONTH_ID,MONTH_NAME FROM MONTHTABLE order by Month_Id
                            SELECT YEAR,YEAR AS YEAR1 FROM YEARDATA order by Year";

@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+
+public partial class Masters_RawMaterial_Row_meterial_stock : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
+        if (!IsPostBack)
+        {
+            UtilityModule.ConditionalComboFill(ref ddCompName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "Select Comp Name");
+            UtilityModule.ConditionalComboFill(ref ddgodown, "select godownid,godownname from godownmaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref ddCatagory, "select category_id,category_name from item_category_master ic inner join categoryseparate cs on ic.category_id=cs.categoryid where id=1 And ic.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref ddlotno, "Select distinct lotno,lotno from stock Where CompanyId=" + ddCompName.SelectedValue, true, "ALL");
+            UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME 
+           FROM    dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID INNER JOIN dbo.ITEM_MASTER ON i.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "ALL");
+            UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT q.QualityId,q.QualityName  FROM  dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID  INNER JOIN dbo.Quality q ON i.QUALITY_ID = q.QualityId And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "ALL");
+            ddCompName.SelectedIndex = 1;
+            ddgodown.SelectedIndex = 1;
+        }
+    }
+    protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref dditemname, @"SELECT DISTINCT dbo.ITEM_MASTER.ITEM_ID, dbo.ITEM_MASTER.ITEM_NAME 
+        FROM    dbo.ITEM_PARAMETER_MASTER i INNER JOIN stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID INNER JOIN
+        dbo.ITEM_MASTER ON i.ITEM_ID = dbo.ITEM_MASTER.ITEM_ID
+        Where  item_master.category_id=" + ddCatagory.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
+
+    }
+    protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref dquality, @"SELECT DISTINCT q.QualityId,q.QualityName
+        FROM  dbo.ITEM_PARAMETER_MASTER i INNER JOIN
+        stock s ON i.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID
+        INNER JOIN dbo.Quality q ON i.QUALITY_ID = q.QualityId
+        where  q.item_id=" + dditemname.SelectedValue + " And i.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "ALL");
+        ql.Visible = true;
+    }   
+    string strcat, stritem, strgodown, strlotno, strqual, strcolour;
+    private void report()
+    {
+        
+        if (ddCatagory.SelectedIndex == 0)
+            strcat = "";
+        else
+            strcat = " and {v_rawmeterial.categoryid}=" + ddCatagory.SelectedValue + "";
+        if (dditemname.SelectedIndex == 0)
+            stritem = "";
+        else
+            stritem = " and {v_rawmeterial.itemid}=" + dditemname.SelectedValue + "";
+        if (dquality.SelectedIndex == 0)
+            strqual = "";
+        else
+            strqual = " and {v_rawmeterial.qualityid}=" + dquality.SelectedValue + "";
+        if (ddgodown.SelectedIndex == 0)
+            strgodown = "";
+        else
+            strgodown = " and {v_rawmeterial.godownid}=" + ddgodown.SelectedValue + "";
+        if (ddlotno.SelectedIndex == 0)
+            strlotno = "";
+        else
+            strlotno = " and {v_rawmeterial.lotno}=" + ddlotno.SelectedItem + "";
+
+        Session["ReportPath"] = "Reports/rpt_rawmeterialstock_detail.rpt";
+        Session["CommanFormula"] = "{v_rawmeterial.companyid}=" + ddCompName.SelectedValue + " " + strcat + " " + stritem + " " + strqual + " " + strgodown + " " + strlotno + "";
+    }
+    protected void ddCompName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        report();
+    }
+    protected void btnpreview_Click(object sender, EventArgs e)
+    {
+        report();
+        //ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "ScriptRegistration", "priview();", true);
+        Report1();
+    }
+    private void Report1()
+    {
+        string qry = @"SELECT item,quality,colourname,lotno,qty  FROM  v_rawmeterial 
+where v_rawmeterial.companyid=" + ddCompName.SelectedValue + " " + strcat + " " + stritem + " " + strqual + " " + strgodown + " " + strlotno + "";
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\rpt_rawmeterialstock_detailNEW.rpt";
+            //Session["rptFileName"] = Session["ReportPath"];
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+        }
+    }
+}

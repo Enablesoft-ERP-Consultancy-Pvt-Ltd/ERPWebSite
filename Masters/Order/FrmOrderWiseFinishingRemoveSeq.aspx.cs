@@ -11,7 +11,7 @@ public partial class Masters_Order_FrmOrderWiseFinishingRemoveSeq : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,10 +20,10 @@ public partial class Masters_Order_FrmOrderWiseFinishingRemoveSeq : System.Web.U
             string Str = @"Select CI.CompanyId,CompanyName 
                         From CompanyInfo CI(Nolock) 
                         JOIN Company_Authentication CA(Nolock) on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                        CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+                        CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                         Select Distinct CI.Customerid, CI.CompanyName + SPACE(5) + CI.Customercode CompanyName 
                         From OrderMaster OM(Nolock) 
-                        JOIN customerinfo CI(Nolock) ON CI.CustomerId = OM.CustomerId And CI.MasterCompanyId=" + Session["varCompanyId"] + @"
+                        JOIN customerinfo CI(Nolock) ON CI.CustomerId = OM.CustomerId And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                         --LEFT JOIN JobAssigns JA(Nolock) ON JA.OrderId = OM.OrderId 
                         Where --JA.OrderID is null And 
                         OM.CompanyId = " + Session["CurrentWorkingCompanyID"] + @" 

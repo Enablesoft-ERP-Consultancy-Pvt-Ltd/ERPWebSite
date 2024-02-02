@@ -12,7 +12,7 @@ public partial class Masters_Campany_AddBank : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -40,7 +40,7 @@ public partial class Masters_Campany_AddBank : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select * from Bank Where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "select * from Bank Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -183,7 +183,7 @@ public partial class Masters_Campany_AddBank : CustomPage
             _arrPara[11].Value = txtMisc.Text.ToUpper();
             _arrPara[12].Value = TxtAdCode.Text.ToUpper();
             _arrPara[13].Value = Session["varuserid"].ToString();
-            _arrPara[14].Value = Session["varCompanyId"].ToString();
+            _arrPara[14].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[15].Value = txtiban.Text.ToUpper();
             _arrPara[16].Value = txtbic.Text.ToUpper();
             _arrPara[17].Value = txtifscode.Text.ToUpper();
@@ -302,11 +302,11 @@ public partial class Masters_Campany_AddBank : CustomPage
             string strsql;
             if (BtnSave.Text == "Update")
             {
-                strsql = "select BankName from bank where BankId!='" + ViewState["BankId"].ToString() + "' and  BankName='" + txtBankName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select BankName from bank where BankId!='" + ViewState["BankId"].ToString() + "' and  BankName='" + txtBankName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select BankName from bank where BankName='" + txtBankName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select BankName from bank where BankName='" + txtBankName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -354,7 +354,7 @@ public partial class Masters_Campany_AddBank : CustomPage
             _array[0] = new SqlParameter("@BankId", dgBank.DataKeys[e.RowIndex].Value);
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteBank", _array);
             Tran.Commit();

@@ -11,15 +11,15 @@ public partial class Masters_RawMaterial_FrmGateInOutMaterial : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = "";
-            str = @"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname 
-            Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+            str = @"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname 
+            Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
            
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 0, true, "Select Comp Name");
@@ -41,7 +41,7 @@ public partial class Masters_RawMaterial_FrmGateInOutMaterial : System.Web.UI.Pa
             ViewState["GateInMaterialRegisterID"] = 0;
             ViewState["GateOutMaterialRegisterID"]=0;
             BindGateType();
-            if (Convert.ToInt32(Session["varCompanyId"]) == 16 || Convert.ToInt32(Session["varCompanyId"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
                 ddGateType.Enabled = true;
             }
@@ -185,7 +185,7 @@ public partial class Masters_RawMaterial_FrmGateInOutMaterial : System.Web.UI.Pa
                 arr[13].Value = ddGateType.SelectedValue;
                 arr[14].Value = DDMaterialReturnType.SelectedValue;
                 arr[15].Value = Session["varuserid"];
-                arr[16].Value = Session["varCompanyId"];
+                arr[16].Value = Session["varMasterCompanyIDForERP"];
                 arr[17].Direction = ParameterDirection.Output;
                 arr[18].Value = DDBranchName.SelectedValue;
 
@@ -240,7 +240,7 @@ public partial class Masters_RawMaterial_FrmGateInOutMaterial : System.Web.UI.Pa
                 arr[13].Value = ddGateType.SelectedValue;
                 arr[14].Value = DDMaterialReturnType.SelectedValue;
                 arr[15].Value = Session["varuserid"];
-                arr[16].Value = Session["varCompanyId"];
+                arr[16].Value = Session["varMasterCompanyIDForERP"];
                 arr[17].Direction = ParameterDirection.Output;
                 arr[18].Value = DDBranchName.SelectedValue;
 
@@ -368,7 +368,7 @@ public partial class Masters_RawMaterial_FrmGateInOutMaterial : System.Web.UI.Pa
             arr[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
 
             arr[0].Value = gvMaterialIndetail.DataKeys[e.RowIndex].Value;
-            arr[1].Value = Session["varCompanyId"];           
+            arr[1].Value = Session["varMasterCompanyIDForERP"];           
             arr[2].Value = Session["varuserid"];
             arr[3].Direction = ParameterDirection.Output;
 
@@ -479,7 +479,7 @@ public partial class Masters_RawMaterial_FrmGateInOutMaterial : System.Web.UI.Pa
             arr[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
 
             arr[0].Value = GVMaterialOutDetail.DataKeys[e.RowIndex].Value;
-            arr[1].Value = Session["varCompanyId"];
+            arr[1].Value = Session["varMasterCompanyIDForERP"];
             arr[2].Value = Session["varuserid"];
             arr[3].Direction = ParameterDirection.Output;
 

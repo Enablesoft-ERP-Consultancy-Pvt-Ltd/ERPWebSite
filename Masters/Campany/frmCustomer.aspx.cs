@@ -12,7 +12,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,8 +25,8 @@ public partial class Masters_Campany_frmCustomer : CustomPage
 
             Session["ReportPath"] = "Reports/CustomerDetail.rpt";
             Session["CommanFormula"] = "";
-            //UtilityModule.ConditionalComboFill(ref ddContinent, "select continentid,continentname from continentmaster Where  MasterCompanyId=" + Session["varCompanyId"] + @" order by continentname", true, "--select--");
-            // UtilityModule.ConditionalComboFill(ref DDbuyinghouse, "select buyinghouseId,Name_buying_house from buyinghouse where mastercompanyid=" + Session["varcompanyId"] + @" order by  Name_buying_house", true, "--Select--");
+            //UtilityModule.ConditionalComboFill(ref ddContinent, "select continentid,continentname from continentmaster Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by continentname", true, "--select--");
+            // UtilityModule.ConditionalComboFill(ref DDbuyinghouse, "select buyinghouseId,Name_buying_house from buyinghouse where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by  Name_buying_house", true, "--Select--");
 
             string str = @"select AgencyId,AgencyName from shippingagency order by AgencyName
                            select BuyingHouseId,Name_buying_house from BuyingHouse order by Name_buying_house
@@ -37,7 +37,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
             UtilityModule.ConditionalComboFillWithDS(ref DDBuyingHouse1, ds, 1, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref ddTypeofCustomer, ds, 2, true, "--Plz Select--");
 
-            switch (Session["VarcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "9":
                     //lblOtherThanConsigneeAir.Text = "Buyer Other Than Consignee";
@@ -52,7 +52,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
                     TDBankLabel.Visible = false;
                     break;
             }
-            hnmastercompanyid.Value = Session["varcompanyId"].ToString();
+            hnmastercompanyid.Value = Session["varMasterCompanyIDForERP"].ToString();
         }
 
 
@@ -84,7 +84,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
 				      Left Outer JOIN Term ON CI.TermId=Term.TermId left outer join continentmaster cm on cm.continentid=ci.continentid left outer join state_master s1m on s1m.stateid=ci.stateid
                       left outer join subcontinentmaster s2m on s2m.subcontinentid=ci.subcontinentid left outer join SeaPort s on s.seaportid=ci.seaportid 
                       left outer join AirPort a on a.airportid=ci.airportid left outer join buyinghouse bh on bh.buyinghouseId = BuyingAgent.buyinghouseId
-                      Where CI.MasterCompanyId=" + Session["varCompanyId"];
+                      Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ddContinent.SelectedIndex > 0)
             {
                 strsql = strsql + " And CI.continentid=" + ddContinent.SelectedValue;
@@ -136,12 +136,12 @@ public partial class Masters_Campany_frmCustomer : CustomPage
         //UtilityModule.ConditionalComboFill(ref ddPaymentMode, "Select PaymentId,PaymentName from Payment order by PaymentName", true, "--Select--");
         //UtilityModule.ConditionalComboFill(ref ddDeliveryTerms, "select TermId,TermName from Term order by TermName", true, "--Select--");
         #endregion
-        string str = @"Select CurrencyId,CurrencyName from currencyinfo where MasterCompanyId=" + Session["varCompanyId"] + @" order by CurrencyName
-                    Select Bankid,BankName from Bank where MasterCompanyId=" + Session["varCompanyId"] + @" order by BankName
-                    Select GoodsReceiptId, StationName from GoodsReceipt where  MasterCompanyId=" + Session["varCompanyId"] + @" order by StationName
-                    select carriageid,carriageName from Carriage where MasterCompanyId=" + Session["varCompanyId"] + @" order by carriageName
-                    select TransModeid,TransModeName from Transmode where MasterCompanyId=" + Session["varCompanyId"] + @" order by TransModename
-                    Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varCompanyId"] + @" order by StationName";
+        string str = @"Select CurrencyId,CurrencyName from currencyinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CurrencyName
+                    Select Bankid,BankName from Bank where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by BankName
+                    Select GoodsReceiptId, StationName from GoodsReceipt where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by StationName
+                    select carriageid,carriageName from Carriage where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by carriageName
+                    select TransModeid,TransModeName from Transmode where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TransModename
+                    Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by StationName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         CommanFunction.FillComboWithDS(ddlCurrency, ds, 0);
         CommanFunction.FillComboWithDS(ddlBank, ds, 1);
@@ -149,11 +149,11 @@ public partial class Masters_Campany_frmCustomer : CustomPage
         CommanFunction.FillComboWithDS(ddlPreCarr, ds, 3);
         CommanFunction.FillComboWithDS(ddlByAirSea, ds, 4);
         CommanFunction.FillComboWithDS(ddlPortOfLoading, ds, 5);
-        string str1 = @"Select Agentid,Agentname from Shipp where MasterCompanyId=" + Session["varCompanyId"] + @" order by Agentname                                  
-                      select CountryId,CountryName from CountryMaster where MasterCompanyId=" + Session["varCompanyId"] + @" order by CountryName
-                      Select PaymentId,PaymentName from Payment where MasterCompanyId=" + Session["varCompanyId"] + @" order by PaymentName
-                      select TermId,TermName from Term where MasterCompanyId=" + Session["varCompanyId"] + @" order by TermName
-                      select continentid,continentname from continentmaster Where MasterCompanyId=" + Session["varCompanyId"] + @" order by continentname";
+        string str1 = @"Select Agentid,Agentname from Shipp where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Agentname                                  
+                      select CountryId,CountryName from CountryMaster where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CountryName
+                      Select PaymentId,PaymentName from Payment where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PaymentName
+                      select TermId,TermName from Term where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TermName
+                      select continentid,continentname from continentmaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by continentname";
         DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str1);
         UtilityModule.ConditionalComboFillWithDS(ref ddShipping, ds1, 0, true, "--Select--");
 
@@ -447,7 +447,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
                 _arrPara[30].Value = ddPaymentMode.SelectedIndex > 0 ? ddPaymentMode.SelectedValue : "0";
                 _arrPara[31].Value = ddDeliveryTerms.SelectedIndex > 0 ? ddDeliveryTerms.SelectedValue : "0";
                 _arrPara[32].Value = Session["varuserid"].ToString();
-                _arrPara[33].Value = Session["varCompanyId"].ToString();
+                _arrPara[33].Value = Session["varMasterCompanyIDForERP"].ToString();
                 //_arrPara[34].Value = DDState.SelectedIndex > 0 ?DDState.SelectedValue:"NULL";
                 _arrPara[34].Value = DDState.SelectedIndex > 0 ? DDState.SelectedValue : "0";
                 _arrPara[35].Value = ddContinent.SelectedIndex < 0 ? "0" : ddContinent.SelectedValue; ;
@@ -608,15 +608,15 @@ public partial class Masters_Campany_frmCustomer : CustomPage
 
     protected void Button3_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(ddlBank, "Select Bankid,BankName from Bank where MasterCompanyId=" + Session["varCompanyId"] + " order by BankName");
+        CommanFunction.FillCombo(ddlBank, "Select Bankid,BankName from Bank where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by BankName");
     }
     protected void country_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddCountry, "select CountryId,CountryName from CountryMaster where MasterCompanyId=" + Session["varCompanyId"] + " order by CountryName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddCountry, "select CountryId,CountryName from CountryMaster where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CountryName", true, "--Select--");
     }
     protected void currency_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(ddlCurrency, "Select CurrencyId,CurrencyName from currencyinfo where MasterCompanyId=" + Session["varCompanyId"] + " order by CurrencyName");
+        CommanFunction.FillCombo(ddlCurrency, "Select CurrencyId,CurrencyName from currencyinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CurrencyName");
     }
     protected void cariage_Click(object sender, EventArgs e)
     {
@@ -624,29 +624,29 @@ public partial class Masters_Campany_frmCustomer : CustomPage
         //CommanFunction.FillCombo(ddlReceiptPreCar, "Select GoodsReceiptId, StationName from GoodsReceipt order by StationName");
         //CommanFunction.FillCombo(ddlPortOfLoading, "Select GoodsReceiptId, StationName from GoodsReceipt order by StationName");
         #endregion
-        string str = "Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varCompanyId"] + " order by StationName";
+        string str = "Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by StationName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         CommanFunction.FillComboWithDS(ddlReceiptPreCar, ds, 0);
         CommanFunction.FillComboWithDS(ddlPortOfLoading, ds, 0);
     }
     protected void shipping0_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(ddShipping, "Select Agentid,Agentname from Shipp where MasterCompanyId=" + Session["varCompanyId"] + " order by Agentname");
+        CommanFunction.FillCombo(ddShipping, "Select Agentid,Agentname from Shipp where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Agentname");
     }
 
     protected void transmode_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(ddlByAirSea, "select TransModeid,TransModeName from Transmode where MasterCompanyId=" + Session["varCompanyId"] + " order by TransModename");
+        CommanFunction.FillCombo(ddlByAirSea, "select TransModeid,TransModeName from Transmode where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by TransModename");
     }
 
     protected void Button7_Click1(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(ddlPortOfLoading, "Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varCompanyId"] + " order by StationName");
+        CommanFunction.FillCombo(ddlPortOfLoading, "Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by StationName");
 
     }
     protected void addbying_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(ddBuyingAgent, "Select BuyeingAgentid,BuyeingAgentname from BuyingAgent where MasterCompanyId=" + Session["varCompanyId"] + " order by BuyeingAgentname");        
+        CommanFunction.FillCombo(ddBuyingAgent, "Select BuyeingAgentid,BuyeingAgentname from BuyingAgent where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by BuyeingAgentname");        
     }
     protected void ddCountry_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -694,7 +694,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
     }
     private void Report()
     {
-        string qry = @" SELECT CustomerName,CompanyName,Address,PhoneNo,CustomerCode,Email,DestinationPlace,CustAdd1,CustAdd2 FROM    customerinfo where  MasterCompanyId=" + Session["varCompanyId"];
+        string qry = @" SELECT CustomerName,CompanyName,Address,PhoneNo,CustomerCode,Email,DestinationPlace,CustAdd1,CustAdd2 FROM    customerinfo where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ddCountry.SelectedIndex > 0)
         {
             qry = qry + "  And Country=" + ddCountry.SelectedValue + "";
@@ -751,7 +751,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
         try
         {
             string strsql = @"select item_id,category_name,item_name from item_category_master
-                    inner join item_master on item_category_master.category_id = item_master.category_id  where category_name ='ACCESSORIES ITEM' ANd  item_category_master.MasterCompanyId=" + Session["varCompanyId"];
+                    inner join item_master on item_category_master.category_id = item_master.category_id  where category_name ='ACCESSORIES ITEM' ANd  item_category_master.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -797,7 +797,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
     }
     protected void PreCarriageBy_Click(object sender, EventArgs e)
     {
-        CommanFunction.FillCombo(ddlPreCarr, "select carriageid,carriageName from Carriage where MasterCompanyId=" + Session["varCompanyId"] + " order by carriageName");
+        CommanFunction.FillCombo(ddlPreCarr, "select carriageid,carriageName from Carriage where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by carriageName");
     }
     private void Validated()
     {
@@ -807,11 +807,11 @@ public partial class Masters_Campany_frmCustomer : CustomPage
             string strsql;
             if (cmdSave0.Text == "Update")
             {
-                strsql = "select CustomerName from customerinfo where CustomerId!='" + ViewState["CustomerId"].ToString() + "' and CompanyName='" + txtCompName.Text + "' And  MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CustomerName from customerinfo where CustomerId!='" + ViewState["CustomerId"].ToString() + "' and CompanyName='" + txtCompName.Text + "' And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select CustomerName from customerinfo where CompanyName='" + txtCompName.Text + "' And  MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CustomerName from customerinfo where CompanyName='" + txtCompName.Text + "' And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -854,7 +854,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
             _array[0] = new SqlParameter("@CustomerId", ViewState["CustomerId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteCustomer", _array);
             lblErr.Visible = true;
@@ -885,21 +885,21 @@ public partial class Masters_Campany_frmCustomer : CustomPage
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     protected void BtnRefPaymentMode_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddPaymentMode, "Select PaymentId,PaymentName from Payment where MasterCompanyId=" + Session["varCompanyId"] + " order by PaymentName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddPaymentMode, "Select PaymentId,PaymentName from Payment where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PaymentName", true, "--Select--");
     }
     protected void BtnRefPaymentModeCustom_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddPaymentModeCustom, "Select PaymentId,PaymentName from Payment where MasterCompanyId=" + Session["varCompanyId"] + " order by PaymentName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddPaymentModeCustom, "Select PaymentId,PaymentName from Payment where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by PaymentName", true, "--Select--");
     }
     protected void BtnRefDeliveryTerms_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddDeliveryTerms, "select TermId,TermName from Term where MasterCompanyId=" + Session["varCompanyId"] + " order by TermName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddDeliveryTerms, "select TermId,TermName from Term where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by TermName", true, "--Select--");
     }
     protected void GvCustomer_RowCreated(object sender, GridViewRowEventArgs e)
     {
@@ -974,7 +974,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
 
     protected void Continent_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddContinent, "select continentid,continentname from continentmaster Where  MasterCompanyId=" + Session["varCompanyId"] + @" order by continentname", true, "--select--");
+        UtilityModule.ConditionalComboFill(ref ddContinent, "select continentid,continentname from continentmaster Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by continentname", true, "--select--");
 
     }
     protected void Subcontinent_Click(object sender, EventArgs e)
@@ -1025,7 +1025,7 @@ public partial class Masters_Campany_frmCustomer : CustomPage
     }
     protected void btnbuyinghouseCloseFormCustomer_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDBuyingHouse1, "select buyinghouseid,Name_buying_house from buyinghouse Where  MasterCompanyId=" + Session["varCompanyId"] + @"order by Name_buying_house", true, "--select--");
+        UtilityModule.ConditionalComboFill(ref DDBuyingHouse1, "select buyinghouseid,Name_buying_house from buyinghouse Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"order by Name_buying_house", true, "--select--");
     }
 }
 

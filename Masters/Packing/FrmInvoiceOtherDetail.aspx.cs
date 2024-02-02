@@ -13,7 +13,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetail : System.Web.UI.Page
     string Msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,7 +23,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetail : System.Web.UI.Page
             con.Open();
             TxtInvoiceId.Text = Request.QueryString["ID"];
             string Qry = "Select Contents,Declaration,ACDPerson,TBuyerOConsignee,Goodsid from invoice Where InvoiceId=" + TxtInvoiceId.Text + @"
-                          Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varCompanyId"] + " Order By GoodsName";
+                          Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By GoodsName";
             DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, Qry);
             UtilityModule.ConditionalComboFillWithDS(ref DDGoods, Ds, 1, true, "--Select--");
             if (Ds.Tables[0].Rows.Count > 0)
@@ -38,7 +38,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetail : System.Web.UI.Page
     }
     protected void refreshcolor_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varCompanyId"] + " Order By GoodsName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By GoodsName", true, "--Select--");
     }
     protected void BtnSave_Click(object sender, EventArgs e)
     {
@@ -75,7 +75,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetail : System.Web.UI.Page
                 LblErrorMessage.Visible = true;
                 // LblErrorMessage.Text = "Data Saved Successfully....";
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + _arrPara[0].Value + ",getdate(),'Update')");
+                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + _arrPara[0].Value + ",getdate(),'Update')");
             }
         }
         catch (Exception ex)
@@ -117,7 +117,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetail : System.Web.UI.Page
     }
     protected void BtnRefreshDescriptionOfGood_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varCompanyId"] + " Order By GoodsName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By GoodsName", true, "--Select--");
     }
     protected void RDDeclaration1_CheckedChanged(object sender, EventArgs e)
     {
@@ -126,7 +126,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetail : System.Web.UI.Page
             RDDeclaration2.Checked = false;
             TxtDeclaration.Text = "";
 
-            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration1 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration1 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 TxtDeclaration.Text = ds.Tables[0].Rows[0]["Declaration1"].ToString();
@@ -138,7 +138,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetail : System.Web.UI.Page
         if (RDDeclaration2.Checked == true)
         {
             TxtDeclaration.Text = "";
-            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration2 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Declaration2 from companyinfo CI,Invoice I Where CI.Companyid=I.ConsignorId And I.Invoiceid=" + TxtInvoiceId.Text + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 TxtDeclaration.Text = ds.Tables[0].Rows[0]["Declaration2"].ToString();

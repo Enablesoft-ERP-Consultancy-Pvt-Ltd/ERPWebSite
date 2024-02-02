@@ -14,15 +14,15 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" and " + (variable.Carpetcompany == "1" ? " Process_Name='DYEING'" : "1=1") + @" Order By PROCESS_NAME
-                        select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varCompanyId"] + @"  Order by EmpName                  
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" and " + (variable.Carpetcompany == "1" ? " Process_Name='DYEING'" : "1=1") + @" Order By PROCESS_NAME
+                        select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  Order by EmpName                  
                         select distinct CI.CustomerId,CI.CustomerCode+'/'+CompanyName as customercode from OrderMaster OM inner join V_Indent_OredrId VO on Om.OrderId=VO.Orderid inner join customerinfo CI on CI.CustomerId=OM.CustomerId order by CustomerCode
                         select IM.Item_Id,Im.Item_Name From Item_Master Im inner join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and cs.id=1 order by IM.ITEM_NAME";
             if (variable.JoborderNewModule == "1")
@@ -60,7 +60,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
             //{
             //    TRCustomerCode.Visible = false;
             //}
-            //if (Session["varcompanyId"].ToString() == "16")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             //{
             //    RDPONot.Visible = false;
             //    RDdyerledger.Visible = false;
@@ -111,7 +111,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
         {
             str = @"Select Distinct IM.IndentId,IM.IndentNo from PP_ProcessRecMaster PRM JOIN PP_ProcessRecTran PRT ON PRM.PRMID=PRT.PRMID
                     JOIN IndentMaster IM ON PRT.IndentID=IM.IndentId
-                  Where IM.MasterCompanyid= " + Session["varcompanyid"];
+                  Where IM.MasterCompanyid= " + Session["varMasterCompanyIDForERP"];
             if (DDCompany.SelectedIndex > 0)
             {
                 str = str + " and PRM.companyid=" + DDCompany.SelectedValue;
@@ -142,7 +142,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
     {
         string str, strsample = string.Empty;
         str = @" select Distinct EI.EmpId,ltrim(Empname)+'/'+Address as EmpName from PP_ProcessRecMaster PRM JOIN PP_ProcessRecTran PRT ON PRM.PRMID=PRT.PRMID
-                 inner join empinfo EI on EI.EmpId=PRM.EmpId  Where EI.MasterCompanyid= " + Session["varcompanyid"];
+                 inner join empinfo EI on EI.EmpId=PRM.EmpId  Where EI.MasterCompanyid= " + Session["varMasterCompanyIDForERP"];
 
         strsample = "select Distinct ei.EmpId,ei.EmpName+'/'+Address as Empname From SampleDyeingmaster SM inner join EmpInfo ei on SM.empid=ei.EmpId Where 1=1";
 
@@ -231,7 +231,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
 //                            left join OrderMaster OM on OD.OrderId=OM.OrderId
 //                            left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
 //                            INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-//                            Where IM.MasterCompanyId=" + Session["varCompanyId"];
+//                            Where IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 //                }
 //                else
@@ -255,7 +255,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
 //                        left join OrderMaster OM on OD.OrderId=OM.OrderId
 //                        left join V_IndentRawReturnQty V on Pt.PRMid=v.prmid and Pt.PRTid=v.PrtId 
 //                        INNER JOIN V_REPROCESSINDENTID ID ON PT.IndentId=ID.IndentId 
-//                        Where PRM.MasterCompanyId=" + Session["varCompanyId"];
+//                        Where PRM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 //                    switch (Session["varcompanyNo"].ToString())
 //                    {
 //                        case "16":
@@ -403,7 +403,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
 //                    str = str.Replace("V_Indent_OredrId", "V_Indent_OredrId_withoutBom");
 //                }
 
-//                switch (Session["varcompanyid"].ToString())
+//                switch (Session["varMasterCompanyIDForERP"].ToString())
 //                {
 //                    case "6":
 //                    case "12":
@@ -583,7 +583,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
             cmd.Parameters.AddWithValue("@WhereSample", WhereSample);
             cmd.Parameters.AddWithValue("@ChkForDate", ChkForDate.Checked == true ? "1" : "0");
             cmd.Parameters.AddWithValue("@ChkForSample", chksample.Checked == true ? "1" : "0");
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -631,7 +631,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
         //{
         //    DDCustCode_SelectedIndexChanged(sender, new EventArgs());
         //}
-        //UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        //UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void BindCustomerOrder()
     {
@@ -639,7 +639,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
         str = @"Select distinct PPC.OrderId,LocalOrder+' / '+customerorderno as OrderNo From PP_Consumption PPC 
                 JOIN PP_ProcessRecTran PRT ON PPC.OrderID=PRT.CustomerOrderId
                 JOIN OrderMaster OM ON OM.OrderId=PPC.OrderId 
-                Where  OM.CompanyId=" +DDCompany.SelectedValue+ " and OM.Status=0 and PPC.MasterCompanyId=" + Session["varCompanyId"] + "";
+                Where  OM.CompanyId=" +DDCompany.SelectedValue+ " and OM.Status=0 and PPC.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
         UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
     }
@@ -647,7 +647,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
 //    protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
 //    {
 //        string str = "", str1 = "";
-//        if (Session["varcompanyid"].ToString() == "16")
+//        if (Session["varMasterCompanyIDForERP"].ToString() == "16")
 //        {
 //            str = @"Select distinct OM.OrderId, CustomerOrderNo as CustomerOrderNo 
 //                From OrderMaster OM 
@@ -689,7 +689,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
     {
 //        string str = string.Empty;
 //        str = @"select Distinct PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME from IndentMaster IM inner join V_Indent_OredrId VO on Im.IndentID=VO.IndentId
-//                inner join PROCESS_NAME_MASTER PNM on PNM.PROCESS_NAME_ID=IM.ProcessID Where PNM.mastercompanyId=" + Session["varcompanyid"];
+//                inner join PROCESS_NAME_MASTER PNM on PNM.PROCESS_NAME_ID=IM.ProcessID Where PNM.mastercompanyId=" + Session["varMasterCompanyIDForERP"];
 //        if (DDCompany.SelectedIndex > 0)
 //        {
 //            str = str + "  and IM.Companyid=" + DDCompany.SelectedValue;
@@ -708,7 +708,7 @@ public partial class Masters_ReportForms_FrmIndentRecDetailWithMultipleOrder : S
         string str = string.Empty;
         str = @"Select Distinct PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From PP_ProcessRecMaster PRM JOIN PP_ProcessRecTran PRT ON PRM.PRMID=PRT.PRMID
                 JOIN PROCESS_NAME_MASTER PNM ON PNM.PROCESS_NAME_ID=PRM.ProcessID 
-                Where PNM.mastercompanyId=" + Session["varcompanyid"];
+                Where PNM.mastercompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDCompany.SelectedIndex > 0)
         {
             str = str + "  and  PRM.CompanyID=" + DDCompany.SelectedValue;

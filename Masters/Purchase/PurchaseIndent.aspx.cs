@@ -13,7 +13,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
             #region Author:Rajeev, Date:09-12-12,...
             ViewState["PIndentId"] = "0";
             ViewState["PIndentDetailId"] = "0";
-            string Qry = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+            string Qry = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                         Select DepartmentId,DepartmentName from Department order by DepartmentName
                         select distinct ci.customerid,ci.Customercode from customerinfo ci inner join OrderMaster om on om.customerid=ci.customerid Order BY Ci.Customercode
                         Select Distinct OrderId,LocalOrder+ ' / ' +CustomerOrderNo from OrderMaster Order By LocalOrder+ ' / ' +CustomerOrderNo ";
@@ -73,7 +73,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
                     itmcod.Visible = true;
                     break;
             }
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "12":
                     lblvend.Text = "Supplier Name";
@@ -91,8 +91,8 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        //DDCompanyName.SelectedValue = Session["varCompanyId"].ToString();
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        //DDCompanyName.SelectedValue = Session["varMasterCompanyIDForERP"].ToString();
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         LblQuality.Text = ParameterList[0];
         LblDesign.Text = ParameterList[1];
         LblColor.Text = ParameterList[2];
@@ -287,7 +287,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
         SqlTransaction tran = con.BeginTransaction();
         try
         {
-            int varFinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtItemCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varFinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtItemCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             TxtIndentNo.Text = "";
 
             if (Session["VarcOmpanyNo"].ToString() == "6")
@@ -342,7 +342,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
             _arrpara[4].Value = TxtIndentNo.Text.ToUpper();
             _arrpara[5].Value = TxtDate.Text;
             _arrpara[6].Value = Session["varuserid"];
-            _arrpara[7].Value = Session["varCompanyId"];
+            _arrpara[7].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[8].Direction = ParameterDirection.InputOutput;
             if (ChkEditOrder.Checked == true)
                 _arrpara[8].Value = ViewState["PIndentDetailId"];
@@ -901,7 +901,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
     private void fill_grid_show()
     {
         DataSet ds;
-        switch (Convert.ToInt16(Session["varcompanyId"]))
+        switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
         {
             case 6:
                 ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select CATEGORY_NAME+'  '+ITEM_NAME+'  '+QualityName+'  '+designName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName as Description,CATEGORY_ID,ITEM_ID,QualityId,ColorId,designId,SizeId,ShapeId,ShadecolorId,(isnull(Sum(consumptionqty),0)-isnull(sum(purchaseqty),0)) as qty,vc.finishedid,'0' as ISizeflag
@@ -917,7 +917,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
                            CASE WHEN OD.SizeUnit=1 Then SizeMtr Else SizeFt End Description,sum(Qty) As Qty,
                            VF.Item_Finished_Id as finishedid,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,SizeId,'0' as ISizeflag FROM OrderLocalConsumption OD Inner JOIN V_FinishedItemDetail VF ON 
                            OD.FinishedId=VF.Item_Finished_Id  INNER JOIN ITEM_PARAMETER_MASTER IPM ON OD.FinishedId=IPM.Item_Finished_Id 
-                           Where OrderId=" + ddorder.SelectedValue + " And VF.MasterCompanyId=" + Session["varcompanyId"] + @" Group by Category_Name,ITEM_NAME,QualityName,DesignName,ColorName,ShadeColorName,
+                           Where OrderId=" + ddorder.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Group by Category_Name,ITEM_NAME,QualityName,DesignName,ColorName,ShadeColorName,
                            ShapeName,SizeUnit,SizeMtr,SizeFt, VF.Item_Finished_Id,Qualityid,Colorid,designid,shapeid,shadecolorid,category_id,vf.item_id,SizeId");
                 }
                 else
@@ -1034,7 +1034,7 @@ public partial class Masters_Purchase_PurchaseIndent : System.Web.UI.Page
         DataSet ds;
         if (ChKForOrder.Checked == true)
         {
-            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(Qty),0) from PurchaseIndentDetail piit,PurchaseIndentMaster pii where pii.PindentId=piit.PindentId and  finishedid=" + strval + "  and pii.orderid=" + ddorder.SelectedValue + " And pii.MasterCompanyid=" + Session["varCompanyId"] + "");
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(Qty),0) from PurchaseIndentDetail piit,PurchaseIndentMaster pii where pii.PindentId=piit.PindentId and  finishedid=" + strval + "  and pii.orderid=" + ddorder.SelectedValue + " And pii.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "");
             val = ds.Tables[0].Rows[0][0].ToString();
         }
 

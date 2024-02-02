@@ -14,7 +14,7 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -31,7 +31,7 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
                             From Department D(Nolock)
                             JOIN DepartmentBranch DB(Nolock) ON DB.DepartmentID = D.DepartmentId 
                             JOIN BranchUser BU(Nolock) ON BU.BranchID = DB.BranchID And BU.UserID = " + Session["varuserId"] + @" 
-                            Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                            Where IsNull(ShowOrNotInHR, 0) = 1 And D.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                             Order By D.DepartmentName 
                             SELECT SUBDEPTID,SUBDEPT FROM HR_SUBDEPT ORDER BY DISPSEQNO,SUBDEPT
                             SELECT DIVISIONID,DIVISION FROM HR_DIVISIONMASTER ORDER BY DISPSEQNO,DIVISION
@@ -46,7 +46,7 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
                             Select ID, BranchName 
                             From BRANCHMASTER BM(nolock) 
                             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + " Order By BranchName ";
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By BranchName ";
 
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -748,7 +748,7 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
             arr[92] = new SqlParameter("@NOMINEESFORGRATUITY", txtnomineeforgratuity.Text);
             arr[93] = new SqlParameter("@GRAUITYSHAREOFNOMINEE", txtgratuitysharepercentageofnominee.Text == "" ? "0" : txtgratuitysharepercentageofnominee.Text);
             arr[94] = new SqlParameter("@USERID", Session["varuserid"]);
-            arr[95] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyid"]);
+            arr[95] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
             arr[96] = new SqlParameter("@DTEXPERIENCE", dtexperience);
             arr[97] = new SqlParameter("@DTFAMILYMEMBERS", dtfamilymembers);
             arr[98] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
@@ -829,7 +829,7 @@ public partial class Masters_Payroll_frmbiodataentry : System.Web.UI.Page
     {
         txtage.Text = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,
         @"Select (Convert(int,(convert(Float,convert(int,convert(varchar(10),GETDATE(),112))) - convert(Float,convert(int,convert(varchar(10),convert(date,ltrim(rtrim('" + txtdateofbirth.Text + "'))),112)))))/10000)"));
-        if (Convert.ToInt32(Session["varcompanyid"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 281)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 && Convert.ToInt32(Session["varSubCompanyId"]) == 281)
         {
             if (Convert.ToDecimal(txtage.Text) < 18)
             {

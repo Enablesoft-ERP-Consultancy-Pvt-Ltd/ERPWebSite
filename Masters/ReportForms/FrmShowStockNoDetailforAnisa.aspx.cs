@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
         {
             txtStockNo.Text = "";
             txtStockNo.Focus();
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "14":
                 case "45":
@@ -107,7 +107,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
                                 From Process_Stock_Detail PSD,CarpetNumber CN,Process_Name_Master PM,V_FinishedItemDetail VF 
                                 Where PSD.StockNo=CN.StockNo And PSD.ToProcessId=PM.PROCESS_NAME_ID And CN.Item_Finished_id=VF.Item_Finished_id And 
                                 CN.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And TSTOCKNO in (" + StrNew + @") And 
-                                VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By CN.TSTOCKNO,PSD.ProcessDetailId";
+                                VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CN.TSTOCKNO,PSD.ProcessDetailId";
 
                 DataSet Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, Query);
                 if (Ds.Tables[0].Rows.Count > 0)
@@ -175,7 +175,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
             for (int i = 0; i < DGStock.Columns.Count; i++)
             {
 
-                if (Session["varcompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     if (Session["usertype"].ToString() == "1")
                     {
@@ -193,7 +193,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
                     }
                 }
 
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     if (DGStock.Columns[i].HeaderText == "Cotton LotNo")
                     {
@@ -208,7 +208,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
                     }
                 }
 
-                if (Session["varcompanyId"].ToString() == "14" || Session["varcompanyId"].ToString() == "45")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "14" || Session["varMasterCompanyIDForERP"].ToString() == "45")
                 {
                     if (DGStock.Columns[i].HeaderText == "ECIS NO & DEST.CODE" || DGStock.Columns[i].HeaderText == "JobSequence")
                     {
@@ -305,7 +305,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
             param[0] = new SqlParameter("@Processid", lbltoprocessid.Text);
             param[1] = new SqlParameter("@Process_rec_detail_id", lblreceivedetailid.Text);
             param[2] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@MastercompanyId", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             param[5] = new SqlParameter("@QualityType", lblqualitytype.Text);
@@ -375,7 +375,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
                             '' EmpName,'' IssueChallanNo,replace(convert(varchar(11), PSD.OrderDate,106), ' ','-') OrderDate,'' RecChallanNo,
                             Replace(convert(varchar(11),ReceiveDate,106), ' ','-') ReceiveDate,CN.CompanyId,FromProcessId,ToProcessId,ReceiveDetailId,IssueDetailId,Pack,
                             PM.PROCESS_NAME,VF.Item_Name+' '+VF.QualityName+' '+VF.DesignName+' '+VF.ColorName+' '+VF.ShapeName+' '+VF.SizeMtr
-                            + case when psd.toprocessid=1 Then ' ['+isnull( dbo.[F_GetStockActualSize](psd.stockno," + Session["varcompanyid"] + @"),'')+']' else '' end  Description, 
+                            + case when psd.toprocessid=1 Then ' ['+isnull( dbo.[F_GetStockActualSize](psd.stockno," + Session["varMasterCompanyIDForERP"] + @"),'')+']' else '' end  Description, 
                             IsNull(CC.CustomerCode, '') Customercode,'' as customerorderNO,psd.Processdetailid,isnull(CN.PackingId,0) as PackingId,0 as ToProcessid,CN.Item_Finished_id,'' as UnitName,'' as LoomNo,
                             '' as StockStatus,1 as QualityType,'' as TanaLotNo, IsNull(NUD.UserName, '') UserName ,'' as Ecisno,'' as Destcode,'' as FolioChallanNo
                             From CarpetNumber CN 
@@ -385,7 +385,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
                             left JOIN NewUserDetail NUD ON NUD.UserId = PSD.UserId 
                             left join OrderMaster Om on CN.OrderId=OM.OrderId
                             left join customerinfo CC on OM.CustomerId=CC.customerid                             
-                            Where CN.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And TSTOCKNO in (" + StrNew + ") And VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By CN.TSTOCKNO,ProcessDetailId";
+                            Where CN.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And TSTOCKNO in (" + StrNew + ") And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CN.TSTOCKNO,ProcessDetailId";
 
                 DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Query);
                 if (Ds.Tables[0].Rows.Count > 0)
@@ -582,7 +582,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
     }
     protected void btnprintstockrawdetail_Click(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"].ToString() == "21")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             GetStockRawdetailKaysons();
         }
@@ -745,7 +745,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "22":
                     GDLinkedtoCustomer.HeaderRow.Cells[4].Text = "Secondary LotNo.";                   
@@ -757,7 +757,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
 
             for (int i = 0; i < GDLinkedtoCustomer.Columns.Count; i++)
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "14":
                     case "45":
@@ -1251,7 +1251,7 @@ public partial class Masters_ReportForms_FrmShowStockNoDetailforAnisa : CustomPa
                 SqlParameter[] param = new SqlParameter[4];
                 param[0] = new SqlParameter("@TUniqueSeqNo", txtPackingBarCode.Text);
                 param[1] = new SqlParameter("@userid", Session["varuserid"]);
-                param[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+                param[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
                 param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[3].Direction = ParameterDirection.Output;
                 //**

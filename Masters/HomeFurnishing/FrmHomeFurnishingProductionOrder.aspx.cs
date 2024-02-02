@@ -14,7 +14,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
     static int hnEmpId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,7 +26,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(Nolock)
                         JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                         Select Distinct CI.CustomerId, CI.CustomerCode 
                         From OrderMaster OM(Nolock)
                         JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId 
@@ -36,7 +36,17 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                         Order By CI.CustomerCode 
                         Select UnitsId, UnitName From Units(Nolock) Order By UnitName 
                         Select UnitId, UnitName From Unit(Nolock) Where Unitid in(1, 2, 6)
-                        Select PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name_ID = 1";
+                        Select PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name_ID = 1
+                        Select Distinct a.DepartmentID, D.DepartmentName 
+                        From ProcessIssueToHomeFurnishingDepartmentMaster a(Nolock)
+                        JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
+                        JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
+                        Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And a.ProcessID = 1 
+                        Order By D.DepartmentName 
+                        Select ID, BranchName 
+                        From BRANCHMASTER BM(nolock) 
+                        JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -47,6 +57,15 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 DDcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDcompany.Enabled = false;
             }
+            UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, ds, 6, false, "");
+            DDBranchName.Enabled = false;
+
+            if (DDBranchName.Items.Count == 0)
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Branch not define for this user!');", true);
+                return;
+            }
+
             UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 4, false, "");
 
             UtilityModule.ConditionalComboFillWithDS(ref DDcustcode, ds, 1, true, "--Plz Select--");
@@ -78,9 +97,16 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             }
             else if (Session["varcompanyNo"].ToString() == "44")
             {
-            TDLoomNotextbox.Visible=false;
-            ddunit.Enabled = false;
-            Page.Title = "PRODUCTION ORDER";
+                TDLoomNotextbox.Visible = false;
+                ddunit.Enabled = false;
+                Page.Title = "PRODUCTION ORDER";
+            }
+
+            if (Session["varCompanyNo"].ToString() == "16" || Session["varCompanyNo"].ToString() == "28" || Session["varCompanyNo"].ToString() == "39")
+            {
+                UtilityModule.ConditionalComboFillWithDS(ref DDDepartmentName, ds, 5, true, "--Plz Select--");
+                TDDepartmentName.Visible = true;
+                //TDDepartmentIssueNo.Visible = true;
             }
         }
     }
@@ -94,113 +120,117 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
         enablecontrols();
         //*********************
         AutoCompleteExtenderloomno.ContextKey = "0#" + DDcompany.SelectedValue + "#" + DDProdunit.SelectedValue;
-         if (Session["varcompanyNo"].ToString() == "44" )
-                    {
-                        BindFolioNo(sender,e);
-                    }
-                    else
-                    {
-                        if (TDLoomNoDropdown.Visible == true)
-                        {
-                            if (chkEdit.Checked == true)
-                            {
-                                string str = @"select Distinct PLM.UID,PLM.LoomNo+'/'+isnull(IM.ITEM_NAME,'') as LoomNo,case when ISNUMERIC(loomno)=1 Then CONVERT(int,loomno) Else 9999999 End as Loom 
+        if (Session["varcompanyNo"].ToString() == "44")
+        {
+            BindFolioNo(sender, e);
+        }
+        else
+        {
+            if (TDLoomNoDropdown.Visible == true)
+            {
+                if (chkEdit.Checked == true)
+                {
+                    string str = @"select Distinct PLM.UID,PLM.LoomNo+'/'+isnull(IM.ITEM_NAME,'') as LoomNo,case when ISNUMERIC(loomno)=1 Then CONVERT(int,loomno) Else 9999999 End as Loom 
                             from HomeFurnishingOrderMaster PIM 
                             inner join ProductionLoomMaster PLM on PIM.LoomId=PLM.UID
                             Left join ITEM_MASTER Im on PLm.Itemid=IM.ITEM_ID 
                             left join Employee_HomeFurnishingOrderMaster EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMP.ProcessId = " + DDProcessName.SelectedValue + @"
                             Where Plm.CompanyId=" + DDcompany.SelectedValue + " and PLm.UnitId=" + DDProdunit.SelectedValue + "";
 
-                                string str1 = @"select Top 1 PIM.IssueOrderID, PIM.LoomId 
+                    string str1 = @"select Top 1 PIM.IssueOrderID, PIM.LoomId 
                             from HomeFurnishingOrderMaster PIM 
                             inner join ProductionLoomMaster PLM on PIM.LoomId=PLM.UID
                             join Employee_HomeFurnishingOrderMaster EMP on PIM.IssueOrderId=EMP.IssueOrderId and EMP.ProcessId = " + DDProcessName.SelectedValue + @"
                             JOIN Empinfo EI ON EI.EmpID = EMP.EMPID 
                             Where Plm.CompanyId=" + DDcompany.SelectedValue + " and PLm.UnitId=" + DDProdunit.SelectedValue + "";
 
-                                if (chkcomplete.Checked == true)
-                                {
-                                    str = str + " and PIM.status='Complete'";
-                                    str1 = str1 + " and PIM.status='Complete'";
-                                }
-                                else
-                                {
-                                    str = str + " and PIM.status='Pending'";
-                                    str1 = str1 + " and PIM.status='Pending'";
-                                }
-                                if (txteditempid.Text != "")
-                                {
-                                    str = str + " and EMP.EMPID=" + txteditempid.Text + "";
-                                    str1 = str1 + " and EMP.EMPID=" + txteditempid.Text + "";
-                                }
-                                if (txteditempcode.Text != "")
-                                {
-                                    str1 = str1 + " and EI.EMPCode = '" + txteditempcode.Text + "'";
-                                }
-                                if (txtfolionoedit.Text != "")
-                                {
-                                    str = str + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
-                                    str1 = str1 + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
+                    if (chkcomplete.Checked == true)
+                    {
+                        str = str + " and PIM.status='Complete'";
+                        str1 = str1 + " and PIM.status='Complete'";
+                    }
+                    else
+                    {
+                        str = str + " and PIM.status='Pending'";
+                        str1 = str1 + " and PIM.status='Pending'";
+                    }
+                    if (txteditempid.Text != "")
+                    {
+                        str = str + " and EMP.EMPID=" + txteditempid.Text + "";
+                        str1 = str1 + " and EMP.EMPID=" + txteditempid.Text + "";
+                    }
+                    if (txteditempcode.Text != "")
+                    {
+                        str1 = str1 + " and EI.EMPCode = '" + txteditempcode.Text + "'";
+                    }
+                    if (txtfolionoedit.Text != "")
+                    {
+                        str = str + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
+                        str1 = str1 + " and PIM.ChallanNo='" + txtfolionoedit.Text + "'";
 
-                                    ///str = str + " and PIM.issueorderid=" + txtfolionoedit.Text + "";
-                                }
-                                str = str + " order by Loom,loomno ";
-                                str1 = str1 + " order by PIM.IssueOrderID Desc ";
-                                str = str + str1;
+                        ///str = str + " and PIM.issueorderid=" + txtfolionoedit.Text + "";
+                    }
+                    str = str + " order by Loom,loomno ";
+                    str1 = str1 + " order by PIM.IssueOrderID Desc ";
+                    str = str + str1;
 
-                                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+                    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
-                                UtilityModule.ConditionalComboFillWithDS(ref DDLoomNo, ds, 0, true, "--Plz Select--");
+                    UtilityModule.ConditionalComboFillWithDS(ref DDLoomNo, ds, 0, true, "--Plz Select--");
 
-                                if (DDLoomNo.Items.Count > 0)
-                                {
-                                    if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
-                                    {
-                                        DDLoomNo.SelectedValue = ds.Tables[1].Rows[0]["LoomId"].ToString();
-                                    }
-                                    else
-                                    {
-                                        DDLoomNo.SelectedIndex = 1;
-                                    }
+                    if (DDLoomNo.Items.Count > 0)
+                    {
+                        if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                        {
+                            DDLoomNo.SelectedValue = ds.Tables[1].Rows[0]["LoomId"].ToString();
+                        }
+                        else
+                        {
+                            DDLoomNo.SelectedIndex = 1;
+                        }
 
-                                    DDLoomNo_SelectedIndexChanged(sender, new EventArgs());
+                        DDLoomNo_SelectedIndexChanged(sender, new EventArgs());
 
-                                }
-                            }
-                            else
-                            {
-                                UtilityModule.ConditionalComboFill(ref DDLoomNo, @"select  PM.UID,PM.LoomNo+'/'+isnull(IM.ITEM_NAME,'') as LoomNo from ProductionLoomMaster PM 
+                    }
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref DDLoomNo, @"select  PM.UID,PM.LoomNo+'/'+isnull(IM.ITEM_NAME,'') as LoomNo from ProductionLoomMaster PM 
                                             Left join ITEM_MASTER IM on PM.Itemid=IM.ITEM_ID                                            
                                             Where  PM.CompanyId=" + DDcompany.SelectedValue + " and PM.UnitId=" + DDProdunit.SelectedValue + " order by case when ISNUMERIC(PM.loomno)=1 Then CONVERT(int,PM.loomno) Else 9999999 End,PM.loomno", true, "--Plz Select--");
-                            }
-                        }
+                }
+            }
         }
     }
     protected void DDcustcode_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str=string.Empty;
-        if (Session["varcompanyNo"].ToString() == "44")
+        if (TDDepartmentName.Visible == true && DDDepartmentName.SelectedIndex > 0)
         {
-            str = @"Select Distinct OM.OrderID, OM.CustomerOrderNo 
+            FillDepartmentIssueNo();
+        }
+        else
+        {
+            string str = string.Empty;
+            if (Session["varcompanyNo"].ToString() == "44")
+            {
+                str = @"Select Distinct OM.OrderID, OM.CustomerOrderNo 
                     From OrderMaster OM(Nolock) 
                     JOIN OrderDetail OD(Nolock) ON OD.OrderID = OM.OrderID 
                     JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id 
                     Where OM.Status = 0 And OM.CompanyID = " + DDcompany.SelectedValue + " AND OM.CustomerId = " + DDcustcode.SelectedValue + @" 
                     Order By OM.CustomerOrderNo";
-        }
-        else
-        {
-            str = @"Select Distinct OM.OrderID, OM.CustomerOrderNo 
+            }
+            else
+            {
+                str = @"Select Distinct OM.OrderID, OM.CustomerOrderNo 
                     From OrderMaster OM(Nolock) 
                     JOIN OrderDetail OD(Nolock) ON OD.OrderID = OM.OrderID 
                     JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.PoufTypeCategory = 1 
                     Where OM.Status = 0 And OM.CompanyID = " + DDcompany.SelectedValue + " AND OM.CustomerId = " + DDcustcode.SelectedValue + @" 
                     Order By OM.CustomerOrderNo";
-        
-        
-        
+            }
+            UtilityModule.ConditionalComboFill(ref DDorderNo, str, true, "--Plz Select--");
         }
-        UtilityModule.ConditionalComboFill(ref DDorderNo, str, true, "--Plz Select--");
     }
     protected void FillissueDetails()
     {
@@ -333,8 +363,14 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
                 JOIN ORDERDETAILDETAIL ODD(Nolock) ON ODD.OrderDetailID = OD.OrderDetailId And ODD.OrderID = OD.OrderID 
                 LEFT JOIN V_HomeFurnishingOrderDetail VHFOD(Nolock) ON VHFOD.OrderID = ODD.OrderID And VHFOD.Order_FinishedID = OD.ITEM_FINISHED_ID And 
-                        VHFOD.OrderDetailDetail_FinishedID = ODD.OrderDetailDetail_Item_Finished_Id And VHFOD.ProcessID = " + DDProcessName.SelectedValue + @" 
-                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = ODD.OrderDetailDetail_Item_Finished_Id 
+                        VHFOD.OrderDetailDetail_FinishedID = ODD.OrderDetailDetail_Item_Finished_Id And VHFOD.ProcessID = " + DDProcessName.SelectedValue;
+
+                if(TDDepartmentIssueNo.Visible ==true && DDDepartmentIssueNo.SelectedIndex > 0)
+                {
+                    str = str + @" JOIN ProcessIssueToHomeFurnishingDepartmentDetail PIHFDD(Nolock) ON PIHFDD.OrderID = OM.OrderID And PIHFDD.Order_FinishedID = OD.ITEM_FINISHED_ID And 
+                                PIHFDD.OrderDetailDetail_FinishedID = ODD.OrderDetailDetail_Item_Finished_Id And PIHFDD.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue;
+                }
+                str = str + @" JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = ODD.OrderDetailDetail_Item_Finished_Id 
                 JOIN JobAssigns J(Nolock) ON J.OrderID = OD.OrderID And J.ITEM_FINISHED_ID = OD.Item_Finished_Id 
                 JOIN Unit U(nolock) ON U.UnitId = OD.OrderUnitId 
                 CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(OD.item_finished_id, " + DDProcessName.SelectedValue + "," + DDProdunit.SelectedValue + @"," + DDcaltype.SelectedValue + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE 
@@ -444,9 +480,9 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             }
 
 
-                    if (Session["varcompanyNo"].ToString() == "44")
-                    {
-                        str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
+            if (Session["varcompanyNo"].ToString() == "44")
+            {
+                str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
                 " + ddunit.SelectedValue + @" OrderUnitId, OD.flagsize, 
                 VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
                 Case When " + ddunit.SelectedValue + @" = 1 Then vf.LWHMtr Else Case When " + ddunit.SelectedValue + @" = 6 Then VF.LWHInch Else VF.LWHFt End End ItemDescription, 
@@ -463,26 +499,26 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(ODD.OrderDetailDetail_Item_Finished_Id, " + DDProcessName.SelectedValue + "," + DDProdunit.SelectedValue + @"," + DDcaltype.SelectedValue + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE 
                 Where Om.orderid = " + DDorderNo.SelectedValue + " Order By OD.OrderDetailID";
 
-                        //                str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
-                        //                " + ddunit.SelectedValue + @" OrderUnitId, OD.flagsize, 
-                        //                VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
-                        //                Case When OD.OrderUnitId = 1 Then vf.LWHMtr Else Case When OD.OrderUnitId = 6 Then VF.LWHInch Else VF.LWHFt End End ItemDescription, 
-                        //                '" + ddunit.SelectedItem.Text + @"' UnitName, (J.INTERNALPRODASSIGNEDQTY + J.PreProdAssignedQty) QtyRequired, 
-                        //                IsNull(VHFOD.Qty, 0) OrderedQty, JOBRATE.RATE, Case When OD.OrderUnitId = 1 Then LengthMtr  When OD.OrderUnitId = 6 THEN LengthINCH ELSE LengthFt END   [Length], Case When OD.OrderUnitId = 1 Then WidthMtr  When OD.OrderUnitId = 6 THEN WidthINCH ELSE WidthFt END  [Width],Case When OD.OrderUnitId = 1 Then HeightMtr  When OD.OrderUnitId = 6 THEN HeightINCH ELSE HeightFt END [height],   Case When OD.OrderUnitId = 1 Then AreaMtr  When OD.OrderUnitId = 6 THEN AreaInch ELSE AreaFt END  Area, VF.ShapeID, JOBRATE.COMMRATE 
-                        //                From OrderMaster OM(Nolock) 
-                        //                JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
-                        //                JOIN ORDERDETAILDETAIL ODD(Nolock) ON ODD.OrderDetailID = OD.OrderDetailId And ODD.OrderID = OD.OrderID 
-                        //                LEFT JOIN V_HomeFurnishingOrderDetail VHFOD(Nolock) ON VHFOD.OrderID = ODD.OrderID And VHFOD.Order_FinishedID = OD.ITEM_FINISHED_ID And 
-                        //                        VHFOD.OrderDetailDetail_FinishedID = ODD.OrderDetailDetail_Item_Finished_Id And VHFOD.ProcessID = " + DDProcessName.SelectedValue + @" 
-                        //                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = ODD.OrderDetailDetail_Item_Finished_Id 
-                        //                JOIN JobAssigns J(Nolock) ON J.OrderID = OD.OrderID And J.ITEM_FINISHED_ID = OD.Item_Finished_Id 
-                        //                JOIN Unit U(nolock) ON U.UnitId = OD.OrderUnitId 
-                        //                CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(ODD.OrderDetailDetail_Item_Finished_Id, " + DDProcessName.SelectedValue + "," + DDProdunit.SelectedValue + @"," + DDcaltype.SelectedValue + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE 
-                        //                Where Om.orderid = " + DDorderNo.SelectedValue + " Order By OD.OrderDetailID";
-                    }
-                    else
-                    {
-                        str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
+                //                str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
+                //                " + ddunit.SelectedValue + @" OrderUnitId, OD.flagsize, 
+                //                VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
+                //                Case When OD.OrderUnitId = 1 Then vf.LWHMtr Else Case When OD.OrderUnitId = 6 Then VF.LWHInch Else VF.LWHFt End End ItemDescription, 
+                //                '" + ddunit.SelectedItem.Text + @"' UnitName, (J.INTERNALPRODASSIGNEDQTY + J.PreProdAssignedQty) QtyRequired, 
+                //                IsNull(VHFOD.Qty, 0) OrderedQty, JOBRATE.RATE, Case When OD.OrderUnitId = 1 Then LengthMtr  When OD.OrderUnitId = 6 THEN LengthINCH ELSE LengthFt END   [Length], Case When OD.OrderUnitId = 1 Then WidthMtr  When OD.OrderUnitId = 6 THEN WidthINCH ELSE WidthFt END  [Width],Case When OD.OrderUnitId = 1 Then HeightMtr  When OD.OrderUnitId = 6 THEN HeightINCH ELSE HeightFt END [height],   Case When OD.OrderUnitId = 1 Then AreaMtr  When OD.OrderUnitId = 6 THEN AreaInch ELSE AreaFt END  Area, VF.ShapeID, JOBRATE.COMMRATE 
+                //                From OrderMaster OM(Nolock) 
+                //                JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
+                //                JOIN ORDERDETAILDETAIL ODD(Nolock) ON ODD.OrderDetailID = OD.OrderDetailId And ODD.OrderID = OD.OrderID 
+                //                LEFT JOIN V_HomeFurnishingOrderDetail VHFOD(Nolock) ON VHFOD.OrderID = ODD.OrderID And VHFOD.Order_FinishedID = OD.ITEM_FINISHED_ID And 
+                //                        VHFOD.OrderDetailDetail_FinishedID = ODD.OrderDetailDetail_Item_Finished_Id And VHFOD.ProcessID = " + DDProcessName.SelectedValue + @" 
+                //                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = ODD.OrderDetailDetail_Item_Finished_Id 
+                //                JOIN JobAssigns J(Nolock) ON J.OrderID = OD.OrderID And J.ITEM_FINISHED_ID = OD.Item_Finished_Id 
+                //                JOIN Unit U(nolock) ON U.UnitId = OD.OrderUnitId 
+                //                CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(ODD.OrderDetailDetail_Item_Finished_Id, " + DDProcessName.SelectedValue + "," + DDProdunit.SelectedValue + @"," + DDcaltype.SelectedValue + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE 
+                //                Where Om.orderid = " + DDorderNo.SelectedValue + " Order By OD.OrderDetailID";
+            }
+            else
+            {
+                str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
                 " + ddunit.SelectedValue + @" OrderUnitId, OD.flagsize, 
                 VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
                 Case When " + ddunit.SelectedValue + @" = 1 Then VF.Sizemtr Else Case When " + ddunit.SelectedValue + @" = 6 Then VF.SizeInch Else VF.sizeft End End ItemDescription, 
@@ -498,13 +534,13 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 JOIN Unit U(nolock) ON U.UnitId = OD.OrderUnitId 
                 CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(OD.item_finished_id, " + DDProcessName.SelectedValue + "," + DDProdunit.SelectedValue + @"," + DDcaltype.SelectedValue + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE 
                 Where Om.orderid = " + DDorderNo.SelectedValue + " Order By OD.OrderDetailID";
-                    }
-
-                    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
-                    DG.DataSource = ds.Tables[0];
-                    DG.DataBind();
             }
-        
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            DG.DataSource = ds.Tables[0];
+            DG.DataBind();
+        }
+
     }
 
     protected void DDorderNo_SelectedIndexChanged(object sender, EventArgs e)
@@ -608,7 +644,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 cmd.Parameters.AddWithValue("@LOOMID", txtloomid.Text);
                 cmd.Parameters.AddWithValue("@CALTYPE", DDcaltype.SelectedValue);
                 cmd.Parameters.AddWithValue("@USERID", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@MASTERCOMPANYID", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@REMARKS", TxtRemarks.Text.Trim());
                 cmd.Parameters.AddWithValue("@INSTRUCTION", TxtInstructions.Text.Trim());
                 cmd.Parameters.AddWithValue("@FLAGFIXORWEIGHT", 1);
@@ -621,6 +657,25 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
 
                 cmd.Parameters.AddWithValue("@EMPIDS", StrEmpid);
                 cmd.Parameters.AddWithValue("@OrderDetail", strOrderDetail);
+
+
+                cmd.Parameters.AddWithValue("@BranchID", DDBranchName.SelectedValue);
+
+                if (TDDepartmentIssueNo.Visible == true)
+                {
+                    if (DDDepartmentIssueNo.SelectedIndex > 0)
+                    {
+                        cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", DDDepartmentIssueNo.SelectedValue);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", 0);
+                    }
+                }
+                else
+                {
+                    cmd.Parameters.AddWithValue("@DepartmentIssueOrderID", 0);
+                }
 
                 cmd.ExecuteNonQuery();
                 if (cmd.Parameters["@msg"].Value.ToString() != "") //IF DATA NOT SAVED
@@ -666,11 +721,11 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
     {
         TxtRemarks.Text = "";
         TxtInstructions.Text = "";
-         string str=string.Empty;
+        string str = string.Empty;
 
-         if (Session["varcompanyNo"].ToString() == "44")
-         {
-             str = @"Select a.IssueOrderId, b.IssueDetailId, 
+        if (Session["varcompanyNo"].ToString() == "44")
+        {
+            str = @"Select a.IssueOrderId, b.IssueDetailId, 
                 VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
                                 Case When a.UNITID = 1 Then VF.LWHMtr Else Case When a.UNITID = 6 Then VF.LWHInch Else VF.LWHFt End End ItemDescription, 
                 b.Width, b.Length,b.height, b.Qty, b.Rate, b.Comm, b.Area, b.Amount, REPLACE(CONVERT(NVARCHAR(11), a.assigndate, 106), ' ', '-') assigndate, 
@@ -678,11 +733,11 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 From HomeFurnishingOrderMaster a(Nolock) 
                 JOIN HomeFurnishingOrderDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.OrderDetailDetail_FinishedID 
-                Where a.ISSUEORDERID = " + hnissueorderid.Value + " And a.MasterCompanyId = " + Session["varCompanyId"] + " Order By b.IssueDetailId Desc";
-         }
-         else
-         {
-             str = @"Select a.IssueOrderId, b.IssueDetailId, 
+                Where a.ISSUEORDERID = " + hnissueorderid.Value + " And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By b.IssueDetailId Desc";
+        }
+        else
+        {
+            str = @"Select a.IssueOrderId, b.IssueDetailId, 
                 VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
                                 Case When a.UNITID = 1 Then VF.SizeMtr Else Case When a.UNITID = 6 Then VF.SizeInch Else VF.SizeFt End End ItemDescription, 
                 b.Width, b.Length,b.height, b.Qty, b.Rate, b.Comm, b.Area, b.Amount, REPLACE(CONVERT(NVARCHAR(11), a.assigndate, 106), ' ', '-') assigndate, 
@@ -690,8 +745,8 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 From HomeFurnishingOrderMaster a(Nolock) 
                 JOIN HomeFurnishingOrderDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.OrderDetailDetail_FinishedID 
-                Where a.ISSUEORDERID = " + hnissueorderid.Value + " And a.MasterCompanyId = " + Session["varCompanyId"] + " Order By b.IssueDetailId Desc";
-         }
+                Where a.ISSUEORDERID = " + hnissueorderid.Value + " And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By b.IssueDetailId Desc";
+        }
         //Employeedetail
         str = str + @" Select Distinct EI.Empid, EI.EmpCode + '-' + EI.EmpName EmpName, activestatus 
                     From Employee_HomeFurnishingOrderMaster EMP(Nolock)
@@ -746,15 +801,15 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
         SqlParameter[] array = new SqlParameter[4];
         array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         array[1] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         array[3] = new SqlParameter("@ReportType", 1);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyid"].ToString())
-            {               
+            switch (Session["varMasterCompanyIDForERP"].ToString())
+            {
                 case "44":
                     Session["rptFileName"] = "~\\Reports\\RptProductionOrderLoomWiseStockagni.rpt";
                     break;
@@ -804,13 +859,13 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             TDFolioNo.Visible = true;
             TDFolioNotext.Visible = true;
             hnissueorderid.Value = "0";
-            if((Session["varcompanyid"].ToString()=="44"))
+            if ((Session["varMasterCompanyIDForERP"].ToString() == "44"))
             {
-            TDLoomNoDropdown.Visible = false;
+                TDLoomNoDropdown.Visible = false;
             }
             else
             {
-             TDLoomNoDropdown.Visible = true;
+                TDLoomNoDropdown.Visible = true;
             }
             TDLoomNotextbox.Visible = false;
             //TDactiveemployee.Visible = true;
@@ -951,7 +1006,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
         hnissueorderid.Value = DDFolioNo.SelectedValue;
         FillGrid();
 
-        if (Session["VarCompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
         {
             ShowCustomerCodeAndOrderNo();
         }
@@ -971,7 +1026,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //******
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_CancelProductionorderLoomWise", param);
             //******
@@ -1144,7 +1199,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
 
                 DataSet ds = null;
 
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     str = @"Select EI.Empid, EI.Empcode + '-' + EI.Empname EmpName, IsNull(EI.EmployeeType, 0) Emptype, 1 Caltype, 
                             IsNull(EID.Wagescalculation, 0) Wagescalculation 
@@ -1174,12 +1229,12 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                         ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Please select same location employee');", true);
                         return;
                     }
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -1188,7 +1243,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                            if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                             {
                                 txtWeaverIdNoscan.Text = "";
                                 txtWeaverIdNoscan.Focus();
@@ -1199,7 +1254,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                     //***********CHECK LOCATION
                     Boolean addflag = true;
 
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -1290,12 +1345,12 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                         return;
                     }
 
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -1304,7 +1359,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                            if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                             {
                                 txtWeaverIdNoscan.Text = "";
                                 txtWeaverIdNoscan.Focus();
@@ -1315,7 +1370,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                     //***********CHECK LOCATION
                     Boolean addflag = true;
 
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -1397,15 +1452,16 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Processid", 1);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             string sp = string.Empty;
             if (Session["varcompanyNo"].ToString() == "44")
             {
                 sp = "Pro_UpdateFolioActiveStatusHome";
             }
-            else {
+            else
+            {
                 sp = "Pro_UpdateFolioActiveStatus";
-            
+
             }
 
             //*************
@@ -1644,13 +1700,13 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
 
             array[0].Value = hnissueorderid.Value;
             array[1].Value = 1;
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionConsumptionOrderReport", array);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                if (Convert.ToInt32(Session["VarcompanyId"]) == 27 || Convert.ToInt32(Session["VarcompanyId"]) == 34)//For Antique Panipat
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 34)//For Antique Panipat
                 {
                     Session["rptFileName"] = "~\\Reports\\ProductionOrderConsumptionForAntiquePanipat.rpt";
                 }
@@ -1684,7 +1740,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
     }
     protected void txtstockno_TextChanged(object sender, EventArgs e)
     {
-        if ((Session["varcompanyid"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
+        if ((Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
         {
             StockNoTextChanged();
         }
@@ -1783,7 +1839,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 DGOrderdetail.Columns[10].Visible = false;
                 DGOrderdetail.Columns[11].Visible = false;
             }
-            if (Convert.ToString(Session["varcompanyid"]) == "44")
+            if (Convert.ToString(Session["varMasterCompanyIDForERP"]) == "44")
             {
                 DGOrderdetail.Columns[3].Visible = true;
             }
@@ -1792,7 +1848,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
     protected void btnweaveridscan_Click(object sender, EventArgs e)
     {
         //*********Check Folio Pending
-        switch (Session["varcompanyid"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "16":
             case "28":
@@ -1843,7 +1899,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //param[5] = new SqlParameter("@TanaLotNo", txtTanaLotNo.Text);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioTanaLotNo", param);
@@ -1871,7 +1927,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
         {
             for (int i = 0; i < DG.Columns.Count; i++)
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "27":
                     case "34":
@@ -2124,7 +2180,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@dtrecord", dtrecord);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioEmployeehome", param);
@@ -2183,5 +2239,86 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
         //    con.Close();
         //}
         #endregion
+    }
+    protected void DDDepartmentName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (hnEmployeeType.Value == "0")
+        {
+            DDorderNo.Enabled = false;
+
+            if (DDDepartmentName.SelectedIndex == 0)
+            {
+                TDDepartmentIssueNo.Visible = false;
+                string Str = @"Select Distinct CI.CustomerId, CI.CustomerCode 
+                        From OrderMaster OM(Nolock)
+                        JOIN CustomerInfo CI(Nolock) ON CI.CustomerId = OM.CustomerId 
+                        JOIN OrderDetail OD(Nolock) ON OD.OrderID = OM.OrderID 
+                        JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.PoufTypeCategory = 1 
+                        Where OM.CompanyID = " + Session["CurrentWorkingCompanyID"] + @"
+                        Order By CI.CustomerCode ";
+
+                UtilityModule.ConditionalComboFill(ref DDcustcode, Str, true, "--Plz Select--");
+                DDcustcode.Enabled = true;
+                DDorderNo.Enabled = true;
+            }
+            else
+            {
+                SqlParameter[] param = new SqlParameter[5];
+                param[0] = new SqlParameter("@CompanyID", DDcompany.SelectedValue);
+                param[1] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
+                param[2] = new SqlParameter("@DepartmentID", DDDepartmentName.SelectedValue);
+                param[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
+                param[4] = new SqlParameter("@Type", 1);
+
+                DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_UpdateDepartmentStatus", param);
+
+                UtilityModule.ConditionalComboFillWithDS(ref DDcustcode, ds, 0, true, "select customer code");
+
+                TDDepartmentIssueNo.Visible = true;
+            }
+            DDorderNo.Items.Clear();
+            DG.DataSource = null;
+            DG.DataBind();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('Please select internal employee');", true);
+            DDDepartmentName.SelectedIndex = 0;
+        }
+    }
+    private void FillDepartmentIssueNo()
+    {
+        string Str = @"Select Distinct a.IssueOrderID, a.IssueOrderID a
+                From ProcessIssueToHomeFurnishingDepartmentMaster a(Nolock) ";
+        if (DDcustcode.SelectedIndex > 0)
+        {
+            Str = Str + @" JOIN ProcessIssueToHomeFurnishingDepartmentDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
+                JOIN OrderMaster OM(Nolock) ON OM.OrderId = b.OrderID And OM.CustomerId = " + DDcustcode.SelectedValue;
+        }
+        Str = Str + @" Where a.Status = 'Pending' And a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
+                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By a.IssueOrderID";
+
+        UtilityModule.ConditionalComboFill(ref DDDepartmentIssueNo, Str, true, "--Plz Select--");
+    }
+    protected void DDDepartmentIssueNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDDepartmentIssueNo.SelectedIndex > 0)
+        {
+            if (DDDepartmentName.SelectedIndex > 0 && DDDepartmentIssueNo.SelectedIndex > 0)
+            {
+                string str = @"Select Distinct OM.OrderId, OM.CustomerOrderNo 
+                From ProcessIssueToHomeFurnishingDepartmentMaster a(Nolock) 
+                JOIN ProcessIssueToHomeFurnishingDepartmentDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
+                JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID 
+                Where a.Status = 'Pending' And a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
+                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OM.status = '0' And OM.CustomerId = " + DDcustcode.SelectedValue + @" 
+                    And a.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue + @" 
+                Order By OM.OrderID ";
+
+                UtilityModule.ConditionalComboFill(ref DDorderNo, str, true, "--Plz Select--");
+            }
+            DDorderNo.SelectedIndex = 1;
+            DDorderNo_SelectedIndexChanged(sender, new EventArgs());
+        }
     }
 }

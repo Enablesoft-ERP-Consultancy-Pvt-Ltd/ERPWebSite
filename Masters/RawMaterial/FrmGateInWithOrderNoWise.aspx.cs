@@ -11,23 +11,23 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = "";
-            str = @"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname";
-           str = str + " Select customerid,companyName+ ' (' + CustomerCode + ')' CustomerCode  from Customerinfo  where mastercompanyid=" + Session["varCompanyId"] + @" order by companyName ";
+            str = @"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname";
+           str = str + " Select customerid,companyName+ ' (' + CustomerCode + ')' CustomerCode  from Customerinfo  where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by companyName ";
            
 
-            str = str + @" Select GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId Where GA.UserId=" + Session["varUserId"] + @" and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            str = str + @" Select GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId Where GA.UserId=" + Session["varUserId"] + @" and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                           
                  Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                 Select ConeType, ConeType From ConeMaster Order By SrNo ";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -105,7 +105,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
         string Str = "";
 //        string Str = @"Select GATEOUTID,cast(ISSUENO as varchar) +' / '+ replace(convert(varchar(11),ISSUEDATE,106),' ','-') as Date 
 //        From View_GateOutInDetail 
-//        Where CompanyId=" + ddCompName.SelectedValue + " And PartyID=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "";
+//        Where CompanyId=" + ddCompName.SelectedValue + " And PartyID=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
 //        if (TDDept.Visible == true)
 //        {
@@ -118,7 +118,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
         {
             Str = Str + @" Select Distinct GIM.GateInID,cast(GIM.GateInNo as varchar) +' / '+ replace(convert(varchar(11),GIM.GateInDate,106),' ','-') as GateInNo 
             From GateInMaster GIM,GateInDetail GID 
-            Where GIM.GateInID=GID.GateInID And CompanyID=" + ddCompName.SelectedValue + " And BranchID=" + DDBranchName.SelectedValue + " And MasterCompanyID=" + Session["varCompanyId"] + @" And 
+            Where GIM.GateInID=GID.GateInID And CompanyID=" + ddCompName.SelectedValue + " And BranchID=" + DDBranchName.SelectedValue + " And MasterCompanyID=" + Session["varMasterCompanyIDForERP"] + @" And 
             GID.OrderID=" + DDCustomerOrderNo.SelectedValue + "";          
             Str = Str + " order by GIM.GateInID";
 
@@ -144,7 +144,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
                     From ORDER_CONSUMPTION_DETAIL OCD(nolock)
                     JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID 
                     JOIN CategorySeparate CS (nolock) ON CS.Categoryid = VF.CATEGORY_ID And CS.ID=" + ddlcatagorytype.SelectedValue + @"
-                    Where OCD.MasterCompanyId = " + Session["varCompanyId"] + " And OCD.OrderID = " + DDCustomerOrderNo.SelectedValue + @"
+                    Where OCD.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OCD.OrderID = " + DDCustomerOrderNo.SelectedValue + @"
                     order by VF.CATEGORY_NAME ", true, "-Select Category-");
         if (ddCatagory.Items.Count > 0)
         {
@@ -173,11 +173,11 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
         shd.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME FROM ITEM_CATEGORY_PARAMETERS IPM inner join 
                         PARAMETER_MASTER PM on IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + @" And 
-                        PM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                        PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                         Select Distinct VF.ITEM_ID, VF.ITEM_NAME 
                         From ORDER_CONSUMPTION_DETAIL OCD(nolock)
                         JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + @" 
-                        Where OCD.MasterCompanyId = " + Session["varCompanyId"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
+                        Where OCD.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
                         order by VF.ITEM_NAME ";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -230,7 +230,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             UtilityModule.ConditionalComboFill(ref dquality, @"Select Distinct VF.QualityId, VF.QualityName
             From ORDER_CONSUMPTION_DETAIL OCD(nolock)
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + " And VF.ITEM_ID = " + dditemname.SelectedValue + @" 
-            Where OCD.MasterCompanyId = " + Session["varCompanyId"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
+            Where OCD.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
             order by VF.QualityName ", true, "-Select Quality-");
         }
         if (dddesign.Visible == true)
@@ -238,7 +238,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             UtilityModule.ConditionalComboFill(ref dddesign, @"Select Distinct VF.DesignID, VF.DesignName 
             From ORDER_CONSUMPTION_DETAIL OCD(nolock)
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + " And VF.ITEM_ID = " + dditemname.SelectedValue + @" 
-            Where OCD.MasterCompanyId = " + Session["varCompanyId"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
+            Where OCD.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
             order by VF.DesignName", true, "-Select Design-");
         }
         if (ddcolor.Visible == true)
@@ -246,7 +246,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             UtilityModule.ConditionalComboFill(ref ddcolor, @"Select Distinct VF.ColorId, VF.ColorName 
             From ORDER_CONSUMPTION_DETAIL OCD(nolock)
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + " And VF.ITEM_ID = " + dditemname.SelectedValue + @" 
-            Where OCD.MasterCompanyId = " + Session["varCompanyId"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
+            Where OCD.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
             order by VF.ColorName ", true, "-Select Colour-");
         }
         if (ddshape.Visible == true)
@@ -254,7 +254,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             UtilityModule.ConditionalComboFill(ref ddshape, @"Select Distinct VF.ShapeId, VF.ShapeName
             From ORDER_CONSUMPTION_DETAIL OCD(nolock)
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + " And VF.ITEM_ID = " + dditemname.SelectedValue + @" 
-            Where OCD.MasterCompanyId = " + Session["varCompanyId"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
+            Where OCD.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
             order by VF.ShapeName", true, "-Select Shape-");
         }
     }
@@ -267,7 +267,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             From ORDER_CONSUMPTION_DETAIL OCD(nolock)
             JOIN V_FinishedItemDetail VF(nolock) ON VF.ITEM_FINISHED_ID = OCD.IFINISHEDID And VF.CATEGORY_ID = " + ddCatagory.SelectedValue + @" 
                 And VF.ITEM_ID = " + dditemname.SelectedValue + " And VF.QualityID = " + dquality.SelectedValue + @" 
-            Where OCD.MasterCompanyId = " + Session["varCompanyId"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
+            Where OCD.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OCD.ORDERID = " + DDCustomerOrderNo.SelectedValue + @" 
             order by VF.ShadeColorName ", true, "-Select Shade Colour-");
         }
     }
@@ -284,7 +284,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             Str = "Select SizeId,SizeMtr";
             StrNew = "SizeMtr";
         }
-        Str = Str + " From Size Where MasterCompanyId=" + Session["varCompanyId"] + " And ShapeId=" + ddshape.SelectedValue + " Order by " + StrNew;
+        Str = Str + " From Size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And ShapeId=" + ddshape.SelectedValue + " Order by " + StrNew;
         UtilityModule.ConditionalComboFill(ref ddsize, Str, true, "-Select Size-");
     }
     protected void ChkForMtr_CheckedChanged(object sender, EventArgs e)
@@ -378,7 +378,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             arr[3].Direction = ParameterDirection.InputOutput;
             arr[3].Value = TxtGateInNo.Text;
             arr[4].Value = txtdate.Text;
-            arr[5].Value = Session["varCompanyId"];
+            arr[5].Value = Session["varMasterCompanyIDForERP"];
             arr[6].Value = Session["varuserid"];
             arr[7].Direction = ParameterDirection.InputOutput;
             if (btnsave.Text == "Update")
@@ -389,7 +389,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
             {
                 arr[7].Value = 0;
             }
-            arr[8].Value = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            arr[8].Value = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[9].Value = TxtQty.Text;
             arr[10].Value = ddgodown.SelectedValue;
             arr[11].Value = TxtLotNo.Text == "" ? "Without Lot No" : TxtLotNo.Text;
@@ -689,7 +689,7 @@ public partial class Masters_RawMaterial_FrmGateInWithOrderNoWise : System.Web.U
         {
             if (variable.VarCHECKBINCONDITION == "1")
             {
-                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 UtilityModule.FillBinNO(DDBinNo, Convert.ToInt32(ddgodown.SelectedValue), Varfinishedid, New_Edit: 0);
             }
             else

@@ -12,7 +12,7 @@ public partial class Masters_RawMaterial_frmmaterialissuestocknowise : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -297,7 +297,7 @@ public partial class Masters_RawMaterial_frmmaterialissuestocknowise : System.We
                 param[3].Value = 0;
                 param[4] = new SqlParameter("@issueDate", System.DateTime.Now.ToString("dd-MMM-yyyy"));
                 param[5] = new SqlParameter("@userid", Session["varuserid"]);
-                param[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[7] = new SqlParameter("@dtrecords", dtrecords);
                 param[8] = new SqlParameter("@TranType", SqlDbType.TinyInt);
                 param[8].Value = 0;

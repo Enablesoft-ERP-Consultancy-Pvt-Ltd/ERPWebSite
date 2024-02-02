@@ -12,7 +12,7 @@ public partial class Masters_Campany_FrmTermsConditions : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -168,7 +168,7 @@ public partial class Masters_Campany_FrmTermsConditions : CustomPage
             _arrpara[1] = new SqlParameter("@TCFID", DDFormatType.SelectedValue == "" ? "0" : DDFormatType.SelectedValue);
             _arrpara[2] = new SqlParameter("@TermsConditions", txtTermsConditions.Text);
             _arrpara[3] = new SqlParameter("@UserId", Session["varUserId"].ToString());
-            _arrpara[4] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"].ToString());
+            _arrpara[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _arrpara[5] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 200);
             _arrpara[5].Direction = ParameterDirection.Output;
 

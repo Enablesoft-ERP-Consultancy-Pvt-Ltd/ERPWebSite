@@ -15,13 +15,13 @@ public partial class Masters_ReportForms_frmJobPaymentSummary : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDjob, pWhere: "MasterCompanyid=" + Session["varcompanyid"] + "", pID: "Process_name_Id", pName: "Process_name", pFillBlank: true, Selecttext: "--Plz select Job");
+            //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDjob, pWhere: "MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", pID: "Process_name_Id", pName: "Process_name", pFillBlank: true, Selecttext: "--Plz select Job");
             UtilityModule.ConditionalComboFill(ref DDjob, "select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER  order by Process_Name", true, "--Plz Select Process--");
             UtilityModule.ConditionalComboFill(ref DDyear, "select Year,Year From YearData", false, "");
             DDMonth.SelectedValue = DateTime.Now.Month.ToString();
@@ -29,7 +29,7 @@ public partial class Masters_ReportForms_frmJobPaymentSummary : System.Web.UI.Pa
 
 
 
-            switch (Session["VarCompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "22":
                     if (Session["usertype"].ToString() == "1")
@@ -64,7 +64,7 @@ public partial class Masters_ReportForms_frmJobPaymentSummary : System.Web.UI.Pa
         cmd.Parameters.AddWithValue("@Month", DDMonth.SelectedItem.Text);
         cmd.Parameters.AddWithValue("@Year", DDyear.SelectedItem.Text);
         cmd.Parameters.AddWithValue("@EmpCode", txtIdNo.Text);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         cmd.Parameters.AddWithValue("@CompanyId", 1);
         cmd.Parameters.AddWithValue("@ChkForWeaverWiseDetail", ChkForWeaverWiseDetail.Checked==true ? 1 : 0);
 
@@ -142,7 +142,7 @@ public partial class Masters_ReportForms_frmJobPaymentSummary : System.Web.UI.Pa
         //    _array[1].Value = DDMonth.SelectedItem.Text;
         //    _array[2].Value = DDyear.SelectedItem.Text;
         //    _array[3].Value = txtIdNo.Text;
-        //    _array[4].Value = Session["varCompanyId"];
+        //    _array[4].Value = Session["varMasterCompanyIDForERP"];
         //    _array[5].Value = 1;// DDCompany.SelectedValue;
 
 

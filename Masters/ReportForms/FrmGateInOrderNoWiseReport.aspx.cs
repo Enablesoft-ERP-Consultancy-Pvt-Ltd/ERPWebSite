@@ -14,13 +14,13 @@ public partial class Masters_ReportForms_FrmGateInOrderNoWiseReport : System.Web
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname";
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -49,13 +49,13 @@ public partial class Masters_ReportForms_FrmGateInOrderNoWiseReport : System.Web
         if (variable.VarWEAVERORDERWITHOUTCUSTCODE == "1")
         {
             string str = @"Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
-            if (Session["varCompanyId"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 str = @"Select OrderId, CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
             }
             UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
         }
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -152,7 +152,7 @@ public partial class Masters_ReportForms_FrmGateInOrderNoWiseReport : System.Web
         cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);        
         cmd.Parameters.AddWithValue("@Where", str);
         cmd.Parameters.AddWithValue("@USERID", Session["VarUserId"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);      
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);      
 
         DataSet ds = new DataSet();
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
