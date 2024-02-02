@@ -12,7 +12,7 @@ public partial class Masters_Payroll_frmpayrollparameterdetails : System.Web.UI.
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -186,7 +186,7 @@ public partial class Masters_Payroll_frmpayrollparameterdetails : System.Web.UI.
             try
             {
                 SqlParameter[] param = new SqlParameter[5];
-                param[0] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+                param[0] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[1] = new SqlParameter("@userid", Session["varuserid"]);
                 param[2] = new SqlParameter("@dt", dt);
                 param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);

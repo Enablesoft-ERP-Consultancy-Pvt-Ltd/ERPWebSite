@@ -14,7 +14,7 @@ public partial class ForgotPassword : System.Web.UI.Page
     string query;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }

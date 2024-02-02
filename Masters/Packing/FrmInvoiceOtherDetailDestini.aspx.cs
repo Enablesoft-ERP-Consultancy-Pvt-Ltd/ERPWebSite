@@ -11,14 +11,14 @@ public partial class Masters_Packing_FrmInvoiceOtherDetailDestini : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
             TxtInvoiceId.Text = Request.QueryString["ID"];
-            UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varCompanyId"] + " Order By GoodsName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By GoodsName", true, "--Select--");
         }
     }
     protected void BtnSave_Click(object sender, EventArgs e)
@@ -87,7 +87,7 @@ public partial class Masters_Packing_FrmInvoiceOtherDetailDestini : System.Web.U
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, Str);
                 Tran.Commit();
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + _arrPara[0].Value + ",getdate(),'Update')");
+                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + _arrPara[0].Value + ",getdate(),'Update')");
                 LblErrorMessage.Visible = true;
                 LblErrorMessage.Text = "Data Saved Successfully";
             }
@@ -122,6 +122,6 @@ public partial class Masters_Packing_FrmInvoiceOtherDetailDestini : System.Web.U
     }
     protected void BtnRefreshDescriptionOfGood_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varCompanyId"] + " Order By GoodsName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDGoods, "Select GoodsId,GoodsName From GoodsDesc Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By GoodsName", true, "--Select--");
     }
 }

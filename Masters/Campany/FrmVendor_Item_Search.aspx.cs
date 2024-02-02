@@ -12,25 +12,25 @@ public partial class Masters_Campany_FrmVendor_Item_Search : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
         }
     }
     protected void ddcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dditem, "select ITEM_ID,ITEM_NAME from item_master where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + " order by ITEM_NAME", true, "--Select ItemName--");
+        UtilityModule.ConditionalComboFill(ref dditem, "select ITEM_ID,ITEM_NAME from item_master where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ITEM_NAME", true, "--Select ItemName--");
     }
     private void fillgrid()
     {
         string str = "";
         try
         {
-            str = @"select Item_Id,QualityName,QualityId  from Quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"];
+            str = @"select Item_Id,QualityName,QualityId  from Quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             gvitemdetail.DataSource = Ds;
             gvitemdetail.DataBind();
@@ -78,7 +78,7 @@ public partial class Masters_Campany_FrmVendor_Item_Search : System.Web.UI.Page
         string qry = @"SELECT EmpName,Address,PhoneNo,DepartmentName,QualityName
                        FROM   EmpInfo INNER JOIN  Department ON EmpInfo.Departmentid=Department.DepartmentId inner join Employee_ItemDetail 
                        on Employee_ItemDetail.EmpId = EmpInfo.EmpId inner join Quality on Quality.QualityId = Employee_ItemDetail.QualityId
-                       Where EmpInfo.MasterCompanyId=" + Session["varCompanyId"];
+                       Where EmpInfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         string str = "0";
         for (int i = 0; i < gvitemdetail.Rows.Count; i++)
         {

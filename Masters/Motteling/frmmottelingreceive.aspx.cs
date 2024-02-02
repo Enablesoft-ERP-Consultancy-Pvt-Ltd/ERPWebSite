@@ -12,20 +12,20 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
     static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName 
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                            select PROCESS_NAME_ID,Process_name From process_name_master  where Process_Name in('Motteling','YARN OPENING+MOTTELING', 'HANK MAKING') order by PROCESS_NAME 
-                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select Godownid From ModuleWiseGodown Where ModuleName='" + Page.Title + @"' 
                            Select ID, BranchName 
                                 From BRANCHMASTER BM(nolock) 
                                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -76,7 +76,7 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
             {
                 TRempcodescan.Visible = true;
             }
-            if (Convert.ToInt32(Session["varcompanyid"]) == 16 || Convert.ToInt32(Session["varcompanyid"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
                 BtnComplete.Visible = true;
             }
@@ -210,7 +210,7 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
 
             //TextBox lblrate = (TextBox)e.Row.FindControl("lblrate");
 
-            //if (Convert.ToInt32(Session["varcompanyid"]) == 16 || Convert.ToInt32(Session["varcompanyid"]) == 28)
+            //if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             //{
             //    lblrate.Enabled = false;
             //}
@@ -255,7 +255,7 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
                 DDTransportType.SelectedValue = lblTransportType.Text;
             }
 
-            if (Convert.ToInt32(Session["varcompanyid"]) == 16 || Convert.ToInt32(Session["varcompanyid"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
                 DDconetype.Enabled = false;
                 DDPlyType.Enabled = false;
@@ -390,7 +390,7 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
                 arr[5].Value = txtchallanNo.Text;
                 arr[6] = new SqlParameter("@RecDate", txtrecdate.Text);
                 arr[7] = new SqlParameter("@userid", Session["varuserid"]);
-                arr[8] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                arr[8] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 arr[9] = new SqlParameter("@dtrecord", dtrecord);
                 arr[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 arr[10].Direction = ParameterDirection.Output;
@@ -515,7 +515,7 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@ID", lblid.Text);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //***********
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DELETEMOTTELINGRECEIVE", arr);
             lblmsg.Text = arr[1].Value.ToString();
@@ -646,7 +646,7 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@ID", lblid.Text);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[5] = new SqlParameter("@Rate", lblrate.Text == "" ? "0" : lblrate.Text);
             arr[6] = new SqlParameter("@Penalityamt", txtpenalityamtrec.Text == "" ? "0" : txtpenalityamtrec.Text);
             arr[7] = new SqlParameter("@Penalityrate", txtpenalityrate_rec.Text == "" ? "0" : txtpenalityrate_rec.Text);

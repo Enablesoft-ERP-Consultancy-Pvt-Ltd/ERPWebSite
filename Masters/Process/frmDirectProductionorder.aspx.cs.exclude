@@ -1,0 +1,578 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+public partial class Masters_Process_frmDirectProductionorder : System.Web.UI.Page
+{
+    public static int ItemFinishedId;
+    public static int IssueOrderId;
+    public static int OrderId;
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (Session["varcompanyno"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
+        if (!IsPostBack)
+        {
+            string str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI,EmpProcess EP Where EI.Empid=EP.Empid  And EP.Processid=1 And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+             select UnitId,UnitName from Unit  Where UnitId in(1,2,4,7)
+             select Category_Id,Category_Name from item_category_master Order by Category_Id";
+            DataSet ds = new DataSet();
+            ds = SqlHelper.ExecuteDataset(str);
+            //Fill DropDown Vendor And Unit
+            UtilityModule.ConditionalComboFillWithDS(ref DDvendorName, ds, 0, true, "--Plz Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDunit, ds, 1, true, "--Plz Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref ddCatagory, ds, 2, true, "--Plz Select--");
+            if (DDunit.Items.Count > 0)
+            {
+                DDunit.SelectedIndex = 1;
+            }
+            DDcaltype.SelectedIndex = 1;
+            TxtAssignDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+            TxtRequiredDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+            lablechange();
+
+        }
+
+
+    }
+    public void lablechange()
+    {
+        String[] ParameterList = new String[8];
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+        lblqualityname.Text = ParameterList[0];
+        lbldesignname.Text = ParameterList[1];
+        lblcolorname.Text = ParameterList[2];
+        lblshapename.Text = ParameterList[3];
+        lblsize.Text = ParameterList[4];
+        lblCategory.Text = ParameterList[5];
+        lblItemName.Text = ParameterList[6];
+        lblshadecolor.Text = ParameterList[7];
+    }
+
+    private void ddlcategorycange()
+    {
+        TDQuality.Visible = false;
+        TDDesign.Visible = false;
+        TDColor.Visible = false;
+        TDShape.Visible = false;
+        TDShade.Visible = false;
+        TdSize.Visible = false;
+        //TdArea.Visible = false;
+
+        string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
+                        FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
+                        IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                switch (dr["PARAMETER_ID"].ToString())
+                {
+                    case "1":
+                        TDQuality.Visible = true;
+                        break;
+                    case "2":
+                        TDDesign.Visible = true;
+                        break;
+                    case "3":
+                        TDColor.Visible = true;
+                        break;
+                    case "4":
+                        TDShape.Visible = true;
+                        break;
+                    case "5":
+                        TdSize.Visible = true;
+                        if (Session["VarcompanyNo"].ToString() == "7")
+                        {
+                            TdArea.Visible = false;
+
+                        }
+                        else
+                        {
+                            // TdArea.Visible = true;
+
+                        }
+                        break;
+                    case "6":
+                        TDShade.Visible = true;
+                        break;
+                }
+            }
+        }
+        UtilityModule.ConditionalComboFill(ref dditemname, "select Item_id, Item_Name from Item_Master where Category_Id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Item_Name", true, "---Plz Select----");
+
+    }
+    private void fillCombo()
+    {
+        if (TDDesign.Visible == true)
+        {
+
+            UtilityModule.ConditionalComboFill(ref dddesign, @"select designid,Designname from Design Order by Designname ", true, "--Plz Select--");
+        }
+        if (TDColor.Visible == true)
+        {
+
+            UtilityModule.ConditionalComboFill(ref ddcolor, @"select ColorId,ColorName from Color Order by ColorName", true, "--Plz Select--");
+        }
+        if (TDShape.Visible == true)
+        {
+            UtilityModule.ConditionalComboFill(ref ddshape, "SELECT ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by shapename", true, "--Plz Select--");
+        }
+        if (TDShade.Visible == true)
+        {
+            UtilityModule.ConditionalComboFill(ref ddshape, "SELECT * from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShadeColorName", true, "--Plz Select--");
+        }
+    }
+    protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ddlcategorycange();
+        fillCombo();
+    }
+    protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref ddquality, "select QualityId,QualityName from Quality Where Item_Id=" + dditemname.SelectedValue + " Order by QualityName", true, "--Plz Select --");
+
+    }
+    private void shapeselectedindexchange()
+    {
+        if (ddshape.SelectedIndex > 0)
+        {
+            if (Convert.ToInt32(DDunit.SelectedValue) == 6)
+            {
+                UtilityModule.ConditionalComboFill(ref ddsize, "SELECT SizeId,Sizeinch Size_Name from Size where shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Sizeinch", true, "--Plz Select--");
+            }
+            else if (Convert.ToInt32(DDunit.SelectedValue) == 2)
+            {
+                //UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeFt Size_Name from Size where shapeid=" + DDShape.SelectedValue + " order by sizeid", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref ddsize, "Select S.Sizeid,SizeFt from Size S Where shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by S.SizeFt", true, "--Plz Select--");
+            }
+            else
+            {
+                // UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,SizeMtr Size_Name from Size where shapeid=" + DDShape.SelectedValue + " order by sizeid", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref ddsize, "select S.Sizeid,SizeMtr from Size S where shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by S.SizeMtr", true, "--Plz Select--");
+            }
+
+        }
+
+    }
+    protected void ddshape_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        shapeselectedindexchange();
+    }
+    private void Area()
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        try
+        {
+            DataSet dt;
+            int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+            DataSet Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "select size_Id,SHAPE_ID from Item_Parameter_Master where Item_Finished_Id=" + ItemFinishedId + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
+            if (Ds.Tables[0].Rows.Count > 0)
+            {
+                int SizeId = Convert.ToInt32(Ds.Tables[0].Rows[0]["size_Id"]);
+                if (SizeId != 0 && hncomp.Value != "6")
+                {
+
+                    //TdArea.Visible = true;
+                    SqlParameter[] _arrpara = new SqlParameter[23];
+                    _arrpara[0] = new SqlParameter("@size_Id", SqlDbType.Int);
+                    _arrpara[1] = new SqlParameter("@UnitTypeId", SqlDbType.Int);
+                    _arrpara[2] = new SqlParameter("@Length", SqlDbType.Float);
+                    _arrpara[3] = new SqlParameter("@width", SqlDbType.Float);
+                    _arrpara[4] = new SqlParameter("@Area", SqlDbType.Float);
+                    _arrpara[0].Value = SizeId;
+                    _arrpara[1].Value = DDunit.SelectedValue;
+                    _arrpara[2].Direction = ParameterDirection.Output;
+                    _arrpara[3].Direction = ParameterDirection.Output;
+                    _arrpara[4].Direction = ParameterDirection.Output;
+                    SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "Pro_Area", _arrpara);
+                    TxtLength.Text = string.Format("{0:#0.00}", _arrpara[2].Value);
+                    TxtWidth.Text = string.Format("{0:#0.00}", _arrpara[3].Value);
+                    TxtArea.Text = string.Format("{0:#0.0000}", _arrpara[4].Value);
+                    //hdArea.Value = string.Format("{0:#0.0000}", _arrpara[4].Value);
+                    if (Convert.ToInt32(DDunit.SelectedValue) == 1)
+                    {
+                        TxtArea.Text = Convert.ToString(UtilityModule.Calculate_Area_Mtr(Convert.ToDouble(TxtLength.Text), Convert.ToDouble(TxtWidth.Text), Convert.ToInt32(DDcaltype.SelectedValue), Convert.ToInt32(Ds.Tables[0].Rows[0]["size_Id"])));
+                        //hdArea.Value = TxtArea.Text;
+                    }
+                    if (Convert.ToInt32(DDunit.SelectedValue) == 2)
+                    {
+                        TxtArea.Text = Convert.ToString(UtilityModule.Calculate_Area_Ft(Convert.ToDouble(TxtLength.Text), Convert.ToDouble(TxtWidth.Text), Convert.ToInt32(DDcaltype.SelectedValue), Convert.ToInt32(Ds.Tables[0].Rows[0]["size_Id"])));
+                        // hdArea.Value = TxtArea.Text;
+                    }
+                }
+                else if (SizeId != 0 && hncomp.Value == "6")
+                {
+                    //datatset dt1 = SqlHelper.ExecuteDataset(con, CommandType.Text, "");
+                    string str = "";
+                    str = "select WidthFt,LengthFt,HeightFt,WidthMtr,LengthMtr,HeightMtr,AreaFt,AreaMtr from size where sizeid=" + SizeId + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+                    Ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
+                    if (DDunit.SelectedValue == "2")
+                    {
+                        TxtLength.Text = string.Format("{0:#0.00}", Ds.Tables[0].Rows[0]["LengthFt"].ToString());
+                        TxtWidth.Text = string.Format("{0:#0.00}", Ds.Tables[0].Rows[0]["WidthFt"].ToString());
+                        TxtArea.Text = string.Format("{0:#0.0000}", Ds.Tables[0].Rows[0]["AreaFt"].ToString());
+                        //hdArea.Value = TxtArea.Text;
+                    }
+                    else
+                    {
+                        TxtLength.Text = string.Format("{0:#0.00}", Ds.Tables[0].Rows[0]["LengthMtr"].ToString());
+                        TxtWidth.Text = string.Format("{0:#0.00}", Ds.Tables[0].Rows[0]["Widthmtr"].ToString());
+                        decimal area;
+                        area = Convert.ToDecimal((Convert.ToDecimal(TxtLength.Text) * Convert.ToDecimal(TxtWidth.Text) * Convert.ToDecimal(10.764)) / 10000);
+                        TxtArea.Text = string.Format("{0:#0.0000}", area);
+                        //hdArea.Value = TxtArea.Text;
+                    }
+
+                }
+                else
+                {
+                    TdArea.Visible = false;
+                    TxtArea.Text = "0";
+                    //hdArea.Value = TxtArea.Text;
+                }
+                //datatset dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "");
+            }
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Process/ProcessIssue.aspx");
+        }
+        finally
+        {
+            con.Close();
+        }
+    }
+
+    protected void ddsize_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+        Area();
+        //1 For Fix Weaving
+        TxtRate.Text = MasterRate(ItemFinishedId, 1).ToString();
+    }
+    public static double MasterRate(int ItemFinishedId, int PROCESS_ID)
+    {
+        DataSet Ds1;
+        Double VarRate = 0;
+
+        string Str = "Select * from Item_ParaMeter_Master IPM,ITem_Master IM Where IPM.Item_Id=IM.Item_Id And IPM.Item_Finished_ID=" + ItemFinishedId + "";
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+        if (Ds.Tables[0].Rows.Count > 0)
+        {
+            Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID AND Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=" + Ds.Tables[0].Rows[0]["Design_ID"] + " And Color_ID=" + Ds.Tables[0].Rows[0]["Color_ID"] + " And Size_ID=" + Ds.Tables[0].Rows[0]["Size_ID"] + " And ProcessID=" + PROCESS_ID + ")";
+            Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            if (Ds1.Tables[0].Rows.Count == 0)
+            {
+                Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID AND Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=" + Ds.Tables[0].Rows[0]["Design_ID"] + " And Color_ID=" + Ds.Tables[0].Rows[0]["Color_ID"] + " And Size_ID=-1 And ProcessID=" + PROCESS_ID + ")";
+                Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            }
+            if (Ds1.Tables[0].Rows.Count == 0)
+            {
+                Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID AND Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=" + Ds.Tables[0].Rows[0]["Design_ID"] + " And Color_ID=-1 And Size_ID=" + Ds.Tables[0].Rows[0]["Size_ID"] + " And ProcessID=" + PROCESS_ID + ")";
+                Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            }
+            if (Ds1.Tables[0].Rows.Count == 0)
+            {
+                Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID AND Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=" + Ds.Tables[0].Rows[0]["Design_ID"] + " And Color_ID=-1 And Size_ID=-1 And ProcessID=" + PROCESS_ID + ")";
+                Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            }
+            if (Ds1.Tables[0].Rows.Count == 0)
+            {
+                Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID And Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=-1 And Color_ID=" + Ds.Tables[0].Rows[0]["Color_ID"] + " And Size_ID=" + Ds.Tables[0].Rows[0]["Size_ID"] + " And ProcessID=" + PROCESS_ID + ")";
+                Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            }
+            if (Ds1.Tables[0].Rows.Count == 0)
+            {
+                Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID And Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=-1 And Color_ID=" + Ds.Tables[0].Rows[0]["Color_ID"] + " And Size_ID=-1 And ProcessID=" + PROCESS_ID + ")";
+                Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            }
+            if (Ds1.Tables[0].Rows.Count == 0)
+            {
+                Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID And Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=-1 And Color_ID=-1 And Size_ID=" + Ds.Tables[0].Rows[0]["Size_ID"] + " And ProcessID=" + PROCESS_ID + ")";
+                Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            }
+            if (Ds1.Tables[0].Rows.Count == 0)
+            {
+                Str = "Select ORate from PROCESSCONSUMPTIONDETAIL Where PCMID in (Select PM.PCMID from ITEM_PARAMETER_MASTER IPCM,PROCESSCONSUMPTIONMASTER PM,ITEM_MASTER IM Where IPCM.ITEM_FINISHED_ID=PM.FINISHEDID And IM.ITEM_ID=IPCM.ITEM_ID And Category_ID=" + Ds.Tables[0].Rows[0]["Category_ID"] + " And IPCM.Item_ID=" + Ds.Tables[0].Rows[0]["Item_ID"] + " And Quality_ID=" + Ds.Tables[0].Rows[0]["Quality_ID"] + " And Shape_ID=" + Ds.Tables[0].Rows[0]["Shape_ID"] + " And Design_ID=-1 And Color_ID=-1 And Size_ID=-1 And ProcessID=" + PROCESS_ID + ")";
+                Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            }
+            if (Ds1.Tables[0].Rows.Count > 0)
+            {
+                VarRate = Convert.ToDouble(Ds1.Tables[0].Rows[0]["ORATE"]);
+            }
+        }
+        return Math.Round(VarRate, 2);
+    }
+    protected void BtnSave_Click(object sender, EventArgs e)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlTransaction Tran = con.BeginTransaction();
+        try
+        {   // Check if Item already exist..
+            if (IssueOrderId.ToString() == "" || IssueOrderId == null)
+            {
+                IssueOrderId = 0;
+            }
+            ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, ddquality, dddesign, ddcolor, ddshape, ddsize, TxtProductCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+            string str = "select Item_Finished_id From Process_Issue_Detail_1 Where IssueOrderId=" + IssueOrderId + " And Item_Finished_id=" + ItemFinishedId + "";
+            DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, str);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                LblErrorMessage.Text = "Item Already Exists.............";
+                LblErrorMessage.Visible = true;
+                Tran.Commit();
+                return;
+            }
+            SqlParameter[] _arrpara = new SqlParameter[34];
+            _arrpara[0] = new SqlParameter("@IssueOrderid", SqlDbType.Int);
+            _arrpara[1] = new SqlParameter("@Empid", SqlDbType.Int);
+            _arrpara[2] = new SqlParameter("@Assign_Date", SqlDbType.SmallDateTime);
+            _arrpara[3] = new SqlParameter("@Status", SqlDbType.NVarChar);
+            _arrpara[4] = new SqlParameter("@UnitId", SqlDbType.Int);
+            _arrpara[5] = new SqlParameter("@User_Id", SqlDbType.Int);
+            _arrpara[6] = new SqlParameter("@Remarks", SqlDbType.NVarChar);
+            _arrpara[7] = new SqlParameter("@Instruction", SqlDbType.NVarChar);
+            _arrpara[8] = new SqlParameter("@Companyid", SqlDbType.Int);
+
+            _arrpara[9] = new SqlParameter("@Issue_Detail_Id", SqlDbType.Int);
+            _arrpara[10] = new SqlParameter("@Item_Finished_id", SqlDbType.Int);
+            _arrpara[11] = new SqlParameter("@Length", SqlDbType.NVarChar);
+            _arrpara[12] = new SqlParameter("@Width", SqlDbType.NVarChar);
+            _arrpara[13] = new SqlParameter("@Area", SqlDbType.Float);
+            _arrpara[14] = new SqlParameter("@Rate", SqlDbType.Float);
+            _arrpara[15] = new SqlParameter("@Amount", SqlDbType.Float);
+            _arrpara[16] = new SqlParameter("@Qty", SqlDbType.Int);
+            _arrpara[17] = new SqlParameter("@ReqByDate", SqlDbType.SmallDateTime);
+            _arrpara[18] = new SqlParameter("@PQty", SqlDbType.Int);
+
+            _arrpara[19] = new SqlParameter("@Comm", SqlDbType.Float);
+            _arrpara[20] = new SqlParameter("@CommAmt", SqlDbType.Float);
+            _arrpara[21] = new SqlParameter("@Orderid", SqlDbType.Int);
+            _arrpara[22] = new SqlParameter("@CalType", SqlDbType.Int);
+            _arrpara[23] = new SqlParameter("@Freight", SqlDbType.Int);
+            _arrpara[24] = new SqlParameter("@Insurance", SqlDbType.Int);
+            _arrpara[25] = new SqlParameter("@PaymentAt", SqlDbType.Int);
+            _arrpara[26] = new SqlParameter("@Destination", SqlDbType.NVarChar, 100);
+            _arrpara[27] = new SqlParameter("@Liasoning", SqlDbType.NVarChar, 50);
+            _arrpara[28] = new SqlParameter("@Inspection", SqlDbType.NVarChar, 50);
+            _arrpara[29] = new SqlParameter("@SampleNumber", SqlDbType.NVarChar, 100);
+            _arrpara[30] = new SqlParameter("@FlagFixOrWeight", SqlDbType.Int);
+            _arrpara[31] = new SqlParameter("@FromProcessId", SqlDbType.Int);
+            _arrpara[32] = new SqlParameter("@ItemId", SqlDbType.Int);
+            _arrpara[33] = new SqlParameter("@OrderDetailId", SqlDbType.Int);
+
+
+            _arrpara[0].Value = IssueOrderId;
+            _arrpara[0].Direction = ParameterDirection.InputOutput;
+            _arrpara[1].Value = DDvendorName.SelectedValue;
+            _arrpara[2].Value = TxtAssignDate.Text;
+            _arrpara[3].Value = "Pending";
+            _arrpara[4].Value = DDunit.SelectedValue;
+            _arrpara[5].Value = Session["varuserid"];
+            _arrpara[6].Value = TxtRemarks.Text.ToUpper();
+            _arrpara[7].Value = TxtInstructions.Text.ToUpper();
+            //Fix CompanyId 1
+            _arrpara[8].Value = 1;
+            _arrpara[9].Direction = ParameterDirection.InputOutput;
+            _arrpara[9].Value = 0;  //IssueDetailId
+            _arrpara[10].Value = ItemFinishedId;
+            _arrpara[11].Value = TxtLength.Text;
+            _arrpara[12].Value = TxtWidth.Text;
+            _arrpara[13].Value = TxtArea.Text;
+
+            _arrpara[14].Value = TxtRate.Text == "" ? "0" : TxtRate.Text;
+            if (DDcaltype.SelectedValue == "0" || DDcaltype.SelectedValue == "2" || DDcaltype.SelectedValue == "3" || DDcaltype.SelectedValue == "4")
+            {
+                _arrpara[15].Value = String.Format("{0:#0.00}", (Convert.ToDouble(TxtArea.Text) * Convert.ToDouble(TxtRate.Text) * Convert.ToDouble(TxtQtyRequired.Text)));
+                _arrpara[20].Value = String.Format("{0:#0.00}", (Convert.ToDouble(TxtArea.Text) * Convert.ToDouble(TxtCommission.Text == "" ? "0" : TxtCommission.Text) * Convert.ToDouble(TxtQtyRequired.Text)));
+            }
+            if (DDcaltype.SelectedValue == "1")
+            {
+                _arrpara[15].Value = String.Format("{0:#0.00}", (Convert.ToDouble(TxtRate.Text) * Convert.ToDouble(TxtQtyRequired.Text)));
+                _arrpara[20].Value = String.Format("{0:#0.00}", (Convert.ToDouble(TxtCommission.Text == "" ? "0" : TxtCommission.Text) * Convert.ToDouble(TxtQtyRequired.Text)));
+            }
+            _arrpara[16].Value = TxtQtyRequired.Text == "" ? "0" : TxtQtyRequired.Text;
+            _arrpara[17].Value = TxtRequiredDate.Text;
+            _arrpara[18].Value = TxtQtyRequired.Text == "" ? "0" : TxtQtyRequired.Text;
+            _arrpara[19].Value = TxtCommission.Text == "" ? "0" : TxtCommission.Text;
+            _arrpara[21].Direction = ParameterDirection.InputOutput;
+            if (OrderId.ToString() == "" || OrderId == null)
+            {
+                OrderId = 0;
+            }
+            _arrpara[21].Value = OrderId;
+            _arrpara[22].Value = DDcaltype.SelectedValue;
+
+            _arrpara[23].Value = 0;
+            _arrpara[24].Value = 0;
+            _arrpara[25].Value = 0;
+            _arrpara[26].Value = "";
+            _arrpara[27].Value = "";
+            _arrpara[28].Value = "";
+            _arrpara[29].Value = "";
+            _arrpara[30].Value = ChkForFix.Checked == true ? 0 : 1;
+            //Fix For Weaving
+            _arrpara[31].Value = 1;
+            _arrpara[32].Value = dditemname.SelectedValue;
+            _arrpara[33].Direction = ParameterDirection.Output;
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_DirectProduction]", _arrpara);
+            IssueOrderId = Convert.ToInt16(_arrpara[0].Value);
+            TxtChallanNo.Text = _arrpara[0].Value.ToString();
+            OrderId = Convert.ToInt16(_arrpara[21].Value);
+            UtilityModule.ORDER_CONSUMPTION_DEFINE(Convert.ToInt16(_arrpara[10].Value), Convert.ToInt32(OrderId), Convert.ToInt32(_arrpara[33].Value), 1, 1);
+           // UtilityModule.PROCESS_CONSUMPTION_DEFINE(Convert.ToInt32(_arrpara[0].Value), Convert.ToInt32(_arrpara[9].Value), Convert.ToInt32(_arrpara[10].Value), 1, Convert.ToInt32(_arrpara[21].Value), Tran);
+            Tran.Commit();
+            Fill_Grid();
+            BtnPreview.Enabled = true;
+            LblErrorMessage.Visible = true;
+            LblErrorMessage.Text = "Data Successfully Saved.......";
+        }
+        catch (Exception ex)
+        {
+            Tran.Rollback();
+            LblErrorMessage.Text = ex.Message;
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+
+    }
+    private void Fill_Grid()
+    {
+        DGOrderdetail.DataSource = GetDetail();
+        DGOrderdetail.DataBind();
+    }
+    private DataSet GetDetail()
+    {
+        DataSet DS = null;
+        string sqlstr = "";
+
+        sqlstr = @"Select Issue_Detail_Id as Sr_No,ICM.Category_Name as Category,IM.Item_Name as Item,IPM.QDCS + Space(5) + Case When PM.Unitid=7 Then SizeMtr Else SizeFt End Description,Length,Width,
+                        Length + 'x' + Width Size,Area,Rate,Qty,Amount From PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,
+                        ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
+                        Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
+                        PM.IssueOrderid=" + IssueOrderId + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+            DS = SqlHelper.ExecuteDataset(con, CommandType.Text, sqlstr);
+            LblErrorMessage.Visible = false;
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Process/ProcessIssue.aspx");
+            LblErrorMessage.Visible = true;
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+        return DS;
+    }
+    protected void DGOrderdetail_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+        //Add CSS class on header row.
+        if (e.Row.RowType == DataControlRowType.Header)
+            e.Row.CssClass = "header";
+
+        //Add CSS class on normal row.
+        if (e.Row.RowType == DataControlRowType.DataRow &&
+                  e.Row.RowState == DataControlRowState.Normal)
+            e.Row.CssClass = "normal";
+
+        //Add CSS class on alternate row.
+        if (e.Row.RowType == DataControlRowType.DataRow &&
+                  e.Row.RowState == DataControlRowState.Alternate)
+            e.Row.CssClass = "alternate";
+    }
+    protected void DGOrderdetail_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
+            e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
+            e.Row.Attributes["onclick"] = ClientScript.GetPostBackClientHyperlink(this.DGOrderdetail, "Select$" + e.Row.RowIndex);
+        }
+    }
+    protected void DDvendorName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ItemFinishedId = 0;
+        IssueOrderId = 0;
+        OrderId = 0;
+    }
+    private void ProcessReportPath()
+    {
+        #region Author: Rajeev, Date: 30-Nov-12...
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        string str = "";
+        str = "Delete TEMP_PROCESS_ISSUE_MASTER ";
+        str = str + " Delete TEMP_PROCESS_ISSUE_DETAIL  ";
+        str = str + " Insert into TEMP_PROCESS_ISSUE_MASTER Select *,1 from PROCESS_ISSUE_MASTER_1 Where IssueOrderId=" + IssueOrderId + "";
+        str = str + " Insert into TEMP_PROCESS_ISSUE_DETAIL Select * from PROCESS_ISSUE_DETAIL_1 Where IssueOrderId=" + IssueOrderId + "";
+
+        SqlHelper.ExecuteNonQuery(con, CommandType.Text, str);
+
+
+        con.Close();
+        con.Dispose();
+        #endregion
+    }
+    private void Report()
+    {
+        string qry = @"SELECT VPI.Item_Name,VPI.Description,VPI.AssignDate,VPI.Remarks,VPI.Instruction,VPI.IssueOrderid,Round(VPI.Area,4) Area,VPI.Qty,VPI.ReqByDate,CI.CompanyName, CI.CompAddr1,CI.CompAddr2,CI.CompAddr3,CI.CompTel,CI.TinNo,EI.EmpName,EI.Address,EI.PhoneNo,OM.CustomerOrderNo,OM.LocalOrder,Unit.UnitName,
+                     PNM.ShortName,VPI.Rate,VPI.Amount,VPI.UnitId,OM.CUSTOMERORDERNO,CIC.CUSTOMERCODE ,u.unitname,VPI.Comm,CancelQty
+                     FROM View_Production_Issue_Order VPI INNER JOIN CompanyInfo CI ON VPI.Companyid=CI.CompanyId INNER JOIN EmpInfo EI ON VPI.Empid=EI.EmpId INNER JOIN 
+                     OrderMaster OM ON VPI.Orderid=OM.OrderId INNER JOIN Unit ON VPI.UnitId=Unit.UnitId INNER JOIN PROCESS_NAME_MASTER PNM ON VPI.PROCESSID=PNM.PROCESS_NAME_ID INNER JOIN
+                     CUSTOMERINFO CIC ON CIC.CUSTOMERID=OM.CUSTOMERID inner join unit u on vpi.unitid=u.unitid Where VPI.IssueOrderid=" + IssueOrderId + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        string str = @"SELECT VPIC.QTY,IM.ITEM_ID,IM.ITEM_NAME,VF.Finishedid,VF.Quality,vf.Design,vf.Color,vf.Shape,VF.ShadeColor,VPIC.Issueorderid,vpic.unitname FROM VIEW_PROCESS_ISSUE_CONSUMPTION VPIC INNER JOIN 
+                       ViewFindFinishedId2 VF ON VPIC.FINISHEDID=VF.Finishedid INNER JOIN ITEM_MASTER IM ON VF.ITEM_ID=IM.ITEM_ID And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY IM.ITEM_ID,VF.Quality,VF.Finishedid";
+        SqlDataAdapter sda = new SqlDataAdapter(str, con);
+        DataTable dt = new DataTable();
+        sda.Fill(dt);
+        ds.Tables.Add(dt);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (Convert.ToInt32(Session["VarcompanyNo"]) == 5)
+            {
+                Session["rptFileName"] = "~\\Reports\\ProductionOrderPoshNew.rpt";
+            }
+            else
+            {
+                Session["rptFileName"] = "~\\Reports\\ProductionOrderNew.rpt";
+            }
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\ProductionOrderNew.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else { ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true); }
+    }
+    protected void BtnPreview_Click(object sender, EventArgs e)
+    {
+        ProcessReportPath();
+        Report();
+    }
+}

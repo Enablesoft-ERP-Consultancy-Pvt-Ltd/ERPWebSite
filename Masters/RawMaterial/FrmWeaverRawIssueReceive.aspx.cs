@@ -14,14 +14,14 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
     public int UnitId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varcompanyid"] + @" order by GodownName";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by GodownName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -60,12 +60,12 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
     }
     private void BindQualityType()
     {
-        UtilityModule.ConditionalComboFill(ref DDQualityType, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDQualityType, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name", true, "--Plz Select--");
 
     }
     private void BindItemName()
     {
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=1 and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=1 and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name", true, "--Plz Select--");
 
     }
     protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
@@ -84,7 +84,7 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
     }
     private void BindQuality()
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varCompanyId"] + @" Order by QualityName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by QualityName", true, "--Plz Select--");
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -167,7 +167,7 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
     {
         if (DDShadeColor.SelectedIndex > 0)
         {
-            int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDShadeColor.SelectedValue), 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDShadeColor.SelectedValue), 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             FillLotno(Varfinishedid);
         }
         else
@@ -255,7 +255,7 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
             arr[5] = new SqlParameter("@ChallanNo", SqlDbType.VarChar, 50);
             arr[5].Direction = ParameterDirection.InputOutput;
             arr[5].Value = txtChallanNo.Text;
-            arr[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            arr[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[7] = new SqlParameter("@TranDetailId", SqlDbType.Int);
             arr[7].Value = 0;
             arr[8] = new SqlParameter("@ItemId", DDItemName.SelectedValue);
@@ -265,7 +265,7 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
             arr[12] = new SqlParameter("@godownid", DDGodownName.SelectedValue);
             arr[13] = new SqlParameter("@IssRecQty", txtIssueQty.Text == "" ? "0" : txtIssueQty.Text);
             arr[14] = new SqlParameter("@QualityTypeId", DDQualityType.SelectedValue);
-            int varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDShadeColor.SelectedValue), "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDShadeColor.SelectedValue), "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[15] = new SqlParameter("@finishedid", varfinishedid);
             arr[16] = new SqlParameter("@Rate", lblRate.Text == "" ? "0" : lblRate.Text);
             arr[17] = new SqlParameter("@unitid", lblUnitId.Text);
@@ -322,7 +322,7 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
         // string str = "";
         SqlParameter[] array = new SqlParameter[4];
         array[0] = new SqlParameter("@ChallanNo", txtChallanNo.Text);
-        array[1] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         array[2] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
         array[2].Direction = ParameterDirection.Output;
         //array[3] = new SqlParameter("@ReportType", SqlDbType.Int);
@@ -387,7 +387,7 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@TranID", lblTranid.Text);
             arr[3] = new SqlParameter("@TranType", lblTranType.Text);
-            arr[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             arr[5] = new SqlParameter("@UserID", Session["varuserid"]);
 
             //***********
@@ -409,7 +409,7 @@ public partial class Masters_RawMaterial_FrmWeaverRawIssueReceive : System.Web.U
     }
     protected void DDLotNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDShadeColor.SelectedValue), 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDShadeColor.SelectedValue), 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         FillstockQty(Varfinishedid);
     }
 }

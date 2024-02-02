@@ -12,7 +12,7 @@ public partial class Masters_MapStencil_FrmMapReceive : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_MapStencil_FrmMapReceive : System.Web.UI.Page
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName 
                 from Companyinfo CI,Company_Authentication CA 
-                Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName 
+                Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                 Select ID, Name From MapStencilType Order By ID ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -43,7 +43,7 @@ public partial class Masters_MapStencil_FrmMapReceive : System.Web.UI.Page
 
             hnReceiveid.Value = "0";
 
-            switch (Session["VarCompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "30":
                     TDCustomerCode.Visible = false;
@@ -148,7 +148,7 @@ public partial class Masters_MapStencil_FrmMapReceive : System.Web.UI.Page
     }
     protected void DDCompany_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         {
             FillCustomerOrderNo();
         }
@@ -193,7 +193,7 @@ public partial class Masters_MapStencil_FrmMapReceive : System.Web.UI.Page
         else
         {
             str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI, Department DP Where EI.DepartmentId=DP.DepartmentId 
-                And EI.MasterCompanyId=" + Session["varCompanyId"] + " and isnull(Ei.blacklist,0)=0 ";
+                And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and isnull(Ei.blacklist,0)=0 ";
 
         } 
         
@@ -250,7 +250,7 @@ public partial class Masters_MapStencil_FrmMapReceive : System.Web.UI.Page
         //{
         //    goto a;
         //}   
-        if (Session["varCompanyId"].ToString() != "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() != "30")
         {
             if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerCode) == false)
             {
@@ -342,7 +342,7 @@ public partial class Masters_MapStencil_FrmMapReceive : System.Web.UI.Page
                     param[3] = new SqlParameter("@EmpId", DDDesignerName.SelectedValue);
                     param[4] = new SqlParameter("@ReceiveDate", txtReceiveDate.Text);
                     param[5] = new SqlParameter("@userid", Session["varuserid"]);
-                    param[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    param[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     param[7] = new SqlParameter("@dtrecords", dtrecords);
                     param[8] = new SqlParameter("@MapStencilType", SqlDbType.TinyInt);
                     param[8].Value = DDMapStencilType.SelectedValue;

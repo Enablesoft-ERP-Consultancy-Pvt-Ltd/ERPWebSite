@@ -12,14 +12,14 @@ public partial class Masters_Process_ReceiveFromDyer : System.Web.UI.Page
     public static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and mastercompanyid=" + Session["varcompanyid"] + @" order by PROCESS_NAME 
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME 
                            select GoDownID,GodownName From GodownMaster
                            select Godownid From ModuleWiseGodown Where ModuleName='" + Page.Title + "'";
 
@@ -193,7 +193,7 @@ public partial class Masters_Process_ReceiveFromDyer : System.Web.UI.Page
                 arr[5].Value = txtchallanNo.Text;
                 arr[6] = new SqlParameter("@RecDate", txtrecdate.Text);
                 arr[7] = new SqlParameter("@userid", Session["varuserid"]);
-                arr[8] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                arr[8] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 arr[9] = new SqlParameter("@dtrecord", dtrecord);
                 arr[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 arr[10].Direction = ParameterDirection.Output;
@@ -413,7 +413,7 @@ public partial class Masters_Process_ReceiveFromDyer : System.Web.UI.Page
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@ID", lblid.Text);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //***********
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteDyerReceive", arr);
             lblmsg.Text = arr[1].Value.ToString();

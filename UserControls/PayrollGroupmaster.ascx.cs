@@ -12,7 +12,7 @@ public partial class UserControls_PayrollGroupmaster : System.Web.UI.UserControl
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -42,7 +42,7 @@ public partial class UserControls_PayrollGroupmaster : System.Web.UI.UserControl
             param[0].Value = hngroupid.Value;
             param[1] = new SqlParameter("@GroupName", txtgroupname.Text.Trim());
             param[2] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+            param[3] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             //********

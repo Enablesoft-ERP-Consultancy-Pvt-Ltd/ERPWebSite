@@ -18,7 +18,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -89,7 +89,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
                         //Get quality,Design,color size from article creation
 
                         string articleno = "";
-                        if (Session["varCompanyId"].ToString() == "14")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "14")
                         {
                             double articleno2 = Convert.ToDouble(wsp.Readcell("C" + rNo).Trim());  //articleno
                             articleno = Convert.ToString(articleno2);
@@ -144,7 +144,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
                         dr["Sizeid"] = dtitemdesc.Rows[0]["Sizeid"];
                         dr["Packingtypeid"] = dtitemdesc.Rows[0]["packingtypeid"];
                         dr["Ratedate"] = DateTime.FromOADate(Convert.ToDouble(wsp.Readcell("M" + rNo))).ToString("dd-MMM-yyyy");
-                        if (Session["varCompanyId"].ToString() == "14")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "14")
                         {
                             dr["PalletNo"] = wsp.Readcell("N" + rNo).Trim();
                         }
@@ -243,7 +243,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
             Label lblpono = (Label)gvr.FindControl("lblpono");
             Label lbldtstamp = (Label)gvr.FindControl("lbldtstamp");
             Label lblratedate = (Label)gvr.FindControl("lblratedate");
-            if (Session["varCompanyId"].ToString() == "14")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "14")
             {
                  lblpallet = (Label)gvr.FindControl("lblpalletno");
             }
@@ -290,7 +290,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
                 param[2] = new SqlParameter("@Startdate", txtstartdate.Text);
                 param[3] = new SqlParameter("@Compdate", txtcompdate.Text);
                 param[4] = new SqlParameter("@userid", Session["varuserid"]);
-                param[5] = new SqlParameter("@mastercomanyId", Session["varcompanyid"]);
+                param[5] = new SqlParameter("@mastercomanyId", Session["varMasterCompanyIDForERP"]);
                 param[6] = new SqlParameter("@dtdetail", dt);
                 param[7] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[7].Direction = ParameterDirection.Output;
@@ -428,7 +428,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
             Label lbldtstamp = (Label)gvr.FindControl("lbldtstamp");
             Label lblid = (Label)gvr.FindControl("lblid");
             Label lbldetailid = (Label)gvr.FindControl("lbldetailid");
-            if (Session["varCompanyId"].ToString() == "14")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "14")
             {
                  lblpalletno = (Label)gvr.FindControl("lblpalletno");
             }
@@ -474,7 +474,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
 
                 cmd.Parameters.AddWithValue("@PlanID", hnplanid.Value);
                 cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@mastercomanyId", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@mastercomanyId", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@dtdetail", dt);
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;             
@@ -489,7 +489,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
                 //SqlParameter[] param = new SqlParameter[5];
                 //param[0] = new SqlParameter("@PlanID", hnplanid.Value);
                 //param[1] = new SqlParameter("@userid", Session["varuserid"]);
-                //param[2] = new SqlParameter("@mastercomanyId", Session["varcompanyid"]);
+                //param[2] = new SqlParameter("@mastercomanyId", Session["varMasterCompanyIDForERP"]);
                 //param[3] = new SqlParameter("@dtdetail", dt);
                 //param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 //param[4].Direction = ParameterDirection.Output;
@@ -589,7 +589,7 @@ public partial class Masters_Packing_frmdispatchplan : System.Web.UI.Page
     {
         if (e.Row.RowType == DataControlRowType.DataRow)
         {
-            if (Convert.ToInt16(Session["varcompanyid"]) ==14)
+            if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) ==14)
             {
                 DG.Columns[15].Visible = true;
                 

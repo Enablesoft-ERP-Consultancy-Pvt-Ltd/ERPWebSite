@@ -12,7 +12,7 @@ public partial class Masters_Packing_frmRollWeight : System.Web.UI.Page
     string Msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }

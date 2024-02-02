@@ -11,17 +11,14 @@ public partial class Masters_Testing_frmtesting : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
-
-
         }
         if (!IsPostBack)
         {
-
-            string str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by CompanyId
-                          select PROCESS_NAME_ID,PROCESS_NAME From process_Name_master Where PROCESS_NAME<>'WEAVING' and mastercompanyid=" + Session["varcompanyid"] + " order by PROCESS_NAME";
+            string str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by CompanyId
+                          select PROCESS_NAME_ID,PROCESS_NAME From process_Name_master Where PROCESS_NAME<>'WEAVING' and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by PROCESS_NAME";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
             

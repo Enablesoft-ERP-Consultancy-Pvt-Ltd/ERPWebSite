@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -164,7 +164,7 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
                 if (ds.Tables[0].Rows.Count > 0)
                 {
                     Session["dsFileName"] = "~\\ReportSchema\\rptadvancepaymentdetail.xsd";
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "22":
                             Session["rptFileName"] = "Reports/rptadvancepaymentdetail_Diamond.rpt";
@@ -799,7 +799,7 @@ public partial class Masters_ReportForms_frmadvancepaymentdetail : System.Web.UI
     {
         if (variable.VarAdvancePaymentExportExcelpwd == txtpwd.Text)
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "22":
                     MonthlyJobPaymentDetailDiamond();

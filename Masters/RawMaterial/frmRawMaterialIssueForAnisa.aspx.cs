@@ -12,7 +12,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -53,7 +53,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
                             PD.Qty*OCD.IQTY END END),3),0)-[dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid),3) PendQty,OCD.IFinishedid 
                             FROM PROCESS_CONSUMPTION_DETAIL OCD,PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,
                             V_FinishedItemDetail VF1 Where PM.IssueOrderid=PD.IssueOrderid And OCD.Issueorderid=PD.Issueorderid And OCD.Issue_Detail_Id=PD.Issue_Detail_Id And 
-                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And PM.Issueorderid=" + ViewState["IssueOrderId"] + " And VF1.MasterCompanyId=" + Session["varCompanyId"] + @"
+                            VF1.ITEM_FINISHED_ID=OCD.IFINISHEDID And PM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And PM.Issueorderid=" + ViewState["IssueOrderId"] + " And VF1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                             Group By VF1.Category_Name,VF1.Item_Name,VF1.QualityName,VF1.DesignName,VF1.ColorName,VF1.ShapeName,PM.UnitId,VF1.SizeMtr,VF1.SizeFt,
                             VF1.ShadeColorName,OCD.IFINISHEDID,PM.Issueorderid";
 
@@ -111,7 +111,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
         {
             DropDownList ddlgodown = (DropDownList)e.Row.FindControl("ddgodown");
             int itemFinishedid = Convert.ToInt32(DGConsumption.DataKeys[e.Row.RowIndex].Value);
-            UtilityModule.ConditionalComboFill(ref ddlgodown, "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM,Stock S Where GM.GodownID=S.GodownID And Round(Qtyinhand, 3) > 0 And CompanyId=" + Session["CurrentWorkingCompanyID"] + " And item_finished_id=" + itemFinishedid + " And GM.MasterCompanyId=" + Session["varCompanyId"] + " Order By GodownName", true, "--Plz Select godown--");
+            UtilityModule.ConditionalComboFill(ref ddlgodown, "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM,Stock S Where GM.GodownID=S.GodownID And Round(Qtyinhand, 3) > 0 And CompanyId=" + Session["CurrentWorkingCompanyID"] + " And item_finished_id=" + itemFinishedid + " And GM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By GodownName", true, "--Plz Select godown--");
             DropDownList ddlotno = (DropDownList)e.Row.FindControl("ddlotno");
             int Units;
             Units = Convert.ToInt16(((Label)DGOrderdetail.Rows[0].FindControl("lblUnits")).Text);
@@ -239,7 +239,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
                 arr[22] = new SqlParameter("@ItemRemarks", SqlDbType.VarChar, 500);
                 arr[23] = new SqlParameter("@Msg", SqlDbType.VarChar, 500);
 
-                //int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+                //int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 if (ViewState["Prmid"] == null)
                 {
                     ViewState["Prmid"] = "0";
@@ -254,7 +254,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
                 arr[6].Direction = ParameterDirection.InputOutput;
                 arr[7].Value = 0;
                 arr[8].Value = Session["varuserid"].ToString();
-                arr[9].Value = Session["varCompanyId"].ToString();
+                arr[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                 arr[10].Value = 0;
                 arr[20].Value = 0;
                 //if (btnsave.Text == "Update")
@@ -508,7 +508,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
                 arr[20] = new SqlParameter("@UpdateFlag", SqlDbType.Int);
                 arr[21] = new SqlParameter("@ConeTypeId", SqlDbType.Int);
                 arr[22] = new SqlParameter("@ItemRemarks", SqlDbType.VarChar, 500);
-                //int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+                //int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 if (ViewState["Prmid"] == null)
                 {
                     ViewState["Prmid"] = "0";
@@ -523,7 +523,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
                 arr[6].Direction = ParameterDirection.InputOutput;
                 arr[7].Value = 0;
                 arr[8].Value = Session["varuserid"].ToString();
-                arr[9].Value = Session["varCompanyId"].ToString();
+                arr[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                 arr[10].Value = 0;
                 arr[20].Value = 0;
                 //if (btnsave.Text == "Update")
@@ -637,7 +637,7 @@ public partial class Masters_RawMaterial_frmRawMaterialIssueForAnisa : System.We
                         Width + 'x' + Length Size,Area,Rate,Qty,Amount,OrderId,PD.Item_Finished_Id,units From PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,
                         V_FinishedItemDetail vf
                         Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=vf.Item_Finished_id  and PM.status<>'canceled'
-                        And PM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And PM.IssueOrderid=" + ViewState["IssueOrderId"] + " And vf.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                        And PM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And PM.IssueOrderid=" + ViewState["IssueOrderId"] + " And vf.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
 
         try
         {

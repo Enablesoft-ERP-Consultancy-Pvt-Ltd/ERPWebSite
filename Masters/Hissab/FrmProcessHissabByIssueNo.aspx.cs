@@ -12,7 +12,7 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,13 +21,13 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
             string Str = @"Select CI.CompanyId, CI.CompanyName 
                 From CompanyInfo CI(Nolock)
                 JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                Where CI.CompanyID = " + Session["CurrentWorkingCompanyID"].ToString() + " And CI.MasterCompanyid = " + Session["varCompanyId"] + @" 
+                Where CI.CompanyID = " + Session["CurrentWorkingCompanyID"].ToString() + " And CI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                 Order By CI.CompanyName 
                 Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
                 From PROCESS_NAME_MASTER PNM(Nolock)
                 JOIN UserRightsProcess URP(Nolock) ON URP.ProcessId = PNM.PROCESS_NAME_ID And URP.Userid = " + Session["varuserid"] + @" 
-                Where PNM.MasterCompanyID = " + Session["varCompanyId"];
-            if (Session["varCompanyId"].ToString() == "16")
+                Where PNM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 Str = Str + " And PNM.Process_Name_ID In (145, 150, 190)";
             }
@@ -63,7 +63,7 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
                 Str = @"Select Distinct EI.EmpId, EI.EmpName + case when isnull(ei.empcode, '') <> '' then ' [' + ei.empcode + ']' else '' end EmpName 
                 From ProcessHissabIssueNoWise PH(Nolock) 
                 JOIN Empinfo EI(Nolock) ON EI.EmpID = PH.EmpID And EI.Blacklist = 0 
-                Where PH.CompanyId = " + DDCompanyName.SelectedValue + @" And PH.MasterCompanyId=" + Session["varcompanyId"] + @" And 
+                Where PH.CompanyId = " + DDCompanyName.SelectedValue + @" And PH.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And 
                 PH.ProcessId = " + DDProcessName.SelectedValue + " Order By EmpName";
             }
             else
@@ -148,7 +148,7 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
             cmd.Parameters.AddWithValue("@FromDate", TxtDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", TxtDate.Text);
             cmd.Parameters.AddWithValue("@UserID", Session["varuserId"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.Add(new SqlParameter("@Msg", SqlDbType.VarChar, 300));
             cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;
 
@@ -277,7 +277,7 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
             param[2] = new SqlParameter("@PageName", "FrmProcessHissabByIssueNo");
             param[3] = new SqlParameter("@ProcessTypeID", 1);
             param[4] = new SqlParameter("@userid", Session["varuserid"]);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[6].Direction = ParameterDirection.Output;
 
@@ -322,7 +322,7 @@ public partial class Masters_Hissab_FrmProcessHissabByIssueNo : System.Web.UI.Pa
         param[1] = new SqlParameter("@processid", DDProcessName.SelectedValue);
         param[2] = new SqlParameter("@PageName", "FrmProcessHissabByIssueNo");
         param[3] = new SqlParameter("@ProcessTypeID", 1);
-        param[4] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+        param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetVoucherDetail", param);
 

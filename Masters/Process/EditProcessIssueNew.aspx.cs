@@ -19,7 +19,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -31,7 +31,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
             DDPOrderNo.Visible = true;
 
             DataSet ds = new DataSet();
-            string str = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+            string str = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                            SELECT Distinct CI.CustomerId,CI.CustomerCode CustomerCode From CustomerInfo CI,JobAssigns J,OrderMaster OM Where CI.Customerid=OM.Customerid And OM.Orderid=J.Orderid Order By CI.CustomerCode
                            select unitid,unitname from unit where unitid in (1,2,4,6,7)";
             ds = SqlHelper.ExecuteDataset(str);
@@ -49,7 +49,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
             DDunit.SelectedIndex = 2;
             ViewState["IssueOrderid"] = PROCESS_ISSUE_ID;
             ParameteLabel();
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "2":
                     TDItemCode1.Visible = false;
@@ -61,7 +61,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                     BtnSave.Visible = false;
                     break;
             }
-            hncomp.Value = Session["varCompanyId"].ToString();
+            hncomp.Value = Session["varMasterCompanyIDForERP"].ToString();
             Fill_Temp_OrderNo();
             DDCustomerCode.Focus();
             BindProcess();
@@ -89,7 +89,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
     }
@@ -113,7 +113,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
     private void CustomerOrderNumberSelectedChange()
     {
         string str;
-        if (Session["varcompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             str = @"SELECT Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_MASTER IM INNER JOIN ITEM_CATEGORY_MASTER ICM ON IM.CATEGORY_ID = ICM.CATEGORY_ID INNER JOIN OrderDetail OD ON IM.ITEM_ID = OD.ITEM_ID INNER JOIN OrderMaster OM ON OD.OrderId = OM.OrderId inner Join JobAssigns JA ON JA.OrderId=OD.OrderId where  OD.Item_Finished_Id=JA.Item_Finished_Id  and OM.OrderId=" + DDCustomerOrderNumber.SelectedValue;
         }
@@ -133,7 +133,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
 
 
         //        string str;
-        //        if (Session["varcompanyId"].ToString() == "9")
+        //        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         //        {
         //            str = @"select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER  where process_name_id in(1,16)
         //                    SELECT Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_MASTER IM INNER JOIN ITEM_CATEGORY_MASTER ICM ON IM.CATEGORY_ID = ICM.CATEGORY_ID INNER JOIN OrderDetail OD ON IM.ITEM_ID = OD.ITEM_ID INNER JOIN OrderMaster OM ON OD.OrderId = OM.OrderId inner Join JobAssigns JA ON JA.OrderId=OD.OrderId where  OD.Item_Finished_Id=JA.Item_Finished_Id  and OM.OrderId=" + DDCustomerOrderNumber.SelectedValue;
@@ -146,7 +146,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
         //        DataSet ds = new DataSet();
         //        ds = SqlHelper.ExecuteDataset(str);
         //        UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 0, true, "--Select--");
-        //        if (Session["varcompanyId"].ToString() == "20")
+        //        if (Session["varMasterCompanyIDForERP"].ToString() == "20")
         //        {
         //            DDProcessName.Enabled = false;
         //            if (DDProcessName.Items.Count > 0)
@@ -160,7 +160,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
     protected void BindProcess()
     {
         string str;
-        if (Session["varcompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             str = @"select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER  where process_name_id in(1,16)";
         }
@@ -171,7 +171,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
         DataSet ds = new DataSet();
         ds = SqlHelper.ExecuteDataset(str);
         UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 0, true, "--Select--");
-        if (Session["varcompanyId"].ToString() == "20")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "20")
         {
             DDProcessName.Enabled = false;
             if (DDProcessName.Items.Count > 0)
@@ -211,7 +211,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
     }
     protected void BindCategory()
     {
-        if (Session["varCompanyId"].ToString() == "6")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "6")
         {
             string STR;
             if (variable.VarNewQualitySize == "1")
@@ -263,7 +263,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
     }
     private void dditemname_chage()
     {
-        if (Session["varCompanyId"].ToString() == "6")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "6")
         {
             string STR = "";
             if (variable.VarNewQualitySize == "1")
@@ -309,7 +309,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 int SizeId = Convert.ToInt32(Ds.Tables[0].Rows[0]["size_Id"]);
-                if (SizeId != 0 && Session["varCompanyId"].ToString() != "6")
+                if (SizeId != 0 && Session["varMasterCompanyIDForERP"].ToString() != "6")
                 {
                     //LblArea.Visible = true;
                     TdArea.Visible = true;
@@ -336,7 +336,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
 
                     SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_AreaNew", _arrpara);
 
-                    if (Session["varcompanyId"].ToString() == "9")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                     {
                         switch (DDunit.SelectedValue)
                         {
@@ -373,7 +373,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                     }
 
                 }
-                else if (SizeId != 0 && Session["varCompanyId"].ToString() == "6")
+                else if (SizeId != 0 && Session["varMasterCompanyIDForERP"].ToString() == "6")
                 {
                     //datatset dt1 = SqlHelper.ExecuteDataset(con, CommandType.Text, "");
                     string str = "";
@@ -504,7 +504,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                 CHECKVALIDCONTROL();
 
                 ChkDuplicateData();
-                if (Session["varcompanyId"].ToString() == "20")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "20")
                 {
                     ChkItemFinishedId();
                 }
@@ -551,7 +551,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                     {
                         // ViewState["IssueOrderid"]
                         int a;
-                        if (Session["varcompanyId"].ToString() == "9")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                         {
                             switch (DDProcessName.SelectedValue)
                             {
@@ -626,7 +626,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                         //Select IssueOrderid,Empid,AssignDate,Status,UnitId,Userid,Remarks,Instruction,Companyid from PROCESS_ISSUE_MASTER_1
                         //Select Issue_Detail_Id,IssueOrderid,Item_Finished_id,Length,Width,Area,Rate,Amount,Qty,ReqByDate,PQty,Comm,CommAmt,Orderid From PROCESS_ISSUE_DETAIL_1
                         string str;
-                        if (Session["varcompanyId"].ToString() == "9")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                         {
                             str = @"  Insert Into Process_Issue_Master_" + DDProcessName.SelectedValue + "(IssueOrderid,Empid,AssignDate,Status,UnitId,Userid,Remarks,Instruction,Companyid,CalType,FlagFixOrWeight) Values (" + _arrpara[0].Value + ",'" + _arrpara[1].Value + "','" + _arrpara[2].Value + "','" + _arrpara[3].Value + "'," + _arrpara[4].Value + "," + _arrpara[5].Value + ",'" + _arrpara[6].Value + "','" + _arrpara[7].Value + "'," + _arrpara[8].Value + "," + _arrpara[22].Value + "," + _arrpara[23].Value + ")";
                         }
@@ -911,7 +911,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                 //EmployeeSelectedChange();
 
 
-                //                if (Session["varCompanyId"].ToString() == "6")
+                //                if (Session["varMasterCompanyIDForERP"].ToString() == "6")
                 //                {
                 //                    string STR1 = "";
                 //                    if (variable.VarNewQualitySize == "1")
@@ -1037,7 +1037,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
     }
     protected void BtnUpdate_Click(object sender, EventArgs e)
     {
-        switch (Session["varcompanyid"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "9":
             case "20":
@@ -1052,7 +1052,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
         }
 
 
-        //if (Session["varcompanyid"].ToString() == "9")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         //{
         //    txtpwd.Focus();
         //    Popup(true);
@@ -1139,7 +1139,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                 _arrpara[0].Value = (ViewState["IssueOrderid"]);
                 _arrpara[1].Value = DGOrderdetail.SelectedValue;
                 _arrpara[2].Value = DDDescription.SelectedValue;
-                if (Session["varcompanyid"].ToString() == "9")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                 {
                     _arrpara[3].Value = Convert.ToDouble(TxtLength.Text);
                     _arrpara[4].Value = Convert.ToDouble(TxtWidth.Text);
@@ -1173,7 +1173,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                 _arrpara[14].Value = DDProcessName.SelectedValue;
                 _arrpara[15].Value = TxtRemarks.Text;
                 _arrpara[16].Value = TxtInstructions.Text;
-                _arrpara[17].Value = Session["varcompanyid"];
+                _arrpara[17].Value = Session["varMasterCompanyIDForERP"];
                 _arrpara[18].Value = hnOldQty;
                 _arrpara[19].Direction = ParameterDirection.Output;
                 _arrpara[20].Value = TxtHSCode.Text;
@@ -1466,9 +1466,9 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
 
             array[0].Value = ViewState["IssueOrderid"];
             array[1].Value = DDProcessName.SelectedValue;
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
 
-            //if (Session["varcompanyId"].ToString() == "9")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             //{
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrderReport", array);
 
@@ -1487,11 +1487,11 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
             //        ds.Tables.Add(dt);
             if (ds.Tables[0].Rows.Count > 0)
             {
-                if (Convert.ToInt32(Session["VarcompanyId"]) == 5)
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 5)
                 {
                     Session["rptFileName"] = "~\\Reports\\ProductionOrderPoshNew.rpt";
                 }
-                else if (Convert.ToInt32(Session["VarcompanyId"]) == 9)//For Hafizia
+                else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 9)//For Hafizia
                 {
                     if (chkforsummary.Checked == true)
                     {
@@ -1871,7 +1871,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                 dr["ORDER_ID"] = Convert.ToInt32(lblorderdid.Text);
                 dr["Process_ID"] = Convert.ToInt32(DDProcessName.SelectedValue);
                 dr["effectivedate"] = TxtAssignDate.Text == "" ? System.DateTime.Now.ToString("dd-MMM-yyyy") : TxtAssignDate.Text;
-                dr["mastercompanyid"] = HttpContext.Current.Session["varcompanyid"];
+                dr["mastercompanyid"] = HttpContext.Current.Session["varMasterCompanyIDForERP"];
 
                 dtrecords.Rows.Add(dr);
             }
@@ -1980,7 +1980,7 @@ public partial class Masters_Process_EditProcessIssueNew : System.Web.UI.Page
                 dr["UnitId"] = Convert.ToInt32(DDunit.SelectedValue);
                 dr["Process_ID"] = Convert.ToInt32(DDProcessName.SelectedValue);
                 dr["effectivedate"] = TxtAssignDate.Text == "" ? System.DateTime.Now.ToString("dd-MMM-yyyy") : TxtAssignDate.Text;
-                dr["mastercompanyid"] = HttpContext.Current.Session["varcompanyid"];
+                dr["mastercompanyid"] = HttpContext.Current.Session["varMasterCompanyIDForERP"];
 
                 dtrecords.Rows.Add(dr);
             }

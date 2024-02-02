@@ -12,7 +12,7 @@ public partial class Masters_Hissab_FrmAdvancePayment : System.Web.UI.Page
     static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,10 +21,10 @@ public partial class Masters_Hissab_FrmAdvancePayment : System.Web.UI.Page
             string Str = @"Select CI.CompanyId,CompanyName 
                         From CompanyInfo CI(Nolock)
                         JOIN Company_Authentication CA (Nolock) ON CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserid"] + @" 
-                        Where CI. MasterCompanyId=" + Session["varCompanyId"] + @" order by CI.CompanyId 
+                        Where CI. MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CI.CompanyId 
                         Select PROCESS_NAME_ID, PROCESS_NAME 
                         From PROCESS_NAME_MASTER (Nolock) 
-                        Where MasterCompanyid = " + Session["varCompanyId"] + @" Order By PROCESS_NAME";
+                        Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
 
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -89,7 +89,7 @@ public partial class Masters_Hissab_FrmAdvancePayment : System.Web.UI.Page
             _array[2].Value = TxtAdvance.Text;
             _array[3].Value = 0;
             _array[4].Value = TxtDate.Text;
-            _array[5].Value = Session["VarcompanyId"];
+            _array[5].Value = Session["varMasterCompanyIDForERP"];
             _array[6].Value = DDCompanyName.SelectedValue;
             _array[7].Value = Session["VarUserId"];
             _array[8].Value = txtChequeno.Text;
@@ -317,7 +317,7 @@ public partial class Masters_Hissab_FrmAdvancePayment : System.Web.UI.Page
             param[0] = new SqlParameter("@id", lblid.Text);
             param[1] = new SqlParameter("@Processid", lblprocessid.Text);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 
@@ -368,7 +368,7 @@ public partial class Masters_Hissab_FrmAdvancePayment : System.Web.UI.Page
             param[1] = new SqlParameter("@processid", 0);
             param[2] = new SqlParameter("@PageName", "FrmAdvancePayment");
             param[3] = new SqlParameter("@ProcessTypeID", 0);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETVOUCHERDETAIL", param);
             if (ds.Tables[0].Rows.Count > 0)

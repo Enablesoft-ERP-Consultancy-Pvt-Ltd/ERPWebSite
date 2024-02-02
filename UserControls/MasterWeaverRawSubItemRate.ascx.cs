@@ -12,7 +12,7 @@ public partial class UserControls_MasterWeaverRawSubItemRate : System.Web.UI.Use
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,13 +32,13 @@ public partial class UserControls_MasterWeaverRawSubItemRate : System.Web.UI.Use
     }
     private void BindItemName()
     {
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=1 and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=1 and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name", true, "--Plz Select--");
 
     }
 
     private void BindQuality()
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varCompanyId"] + @" Order by QualityName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by QualityName", true, "--Plz Select--");
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -104,7 +104,7 @@ public partial class UserControls_MasterWeaverRawSubItemRate : System.Web.UI.Use
             _arrpara[2] = new SqlParameter("@QualityId", DDQuality.SelectedValue);           
             _arrpara[3] = new SqlParameter("@Rate", txtRate.Text == "" ? "0" : txtRate.Text);          
             _arrpara[4] = new SqlParameter("@EffectiveDate", txtEffectiveDate.Text);
-            _arrpara[5] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+            _arrpara[5] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _arrpara[6] = new SqlParameter("@UserId", Session["varuserid"]);
             _arrpara[7] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 200);
             _arrpara[7].Direction = ParameterDirection.Output;
@@ -272,7 +272,7 @@ public partial class UserControls_MasterWeaverRawSubItemRate : System.Web.UI.Use
     //}
     //private void Report()
     //{
-    //    string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varCompanyId"] + "  ORDER BY ColorName";
+    //    string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY ColorName";
     //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
     //    if (ds.Tables[0].Rows.Count > 0)
     //    {

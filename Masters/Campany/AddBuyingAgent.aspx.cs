@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -19,7 +19,7 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
         {
             txtid.Text = "0";
             Fill_Grid();
-            UtilityModule.ConditionalComboFill(ref ddbuyinghouse, "select buyinghouseid,Name_buying_house from buyinghouse Where  MasterCompanyId=" + Session["varCompanyId"] + @"order by Name_buying_house", true, "--Select Buyinghouse Name--");
+            UtilityModule.ConditionalComboFill(ref ddbuyinghouse, "select buyinghouseid,Name_buying_house from buyinghouse Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"order by Name_buying_house", true, "--Select Buyinghouse Name--");
         }
         Label2.Visible = false;
     }
@@ -33,7 +33,7 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
         DataSet ds = null;
         try
         {
-            string str = "select BuyeingAgentId,BuyeingAgentName,Address,PhoneNo,Email,isnull(buyinghouseid,0) as buyinghouseid from BuyingAgent Where MasterCompanyId=" + Session["varCompanyid"];
+            string str = "select BuyeingAgentId,BuyeingAgentName,Address,PhoneNo,Email,isnull(buyinghouseid,0) as buyinghouseid from BuyingAgent Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(str);
         }
         catch (Exception ex)
@@ -110,7 +110,7 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
                 _arrpara[3].Value = txtPhone.Text.ToUpper();
                 _arrpara[4].Value = txtEmail.Text.ToUpper();
                 _arrpara[5].Value = Session["varuserid"].ToString();
-                _arrpara[6].Value = Session["varCompanyId"].ToString();
+                _arrpara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrpara[7].Value = ddbuyinghouse.SelectedValue;
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_BUYEING", _arrpara);
                 Tran.Commit();
@@ -172,11 +172,11 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentId!='" + ViewState["BuyingAgentid"].ToString() + "' and BuyeingAgentName='" + txtAgentName.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentId!='" + ViewState["BuyingAgentid"].ToString() + "' and BuyeingAgentName='" + txtAgentName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentName='" + txtAgentName.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentName='" + txtAgentName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             DataSet ds = SqlHelper.ExecuteDataset(strsql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -202,11 +202,11 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
         //    string strsql;
         //    if (btnsave.Text == "Update")
         //    {
-        //        strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentId!='" + ViewState["id"].ToString() + "' and BuyeingAgentName='" + txtAgentName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+        //        strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentId!='" + ViewState["id"].ToString() + "' and BuyeingAgentName='" + txtAgentName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         //    }
         //    else
         //    {
-        //        strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentName='" + txtAgentName.Text + "' And  MasterCompanyId=" + Session["varCompanyId"];
+        //        strsql = "select BuyeingAgentName from BuyingAgent where BuyeingAgentName='" + txtAgentName.Text + "' And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         //    }
         //    con.Open();
         //    DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -249,7 +249,7 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
             _array[0] = new SqlParameter("@BuyingAgentID", ViewState["BuyingAgentid"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteBuyingAgent", _array);
             Tran.Commit();
@@ -290,7 +290,7 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
         //        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from BuyingAgent where BuyeingAgentId=" + ViewState["id"].ToString());
 
         //        DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-        //        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'BuyingAgent'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+        //        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'BuyingAgent'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
         //        Label2.Visible = true;
         //        Label2.Text = "Value Deleted.........";
         //    }
@@ -338,7 +338,7 @@ public partial class Masters_Campany_AddBuyingAgent : CustomPage
     }
     protected void btnbuyinghouseClose_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddbuyinghouse, "select buyinghouseid,Name_buying_house from buyinghouse Where  MasterCompanyId=" + Session["varCompanyId"] + @"order by Name_buying_house", true, "--select--");
+        UtilityModule.ConditionalComboFill(ref ddbuyinghouse, "select buyinghouseid,Name_buying_house from buyinghouse Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"order by Name_buying_house", true, "--select--");
 
     }
 }

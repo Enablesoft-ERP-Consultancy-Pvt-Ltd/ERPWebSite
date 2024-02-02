@@ -12,14 +12,14 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportOthers : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
-                           select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varcompanyid"] + @" order by Customercode";
+                           select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, false, "");
@@ -58,7 +58,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportOthers : System.We
             param[2] = new SqlParameter("@orderid", DDOrder.SelectedValue);
             param[3] = new SqlParameter("@shipfrom", txtfromdate.Text);
             param[4] = new SqlParameter("@shipto", txttodate.Text);
-            param[5] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[5] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_ORDERSUMMARYOTHERS", param);
 
@@ -92,7 +92,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportOthers : System.We
     protected void DDcustomer_SelectedIndexChanged(object sender, EventArgs e)
     {
         string Str ="select OM.Orderid,OM.LocalOrder+'#'+OM.customerorderno as OrderNo from orderMaster OM Where OM.CustomerId=" + DDcustomer.SelectedValue + " And OM.CompanyId=" + DDCompany.SelectedValue + " and OM.Status=0 order by Om.orderid";
-        if (Convert.ToInt32(Session["varcompanyId"]) == 27)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27)
         {
             Str = "select OM.Orderid, OM.customerorderno as OrderNo From OrderMaster OM Where OM.CustomerId=" + DDcustomer.SelectedValue + " And OM.CompanyId=" + DDCompany.SelectedValue + " and OM.Status=0 order by Om.orderid";
         }
@@ -339,7 +339,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportOthers : System.We
             cmd.Parameters.AddWithValue("@orderid", DDOrder.SelectedIndex > 0 ? DDOrder.SelectedValue : "0");
             cmd.Parameters.AddWithValue("@Shipfrom", txtfromdate.Text);
             cmd.Parameters.AddWithValue("@Shipto", txttodate.Text);
-            cmd.Parameters.AddWithValue("@mastercompanyid", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@dt", dt);
             DataTable dt1 = new DataTable();
 
@@ -403,7 +403,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportOthers : System.We
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "21":
                     txtfromdate.Text = ds.Tables[0].Rows[0]["orderdate"].ToString();
@@ -430,7 +430,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReportOthers : System.We
             param[2] = new SqlParameter("@orderid", DDOrder.SelectedValue);
             param[3] = new SqlParameter("@shipfrom", txtfromdate.Text);
             param[4] = new SqlParameter("@shipto", txttodate.Text);
-            param[5] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[5] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_ORDERSUMMARYOTHERSNEW", param);
             if (ds.Tables[0].Rows.Count > 0)

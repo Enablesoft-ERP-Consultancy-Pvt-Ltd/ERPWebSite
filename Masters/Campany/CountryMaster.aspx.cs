@@ -11,7 +11,7 @@ public partial class Masters_Campany_countrymaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Campany_countrymaster : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select CountryId,CountryName,CountryCode from CountryMaster where masterCompanyId=" + Session["varCompanyId"];
+            string strsql = "select CountryId,CountryName,CountryCode from CountryMaster where masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -113,7 +113,7 @@ public partial class Masters_Campany_countrymaster : CustomPage
                 _arrPara[1].Value = txtCountry.Text.ToUpper();
                 _arrPara[2].Value = txtCountryCode.Text.ToUpper();
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Country", _arrPara);
                 txtCountry.Text = "";
@@ -180,11 +180,11 @@ public partial class Masters_Campany_countrymaster : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select CountryName from CountryMaster where CountryId!='" + ViewState["id"].ToString() + "' and CountryName='" + txtCountry.Text + "' And  masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CountryName from CountryMaster where CountryId!='" + ViewState["id"].ToString() + "' and CountryName='" + txtCountry.Text + "' And  masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select CountryName from CountryMaster where CountryName='" + txtCountry.Text + "' And masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CountryName from CountryMaster where CountryName='" + txtCountry.Text + "' And masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -224,7 +224,7 @@ public partial class Masters_Campany_countrymaster : CustomPage
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from CountryMaster where CountryId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'CountryMaster'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'CountryMaster'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 btnsave.Text = "Save";
                 lblerr.Visible = true;
                 lblerr.Text = "Value Deleted..............";

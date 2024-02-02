@@ -12,6 +12,10 @@ public partial class Masters_Campany_FrmLoommaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (!IsPostBack)
         {
             FillGrid();
@@ -56,7 +60,7 @@ public partial class Masters_Campany_FrmLoommaster : System.Web.UI.Page
         GridViewRow Gvr = ((DropDownList)sender).NamingContainer as GridViewRow;
         DropDownList dditem = (DropDownList)sender;
         DropDownList ddquality = ((DropDownList)Gvr.FindControl("DDquality"));
-        UtilityModule.ConditionalComboFill(ref ddquality, "select QualityId,QualityName from quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + " order by QualityName", true, "--Plz Select Quality--");
+        UtilityModule.ConditionalComboFill(ref ddquality, "select QualityId,QualityName from quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "--Plz Select Quality--");
 
     }
     protected void DDitem_SelectedIndexChangedForEdit(object sender, EventArgs e)
@@ -64,7 +68,7 @@ public partial class Masters_Campany_FrmLoommaster : System.Web.UI.Page
         GridViewRow Gvr = ((DropDownList)sender).NamingContainer as GridViewRow;
         DropDownList dditem = (DropDownList)sender;
         DropDownList DDquality = ((DropDownList)Gvr.FindControl("DDquality"));
-        UtilityModule.ConditionalComboFill(ref DDquality, "select QualityId,QualityName from quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + " order by QualityName", true, "--Plz Select Quality--");
+        UtilityModule.ConditionalComboFill(ref DDquality, "select QualityId,QualityName from quality where Item_id=" + dditem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "--Plz Select Quality--");
 
     }
     protected void Gvloom_RowDataBound(object sender, GridViewRowEventArgs e)
@@ -73,8 +77,8 @@ public partial class Masters_Campany_FrmLoommaster : System.Web.UI.Page
         {
             DropDownList ddlitem = (e.Row.FindControl("DDitem") as DropDownList);
             DropDownList ddlunit = (e.Row.FindControl("DDunit") as DropDownList);
-            UtilityModule.ConditionalComboFill(ref ddlitem, "select Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varcompanyId"] + " Order by Item_name", true, "--Plz Select Item--");
-            UtilityModule.ConditionalComboFill(ref ddlunit, "select Unitid,Unitname from Unit Where MasterCompanyId=" + Session["varcompanyId"] + "Order by Unitname", true, "--Plz Select Unit--");
+            UtilityModule.ConditionalComboFill(ref ddlitem, "select Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Item_name", true, "--Plz Select Item--");
+            UtilityModule.ConditionalComboFill(ref ddlunit, "select Unitid,Unitname from Unit Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order by Unitname", true, "--Plz Select Unit--");
 
         }
     }
@@ -109,7 +113,7 @@ public partial class Masters_Campany_FrmLoommaster : System.Web.UI.Page
 
                 _arrPara[7].Value = Request.QueryString["a"].ToString();
                 _arrPara[8].Value = Session["varuserid"].ToString();
-                _arrPara[9].Value = Session["varCompanyId"].ToString();
+                _arrPara[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[10].Direction = ParameterDirection.Output;
 
                 for (int i = 0; i < Gvloom.Rows.Count; i++)
@@ -248,11 +252,11 @@ public partial class Masters_Campany_FrmLoommaster : System.Web.UI.Page
             Label lblUnitId = (e.Row.FindControl("lblUnitId") as Label);
             Label lblQualityId = (e.Row.FindControl("lblQualityId") as Label);
 
-            UtilityModule.ConditionalComboFill(ref ddlitem1, "select Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varcompanyId"] + " Order by Item_name", true, "--Plz Select Item--");
-            UtilityModule.ConditionalComboFill(ref ddlunit, "select Unitid,Unitname from Unit Where MasterCompanyId=" + Session["varcompanyId"] + "Order by Unitname", true, "--Plz Select Unit--");
+            UtilityModule.ConditionalComboFill(ref ddlitem1, "select Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Item_name", true, "--Plz Select Item--");
+            UtilityModule.ConditionalComboFill(ref ddlunit, "select Unitid,Unitname from Unit Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order by Unitname", true, "--Plz Select Unit--");
             ddlitem1.SelectedValue = lblitemid.Text;
             ddlunit.SelectedValue = lblUnitId.Text;
-            UtilityModule.ConditionalComboFill(ref DDquality, "select QualityId,QualityName from quality where Item_id=" + ddlitem1.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + " order by QualityName", true, "--Plz Select Quality--");
+            UtilityModule.ConditionalComboFill(ref DDquality, "select QualityId,QualityName from quality where Item_id=" + ddlitem1.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "--Plz Select Quality--");
             DDquality.SelectedValue = lblQualityId.Text;
         }
     }

@@ -14,7 +14,10 @@ public partial class Masters_Hissab_frmEditadvanceamount : System.Web.UI.Page
     {
         if (!IsPostBack)
         {
-
+            if (Session["varMasterCompanyIDForERP"] == null)
+            {
+                Response.Redirect("~/Login.aspx");
+            }
             UtilityModule.ConditionalComboFill(ref DDyear, "select year,year year1 from yearData order by year desc", false, "");
             DDMonth.SelectedValue = DateTime.Now.Month.ToString();
             DDyear.SelectedValue = DateTime.Now.Year.ToString();
@@ -46,7 +49,7 @@ public partial class Masters_Hissab_frmEditadvanceamount : System.Web.UI.Page
                 param[2] = new SqlParameter("@AdvRemark", txtadvremark.Text);
                 param[3] = new SqlParameter("@AdvDate", txtAdvancedate.Text);
                 param[4] = new SqlParameter("@Userid", Session["varuserid"]);
-                param[5] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+                param[5] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                 param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[6].Direction = ParameterDirection.Output;
                 param[7] = new SqlParameter("@CompanyId", 1);
@@ -118,7 +121,7 @@ public partial class Masters_Hissab_frmEditadvanceamount : System.Web.UI.Page
 
             string str = @"Delete from advanceamountforanisa where EmpId=" + empId + " and JobId=" + Jobid + " and Id=" + Detailid + @"
                           insert into UpdateStatus(Id,CompanyId,UserId,Tablename,TableId,Date,Status)
-                          values((select max(id)+1 from UpdateStatus)," + Session["varcompanyId"] + "," + Session["varuserid"] + ",'advanceamountforanisa'," + Detailid + ",GETDATE(),'Delete," + Amount + "')";
+                          values((select max(id)+1 from UpdateStatus)," + Session["varMasterCompanyIDForERP"] + "," + Session["varuserid"] + ",'advanceamountforanisa'," + Detailid + ",GETDATE(),'Delete," + Amount + "')";
             SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             ScriptManager.RegisterStartupScript(Page, GetType(), "del", "alert('Data Deleted successfully!!!');", true);
             fillgrid();

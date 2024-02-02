@@ -11,7 +11,7 @@ public partial class Masters_ReportForms_frmUpdate_YarnWarpingMottelingRate : Sy
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,7 +24,7 @@ public partial class Masters_ReportForms_frmUpdate_YarnWarpingMottelingRate : Sy
             txtFromdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             txtToDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             RDOrderRate.Checked = true;
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     break;
@@ -56,7 +56,7 @@ public partial class Masters_ReportForms_frmUpdate_YarnWarpingMottelingRate : Sy
                 cmd.Parameters.AddWithValue("@FromDate", txtFromdate.Text);
                 cmd.Parameters.AddWithValue("@ToDate", txtToDate.Text);
                 cmd.Parameters.AddWithValue("@Rateoption", RDOrderRate.Checked == true ? 0 : 1);
-                cmd.Parameters.AddWithValue("@mastercompanyid", Session["varcompanyId"].ToString());
+                cmd.Parameters.AddWithValue("@mastercompanyid", Session["varMasterCompanyIDForERP"].ToString());
                 cmd.Parameters.AddWithValue("@Userid", Session["varuserid"].ToString());
                 cmd.ExecuteNonQuery();
                 Tran.Commit();

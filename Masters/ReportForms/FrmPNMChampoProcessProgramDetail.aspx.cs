@@ -12,7 +12,7 @@ public partial class Masters_ReportForms_FrmPNMChampoProcessProgramDetail : Syst
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,9 +20,9 @@ public partial class Masters_ReportForms_FrmPNMChampoProcessProgramDetail : Syst
         {
             String Str = @"select CI.CompanyId,CompanyName 
             From CompanyInfo CI,Company_Authentication CA 
-            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" 
+            Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" 
             order by CompanyName
-            Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + @" And Process_Name_ID = 5
+            Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And Process_Name_ID = 5
             Select CustomerID, CustomerCode From CustomerInfo CI(Nolock) Order By CustomerCode ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);

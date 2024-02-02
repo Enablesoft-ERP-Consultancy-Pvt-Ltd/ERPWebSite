@@ -12,7 +12,7 @@ public partial class Masters_Campany_WareHouse : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -51,12 +51,12 @@ public partial class Masters_Campany_WareHouse : CustomPage
                       isnull(WHM.WHCountryFinalDestination,'') as WHCountryFinalDestination,isnull(WHM.WHPortOfLoading,'') as WHPortOfLoading,
                       isnull(WHM.WHPortOfDischarge,'') as WHPortOfDischarge,isnull(WHM.WHPlaceOfDelivery,'') as WHPlaceOfDelivery,isnull(WHM.WHFinalDestination,'') as WHFinalDestination
                       FROM dbo.WarehouseMaster  WHM INNER JOIN
-                      dbo.customerinfo CI ON WHM.Customerid =CI.CustomerId where WHM.MasterCompanyId=" + Session["varCompanyId"] + "";
+                      dbo.customerinfo CI ON WHM.Customerid =CI.CustomerId where WHM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
 //             str = @"SELECT WHM.Warehouseid as SrNo,CI.CustomerCode, WHM.Warehousecode, 
 //                      WHM.Warehousename, WHM.Address, WHM.City, WHM.State,WHM.Country
 //                      FROM dbo.WarehouseMaster  WHM INNER JOIN
-//                      dbo.customerinfo CI ON WHM.Customerid =CI.CustomerId where WHM.MasterCompanyId=" + Session["varCompanyId"] + "";
+//                      dbo.customerinfo CI ON WHM.Customerid =CI.CustomerId where WHM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
              if (cmbCustomerCode.SelectedIndex > 0)
              {
                  str = str + " and WHM.Customerid=" + cmbCustomerCode.SelectedValue + "";
@@ -83,11 +83,11 @@ public partial class Masters_Campany_WareHouse : CustomPage
     }
     private void fill_combo()
     {
-        //CommanFunction.FillCombo(cmbCustomerCode, "select  Customerid,CustomerCode from customerinfo Where MasterCompanyId=" + Session["varCompanyid"] + " ORDER by customercode " );
+        //CommanFunction.FillCombo(cmbCustomerCode, "select  Customerid,CustomerCode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER by customercode " );
 
-        UtilityModule.ConditionalComboFill(ref cmbCustomerCode, "select  Customerid,CustomerCode from customerinfo Where MasterCompanyId=" + Session["varCompanyid"] + " ORDER by customercode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref cmbCustomerCode, "select  Customerid,CustomerCode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER by customercode", true, "--Select--");
 
-        UtilityModule.ConditionalComboFill(ref DDPortOfLoading, "Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varCompanyId"] + @" order by StationName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDPortOfLoading, "Select GoodsReceiptId, StationName from GoodsReceipt where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by StationName", true, "--Select--");
     }
     protected void gdWarehouse_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -105,7 +105,7 @@ public partial class Masters_Campany_WareHouse : CustomPage
         {
             SqlParameter[] param = new SqlParameter[3];
             param[0] = new SqlParameter("@warehouseid", id);
-            param[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[2] = new SqlParameter("@UserId", Session["VarUserId"]);
 
             //**********
@@ -219,7 +219,7 @@ public partial class Masters_Campany_WareHouse : CustomPage
                     _arrpara[6].Value = txtState.Text.ToUpper();
                     _arrpara[7].Value = txtCountry.Text.ToUpper();
                     _arrpara[8].Value = Session["varuserid"].ToString();
-                    _arrpara[9].Value = Session["varCompanyId"].ToString();
+                    _arrpara[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrpara[10].Value = txtConsignee.Text.ToUpper();
                     _arrpara[11].Value = txtBuyerOtherThanConsignee.Text.ToUpper();
                     _arrpara[12].Value = txtShipTo.Text.ToUpper();
@@ -341,7 +341,7 @@ public partial class Masters_Campany_WareHouse : CustomPage
     private void Report()
     {
         string qry = @"  SELECT CustomerName,CustomerCode,Warehouseid,Warehousecode,Warehousename,WarehouseMaster.Address,City,State,WarehouseMaster.Country
- FROM   customerinfo INNER JOIN WarehouseMaster ON customerinfo.CustomerId=WarehouseMaster.Customerid Where WarehouseMaster.MasterCompanyId=" + Session["varCompanyId"];
+ FROM   customerinfo INNER JOIN WarehouseMaster ON customerinfo.CustomerId=WarehouseMaster.Customerid Where WarehouseMaster.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -367,11 +367,11 @@ public partial class Masters_Campany_WareHouse : CustomPage
             string strsql;
             if (btnSave.Text == "Update")
             {
-                strsql = "select Warehousecode,Warehousename from WarehouseMaster where Warehouseid !=" + ViewState["WareHouseId"] + " and  ( Warehousecode='" + txtWareHouseCode.Text + "' or Warehousename='" + txtWareHouseName.Text + "')  And MasterCompanyid=" + Session["varCompanyId"];
+                strsql = "select Warehousecode,Warehousename from WarehouseMaster where Warehouseid !=" + ViewState["WareHouseId"] + " and  ( Warehousecode='" + txtWareHouseCode.Text + "' or Warehousename='" + txtWareHouseName.Text + "')  And MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select Warehousecode,Warehousename from WarehouseMaster where Warehousecode='" + txtWareHouseCode.Text + "' or Warehousename='" + txtWareHouseName.Text + "' And MasterCompanyid=" + Session["varCompanyId"];
+                strsql = "select Warehousecode,Warehousename from WarehouseMaster where Warehousecode='" + txtWareHouseCode.Text + "' or Warehousename='" + txtWareHouseName.Text + "' And MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -414,7 +414,7 @@ public partial class Masters_Campany_WareHouse : CustomPage
             _array[0] = new SqlParameter("@WareHouseId", ViewState["WareHouseId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteWareHouse", _array);
             Tran.Commit();

@@ -13,7 +13,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToNextProcess : System.W
     int varcombo = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,11 +22,11 @@ public partial class Masters_MachineProcess_FrmRollIssueToNextProcess : System.W
             str = @"Select Distinct CI.CompanyId, CI.Companyname 
             From Companyinfo CI(nolock)
             JOIN Company_Authentication CA(nolock) ON CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CI.Companyname 
+            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CI.Companyname 
 
             Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
             From PROCESS_NAME_MASTER PNM(nolock) 
-            Where PNM.MasterCompanyid = " + Session["varcompanyid"] + @" Order By PNM.Process_Name_ID ";
+            Where PNM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By PNM.Process_Name_ID ";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 0, true, "Select Comp Name");
@@ -40,7 +40,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToNextProcess : System.W
 
             if (DDProcessName.Items.Count > 0)
             {
-                if (Convert.ToInt32(Session["varcompanyid"]) == 21)
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 21)
                 {
                     DDProcessName.SelectedValue = "16";
                 }
@@ -123,7 +123,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToNextProcess : System.W
             arr[4].Value = TxtIssueDate.Text;
             arr[5].Value = DetailData;
             arr[6].Value = Session["varuserid"];
-            arr[7].Value = Session["varCompanyId"];
+            arr[7].Value = Session["varMasterCompanyIDForERP"];
             arr[8].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_SaveRollIssueToNextProcess]", arr);
@@ -200,7 +200,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToNextProcess : System.W
             param[1] = new SqlParameter("@RollIssueToNextDetailID", LblRollIssueToNextDetailID.Text);
             param[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["VarUserId"]);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
             //****************
@@ -241,7 +241,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToNextProcess : System.W
         TxtIssueNo.Text = "";
         string str = @"Select RollIssueToNextID, IssueNo 
             From RollIssueToNextProcessMaster
-            Where MasterCompanyID = " + Session["VarCompanyId"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @"
+            Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @"
             Order By RollIssueToNextID Desc";
 
         DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -297,7 +297,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToNextProcess : System.W
     {
         string str = @"Select a.RollIssueToNextID, a.IssueNo, REPLACE(CONVERT(NVARCHAR(11), a.IssueDate, 106), ' ', '-') IssueDate 
             From RollIssueToNextProcessMaster a(Nolock) 
-            Where a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
+            Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
             and a.IssueNo="+DDIssueNo.SelectedValue+@"
             Order By a.RollIssueToNextID Desc";
 

@@ -14,16 +14,16 @@ public partial class Masters_ReportForms_FrmFinishingProcess_Issue_Receive_ByFol
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where ProcessType=1 and MasterCompanyId=" + Session["varCompanyId"] + @" and Process_Name<>'WEAVING' Order By PROCESS_NAME";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                            Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where ProcessType=1 and MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" and Process_Name<>'WEAVING' Order By PROCESS_NAME";
 
-            //if (Session["varcompanyId"].ToString() == "9")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             //{
             //    ChkHindiFormat.Visible = true;
             //    ChkFolioMaterialDetail.Visible = true;
@@ -123,7 +123,7 @@ public partial class Masters_ReportForms_FrmFinishingProcess_Issue_Receive_ByFol
 
         cmd.Parameters.AddWithValue("@ToProcessId", DDProcessName.SelectedValue);
         cmd.Parameters.AddWithValue("@issueorderid", DDIssueChallanNo.SelectedValue);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         cmd.Parameters.AddWithValue("@UserId", Session["varUserId"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
@@ -133,7 +133,7 @@ public partial class Masters_ReportForms_FrmFinishingProcess_Issue_Receive_ByFol
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            ////switch (Session["varcompanyId"].ToString())
+            ////switch (Session["varMasterCompanyIDForERP"].ToString())
             ////{
             ////    case "15":
             ////        Session["rptFileName"] = "Reports/rptweaverfolio_EMHD.rpt";
@@ -180,7 +180,7 @@ public partial class Masters_ReportForms_FrmFinishingProcess_Issue_Receive_ByFol
 
         cmd.Parameters.AddWithValue("@ToProcessId", "0");
         cmd.Parameters.AddWithValue("@issueorderid", DDIssueChallanNo.SelectedValue);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         cmd.Parameters.AddWithValue("@UserId", Session["varUserId"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
@@ -314,7 +314,7 @@ public partial class Masters_ReportForms_FrmFinishingProcess_Issue_Receive_ByFol
     //        cmd.CommandTimeout = 300;
 
     //        cmd.Parameters.AddWithValue("@issueorderid", DDIssueChallanNo.SelectedValue);
-    //        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+    //        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
     //        SqlDataAdapter ad = new SqlDataAdapter(cmd);
     //        cmd.ExecuteNonQuery();
     //        ad.Fill(ds);
@@ -323,7 +323,7 @@ public partial class Masters_ReportForms_FrmFinishingProcess_Issue_Receive_ByFol
 
     //    if (ds.Tables[0].Rows.Count > 0)
     //    {
-    //        switch (Session["varcompanyId"].ToString())
+    //        switch (Session["varMasterCompanyIDForERP"].ToString())
     //        {
     //            case "15":
     //                Session["rptFileName"] = "Reports/rptweaverfolio_EMHD.rpt";

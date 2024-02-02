@@ -377,7 +377,7 @@ public partial class Masters_Carpet_FrmDesignRatioSizeWise : CustomPage
                         ddlSizeShape.Items[0].Value = "0";
                     }
 
-                    if (Session["varcompanyId"].ToString() == "20" && variable.VarNewQualitySize == "1")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "20" && variable.VarNewQualitySize == "1")
                     {
                         ddlSizeShape.Enabled = false;
                     }
@@ -571,7 +571,7 @@ public partial class Masters_Carpet_FrmDesignRatioSizeWise : CustomPage
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -987,7 +987,7 @@ public partial class Masters_Carpet_FrmDesignRatioSizeWise : CustomPage
                 param[4] = new SqlParameter("@SizeId", ddlSizeShape.SelectedIndex > 0 ? ddlSizeShape.SelectedValue : "0");
                 param[5] = new SqlParameter("@AdjustInPer", tbAdjustAge.Text == "" ? "0" : tbAdjustAge.Text);
                 param[6] = new SqlParameter("@dtrecords", dtrecords);
-                param[7] = new SqlParameter("@MasterCompanyId", Convert.ToInt32(Session["varCompanyId"]));
+                param[7] = new SqlParameter("@MasterCompanyId", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 param[8] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[8].Direction = ParameterDirection.Output;
                

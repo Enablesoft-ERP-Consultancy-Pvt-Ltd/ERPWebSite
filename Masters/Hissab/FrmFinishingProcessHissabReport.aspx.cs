@@ -14,14 +14,14 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By PROCESS_NAME
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME
                         select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -45,7 +45,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName", true, "--Select--");
         }
 
         UtilityModule.ConditionalComboFill(ref DDCategory, "select ICM.CATEGORY_ID,ICM.CATEGORY_NAME From Item_category_Master ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=CS.Categoryid and CS.id=0", true, "--Plz Select--");
@@ -113,7 +113,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -129,7 +129,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 
             Str1 = @"Select Distinct VF.QualityId,VF.QualityName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             if (DDEmpName.SelectedIndex > 0 && variable.VarFinishingNewModuleWise != "1")
             {
@@ -143,7 +143,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
         }
         else
         {
-            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varCompanyId"] + " and vf.qualityname<>''";
+            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and vf.qualityname<>''";
             if (DDCategory.SelectedIndex > 0)
             {
                 Str1 = Str1 + " And VF.Category_id=" + DDCategory.SelectedValue;
@@ -175,7 +175,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 
             Str1 = @"Select Distinct VF.ITEM_ID,VF.ITEM_NAME From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
             if (DDEmpName.SelectedIndex > 0 && variable.VarFinishingNewModuleWise != "1")
@@ -222,13 +222,13 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
                         TRDDShadeColor.Visible = true;
 
                         //                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from View_StockTranGetPassDetail PM,
-                        //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         //                        if (DDCategory.SelectedIndex > 0)
                         //                        {
                         //                            Str1 = Str1 + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
                         //                        }
                         //                        Str1 = Str1 + " Order BY VF.shadecolorname ";
-                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " and vf.shadecolorname<>''";
+                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and vf.shadecolorname<>''";
                         if (DDCategory.SelectedIndex > 0)
                         {
                             Str1 = Str1 + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
@@ -265,7 +265,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 
             Str1 = @"Select Distinct VF.designId,VF.designName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             if (DDEmpName.SelectedIndex > 0 && variable.VarFinishingNewModuleWise != "1")
             {
@@ -287,7 +287,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 
             Str1 = @"Select Distinct VF.ColorId,VF.ColorName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
             if (DDEmpName.SelectedIndex > 0 && variable.VarFinishingNewModuleWise != "1")
@@ -310,7 +310,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 
             Str1 = @"Select Distinct VF.ShapeId,VF.ShapeName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
             if (DDEmpName.SelectedIndex > 0 && variable.VarFinishingNewModuleWise != "1")
@@ -333,7 +333,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 
             Str1 = @"Select Distinct VF.ShadecolorId,VF.ShadeColorName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
             if (DDEmpName.SelectedIndex > 0 && variable.VarFinishingNewModuleWise != "1")
@@ -355,7 +355,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
         lblqualityname.Text = ParameterList[0];
@@ -378,7 +378,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
 
             Str1 = @"Select Distinct VF.SizeId,VF." + strSize + " as size From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
 
             if (DDEmpName.SelectedIndex > 0)
@@ -1134,7 +1134,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
     //            cmd.CommandTimeout = 1000;
 
     //            cmd.Parameters.AddWithValue("@issueorderid", DDFolioNo.SelectedValue);
-    //            //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+    //            //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
     //            SqlDataAdapter ad = new SqlDataAdapter(cmd);
     //            cmd.ExecuteNonQuery();
     //            ad.Fill(ds);
@@ -1792,7 +1792,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
     //            cmd.CommandTimeout = 1000;
 
     //            cmd.Parameters.AddWithValue("@issueorderid", DDFolioNo.SelectedValue);
-    //            //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+    //            //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
     //            SqlDataAdapter ad = new SqlDataAdapter(cmd);
     //            cmd.ExecuteNonQuery();
     //            ad.Fill(ds);
@@ -2459,7 +2459,7 @@ public partial class Masters_Hissab_FrmFinishingProcessHissabReport : System.Web
     //    cmd.CommandTimeout = 30000;
 
     //    cmd.Parameters.AddWithValue("@IssueOrderID", DDFolioNo.SelectedValue);
-    //    cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+    //    cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
     //    SqlDataAdapter ad = new SqlDataAdapter(cmd);
     //    cmd.ExecuteNonQuery();
     //    ad.Fill(ds);

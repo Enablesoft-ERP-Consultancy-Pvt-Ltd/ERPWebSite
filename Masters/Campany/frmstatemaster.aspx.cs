@@ -13,7 +13,7 @@ public partial class Masters_Campany_frmstatemaster : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -68,7 +68,7 @@ public partial class Masters_Campany_frmstatemaster : System.Web.UI.Page
                 _arrPara[1].Value = txtStateName.Text;
                 _arrPara[2].Value = ddCountry.SelectedValue;
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[5].Direction = ParameterDirection.Output;
                 _arrPara[6].Value = txtStateCode.Text;
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_Statemaster", _arrPara);
@@ -99,11 +99,11 @@ public partial class Masters_Campany_frmstatemaster : System.Web.UI.Page
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select StateName from State_Master where statename='" + ViewState["id"].ToString() + "' and StateName='" + txtStateName.Text + "' And  masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select StateName from State_Master where statename='" + ViewState["id"].ToString() + "' and StateName='" + txtStateName.Text + "' And  masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select *  from State_Master where CountryName='" + txtStateName.Text + "' And masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select *  from State_Master where CountryName='" + txtStateName.Text + "' And masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -181,7 +181,7 @@ public partial class Masters_Campany_frmstatemaster : System.Web.UI.Page
             {
                 SqlHelper.ExecuteScalar(Tran, CommandType.Text, "delete  from State_master where Stateid=" + StateId + "");
                 DataSet dt = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'State_master'," + StateId + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'State_master'," + StateId + ",getdate(),'Delete')");
                 btnsave.Text = "Save";
                 txtStateName.Text = "";
                 lblerr.Visible = true;

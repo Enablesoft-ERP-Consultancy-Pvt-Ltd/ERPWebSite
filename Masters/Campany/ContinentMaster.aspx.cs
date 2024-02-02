@@ -11,7 +11,7 @@ public partial class Masters_Campany_ContinentMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -34,7 +34,7 @@ public partial class Masters_Campany_ContinentMaster : System.Web.UI.Page
     //    SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
     //    try
     //    {
-    //        string strsql = "select ContinentId,ContinentName,ContinentCode from ContinentMaster where masterCompanyId=" + Session["varCompanyId"];
+    //        string strsql = "select ContinentId,ContinentName,ContinentCode from ContinentMaster where masterCompanyId=" + Session["varMasterCompanyIDForERP"];
     //        con.Open();
     //        ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
     //    }
@@ -123,7 +123,7 @@ public partial class Masters_Campany_ContinentMaster : System.Web.UI.Page
                 _arrPara[1].Value = txtContinent.Text.ToUpper();
                 _arrPara[2].Value = txtContinentCode.Text.ToUpper();
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Continent", _arrPara);
                 txtContinent.Text = "";
@@ -183,11 +183,11 @@ public partial class Masters_Campany_ContinentMaster : System.Web.UI.Page
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select ContinentName from ContinentMaster where ContinentId!='" + ViewState["id"].ToString() + "' and ContinentName='" + txtContinent.Text + "' And  masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select ContinentName from ContinentMaster where ContinentId!='" + ViewState["id"].ToString() + "' and ContinentName='" + txtContinent.Text + "' And  masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select ContinentName from ContinentMaster where ContinentName='" + txtContinent.Text + "' And masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select ContinentName from ContinentMaster where ContinentName='" + txtContinent.Text + "' And masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -232,7 +232,7 @@ public partial class Masters_Campany_ContinentMaster : System.Web.UI.Page
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from ContinentMaster where ContinentId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'ContinentMaster'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'ContinentMaster'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 btnsave.Text = "Save";
                 lblerr.Visible = true;
                 lblerr.Text = "Value Deleted..............";
@@ -273,7 +273,7 @@ public partial class Masters_Campany_ContinentMaster : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select ContinentId,ContinentName,ContinentCode from ContinentMaster where masterCompanyId=" + Session["varCompanyid"];
+            string strsql = "select ContinentId,ContinentName,ContinentCode from ContinentMaster where masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }

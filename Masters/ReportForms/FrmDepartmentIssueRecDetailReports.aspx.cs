@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_FrmDepartmentIssueRecDetailReports : Sy
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,11 +24,11 @@ public partial class Masters_ReportForms_FrmDepartmentIssueRecDetailReports : Sy
             string Str = @"Select Distinct CI.CompanyId, CI.Companyname 
             From Companyinfo CI(Nolock)
             JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-            Where CI.MastercompanyId = " + Session["varCompanyId"] + @" Order by CI.Companyname 
+            Where CI.MastercompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order by CI.Companyname 
             Select Distinct a.DepartmentID, D.DepartmentName 
             From ProcessIssueToDepartmentMaster a(Nolock) 
             JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
-            Where a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" Order By D.DepartmentName";
+            Where a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By D.DepartmentName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -42,7 +42,7 @@ public partial class Masters_ReportForms_FrmDepartmentIssueRecDetailReports : Sy
                 CompanySelectedChange();
             }
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
             LblCompanyName.Text = Session["varCompanyName"].ToString();
             LblUserName.Text = Session["varusername"].ToString();
             TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -56,7 +56,7 @@ public partial class Masters_ReportForms_FrmDepartmentIssueRecDetailReports : Sy
     }
     private void CompanySelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
 
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
@@ -69,7 +69,7 @@ public partial class Masters_ReportForms_FrmDepartmentIssueRecDetailReports : Sy
             From ProcessIssueToDepartmentMaster a(Nolock) 
             JOIN ProcessIssueToDepartmentDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
             JOIN OrderMaster OM(Nolock) ON OM.OrderId = b.OrderID And OM.CustomerId = " + DDCustCode.SelectedValue + @" 
-            Where a.CompanyID = " + DDCompany.SelectedValue + " And a.MasterCompanyID = " + Session["varCompanyId"] + " Order By OM.OrderId Desc ";
+            Where a.CompanyID = " + DDCompany.SelectedValue + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By OM.OrderId Desc ";
 
         UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
     }
@@ -96,7 +96,7 @@ public partial class Masters_ReportForms_FrmDepartmentIssueRecDetailReports : Sy
         {
             Str = Str + " And a.DepartmentID = " + DDDepartmentName.SelectedValue;
         }
-        Str = Str + " Where a.CompanyID = " + DDCompany.SelectedValue + " And a.MasterCompanyID = " + Session["varCompanyId"];
+        Str = Str + " Where a.CompanyID = " + DDCompany.SelectedValue + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
         Str = Str + " Order By a.IssueOrderID Desc ";
         UtilityModule.ConditionalComboFill(ref DDIssueNo, Str, true, "--Select--");
@@ -386,7 +386,7 @@ public partial class Masters_ReportForms_FrmDepartmentIssueRecDetailReports : Sy
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

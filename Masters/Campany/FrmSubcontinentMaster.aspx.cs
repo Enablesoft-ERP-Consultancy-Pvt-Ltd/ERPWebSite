@@ -12,7 +12,7 @@ public partial class Masters_Campany_FrmSubcontinentMaster : System.Web.UI.Page
     public static int SubcontinentID = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -66,7 +66,7 @@ public partial class Masters_Campany_FrmSubcontinentMaster : System.Web.UI.Page
                 _arrPara[1].Value = txtsubcontinentName.Text;
                 _arrPara[2].Value = ddContinent.SelectedValue;
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[5].Direction = ParameterDirection.Output;
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "pro_Subcontinentmaster", _arrPara);
                 Tran.Commit();
@@ -96,11 +96,11 @@ public partial class Masters_Campany_FrmSubcontinentMaster : System.Web.UI.Page
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select subcontinentName from Subcontinentmaster where Subcontinentname='" + ViewState["id"].ToString() + "' and SubcontinentName='" + txtsubcontinentName.Text + "' And  masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select subcontinentName from Subcontinentmaster where Subcontinentname='" + ViewState["id"].ToString() + "' and SubcontinentName='" + txtsubcontinentName.Text + "' And  masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select  from Subcontinentmaster where ContinentName='" + txtsubcontinentName.Text + "' And masterCompanyId=" + Session["varCompanyId"];
+                strsql = "select  from Subcontinentmaster where ContinentName='" + txtsubcontinentName.Text + "' And masterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -145,7 +145,7 @@ public partial class Masters_Campany_FrmSubcontinentMaster : System.Web.UI.Page
             {
                 SqlHelper.ExecuteScalar(Tran, CommandType.Text, "delete  from SubcontinentMaster where Subcontinentid=" + SubcontinentID + "");
                 DataSet dt = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'SubcontinentMaster'," + SubcontinentID + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'SubcontinentMaster'," + SubcontinentID + ",getdate(),'Delete')");
                 btnsave.Text = "Save";
                 txtsubcontinentName.Text = "";
                 lblerr.Visible = true;

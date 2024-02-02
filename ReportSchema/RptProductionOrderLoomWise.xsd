@@ -65,6 +65,7 @@
               <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
               <xs:element name="COLORNAME" type="xs:string" minOccurs="0" />
               <xs:element name="SHAPENAME" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderCategoryName" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

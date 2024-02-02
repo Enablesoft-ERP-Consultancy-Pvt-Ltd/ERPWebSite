@@ -11,7 +11,7 @@ public partial class Masters_ReportForms_frmUpdateProductionReceiveRate : System
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_ReportForms_frmUpdateProductionReceiveRate : System
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                          select PROCESS_NAME_ID,Process_name from PROCESS_NAME_MASTER  order by Process_Name
                         select CATEGORY_ID,CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM Where ICM.CATEGORY_NAME='CARPET'";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -37,7 +37,7 @@ public partial class Masters_ReportForms_frmUpdateProductionReceiveRate : System
             }
 
             //RDOrderRate.Checked = true;
-            //switch (Session["varcompanyId"].ToString())
+            //switch (Session["varMasterCompanyIDForERP"].ToString())
             //{
             //    case "8":
             //        break;
@@ -63,7 +63,7 @@ public partial class Masters_ReportForms_frmUpdateProductionReceiveRate : System
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -265,7 +265,7 @@ public partial class Masters_ReportForms_frmUpdateProductionReceiveRate : System
                 array[2].Value = txtToDate.Text;
                 ////0 For ProcessOrder And 1 For ProcessReceive
                 array[3].Value = DDRatetype.SelectedValue;
-                array[4].Value = Session["varcompanyId"].ToString();
+                array[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 array[5].Value = Session["varuserid"].ToString();
                 array[6].Value = DDCompanyName.SelectedValue;
                 array[7].Value = str;

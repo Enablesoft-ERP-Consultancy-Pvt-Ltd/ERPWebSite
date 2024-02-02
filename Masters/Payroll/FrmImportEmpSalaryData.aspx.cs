@@ -18,7 +18,7 @@ public partial class Masters_Payroll_FrmImportEmpSalaryData : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -27,7 +27,7 @@ public partial class Masters_Payroll_FrmImportEmpSalaryData : System.Web.UI.Page
             //txtstartdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             //txtcompdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
 
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                                        select UnitsId,UnitName from Units order by UnitName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -50,7 +50,7 @@ public partial class Masters_Payroll_FrmImportEmpSalaryData : System.Web.UI.Page
     }
     protected void bindCompanyUnit()
     {
-        string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+        string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                                        select UnitsId,UnitName from Units order by UnitName";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -704,7 +704,7 @@ public partial class Masters_Payroll_FrmImportEmpSalaryData : System.Web.UI.Page
 
                 SqlParameter[] param = new SqlParameter[8];
                 param[0] = new SqlParameter("@ReceiptNo", DDreceiveNo.SelectedValue);
-                param[1] = new SqlParameter("@MasterCompanyId", Session["varcompanyid"]);
+                param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
                 param[2] = new SqlParameter("@UserId", Session["varuserid"]);
                 param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                 param[3].Direction = ParameterDirection.Output;

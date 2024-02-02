@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_FrmAllFolioStatusReport : System.Web.UI
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -52,7 +52,7 @@ public partial class Masters_ReportForms_FrmAllFolioStatusReport : System.Web.UI
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
             cmd.Parameters.AddWithValue("@ChkDateFlag", ChkselectDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@UserId", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -183,7 +183,7 @@ public partial class Masters_ReportForms_FrmAllFolioStatusReport : System.Web.UI
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
             cmd.Parameters.AddWithValue("@ChkDateFlag", ChkselectDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@UserId", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);

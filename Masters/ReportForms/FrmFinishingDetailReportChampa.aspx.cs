@@ -15,7 +15,7 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,8 +24,8 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
             //TRlotNo.Visible = false;
 
 
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name_Id<>1 and MasterCompanyId=" + Session["varCompanyId"] + @" Order By PROCESS_NAME
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name_Id<>1 and MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME
                         select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -35,7 +35,7 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
             UtilityModule.ConditionalComboFillWithDS(ref DDcustcode, ds, 2, true, "--Select--");
             TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            int varcompanyNo = Convert.ToInt16(Session["varcompanyid"].ToString());
+            int varcompanyNo = Convert.ToInt16(Session["varMasterCompanyIDForERP"].ToString());
             if (DDCompany.Items.Count > 0)
             {
                 DDCompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -81,7 +81,7 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
     {
         if (DDProcessName.SelectedIndex > 0)
         {
-            string str = "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_Receive_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId  And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName";
+            string str = "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_Receive_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId  And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName";
             if (DDCompany.SelectedIndex > 0)
             {
                 str = str + " and CompanyId=" + DDCompany.SelectedValue + "";
@@ -395,7 +395,7 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -541,7 +541,7 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
         lblqualityname.Text = ParameterList[0];
@@ -564,7 +564,7 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
         TRQualityWise.Visible = true;
 
         ChkForDate_CheckedChanged(sender, e);
-        //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName", true, "--Select--");
+        //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName", true, "--Select--");
 
         BindCategory();
         DDProcessName_SelectedIndexChanged(sender, new EventArgs());
@@ -587,7 +587,7 @@ public partial class Masters_ReportForms_FrmFinishingDetailReportChampa : System
 
 
             ChkForDate_CheckedChanged(sender, e);
-            //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName", true, "--Select--");
+            //UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName", true, "--Select--");
 
             BindCategory();
             DDProcessName_SelectedIndexChanged(sender, new EventArgs());

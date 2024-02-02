@@ -14,8 +14,7 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        if (Session["varcompanyNo"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,13 +25,13 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
             str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName                     
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                     
                                         
-                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" and PROCESS_NAME='PURCHASE' Order By PROCESS_NAME 
+                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" and PROCESS_NAME='PURCHASE' Order By PROCESS_NAME 
                     Select ID, BranchName 
                                 From BRANCHMASTER BM(nolock) 
                                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @" ";
+                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" ";
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
 
@@ -72,7 +71,7 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
     }
     protected void BindPurchaseVendor()
     {
-        string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+        string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
         if (Session["varCompanyno"].ToString() != "6")
         {
             Str = Str + "  AND DM.Departmentname='PURCHASE'";
@@ -83,12 +82,12 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
 
     private void BindItemName()
     {
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM where IM.Category_Id=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM where IM.Category_Id=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name", true, "--Plz Select--");
 
     }
     private void BindQuality()
     {
-        UtilityModule.ConditionalComboFill(ref ddquality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varCompanyId"] + @" Order by QualityName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref ddquality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by QualityName", true, "--Plz Select--");
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -136,7 +135,7 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
             _arrpara[7] = new SqlParameter("@EmpId", DDPurchaseVendor.SelectedIndex > 0 ? DDPurchaseVendor.SelectedValue : "0");
             _arrpara[8] = new SqlParameter("@PurchaseRate", txtrate.Text == "" ? "0" : txtrate.Text);          
             _arrpara[9] = new SqlParameter("@EffectiveDate", txtEffectiveDate.Text);
-            _arrpara[10] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+            _arrpara[10] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _arrpara[11] = new SqlParameter("@UserId", Session["varuserid"]);
             _arrpara[12] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 200);
             _arrpara[12].Direction = ParameterDirection.Output;
@@ -300,7 +299,7 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
             //    }
             //    if (DGRateDetail.Columns[i].HeaderText == "Bonus" || DGRateDetail.Columns[i].HeaderText == "Finisher Rate" || DGRateDetail.Columns[i].HeaderText == "Order Type")
             //    {
-            //        if (Convert.ToInt32(Session["varcompanyId"]) == 42)
+            //        if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
             //        {
             //            DGRateDetail.Columns[i].Visible = true;
             //        }
@@ -312,7 +311,7 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
 
             //    //if (DGRateDetail.Columns[i].HeaderText == "Emp Name")
             //    //{
-            //    //    if (Session["varCompanyId"].ToString() == "27")
+            //    //    if (Session["varMasterCompanyIDForERP"].ToString() == "27")
             //    //    {
             //    //        DGRateDetail.Columns[i].Visible = true;
             //    //    }
@@ -395,7 +394,7 @@ public partial class Masters_Process_FrmPurchaseRateMaster : System.Web.UI.Page
         param[0] = new SqlParameter("@FromDate", txtFromDate.Text);
         param[1] = new SqlParameter("@ToDate", txtToDate.Text);
         param[2] = new SqlParameter("@userid", Session["varuserid"]);
-        param[3] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+        param[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[4] = new SqlParameter("@CompanyId", DDCompanyName.SelectedValue);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetPurchaseRateReportBetweenDate", param);

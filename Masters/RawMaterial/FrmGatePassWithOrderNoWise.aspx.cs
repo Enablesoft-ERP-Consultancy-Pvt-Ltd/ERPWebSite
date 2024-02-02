@@ -13,20 +13,20 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     int varcombo = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname 
-                    Select customerid,companyName+ ' (' + CustomerCode + ')' CustomerCode  from Customerinfo  where mastercompanyid=" + Session["varCompanyId"] + @" order by companyName
+            str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname 
+                    Select customerid,companyName+ ' (' + CustomerCode + ')' CustomerCode  from Customerinfo  where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by companyName
                     select DepartmentId,DepartmentName from Department order by DepartmentName
                     select val,Type from SizeType Order by val 
                  Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                 Select ConeType, ConeType From ConeMaster Order By SrNo ";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -132,7 +132,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     private void categorytype_change()
     {
         UtilityModule.ConditionalComboFill(ref ddCatagory, @"select Distinct ic.CATEGORY_ID,ic.CATEGORY_NAME FROM dbo.V_finisheditemdetail im INNER JOIN dbo.Stock s ON im.ITEM_FINISHED_ID = s.ITEM_FINISHED_ID  inner join  
-        ITEM_CATEGORY_MASTER ic On im.CATEGORY_ID=ic.CATEGORY_ID inner join CategorySeparate cs ON cs.Categoryid = ic.CATEGORY_ID Where ic.mastercompanyid=" + Session["varCompanyId"] + " and cs.id =" + ddlcatagorytype.SelectedValue + " order by CATEGORY_NAME", true, "-Select Category-");
+        ITEM_CATEGORY_MASTER ic On im.CATEGORY_ID=ic.CATEGORY_ID inner join CategorySeparate cs ON cs.Categoryid = ic.CATEGORY_ID Where ic.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " and cs.id =" + ddlcatagorytype.SelectedValue + " order by CATEGORY_NAME", true, "-Select Category-");
         if (ddCatagory.Items.Count > 0)
         {
             ddCatagory.SelectedIndex = 1;
@@ -161,11 +161,11 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
         UtilityModule.ConditionalComboFill(ref dditemname, @"select Distinct im.ITEM_ID,im.ITEM_NAME FROM ITEM_MASTER im Inner join 
             v_finisheditemdetail v On v.ITEM_ID=im.ITEM_ID Inner join 
             stock s On s.ITEM_FINISHED_ID=v.ITEM_FINISHED_ID 
-            where v.CATEGORY_ID=" + ddCatagory.SelectedValue + " and im.MasterCompanyid=" + Session["varCompanyId"] + " order by im.ITEM_NAME", true, "--Select Item--");
+            where v.CATEGORY_ID=" + ddCatagory.SelectedValue + " and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by im.ITEM_NAME", true, "--Select Item--");
 
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -209,7 +209,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
         {
             DDunit.SelectedIndex = 1;
         }
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + " and v.item_id=" + dditemname.SelectedValue + " and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + " and v.item_id=" + dditemname.SelectedValue + " and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         fill_combo();
     }
     private void fill_combo()
@@ -252,11 +252,11 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
         }
         if (ddgodown.Visible == true && varcombo < 7)
         {
-            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             ////UtilityModule.ConditionalComboFill(ref ddgodown, "select Distinct g.godownid,g.godownname from godownmaster g Inner join stock s On g.godownid=s.Godownid where ITEM_FINISHED_ID=" + varfinishedid + " And S.CompanyId=" + ddCompName.SelectedValue, true, "-Select Godown-");
 
-            UtilityModule.ConditionalComboFill(ref ddgodown, "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" 
-                                                               JOIN Stock S ON GM.GodownID=S.GodownID Where S.CompanyId=" + ddCompName.SelectedValue + " And S.item_finished_id=" + varfinishedid + " And GM.MasterCompanyId=" + Session["varCompanyId"] + @"", true, "-Select Godown-");
+            UtilityModule.ConditionalComboFill(ref ddgodown, "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId and GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
+                                                               JOIN Stock S ON GM.GodownID=S.GodownID Where S.CompanyId=" + ddCompName.SelectedValue + " And S.item_finished_id=" + varfinishedid + " And GM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"", true, "-Select Godown-");
             ViewState["finishedid"] = varfinishedid;
             return;
         }
@@ -267,7 +267,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     }
     private void quality_change()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.QualityId=" + dquality.SelectedValue + " and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.QualityId=" + dquality.SelectedValue + " and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         varcombo = 1;
         fill_combo();
     }
@@ -277,7 +277,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     }
     private void fill_design()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.designId=" + dddesign.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.designId=" + dddesign.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dquality.Visible == true)
         {
             str = str + "and v.QualityId=" + dquality.SelectedValue + "";
@@ -291,7 +291,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     }
     private void colour_change()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.ColorId=" + ddcolor.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.ColorId=" + ddcolor.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dddesign.Visible == true)
         {
             str = str + "and v.designId=" + dddesign.SelectedValue + "";
@@ -310,7 +310,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     }
     private void shape_change()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.ShapeId=" + ddshape.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.ShapeId=" + ddshape.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dddesign.Visible == true)
         {
             str = str + "and v.designId=" + dddesign.SelectedValue + "";
@@ -333,7 +333,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     }
     private void size_change()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.SizeId=" + ddsize.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.SizeId=" + ddsize.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dddesign.Visible == true)
         {
             str = str + "and v.designId=" + dddesign.SelectedValue + "";
@@ -364,7 +364,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
     }
     protected void ChkForMtr_CheckedChanged(object sender, EventArgs e)
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dddesign.Visible == true)
         {
             str = str + "and v.designId=" + dddesign.SelectedValue + "";
@@ -543,7 +543,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
             arr[1].Value = txtchalanno.Text;
             arr[2].Value = 0;
             arr[3].Value = txtdate.Text;
-            arr[4].Value = Session["varCompanyId"];
+            arr[4].Value = Session["varMasterCompanyIDForERP"];
             arr[5].Direction = ParameterDirection.InputOutput;
             if (btnsave.Text == "Update")
             {
@@ -702,7 +702,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
             arr[3] = new SqlParameter("@FlagDeleteOrNot", SqlDbType.Int);
             arr[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             arr[5] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[6] = new SqlParameter("@mastercompanyid", Session["VarcompanyId"]);
+            arr[6] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             arr[0].Value = gvdetail.DataKeys[e.RowIndex].Value;
             arr[1].Value = "Gateoutdetail";
@@ -951,7 +951,7 @@ public partial class Masters_RawMaterial_FrmGatePassWithOrderNoWise : System.Web
         {
             Size = "SizeInch";
         }
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dddesign.Visible == true)
         {
             str = str + "and v.designId=" + dddesign.SelectedValue + "";

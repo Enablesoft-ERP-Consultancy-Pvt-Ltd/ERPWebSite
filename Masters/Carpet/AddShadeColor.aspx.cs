@@ -11,7 +11,7 @@ public partial class Masters_Carpet_AddShadeColor : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -30,7 +30,7 @@ public partial class Masters_Carpet_AddShadeColor : System.Web.UI.Page
     }
     public void lablechange()
     {
-        lblshadecolorname.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where PS.Company_Id=" + Session["varCompanyId"] + " And  ps.parameter_id='8'").ToString();
+        lblshadecolorname.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where PS.Company_Id=" + Session["varMasterCompanyIDForERP"] + " And  ps.parameter_id='8'").ToString();
     }
     protected void gdshadecolor_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -86,7 +86,7 @@ public partial class Masters_Carpet_AddShadeColor : System.Web.UI.Page
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from shadecolor Where shadeColorName='" + txtcolor.Text + "' and shadeColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from shadecolor Where shadeColorName='" + txtcolor.Text + "' and shadeColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -120,7 +120,7 @@ public partial class Masters_Carpet_AddShadeColor : System.Web.UI.Page
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtcolor.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[4].Value = txtColorBox.Text.ToUpper().Trim();
                 _arrPara[5].Value = txtShadeColor.Text.ToUpper().Trim();
                 con.Open();
@@ -164,7 +164,7 @@ public partial class Masters_Carpet_AddShadeColor : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"SELECT shadeColorId as Sr_No,shadeColorName as " + lblshadecolorname.Text + ",S.ShadeColorBox,S.ShadeColor FROM shadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " Order By shadeColorId";
+            string strsql = @"SELECT shadeColorId as Sr_No,shadeColorName as " + lblshadecolorname.Text + ",S.ShadeColorBox,S.ShadeColor FROM shadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By shadeColorId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns["SHADE_COLOR"].ColumnName = "ShadeColor Name";
@@ -212,7 +212,7 @@ public partial class Masters_Carpet_AddShadeColor : System.Web.UI.Page
         {
             SqlParameter[] parparam = new SqlParameter[3];
             parparam[0] = new SqlParameter("@id", ViewState["id"].ToString());
-            parparam[1] = new SqlParameter("@varCompanyId", Session["varCompanyId"].ToString());
+            parparam[1] = new SqlParameter("@varCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             parparam[2] = new SqlParameter("@varuserid", Session["varuserid"].ToString());
 
             int id = SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "Proc_DeleteShadeColor", parparam);

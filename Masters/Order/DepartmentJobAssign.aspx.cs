@@ -11,14 +11,14 @@ public partial class Masters_Campany_DepartmentJobAssign : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             DDLInCompanyName.Focus();
-            UtilityModule.ConditionalComboFill(ref DDLInCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDLInCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
             if (DDLInCompanyName.Items.Count > 0)
             {
                 DDLInCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -44,7 +44,7 @@ public partial class Masters_Campany_DepartmentJobAssign : CustomPage
     {
         string str = @"SELECT distinct C.CustomerId,(companyName +'     '+C.CustomerCode)CustomerCode  
         FROM OrderMaster OM INNER JOIN OrderDetail OD ON OM.OrderId=OD.OrderId INNER JOIN Customerinfo C ON 
-        OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + " Where (OD.TAG_FLAG IS Null OR OD.TAG_FLAG=0) And OM.Companyid=" + DDLInCompanyName.SelectedValue + "";
+        OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Where (OD.TAG_FLAG IS Null OR OD.TAG_FLAG=0) And OM.Companyid=" + DDLInCompanyName.SelectedValue + "";
         UtilityModule.ConditionalComboFill(ref DDLCustomerCode, str, true, "Select CustomerCode");
     }
     protected void DDLCustomerCode_SelectedIndexChanged(object sender, EventArgs e)
@@ -54,7 +54,7 @@ public partial class Masters_Campany_DepartmentJobAssign : CustomPage
     private void ddlcustomercode_seletedchage()
     {
         UtilityModule.ConditionalComboFill(ref DDLOrderNo, @"SELECT Distinct OM.OrderId,OM.LocalOrder+ ' / ' +OM.CustomerOrderNo FROM OrderDetail OD INNER JOIN
-        OrderMaster OM ON OD.OrderId=OM.OrderId INNER JOIN Customerinfo C ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varCompanyId"] + @"
+        OrderMaster OM ON OD.OrderId=OM.OrderId INNER JOIN Customerinfo C ON OM.CustomerId=C.CustomerId And C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
         Where (OD.TAG_FLAG IS Null OR OD.TAG_FLAG=0) And OM.Companyid=" + DDLInCompanyName.SelectedValue + " And OM.Customerid=" + DDLCustomerCode.SelectedValue, true, "--Select--");
     }
     protected void DDLOrderNo_SelectedIndexChanged(object sender, EventArgs e)

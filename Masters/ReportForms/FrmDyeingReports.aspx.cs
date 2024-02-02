@@ -12,27 +12,27 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-            select E.Empid,EmpName+'/'+Address From Empinfo E,EmpProcess EP where E.Empid=EP.Empid And ProcessId=5 And E.MasterCompanyId=" + Session["varCompanyId"] + @"
-            select Category_Id,Category_Name From Item_Category_Master CM,CategorySeparate CS where CM.Category_Id=CS.Categoryid And Id=1 And CM.MasterCompanyId=" + Session["varCompanyId"];
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+            select E.Empid,EmpName+'/'+Address From Empinfo E,EmpProcess EP where E.Empid=EP.Empid And ProcessId=5 And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+            select Category_Id,Category_Name From Item_Category_Master CM,CategorySeparate CS where CM.Category_Id=CS.Categoryid And Id=1 And CM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);
             if (DDCompany.Items.Count > 0)
             {
                 DDCompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDCompany.Enabled = false;
-                UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDDyerName, ds, 1, true, "All");
             UtilityModule.ConditionalComboFillWithDS(ref DDCategory, ds, 2, true, "--select--");
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
             LblCompanyName.Text = Session["varCompanyName"].ToString();
             LblUserName.Text = Session["varusername"].ToString();
             RDDyingProgramDelStatus.Checked = true;
@@ -42,13 +42,13 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
     }
     protected void DDCompany_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
         string Str =@"select orderId,CustomerOrderNo From OrderMaster where CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDCompany.SelectedValue;
 
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             Str = @"select orderId,CustomerOrderNo From OrderMaster where Status = 0 And CustomerId=" + DDCustCode.SelectedValue + " And CompanyId=" + DDCompany.SelectedValue;
         }
@@ -58,7 +58,7 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
 
@@ -67,33 +67,33 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
     {
         if (DDDyerName.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref DDIndentno, "select IndentId,IndentNo From IndentMaster where PartyId=" + DDDyerName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order by IndentNo", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDIndentno, "select IndentId,IndentNo From IndentMaster where PartyId=" + DDDyerName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by IndentNo", true, "--Select--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDIndentno, "select IndentId,IndentNo From IndentMaster Where MasterCompanyId=" + Session["varCompanyId"] + " Order by IndentNo", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDIndentno, "select IndentId,IndentNo From IndentMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by IndentNo", true, "--Select--");
         }
 
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDItem, "select Item_Id,Item_Name From item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Item_Name", true, "All");
+        UtilityModule.ConditionalComboFill(ref DDItem, "select Item_Id,Item_Name From item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Item_Name", true, "All");
 
     }
     protected void DDItem_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (DDItem.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref DDSubItem, "select QualityId,QualityName From Quality Where Item_Id=" + DDItem.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by QualityName", true, "All");
+            UtilityModule.ConditionalComboFill(ref DDSubItem, "select QualityId,QualityName From Quality Where Item_Id=" + DDItem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "All");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDSubItem, "select QualityId,QualityName From Quality Where MasterCompanyId=" + Session["varCompanyId"] + "  order by QualityName", true, "All");
+            UtilityModule.ConditionalComboFill(ref DDSubItem, "select QualityId,QualityName From Quality Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityName", true, "All");
         }
     }
     protected void DDSubItem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = @"select ShadeColorId,ShadeColorName From Item_Parameter_Master IM,shadeColor S where IM.ShadeColor_Id=S.ShadeColorId And IM.MasterCompanyId=" + Session["varCompanyId"];
+        string str = @"select ShadeColorId,ShadeColorName From Item_Parameter_Master IM,shadeColor S where IM.ShadeColor_Id=S.ShadeColorId And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDSubItem.SelectedIndex > 0)
         {
             str = str + " And Quality_Id=" + DDSubItem.SelectedValue;
@@ -116,7 +116,7 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
                 string str = @"select E.EmpName,IndentNo,Item_Name,QualityName,ShadeColorName,
                         IsNull(Sum(IssueQuantity),0) As IssQty,0 As RecQty,IM.ReqDate,'' As LatebyDays,IM.IndentId,0,0
                        From IndentMaster IM,PP_ProcessRawMaster PM,PP_ProcessRawTran PT,V_FinishedItemDetail V,EmpInfo E
-                       where IM.IndentId=PT.IndentId And PM.PRMID=PT.PRMID And V.Item_Finished_id=PT.Finishedid And PM.EmpId=E.EmpId  And IM.MasterCompanyId=" + Session["varCompanyId"];
+                       where IM.IndentId=PT.IndentId And PM.PRMID=PT.PRMID And V.Item_Finished_id=PT.Finishedid And PM.EmpId=E.EmpId  And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                 if (DDDyerName.SelectedIndex > 0)
                 {
@@ -149,7 +149,7 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
                             0 As IssQty,IsNull(Sum(REcQuantity),0)  As RecQty,'" + Ds.Tables[0].Rows[i]["DueDate"] + @"','' As LatebyDays,IM.IndentId,0,0  From
                             PP_ProcessRecMaster PM,PP_ProcessRecTran PT,V_FinishedItemDetail V,IndentMaster IM,EmpInfo E
                             where PM.PRMID=PT.PRMID And E.EmpID=PM.EMpID And V.Item_Finished_ID=PT.Finishedid And IM.IndentId=PT.Indentid
-                            And PT.IndentId=" + Ds.Tables[0].Rows[i]["IndentId"] + " And V.MasterCompanyId=" + Session["varCompanyId"];
+                            And PT.IndentId=" + Ds.Tables[0].Rows[i]["IndentId"] + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         if (DDItem.SelectedIndex > 0)
                         {
                             str = str + " And V.Item_Id=" + DDItem.SelectedValue;
@@ -302,7 +302,7 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
                 string str = @" select OFinishedid,C.CompanyName,CompAddr1+','+CompAddr2+','+CompAddr3 As CompAdd,V.Item_NAme,QualityName,ShadeColorName,EmpName,Rate,IM.IndentId,Isnull([dbo].[F_QtytoDye](Id.OFinishedid,OrderId,PPNo),0) As DyeQty,
                               0 As IssQty,0 As RecQty,0 As Loss,0 As SessionId,OrderId,'Issue',0,0
                               From IndentMaster IM,IndentDetail Id,V_FinishedItemDetail V,CompanyInfo C,EmpInfo E where IM.IndentId=ID.IndentId And V.Item_Finished_ID=ID.OFinishedID And IM.PartyId=E.EmpId And IM.CompanyId=C.CompanyId And IM.ProcessId=5
-                              And  ID.OrderId=" + DDOrderNo.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " group by  Id.OFinishedid,V.Item_Name,QualityName,ShadeColorName,IM.IndentId,EmpName,Rate,OrderId,PPNo,C.CompanyName,CompAddr1,CompAddr2,CompAddr3 ";
+                              And  ID.OrderId=" + DDOrderNo.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by  Id.OFinishedid,V.Item_Name,QualityName,ShadeColorName,IM.IndentId,EmpName,Rate,OrderId,PPNo,C.CompanyName,CompAddr1,CompAddr2,CompAddr3 ";
                 SqlHelper.ExecuteNonQuery(tran, CommandType.Text, " Insert into Temp_OrderWiseDyeingHissab " + str + "");
                 DataSet ds = SqlHelper.ExecuteDataset(tran, CommandType.Text, "Select IndentId,OrderId From Temp_OrderWiseDyeingHissab");
                 if (ds.Tables[0].Rows.Count > 0)
@@ -312,13 +312,13 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
                         str = @"select IFinishedid,C.CompanyName,CompAddr1+','+CompAddr2+','+CompAddr3 As CompAdd,V.Item_NAme,QualityName,ShadeColorName,EmpName,Rate,IM.IndentId,0 As DyeQty,
                            Isnull([dbo].[F_IssQtytoDyer](Id.IFinishedid,IM.IndentId),0) As IssQty,0 As RecQty,0 As Loss,0 As SessionId,ID.OrderId,'Issue',99999,0
                            From IndentMaster IM,IndentDetail Id,V_FinishedItemDetail V,EmpInfo E,CompanyInfo C where IM.IndentId=ID.IndentId And V.Item_Finished_ID=ID.IFinishedID And IM.PartyId=E.EmpId And C.CompanyId=IM.CompanyId And IM.ProcessId=5
-                           And IM.IndentId=" + ds.Tables[0].Rows[i]["IndentId"] + " And ID.OrderId=" + ds.Tables[0].Rows[i]["OrderId"] + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "  group by  Id.IFinishedid,V.Item_Name,QualityName,ShadeColorName,IM.IndentId,EmpName,Rate,ID.OrderId,C.CompanyName,CompAddr1,CompAddr2,CompAddr3";
+                           And IM.IndentId=" + ds.Tables[0].Rows[i]["IndentId"] + " And ID.OrderId=" + ds.Tables[0].Rows[i]["OrderId"] + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  group by  Id.IFinishedid,V.Item_Name,QualityName,ShadeColorName,IM.IndentId,EmpName,Rate,ID.OrderId,C.CompanyName,CompAddr1,CompAddr2,CompAddr3";
 
                         SqlHelper.ExecuteNonQuery(tran, CommandType.Text, " Insert into Temp_OrderWiseDyeingHissab " + str + "");
                         str = @"select OFinishedid,C.CompanyName,CompAddr1+','+CompAddr2+','+CompAddr3 As CompAdd,V.Item_NAme,QualityName,ShadeColorName,EmpName,Rate,IM.IndentId,0 As DyeQty,
                               0 As IssQty,Isnull([dbo].[F_RecQtytoDyer](Id.OFinishedid,IM.IndentId),0)  As RecQty,0 As Loss,0 As SessionId,ID.OrderId,'Receive',LossPercent,Isnull([dbo].[F_LossQtytoDyer](Id.OFinishedid,IM.IndentId),0)  As LossQty
                               From IndentMaster IM,IndentDetail Id,V_FinishedItemDetail V,EmpInfo E,CompanyInfo C where IM.IndentId=ID.IndentId And V.Item_Finished_ID=ID.OFinishedID And IM.PartyId=E.EmpId And C.CompanyId=IM.CompanyId And IM.ProcessId=5
-                              And IM.IndentId=" + ds.Tables[0].Rows[i]["IndentId"] + "  And ID.OrderId=" + ds.Tables[0].Rows[i]["OrderId"] + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " group by  Id.OFinishedid,V.Item_Name,QualityName,ShadeColorName,IM.IndentId,EmpName,Rate,ID.OrderId,C.CompanyName,CompAddr1,CompAddr2,CompAddr3,LossPercent";
+                              And IM.IndentId=" + ds.Tables[0].Rows[i]["IndentId"] + "  And ID.OrderId=" + ds.Tables[0].Rows[i]["OrderId"] + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " group by  Id.OFinishedid,V.Item_Name,QualityName,ShadeColorName,IM.IndentId,EmpName,Rate,ID.OrderId,C.CompanyName,CompAddr1,CompAddr2,CompAddr3,LossPercent";
                         SqlHelper.ExecuteNonQuery(tran, CommandType.Text, " Insert into Temp_OrderWiseDyeingHissab " + str + "");
                     }
                 }
@@ -328,7 +328,7 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
                 {
                     TxtExcessMatBal.Text = Convert.ToString(ds1.Tables[0].Rows[0][0]);
                     ViewState["TxtExcessMatBal"] = ds1.Tables[0].Rows[0][0];
-                    str = @"select IsNull(Max(price),0) As Price From Stock where Item_Finished_Id in(select T.FinishedId From PP_ProcessRawMaster PM,PP_ProcessRawTran PT,Temp_OrderWiseDyeingHissab T where PM.MasterCompanyId=" + Session["varCompanyId"] + @" And PM.PRMID=PT.PRMID
+                    str = @"select IsNull(Max(price),0) As Price From Stock where Item_Finished_Id in(select T.FinishedId From PP_ProcessRawMaster PM,PP_ProcessRawTran PT,Temp_OrderWiseDyeingHissab T where PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And PM.PRMID=PT.PRMID
                        And PT.IndentId=T.IndentId And PT.Finishedid=T.Finishedid And T.LossPercent=99999) And LotNo in(
                        select LotNo From PP_ProcessRawMaster PM,PP_ProcessRawTran PT,Temp_OrderWiseDyeingHissab T where PM.PRMID=PT.PRMID
                        And PT.IndentId=T.IndentId And PT.Finishedid=T.Finishedid And T.LossPercent=99999)";
@@ -386,7 +386,7 @@ public partial class Masters_ReportForms_FrmDyeingReports : System.Web.UI.Page
             string qry = @" SELECT Temp_OrderWiseDyeingHissab.CompanyName,Temp_OrderWiseDyeingHissab.CompAdd,Temp_OrderWiseDyeingHissab.ItemName,Temp_OrderWiseDyeingHissab.QualityName,
 Temp_OrderWiseDyeingHissab.ColorName,Temp_OrderWiseDyeingHissab.EmpName,Temp_OrderWiseDyeingHissab.DyeQty,Temp_OrderWiseDyeingHissab.IssQty,customerinfo.CustomerCode,
 OrderMaster.CustomerOrderNo,OrderMaster.OrderId,Temp_OrderWiseDyeingHissab.Type
- FROM   Temp_OrderWiseDyeingHissab INNER JOIN OrderMaster ON Temp_OrderWiseDyeingHissab.OrderId=OrderMaster.OrderId INNER JOIN customerinfo ON OrderMaster.CustomerId=customerinfo.CustomerId And Customerinfo.MasterCompanyId=" + Session["varCompanyId"] + @"
+ FROM   Temp_OrderWiseDyeingHissab INNER JOIN OrderMaster ON Temp_OrderWiseDyeingHissab.OrderId=OrderMaster.OrderId INNER JOIN customerinfo ON OrderMaster.CustomerId=customerinfo.CustomerId And Customerinfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
  WHERE Temp_OrderWiseDyeingHissab.Type=N'Issue' and OrderMaster.CustomerId=" + DDCustCode.SelectedValue + " And OrderMaster.OrderId=" + DDOrderNo.SelectedValue + " ORDER BY Temp_OrderWiseDyeingHissab.EmpName,Temp_OrderWiseDyeingHissab.ItemName,Temp_OrderWiseDyeingHissab.QualityName,Temp_OrderWiseDyeingHissab.ColorName";
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
             SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
@@ -467,7 +467,7 @@ OrderMaster.CustomerOrderNo,OrderMaster.OrderId,Temp_OrderWiseDyeingHissab.Type
         TxtFdate.Visible = true;
         TxtToDate.Visible = true;
         Session["ReportPath"] = "Reports/RptDyeingLedger.rpt";
-        string qry = @"Select CompanyID,Empid,date,empname,typ,billno,hissab,debitbal,'" + TxtFdate.Text + "' FromDate,'" + TxtToDate.Text + "' ToDate From v_dyeingLedger where date >= '" + TxtFdate.Text + "' and date <='" + TxtToDate.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+        string qry = @"Select CompanyID,Empid,date,empname,typ,billno,hissab,debitbal,'" + TxtFdate.Text + "' FromDate,'" + TxtToDate.Text + "' ToDate From v_dyeingLedger where date >= '" + TxtFdate.Text + "' and date <='" + TxtToDate.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDDyerName.SelectedIndex > 0)
         {
             qry = qry + " And Empid=" + DDDyerName.SelectedValue;

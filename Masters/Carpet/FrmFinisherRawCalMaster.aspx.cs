@@ -24,7 +24,7 @@ public partial class Masters_Carpet_FrmFinisherRawCalMaster : System.Web.UI.Page
 
     private void BindJobType()
     {
-        string str = "select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER WHERE MasterCompanyId=" + Session["varCompanyId"] + " and ProcessType=1 and Process_Name_id<>1 order by PROCESS_NAME";
+        string str = "select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and ProcessType=1 and Process_Name_id<>1 order by PROCESS_NAME";
        
         UtilityModule.ConditionalComboFill(ref DDJobType, str, true, "--Select--");
     }
@@ -264,7 +264,7 @@ public partial class Masters_Carpet_FrmFinisherRawCalMaster : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -831,7 +831,7 @@ public partial class Masters_Carpet_FrmFinisherRawCalMaster : System.Web.UI.Page
 
             param[0] = new SqlParameter("@RawId", RawId);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 
@@ -892,7 +892,7 @@ public partial class Masters_Carpet_FrmFinisherRawCalMaster : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@RawId", "0");
             param[1] = new SqlParameter("@Where", where);
-            param[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@UserId", Session["VarUserId"]);
 
             //**********
@@ -938,7 +938,7 @@ public partial class Masters_Carpet_FrmFinisherRawCalMaster : System.Web.UI.Page
         {
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@JobId", DDJobType.SelectedValue);            
-            param[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@UserId", Session["VarUserId"]);
 
             //**********

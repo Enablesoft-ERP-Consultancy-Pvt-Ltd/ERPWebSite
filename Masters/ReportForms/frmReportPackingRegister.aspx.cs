@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -53,7 +53,7 @@ public partial class Masters_ReportForms_frmReportPackingRegister : System.Web.U
             string str = @"select *,'" + txtFromdate.Text + "' As FromDate,'" + txtToDate.Text + @"' As ToDate 
             From V_PackingRegister 
             Where CompanyID = " + Session["CurrentWorkingCompanyID"] + " And UnitsId=" + DDUnit.SelectedValue + " And Item_id=" + DDArticle.SelectedValue + @" And 
-            Date>='" + txtFromdate.Text + "' And Date<='" + txtToDate.Text + "' And MasterCompanyid=" + Session["varcompanyid"] + "";
+            Date>='" + txtFromdate.Text + "' And Date<='" + txtToDate.Text + "' And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
             if (DDColor.SelectedIndex > 0)
             {
                 str = str + "  and colorid=" + DDColor.SelectedValue;

@@ -11,7 +11,7 @@ public partial class Masters_Campany_frmGoodDescription : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -37,7 +37,7 @@ public partial class Masters_Campany_frmGoodDescription : CustomPage
         }
         try
         {
-            string strsql = "select GoodsId as SrNo,GoodsName from goodsdesc where MasterCompanyId=" + Session["varCompanyid"] + " order by GoodsId";
+            string strsql = "select GoodsId as SrNo,GoodsName from goodsdesc where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by GoodsId";
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
         catch (Exception ex)
@@ -126,7 +126,7 @@ public partial class Masters_Campany_frmGoodDescription : CustomPage
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtGoods.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_GOODSDESC", _arrPara);
                 Tran.Commit();
                 lbl.Visible = true;
@@ -185,11 +185,11 @@ public partial class Masters_Campany_frmGoodDescription : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select GoodsName from goodsdesc where GoodsId!='" + ViewState["GoodsdescId"] + "' and GoodsName='" + txtGoods.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select GoodsName from goodsdesc where GoodsId!='" + ViewState["GoodsdescId"] + "' and GoodsName='" + txtGoods.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select GoodsName from goodsdesc where GoodsName='" + txtGoods.Text + "' And MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select GoodsName from goodsdesc where GoodsName='" + txtGoods.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -232,7 +232,7 @@ public partial class Masters_Campany_frmGoodDescription : CustomPage
             _array[0] = new SqlParameter("@GoodSdescId", ViewState["GoodsdescId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteGoodSdesc", _array);
             Tran.Commit();

@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddTransMode : System.Web.UI.Page
 {
      protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Campany_AddTransMode : System.Web.UI.Page
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select transmodeId as Sr_No,TransmodeName from TransMode Where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "select transmodeId as Sr_No,TransmodeName from TransMode Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -74,7 +74,7 @@ public partial class Masters_Campany_AddTransMode : System.Web.UI.Page
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
             }
             _arrPara[1].Value = txtname.Text.ToUpper();
-            _arrPara[2].Value = Session["varCompanyId"].ToString();
+            _arrPara[2].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[3].Value = Session["varuserid"].ToString();
             con.Open();
             SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Transmode", _arrPara);
@@ -152,11 +152,11 @@ public partial class Masters_Campany_AddTransMode : System.Web.UI.Page
                 string strsql;
                 if (btnsave.Text == "Update")
                 {
-                    strsql = "select transmodename from TransMode where transmodeId!='" + ViewState["id"].ToString() + "' and  transmodename='" + txtname.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                    strsql = "select transmodename from TransMode where transmodeId!='" + ViewState["id"].ToString() + "' and  transmodename='" + txtname.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 }
                 else
                 {
-                    strsql = "select transmodename from TransMode where transmodename='" + txtname.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                    strsql = "select transmodename from TransMode where transmodename='" + txtname.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 }
                 con.Open();
                 DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -191,12 +191,12 @@ public partial class Masters_Campany_AddTransMode : System.Web.UI.Page
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select ByAirSea from customerinfo where  MasterCompanyId=" + Session["varCompanyId"] + " And ByAirSea=" + ViewState["id"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select ByAirSea from customerinfo where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And ByAirSea=" + ViewState["id"].ToString()));
             if (id <= 0)
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from TransMode where transmodeId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'TransMode'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'TransMode'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 lbl.Visible = true;
                 lbl.Text = "Deleted Value............";
             }

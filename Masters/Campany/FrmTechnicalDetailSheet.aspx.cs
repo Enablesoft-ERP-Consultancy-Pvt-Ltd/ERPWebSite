@@ -17,10 +17,9 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
-
         }
         if (!IsPostBack)
         {
@@ -34,8 +33,8 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
                 SetInitialRow5();
             }
             txtdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            UtilityModule.ConditionalComboFill(ref dditemname, "select Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varcompanyId"] + " Order by Item_name", true, "--Plz Select Item--");
-            UtilityModule.ConditionalComboFill(ref dddesign, "SELECT DESIGNID,DESIGNNAME from DESIGN where MasterCompanyId=" + Session["varcompanyid"] + "Order By DESIGNNAME", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref dditemname, "select Item_Id,Item_Name from Item_Master  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Item_name", true, "--Plz Select Item--");
+            UtilityModule.ConditionalComboFill(ref dddesign, "SELECT DESIGNID,DESIGNNAME from DESIGN where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order By DESIGNNAME", true, "--Select--");
         }
     }
     private void SetInitialRow()
@@ -248,7 +247,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
 
     //            splitItems = item.Split(",".ToCharArray());
 
-    //            sb.AppendFormat("{0}('{1}','{2}','{3}'); ", sqlStatement, splitItems[0], splitItems[1], splitItems[2], txtfileno.Text, Session["varuserid"], Session["varcompanyid"]);
+    //            sb.AppendFormat("{0}('{1}','{2}','{3}'); ", sqlStatement, splitItems[0], splitItems[1], splitItems[2], txtfileno.Text, Session["varuserid"], Session["varMasterCompanyIDForERP"]);
 
     //        }
     //    }
@@ -347,7 +346,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
                 if (box1.Text != "" || box2.Text != "" || box3.Text != "")
                 {
                     string str = @"Insert into detailcustomertestingrequirement(NameofTest,TestMethod,ScopeofTest,fileno,Userid,Mastercompanyid)
-                   values ('" + box1.Text + "','" + box2.Text + "','" + box3.Text + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varCompanyId"] + ")";
+                   values ('" + box1.Text + "','" + box2.Text + "','" + box3.Text + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ")";
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
                 }
             }
@@ -370,7 +369,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
                 {
 
                     string str = @"Insert into DetailCutting(parametername,scopeofrequirement_test,otherinformation,FileNo,Userid,Mastercompanyid)
-                   values ('" + box1.Text + "','" + box2.Text + "',N'" + txtotherinformation.Text + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varCompanyId"] + ")";
+                   values ('" + box1.Text + "','" + box2.Text + "',N'" + txtotherinformation.Text + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ")";
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
 
                 }
@@ -392,7 +391,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
                 if (box1.Text != "" || box2.Text != "" || box3.Text != "" || box4.Text != "")
                 {
                     string str = @"insert into processloss(processname,warp,weft,Specifygrm,fileno,otherinformation,userid,mastercompanyid)
-                   values ('" + box1.Text + "','" + box2.Text + "','" + box3.Text + "','" + box4.Text + "','" + txtfileno.Text + "',N'" + txtotherinfo.Text.Trim() + "'," + Session["varuserid"] + "," + Session["varCompanyId"] + ")";
+                   values ('" + box1.Text + "','" + box2.Text + "','" + box3.Text + "','" + box4.Text + "','" + txtfileno.Text + "',N'" + txtotherinfo.Text.Trim() + "'," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ")";
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
                 }
             }
@@ -404,7 +403,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
         if (txtfinishweight.Text != "" || txtactualweight.Text != "" || txtreed.Text != "" || txtfeeding.Text != "" || txtpick.Text != "" || txtshaft.Text != "" || txtpunchcard.Text != "" || txtpilescale.Text != "" || txtpileheight.Text != "" || txtsizetollerance.Text != "" || txtweighttollerance.Text != "")
         {
             str = @"Insert into WEAVING(FINISHWEIGHT,ACTUALWEIGHT,REED,FEEDING,PICK_LINE,SHAFT,PUNCHCARD,PILESCALE,PILEHEIGHT,SIZETOLLERANCE,WEIGHTTOLLERANCE,FileNo,userid,Mastercompanyid)
-            values ( N'" + txtfinishweight.Text + "',N'" + txtactualweight.Text + "',N'" + txtreed.Text + "',N'" + txtfeeding.Text + "',N'" + txtpick.Text + "',N'" + txtshaft.Text + "',N'" + txtpunchcard.Text + "',N'" + txtpilescale.Text + "',N'" + txtpileheight.Text + "',N'" + txtsizetollerance.Text + "',N'" + txtweighttollerance.Text + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varCompanyId"] + ")";
+            values ( N'" + txtfinishweight.Text + "',N'" + txtactualweight.Text + "',N'" + txtreed.Text + "',N'" + txtfeeding.Text + "',N'" + txtpick.Text + "',N'" + txtshaft.Text + "',N'" + txtpunchcard.Text + "',N'" + txtpilescale.Text + "',N'" + txtpileheight.Text + "',N'" + txtsizetollerance.Text + "',N'" + txtweighttollerance.Text + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ")";
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
         }
     }
@@ -413,7 +412,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
         if (txtfringes.Text != "" || txtlength.Text != "" || txtfoldededges.Text != "" || txtedges.Text != "" || txtplain.Text != "" || txtcortrise.Text != "" || txtbeedsground.Text != "" || txtbeeds.Text != "" || txtbinding.Text != "" || txtpoms.Text != "" || txtspecify1.Text != "" || txtlace.Text != "" || txtspecify2.Text != "" || txtwidth.Text != "" || txtlength1.Text != "" || txtallround.Text != "" || txtotherforends.Text != "" || txtfileno.Text != "")
         {
             string str = @"insert into detailends(FRINGES,LENGTH,FOLDEDEDGES,EDGESLENGTH_WIDTH,PLAIN,CORTRISE,BEEDS_GROUND,BEEDS,BINDING,POMS,SPECIFYNO_1SIDE,LACE,SPECIFYNO,WIDTH,detailLENGTH,ALL_AROUND,otherinformation,fileNo,userid,mastercompanyid,melt)
-             values('" + txtfringes.Text + "','" + txtlength.Text + "','" + txtfoldededges.Text + "','" + txtedges.Text + "','" + txtplain.Text + "','" + txtcortrise.Text + "','" + txtbeedsground.Text + "','" + txtbeeds.Text + "','" + txtbinding.Text + "','" + txtpoms.Text + "','" + txtspecify1.Text + "','" + txtlace.Text + "','" + txtspecify2.Text + "','" + txtwidth.Text + "','" + txtlength1.Text + "','" + txtallround.Text + "',N'" + txtotherforends.Text.Trim() + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varCompanyId"] + ",N'"+ txtmelt.Text + "')";
+             values('" + txtfringes.Text + "','" + txtlength.Text + "','" + txtfoldededges.Text + "','" + txtedges.Text + "','" + txtplain.Text + "','" + txtcortrise.Text + "','" + txtbeedsground.Text + "','" + txtbeeds.Text + "','" + txtbinding.Text + "','" + txtpoms.Text + "','" + txtspecify1.Text + "','" + txtlace.Text + "','" + txtspecify2.Text + "','" + txtwidth.Text + "','" + txtlength1.Text + "','" + txtallround.Text + "',N'" + txtotherforends.Text.Trim() + "','" + txtfileno.Text + "'," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ",N'"+ txtmelt.Text + "')";
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
         }
@@ -742,8 +741,8 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
                             delete from WEAVING where fileno = '" + txtfileno.Text + @"'
                             delete from detailends where fileno = '" + txtfileno.Text + "'";
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str1);
-            // string str = "insert into Technicaldetail(Masterquality,fileno,Subquality,Version,Ourref,date,Design,UserId,MasterCompanyId)values('" +txtmasterquality.Text + "','" + _arrpara[1].Value + "','" + _arrpara[2].Value + "','" + _arrpara[3].Value + "','" + _arrpara[4].Value + "','" + _arrpara[5].Value + "','" + _arrpara[6].Value + "', " + Session["varuserid"].ToString() + "," + Session["varCompanyId"].ToString() + ")";
-            string str = "insert into Technicaldetail(ITEM_ID,fileno,QualityID,Version,Ourref,date,Designid,UserId,MasterCompanyId,LocalOrderNo)values('" + dditemname.SelectedValue + "','" + txtfileno.Text + "','" + ddsubquality.SelectedValue + "','" + txtversion.Text + "','" + txtourref.Text + "','" + txtdate.Text + "','" + dddesign.SelectedValue + "', " + Session["varuserid"].ToString() + "," + Session["varCompanyId"].ToString() + ",'" + txtsrno.Text +"')";
+            // string str = "insert into Technicaldetail(Masterquality,fileno,Subquality,Version,Ourref,date,Design,UserId,MasterCompanyId)values('" +txtmasterquality.Text + "','" + _arrpara[1].Value + "','" + _arrpara[2].Value + "','" + _arrpara[3].Value + "','" + _arrpara[4].Value + "','" + _arrpara[5].Value + "','" + _arrpara[6].Value + "', " + Session["varuserid"].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + ")";
+            string str = "insert into Technicaldetail(ITEM_ID,fileno,QualityID,Version,Ourref,date,Designid,UserId,MasterCompanyId,LocalOrderNo)values('" + dditemname.SelectedValue + "','" + txtfileno.Text + "','" + ddsubquality.SelectedValue + "','" + txtversion.Text + "','" + txtourref.Text + "','" + txtdate.Text + "','" + dddesign.SelectedValue + "', " + Session["varuserid"].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + ",'" + txtsrno.Text +"')";
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, str);
             //InsertRecords(sc);
 
@@ -937,7 +936,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
         for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
         {
             dditemname.SelectedValue = ds1.Tables[0].Rows[i]["ITEM_ID"].ToString();
-            UtilityModule.ConditionalComboFill(ref ddsubquality, "select QualityId,QualityName from quality where Item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + "Order By QualityName", true, "-- Pls Select Quality--");
+            UtilityModule.ConditionalComboFill(ref ddsubquality, "select QualityId,QualityName from quality where Item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order By QualityName", true, "-- Pls Select Quality--");
             ddsubquality.SelectedValue = ds1.Tables[0].Rows[i]["QualityID"].ToString();
             txtversion.Text = ds1.Tables[0].Rows[i]["Version"].ToString();
             txtourref.Text = ds1.Tables[0].Rows[i]["Ourref"].ToString();
@@ -1175,7 +1174,7 @@ public partial class Masters_Campany_FrmTechnicalDetailSheet : System.Web.UI.Pag
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
     {
 
-        UtilityModule.ConditionalComboFill(ref ddsubquality, "select QualityId,QualityName from quality where Item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varcompanyid"] + "Order By QualityName", true, "-- Pls Select Quality--");
+        UtilityModule.ConditionalComboFill(ref ddsubquality, "select QualityId,QualityName from quality where Item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "Order By QualityName", true, "-- Pls Select Quality--");
 
     }
     

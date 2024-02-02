@@ -12,7 +12,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
     string str = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,17 +21,17 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
             str = @"Select Distinct CI.CompanyId, CI.Companyname 
             From Companyinfo CI(nolock)
             JOIN Company_Authentication CA(nolock) ON CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CI.Companyname 
+            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CI.Companyname 
 
             Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
             From PROCESS_NAME_MASTER PNM(nolock) 
-            Where PNM.MasterCompanyid = " + Session["varcompanyid"] + @" Order By PNM.Process_Name_ID 
+            Where PNM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By PNM.Process_Name_ID 
 
             Select EI.EmpId, EI.EmpName 
             From Empinfo EI(Nolock)
             JOIN EMPPROCESS EP(Nolock) ON EP.EmpId = EI.EmpId";
 
-            if (Convert.ToInt32(Session["varcompanyid"]) == 21)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 21)
             {
                 str = str + " And EP.ProcessId = 17 ";
             }
@@ -40,7 +40,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
                 str = str + " And EP.ProcessId = 1 ";
             }
 
-            str = str + " Where EI.MasterCompanyID = " + Session["varcompanyid"] + " Order By EI.EmpName ";
+            str = str + " Where EI.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName ";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 0, true, "Select Comp Name");
@@ -54,7 +54,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
 
             if (DDProcessName.Items.Count > 0)
             {
-                if (Convert.ToInt32(Session["varcompanyid"]) == 21)
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 21)
                 {
                     DDProcessName.SelectedValue = "17";
                 }
@@ -146,7 +146,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
             arr[5].Value = TxtIssueDate.Text;
             arr[6].Value = DetailData;
             arr[7].Value = Session["varuserid"];
-            arr[8].Value = Session["varCompanyId"];
+            arr[8].Value = Session["varMasterCompanyIDForERP"];
             arr[9].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_SaveRollIssueOtherProcess]", arr);
@@ -222,7 +222,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
             param[1] = new SqlParameter("@RollIssueOtherProcessDetailID", LblRollIssueOtherProcessDetailID.Text);
             param[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["VarUserId"]);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
             //****************
@@ -263,7 +263,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
         string str = @"Select Distinct EI.EmpID, EI.EmpName 
             From RollIssueOtherProcessMatser a(Nolock)
             JOIN Empinfo EI ON EI.EmpID = a.EmpID 
-            Where a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @"
+            Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @"
             Order By EI.EmpName ";
 
         DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -312,7 +312,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
     {
         string str = @"Select a.RollIssueOtherProcessID, a.IssueNo, REPLACE(CONVERT(NVARCHAR(11), a.IssueDate, 106), ' ', '-') IssueDate 
             From RollIssueOtherProcessMatser a(Nolock) 
-            Where a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
+            Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
             And a.RollIssueOtherProcessID = " + DDIssueNo.SelectedValue + @"
             Order By a.RollIssueOtherProcessID Desc";
 
@@ -335,7 +335,7 @@ public partial class Masters_MachineProcess_FrmRollIssueToStitchingAndOtherProce
         {
             string str = @"Select RollIssueOtherProcessID, IssueNo 
             From RollIssueOtherProcessMatser(Nolock) 
-            Where MasterCompanyID = " + Session["VarCompanyId"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" 
+            Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" 
             And EmpID = " + DDEmployeeName.SelectedValue + " Order By RollIssueOtherProcessID Desc ";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);

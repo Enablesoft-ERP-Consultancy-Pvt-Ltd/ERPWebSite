@@ -12,7 +12,7 @@ public partial class Masters_Campany_Currencies : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -42,7 +42,7 @@ public partial class Masters_Campany_Currencies : CustomPage
         try
         {
             con.Open();
-            string strsql = "Select CurrencyId,CurrencyName,CurrencyTypeRs,CurrencyTypePs,CurrentRateRefRs from  CurrencyInfo Where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "Select CurrencyId,CurrencyName,CurrencyTypeRs,CurrencyTypePs,CurrentRateRefRs from  CurrencyInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns["CurrencyId"].ColumnName = "Sr.No";
             ds.Tables[0].Columns["CurrencyName"].ColumnName = "Curency Name";
@@ -96,7 +96,7 @@ public partial class Masters_Campany_Currencies : CustomPage
                 _arrpara[3].Value = txtpaise.Text.ToUpper();
                 _arrpara[4].Value = Convert.ToDouble(txtConversionRateAsPerRs.Text);
                 _arrpara[5].Value = Session["varuserid"].ToString();
-                _arrpara[6].Value = Session["varCompanyId"].ToString();
+                _arrpara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
 
                 _arrpara[7].Value = trPAYINSTRUCTION.Visible == true ? TXTPAYMENTINSTRUCTION.Text : "";
                 _arrpara[8].Value = trBENEFICIARYBANK.Visible == true ? TXTBENEFICIARYBANK.Text : "";
@@ -159,7 +159,7 @@ public partial class Masters_Campany_Currencies : CustomPage
     {
         BtnSave.Text = "Update";
         txtid.Text = dgcurrency.SelectedRow.Cells[0].Text;
-        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CurrencyId,currencyName,currencytypeRs,currencytypePs,currentRateRefRs,PAYINSTRUCTION,BENEFICIARY_BANK,REMARKS from CurrencyInfo where  MasterCompanyId=" + Session["varCompanyId"] + " And CurrencyId=" + dgcurrency.SelectedRow.Cells[0].Text);
+        DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select CurrencyId,currencyName,currencytypeRs,currencytypePs,currentRateRefRs,PAYINSTRUCTION,BENEFICIARY_BANK,REMARKS from CurrencyInfo where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And CurrencyId=" + dgcurrency.SelectedRow.Cells[0].Text);
         if (Ds.Tables[0].Rows.Count > 0)
         {
             //ViewState["CurrencyId"] = txtid.Text;
@@ -207,11 +207,11 @@ public partial class Masters_Campany_Currencies : CustomPage
             string strsql;
             if (BtnSave.Text == "Update")
             {
-                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyId !=" + dgcurrency.SelectedValue + " and CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyId !=" + dgcurrency.SelectedValue + " and CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "Select isnull(max(CurrencyId),0) from CurrencyInfo where CurrencyName='" + TxtCurrencyName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             int id = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, strsql));
@@ -254,7 +254,7 @@ public partial class Masters_Campany_Currencies : CustomPage
             _array[0] = new SqlParameter("@CurrencyId", ViewState["CurrencyId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteCurrency", _array);
             lblerr.Visible = true;

@@ -10,7 +10,7 @@ public partial class Masters_Packing_frmpackingtype : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -39,7 +39,7 @@ public partial class Masters_Packing_frmpackingtype : System.Web.UI.Page
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@userid", Session["varuserid"]);
-            param[5] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[5] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //**************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_savepackingtype", param);
             lblmsg.Text = param[3].Value.ToString();

@@ -16,23 +16,23 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack != true)
         {
             string process;
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
-                process = "Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" and process_name_id in(1,16) Order By PROCESS_NAME";
+                process = "Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" and process_name_id in(1,16) Order By PROCESS_NAME";
             }
             else
             {
-                process = "Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" and Process_name_id=1 Order By PROCESS_NAME";
+                process = "Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" and Process_name_id=1 Order By PROCESS_NAME";
             }
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                         " + process + @"
                         Select Unitid,UnitName from Unit Where Unitid in (1,2,7,4,6)
                         Select VarCompanyNo,VarProdCode From MasterSetting 
@@ -46,7 +46,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
             hncomp.Value = ds.Tables[3].Rows[0]["VarCompanyNo"].ToString();
             int VarProdCode = Convert.ToInt32(ds.Tables[3].Rows[0]["VarProdCode"]);
 
-            if (Convert.ToInt32(Session["varCompanyId"]) == 7)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 7)
             {
                 if (DDunit.Items.Count > 0)
                 {
@@ -82,7 +82,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
 
             if (DDProcessName.Items.Count > 0)
             {
-                if (Convert.ToInt32(Session["varCompanyId"]) == 7)
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 7)
                 {
                     DDProcessName.SelectedValue = "9";
                     ViewState["Process_Rec_Id"] = 0;
@@ -98,9 +98,9 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
                         DDProcessName.SelectedValue = "1";
                     }
                 }
-                UtilityModule.ConditionalComboFill(ref DDEmployeeNamee, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " order by EI.EmpName", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDEmployeeNamee, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by EI.EmpName", true, "--Select--");
             }
-            //DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "");
+            //DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             //if (Ds.Tables[0].Rows.Count > 0)
             //{
             //    for (int i = 0; i < Ds.Tables[0].Rows.Count; i++)
@@ -113,7 +113,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
             // btnqcchkpreview.Enabled = false;
             visible_comp();
             //
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 9:
                     //btnqcchkpreview.Visible = false;
@@ -175,7 +175,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
     }
@@ -224,7 +224,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
     {
         if (DDProcessName.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref DDEmployeeNamee, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId ANd EI.MasterCompanyId=" + Session["varCompanyId"] + " order by ei.empname ", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDEmployeeNamee, "Select Distinct EI.EmpId,EI.EmpName from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId ANd EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ei.empname ", true, "--Select--");
         }
     }
     protected void DDEmployeeNamee_SelectedIndexChanged(object sender, EventArgs e)
@@ -235,7 +235,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
     private void EmployeeSelectedChange()
     {
         string sql = "";
-        sql = sql + "Select Distinct PM.IssueOrderId,case When " + Session["varcompanyId"] + "=9 Then Om.localOrder+'/'+cast(PM.IssueOrderId as varchar(100)) ELse cast(PM.IssueOrderId as varchar(100)) End as IssueOrderid1 from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD,ordermaster OM  Where PM.ISSUEORDERID=PD.ISSUEORDERID And PD.orderid=OM.orderid And PD.PQty<>0 And PM.status='Pending' And Empid=" + DDEmployeeNamee.SelectedValue + " And Pm.CompanyId=" + DDCompanyName.SelectedValue + "";
+        sql = sql + "Select Distinct PM.IssueOrderId,case When " + Session["varMasterCompanyIDForERP"] + "=9 Then Om.localOrder+'/'+cast(PM.IssueOrderId as varchar(100)) ELse cast(PM.IssueOrderId as varchar(100)) End as IssueOrderid1 from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD,ordermaster OM  Where PM.ISSUEORDERID=PD.ISSUEORDERID And PD.orderid=OM.orderid And PD.PQty<>0 And PM.status='Pending' And Empid=" + DDEmployeeNamee.SelectedValue + " And Pm.CompanyId=" + DDCompanyName.SelectedValue + "";
         if (chkboxSampleFlag.Checked == true)
         {
             sql = sql + " and PM.SampleNumber!='' ";
@@ -275,7 +275,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
                     if (Ds.Tables[0].Rows.Count > 0)
                     {
                         DDunit.SelectedValue = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select Unitid From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " Where EmpId=" + DDEmployeeNamee.SelectedValue + " and Status!='Canceled'").ToString();
-                        UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ")  where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=PIM.IssueOrderId and PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status!='Canceled' And IM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                        UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ")  where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=PIM.IssueOrderId and PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status!='Canceled' And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                         if (DDCategoryName.Items.Count > 0)
                         {
                             DDCategoryName.SelectedIndex = 1;
@@ -295,7 +295,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
                     ////DDunit.SelectedValue = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select Unitid From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " Where IssueOrderId=" + DDPONo.SelectedValue).ToString();
                     DDunit.SelectedValue = ds2.Tables[0].Rows[0]["Unitid"].ToString();
                     DDcaltype.SelectedValue = ds2.Tables[0].Rows[0]["CalType"].ToString();
-                    UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=PIM.IssueOrderId and PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status!='Canceled' And IM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                    UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=PIM.IssueOrderId and PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status!='Canceled' And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
 
                     if (DDCategoryName.Items.Count > 0)
                     {
@@ -354,7 +354,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
                     if (Ds.Tables[0].Rows.Count > 0)
                     {
                         DDunit.SelectedValue = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select Unitid From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " Where IssueOrderId=" + DDPONo.SelectedValue).ToString();
-                        UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ")  where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=" + DDPONo.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                        UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ")  where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=" + DDPONo.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                     }
                     else
                     {
@@ -369,7 +369,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
                     ////DDunit.SelectedValue = SqlHelper.ExecuteScalar(Tran, CommandType.Text, "Select Unitid From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " Where IssueOrderId=" + DDPONo.SelectedValue).ToString();
                     DDunit.SelectedValue = ds2.Tables[0].Rows[0]["Unitid"].ToString();
                     DDcaltype.SelectedValue = ds2.Tables[0].Rows[0]["CalType"].ToString();
-                    UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=" + DDPONo.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+                    UtilityModule.ConditionalComboFill(ref DDCategoryName, "Select Distinct ICM.Category_Id,Category_Name from PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PID,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,ITEM_CATEGORY_MASTER ICM inner join UserRights_Category UC on(ICM.Category_Id=UC.CategoryId And UC.UserId=" + Session["varuserid"] + ") where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.Item_Finished_Id=IPM.Item_Finished_Id and PID.IssueOrderId=" + DDPONo.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
                 }
             }
             Tran.Commit();
@@ -395,11 +395,11 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
     {
         if (variable.VarNewQualitySize == "1")
         {
-            UtilityModule.ConditionalComboFill(ref DDItemName, "Select Distinct Item_id, Item_Name from V_FinishedItemDetailNew VF,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM Where VF.Item_Finished_Id=PD.Item_Finished_Id And VF.Category_Id=" + DDCategoryName.SelectedValue + " And PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status!='Canceled' And VF.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDItemName, "Select Distinct Item_id, Item_Name from V_FinishedItemDetailNew VF,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM Where VF.Item_Finished_Id=PD.Item_Finished_Id And VF.Category_Id=" + DDCategoryName.SelectedValue + " And PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status!='Canceled' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDItemName, "Select Distinct Item_id, Item_Name from V_FinishedItemDetail VF,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD Where VF.Item_Finished_Id=PD.Item_Finished_Id And VF.Category_Id=" + DDCategoryName.SelectedValue + " And PD.IssueOrderId=" + DDPONo.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDItemName, "Select Distinct Item_id, Item_Name from V_FinishedItemDetail VF,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + " PD Where VF.Item_Finished_Id=PD.Item_Finished_Id And VF.Category_Id=" + DDCategoryName.SelectedValue + " And PD.IssueOrderId=" + DDPONo.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         }
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
@@ -416,13 +416,13 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
         {
             if (DDItemName.SelectedIndex > 0)
             {
-                TxtPrefix.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Item_Code from Item_Master Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
-                if (Convert.ToInt32(Session["varCompanyId"]) != 5)
+                TxtPrefix.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Item_Code from Item_Master Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) != 5)
                 {
                     get_year = DateTime.Now.ToString("dd-MMM-yyyy");
                     lastTwoChars = get_year.Substring(get_year.Length - 2);
                 }
-                switch (Convert.ToInt32(Session["varcompanyId"]))
+                switch (Convert.ToInt32(Session["varMasterCompanyIDForERP"]))
                 {
                     case 4:
                     case 15:
@@ -733,7 +733,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
                     _arrpara[11] = new SqlParameter("@TDSPercentage", 0);
                     _arrpara[12] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
                     _arrpara[13] = new SqlParameter("@GatePassNo", 0);
-                    _arrpara[14] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+                    _arrpara[14] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                     _arrpara[15] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 100);
                     _arrpara[15].Direction = ParameterDirection.Output;
                     _arrpara[16] = new SqlParameter("@dtrecords", dtrecords);
@@ -828,7 +828,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
     }
     private void CATEGORY_DEPENDS_CONTROLS()
     {
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select Distinct Item_id, Item_Name from Item_Master where Category_Id=" + DDCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select Distinct Item_id, Item_Name from Item_Master where Category_Id=" + DDCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
     public static string[] GetQuality(string prefixText, int count)
@@ -873,7 +873,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
                        PIM.UnitId UNIT,PID.Item_Finished_Id as finishedid,Issue_Detail_Id,PIM.AssignDate,PID.width as ProdWidthFt,PID.Length as ProdLengthFt,PID.AfterKhapSizeOrder as finishing_Ft_Size,PID.Area as Finishing_Ft_Area,
                        V.Finishing_Mt_Size,PID.Orderid,PID.Rate,PID.Comm,PIM.FlagFixOrWeight,PID.Area From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PIM,
                        PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PID,V_FinishedItemDetailNew V Where PIM.IssueOrderId=PID.IssueOrderId And 
-                       pid.item_finished_id=V.Item_Finished_Id And PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status='Pending' And V.MasterCompanyId=" + Session["varCompanyId"] + " And PIM.CompanyId=" + DDCompanyName.SelectedValue + @" Group By PID.IssueOrderId, CATEGORY_NAME,Item_Name,QualityName,Designname,
+                       pid.item_finished_id=V.Item_Finished_Id And PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status='Pending' And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And PIM.CompanyId=" + DDCompanyName.SelectedValue + @" Group By PID.IssueOrderId, CATEGORY_NAME,Item_Name,QualityName,Designname,
                        ColorName,ShadeColorName,ShapeName,ProdSizeMtr,ProdSizeFt,Sizeinch,UnitId,CATEGORY_ID,V.ITEM_ID,QualityId,ColorId,DesignId,SizeId,ShapeId,ShadecolorId,PID.Item_Finished_Id,PIM.AssignDate,
                         PID.width,PID.Length,PID.AfterKhapSizeOrder,V.Finishing_Mt_Size,PID.Orderid,PID.Rate,PID.Comm,PIM.FlagFixOrWeight,PID.Area,PIM.SampleNumber,Issue_Detail_Id Having isnull(sum(pid.PQty),0)>0";
 
@@ -885,7 +885,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
             //                       PIM.UnitId UNIT,PID.Item_Finished_Id as finishedid,Issue_Detail_Id,PIM.AssignDate,V.ProdWidthFt,V.ProdLengthFt,
             //                        V.finishing_Ft_Size, V.Finishing_Ft_Area,V.Finishing_Mt_Size,PID.Orderid,PID.Rate,PID.Comm,PIM.FlagFixOrWeight,PID.Area From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PIM,
             //                       PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PID,V_FinishedItemDetailNew V Where PIM.IssueOrderId=PID.IssueOrderId And 
-            //                       pid.item_finished_id=V.Item_Finished_Id And PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status='Pending' And V.MasterCompanyId=" + Session["varCompanyId"] + " And PIM.CompanyId=" + DDCompanyName.SelectedValue + @" Group By PID.IssueOrderId, CATEGORY_NAME,Item_Name,QualityName,Designname,
+            //                       pid.item_finished_id=V.Item_Finished_Id And PIM.Empid=" + DDEmployeeNamee.SelectedValue + " and PIM.Status='Pending' And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And PIM.CompanyId=" + DDCompanyName.SelectedValue + @" Group By PID.IssueOrderId, CATEGORY_NAME,Item_Name,QualityName,Designname,
             //                       ColorName,ShadeColorName,ShapeName,ProdSizeMtr,ProdSizeFt,Sizeinch,UnitId,CATEGORY_ID,V.ITEM_ID,QualityId,ColorId,DesignId,SizeId,ShapeId,ShadecolorId,PID.Item_Finished_Id,PIM.AssignDate,
             //                        V.ProdWidthFt,V.ProdLengthFt,V.finishing_Ft_Size, V.Finishing_Ft_Area,V.Finishing_Mt_Size,PID.Orderid,PID.Rate,PID.Comm,PIM.FlagFixOrWeight,PID.Area,Issue_Detail_Id Having isnull(sum(pid.PQty),0)>0";
         }
@@ -2268,7 +2268,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
         array[5] = new SqlParameter("@ManualWtEntry", SqlDbType.Int);
         array[0].Value = Convert.ToInt32(lblProcessRecID.Text == "" ? "0" : lblProcessRecID.Text);
         array[1].Value = DDEmployeeNamee.SelectedValue;
-        array[2].Value = Session["varcompanyId"];
+        array[2].Value = Session["varMasterCompanyIDForERP"];
         array[3].Value = DDCompanyName.SelectedValue;
 
         int chkboxsampleflag = 0;
@@ -2335,7 +2335,7 @@ public partial class Masters_process_ProcessReceiveNew : System.Web.UI.Page
         // array[4] = new SqlParameter("@SampleFlag", SqlDbType.Int);
         array[0].Value = Convert.ToInt32(lblProcessRecID.Text == "" ? "0" : lblProcessRecID.Text);
         array[1].Value = DDEmployeeNamee.SelectedValue;
-        array[2].Value = Session["varcompanyId"];
+        array[2].Value = Session["varMasterCompanyIDForERP"];
         array[3].Value = DDCompanyName.SelectedValue;
 
         //int chkboxsampleflag = 0;

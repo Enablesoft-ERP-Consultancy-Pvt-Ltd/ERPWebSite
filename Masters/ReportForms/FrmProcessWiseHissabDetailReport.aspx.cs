@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabDetailReport : Syst
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -35,7 +35,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabDetailReport : Syst
     private void BindProcessName()
     {
         string Str = "";
-        Str = "Select Process_Name_Id, Process_Name from PROCESS_NAME_MASTER(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + " and Process_Name<>'Weaving' Order By Process_Name";
+        Str = "Select Process_Name_Id, Process_Name from PROCESS_NAME_MASTER(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and Process_Name<>'Weaving' Order By Process_Name";
 
         UtilityModule.ConditionalComboFill(ref DDProcessName, Str, true, "--SELECT--");
     }
@@ -48,7 +48,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabDetailReport : Syst
             {
                 if (DDProcessName.SelectedValue == "1")
                 {
-                    Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI Where CompanyId=" + DDcompany.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.Blacklist=0 Order By EmpName";
+                    Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI Where CompanyId=" + DDcompany.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.Blacklist=0 Order By EmpName";
                 }
                 else
                 {
@@ -56,7 +56,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabDetailReport : Syst
                             inner join EmpInfo EI(NoLock) on EMP.Empid=EI.EmpId Where  EMP.ProcessId=" + DDProcessName.SelectedValue + " and PIM.Companyid= " + DDcompany.SelectedValue + " and EI.Blacklist=0 order by Empname";
                 }
 
-                //                    switch (Session["varcompanyId"].ToString())
+                //                    switch (Session["varMasterCompanyIDForERP"].ToString())
                 //                    {
                 //                        case "28":
                 //                        case "22":
@@ -70,7 +70,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabDetailReport : Syst
                 //                        default:
                 //                            if (DDProcessName.SelectedValue == "1")
                 //                            {
-                //                                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI Where CompanyId=" + DDcompany.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.Blacklist=0 Order By EmpName";
+                //                                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI Where CompanyId=" + DDcompany.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.Blacklist=0 Order By EmpName";
                 //                            }
                 //                            else
                 //                            {
@@ -82,7 +82,7 @@ public partial class Masters_ReportForms_FrmProcessWiseHissabDetailReport : Syst
             }
             else
             {
-                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI(NoLock) Where CompanyId=" + DDcompany.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.Blacklist=0 Order By EmpName";
+                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM(NoLock),EMpInfo EI(NoLock) Where CompanyId=" + DDcompany.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.Blacklist=0 Order By EmpName";
             }
 
             UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");

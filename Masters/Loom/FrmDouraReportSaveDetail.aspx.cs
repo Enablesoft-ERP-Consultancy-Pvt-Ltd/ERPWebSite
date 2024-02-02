@@ -13,7 +13,7 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,17 +21,17 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
         {
             string str = @"select CI.CompanyId,CompanyName 
                         From CompanyInfo CI(Nolock) 
-                        inner Join Company_Authentication CA(Nolock) on CA.CompanyId = CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                        inner Join Company_Authentication CA(Nolock) on CA.CompanyId = CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                         Select ID, BranchName 
                         From BRANCHMASTER BM(nolock) 
                         JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                         Select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' Empname 
                         From EmpInfo EI(Nolock) 
                         inner join Department D(Nolock) on EI.Departmentid = D.DepartmentId And D.DepartmentName = 'PRODUCTION' And EI.Status = 'P' 
                         And EI.Blacklist = 0 order by Empname
                         select ICM.Category_id,ICM.CATEGORY_NAME From Item_category_Master  ICM 
-                          inner join CategorySeparate CS on ICM.CATEGORY_ID=Cs.Categoryid and Cs.id=0 and ICM.MasterCompanyid=" + Session["varcompanyid"] + " ";
+                          inner join CategorySeparate CS on ICM.CATEGORY_ID=Cs.Categoryid and Cs.id=0 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -86,7 +86,7 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -282,7 +282,7 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
             //cmd.Parameters.AddWithValue("@EMPID", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
             cmd.Parameters.AddWithValue("@IssueOrderId", DDFolioNo.SelectedValue); 
             cmd.Parameters.AddWithValue("@WHERE", str);            
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
 
             DataSet ds = new DataSet();
@@ -423,7 +423,7 @@ public partial class Masters_Loom_FrmDouraReportSaveDetail : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@Remarks", txtDouraRemark.Text);
                     cmd.Parameters.AddWithValue("@StringDetail", Strdetail);
                     cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                     cmd.Parameters["@msg"].Direction = ParameterDirection.Output; 
                  

@@ -26,12 +26,12 @@ public partial class Masters_ReportForms_frmprocesspendingReport : System.Web.UI
             str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
-                    select  UnitsId,UnitName from  units with(nolock) Where Mastercompanyid=" + Session["varcompanyid"] + @"
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
+                    select  UnitsId,UnitName from  units with(nolock) Where Mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @"
                     select ITEM_ID,ITEM_NAME from ITEM_MASTER IM with(nolock) Inner Join CategorySeparate CS with(nolock) on 
-                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid=" + Session["varcompanyid"] + @"
+                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @"
                     select  ShapeId,ShapeName from Shape with(nolock)
-                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) where MasterCompanyid=" + Session["varcompanyid"] + @"
+                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
                     select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME";
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -54,7 +54,7 @@ public partial class Masters_ReportForms_frmprocesspendingReport : System.Web.UI
             ds.Dispose();
             txtFdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             txtTdate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     ChkForExcel.Visible = false; 
@@ -218,7 +218,7 @@ public partial class Masters_ReportForms_frmprocesspendingReport : System.Web.UI
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref DDArticleName, @"select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner join CategorySeparate CS on IM.CATEGORY_ID=CS.Categoryid
-                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varcompanyId"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
+                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
     }
 
     protected void ExcelReport()

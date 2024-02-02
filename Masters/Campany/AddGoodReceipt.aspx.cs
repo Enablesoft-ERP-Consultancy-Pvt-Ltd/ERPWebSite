@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddGoodReceipt : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Campany_AddGoodReceipt : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select GoodsreceiptId as Sr_No,StationName from GoodsReceipt Where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "select GoodsreceiptId as Sr_No,StationName from GoodsReceipt Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -75,7 +75,7 @@ public partial class Masters_Campany_AddGoodReceipt : CustomPage
                 }
                 _arrPara[1].Value = txtStationname.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_GOODS", _arrPara);
                 txtid.Text = "0";
@@ -176,11 +176,11 @@ public partial class Masters_Campany_AddGoodReceipt : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select StationName from GoodsReceipt where GoodsreceiptId!='" + ViewState["id"].ToString() + "' and StationName='" + txtStationname.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select StationName from GoodsReceipt where GoodsreceiptId!='" + ViewState["id"].ToString() + "' and StationName='" + txtStationname.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select StationName from GoodsReceipt where StationName='" + txtStationname.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select StationName from GoodsReceipt where StationName='" + txtStationname.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -215,12 +215,12 @@ public partial class Masters_Campany_AddGoodReceipt : CustomPage
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select RecieptAtByPreCarrier ,PortOfLoading from customerinfo where MasterCompanyId=" + Session["varCompanyId"] + "  And PortOfLoading='" + ViewState["id"].ToString() + "' or PortOfLoading='" + ViewState["id"].ToString() + "'"));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select RecieptAtByPreCarrier ,PortOfLoading from customerinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  And PortOfLoading='" + ViewState["id"].ToString() + "' or PortOfLoading='" + ViewState["id"].ToString() + "'"));
             if (id <= 0)
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from GoodsReceipt where GoodsreceiptId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'GoodsReceipt'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'GoodsReceipt'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 Label1.Visible = true;
                 Label1.Text = "Value Deleted..........";
 

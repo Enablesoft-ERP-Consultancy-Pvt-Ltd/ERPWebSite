@@ -12,7 +12,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingHissab :
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingHissab :
             string Str = @"Select CI.CompanyId, CI.CompanyName 
                     From CompanyInfo CI(Nolock) 
                     JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyid = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                    Where CI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
                     Select Distinct a.ProcessID, PNM.PROCESS_NAME 
                     From HomeFurnishingMakingReceiveMaster a(Nolock)
                     JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = a.ProcessID 
@@ -79,7 +79,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingHissab :
                 Str = @" Select Distinct EI.EmpId, EI.EmpName + case when isnull(ei.empcode, '') <> '' then ' [' + ei.empcode + ']' else '' end EmpName 
                 From HomeFurnishingMakingHissab PH(Nolock) 
                 JOIN EMpInfo EI(Nolock) ON EI.EmpID = PH.EmpID And EI.Blacklist = 0 
-                Where PH.CompanyId = " + DDCompanyName.SelectedValue + " AND EI.MasterCompanyId = " + Session["varcompanyId"] + @" And 
+                Where PH.CompanyId = " + DDCompanyName.SelectedValue + " AND EI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" And 
                 PH.ProcessId = " + DDProcessName.SelectedValue + " Order By EmpName";
             }
             else
@@ -145,7 +145,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingHissab :
             cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
             cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 250);
             cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;
 
@@ -245,7 +245,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingHissab :
             param[0] = new SqlParameter("@Hissab_No", ViewState["Hissab_No"]);
             param[1] = new SqlParameter("@processid", DDProcessName.SelectedValue);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 

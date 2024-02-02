@@ -16,7 +16,7 @@ public partial class Masters_Payroll_FrmPaidLeaveDetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -89,7 +89,7 @@ public partial class Masters_Payroll_FrmPaidLeaveDetail : System.Web.UI.Page
             param[4] = new SqlParameter("@NOOFLEAVE", TxtNoofLeave.Text);
             param[5] = new SqlParameter("@REMARK", TxtRemark.Text);
             param[6] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[7] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"]);
+            param[7] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[8] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[8].Direction = ParameterDirection.Output;
 

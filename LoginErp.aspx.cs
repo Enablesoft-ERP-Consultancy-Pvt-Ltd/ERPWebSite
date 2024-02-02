@@ -104,7 +104,7 @@ public partial class LoginErp : System.Web.UI.Page
                     Session["varDepartment"] = _arrPara[4].Value;
                     Session["varCompanyName"] = _arrPara[7].Value;
                     string name = Session["varusername"].ToString().ToLower();
-                    Session["varCompanyId"] = _arrPara[6].Value;
+                    Session["varMasterCompanyIDForERP"] = _arrPara[6].Value;
                     Session["varusername"] = "Welcome  " + name[0].ToString().ToUpper() + name.Substring(1);
                     Session["VarcompanyNo"] = _arrPara[6].Value;
                     Response.Redirect("main.aspx");

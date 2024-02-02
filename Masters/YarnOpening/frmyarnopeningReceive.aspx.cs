@@ -12,7 +12,7 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
     static int rowindex = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
             string str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                            select EI.EmpId,EI.EmpName+case when isnull(EI.empcode,'')<>'' Then ' ['+EI.empcode+']' Else '' End Empname  from empinfo EI inner join Department D 
                            on EI.departmentId=D.DepartmentId Where D.DepartmentName in('Yarn Opening','WEFT DEPARTMENT') and isnull(Blacklist,0)=0";
             if (Session["varcompanyNo"].ToString() != "16")
@@ -33,13 +33,13 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
 
             }
             str = str + " order by EmpName";
-            str = str + " Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName";
+            str = str + " Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName";
             str = str + " select Godownid From ModuleWiseGodown where ModuleName='" + Page.Title + "' ";
             str = str + " Select D.Departmentid,D.DepartmentName From Department D Where D.DepartmentName in('Yarn Opening','WEFT DEPARTMENT') ";
             str = str + @" Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -379,14 +379,14 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
                 DDTransportType.SelectedValue = lblTransportType.Text;
             }
 
-            if (Convert.ToInt32(Session["varcompanyid"]) == 16 || Convert.ToInt32(Session["varcompanyid"]) == 28)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
             {
                 DDconetype.Enabled = false;
                 DDPlyType.Enabled = false;
                 DDTransportType.Enabled = false;
             }
 
-            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                             select godownid From Modulewisegodown Where ModuleName='" + Page.Title + @"'
                             Select ConeType, ConeType From ConeMaster Order By SrNo ";
 
@@ -428,7 +428,7 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
                 }
                 if (DG.Columns[i].HeaderText.ToUpper() == "MOISTURE")
                 {
-                    if (Convert.ToInt32(Session["varcompanyid"]) == 16 || Convert.ToInt32(Session["varcompanyid"]) == 28)
+                    if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
                     {
                         DG.Columns[i].Visible = true;
                     }
@@ -446,7 +446,7 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "14":
                     Session["rptFileName"] = "~\\Reports\\rptyarnopeningReceive.rpt";
@@ -528,7 +528,7 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
             param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[2].Direction = ParameterDirection.Output;
             param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteYarnOpeningReceive", param);
             Tran.Commit();
@@ -785,7 +785,7 @@ public partial class Masters_YarnOpening_frmyarnopeningReceive : System.Web.UI.P
             arr[1].Direction = ParameterDirection.Output;
             arr[2] = new SqlParameter("@ID", lblid.Text);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[5] = new SqlParameter("@Rate", lblrate.Text == "" ? "0" : lblrate.Text);
             //***********
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[PRO_UPDATEYARNOPENINGRECRATE]", arr);

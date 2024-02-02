@@ -12,7 +12,7 @@ public partial class Masters_Purchase_FrmDefineItemUserWise : System.Web.UI.Page
     string str = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Purchase_FrmDefineItemUserWise : System.Web.UI.Page
             str = @"Select Distinct CI.CompanyId, CI.Companyname 
             From Companyinfo CI(nolock)
             JOIN Company_Authentication CA(nolock) ON CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CI.Companyname 
+            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CI.Companyname 
             Select Distinct CI.CustomerId, CI.CustomerCode 
             From OrderMaster OM(nolock)
             JOIN CustomerInfo CI(nolock) ON CI.CustomerId = OM.CustomerId 
@@ -119,7 +119,7 @@ public partial class Masters_Purchase_FrmDefineItemUserWise : System.Web.UI.Page
             arr[1].Value = DDUserName.SelectedValue;
             arr[2].Value = DetailData;
             arr[3].Value = Session["varuserid"];
-            arr[4].Value = Session["varCompanyId"];
+            arr[4].Value = Session["varMasterCompanyIDForERP"];
             arr[5].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_SaveDefineItemUserWise]", arr);
@@ -187,7 +187,7 @@ public partial class Masters_Purchase_FrmDefineItemUserWise : System.Web.UI.Page
             param[1] = new SqlParameter("@RollIssueToNextDetailID", LblRollIssueToNextDetailID.Text);
             //param[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["VarUserId"]);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
             //****************
@@ -223,7 +223,7 @@ public partial class Masters_Purchase_FrmDefineItemUserWise : System.Web.UI.Page
         
         DataSet ds = SqlHelper.ExecuteDataset(@"Select Item_Finished_ID 
             From DefinePurchaseItemUserWise(Nolock)
-            Where OrderID = " + DDOrderNo.SelectedValue + " And UserID = " + DDUserName.SelectedValue + " And MasterCompanyID = " + Session["varCompanyId"]);
+            Where OrderID = " + DDOrderNo.SelectedValue + " And UserID = " + DDUserName.SelectedValue + " And MasterCompanyID = " + Session["varMasterCompanyIDForERP"]);
         if (ds.Tables[0].Rows.Count > 0)
         {
             for (int i = 0; i < ds.Tables[0].Rows.Count; i++)

@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
                            SELECT PROCESS_NAME_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESS_NAME IN('YARN OPENING+MOTTELING','HAND SPINNING','MOTTELING', 'HANK MAKING') ORDER BY PROCESS_NAME 
                            SELECT ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM INNER JOIN CATEGORYSEPARATE CS ON ICM.CATEGORY_ID=CS.CATEGORYID AND CS.ID=1 ORDER BY CATEGORY_NAME
-                           select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + " order by customer";
+                           select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by customer";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -326,7 +326,9 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
         sht.Range("K2").Value = "Cone Type";
         sht.Range("L2").Value = "Ply Type";
         sht.Range("M2").Value = "Transport Type";
-
+        sht.Range("N2").Value = "Rate";
+        sht.Range("O2").Value = "Amount";
+        
         DataView dv = ds.Tables[0].DefaultView;
         dv.Sort = "issuedate,Id";
         DataSet ds1 = new DataSet();
@@ -335,7 +337,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
         Decimal Bal = 0;
         for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)
         {
-            using (var a = sht.Range("A" + row + ":M" + row))
+            using (var a = sht.Range("A" + row + ":O" + row))
             {
                 a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
                 a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
@@ -345,8 +347,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
 
             sht.Range("F" + row + ":J" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
             sht.Range("F" + row + ":J" + row).Style.NumberFormat.Format = "#,##0.000";
-
-
+            
             sht.Range("A" + row).SetValue(ds1.Tables[0].Rows[i]["Empname"]);
             sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["issueno"]);
             sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["issuedate"]);
@@ -361,9 +362,12 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
             sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["ConeType"]);
             sht.Range("L" + row).SetValue(ds1.Tables[0].Rows[i]["PlyType"]);
             sht.Range("M" + row).SetValue(ds1.Tables[0].Rows[i]["TransportType"]);
+            sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["Rate"]);
+            sht.Range("O" + row).FormulaA1 = "=G" + row + '*' + "N" + row;
+
             row = row + 1;
         }
-        using (var a = sht.Range("F" + row + ":M" + row))
+        using (var a = sht.Range("F" + row + ":O" + row))
         {
             a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
             a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
@@ -376,6 +380,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
         var Balanced = sht.Evaluate("SUM(J3:J" + (row - 1) + ")");
         var Lossqty = sht.Evaluate("SUM(I3:I" + (row - 1) + ")");
         var Retnqty = sht.Evaluate("SUM(H3:H" + (row - 1) + ")");
+        var Amount = sht.Evaluate("SUM(O3:O" + (row - 1) + ")");
 
 
         sht.Range("F" + row + ":J" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
@@ -387,6 +392,7 @@ public partial class Masters_ReportForms_frmreportMotteling_Handspinning : Syste
         sht.Range("H" + row).Value = Retnqty;
         sht.Range("I" + row).Value = Lossqty;
         sht.Range("J" + row).Value = Balanced;
+        sht.Range("O" + row).Value = Amount;
 
         //********************
         sht.Columns(1, 30).AdjustToContents();

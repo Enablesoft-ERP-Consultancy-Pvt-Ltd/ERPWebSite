@@ -13,23 +13,23 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and mastercompanyid=" + Session["varcompanyid"] + @" order by PROCESS_NAME
-                           select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=1 and ICM.MasterCompanyid=" + Session["varcompanyid"] + @"
-                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME
+                           select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=1 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
+                           Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select CalID,CalType from Process_CalType order by caltype
                            select Val,Type from Sizetype
                            select godownid From Modulewisegodown Where ModuleName='" + Page.Title + @"' 
                            Select ID, BranchName 
                                 From BRANCHMASTER BM(nolock) 
                                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -137,7 +137,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
         TDISize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -171,7 +171,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
             }
         }
 
-        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " order by IM.item_name";
+        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by IM.item_name";
         UtilityModule.ConditionalComboFill(ref DDItem, stritem, true, "---Select Item----");
     }
     private void Rcategorychange()
@@ -190,7 +190,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
         TDRSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDRcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDRcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -223,7 +223,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
                 }
             }
         }
-        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDRcategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " order by IM.item_name";
+        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDRcategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by IM.item_name";
         UtilityModule.ConditionalComboFill(ref DDRitemName, stritem, true, "---Select Item----");
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -242,11 +242,11 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, DropDownList Shade, int Itemid)
     {
-        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By QUALITYNAME
-                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
-                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By QUALITYNAME
+                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
+                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -317,7 +317,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
         //size Query
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");
         //
@@ -355,7 +355,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
                 SizeString = "Sizeft";
                 break;
         }
-        Str = "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + DDRshape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "";
+        Str = "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + DDRshape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
 
         UtilityModule.ConditionalComboFill(ref DDRshape, Str, true, "--SELECT--");
 
@@ -372,15 +372,15 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
     {
         //if (TDBinNo.Visible == true)
         //{
-        //    int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //    int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //    FillBinNo(Varfinishedid, sender);
         //}
         //else
         //{
-        //    int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //    int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //    FillLotno(Varfinishedid);
         //}
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         FillLotno(Varfinishedid);
     }
 
@@ -448,7 +448,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
     }
     protected void DDLotno_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         if (TDTagno.Visible == true)
         {
             FillTagno(Varfinishedid);
@@ -470,7 +470,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
     }
     protected void DDTagNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         if (TDBinNo.Visible == true)
         {
             FillBinNo(Varfinishedid, sender);
@@ -528,17 +528,17 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
             arr[4].Value = TxtIndentNo.Text;
             arr[5] = new SqlParameter("@IssueDate", TxtDate.Text);
             arr[6] = new SqlParameter("@ReqDate", TxtReqDate.Text);
-            arr[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            arr[7] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[8] = new SqlParameter("@DetailId", SqlDbType.Int);
             arr[8].Value = 0;
-            int varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDColorShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[9] = new SqlParameter("@Ifinishedid", varfinishedid);
             arr[10] = new SqlParameter("@Iflagsize", DDsizetype.SelectedValue);
             arr[11] = new SqlParameter("@unitid", ddUnit.SelectedValue);
             arr[12] = new SqlParameter("@godownid", DDgodown.SelectedValue);
             arr[13] = new SqlParameter("@LotNo", DDLotno.SelectedItem.Text);
             arr[14] = new SqlParameter("@TagNo", TDTagno.Visible == false ? "Without Tag No" : DDTagNo.SelectedItem.Text);
-            int varRfinishedid = UtilityModule.getItemFinishedId(DDRitemName, DDRquality, DDRdesign, DDRcolor, DDRshape, DDRsize, txtRprodcode, Tran, DDRShadecolor, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varRfinishedid = UtilityModule.getItemFinishedId(DDRitemName, DDRquality, DDRdesign, DDRcolor, DDRshape, DDRsize, txtRprodcode, Tran, DDRShadecolor, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[15] = new SqlParameter("@Rfinishedid", varRfinishedid);
             arr[16] = new SqlParameter("@Rflagsize", DDRSizetype.SelectedValue);
             arr[17] = new SqlParameter("@Caltype", DDcaltype.SelectedValue);
@@ -618,19 +618,19 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if (Session["VarCompanyId"].ToString() == "31")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "31")
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingissueOPEE.rpt";
             }
-            else if (Session["VarCompanyId"].ToString() == "42")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "42")
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingissueVikarmCarpet.rpt";
             }
-            else if (Session["VarCompanyId"].ToString() == "43")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "43")
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingissueCarpetInternational.rpt";
             }
-            else if (Session["VarCompanyId"].ToString() == "22")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             {
                 Session["rptFileName"] = "~\\Reports\\rptsampledyeingissueDiamond.rpt";
             }
@@ -730,7 +730,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
             arr[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             arr[3].Direction = ParameterDirection.Output;
             arr[4] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[6] = new SqlParameter("@EWayBillNo", TxtEWayBillNo.Text);
             arr[7] = new SqlParameter("@Rate", txtRate.Text == "" ? "0" : txtRate.Text);
             //*******
@@ -822,7 +822,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
 
     protected void DDBinNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, DDColorShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         FillstockQty(Varfinishedid);
     }
     protected void BtnUpdateRemark_Click(object sender, EventArgs e)
@@ -843,7 +843,7 @@ public partial class Masters_Sample_Material_frmsamplematerialdyeing : System.We
             arr[1] = new SqlParameter("@ProcessId", SqlDbType.Int);
             arr[2] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             arr[3] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[5] = new SqlParameter("@Remark", txtremark.Text);
 
 

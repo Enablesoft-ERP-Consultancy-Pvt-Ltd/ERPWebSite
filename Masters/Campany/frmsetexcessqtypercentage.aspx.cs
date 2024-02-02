@@ -11,11 +11,10 @@ public partial class Masters_Campany_frmsetexcessqtypercentage : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
-
     }
     protected void ddpercentageexcessqtyfor_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -50,7 +49,7 @@ public partial class Masters_Campany_frmsetexcessqtypercentage : System.Web.UI.P
                 txtpercentage.Text = ds.Tables[0].Rows[0]["value"].ToString();
             }
         }
-        if (Session["varCompanyId"].ToString() == "16" && column == "PercentageExecssQtyForIndent")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" && column == "PercentageExecssQtyForIndent")
         {
             TrPPNo.Visible = true;
             if (column == "PercentageExecssQtyForIndent")
@@ -92,7 +91,7 @@ public partial class Masters_Campany_frmsetexcessqtypercentage : System.Web.UI.P
             param[0] = new SqlParameter("@columnname", column);
             param[1] = new SqlParameter("@value", txtpercentage.Text == "" ? "0" : txtpercentage.Text);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyId", Session["varcompanyId"]);
+            param[3] = new SqlParameter("@mastercompanyId", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
             if (TrPPNo.Visible == true)
@@ -121,7 +120,7 @@ public partial class Masters_Campany_frmsetexcessqtypercentage : System.Web.UI.P
     {
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"Select PercentageExecssQtyForIndent 
             From ProcessProgramExcessPercentage(Nolock) 
-            Where PPID = " + DDProcessProgramNo.SelectedValue + @" And MasterCompanyID = " + Session["varCompanyId"]);
+            Where PPID = " + DDProcessProgramNo.SelectedValue + @" And MasterCompanyID = " + Session["varMasterCompanyIDForERP"]);
         txtpercentage.Text = "";
         if (ds.Tables[0].Rows.Count > 0)
         {

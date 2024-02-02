@@ -12,7 +12,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,8 +20,8 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
 
         if (!IsPostBack)
         {
-            string str = @"select Customerid,Customercode From Customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by Customercode
-                            SELECT CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM,CategorySeparate CS Where ICM.CATEGORY_ID=CS.CATEGORYID And CS.ID=0 And ICM.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CATEGORY_NAME
+            string str = @"select Customerid,Customercode From Customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode
+                            SELECT CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM,CategorySeparate CS Where ICM.CATEGORY_ID=CS.CATEGORYID And CS.ID=0 And ICM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CATEGORY_NAME
                            Select varCompanyType From Mastersetting";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref ddBuyerCode, ds, 0, true, "---Select---");
@@ -32,7 +32,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
             {
                 ddlcategory.SelectedIndex = 1;
             }
-            UtilityModule.ConditionalComboFill(ref DDMasterQuality, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER where CATEGORY_ID=" + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+            UtilityModule.ConditionalComboFill(ref DDMasterQuality, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER where CATEGORY_ID=" + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
             DDMasterQuality.SelectedValue = Request.QueryString["Item"];
             txtid.Text = "0";
             txtDescription.Focus();          
@@ -45,7 +45,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblQualityName.Text = ParameterList[0];
         lblcategory.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
@@ -55,7 +55,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
         string str;
         DataSet ds;
         str = @"select Distinct q.QualityId,Q.QualityName from ITEM_PARAMETER_MASTER IM inner join Quality Q 
-                  on IM.QUALITY_ID=Q.QualityId  and IM.ITEM_ID= " + DDMasterQuality.SelectedValue + " and Q.mastercompanyId=" + Session["varcompanyId"] + @" order by Qualityname";
+                  on IM.QUALITY_ID=Q.QualityId  and IM.ITEM_ID= " + DDMasterQuality.SelectedValue + " and Q.mastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Qualityname";
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         UtilityModule.ConditionalComboFillWithDS(ref DDQuality, ds, 0, true, "--Select--");
@@ -99,7 +99,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
 
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@UserID", Session["VarUserId"]);
-        param[1] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+        param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[2] = new SqlParameter("@Where", where);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FILLQualityShipmentUpload", param);
@@ -142,7 +142,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
             SqlParameter[] param = new SqlParameter[3];
             param[0] = new SqlParameter("@Id", id);
             param[1] = new SqlParameter("@UserID", Session["VarUserId"]);
-            param[2] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+            param[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             //**********
             DataSet ds = SqlHelper.ExecuteDataset(Tran, CommandType.StoredProcedure, "Pro_GetQualityShipmentUpload", param);
@@ -227,7 +227,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
                     _arrPara[5].Value = txtDescription.Text;
                     _arrPara[6].Value = txtShipment.Text;
                     _arrPara[7].Value = txtUpload.Text;
-                    _arrPara[8].Value = Session["varCompanyId"].ToString();
+                    _arrPara[8].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara[9].Value = Session["varuserid"].ToString();
                     _arrPara[10].Value = txtNetWt.Text;
 
@@ -287,7 +287,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select QDescription from MasterQualityShipmentUpload Where CustomerCodeId=" + ddBuyerCode.SelectedValue + " and Category_ID=" + ddlcategory.SelectedValue + " and  Item_Id=" + DDMasterQuality.SelectedValue + " and QualityId=" + DDQuality.SelectedValue + "  and Id !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select QDescription from MasterQualityShipmentUpload Where CustomerCodeId=" + ddBuyerCode.SelectedValue + " and Category_ID=" + ddlcategory.SelectedValue + " and  Item_Id=" + DDMasterQuality.SelectedValue + " and QualityId=" + DDQuality.SelectedValue + "  and Id !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -364,7 +364,7 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
     }
     protected void CategorySelectedChanged()
     {
-        UtilityModule.ConditionalComboFill(ref DDMasterQuality, "select item_id,item_name from item_master where category_id= " + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDMasterQuality, "select item_id,item_name from item_master where category_id= " + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name", true, "--Select--");
     }
 //    protected void Button1_Click(object sender, EventArgs e)
 //    {
@@ -375,11 +375,11 @@ public partial class Masters_Carpet_FrmQualityWiseShipmentUpload : CustomPage
     
 
     
-//        //string qry = @"    SELECT QualityName FROM  Quality where MasterCompanyid=" + Session["varCompanyId"] + "  ORDER BY QualityName";
+//        //string qry = @"    SELECT QualityName FROM  Quality where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY QualityName";
 
 //        string qry=@"SELECT IM.ITEM_NAME, Q.QualityName FROM  Quality Q INNER JOIN ITEM_MASTER IM ON Q.Item_Id=IM.ITEM_ID
 //                    INNER JOIN ITEM_CATEGORY_MASTER ICM ON IM.CATEGORY_ID=ICM.CATEGORY_ID
-//                    where Q.MasterCompanyid=" + Session["varCompanyId"] + " and Q.Item_Id="+DDMasterQulaty.SelectedValue+" and ICM.CATEGORY_ID="+ddlcategory.SelectedValue+" ORDER BY QualityName";
+//                    where Q.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and Q.Item_Id="+DDMasterQulaty.SelectedValue+" and ICM.CATEGORY_ID="+ddlcategory.SelectedValue+" ORDER BY QualityName";
 //        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
 //        if (ds.Tables[0].Rows.Count > 0)
 //        {

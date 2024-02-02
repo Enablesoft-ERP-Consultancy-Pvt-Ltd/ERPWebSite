@@ -11,18 +11,18 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            UtilityModule.ConditionalComboFill(ref ddCustomerCode, @"SELECT CUSTOMERID,CUSTOMERCODE+' / '+COMPANYNAME CODE from CUSTOMERINFO Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddCustomerCode, @"SELECT CUSTOMERID,CUSTOMERCODE+' / '+COMPANYNAME CODE from CUSTOMERINFO Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             if (ddCustomerCode.Items.Count > 0)
             {
                 ddCustomerCode.SelectedIndex = 1;
             }
-            UtilityModule.ConditionalComboFill(ref ddcategory, @"Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddcategory, @"Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
             lablechange();
             ddcategory.Focus();
         }
@@ -34,7 +34,7 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
         {
             
             String[] ParameterList = new String[8];
-            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+            ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             lblqualityname.Text = ParameterList[0];
             lbldesignname.Text = ParameterList[1];
             lblcolorname.Text = ParameterList[2];
@@ -68,7 +68,7 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
         UtilityModule.ConditionalComboFill(ref dditemname, @"Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddcategory.SelectedValue, true, "--Select--");
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddcategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -170,11 +170,11 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
                 _arrPara1[5] = new SqlParameter("@varCompanyId", SqlDbType.Int);
                 _arrPara1[0].Value = 0;
                 _arrPara1[1].Value = ddCustomerCode.SelectedValue;
-                int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                int ItemFinishedId = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 _arrPara1[2].Value = ItemFinishedId;
                 _arrPara1[3].Value = txtUPCNO.Text;
                 _arrPara1[4].Value = Session["varuserid"].ToString();
-                _arrPara1[5].Value = Session["varCompanyId"].ToString();
+                _arrPara1[5].Value = Session["varMasterCompanyIDForERP"].ToString();
                 if (btnsave.Text == "Update")
                 {
                     _arrPara1[0].Value = 1;
@@ -283,7 +283,7 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
                 @" then IsNull(SizeFt,'') else IsNull(SizeMtr,'') End Size,UP.UPCNO From UPCNO UP,Item_Parameter_Master IPM Left Outer Join Quality Q ON 
                 IPM.Quality_id=Q.Qualityid Left Outer Join Design D ON IPM.Design_id=D.Designid Left Outer Join Color C ON IPM.Color_id=C.Colorid Left Outer Join Shape Sh 
                 ON IPM.Shape_id=Sh.Shapeid Left Outer Join Size S ON IPM.Size_id=S.Sizeid Left Outer Join ShadeColor Sd ON IPM.SHADECOLOR_ID=Sd.ShadecolorId 
-                WHERE UP.Finishedid=IPM.Item_Finished_id AND UP.CUSTOMERID=" + ddCustomerCode.SelectedValue + " AND IPM.ITEM_ID=" + dditemname.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                WHERE UP.Finishedid=IPM.Item_Finished_id AND UP.CUSTOMERID=" + ddCustomerCode.SelectedValue + " AND IPM.ITEM_ID=" + dditemname.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (dquality.Visible == true && dquality.SelectedIndex > 0)
             {
                 strsql = strsql + @" And IPM.QUALITY_ID=" + dquality.SelectedValue + "";
@@ -329,7 +329,7 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
         Session["id"] = id;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         con.Open();
-        ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT IPM.*,IM.CATEGORY_ID,UP.CUSTOMERID,UP.UPCNO FROM UPCNO UP INNER JOIN ITEM_PARAMETER_MASTER IPM ON UP.FINISHEDID=IPM.ITEM_FINISHED_ID INNER JOIN ITEM_MASTER IM ON IPM.ITEM_ID=IM.ITEM_ID WHERE ITEM_FINISHED_ID=" + id + " And IPM.MasterCompanyId=" + Session["varCompanyId"] + "");
+        ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "SELECT IPM.*,IM.CATEGORY_ID,UP.CUSTOMERID,UP.UPCNO FROM UPCNO UP INNER JOIN ITEM_PARAMETER_MASTER IPM ON UP.FINISHEDID=IPM.ITEM_FINISHED_ID INNER JOIN ITEM_MASTER IM ON IPM.ITEM_ID=IM.ITEM_ID WHERE ITEM_FINISHED_ID=" + id + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         try
         {
             if (ds.Tables[0].Rows.Count == 1)
@@ -385,44 +385,44 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
     }
     protected void refreshcategory_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddcategory, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " Order by CATEGORY_Id", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddcategory, "Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by CATEGORY_Id", true, "--SELECT--");
     }
     protected void refreshitem_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dditemname, "Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref dditemname, "Select Distinct Item_Id,Item_Name from Item_Master where Category_Id=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Item--");
     }
     protected void refreshquality_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dquality, "select qualityid,qualityname from quality Where Item_Id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QUALITYID Desc", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref dquality, "select qualityid,qualityname from quality Where Item_Id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QUALITYID Desc", true, "--Select--");
     }
     protected void refreshdesign_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dddesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order  by DesignName", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref dddesign, "select distinct Designid,DesignName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order  by DesignName", true, "--Select--");
     }
     protected void refreshcolor_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddcolor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varCompanyId"] + " order by colorid", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddcolor, "SELECT ColorId,ColorName FROM Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by colorid", true, "--Select--");
     }
     protected void refreshshape_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Shapeid", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddshape, "select Shapeid,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Shapeid", true, "--Select--");
     }
     protected void refreshsize_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varCompanyId"] + " order by sizeid ", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid ", true, "--Select--");
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, DropDownList Shade, int Itemid)
     {
-        UtilityModule.ConditionalComboFill(ref Quality, "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QUALITYID Desc", true, "--SELECT--");
-        UtilityModule.ConditionalComboFill(ref Design, "SELECT DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
-        UtilityModule.ConditionalComboFill(ref Color, "SELECT COLORID,COLORNAME FROM COLOR Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
-        UtilityModule.ConditionalComboFill(ref Shape, "SELECT SHAPEID,SHAPENAME FROM SHAPE Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
-        UtilityModule.ConditionalComboFill(ref Shade, "SELECT ShadecolorId,ShadeColorName FROM ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref Quality, "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QUALITYID Desc", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref Design, "SELECT DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref Color, "SELECT COLORID,COLORNAME FROM COLOR Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref Shape, "SELECT SHAPEID,SHAPENAME FROM SHAPE Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref Shade, "SELECT ShadecolorId,ShadeColorName FROM ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
     }
 
     protected void refreshshade_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddShade, "SELECT ShadecolorId,ShadeColorName FROM ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddShade, "SELECT ShadecolorId,ShadeColorName FROM ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
     }
     protected void chkbox_CheckedChanged(object sender, EventArgs e)
     {
@@ -433,11 +433,11 @@ public partial class Masters_Campany_FrmUPCNO : System.Web.UI.Page
     {
         if (chkbox.Checked == false)
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varCompanyId"] + "", true, " Select Size");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, " Select Size");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size Where MasterCompanyId=" + Session["varCompanyId"] + "", true, " Select Size");
+            UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, " Select Size");
         }
     }
     

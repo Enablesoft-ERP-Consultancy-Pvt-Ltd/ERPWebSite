@@ -12,14 +12,14 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
-                         Delete TEMP_HISSAB_WISE_CONSUMPTION Where Userid=" + Session["varuserid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
+                         Delete TEMP_HISSAB_WISE_CONSUMPTION Where Userid=" + Session["varuserid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -38,7 +38,7 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             CheckForEditSelectedChanges();
             ViewState["Hissab_No"] = 0;
-            //switch (Convert.ToInt16(Session["varcompanyId"]))
+            //switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             //{
             //    case 9: //for Hafizia
             //        TDPoOrderNo.Visible = true;
@@ -97,7 +97,7 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
         {
             string str = "";
             str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI, Department DP Where EI.DepartmentId=DP.DepartmentId 
-                And DP.DepartmentName='DESIGNING' And EI.MasterCompanyId=" + Session["varCompanyId"] + " and isnull(Ei.blacklist,0)=0 order by EI.Empname";
+                And DP.DepartmentName='DESIGNING' And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and isnull(Ei.blacklist,0)=0 order by EI.Empname";
 
             UtilityModule.ConditionalComboFill(ref DDDesignerName, str, true, "--Plz Select--");
         }
@@ -179,7 +179,7 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
             if (DDCompanyName.SelectedIndex > 0 && DDDesignerName.SelectedIndex > 0  && ChkForEdit.Checked == false)
             {
                 BtnShowData.Visible = true;
-                //if (Convert.ToInt16(Session["varcompanyId"]) == 16)
+                //if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16)
                 //{
                 //    BtnShowData.Visible = false;
                 //}
@@ -202,7 +202,7 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
             //{
             //    if (DGDetail.Columns[i].HeaderText == "Bonus Amt")
             //    {
-            //        if (Session["varcompanyId"].ToString() == "42")
+            //        if (Session["varMasterCompanyIDForERP"].ToString() == "42")
             //        {
             //            DGDetail.Columns[i].Visible = true;
             //        }
@@ -249,7 +249,7 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
                     cmd.Parameters.AddWithValue("@MapTraceType", DDMapStencilType.SelectedValue);
                     cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
                     cmd.Parameters.AddWithValue("@TODate", TxtToDate.Text);
-                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     cmd.Parameters.AddWithValue("@IssueNoId", DDIssueNo.SelectedIndex > 0 ? DDIssueNo.SelectedValue : "0");                  
                    
 
@@ -568,7 +568,7 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
             param[0] = new SqlParameter("@MapReceiveHissab_No", ViewState["Hissab_No"]);
             param[1] = new SqlParameter("@DesignerID", DDDesignerName.SelectedValue);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 
@@ -618,7 +618,7 @@ public partial class Masters_Hissab_FrmMapReceiveHissab : System.Web.UI.Page
 //        TxtToDate.Text = Convert.ToString(ds.Tables[0].Rows[0]["Todate"]);
 //        FillSrno();
 
-//        //if (Convert.ToInt16(Session["varcompanyId"]) == 16)
+//        //if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16)
 //        //{
 //        //    BtnShowData.Visible = true;
 //        //}

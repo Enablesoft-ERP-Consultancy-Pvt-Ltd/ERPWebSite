@@ -203,7 +203,7 @@
                                 <asp:Label ID="lblTStockNo" Text='<%#Bind("Tstockno") %>' runat="server" />
                             </ItemTemplate>
                         </asp:TemplateField>
-                         <asp:TemplateField HeaderText="Bonus" Visible="false">
+                        <asp:TemplateField HeaderText="Bonus" Visible="false">
                             <ItemTemplate>
                                 <asp:Label ID="lblBonus" Text='<%#Bind("Bonus") %>' runat="server" />
                             </ItemTemplate>
@@ -251,6 +251,8 @@
                         <asp:Button ID="Btnnew" Text="New" runat="server" CssClass="buttonnorm" OnClientClick="return NewForm();" />
                         <asp:Button Text="Update all consumption" ID="btnupdateconsmp" CssClass="buttonnorm"
                             UseSubmitBehavior="false" runat="server" OnClick="btnupdateconsmp_Click" OnClientClick="if (!confirm('Do you want update all item consumption?')) return ;this.disabled=true;this.value = 'wait ...';" />
+                        <asp:Button ID="BtnUpdateRemarkInstruction" runat="server" Text="Update Remark" CssClass="buttonnorm"
+                            Visible="false" OnClick="BtnUpdateRemarkInstruction_Click" />
                         <asp:Button ID="BtnStockNoToPNM" runat="server" Text="PNM INC." CssClass="buttonnorm"
                             Visible="false" OnClick="BtnStockNoToPNM_Click" />
                         <asp:Button ID="BtnPanipatPNM1" runat="server" Text="FAB LIVING" CssClass="buttonnorm"
@@ -261,13 +263,20 @@
                             Visible="false" OnClick="BtnStockNoToChampoPanipatPNM3_Click" />
                     </td>
                 </tr>
-                 <tr>
-                      <td style="background-color: #faf9f7">
-                           <asp:Label ID="Label18" Text="Remarks" CssClass="labelbold" runat="server" />
-                            <br />
-                           <asp:TextBox ID="txtremarks" CssClass="textb" Width="100%" runat="server" />
-                      </td>
-                 </tr>
+            </table>
+            <table>
+                <tr>
+                    <td class="tdstyle">
+                        Remarks
+                        <asp:TextBox ID="txtremarks" CssClass="textb" Width="200%" runat="server" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="tdstyle">
+                        Instructions
+                        <asp:TextBox CssClass="textb" ID="TxtInsructions" Width="200%" runat="server"></asp:TextBox>
+                    </td>
+                </tr>
             </table>
             <div>
                 <asp:Button runat="server" ID="btnModalPopUp" Style="display: none" />

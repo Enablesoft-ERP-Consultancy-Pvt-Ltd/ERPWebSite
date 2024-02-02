@@ -12,7 +12,7 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
             txtid.Text = "0";
             Fill_Grid();
 
-            UtilityModule.ConditionalComboFill(ref DDbankinformation, "select bankid,bankname from bank where mastercompanyid=" + Session["varcompanyid"] + "order by bankname", true, "--plz select bank");
+            UtilityModule.ConditionalComboFill(ref DDbankinformation, "select bankid,bankname from bank where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + "order by bankname", true, "--plz select bank");
             UtilityModule.ConditionalComboFill(ref DDAgencyName, "select Agencyid,AgencyName From ShippingAgency Order by AgencyName", true, "--Select Agency Name--");
         }
         Label1.Visible = false;
@@ -43,7 +43,7 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
         }
         try
         {
-            string str = "select AgentId,AgentName,Address,S.ContectPerson As ContactPerson,S.PhoneNo,Mobile,Fax, S.Email,definecompany,modeoftranaction,S.bankid,B.BankName,AgencyId from shipp S left outer join Bank B on S.BankId=B.BankId Where s.MasterCompanyId=" + Session["varCompanyId"];
+            string str = "select AgentId,AgentName,Address,S.ContectPerson As ContactPerson,S.PhoneNo,Mobile,Fax, S.Email,definecompany,modeoftranaction,S.bankid,B.BankName,AgencyId from shipp S left outer join Bank B on S.BankId=B.BankId Where s.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (DDAgencyName.SelectedIndex > 0)
             {
                 str = str + " And AgencyId=" + DDAgencyName.SelectedValue;
@@ -77,7 +77,7 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
         {
             con.Open();
         }
-        DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "select * from Shipp where MasterCompanyId=" + Session["varCompanyId"] + " And AgentId=" + id);
+        DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "select * from Shipp where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And AgentId=" + id);
         try
         {
             txtid.Text = ds.Tables[0].Rows[0]["AgentId"].ToString();
@@ -157,7 +157,7 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
                 _arrpara[6].Value = txtFax.Text.ToUpper();
                 _arrpara[7].Value = txtEmail.Text.ToUpper();
                 _arrpara[8].Value = Session["varuserid"].ToString();
-                _arrpara[9].Value = Session["varCompanyId"].ToString();
+                _arrpara[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrpara[10].Value = DDdefinecompany.SelectedItem.Text.ToUpper();
                 _arrpara[11].Value = DDmodeoftranaction.SelectedItem.Text.ToUpper();
                 _arrpara[12].Value = DDbankinformation.SelectedValue.ToUpper();
@@ -230,11 +230,11 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select AgentName from Shipp where AgentId!='" + ViewState["AgentId"].ToString() + "' and  AgentName='" + txtCompanyName.Text + "' And MasterCompanyId=" + Session["varCompanyId"] + " And AgencyId=" + DDAgencyName.SelectedValue;
+                strsql = "select AgentName from Shipp where AgentId!='" + ViewState["AgentId"].ToString() + "' and  AgentName='" + txtCompanyName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And AgencyId=" + DDAgencyName.SelectedValue;
             }
             else
             {
-                strsql = "select AgentName from Shipp where AgentName='" + txtCompanyName.Text + "' And MasterCompanyId=" + Session["varCompanyId"] + " And AgencyId=" + DDAgencyName.SelectedValue;
+                strsql = "select AgentName from Shipp where AgentName='" + txtCompanyName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And AgencyId=" + DDAgencyName.SelectedValue;
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -277,7 +277,7 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
             _array[0] = new SqlParameter("@ShippingAgentID", ViewState["AgentId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@VarUserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@VarCompanyId", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@VarCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteShipp", _array);
             Tran.Commit();
@@ -321,7 +321,7 @@ public partial class Masters_Campany_ShippingMaster : CustomPage
     private void Report()
     {
         string qry = @" SELECT AgentId,AgentName,S.Address,S.PhoneNo,S.Fax,S.Email,Mobile,Isnull(AgencyName,'') AgencyName FROM   Shipp S Left Outer Join ShippingAgency SA
-                        on S.AgencyId=SA.AgencyId Where S.MasterCompanyId=" + Session["varCompanyId"];
+                        on S.AgencyId=SA.AgencyId Where S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDAgencyName.SelectedIndex > 0)
         {
             qry = qry + " And S.AgencyId=" + DDAgencyName.SelectedValue;

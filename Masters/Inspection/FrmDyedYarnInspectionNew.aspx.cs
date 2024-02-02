@@ -15,18 +15,18 @@ public partial class Masters_Inspection_FrmDyedYarnInspectionNew : System.Web.UI
     static int approvestatus = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select CI.CompanyId,CI.CompanyName from CompanyInfo CI inner join Company_Authentication CA on Ci.CompanyId=CA.CompanyId
-                  WHere CI.MasterCompanyid=" + Session["varcompanyid"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName 
+                  WHere CI.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and CA.UserId=" + Session["varuserid"] + @"  order by CompanyName 
                     Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -325,7 +325,7 @@ public partial class Masters_Inspection_FrmDyedYarnInspectionNew : System.Web.UI
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 
@@ -535,7 +535,7 @@ public partial class Masters_Inspection_FrmDyedYarnInspectionNew : System.Web.UI
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@Docid", hndocid.Value);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
 
@@ -652,7 +652,7 @@ public partial class Masters_Inspection_FrmDyedYarnInspectionNew : System.Web.UI
             param[9] = new SqlParameter("@recdqty", txtrecdqty.Text.Trim());
             param[10] = new SqlParameter("@result", ddresult.SelectedItem.Text);
             param[11] = new SqlParameter("@comments", txtcomments.Text);
-            param[12] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[12] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             param[13] = new SqlParameter("@ShadeVariation", txtShadeVariation.Text);
             param[14] = new SqlParameter("@PresenceOfRefSample", txtPresenceOfRefSample.Text);

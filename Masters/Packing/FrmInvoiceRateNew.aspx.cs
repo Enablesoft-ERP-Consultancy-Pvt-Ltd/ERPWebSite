@@ -11,7 +11,7 @@ public partial class Masters_Packing_FrmInvoiceRateNew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Packing_FrmInvoiceRateNew : System.Web.UI.Page
             TxtInvoiceId.Text = Request.QueryString["ID"];            
             Fill_Grid();
 
-            if (Session["varCompanyId"].ToString() != "30")
+            if (Session["varMasterCompanyIDForERP"].ToString() != "30")
             {
                 RDAreaWise.Checked = true;
                 if (MySession.InvoiceReportType == "1")
@@ -69,13 +69,13 @@ public partial class Masters_Packing_FrmInvoiceRateNew : System.Web.UI.Page
                             Pcs*Price End Amt," + VarCalType + @" as CalType,P.UnitId 
                             From Packing P JOIN  PackingInformation PI ON P.PackingId=PI.PackingId
                             JOIN V_FinishedItemDetail VF ON PI.Finishedid=VF.Item_Finished_id
-                            Where P.PackingId=" + TxtInvoiceId.Text + "  And P.MasterCompanyId=" + Session["varCompanyId"] + "";  
+                            Where P.PackingId=" + TxtInvoiceId.Text + "  And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";  
                      
 
 //            strsql = @"Select Replace(Str(VF.QualityId)+'|'+Str(VF.DesignId)+'|'+Str(VF.ColorId),' ','') Sr_No,PI.Quality as QualityName,PI.Design as DesignName,PI.Color as ColorName,Sum(Pcs) Pcs,
 //                             Sum(Area) Area,Price,Case When " + VarCalType + @"=0 Then Sum(Area)*Price Else 
 //                             Sum(Pcs)*Price End Amt From Packing P,PackingInformation PI,V_FinishedItemDetail VF Where P.PackingId=PI.PackingId And 
-//                             PI.Finishedid=VF.Item_Finished_id And P.PackingId=" + TxtInvoiceId.Text + "  And P.MasterCompanyId=" + Session["varCompanyId"] + @"
+//                             PI.Finishedid=VF.Item_Finished_id And P.PackingId=" + TxtInvoiceId.Text + "  And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
 //                             Group By VF.QualityId,VF.DesignId,VF.ColorId,PI.Quality,PI.Design,PI.Color,Price";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -149,7 +149,7 @@ public partial class Masters_Packing_FrmInvoiceRateNew : System.Web.UI.Page
 
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[1] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[1] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[2] = new SqlParameter("@StringDetail", Strdetail);
             param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 200);
             param[3].Direction = ParameterDirection.Output;
@@ -217,7 +217,7 @@ public partial class Masters_Packing_FrmInvoiceRateNew : System.Web.UI.Page
 //                SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, Str);
 //                //DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
 //                int dt = Convert.ToInt32(SqlHelper.ExecuteScalar(Tran, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus"));
-//                SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PackingInformation'," + arrPara[0].Value + ",getdate(),'Update')");
+//                SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PackingInformation'," + arrPara[0].Value + ",getdate(),'Update')");
 //            }
 //            Tran.Commit();
 //            lblmessage.Text = "Data Saved Succeessfully......";

@@ -475,7 +475,7 @@
                                     <asp:TextBox CssClass="textb" ID="TxtDyingLotNo" runat="server" Width="120px"></asp:TextBox>
                                 </td>
                                 <td align="center">
-                                    <asp:Label ID="LblErrorMessage" runat="server" Text=""  CssClass="labelbold" ForeColor="Red"></asp:Label>
+                                    <asp:Label ID="LblErrorMessage" runat="server" Text="" CssClass="labelbold" ForeColor="Red"></asp:Label>
                                 </td>
                             </tr>
                         </table>

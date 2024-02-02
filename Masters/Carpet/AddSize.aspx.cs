@@ -11,7 +11,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -64,7 +64,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
             Tr3.Visible = true;
             Tr4.Visible = true;
         }
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "9":
                 lblMtrWidth.Text = "CM Width";
@@ -110,7 +110,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
         try
         {
             string strsql;
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 strsql = @"Select S.Sizeid as Sr_No,Sh.ShapeName,S.SizeFt,S.SizeMtr As SizeCM,S.WidthFt,S.LengthFt,S.AreaFt,S.WidthMtr as WidthCM,S.LengthMtr as LengthCM,S.AreaMtr,
                             S.HeightFt,S.VolumeFt,S.HeightMtr as HeightCM,S.VolumeMtr,isnull(SizeCode,'') as SizeCode FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
@@ -478,7 +478,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Size Where SizeCode='" + txtSizeCode.Text + "' and SizeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Size Where SizeCode='" + txtSizeCode.Text + "' and SizeId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -497,7 +497,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
     {
         lblMessage.Visible = false;
         CHECKVALIDCONTROL();
-        if (Session["varCompanyId"].ToString() == "21")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             if (txtSizeCode.Text != "")
             {
@@ -734,7 +734,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
                 _arrPara[13].Value = Convert.ToDouble(txtAreaMtr.Text);
                 _arrPara[14].Value = Convert.ToDouble(txtVolMtr.Text);
                 _arrPara[15].Value = Session["varuserid"].ToString();
-                _arrPara[16].Value = Session["varCompanyId"].ToString();
+                _arrPara[16].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[17].Value = Convert.ToDouble(txtwidthInch.Text);
                 _arrPara[18].Value = Convert.ToDouble(txtlengthInch.Text);
                 _arrPara[19].Value = txtheightInch.Text != "" ? Convert.ToDouble(txtheightInch.Text) : 0;
@@ -819,7 +819,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
         string id = gdSize.SelectedDataKey.Value.ToString();
         Session["id"] = id;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        str = @"select * from Size WHERE SizeId=" + id + " And MasterCompanyId=" + Session["varCompanyId"] + @"
+        str = @"select * from Size WHERE SizeId=" + id + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 select SIZE_ID from ITEM_PARAMETER_MASTER Where size_id=" + id + "";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,str);
         try
@@ -981,7 +981,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Size where SizeId=" + Session["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + Session["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + Session["id"].ToString() + ",getdate(),'Delete')");
                 lbl.Visible = true;
                 lbl.Text = "Value deleted...";
             }
@@ -1392,7 +1392,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
     }
     protected void BtnUpdateCode_Click(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"].ToString() == "21")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             if (txtSizeCode.Text != "")
             {
@@ -1415,7 +1415,7 @@ public partial class Masters_Carpet_AddSize : CustomPage
 
                     _arrpara[0].Value = Session["id"].ToString();
                     _arrpara[1].Value = Session["varuserid"].ToString();
-                    _arrpara[2].Value = Session["varCompanyId"].ToString();
+                    _arrpara[2].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrpara[3].Value = txtSizeCode.Text;
                     con.Open();
                     SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "Update_SizeCode", _arrpara);

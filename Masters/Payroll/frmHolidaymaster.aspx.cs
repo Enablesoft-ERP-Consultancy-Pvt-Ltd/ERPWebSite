@@ -11,7 +11,7 @@ public partial class Masters_Payroll_frmHolidaymaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,12 +20,12 @@ public partial class Masters_Payroll_frmHolidaymaster : System.Web.UI.Page
             string str = @"Select CI.CompanyId, CI.CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                             Select Year,Year as Year1 From YearData order  by Year1 desc 
                             Select ID, BranchName 
                             From BRANCHMASTER BM(nolock) 
                             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -90,7 +90,7 @@ public partial class Masters_Payroll_frmHolidaymaster : System.Web.UI.Page
             param[1] = new SqlParameter("@companyId", DDCompanyName.SelectedValue);
             param[2] = new SqlParameter("@choosedate", txtchoosedate.Text);
             param[3] = new SqlParameter("@Holidaytype", txtholidaytype.Text.ToString());
-            param[4] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@userid", Session["varuserid"]);
             param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[6].Direction = ParameterDirection.Output;
@@ -173,7 +173,7 @@ public partial class Masters_Payroll_frmHolidaymaster : System.Web.UI.Page
             Label lblid = (Label)GDDetail.Rows[e.RowIndex].FindControl("lblid");
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@id", lblid.Text);
-            param[1] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            param[1] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;

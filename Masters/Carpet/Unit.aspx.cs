@@ -11,7 +11,7 @@ public partial class Masters_Carpet_Unit : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -19,7 +19,7 @@ public partial class Masters_Carpet_Unit : System.Web.UI.Page
         {
             txtid.Text = "0";
             Fill_Grid();
-            CommanFunction.FillCombo(ddUnit, "select UnitTypeId,UnitType from Unit_Type_Master Where MasterCompanyId=" + Session["varCompanyId"] + " Order by UnitTypeId");
+            CommanFunction.FillCombo(ddUnit, "select UnitTypeId,UnitType from Unit_Type_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by UnitTypeId");
         }
         LblError.Visible = false;
     }
@@ -37,7 +37,7 @@ public partial class Masters_Carpet_Unit : System.Web.UI.Page
         {
             string strsql = @"SELECT dbo.Unit.UnitId as Sr_No, dbo.Unit.UnitName, dbo.UNIT_TYPE_MASTER.UnitType
                               FROM dbo.Unit INNER JOIN
-                              dbo.UNIT_TYPE_MASTER ON dbo.Unit.UnitTypeID = dbo.UNIT_TYPE_MASTER.UnitTypeID And Unit.MasterCompanyId=" + Session["varCompanyId"];
+                              dbo.UNIT_TYPE_MASTER ON dbo.Unit.UnitTypeID = dbo.UNIT_TYPE_MASTER.UnitTypeID And Unit.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
 
@@ -77,7 +77,7 @@ public partial class Masters_Carpet_Unit : System.Web.UI.Page
                 _arrPara[1].Value = txtUnit.Text.ToUpper();
                 _arrPara[2].Value = ddUnit.SelectedValue;
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Unit", _arrPara);
 
@@ -113,7 +113,7 @@ public partial class Masters_Carpet_Unit : System.Web.UI.Page
 
         string id = gdUnit.SelectedDataKey.Value.ToString();
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Unit where UnitId=" + id + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Unit where UnitId=" + id + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         try
         {
 
@@ -177,11 +177,11 @@ public partial class Masters_Carpet_Unit : System.Web.UI.Page
                 con.Open();
                 if (btnsave.Text == "Update")
                 {
-                    str = "Select isnull(UnitId,0) from Unit where UnitName='" + txtUnit.Text + "' and UnittypeId =" + ddUnit.SelectedValue + " and Unitid<>" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+                    str = "Select isnull(UnitId,0) from Unit where UnitName='" + txtUnit.Text + "' and UnittypeId =" + ddUnit.SelectedValue + " and Unitid<>" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 }
                 else
                 {
-                    str = "Select isnull(UnitId,0) from Unit where UnitName='" + txtUnit.Text + "' and UnittypeId =" + ddUnit.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                    str = "Select isnull(UnitId,0) from Unit where UnitName='" + txtUnit.Text + "' and UnittypeId =" + ddUnit.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 }
                 DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
                 if (ds.Tables[0].Rows.Count > 0)

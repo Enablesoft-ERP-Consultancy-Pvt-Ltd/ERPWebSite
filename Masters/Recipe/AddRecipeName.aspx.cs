@@ -11,7 +11,7 @@ public partial class Master_Recipe_AddRecipeName : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -35,7 +35,7 @@ public partial class Master_Recipe_AddRecipeName : System.Web.UI.Page
         {
             string strsql = @"Select ID, Name, EnableDisbleFlag, Case When EnableDisbleFlag = 1 Then 'Enable' Else 'Disble' End Flag 
             From RecipeMaster(Nolock) 
-            Where ProcessID = " + Request.QueryString["ProcessID"] + " And MasterCompanyId = " + Session["varCompanyId"] + " Order By Name";
+            Where ProcessID = " + Request.QueryString["ProcessID"] + " And MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By Name";
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         }
@@ -73,7 +73,7 @@ public partial class Master_Recipe_AddRecipeName : System.Web.UI.Page
                 _arrPara1[1].Value = TxtRecipeName.Text.ToUpper();
                 _arrPara1[2].Value = Request.QueryString["ProcessID"];
                 _arrPara1[3].Value = Session["varuserid"].ToString();
-                _arrPara1[4].Value = Session["varCompanyId"].ToString();
+                _arrPara1[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara1[5].Direction = ParameterDirection.InputOutput;
                 _arrPara1[6].Value = ChkForEnableDisbleFlag.Checked == true ? 1 : 0;
 

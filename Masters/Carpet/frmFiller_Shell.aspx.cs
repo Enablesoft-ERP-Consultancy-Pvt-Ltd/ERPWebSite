@@ -11,6 +11,10 @@ public partial class Masters_Carpet_frmFiller_Shell : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (!IsPostBack)
         {
             UtilityModule.ConditionalComboFill(ref DDcurrency, "select CurrencyId,CurrencyName from currencyinfo order by currencyName", true, "--Plz Select--");

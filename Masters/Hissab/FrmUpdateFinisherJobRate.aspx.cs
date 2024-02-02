@@ -12,19 +12,19 @@ public partial class Masters_Hissab_FrmUpdateFinisherJobRate : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
-                         Delete TEMP_HISSAB_WISE_CONSUMPTION Where Userid=" + Session["varuserid"] + " And MasterCompanyId=" + Session["varCompanyId"];
+            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
+                         Delete TEMP_HISSAB_WISE_CONSUMPTION Where Userid=" + Session["varuserid"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
 
-            Str = "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " and ProcessType=1 Order By Process_Name";
+            Str = "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and ProcessType=1 Order By Process_Name";
             UtilityModule.ConditionalComboFill(ref DDProcessName, Str, true, "--SELECT--");
             ViewState["Hissab_No"] = 0;
 
@@ -36,7 +36,7 @@ public partial class Masters_Hissab_FrmUpdateFinisherJobRate : System.Web.UI.Pag
             TxtDate.Enabled = false;
             CheckForEditSelectedChanges();
             ViewState["Hissab_No"] = 0;
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 9: //for Hafizia
                     TDPoOrderNo.Visible = true;
@@ -103,13 +103,13 @@ public partial class Masters_Hissab_FrmUpdateFinisherJobRate : System.Web.UI.Pag
             if (TDQuality.Visible == true)
             {
                 string Str2 = "";
-                Str2 = "Select Distinct VF.QualityId,VF.ITEM_NAME+' '+VF.QualityName as QualityName From PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + " PRD INNER JOIN V_FinishedItemDetailNew VF ON PRD.Item_Finished_Id=VF.ITEM_FINISHED_ID Where VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By VF.QualityId";
+                Str2 = "Select Distinct VF.QualityId,VF.ITEM_NAME+' '+VF.QualityName as QualityName From PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + " PRD INNER JOIN V_FinishedItemDetailNew VF ON PRD.Item_Finished_Id=VF.ITEM_FINISHED_ID Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By VF.QualityId";
 
                 UtilityModule.ConditionalComboFill(ref DDQuality, Str2, true, "--SELECT--");
             }
 
             string Str = "";
-            Str = "Select Distinct PM.EmpId,EI.EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM INNER JOIN EmpInfo EI ON PM.Empid=EI.EmpId Where EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName";
+            Str = "Select Distinct PM.EmpId,EI.EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM INNER JOIN EmpInfo EI ON PM.Empid=EI.EmpId Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName";
 
             UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
             FillReceiptNo();
@@ -205,7 +205,7 @@ public partial class Masters_Hissab_FrmUpdateFinisherJobRate : System.Web.UI.Pag
                 param[2] = new SqlParameter("@Empid", DDEmployerName.SelectedValue);
                 param[3] = new SqlParameter("@FromDate", TxtFromDate.Text);
                 param[4] = new SqlParameter("@TODate", TxtToDate.Text);
-                param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[6] = new SqlParameter("@SlipNo", DDSlipNo.SelectedValue);
                 param[7] = new SqlParameter("@Where", where);
 
@@ -370,7 +370,7 @@ public partial class Masters_Hissab_FrmUpdateFinisherJobRate : System.Web.UI.Pag
                 _arrpara1[3] = new SqlParameter("@SlipNo", DDSlipNo.SelectedValue);
                 _arrpara1[4] = new SqlParameter("@FromDate", TxtFromDate.Text);
                 _arrpara1[5] = new SqlParameter("@ToDate", TxtToDate.Text);
-                _arrpara1[6] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+                _arrpara1[6] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
                 _arrpara1[7] = new SqlParameter("@dtrecords", dtrecords);
                 _arrpara1[8] = new SqlParameter("@Msgflag", SqlDbType.VarChar, 100);
                 _arrpara1[8].Direction = ParameterDirection.Output;
@@ -514,7 +514,7 @@ public partial class Masters_Hissab_FrmUpdateFinisherJobRate : System.Web.UI.Pag
             _param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
             _param[3] = new SqlParameter("@TODate", TxtToDate.Text);
             _param[4] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
-            _param[5] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+            _param[5] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
             _param[6] = new SqlParameter("@Userid", Session["varuserid"]);
             _param[7] = new SqlParameter("@Process_Rec_Id", lblRecpNo.Text);
             _param[8] = new SqlParameter("@SrNo", lblSrNo.Text);
@@ -785,7 +785,7 @@ public partial class Masters_Hissab_FrmUpdateFinisherJobRate : System.Web.UI.Pag
                 param[2] = new SqlParameter("@Empid", DDEmployerName.SelectedValue);
                 param[3] = new SqlParameter("@FromDate", TxtFromDate.Text);
                 param[4] = new SqlParameter("@TODate", TxtToDate.Text);
-                param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[6] = new SqlParameter("@SlipNo", DDSlipNo.SelectedValue);
                 param[7] = new SqlParameter("@Where", where);
                 param[8] = new SqlParameter("@UserId", Session["VarUserid"]);

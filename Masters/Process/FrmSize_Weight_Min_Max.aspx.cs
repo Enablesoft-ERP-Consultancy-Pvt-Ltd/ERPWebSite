@@ -26,13 +26,13 @@ public partial class Masters_Process_FrmSize_Weight_Min_Max : System.Web.UI.Page
             str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
 
-                    select  UnitsId,UnitName from Units with(nolock) Where Mastercompanyid = " + Session["varcompanyid"] + @" 
+                    select  UnitsId,UnitName from Units with(nolock) Where Mastercompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     select ITEM_ID,ITEM_NAME from ITEM_MASTER IM with(nolock) Inner Join CategorySeparate CS with(nolock) on 
-                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varcompanyid"] + @" 
+                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     select  ShapeId,ShapeName from Shape with(nolock) 
-                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" 
+                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME 
                     select val,Type From Sizetype";
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -60,7 +60,7 @@ public partial class Masters_Process_FrmSize_Weight_Min_Max : System.Web.UI.Page
                 DDShape.SelectedIndex = 0;
             }
             ds.Dispose();
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     //Divuniname.Visible = true;
@@ -146,7 +146,7 @@ public partial class Masters_Process_FrmSize_Weight_Min_Max : System.Web.UI.Page
         try
         {
             int finishedid = 0;
-            finishedid = UtilityModule.getItemFinishedId(DDArticleName, ddquality, DDDesign, DDColor, DDShape, ddSize, TxtProductCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            finishedid = UtilityModule.getItemFinishedId(DDArticleName, ddquality, DDDesign, DDColor, DDShape, ddSize, TxtProductCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             SqlParameter[] param = new SqlParameter[13];
             param[0] = new SqlParameter("@CompanyId", DDCompanyName.SelectedValue);
             param[1] = new SqlParameter("@UnitsId", Divuniname.Visible == true ? DDUnitName.SelectedValue : "0");
@@ -160,7 +160,7 @@ public partial class Masters_Process_FrmSize_Weight_Min_Max : System.Web.UI.Page
             param[9] = new SqlParameter("@WeightMax", txtWeightMax.Text);
             param[10] = new SqlParameter("@SizeUnitId", DDsizeType.SelectedValue);
             param[11] = new SqlParameter("@UserId", Session["varuserid"]);
-            param[12] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);  
+            param[12] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);  
             //Save data
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SAVEWidhtLengthWeightMinMax", param);
             //
@@ -194,7 +194,7 @@ public partial class Masters_Process_FrmSize_Weight_Min_Max : System.Web.UI.Page
                         case when WLM.SizeUnitId=1 then vf.SizeMtr else vf.sizeft end as Size,WLM.AddDate,WLM.WidthMin,WLM.WidthMax,WLM.LengthMin,WLM.LengthMax,WLM.WeightMin,WLM.WeightMax
                         from WidthLengthWeightMinMaxMaster WLM JOIN V_FinishedItemDetail VF ON WLM.FinishedId=VF.Item_Finished_id
                         inner join PROCESS_NAME_MASTER PNM on PNM.PROCESS_NAME_ID=WLM.ProcessId 
-                        Where WLM.MasterCompanyId=" + Session["varcompanyId"] + " And WLM.companyId=" + DDCompanyName.SelectedValue;
+                        Where WLM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And WLM.companyId=" + DDCompanyName.SelectedValue;
         if (Divuniname.Visible == true)
         {
             if (DDUnitName.SelectedIndex >= 0)
@@ -299,11 +299,11 @@ public partial class Masters_Process_FrmSize_Weight_Min_Max : System.Web.UI.Page
         divshade.Visible = false;
 
         UtilityModule.ConditionalComboFill(ref DDArticleName, @"select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner join CategorySeparate CS on IM.CATEGORY_ID=CS.Categoryid
-                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varcompanyId"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
+                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
 
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -367,7 +367,7 @@ public partial class Masters_Process_FrmSize_Weight_Min_Max : System.Web.UI.Page
 
             //    if (DGRateDetail.Columns[i].HeaderText == "Emp Name")
             //    {
-            //        if (Session["varCompanyId"].ToString() == "27")
+            //        if (Session["varMasterCompanyIDForERP"].ToString() == "27")
             //        {
             //            DGRateDetail.Columns[i].Visible = true;
             //        }

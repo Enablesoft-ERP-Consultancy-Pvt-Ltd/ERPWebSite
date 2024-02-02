@@ -11,7 +11,7 @@ public partial class Masters_Purchase_DebitNote : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Purchase_DebitNote : System.Web.UI.Page
             ViewState["DebitNoteid"] = 0;
             ViewState["DebitNoteDetailid"] = 0;
             DataSet ds = SqlHelper.ExecuteDataset(@"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA 
-            Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname");
+            Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname");
 
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);
 
@@ -39,11 +39,11 @@ public partial class Masters_Purchase_DebitNote : System.Web.UI.Page
     }
     private void CompanySelectedIndexChanged()
     {
-        UtilityModule.ConditionalComboFill(ref DDPartyName, "Select EmpId,EmpName from Empinfo Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDPartyName, "Select EmpId,EmpName from Empinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     protected void DDPartyName_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDReceiveNo, "select PurchaseReceiveId,GateInNo from PurchaseReceiveMaster where PartyId=" + DDPartyName.SelectedValue + "  and CompanyId=" + DDCompany.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDReceiveNo, "select PurchaseReceiveId,GateInNo from PurchaseReceiveMaster where PartyId=" + DDPartyName.SelectedValue + "  and CompanyId=" + DDCompany.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     protected void DDReceiveNo_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -63,7 +63,7 @@ public partial class Masters_Purchase_DebitNote : System.Web.UI.Page
             con.Open();
             string strsql = @"select PRD.PurchaseReceiveDetailId,Item_Name,isnull(QualityName,'')+'/'+isnull(DesignName,'')+'/'+isnull(ColorName,'') +'/'+isnull(ShadeColorName,'')+'/'+isnull(ShapeName,'')+'/'+Isnull(SizeFt,'') ItemDescription,LotNo,GodownName,QTY,isnull(ReturnQty,0) ReturnQty from PurchaseReceiveDetail PRD 
                             Inner join V_FinishedItemDetail IPM on IPM.Item_Finished_Id=PRD.FinishedId Left Outer Join PDebitNotedetail DND on DND.PurchaseReceiveDetailId=PRD.PurchaseReceiveDetailId
-                            Inner join GodownMaster G on G.GodownId=PRD.GodownId where PRD.PurchaseReceiveId=" + DDReceiveNo.SelectedValue + " And IPM.MasterCompanyId=" + Session["varCompanyId"];
+                            Inner join GodownMaster G on G.GodownId=PRD.GodownId where PRD.PurchaseReceiveId=" + DDReceiveNo.SelectedValue + " And IPM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
         catch (Exception ex)
@@ -119,7 +119,7 @@ public partial class Masters_Purchase_DebitNote : System.Web.UI.Page
                 _arrPara[1].Value = TxtDebtNoteNo.Text;
                 _arrPara[2].Value = TxtDate.Text;
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[5].Value = ViewState["DebitNoteDetailid"];
                 _arrPara[6].Value = Id;
                 _arrPara[7].Value = DDReceiveNo.SelectedValue;

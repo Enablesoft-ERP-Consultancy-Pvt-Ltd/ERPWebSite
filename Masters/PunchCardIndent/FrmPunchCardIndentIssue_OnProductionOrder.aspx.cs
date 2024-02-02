@@ -12,13 +12,13 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                            SELECT Distinct CI.CustomerId,CI.CustomerCode CustomerCode From CustomerInfo CI,JobAssigns J,OrderMaster OM Where CI.Customerid=OM.Customerid And OM.Orderid=J.Orderid Order By CI.CustomerCode
                            select unitid,unitname from unit where unitid in (1,2,4,6,7)";
 
@@ -37,7 +37,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
             txtissuedate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
 
            
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "30":
                    
@@ -63,7 +63,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     {
         string strinsert = "", str = "";
         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "DELETE TEMP_PROCESS_ISSUE_MASTER_NEW");
-        if (Session["varcompanyid"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             str = "Select Process_name_id from PROCESS_NAME_MASTER Where Process_name_id in(1,16,35)";
         }
@@ -90,7 +90,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     private void ParameteLabel()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //lblcategoryname.Text = ParameterList[5];
         //lblitemname.Text = ParameterList[6];
     }
@@ -146,7 +146,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     private void CustomerOrderNumberSelectedChange()
     {
         string str;
-        if (Session["varcompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             str = @"select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER  where process_name_id in(1,16,35)
                     SELECT Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME FROM ITEM_MASTER IM INNER JOIN ITEM_CATEGORY_MASTER ICM ON IM.CATEGORY_ID = ICM.CATEGORY_ID INNER JOIN OrderDetail OD ON IM.ITEM_ID = OD.ITEM_ID INNER JOIN OrderMaster OM ON OD.OrderId = OM.OrderId inner Join JobAssigns JA ON JA.OrderId=OD.OrderId where  OD.Item_Finished_Id=JA.Item_Finished_Id  and OM.OrderId=" + DDCustomerOrderNumber.SelectedValue;
@@ -159,7 +159,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
         DataSet ds = new DataSet();
         ds = SqlHelper.ExecuteDataset(str);
         UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 0, true, "--Select--");
-        if (Session["varcompanyId"].ToString() == "20")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "20")
         {
             DDProcessName.Enabled = false;
             if (DDProcessName.Items.Count > 0)
@@ -244,7 +244,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
     }
     protected void CategoryselectedindexChanged()
     {
-        if (Session["varCompanyId"].ToString() == "6")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "6")
         {
             string STR;
             if (variable.VarNewQualitySize == "1")
@@ -361,7 +361,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
         }
         else
         {
-            if (Session["varCompanyId"].ToString() == "6")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "6")
             {
 
                 STR = "Select distinct JA.Item_Finished_Id,QDCS+Space(5)+ Case When 6=" + DDunit.SelectedValue + " Then Isnull(" + size + ",'') Else Case When 1=" + DDunit.SelectedValue + @" Then Isnull(" + size + ",'') Else Isnull(" + size + @",'') End End Description 
@@ -713,7 +713,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentIssue_OnProductio
                     cmd.Parameters.AddWithValue("@EmpId", DDEmployeeName.SelectedValue);
                     cmd.Parameters.AddWithValue("@Issuedate", txtissuedate.Text);
                     cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     cmd.Parameters.AddWithValue("@StringDetail", Strdetail);
                     cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                     cmd.Parameters["@msg"].Direction = ParameterDirection.Output;

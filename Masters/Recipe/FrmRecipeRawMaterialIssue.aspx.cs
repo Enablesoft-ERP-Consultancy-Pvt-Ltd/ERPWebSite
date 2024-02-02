@@ -15,7 +15,7 @@ public partial class Masters_Recipe_FrmRecipeRawMaterialIssue : System.Web.UI.Pa
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,11 +24,11 @@ public partial class Masters_Recipe_FrmRecipeRawMaterialIssue : System.Web.UI.Pa
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(Nolock) 
                     JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
                     Select Distinct a.ProcessID, PNM.PROCESS_NAME 
                     From RecipeSlipGenerationMaster a(Nolock) 
                     JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = a.ProcessID 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.CompanyID = 1";
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And a.CompanyID = 1";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -61,14 +61,14 @@ public partial class Masters_Recipe_FrmRecipeRawMaterialIssue : System.Web.UI.Pa
     {
         string str = @"Select Distinct a.SlipNo, a.SlipNo SlipNo1
                     From RecipeSlipGenerationMaster a(Nolock) 
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
                     a.ProcessID = " + DDProcessName.SelectedValue + " Order By a.SlipNo";
         if (chkEdit.Checked == true)
         {
             str = @"Select Distinct a.SlipNo, a.SlipNo SlipNo1
                     From RecipeSlipGenerationMaster a(Nolock) 
                     JOIN ProcessRawMaster PRM(Nolock) ON PRM.RecipeSlipGenerationMasterSlipNo = a.SlipNo 
-                    Where PRM.TypeFlag = 0 And a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
+                    Where PRM.TypeFlag = 0 And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
                     a.ProcessID = " + DDProcessName.SelectedValue + " Order By a.SlipNo";
         }
 
@@ -83,7 +83,7 @@ public partial class Masters_Recipe_FrmRecipeRawMaterialIssue : System.Web.UI.Pa
         string str = @"Select a.ID, RM.Name 
                 From RecipeSlipGenerationMaster a(Nolock) 
                 JOIN RecipeMaster RM(Nolock) ON RM.ID = a.RecipeMasterID 
-                Where a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
+                Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
                 a.ProcessID = " + DDProcessName.SelectedValue + " And a.SlipNo = " + DDSlipNo.SelectedValue + @" 
                 Order By RM.Name";
 
@@ -93,7 +93,7 @@ public partial class Masters_Recipe_FrmRecipeRawMaterialIssue : System.Web.UI.Pa
                 From RecipeSlipGenerationMaster a(Nolock) 
                 JOIN ProcessRawMaster PRM(Nolock) ON PRM.RecipeSlipGenerationMasterID = a.ID 
                 JOIN RecipeMaster RM(Nolock) ON RM.ID = a.RecipeMasterID 
-                Where PRM.TypeFlag = 0 And a.MasterCompanyID = " + Session["varCompanyId"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
+                Where PRM.TypeFlag = 0 And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + DDCompanyName.SelectedValue + @" And 
                 a.ProcessID = " + DDProcessName.SelectedValue + " And a.SlipNo = " + DDSlipNo.SelectedValue + @" 
                 Order By RM.Name";
         }
@@ -106,7 +106,7 @@ public partial class Masters_Recipe_FrmRecipeRawMaterialIssue : System.Web.UI.Pa
         {
             string str = @"Select PRM.PRMid, PRM.ChalanNo 
                 From ProcessRawMaster PRM(Nolock) 
-                Where PRM.TypeFlag = 0 And PRM.MasterCompanyId = " + Session["varCompanyId"] + " And IsNull(RecipeSlipGenerationMasterSlipNo, 0) = " + DDSlipNo.SelectedValue + @" And 
+                Where PRM.TypeFlag = 0 And PRM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And IsNull(RecipeSlipGenerationMasterSlipNo, 0) = " + DDSlipNo.SelectedValue + @" And 
                 RecipeSlipGenerationMasterID = " + DDRecipeName.SelectedValue + @" 
                 Order By PRM.ChalanNo ";
             UtilityModule.ConditionalComboFill(ref DDissueno, str, true, "--Plz Select--");
@@ -325,7 +325,7 @@ public partial class Masters_Recipe_FrmRecipeRawMaterialIssue : System.Web.UI.Pa
                 param[8] = new SqlParameter("@TranType", 0);
                 param[9] = new SqlParameter("@DetailData", DetailData);
                 param[10] = new SqlParameter("@UserID", Session["varuserid"]);
-                param[11] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+                param[11] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                 param[12] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[12].Direction = ParameterDirection.Output;
                 

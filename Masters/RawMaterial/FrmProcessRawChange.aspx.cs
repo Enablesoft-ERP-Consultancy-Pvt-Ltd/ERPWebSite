@@ -12,7 +12,7 @@ public partial class Masters_RawMaterial_FrmProcessRawChange : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_RawMaterial_FrmProcessRawChange : System.Web.UI.Pag
             string Qry = @"Select Distinct CI.CompanyId, CI.Companyname 
                 From Companyinfo CI(Nolock)
                 JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CI.Companyname 
+                Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.Companyname 
 
                 Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
                 From PROCESS_NAME_MASTER PNM (Nolock)
@@ -89,7 +89,7 @@ public partial class Masters_RawMaterial_FrmProcessRawChange : System.Web.UI.Pag
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];
@@ -219,7 +219,7 @@ public partial class Masters_RawMaterial_FrmProcessRawChange : System.Web.UI.Pag
         shd.Visible = false;
         string strsql = @"SELECT IPM.CATEGORY_PARAMETERS_ID, IPM.CATEGORY_ID, IPM.PARAMETER_ID, PM.PARAMETER_NAME 
                 FROM ITEM_CATEGORY_PARAMETERS IPM (Nolock)
-                JOIN PARAMETER_MASTER PM(Nolock) ON PM.[PARAMETER_ID] = IPM.[PARAMETER_ID] And PM.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                JOIN PARAMETER_MASTER PM(Nolock) ON PM.[PARAMETER_ID] = IPM.[PARAMETER_ID] And PM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                 Where IPM.[CATEGORY_ID] = " + ddCatagory.SelectedValue;
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -381,7 +381,7 @@ public partial class Masters_RawMaterial_FrmProcessRawChange : System.Web.UI.Pag
         //*************************
         if (quality == 1 && design == 1 && color == 1 && shape == 1 && size == 1 && shadeColor == 1)
         {
-            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
             string str = @"Select Distinct a.ISSUEORDERID, PCD.IFinishedID Item_Finished_Id, 
                     Replace(VF1.ITEM_NAME + '  ' + VF1.QualityName + '  ' + VF1.DesignName + '  ' + VF1.ColorName + '  ' + VF1.ShapeName + '  ' + Case When a.UnitId = 1 Then VF1.SizeMtr Else VF1.SizeFt End + '  ' + VF1.ShadeColorName, '   ', '') [Description], 
@@ -417,7 +417,7 @@ public partial class Masters_RawMaterial_FrmProcessRawChange : System.Web.UI.Pag
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            int VarItem_Finished_ID = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int VarItem_Finished_ID = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
             for (int i = 0; i < gvdetail.Rows.Count; i++)
             {
@@ -449,7 +449,7 @@ public partial class Masters_RawMaterial_FrmProcessRawChange : System.Web.UI.Pag
             cmd.Parameters.Add("@Message", SqlDbType.VarChar, 100);
             cmd.Parameters["@Message"].Direction = ParameterDirection.Output;
             cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             cmd.ExecuteNonQuery();
 

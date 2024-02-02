@@ -12,7 +12,7 @@ public partial class Masters_Process_frmEditProductionReceive : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -127,7 +127,7 @@ public partial class Masters_Process_frmEditProductionReceive : System.Web.UI.Pa
         if (TxtLength.Text != "" && TxtWidth.Text != "")
         {
             int Shape = 0;
-            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
+            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
 
             if (Convert.ToInt32(lblUnitId.Text) == 1)
             {
@@ -194,7 +194,7 @@ public partial class Masters_Process_frmEditProductionReceive : System.Web.UI.Pa
         if (TxtLength.Text != "" && TxtWidth.Text != "")
         {
             int Shape = 0;
-            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
+            Shape = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select ShapeId From V_FinishedItemDetail Where Item_Finished_Id=" + lblFinishedid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
 
             if (Convert.ToInt32(lblUnitId.Text) == 1)
             {
@@ -285,7 +285,7 @@ public partial class Masters_Process_frmEditProductionReceive : System.Web.UI.Pa
             array[4].Value = 1;
             array[5].Value = ((TextBox)DGReceiveDetail.Rows[e.RowIndex].FindControl("txtStockNo")).Text;
             array[6].Direction = ParameterDirection.Output;
-            array[7].Value = Session["varcompanyId"].ToString();
+            array[7].Value = Session["varMasterCompanyIDForERP"].ToString();
             array[8].Value = Session["varuserid"].ToString();
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteProductionDateForAnisa", array);
 

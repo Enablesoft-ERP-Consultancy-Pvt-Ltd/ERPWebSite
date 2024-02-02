@@ -12,13 +12,13 @@ public partial class Masters_ReportForms_FrmWeavingQualityWiseProductionArea : S
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId, CompanyName From CompanyInfo CI, Company_Authentication CA Where CI.CompanyId = CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId, CompanyName From CompanyInfo CI, Company_Authentication CA Where CI.CompanyId = CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
 
             if (DDCompany.Items.Count > 0)
             {
@@ -28,7 +28,7 @@ public partial class Masters_ReportForms_FrmWeavingQualityWiseProductionArea : S
 
             if (DDCompany.Items.Count > 0)
             {
-                UtilityModule.ConditionalComboFill(ref DDWeaverName, "Select EI.EmpId, EI.EmpName + case When isnull(Ei.empcode, '') = '' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varcompanyId"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId=1 order by EmpName", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDWeaverName, "Select EI.EmpId, EI.EmpName + case When isnull(Ei.empcode, '') = '' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId=1 order by EmpName", true, "--Select--");
             }
 
             BindQualityType();
@@ -39,7 +39,7 @@ public partial class Masters_ReportForms_FrmWeavingQualityWiseProductionArea : S
     private void BindQualityType()
     {
         string str1 = @"Select Distinct MQT.MasterQualityTypeId,MasterQualityTypeName From MasterQualityType MQT LEFT JOIN ITEM_MASTER IM ON MQT.MasterQualityTypeId=IM.MasterQualityTypeId
-                        Where MQT.MasterCompanyId=" + Session["varCompanyId"] + @" Order by MQT.MasterQualityTypeName";
+                        Where MQT.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by MQT.MasterQualityTypeName";
 
         UtilityModule.ConditonalChkBoxListFill(ref chekboxlist, str1);
     }
@@ -79,7 +79,7 @@ public partial class Masters_ReportForms_FrmWeavingQualityWiseProductionArea : S
             _arrPara[4].Value = txtfromDate.Text;
             _arrPara[5].Value = txttodate.Text;
             _arrPara[6].Value = Session["varuserid"].ToString();
-            _arrPara[7].Value = Session["varCompanyId"].ToString();
+            _arrPara[7].Value = Session["varMasterCompanyIDForERP"].ToString();
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetReportWeaverQualityWiseProductionArea", _arrPara);
 

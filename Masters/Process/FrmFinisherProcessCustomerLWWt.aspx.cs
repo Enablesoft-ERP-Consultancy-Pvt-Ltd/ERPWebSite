@@ -11,14 +11,14 @@ public partial class Masters_Process_FrmFinisherProcessCustomerLWWt : System.Web
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select CI.CustomerID, CI.CustomerCode From CustomerInfo CI(Nolock) Where CI.CustomerCode <> '' And MasterCompanyId = " + Session["varCompanyId"] + @" Order By CI.CustomerCode
-                        Select Process_Name_ID, Process_Name From Process_Name_Master Where MasterCompanyID = " + Session["varCompanyId"] + " Order By Process_Name ";
+            string str = @"Select CI.CustomerID, CI.CustomerCode From CustomerInfo CI(Nolock) Where CI.CustomerCode <> '' And MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CustomerCode
+                        Select Process_Name_ID, Process_Name From Process_Name_Master Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By Process_Name ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -49,7 +49,7 @@ public partial class Masters_Process_FrmFinisherProcessCustomerLWWt : System.Web
                     From Finishing_Process_Customer_L_W_Wt a(Nolock) 
                     JOIN Customerinfo CI(Nolock) ON CI.CustomerId = a.CustomerID 
                     JOIN PROCESS_NAME_MASTER PNM(Nolock) ON PNM.PROCESS_NAME_ID = a.ProcessID
-                    Where a.MasterCompanyID = " + Session["varCompanyId"] + @" 
+                    Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
                     And a.CustomerID = " + DDCustomerCode.SelectedValue + " Order By CI.CustomerCode, PNM.PROCESS_NAME";
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -78,7 +78,7 @@ public partial class Masters_Process_FrmFinisherProcessCustomerLWWt : System.Web
             _arrpara[1].Value = DDProcessName.SelectedValue;
 
             _arrpara[2].Value = Session["varuserId"];
-            _arrpara[3].Value = Session["varCompanyId"];
+            _arrpara[3].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[4].Direction = ParameterDirection.InputOutput;
 
             SqlTransaction Tran = con.BeginTransaction();

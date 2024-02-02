@@ -12,14 +12,14 @@ public partial class Masters_Process_frmproductiondirectreceive : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
 
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                            select UnitsId,UnitName from Units order by UnitName
                            select UnitId,UnitName From Unit where UnitId in(1,2)
                            select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner Join CategorySeparate CS on ICM.CATEGORY_ID=CS.Categoryid and cs.id=0 order by ICM.CATEGORY_NAME";
@@ -300,14 +300,14 @@ public partial class Masters_Process_frmproductiondirectreceive : System.Web.UI.
             param[5] = new SqlParameter("@Caltype", DDcaltype.SelectedValue);
             param[6] = new SqlParameter("@Receivedate", txtrecdate.Text);
             param[7] = new SqlParameter("@Empid", StrEmpid);
-            int Itemfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Itemfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             param[8] = new SqlParameter("@Item_finished_id", Itemfinishedid);
             param[9] = new SqlParameter("@Width", TxtWidth.Text);
             param[10] = new SqlParameter("@Length", TxtLength.Text);
             param[11] = new SqlParameter("@Area", TxtArea.Text);
             param[12] = new SqlParameter("@Qty", txtqty.Text);
             param[13] = new SqlParameter("@userid", Session["varuserid"]);
-            param[14] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[14] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[15] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[15].Direction = ParameterDirection.Output;
             param[16] = new SqlParameter("@Processid", Processid);
@@ -426,11 +426,11 @@ public partial class Masters_Process_frmproductiondirectreceive : System.Web.UI.
 
 
         sqlstr = @"Select PD.Process_Rec_Detail_Id as Sr_No,vf.item_name as Item,vf.Qualityname,vf.Designname,vf.ColorName,vf.ShapeName,PD.Length,PD.Width,PD.Qty,PD.Rate,PD.Qty*PD.Area Area,PD.Amount,PD.Weight,PD.Penality,
-                        case When " + Session["varcompanyId"] + @"=9 Then '' Else [dbo].[F_GetstockNo_RecDetailWise](PD.Process_Rec_Id,PD.Process_Rec_Detail_Id) End TStockNo,PD.Premarks,PD.Comm,
+                        case When " + Session["varMasterCompanyIDForERP"] + @"=9 Then '' Else [dbo].[F_GetstockNo_RecDetailWise](PD.Process_Rec_Id,PD.Process_Rec_Detail_Id) End TStockNo,PD.Premarks,PD.Comm,
                         PD.ActualLength,PD.ActualWidth,PD.issueorderid,Pd.issue_detail_id,PM.process_rec_id
                         From PROCESS_RECEIVE_MASTER_1 PM,PROCESS_RECEIVE_DETAIL_1 PD," + View + @" vf
                         Where PM.Process_Rec_Id=PD.Process_Rec_Id And PD.Item_Finished_id=vf.Item_finished_id  
-                        and  PM.Process_Rec_Id=" + hnprocessrecid.Value + "  And vf.MasterCompanyId=" + Session["varCompanyId"] + " order by sr_no desc";
+                        and  PM.Process_Rec_Id=" + hnprocessrecid.Value + "  And vf.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sr_no desc";
 
         DS = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sqlstr);
         DGRecDetail.DataSource = DS.Tables[0];

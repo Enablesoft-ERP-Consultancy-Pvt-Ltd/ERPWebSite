@@ -17,7 +17,7 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
     protected static string Focus = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -37,7 +37,7 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
             }
 
             hnEmpWagescalculation.Value = "";
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                 Select CI.CustomerId, CI.CustomerCode 
                 From Customerinfo CI(Nolock)";
                 if (Convert.ToInt32(Session["varcompanyNo"]) == 42)
@@ -45,19 +45,19 @@ public partial class Masters_Loom_purchaseproductionorderagni : System.Web.UI.Pa
                     str = str + @" JOIN CompanyWiseCustomerDetail CCD(Nolock) ON CCD.CustomerID = CI.CustomerID And CCD.CompanyID = " + Session["CurrentWorkingCompanyID"];
                 }
 
-                str = str + @" Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" order by CI.Customercode 
+                str = str + @" Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" order by CI.Customercode 
 
                 select UnitsId,UnitName from Units order by UnitName
                 select UnitId,UnitName From Unit Where Unitid in(1,2,6)
                 Select ID, BranchName 
                 From BRANCHMASTER BM(nolock) 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @" 
+                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
                 Select Distinct a.DepartmentID, D.DepartmentName 
                 From ProcessIssueToDepartmentMaster a(Nolock)
                 JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
-                Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
+                Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And a.ProcessID = 1 
                 Order By D.DepartmentName
 Select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME
 select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
@@ -283,7 +283,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 ChkForPcsWise.Checked = false;
             }
 
-            if (Session["varCompanyId"].ToString() == "22")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             {
                 fillCottonLotNoGrid();
             }
@@ -291,27 +291,27 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             {
                 DDCalType.SelectedValue = "1";
             }
-            if (Session["varCompanyId"].ToString() == "42")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "42")
             {
                 DDCalType.SelectedValue = "0";
                 hnordercaltype.Value = "0";
                 TDChkForMaterialRate.Visible = true;
             }
-            if (Session["varCompanyId"].ToString() == "247")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "247")
             {                
                 hnordercaltype.Value = "0";
             }
-            if (Session["varCompanyId"].ToString() == "36")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "36")
             {
                 DDCalType.SelectedValue = "0";
                 hnordercaltype.Value = "0";
             }
-            if (Session["varCompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 DDCalType.SelectedValue = "1";
               //  hnordercaltype.Value = "0";
             }
-            //if (Session["varCompanyId"].ToString() == "43")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "43")
             //{
             //    DDCalType.SelectedValue = "0";
             //    hnordercaltype.Value = "0";
@@ -324,7 +324,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 //                strf = @"select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' as Empname from EmpInfo EI inner join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION'
                 //        and EI.Status='P' and EI.Blacklist=0 order by Empname";
 
-                string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+                string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
                 if (Session["varCompanyno"].ToString() != "6")
                 {
                     Str = Str + "  AND DM.Departmentname='PURCHASE'";
@@ -750,7 +750,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             {
                 
                     str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                        case when " + Session["varMasterCompanyIDForERP"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                         VJ.PREPRODASSIGNEDQTY as QtyRequired,
                         dbo.F_getProductionOrderQty(OM.OrderId,OD.Item_Finished_Id) as OrderedQty,JOBRATE.RATE,
@@ -1121,7 +1121,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             {
 
                 str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                        case when " + Session["varMasterCompanyIDForERP"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                         VJ.PREPRODASSIGNEDQTY as QtyRequired,
                         dbo.F_getProductionOrderQty(OM.OrderId,OD.Item_Finished_Id) as OrderedQty,JOBRATE.RATE,
@@ -1308,7 +1308,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     protected void DDorderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "28":
                 chkpurchasefolio.Checked = false;
@@ -1499,7 +1499,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                     cmd.Parameters.AddWithValue("@Issuedate", txtissuedate.Text);
                     cmd.Parameters.AddWithValue("@Targetdate", txttargetdate.Text);
                     cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                    cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     cmd.Parameters.AddWithValue("@dtrecords", dtrecords);
                     if (variable.VarProductionOrderPcsWise == "1" && ChkForPcsWise.Checked == true)
                     {
@@ -1564,7 +1564,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         FillConsumptionQty();
                         Refreshcontrol();
                         disablecontrols();
-                        if (Session["varcompanyid"].ToString() == "21")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                         {
                             chkforRateUpdate.Checked = false;
                         }
@@ -1584,7 +1584,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                     //param[6] = new SqlParameter("@Issuedate", txtissuedate.Text);
                     //param[7] = new SqlParameter("@Targetdate", txttargetdate.Text);
                     //param[8] = new SqlParameter("@Userid", Session["varuserid"]);
-                    //param[9] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+                    //param[9] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     //param[10] = new SqlParameter("@dtrecords", dtrecords);
                     //param[11] = new SqlParameter("@Ordercaltype", (hnordercaltype.Value == "" ? "1" : hnordercaltype.Value));  //Pcs Wise
                     //param[12] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
@@ -1613,7 +1613,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                     //    FillConsumptionQty();
                     //    Refreshcontrol();
                     //    disablecontrols();
-                    //    if (Session["varcompanyid"].ToString() == "21")
+                    //    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                     //    {
                     //        chkforRateUpdate.Checked = false;
                     //    }
@@ -1647,7 +1647,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                     {
                         con.Open();
                     }
-                     int Item_finished_id = UtilityModule.getItemFinishedId(DDLItem, DDQuality, DDDesign, DDColor, ddlshape, DDSize, TxtItemCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+                     int Item_finished_id = UtilityModule.getItemFinishedId(DDLItem, DDQuality, DDDesign, DDColor, ddlshape, DDSize, TxtItemCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 saverawdetailcarpet(Item_finished_id);
                 
                 SqlParameter[] param = new SqlParameter[36];
@@ -1679,7 +1679,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 param[18] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[18].Direction = ParameterDirection.Output;
                 param[19] = new SqlParameter("@userid", Session["varuserid"]);
-                param[20] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[20] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
                 param[21] = new SqlParameter("@Quality", DDQuality.SelectedItem.Text);
                 param[22] = new SqlParameter("@Design", DDDesign.SelectedItem.Text);
@@ -1749,7 +1749,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         TxtInstructions.Text = "";
         string str = "";
 
-//        if (Session["varcompanyid"].ToString() == "43")
+//        if (Session["varMasterCompanyIDForERP"].ToString() == "43")
 //        {
 //            str = @"Select Issue_Detail_Id,PM.issueorderid,
 //                        VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+ Space(2) + Case When PM.Unitid=1 Then VF.SizeMtr Else case When PM.unitid=6 Then VF.Sizeinch  Else  VF.SizeFt End End + Space(2) +' ('+
@@ -1762,7 +1762,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 //                        JOIN V_FinishedItemDetail VF ON PD.Item_Finished_Id=Vf.Item_Finished_ID
 //                        JOIN OrderMaster OM ON PD.ORDERID=OM.OrderId
 //                        JOIN CustomerSize CS ON OM.CustomerId=CS.CustomerId and VF.SizeId=CS.Sizeid
-//                        Where PM.IssueOrderid=" + hnissueorderid.Value + " And VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+//                        Where PM.IssueOrderid=" + hnissueorderid.Value + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
 //        }
 //        else
 //        {
@@ -1774,7 +1774,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         From PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,
                         ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
                         Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
-                        PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                        PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
        // }
 
         //Employeedetail
@@ -1790,14 +1790,14 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                     JOIN PROCESS_ISSUE_DETAIL_1 PD ON PD.IssueOrderID = PM.IssueOrderID 
                     JOIN LoomStockNo LS ON LS.IssueOrderID = PD.IssueOrderID And LS.IssueDetailID = PD.Issue_Detail_ID And LS.ProcessID = 1 
                     JOIN V_FinishedItemDetail VF ON VF.Item_Finished_ID = PD.Item_Finished_ID 
-                    Where PM.IssueOrderid = " + hnissueorderid.Value + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                    Where PM.IssueOrderid = " + hnissueorderid.Value + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
         }
         //
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DGOrderdetail.DataSource = ds.Tables[0];
         DGOrderdetail.DataBind();
 
-        if (chkEdit.Checked == true && (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28" || Session["varcompanyid"].ToString() == "42") && Convert.ToInt32(Session["usertype"]) > 2)
+        if (chkEdit.Checked == true && (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "42") && Convert.ToInt32(Session["usertype"]) > 2)
         {
             DGOrderdetail.Columns[5].Visible = false;
             DGOrderdetail.Columns[6].Visible = false;
@@ -1810,13 +1810,13 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             DGOrderdetail.Columns[12].Visible = false;
             DGOrderdetail.Columns[13].Visible = false;
         }
-        if (Session["varcompanyid"].ToString() == "42")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "42")
         {
             DGOrderdetail.Columns[12].Visible = true;
 
             //DGOrderdetail.Columns[11].Visible = false;
         }
-        //if (chkEdit.Checked == true && Session["varcompanyid"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
+        //if (chkEdit.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
         //{
         //    //DGOrderdetail.Columns[9].Visible = false;
         //    DGOrderdetail.Columns[10].Visible = false;
@@ -1923,7 +1923,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     }
     protected void btnPreview_Click(object sender, EventArgs e)
     {
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "27":
             case "34":
@@ -1969,19 +1969,19 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         array[2] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
         array[0].Value = hnissueorderid.Value;
         array[1].Value = 1;
-        array[2].Value = Session["varcompanyId"];
-        //if (Session["varcompanyId"].ToString() == "9")
+        array[2].Value = Session["varMasterCompanyIDForERP"];
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         //{
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrderReport", array);
 
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if (Convert.ToInt32(Session["VarcompanyId"]) == 5)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 5)
             {
                 Session["rptFileName"] = "~\\Reports\\ProductionOrderPoshNew.rpt";
             }
-            else if (Convert.ToInt32(Session["VarcompanyId"]) == 27 || Convert.ToInt32(Session["VarcompanyId"]) == 34)//For Antique Panipat
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 34)//For Antique Panipat
             {
                 Session["rptFileName"] = "~\\Reports\\ProductionOrderNewAntique.rpt";
             }
@@ -2014,7 +2014,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         //SqlParameter[] array = new SqlParameter[3];
         //array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         //array[1] = new SqlParameter("@ProcessId", 1);
-        //array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        //array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
 
@@ -2040,11 +2040,11 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         cmd.Parameters.AddWithValue("@IssueOrderId", hnissueorderid.Value);
         cmd.Parameters.AddWithValue("@ProcessId", 1);
         cmd.Parameters.AddWithValue("@UserName", Session["UserName"]);
-        if (Session["varCompanyId"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             cmd.Parameters.AddWithValue("@TYPE", chksummary.Checked ? 2 : 0);
         }
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = new DataSet();
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -2150,7 +2150,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         SqlParameter[] array = new SqlParameter[3];
         array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         array[1] = new SqlParameter("@ProcessId", 1);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrderSlipReport", array);
 
@@ -2212,7 +2212,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             TDFolioNotext.Visible = true;
             hnissueorderid.Value = "0";
             //btnsave.Visible = false;
-            if (Session["varcompanyid"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 if (Convert.ToInt32(Session["usertype"]) > 2)
                 {
@@ -2363,7 +2363,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         EnablecontrolwithGENERATESTOCKNOONTAGGING();
         DisablecontrolwithGENERATESTOCKNOONTAGGING();
         FillConsumptionQty();
-        if (Session["VarCompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
         {
             ShowCustomerCodeAndOrderNo();
         }
@@ -2443,7 +2443,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //******
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_CancelProductionorderLoomWise", param);
             //******
@@ -2514,7 +2514,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@dtrecord", dtrecord);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioEmployee", param);
@@ -2748,7 +2748,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 
                 DataSet ds = null;
 
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     str = @"Select EI.Empid, EI.Empcode + '-' + EI.Empname EmpName, IsNull(EI.EmployeeType, 0) Emptype, 1 Caltype, 
                             IsNull(EID.Wagescalculation, 0) Wagescalculation 
@@ -2786,12 +2786,12 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Please select same location employee');", true);
                         return;
                     }
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -2800,7 +2800,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            //if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
+                            //if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
                             //{
                             //    txtWeaverIdNoscan.Text = "";
                             //    txtWeaverIdNoscan.Focus();
@@ -2864,7 +2864,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                                 break;
                         }
                     }
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -2915,7 +2915,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 }
 
                 ds.Dispose();
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     tdweaverpedningstock.Visible = true;
                     //  string a = txtWeaverIdNoscan.Text;
@@ -2978,7 +2978,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 
                 DataSet ds = null;
 
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     str = @"Select EI.Empid, EI.Empcode + '-' + EI.Empname EmpName, IsNull(EI.EmployeeType, 0) Emptype, 1 Caltype, 
                             IsNull(EID.Wagescalculation, 0) Wagescalculation 
@@ -3016,12 +3016,12 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Please select same location employee');", true);
                         return;
                     }
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -3030,7 +3030,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            //if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
+                            //if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
                             //{
                             //    txtWeaverIdNoscan.Text = "";
                             //    txtWeaverIdNoscan.Focus();
@@ -3094,7 +3094,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                                 break;
                         }
                     }
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -3145,7 +3145,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 }
 
                 ds.Dispose();
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     tdweaverpedningstock.Visible = true;
                     //  string a = txtWeaverIdNoscan.Text;
@@ -3268,12 +3268,12 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         return;
                     }
 
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -3282,7 +3282,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            //if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                            //if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                             //{
                             //    txtWeaverIdNoscan.Text = "";
                             //    txtWeaverIdNoscan.Focus();
@@ -3350,7 +3350,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         }
                     }
 
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -3444,7 +3444,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Processid", 1);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioActiveStatus", param);
             Tran.Commit();
@@ -3573,33 +3573,33 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         switch (ddunit.SelectedValue.ToString())
         {
             case "0":
-                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
-                //str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by 1";
+                //str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 break;
             case "1":
-                str = "Select Distinct S.Sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
-                //str = " Select Distinct S.sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr from Size S Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                str = "Select Distinct S.Sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by 1";
+                //str = " Select Distinct S.sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr from Size S Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
 
                 break;
             case "2":
-                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
+                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by 1";
                
-                //str = "Select Distinct S.sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                //str = "Select Distinct S.sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 break;
             case "6":
-                str = "Select Distinct S.Sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
+                str = "Select Distinct S.Sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by 1";
                 break;
 
             default:
-                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by 1";
-                //str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                str = "Select Distinct S.Sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId  Where shapeid=" + ddlshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by 1";
+                //str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + DDShape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                 break;
         }
         if (ddlshape.SelectedIndex > 0)
         {
             //if (Convert.ToInt32(DDOrderUnit.SelectedValue) == 6)
             //{
-            //    UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,Sizeinch Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by Sizeinch", true, "--SELECT--");
+            //    UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SizeId,Sizeinch Size_Name from Size where shapeid=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Sizeinch", true, "--SELECT--");
             //}
             //else
             //{
@@ -3797,13 +3797,13 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 
             array[0].Value = hnissueorderid.Value;
             array[1].Value = 1;
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionConsumptionOrderReport", array);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                if (Convert.ToInt32(Session["VarcompanyId"]) == 27 || Convert.ToInt32(Session["VarcompanyId"]) == 34)//For Antique Panipat
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 34)//For Antique Panipat
                 {
                     Session["rptFileName"] = "~\\Reports\\ProductionOrderConsumptionForAntiquePanipat.rpt";
                 }
@@ -3837,7 +3837,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     }
     protected void txtstockno_TextChanged(object sender, EventArgs e)
     {
-        if ((Session["varcompanyid"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
+        if ((Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
         {
             StockNoTextChanged();
         }
@@ -3949,7 +3949,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             {
                 if (DGOrderdetail.Columns[i].HeaderText == "Bonus" || DGOrderdetail.Columns[i].HeaderText == "Finisher Rate")
                 {
-                    if (Convert.ToInt32(Session["varcompanyId"]) == 42)
+                    if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
                     {
                         DGOrderdetail.Columns[i].Visible = true;
                     }
@@ -4002,7 +4002,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     protected void btnweaveridscan_Click(object sender, EventArgs e)
     {
         //*********Check Folio Pending
-        switch (Session["varcompanyid"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "16":
             case "28":            
@@ -4050,7 +4050,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@TanaLotNo", txtTanaLotNo.Text);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioTanaLotNo", param);
@@ -4078,7 +4078,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         {
             for (int i = 0; i < DG.Columns.Count; i++)
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "27":
                     case "34":
@@ -4306,7 +4306,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             if (DDDepartmentName.SelectedIndex == 0)
             {
                 TDDepartmentIssueNo.Visible = false;
-                string Str = "Select CustomerId, CustomerCode From customerinfo(Nolock) Where MasterCompanyId = " + Session["varCompanyId"] + @" order by Customercode";
+                string Str = "Select CustomerId, CustomerCode From customerinfo(Nolock) Where MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" order by Customercode";
 
                 UtilityModule.ConditionalComboFill(ref DDcustcode, Str, true, "--Plz Select--");
                 DDcustcode.Enabled = true;
@@ -4318,7 +4318,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 param[0] = new SqlParameter("@CompanyID", DDcompany.SelectedValue);
                 param[1] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
                 param[2] = new SqlParameter("@DepartmentID", DDDepartmentName.SelectedValue);
-                param[3] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+                param[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
                 DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_UpdateDepartmentStatus", param);
                 
@@ -4351,7 +4351,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 JOIN OrderMaster OM(Nolock) ON OM.OrderId = b.OrderID And OM.CustomerId = " + DDcustcode.SelectedValue;
         }
         Str = Str + @" Where a.Status = 'Pending' And a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
-                    And a.MasterCompanyId = " + Session["varCompanyId"] + " Order By a.IssueOrderID";
+                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By a.IssueOrderID";
 
         UtilityModule.ConditionalComboFill(ref DDDepartmentIssueNo, Str, true, "--Plz Select--");
     }
@@ -4365,7 +4365,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 //                JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID 
 //                JOIN Customerinfo CI(Nolock)  ON CI.CustomerId = OM.CustomerId 
 //                Where a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
-//                    And a.MasterCompanyId = " + Session["varCompanyId"] + @" And OM.status = '0' And a.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue + @" 
+//                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" And OM.status = '0' And a.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue + @" 
 //                order by CI.Customercode ";
 //            UtilityModule.ConditionalComboFill(ref DDcustcode, Str, true, "--Plz Select--");
 //            DDcustcode.SelectedIndex = 1;
@@ -4379,7 +4379,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                 JOIN ProcessIssueToDepartmentDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
                 JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID 
                 Where a.Status = 'Pending' And a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
-                    And a.MasterCompanyId = " + Session["varCompanyId"] + " And OM.status = '0' And OM.CustomerId = " + DDcustcode.SelectedValue + @" 
+                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OM.status = '0' And OM.CustomerId = " + DDcustcode.SelectedValue + @" 
                     And a.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue + @" 
                 Order By OM.OrderID ";
 
@@ -4408,7 +4408,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Remarks", TxtRemarks.Text);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioRemarks", param);
@@ -4940,13 +4940,13 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         }
         //if (tditem.Visible == true)
         //{
-            UtilityModule.ConditionalComboFill(ref DDLItem, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By Item_Name", true, "---Select Item----");
+            UtilityModule.ConditionalComboFill(ref DDLItem, "select Item_id, Item_Name from Item_Master where Category_Id=" + DDCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Item_Name", true, "---Select Item----");
         //}
 //        string Str = @"select Distinct Q.QualityId,q.QualityName+' ['+Im.Item_Name+']' as QualityName 
 //                    From ITEM_MASTER IM(Nolock) 
 //                    join CategorySeparate CS(Nolock) on IM.CATEGORY_ID=cs.Categoryid and cs.id=0  and Cs.Categoryid=" + DDCategory.SelectedValue + @" 
 //                    join Quality Q(Nolock) on IM.ITEM_ID=q.Item_Id  
-//                    Where Im.mastercompanyid=" + Session["varcompanyid"] + " order by Qualityname";
+//                    Where Im.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by Qualityname";
         if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
         {
             Str = @"Select Distinct VF.QualityId, VF.QualityName + ' [' + VF.Item_Name + ']' QualityName 
@@ -4961,14 +4961,14 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     protected void DDLItem_SelectedIndexChanged(object sender, EventArgs e)
     {
         // FindFromProcessId(Convert.ToInt16(DDItemName.SelectedValue), Convert.ToInt16(DDTOProcess.SelectedValue));
-        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDLItem.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QualityName", true, "--Select Quality--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDLItem.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QualityName", true, "--Select Quality--");
         //fill_gride();
 
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
         // FindFromProcessId(Convert.ToInt16(DDItemName.SelectedValue), Convert.ToInt16(DDTOProcess.SelectedValue));
-        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QualityName", true, "--Select Quality--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "Select QualityId,QualityName from Quality Where Item_Id=" + DDItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QualityName", true, "--Select Quality--");
         //fill_gride();
 
     }
@@ -4991,15 +4991,15 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
                         break;
                     case "2":
                         tddesign1.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDDesign, "Select DesignId,Designname from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order by DesignName", true, "--Select Design--");
+                        UtilityModule.ConditionalComboFill(ref DDDesign, "Select DesignId,Designname from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by DesignName", true, "--Select Design--");
                         break;
                     case "3":
                         tdColor1.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDColor, "select  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ColorName", true, "--Select Color--");
+                        UtilityModule.ConditionalComboFill(ref DDColor, "select  ColorId,ColorName from Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ColorName", true, "--Select Color--");
                         break;
                     case "4":
                         tdShape1.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " order By ShapeName", true, "--Select Shape--");
+                        UtilityModule.ConditionalComboFill(ref DDShape, "select ShapeId,Shapename from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order By ShapeName", true, "--Select Shape--");
                         break;
                     case "5":
                         tdsize1.Visible = true;
@@ -5035,7 +5035,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     {
         string StrSize = "vf.shapename";
         string str = "";
-        //if (Session["varcompanyId"].ToString() == "44")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         //{
         //    str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
         //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -5062,13 +5062,13 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 
         //    }
         //}
-        //if (Session["varcompanyId"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
         //{
         //    StrSize = "vf.Sizeft + ' ' + vf.shapename";
 
         //}
 
-        if (Session["varcompanyId"].ToString() == "38")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "38")
         {
             StrSize = "vf.Sizeft + ' ' + vf.shapename";
 
@@ -5107,7 +5107,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     {
         string StrSize = "vf.SizeMtr";
         string str = "";
-        //if (Session["varcompanyId"].ToString() == "44")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         //{
         //    str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
         //    DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -5134,13 +5134,13 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 
         //    }
         //}
-        //if (Session["varcompanyId"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "16" && DDTOProcess.SelectedValue == "12")
         //{
         //    StrSize = "vf.Sizeft + ' ' + vf.shapename";
 
         //}
 
-        if (Session["varcompanyId"].ToString() == "38")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "38")
         {
             StrSize = "vf.Sizeft + ' ' + vf.shapename";
 
@@ -5174,11 +5174,11 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
     {
         if (ddunit.SelectedValue == "2")
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeFt from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By SizeFt", true, "--Select Size--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeFt from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SizeFt", true, "--Select Size--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeMtr from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By SizeFt", true, "--Select Size--");
+            UtilityModule.ConditionalComboFill(ref DDSize, "Select Sizeid,SizeMtr from Size where ShapeId=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SizeFt", true, "--Select Size--");
         }
     }
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
@@ -5316,7 +5316,7 @@ select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
         {
             con.Open();
         }
-        //ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //ItemFinishedId = UtilityModule.getItemFinishedId(ddlitemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         ItemFinishedId = finsihedid;
         SqlTransaction Tran = con.BeginTransaction();
         try

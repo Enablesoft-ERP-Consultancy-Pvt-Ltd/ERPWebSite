@@ -12,13 +12,13 @@ public partial class FrmDefineChemicalRate : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx"); 
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where mastercompanyId=" + Session["varcompanyId"] + " order by category_name", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " order by category_name", true, "--Select--");
             fillgrid();
         }
     }
@@ -27,7 +27,7 @@ public partial class FrmDefineChemicalRate : System.Web.UI.Page
     {
         string str = @"Select dqr.ID,dqr.brandid,dqr.itemid,br.brandName,qr.ITEM_NAME,dqr.rate,dqr.DateAdded,ISNULL(SH.SHADECOLORNAME,'') AS shadecolorname  from defineBrandrate dqr inner join ITEM_MASTER qr 
                     on dqr.itemid=qr.ITEM_ID inner join brand br on 
-                    dqr.brandid=br.brandid LEFT JOIN ShadeColor_res SH ON SH.SHADECOLORID=DQR.SHADECOLORID where dqr.MasterCompany_id=" + Session["varcompanyid"];
+                    dqr.brandid=br.brandid LEFT JOIN ShadeColor_res SH ON SH.SHADECOLORID=DQR.SHADECOLORID where dqr.MasterCompany_id=" + Session["varMasterCompanyIDForERP"];
         //if (ddquality.SelectedIndex > 0)
         //{
         //    str = str + " And dqr.Quality_id=" + ddquality.SelectedValue;
@@ -66,7 +66,7 @@ public partial class FrmDefineChemicalRate : System.Web.UI.Page
             param[1].Value = ddlitem.SelectedValue == "" ? "0" : ddlitem.SelectedValue;
             param[2].Value = txtrate.Text;
             param[3].Value = Session["varuserid"].ToString();
-            param[4].Value = Session["varCompanyId"].ToString();
+            param[4].Value = Session["varMasterCompanyIDForERP"].ToString();
             param[5].Direction = ParameterDirection.Output;
             param[6].Value = ddlshadecolor.SelectedValue == "" ? "0" : ddlshadecolor.SelectedValue; ;
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "Pro_defineBrandrate", param);
@@ -87,22 +87,22 @@ public partial class FrmDefineChemicalRate : System.Web.UI.Page
 
     protected void ddcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddlitem, "select ITEM_ID, ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+        UtilityModule.ConditionalComboFill(ref ddlitem, "select ITEM_ID, ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
     }
 
     protected void ddlitem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddbrand, "select Brandid,BrandName from Brand where item_id=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varcompanyId"] + " order by BrandName desc", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddbrand, "select Brandid,BrandName from Brand where item_id=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " order by BrandName desc", true, "--Select--");
     }
     protected void ddbrand_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddlshadecolor, "select shadecolorid,shadecolorname from ShadeColor_res where itemid=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varcompanyId"] + " and brandid=" + ddbrand.SelectedValue + " order by shadecolorname desc", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddlshadecolor, "select shadecolorid,shadecolorname from ShadeColor_res where itemid=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " and brandid=" + ddbrand.SelectedValue + " order by shadecolorname desc", true, "--Select--");
     }
 
 //    protected void ddquality_SelectedIndexChanged(object sender, EventArgs e)
 //    {
 //        UtilityModule.ConditionalComboFill(ref ddshadecolor, @"select Distinct Sc.ShadecolorId,Sc.ShadeColorName from item_parameter_master Im inner join shadecolor sc
-//                                                            on Im.shadecolor_id=Sc.ShadecolorId where im.Quality_id=" + ddquality.SelectedValue + " and im.mastercompanyId=" + Session["varcompanyId"] + "", true, "--Select--");
+//                                                            on Im.shadecolor_id=Sc.ShadecolorId where im.Quality_id=" + ddquality.SelectedValue + " and im.mastercompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
 //        fillgrid();
 //    }
 

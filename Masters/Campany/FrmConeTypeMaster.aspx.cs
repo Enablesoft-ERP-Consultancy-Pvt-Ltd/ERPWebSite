@@ -11,7 +11,7 @@ public partial class Masters_Campany_FrmConeTypeMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -90,7 +90,7 @@ public partial class Masters_Campany_FrmConeTypeMaster : CustomPage
                 _arrpara[2].Value = TxtConeWeight.Text;
                 _arrpara[3].Value = TxtSeqenceNo.Text;
                 _arrpara[4].Value = Session["varuserid"].ToString();
-                _arrpara[5].Value = Session["varCompanyId"].ToString();
+                _arrpara[5].Value = Session["varMasterCompanyIDForERP"].ToString();
 
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_SAVECONETYPE", _arrpara);
                 Tran.Commit();

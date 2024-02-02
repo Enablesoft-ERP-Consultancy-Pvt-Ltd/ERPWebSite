@@ -12,15 +12,15 @@ public partial class Masters_ReportForms_frmwip : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
-                           select Customerid,Companyname+'/'+customercode as Customer from customerinfo where mastercompanyid=" + Session["varcompanyId"] + @" order by Customer
-                           Select Process_Name_id,Process_Name from Process_Name_Master where MasterCompanyId=" + Session["varCompanyId"] + " order by Process_Name";
+                           select Customerid,Companyname+'/'+customercode as Customer from customerinfo where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by Customer
+                           Select Process_Name_id,Process_Name from Process_Name_Master where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Process_Name";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDcompanyName, ds, 0, false, "");
@@ -117,7 +117,7 @@ public partial class Masters_ReportForms_frmwip : System.Web.UI.Page
         param[0] = new SqlParameter("@companyId", DDcompanyName.SelectedValue);
         param[1] = new SqlParameter("@dtcustomerid", dtcustomerid);
         param[2] = new SqlParameter("@dtorderid", dtorderid);
-        param[3] = new SqlParameter("@mastercompanyId", Session["varcompanyId"]);
+        param[3] = new SqlParameter("@mastercompanyId", Session["varMasterCompanyIDForERP"]);
         param[4] = new SqlParameter("@processid", processid);
         //
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Proc_GetorderWIP", param);
@@ -145,7 +145,7 @@ public partial class Masters_ReportForms_frmwip : System.Web.UI.Page
         param[0] = new SqlParameter("@companyId", DDcompanyName.SelectedValue);
         param[1] = new SqlParameter("@dtcustomerid", dtcustomerid);
         param[2] = new SqlParameter("@dtorderid", dtorderid);
-        param[3] = new SqlParameter("@mastercompanyId", Session["varcompanyId"]);
+        param[3] = new SqlParameter("@mastercompanyId", Session["varMasterCompanyIDForERP"]);
         //
         DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetWipSummary", param);
         ds1.Tables[0].DefaultView.RowFilter = "Bomdays<0 or TNAdays<0";
@@ -176,7 +176,7 @@ public partial class Masters_ReportForms_frmwip : System.Web.UI.Page
         param[0] = new SqlParameter("@companyId", DDcompanyName.SelectedValue);
         param[1] = new SqlParameter("@dtcustomerid", dtcustomerid);
         param[2] = new SqlParameter("@dtorderid", dtorderid);
-        param[3] = new SqlParameter("@mastercompanyId", Session["varcompanyId"]);
+        param[3] = new SqlParameter("@mastercompanyId", Session["varMasterCompanyIDForERP"]);
         //
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetBOM_TNA", param);
         if (ds.Tables[0].Rows.Count > 0)
