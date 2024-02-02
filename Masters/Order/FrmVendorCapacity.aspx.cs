@@ -11,7 +11,7 @@ public partial class Masters_Order_FrmVendorCapacity : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Order_FrmVendorCapacity : System.Web.UI.Page
     {
         string str = @"select V_id as Sr_No, EI.EmpName as VendorName, M.Month_Name as Month, Year,
         VC.Capacity from Vendorcapacity VC inner join Empinfo EI on VC.Vendorid=EI.Empid 
-        inner join MonthTable M on VC.Month_id=M.Month_id where VC.MasterCompanyId=" + Session["varCompanyId"] + "";
+        inner join MonthTable M on VC.Month_id=M.Month_id where VC.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
         if (DDVendor.SelectedIndex > 0)
         {
             str = str + "  and vc.vendorid=" + DDVendor.SelectedValue;
@@ -80,7 +80,7 @@ public partial class Masters_Order_FrmVendorCapacity : System.Web.UI.Page
             param[2].Value = DDyear.SelectedIndex < 0 ? "0" : DDyear.SelectedValue;
             param[3].Value = txtcapacity.Text;
             param[4].Value = Session["varuserid"].ToString();
-            param[5].Value = Session["varCompanyId"].ToString();
+            param[5].Value = Session["varMasterCompanyIDForERP"].ToString();
             param[6].Direction = ParameterDirection.Output;
             param[7].Value = Convert.ToInt32(txtid.Text);
 

@@ -11,21 +11,21 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)  
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             BtnAddNewParameter.Visible = false;
-            UtilityModule.ConditionalComboFill(ref ddCategoryName, "SELECT CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyid=" + Session["varCompanyId"] + " order by CATEGORY_NAME", true, "---Select---");
-            UtilityModule.ConditionalComboFill(ref ddProcessName, "SELECT Process_Name_ID,Process_Name from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + " order by Process_Name", true, "---Select---");
+            UtilityModule.ConditionalComboFill(ref ddCategoryName, "SELECT CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CATEGORY_NAME", true, "---Select---");
+            UtilityModule.ConditionalComboFill(ref ddProcessName, "SELECT Process_Name_ID,Process_Name from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Process_Name", true, "---Select---");
             //logo();
         }
     }
     protected void ddcategoryname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddItemName, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By ITEM_NAME", true, "---Select --");
+        UtilityModule.ConditionalComboFill(ref ddItemName, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ITEM_NAME", true, "---Select --");
     }
     protected void ddProcessName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -65,7 +65,7 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
             arr[0].Value = 0;
             arr[1].Value = ddItemName.SelectedValue;
             arr[3].Value = Session["varuserid"].ToString();
-            arr[4].Value = Session["varCompanyId"].ToString();
+            arr[4].Value = Session["varMasterCompanyIDForERP"].ToString();
             if (dquality.Items.Count == 0)
             {
                 arr[5].Value = 0;
@@ -106,7 +106,7 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
             JOIN QCMaster QCM(Nolock) ON QCM.ParaID = QCP.ParaID 
             JOIN Item_Master IM(Nolock) ON IM.Item_Id = QCM.ItemId 
             JOIN ParameterType PT(Nolock) ON PT.ID = QCP.ParameterTypeID 
-            Where QCP.CategoryID = " + ddCategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"];
+            Where QCP.CategoryID = " + ddCategoryName.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         
         if (ddProcessName.SelectedIndex > 0)
         {
@@ -120,7 +120,7 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
         {
             Str = Str + " And QCM.Qualityid = " + dquality.SelectedValue;
         }
-        if (Convert.ToInt16(Session["varCompanyId"]) == 16)
+        if (Convert.ToInt16(Session["varMasterCompanyIDForERP"]) == 16)
         {
             Str = Str + " And IsNull(QCM.QUALITYID, 0) = 0";
         }
@@ -191,7 +191,7 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
     {
         if (e.Row.RowType == DataControlRowType.Header)
         {
-            if (Session["varcompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 DG.Columns[7].Visible = true;
                 DG.Columns[8].Visible = false;
@@ -231,7 +231,7 @@ public partial class Masters_Carpet_FrmQualityCheckMaster : System.Web.UI.Page
     //private void logo()
     //{
     //    imgLogo.ImageUrl.DefaultIfEmpty();
-    //    imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+    //    imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
     //    LblCompanyName.Text = Session["varCompanyName"].ToString();
     //    LblUserName.Text = Session["varusername"].ToString();
     //}

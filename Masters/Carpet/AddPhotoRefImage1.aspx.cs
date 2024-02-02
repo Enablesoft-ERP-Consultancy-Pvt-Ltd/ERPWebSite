@@ -14,6 +14,10 @@ public partial class Masters_Carpet_AddPhotoRefImage1 : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (!IsPostBack)
         {
             if (Request.QueryString["img"].ToString() == "pp")

@@ -11,7 +11,7 @@ public partial class Masters_Carpet_FinishType : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -43,7 +43,7 @@ public partial class Masters_Carpet_FinishType : System.Web.UI.Page
             _arrPara[1].Value = txtfinishtype.Text.ToUpper();
             _arrPara[2].Value =txtshortnsme.Text.ToUpper();
             _arrPara[3].Value = Session["varuserid"].ToString();
-            _arrPara[4].Value = Session["varCompanyId"].ToString();
+            _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
 
             con.Open();
             SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_finishtype", _arrPara);

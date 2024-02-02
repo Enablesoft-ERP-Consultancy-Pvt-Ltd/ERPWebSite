@@ -11,15 +11,15 @@ public partial class Masters_Packing_frmPreshipmentdocument : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select CI.CompanyId,CI.CompanyName from companyinfo CI inner join Company_Authentication CA on CI.CompanyId=CA.CompanyId and CA.UserId=" + Session["varuserid"] + " and CI.mastercompanyid=" + Session["varcompanyid"] + @"
-                          select CustomerId,CustomerCode+'/'+CompanyName as customer from customerinfo where mastercompanyid=" + Session["varcompanyid"] + @"   order by customer
-                          select PaymentId,PaymentName from Payment where mastercompanyid=" + Session["varcompanyid"] + " order by PaymentName";
+            string str = @"select CI.CompanyId,CI.CompanyName from companyinfo CI inner join Company_Authentication CA on CI.CompanyId=CA.CompanyId and CA.UserId=" + Session["varuserid"] + " and CI.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @"
+                          select CustomerId,CustomerCode+'/'+CompanyName as customer from customerinfo where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @"   order by customer
+                          select PaymentId,PaymentName from Payment where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by PaymentName";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, true, "Select");
             if (DDCompanyName.Items.Count > 0)
@@ -120,7 +120,7 @@ public partial class Masters_Packing_frmPreshipmentdocument : System.Web.UI.Page
                 param[8] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[8].Direction = ParameterDirection.Output;
                 param[9] = new SqlParameter("@userid", Session["varuserid"]);
-                param[10] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                param[10] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
                 //**************
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_savePreshipment", param);

@@ -13,17 +13,17 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
     public static string Export = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName                           
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                           
                            select UnitsId,UnitName from Units order by UnitName
-                           select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=0 and ICM.MasterCompanyid=" + Session["varcompanyid"] + @"
+                           select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=0 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
                            select Val,Type from Sizetype
-                           Select CustomerID, CustomerCode From CustomerInfo Where MasterCompanyid = " + Session["varcompanyid"] + " Order By CustomerCode ";
+                           Select CustomerID, CustomerCode From CustomerInfo Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -82,7 +82,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         TRDDSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -116,7 +116,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             }
         }
 
-        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " order by IM.item_name";
+        string stritem = "select distinct IM.Item_Id,IM.Item_Name from  Item_Parameter_Master IPM  inner Join Item_Master IM on IM.Item_Id=IPM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where  IM.Category_Id=" + DDCategory.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by IM.item_name";
         UtilityModule.ConditionalComboFill(ref ddItemName, stritem, true, "---Select Item----");
     }
     protected void ddItemName_SelectedIndexChanged(object sender, EventArgs e)
@@ -125,11 +125,11 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, int Itemid)
     {
-        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By QUALITYNAME
-                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
-                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+        string Str = @"SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By QUALITYNAME
+                     SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+                     SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+                     SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
+                     SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -165,7 +165,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         //size Query
 
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
-                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");
         //
@@ -431,12 +431,12 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             {
                 if (chkexportwithdetail.Checked == true)
                 {
-                    if (Session["varCompanyId"].ToString() == "22")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                     {
                         PerdayproductionwithdetailDiamond(ds, FilterBy);
                         return;                        
                     }
-                    else if (Session["varCompanyId"].ToString() == "44")
+                    else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                     {
                         Perdayproductionwithdetailagni(ds, FilterBy);
                         return;
@@ -455,17 +455,17 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                 }
                 else
                 {
-                    if (Session["varCompanyId"].ToString() == "14")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "14")
                     {
                         PerdayproductionSummary(ds, FilterBy);
                         return;
                         // Session["rptFileName"] = "~\\Reports\\rptperdayproductionstatussummaryEHI.rpt";
                     }
-                    else if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+                    else if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
                     {
                         Session["rptFileName"] = "~\\Reports\\rptperdayproductionstatussummaryChampo.rpt";
                     }
-                    else if (Session["varCompanyId"].ToString() == "44")
+                    else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                     {
                         Session["rptFileName"] = "~\\Reports\\rptperdayproductionstatussummaryagni.rpt";
                     }
@@ -556,7 +556,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
          sht.Range("X2").Value = "Party ChallanNo";
          sht.Range("Y2").Value = "CustomerOrderNo";
 
-        //if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         //{
         //    sht.Range("X2").Value = "Party ChallanNo";
         //}
@@ -564,7 +564,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         //{
         //    sht.Column(24).Hide();
         //}
-        //if (Session["varCompanyId"].ToString() == "21")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         //{
             //sht.Range("Y2").Value = "QC Comment";
         //}
@@ -573,7 +573,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         //    sht.Column(25).Hide();
         //}
 
-        //if (Session["varCompanyId"].ToString() == "14")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "14")
         //{
         //    sht.Range("Z2").Value = "Actual Width";
         //    sht.Range("AA2").Value = "Actual Length";
@@ -610,7 +610,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["Weight"]);
             sht.Range("O" + row).SetValue(ds1.Tables[0].Rows[i]["Empname"]);
             sht.Range("P" + row).SetValue(ds1.Tables[0].Rows[i]["Stockstatus"]);
-            //if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             //{
             //    sht.Column(12).Hide();
             //    sht.Column(13).Hide();
@@ -620,7 +620,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
            
             //}
          
-            //if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             //{
             //    sht.Column(15).Hide();
             //    sht.Range("O" + row).SetValue("");
@@ -642,7 +642,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("W" + row).SetValue(ds1.Tables[0].Rows[i]["CommAmt"]);
             sht.Range("X" + row).SetValue(ds1.Tables[0].Rows[i]["PartyChallanNo"]);
             sht.Range("Y" + row).SetValue(ds1.Tables[0].Rows[i]["customerorderno"]);
-            //if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             //{
             //    sht.Column(22).Hide();
             //    sht.Column(23).Hide();
@@ -655,7 +655,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             //    sht.Range("W" + row).SetValue(ds1.Tables[0].Rows[i]["CommAmt"]);
             //}
 
-            //if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             //{
             //    sht.Range("X" + row).SetValue(ds1.Tables[0].Rows[i]["PartyChallanNo"]);
             //}
@@ -665,7 +665,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             //    sht.Range("X" + row).SetValue("");
             //}
 
-            //if (Session["varCompanyId"].ToString() == "21")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             //{
             //    sht.Range("Y" + row).SetValue("");
             //}
@@ -675,7 +675,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             //    sht.Range("Y" + row).SetValue("");
             //}
 
-            //if (Session["varCompanyId"].ToString() == "14")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "14")
             //{
             //    sht.Range("Z" + row).SetValue(ds1.Tables[0].Rows[i]["ActualWidth"]);
             //    sht.Range("AA" + row).SetValue(ds1.Tables[0].Rows[i]["ActualLength"]);
@@ -744,7 +744,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         sht.Range("B2").Value = "Carpet No.";
         sht.Range("C2").Value = "Unit Name";
 
-        if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
         {
             sht.Column(4).Hide();
         }
@@ -760,7 +760,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         sht.Range("I2").Value = "Size";
         sht.Range("J2").Value = "Qty";
         sht.Range("K2").Value = "Area";
-        if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
         {
             sht.Column(12).Hide();
             sht.Column(13).Hide();
@@ -771,7 +771,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("M2").Value = "Amount";
         }
         sht.Range("N2").Value = "Weight";
-        if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
         {
             sht.Column(15).Hide();
             sht.Column(16).Hide();
@@ -786,7 +786,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         sht.Range("S2").Value = "Remove Defects";
         sht.Range("T2").Value = "Inspected By";
 
-        if (Session["varCompanyId"].ToString() == "45")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "45")
         {
             sht.Column(21).Hide();
         }
@@ -795,12 +795,12 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("U2").Value = "Inspection Date";
         }
 
-        if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
         {
             sht.Column(22).Hide();
             sht.Column(23).Hide();
         }
-        else if (Session["varCompanyId"].ToString() == "45")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "45")
         {
             sht.Column(22).Hide();
             sht.Column(23).Hide();
@@ -811,7 +811,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("V2").Value = "Penality Amount";
         }
 
-        if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             sht.Range("X2").Value = "Party ChallanNo"; 
         }
@@ -819,7 +819,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
         {
             sht.Column(24).Hide();
         }
-        if (Session["varCompanyId"].ToString() == "21")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         {
             sht.Range("Y2").Value = "QC Comment"; 
         }
@@ -828,7 +828,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Column(25).Hide();
         }
 
-        if (Session["varCompanyId"].ToString() == "14")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "14")
         {
             sht.Range("Z2").Value = "Actual Width";
             sht.Range("AA2").Value = "Actual Length";            
@@ -852,7 +852,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("B" + row).SetValue(ds1.Tables[0].Rows[i]["Tstockno"]);
             sht.Range("C" + row).SetValue(ds1.Tables[0].Rows[i]["Unitname"]);
 
-            if (Session["varCompanyId"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "45" && Session["varSubCompanyId"].ToString() == "451")
             {
                 sht.Column(4).Hide();
             }
@@ -868,7 +868,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("I" + row).SetValue(ds1.Tables[0].Rows[i]["Size"]);
             sht.Range("J" + row).SetValue(ds1.Tables[0].Rows[i]["Qty"]);
             sht.Range("K" + row).SetValue(ds1.Tables[0].Rows[i]["Area"]);
-            if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             {
                 sht.Column(12).Hide();
                 sht.Column(13).Hide();
@@ -879,7 +879,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                 sht.Range("M" + row).SetValue(ds1.Tables[0].Rows[i]["Amount"]);
             }
             sht.Range("N" + row).SetValue(ds1.Tables[0].Rows[i]["Weight"]);
-            if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             {
                 sht.Column(15).Hide();
                 sht.Range("O" + row).SetValue("");
@@ -897,7 +897,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             sht.Range("S" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemoveVALUE"]);
             sht.Range("T" + row).SetValue(ds1.Tables[0].Rows[i]["QCRemove_UserID"]);
 
-            if (Session["varCompanyId"].ToString() == "45")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "45")
             {
                 sht.Column(21).Hide();
             }
@@ -907,14 +907,14 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
             }
 
             
-            if (Session["varCompanyId"].ToString() == "21" && Session["usertype"].ToString() != "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21" && Session["usertype"].ToString() != "1")
             {
                 sht.Column(22).Hide();
                 sht.Column(23).Hide();
                 sht.Range("V" + row).SetValue("");
                 sht.Range("W" + row).SetValue("");
             }
-            else if (Session["varCompanyId"].ToString() == "45")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "45")
             {
                 sht.Column(22).Hide();
                 sht.Column(23).Hide();
@@ -927,7 +927,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                 sht.Range("W" + row).SetValue(ds1.Tables[0].Rows[i]["CommAmt"]);
             }
 
-            if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             {
                 sht.Range("X" + row).SetValue(ds1.Tables[0].Rows[i]["PartyChallanNo"]);                  
             }
@@ -937,7 +937,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                 sht.Range("X" + row).SetValue("");
             }
 
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 sht.Range("Y" + row).SetValue("");
             }
@@ -947,7 +947,7 @@ public partial class Masters_ReportForms_frmperdayproductionstatus : System.Web.
                 sht.Range("Y" + row).SetValue("");    
             }
 
-            if (Session["varCompanyId"].ToString() == "14")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "14")
             {
                 sht.Range("Z" + row).SetValue(ds1.Tables[0].Rows[i]["ActualWidth"]);
                 sht.Range("AA" + row).SetValue(ds1.Tables[0].Rows[i]["ActualLength"]);

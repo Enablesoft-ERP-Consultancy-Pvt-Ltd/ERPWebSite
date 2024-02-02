@@ -11,7 +11,7 @@ public partial class Masters_Payroll_frmallowance_deductionmaster : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"]==null)
+        if (Session["varMasterCompanyIDForERP"]==null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -39,7 +39,7 @@ public partial class Masters_Payroll_frmallowance_deductionmaster : System.Web.U
             param[2] = new SqlParameter("@Parametername", txtparametername.Text.Trim());
             param[3] = new SqlParameter("@Msg", SqlDbType.VarChar,100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@userid", Session["varuserid"]);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveHrAllowancesmaster", param);

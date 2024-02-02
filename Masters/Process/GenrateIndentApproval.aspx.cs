@@ -15,7 +15,7 @@ public partial class Masters_Process_GenrateIndentApproval : System.Web.UI.Page
         if (!IsPostBack)
         {
             TxtApprovalDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            CommanFunction.FillCombo(DDCompanyName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order by Companyname");
+            CommanFunction.FillCombo(DDCompanyName, "select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -23,14 +23,14 @@ public partial class Masters_Process_GenrateIndentApproval : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDprocess, "select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=0 And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Process--");
-            //UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EI.EmpId,EmpName from IndentMaster IM inner join EmpInfo EI ON IM.PartyId=EI.EmpId inner join EmpProcess EP on EI.EmpId=EP.EmpId Where IM.Companyid=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDprocess, "select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where ProcessType=0 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Process--");
+            //UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EI.EmpId,EmpName from IndentMaster IM inner join EmpInfo EI ON IM.PartyId=EI.EmpId inner join EmpProcess EP on EI.EmpId=EP.EmpId Where IM.Companyid=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
         }
     }
 
     protected void DDprocess_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EI.EmpId,EmpName from IndentMaster IM inner join EmpInfo EI ON IM.PartyId=EI.EmpId inner join EmpProcess EP on EI.EmpId=EP.EmpId Where ep.processid=" + DDprocess.SelectedValue + " and  IM.Companyid=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDPartyName, "Select Distinct EI.EmpId,EmpName from IndentMaster IM inner join EmpInfo EI ON IM.PartyId=EI.EmpId inner join EmpProcess EP on EI.EmpId=EP.EmpId Where ep.processid=" + DDprocess.SelectedValue + " and  IM.Companyid=" + DDCompanyName.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
     }
     protected void DDPartyName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -38,7 +38,7 @@ public partial class Masters_Process_GenrateIndentApproval : System.Web.UI.Page
     }
     protected void DDProcessProgramNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditonalChkBoxListFill(ref CHkPindentNo, "Select Distinct IM.IndentId,IndentNo from IndentMaster IM inner join IndentDetail ID on IM.IndentId=ID.IndentId Where im.Approvalflag=0 and IM.CompanyId=" + DDCompanyName.SelectedValue + " And IM.Status <> 'Cancelled' And ID.PPNo=" + DDProcessProgramNo.SelectedValue + " And IM.partyId=" + DDPartyName.SelectedValue + " And IM.CompanyId=" + DDCompanyName.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "");
+        UtilityModule.ConditonalChkBoxListFill(ref CHkPindentNo, "Select Distinct IM.IndentId,IndentNo from IndentMaster IM inner join IndentDetail ID on IM.IndentId=ID.IndentId Where im.Approvalflag=0 and IM.CompanyId=" + DDCompanyName.SelectedValue + " And IM.Status <> 'Cancelled' And ID.PPNo=" + DDProcessProgramNo.SelectedValue + " And IM.partyId=" + DDPartyName.SelectedValue + " And IM.CompanyId=" + DDCompanyName.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
     }
     protected void CHkPindentNo_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -77,13 +77,13 @@ public partial class Masters_Process_GenrateIndentApproval : System.Web.UI.Page
                             inner join IndentDetail IND on INM.indentid=IND.IndentId
                             inner join V_FinishedItemDetail VF on vf.ITEM_FINISHED_ID=ind.OFinishedId
                             left join V_FinishedItemDetail VF1 on vf1.ITEM_FINISHED_ID=ind.IFinishedId
-                            Where IND.IndentId in (select * from Split('" + PindentNo + "',',')) And INM.MasterCompanyId=" + Session["varCompanyId"];
+                            Where IND.IndentId in (select * from Split('" + PindentNo + "',',')) And INM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             //            string strsql = @"Select IND.IndentDetailId,PPNo,IndentNo,Quantity,Rate,VF1.CATEGORY_NAME+space(3)+VF1.ITEM_NAME+space(3)+VF1.QualityName+ Space(3)+VF1.designName+ 
             //            Space(3)+VF1.ColorName+ Space(3)+VF1.ShadeColorName+ Space(3)+VF1.ShapeName+ Space(3)+VF1.SizeMtr InDescription,VF.CATEGORY_NAME+space(3)+VF.ITEM_NAME+space(3)+
             //            VF.QualityName+ Space(3)+VF.designName+ Space(3)+VF.ColorName+ Space(3)+VF.ShadeColorName+ Space(3)+VF.ShapeName+ Space(3)+VF1.SizeMtr OutDescription 
             //            From IndentMaster INM,IndentDetail IND,V_FinishedItemDetail VF,V_FinishedItemDetail VF1
-            //            Where IND.IndentId=INM.IndentId And IND.OFinishedId=VF.ITEM_FINISHED_ID And IND.IFinishedId=VF1.ITEM_FINISHED_ID And IND.IndentId in (select * from Split('" + PindentNo + "',',')) And INM.MasterCompanyId=" + Session["varCompanyId"];
+            //            Where IND.IndentId=INM.IndentId And IND.OFinishedId=VF.ITEM_FINISHED_ID And IND.IFinishedId=VF1.ITEM_FINISHED_ID And IND.IndentId in (select * from Split('" + PindentNo + "',',')) And INM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -126,7 +126,7 @@ public partial class Masters_Process_GenrateIndentApproval : System.Web.UI.Page
                 _arrPara[0].Value = 0;
                 _arrPara[1].Value = TxtApprovalDate.Text;
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[4].Value = TxtApprovedBy.Text;
                 for (int i = 0; i < DGIndentDetail.Rows.Count; i++)
                 {
@@ -135,7 +135,7 @@ public partial class Masters_Process_GenrateIndentApproval : System.Web.UI.Page
                     SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_GIndentApproval", _arrPara);
                 }
                 LblErr.Text = "Data saved..............";
-                UtilityModule.ConditonalChkBoxListFill(ref CHkPindentNo, "Select Distinct IM.IndentId,IndentNo from IndentMaster IM inner join IndentDetail ID on IM.IndentId=ID.IndentId Where im.Approvalflag=0 and IM.CompanyId=" + DDCompanyName.SelectedValue + " And IM.Status <> 'Cancelled' And ID.PPNo=" + DDProcessProgramNo.SelectedValue + " And IM.MasterCompanyId=" + Session["varCompanyId"] + "");
+                UtilityModule.ConditonalChkBoxListFill(ref CHkPindentNo, "Select Distinct IM.IndentId,IndentNo from IndentMaster IM inner join IndentDetail ID on IM.IndentId=ID.IndentId Where im.Approvalflag=0 and IM.CompanyId=" + DDCompanyName.SelectedValue + " And IM.Status <> 'Cancelled' And ID.PPNo=" + DDProcessProgramNo.SelectedValue + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                 BtnPreview.Enabled = true;
                 Session["ReportPath"] = "Reports/GenrateIndentApproval.rpt";
                 Session["CommanFormula"] = "{GenrateIndentReport.indentid} =" + _arrPara[0].Value + "";

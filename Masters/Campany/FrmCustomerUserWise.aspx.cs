@@ -12,13 +12,13 @@ public partial class Masters_Campany_FrmCustomerUserWise : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddemp, @"select userid,username from Newuserdetail where companyid="+Session["varcompanyid"]+"", true, "-Select Employee-");
+            UtilityModule.ConditionalComboFill(ref ddemp, @"select userid,username from Newuserdetail where companyid="+Session["varMasterCompanyIDForERP"]+"", true, "-Select Employee-");
             fillgrid();
         }
     }
@@ -34,7 +34,7 @@ public partial class Masters_Campany_FrmCustomerUserWise : System.Web.UI.Page
     protected void ddemp_SelectedIndexChanged(object sender, EventArgs e)
     {
         Refresh();
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Customerid from CustomerUserWise where userid=" + ddemp.SelectedValue + " and companyid="+Session["varcompanyid"]+" and mastercompanyid="+Session["varcompanyno"]+"");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select Customerid from CustomerUserWise where userid=" + ddemp.SelectedValue + " and companyid="+Session["varMasterCompanyIDForERP"]+" and mastercompanyid="+Session["varcompanyno"]+"");
         if (ds.Tables[0].Rows.Count > 0)
         {
             for (int j = 0; j < ds.Tables[0].Rows.Count; j++)
@@ -83,7 +83,7 @@ public partial class Masters_Campany_FrmCustomerUserWise : System.Web.UI.Page
 
             _arrpara1[0].Value = ddemp.SelectedValue;
             _arrpara1[2].Value = Session["varcompanyno"];
-            _arrpara1[3].Value = Session["varcompanyid"];
+            _arrpara1[3].Value = Session["varMasterCompanyIDForERP"];
             string str = "";
             for (int i = 0; i < DGcustomer.Rows.Count; i++)
             {

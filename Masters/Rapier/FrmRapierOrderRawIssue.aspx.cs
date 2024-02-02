@@ -14,8 +14,7 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,11 +23,11 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(Nolock) 
                         JOIN Company_Authentication CA (Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CI.CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CI.CompanyName 
                         Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
                         From PROCESS_NAME_MASTER PNM(Nolock)
                         JOIN RapierOrderMaster ROM(Nolock) ON ROM.ProcessID = PNM.PROCESS_NAME_ID 
-                        Where PNM.MasterCompanyid = " + Session["varcompanyid"] + " Order By PNM.PROCESS_NAME";
+                        Where PNM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By PNM.PROCESS_NAME";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -52,7 +51,7 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
         string str = @"Select Distinct EI.EmpID, EI.EmpName 
                     From Empinfo EI(Nolock)
                     JOIN RapierOrderMaster ROM(Nolock) ON ROM.EmpID = EI.EmpID 
-                    Where EI.MasterCompanyid = " + Session["varcompanyid"] + " Order By EI.EmpName";
+                    Where EI.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName";
         UtilityModule.ConditionalComboFill(ref DDVendorName, str, true, "--Plz Select--");
     }
     protected void DDVendorName_SelectedIndexChanged(object sender, EventArgs e)
@@ -63,7 +62,7 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
     {
         string str = @"Select ROM.ID, ROM.ID 
                     From RapierOrderMaster ROM(Nolock) 
-                    Where ROM.MasterCompanyid = " + Session["varcompanyid"] + " And ROM.CompanyID = " + DDcompany.SelectedValue + @" And 
+                    Where ROM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " And ROM.CompanyID = " + DDcompany.SelectedValue + @" And 
                         ROM.ProcessID = " + DDprocess.SelectedValue + " And ROM.EmpID = " + DDVendorName.SelectedValue + " Order By ROM.ID Desc";
 
         UtilityModule.ConditionalComboFill(ref DDChallanNo, str, true, "--Plz Select--");
@@ -79,7 +78,7 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
         {
             string str = @"Select ID, Cast(IssueNo as Nvarchar) + '  /  ' + REPLACE(CONVERT(NVARCHAR(11), IssueDate, 106), ' ', '-') IssueDate 
                     From RapierRawIssueMaster (Nolock) 
-                    Where MasterCompanyID = " + Session["varcompanyid"] + " And TranType = 0 And CompanyID = " + DDcompany.SelectedValue + @" And 
+                    Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And TranType = 0 And CompanyID = " + DDcompany.SelectedValue + @" And 
                         ProcessID = " + DDprocess.SelectedValue + " And EmpID = " + DDVendorName.SelectedValue + @" 
                         And ROM.RapierOrderMasterID = " + DDChallanNo.SelectedValue + " Order By ID Desc";
             UtilityModule.ConditionalComboFill(ref DDIssueNo, str, true, "--Plz Select--");
@@ -331,7 +330,7 @@ public partial class Masters_Rapier_FrmRapierOrderRawIssue : System.Web.UI.Page
             param[7] = new SqlParameter("@IssueDate", TxtIssueDate.Text);
             param[8] = new SqlParameter("@EWayBillNo", TxtEWayBillNo.Text);
             param[9] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[10] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[10] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[11] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[11].Direction = ParameterDirection.Output;
             param[12] = new SqlParameter("@Detail", Strdetail);

@@ -14,7 +14,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
     string msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,7 +23,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
             logo();
             UtilityModule.ConditionalComboFill(ref DDInvoiveNo, @"select I.Invoiceid,I.TInvoiceNo 
                 From Invoice I,Packing P 
-                Where  P.PackingId=I.PackingId And I.Status=0 And I.InvoiceType<>3 And P.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                Where  P.PackingId=I.PackingId And I.Status=0 And I.InvoiceType<>3 And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                 And I.consignorId = " + Session["CurrentWorkingCompanyID"] + @" Order By I.TinvoiceNo desc", true, "--Select--");
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtShippingBillDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -65,12 +65,12 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
     {
 
         string Str = "";
-        Str = @"Select CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varCompanyId"] + @"
-            Select Agentid,Agentname from Shipp Where MasterCompanyId=" + Session["varCompanyId"] + @" order by Agentname
-            select carriageid,carriageName from Carriage Where MasterCompanyId=" + Session["varCompanyId"] + @" order by carriageName
-            Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varCompanyId"] + @" order by StationName
-            Select TransModeid,TransModeName from Transmode Where MasterCompanyId=" + Session["varCompanyId"] + @" order by TransModename";
-        //Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varCompanyId"] + " order by StationName";
+        Str = @"Select CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+            Select Agentid,Agentname from Shipp Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Agentname
+            select carriageid,carriageName from Carriage Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by carriageName
+            Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by StationName
+            Select TransModeid,TransModeName from Transmode Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TransModename";
+        //Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by StationName";
         DataSet ds = SqlHelper.ExecuteDataset(Str);
         UtilityModule.ConditionalComboFillWithDS(ref DDCurrency, ds, 0, true, "--Select--");
         UtilityModule.ConditionalComboFillWithDS(ref DDShippingAgent, ds, 1, true, "--Select--");
@@ -89,7 +89,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
         if (ChkInvoice.Checked == false)
         {
             Str = @"Select P.CurrencyId,CI.ShippingAgent,CI.PreCarriageBy,CI.RecieptAtByPreCarrier,CI.ByAirSea,CI.PortOfLoading,CI.Mark,CI.DestinationPlace,CI.PaymentId,
-                    CI.TermId,CI.BankId,'' PortUnload From Packing P,CustomerInfo CI Where P.ConsigneeId=CI.CustomerID And P.PackingID=" + DDInvoiveNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"];
+                    CI.TermId,CI.BankId,'' PortUnload From Packing P,CustomerInfo CI Where P.ConsigneeId=CI.CustomerID And P.PackingID=" + DDInvoiveNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             BtnDelete.Visible = false;
         }
         else
@@ -107,7 +107,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
 
         //if (ChkInvoice.Checked == true)
         //{
-        //    Str = "Select P.CurrencyId,CI.* From Packing P,CustomerInfo CI Where P.ConsigneeId=CI.CustomerID And P.packingid=" + DDInvoiveNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varCompanyId"];
+        //    Str = "Select P.CurrencyId,CI.* From Packing P,CustomerInfo CI Where P.ConsigneeId=CI.CustomerID And P.packingid=" + DDInvoiveNo.SelectedValue + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
         DataSet Ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         if (Ds1.Tables[0].Rows.Count > 0)
@@ -177,7 +177,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
                 CI.Email CIEmail,CI.TinNo CITinNo,CUI.CustomerName CUICustomerName,CUI.CompanyName CUICompanyName,CUI.Address CUIAddress,CUI.BuyerOtherThanConsignee,
                 CUI.PhoneNo CUIPhoneNo,CUI.Mobile CUIMobile,CUI.Email CUIEmail,B.BankName BBankName,B.Street BStreet,B.City BCity,B.State BState,B.Country BCountry,
                 B.PhoneNo BPhoneNo,B.Faxno BFaxno,B.Email BEmail from Invoice I,CompanyInfo CI,CustomerInfo CUI,Bank B Where I.ConsignorId=CI.CompanyId And 
-                I.CosigneeId=CUI.CustomerId And B.BankId=CUI.BankId And I.InvoiceID=" + DDInvoiveNo.SelectedValue + " And CUI.MasterCompanyId=" + Session["varCompanyId"];
+                I.CosigneeId=CUI.CustomerId And B.BankId=CUI.BankId And I.InvoiceID=" + DDInvoiveNo.SelectedValue + " And CUI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -213,28 +213,28 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
                 RDUnToOrder.Checked = true;
                 RDCustomer.Checked = false;
                 RDBank.Checked = false;
-                UtilityModule.ConditionalComboFill(ref DDBuyerOtherThanConsignee, "Select CustomerId,CompanyName from CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDBuyerOtherThanConsignee, "Select CustomerId,CompanyName from CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
                 break;
             case 2:
                 RDCustomer.Checked = true;
                 RDUnToOrder.Checked = false;
                 RDBank.Checked = false;
-                UtilityModule.ConditionalComboFill(ref DDBuyerOtherThanConsignee, "Select CustomerId,CompanyName from CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDBuyerOtherThanConsignee, "Select CustomerId,CompanyName from CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
                 break;
             case 3:
                 RDBank.Checked = true;
                 RDUnToOrder.Checked = false;
                 RDCustomer.Checked = false;
-                UtilityModule.ConditionalComboFill(ref DDBuyerOtherThanConsignee, "Select BankId,BankName from Bank Where MasterCompanyId=" + Session["varCompanyId"] + " order by BankName", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDBuyerOtherThanConsignee, "Select BankId,BankName from Bank Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by BankName", true, "--Select--");
                 break;
         }
     }
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -317,7 +317,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, Str);
                 Tran.Commit();
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + DDInvoiveNo.SelectedValue + ",getdate(),'Update')");
+                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Invoice'," + DDInvoiveNo.SelectedValue + ",getdate(),'Update')");
                 LblErrorMessage.Visible = true;
                 LblErrorMessage.Text = "Data Saved Successfully";
                 msg = "Record(s) has been saved successfully !";
@@ -401,7 +401,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -410,7 +410,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
         DataSet Ds;
         if (RDCustomer.Checked == true)
         {
-            Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select CU.CompanyName,CU.Address,CU.Country,CU.PinCode,CU.PhoneNo,CU.Mobile,CU.Fax,CU.Email From CustomerInfo Cu Where CustomerID=" + DDBuyerOtherThanConsignee.SelectedValue + " And CU.MasterCompanyId=" + Session["varCompanyId"] + "");
+            Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select CU.CompanyName,CU.Address,CU.Country,CU.PinCode,CU.PhoneNo,CU.Mobile,CU.Fax,CU.Email From CustomerInfo Cu Where CustomerID=" + DDBuyerOtherThanConsignee.SelectedValue + " And CU.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 TxtBuyerOtherThanConsignee.Text = Ds.Tables[0].Rows[0]["CompanyName"].ToString() + "," + Ds.Tables[0].Rows[0]["Address"].ToString() + "," + Ds.Tables[0].Rows[0]["Country"].ToString() + "," + Ds.Tables[0].Rows[0]["PhoneNo"].ToString() + "," + Ds.Tables[0].Rows[0]["Mobile"].ToString() + "," + Ds.Tables[0].Rows[0]["Email"].ToString();
@@ -418,7 +418,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
         }
         else if (RDBank.Checked == true)
         {
-            Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select BankName,Street,City,State,Country,PhoneNo,Faxno,Email From Bank Where Bankid=" + DDBuyerOtherThanConsignee.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+            Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select BankName,Street,City,State,Country,PhoneNo,Faxno,Email From Bank Where Bankid=" + DDBuyerOtherThanConsignee.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 TxtBuyerOtherThanConsignee.Text = TxtConsignee.Text;
@@ -432,7 +432,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
     {
         string Str = @"Select I.Invoiceid, I.TInvoiceNo 
             From Invoice I,Packing P 
-            Where I.Packingid=P.Packingid And I.InvoiceType<>3 And I.consignorId = " + Session["CurrentWorkingCompanyID"] + " And P.MasterCompanyId=" + Session["varCompanyId"];
+            Where I.Packingid=P.Packingid And I.InvoiceType<>3 And I.consignorId = " + Session["CurrentWorkingCompanyID"] + " And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
         if (ChkInvoice.Checked == true)
         {
@@ -459,7 +459,7 @@ public partial class Masters_Packing_FrmInvoiceDestini : System.Web.UI.Page
             UtilityModule.ConditionalComboFill(ref DDInvoiveNo, @"select I.Invoiceid,I.TInvoiceNo 
                 From Invoice I,Packing P 
                 Where I.Packingid=P.Packingid And I.Status=1 And 
-                I.consignorId = " + Session["CurrentWorkingCompanyID"] + " And I.InvoiceType<>3 And P.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                I.consignorId = " + Session["CurrentWorkingCompanyID"] + " And I.InvoiceType<>3 And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                 Order By I.TinvoiceNo desc", true, "--Select--");
 
             Refresh();

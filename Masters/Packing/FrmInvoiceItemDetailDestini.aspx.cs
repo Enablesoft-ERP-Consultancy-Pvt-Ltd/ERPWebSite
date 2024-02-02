@@ -10,7 +10,7 @@ public partial class Masters_Packing_FrmInvoiceItemDetailDestini : System.Web.UI
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Packing_FrmInvoiceItemDetailDestini : System.Web.UI
         try
         {
             string strsql = @"Select P.PackingId Sr_No,QualityName,Sum(Pcs) Pcs,Sum(Area) Area,Price from Packing P,PackingInformation PI,V_FinishedItemDetail VF 
-                             Where P.PackingId=PI.PackingId And PI.Finishedid=VF.Item_Finished_id And P.InvoiceNo=" + TxtInvoiceId.Text + " And P.MasterCompanyId=" + Session["varCompanyId"] + @"
+                             Where P.PackingId=PI.PackingId And PI.Finishedid=VF.Item_Finished_id And P.InvoiceNo=" + TxtInvoiceId.Text + " And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                              Group By P.PackingId,QualityName,Price";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);

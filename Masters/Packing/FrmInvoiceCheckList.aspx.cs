@@ -11,7 +11,7 @@ public partial class Masters_Packing_FrmInvoiceCheckList : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
 
@@ -29,7 +29,7 @@ public partial class Masters_Packing_FrmInvoiceCheckList : System.Web.UI.Page
     }
     protected void DDCompany_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDCustomerName, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select---");
+        UtilityModule.ConditionalComboFill(ref DDCustomerName, "SELECT customerid,CompanyName + SPACE(5)+Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select---");
     }
     protected void gvforinvice_RowDataBound(object sender, GridViewRowEventArgs e)
     {

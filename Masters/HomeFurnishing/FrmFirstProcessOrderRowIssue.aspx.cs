@@ -12,7 +12,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -23,10 +23,10 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
             Qry = @" Select Distinct CI.CompanyId,Companyname 
                 From Companyinfo CI(Nolock) 
                 JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By Companyname 
+                Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By Companyname 
 
                 Select PROCESS_NAME_ID, PROCESS_NAME From PROCESS_NAME_MASTER PNM(Nolock) 
-                Where PROCESS_NAME = 'STITCHING' And MasterCompanyID = " + Session["varCompanyId"] + @" Order By Process_Name ";
+                Where PROCESS_NAME = 'STITCHING' And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By Process_Name ";
 
             DSQ = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, DSQ, 0, true, "--Select--");
@@ -186,8 +186,8 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@ProcessID", ddProcessName.SelectedValue);
         param[1] = new SqlParameter("@ISSUEORDERID", ddOrderNo.SelectedValue);
-        param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
-        if (Session["varcompanyId"].ToString() == "44")
+        param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             sp = "PRO_GetHomeFurnishingReceiveChallanNoagni";
         }
@@ -227,7 +227,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
                 UtilityModule.ConditionalComboFill(ref DDChallanNo, @"Select PrmId, ChallanNo + ' / ' + REPLACE(CONVERT(NVARCHAR(11), Date, 106), ' ', '-') Challan 
                 From FirstProcessOrderRowIssueMaster(Nolock) 
                 Where TranType = 0 And CompanyID = " + ddCompName.SelectedValue + " And ProcessID = " + ddProcessName.SelectedValue + @" And 
-                IssueOrderID = " + ddOrderNo.SelectedValue + " And MasterCompanyId = " + Session["varCompanyId"], true, "Select Challan No");
+                IssueOrderID = " + ddOrderNo.SelectedValue + " And MasterCompanyId = " + Session["varMasterCompanyIDForERP"], true, "Select Challan No");
             }
         }
     }
@@ -245,7 +245,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
 
             string strsql2 = @"Select PRMID, ChallanNo  
             From FirstProcessOrderRowIssueMaster PRM(Nolock) 
-            Where PRM.Prmid = " + DDChallanNo.SelectedValue + " And PRM.ProcessID = " + ddProcessName.SelectedValue + " And PRM.MasterCompanyId = " + Session["varCompanyId"];
+            Where PRM.Prmid = " + DDChallanNo.SelectedValue + " And PRM.ProcessID = " + ddProcessName.SelectedValue + " And PRM.MasterCompanyId = " + Session["varMasterCompanyIDForERP"];
             DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql2);
 
             if (ds2.Tables[0].Rows.Count > 0)
@@ -268,7 +268,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
         {
             if (txtchalanno.Text != "")
             {
-                string str = "Select ChallanNo From FirstProcessOrderRowIssueMaster Where ChallanNo<>'' And TranType=0 And ChallanNo='" + txtchalanno.Text + "' And PRMID<>" + ViewState["PRMID"] + " And MasterCompanyId=" + Session["varCompanyId"];
+                string str = "Select ChallanNo From FirstProcessOrderRowIssueMaster Where ChallanNo<>'' And TranType=0 And ChallanNo='" + txtchalanno.Text + "' And PRMID<>" + ViewState["PRMID"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, str);
                 if (ds.Tables[0].Rows.Count > 0)
                 {
@@ -359,7 +359,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
                 arr[6].Value = 0;
                 arr[7].Value = StrDetail;
                 arr[8].Value = Session["varuserid"].ToString();
-                arr[9].Value = Session["varCompanyId"].ToString();
+                arr[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                 arr[10].Value = txtremarks.Text;
                 arr[11].Direction = ParameterDirection.Output;
 
@@ -408,7 +408,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
                 strsql = @"Select PrtId,CATEGORY_NAME,ITEM_NAME,QualityName+ Space(2)+DesignName+ Space(2)+ColorName+ Space(2)+ShapeName+ Space(2)+SizeFt+ Space(2)+ShadeColorName DESCRIPTION,
                             PT.Qty 
                             From FirstProcessOrderRowIssueTran PT
-                            JOIN V_FinishedItemDetail VF ON VF.Item_Finished_id = PT.OrderDetailDetail_FinishedID And VF.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                            JOIN V_FinishedItemDetail VF ON VF.Item_Finished_id = PT.OrderDetailDetail_FinishedID And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                             Where PT.PrmID=" + ViewState["PRMID"];
                 ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
             }
@@ -424,7 +424,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
     protected void txtchalan_ontextchange(object sender, EventArgs e)
     {
         string ChalanNo = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text,
-            @"Select IsNull(ChallanNo, 0) asd From FirstProcessOrderRowIssueMaster Where ChallanNo = '" + txtchalanno.Text + "' And MasterCompanyId = " + Session["varCompanyId"]));
+            @"Select IsNull(ChallanNo, 0) asd From FirstProcessOrderRowIssueMaster Where ChallanNo = '" + txtchalanno.Text + "' And MasterCompanyId = " + Session["varMasterCompanyIDForERP"]));
         if (ChalanNo != "")
         {
             txtchalanno.Text = "";
@@ -512,7 +512,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
     {
         string str=string.Empty;
 
-        if (Session["varcompanyId"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             str = @" Select PM.Date, PM.ChallanNo ChalanNo, PM.trantype, PT.Qty IssueQuantity, '' Lotno, '' GodownName, 
                 (Select Distinct EII.EmpName + ', ' 
@@ -565,7 +565,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if (Session["varcompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 Session["rptFileName"] = "~\\Reports\\RptRawIssueRecDuplicateNew1agni.rpt";
                 
@@ -596,9 +596,9 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@ProcessID", ddProcessName.SelectedValue);
             param[1] = new SqlParameter("@ISSUEORDERID", ddOrderNo.SelectedValue);
-            param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varcompanyId"]);
+            param[2] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@RecChallanNo", DDRecChallanNo.SelectedValue);
-            if (Session["varcompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 sp = "PRO_FILLFirstProcessOrderRowIssueConsumptionagni";
             }
@@ -635,7 +635,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
             arr[2] = new SqlParameter("@TranType", SqlDbType.Int);
             arr[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             arr[4] = new SqlParameter("@UserID", Session["varuserid"]);
-            arr[5] = new SqlParameter("@MastercompanyID", Session["varcompanyid"]);
+            arr[5] = new SqlParameter("@MastercompanyID", Session["varMasterCompanyIDForERP"]);
 
             arr[0].Value = VarPrtID;
             arr[1].Value = ddProcessName.SelectedValue;

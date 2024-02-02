@@ -12,13 +12,13 @@ public partial class Masters_ReportForms_frmJobcard : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDjob, pWhere: "MasterCompanyid=" + Session["varcompanyid"] + " And Process_name_Id<>1", pID: "Process_name_Id", pName: "Process_name", pFillBlank: true, Selecttext: "--Plz select Job");
+            //SqlhelperEnum.FillDropDown(AllEnums.MasterTables.PROCESS_NAME_MASTER, DDjob, pWhere: "MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " And Process_name_Id<>1", pID: "Process_name_Id", pName: "Process_name", pFillBlank: true, Selecttext: "--Plz select Job");
 
             UtilityModule.ConditionalComboFill(ref DDjob, @"select PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME From PROCESS_NAME_MASTER PNM inner join UserRightsProcess URP on PNM.PROCESS_NAME_ID=URP.ProcessId and URP.Userid=" + Session["varuserid"] + @"
                                                           order by PROCESS_NAME", true, "--Plz Select Process--");
@@ -61,7 +61,7 @@ public partial class Masters_ReportForms_frmJobcard : System.Web.UI.Page
             _array[1].Value = txtfromDate.Text;
             _array[2].Value = txttodate.Text;
             _array[3].Value = txtIdNo.Text;
-            _array[4].Value = Session["varCompanyId"];
+            _array[4].Value = Session["varMasterCompanyIDForERP"];
             _array[5].Value = 1;// DDCompany.SelectedValue;
             _array[6].Value = DDjob.SelectedItem.Text;
             _array[7].Value = chkForSummary.Checked == true ? 1 : 0;

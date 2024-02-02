@@ -12,13 +12,13 @@ public partial class Masters_Packing_FrmCustomerSKUItemNoChampa : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, true, "--Select--");
 
@@ -75,7 +75,7 @@ public partial class Masters_Packing_FrmCustomerSKUItemNoChampa : System.Web.UI.
         param[0] = new SqlParameter("@CompanyId", DDCompany.SelectedValue);
         param[1] = new SqlParameter("@Type", DDType.SelectedValue);
         param[2] = new SqlParameter("@CustomerId", DDCustomerCode.SelectedValue);
-        param[3] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+        param[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[4] = new SqlParameter("@UserId", Session["VarUserid"]);
         //************
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FillCustomerSKUItemNo", param);
@@ -178,7 +178,7 @@ public partial class Masters_Packing_FrmCustomerSKUItemNoChampa : System.Web.UI.
                 param[1] = new SqlParameter("@Type", DDType.SelectedValue);
                 param[2] = new SqlParameter("@CustomerId", DDCustomerCode.SelectedValue);
                 param[3] = new SqlParameter("@UserID", Session["varuserid"]);
-                param[4] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+                param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                 param[5] = new SqlParameter("@StringDetail", Strdetail);
                 param[6] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                 param[6].Direction = ParameterDirection.Output;

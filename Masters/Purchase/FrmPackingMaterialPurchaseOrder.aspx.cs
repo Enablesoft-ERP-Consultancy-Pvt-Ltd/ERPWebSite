@@ -13,7 +13,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
     string msg;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -31,18 +31,18 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
             txtduedate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             txtdeldate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             string qry = @"select distinct ci.customerid,ci.Customercode + SPACE(5)+CI.CompanyName from customerinfo ci 
-            inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varCompanyId"] + @" inner join ORDER_CONSUMPTION_DETAIL ocd on ocd.orderid=om.orderid
+            inner join OrderMaster om on om.customerid=ci.customerid And ci.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" inner join ORDER_CONSUMPTION_DETAIL ocd on ocd.orderid=om.orderid
             inner join Jobassigns JA ON OM.Orderid=JA.Orderid Order By ci.Customercode + SPACE(5)+CI.CompanyName
-            select distinct e1.empid,e1.empname from empinfo e1 Where e1.MasterCompanyId=" + Session["varCompanyId"] + @"
+            select distinct e1.empid,e1.empname from empinfo e1 Where e1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
             Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
-            Select p.PaymentId,p.PaymentName from Payment p Where p.MasterCompanyId=" + Session["varCompanyId"] + @" order by PaymentName
-            select t.TermId,t.TermName from Term t Where t.MasterCompanyId=" + Session["varCompanyId"] + @" order by TermName
-            select tm.TransModeid,tm.TransModeName from Transmode tm Where tm.MasterCompanyId=" + Session["varCompanyId"] + @" order by TransModename";
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
+            Select p.PaymentId,p.PaymentName from Payment p Where p.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PaymentName
+            select t.TermId,t.TermName from Term t Where t.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TermName
+            select tm.TransModeid,tm.TransModeName from Transmode tm Where tm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TransModename";
             //;
-            //select distinct ei.empid ,ei.empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varCompanyId"] + @"
+            //select distinct ei.empid ,ei.empname from empinfo ei inner join  PurchaseIndentMaster pim on ei.empid=pim.partyid And ei.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
             //        Order By ei.empname
             DataSet ds = SqlHelper.ExecuteDataset(qry);
             UtilityModule.ConditionalComboFillWithDS(ref ddcustomercode, ds, 0, true, "Select CustomerCode");
@@ -64,7 +64,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
             dddelivery.SelectedIndex = 1;
             ddcustomercode.Focus();
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
             LblCompanyName.Text = Session["varCompanyName"].ToString();
             LblUserName.Text = Session["varusername"].ToString();
         }
@@ -94,7 +94,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
         //TxtOrderId.Text = ddorderno.SelectedValue;
         if (ChkEditOrder.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddempname, "select distinct empid,empname from empinfo where MasterCompanyId=" + Session["varCompanyId"] + " And  empid in(select partyid from PurchaseOrderMasterPacking where orderid=" + ddorderno.SelectedValue + ") Order By empname", true, "--Select EMP--");
+            UtilityModule.ConditionalComboFill(ref ddempname, "select distinct empid,empname from empinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And  empid in(select partyid from PurchaseOrderMasterPacking where orderid=" + ddorderno.SelectedValue + ") Order By empname", true, "--Select EMP--");
             //string st3 = "select chalanno from PurchaseOrderMasterPacking where orderid=" + ddorderno.Text + "";
             //ds3 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, st3);
             //if (ds3.Tables[0].Rows.Count > 0)
@@ -104,7 +104,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref ddempname, "select distinct empid,empname from empinfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By empname", true, "Select Party");
+            UtilityModule.ConditionalComboFill(ref ddempname, "select distinct empid,empname from empinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By empname", true, "Select Party");
            // txtchalanno.Text = "";
             //Fill_Grid_Show();
             Fill_DataGridShow();
@@ -304,7 +304,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
         //            arr[33].Value = Convert.ToDouble(((TextBox)DGSHOWDATA.Rows[i].FindControl("TXTRAte")).Text);
         //            arr[34].Value = Convert.ToDouble(DGSHOWDATA.Rows[i].Cells[11].Text);
         //            arr[35].Value = ((TextBox)DGSHOWDATA.Rows[i].FindControl("TXTPCS")).Text;
-        //            arr[36].Value = Session["varCompanyId"];
+        //            arr[36].Value = Session["varMasterCompanyIDForERP"];
         //            if (ChkEditOrder.Checked == true)
         //                arr[37].Value = ((Label)DGSHOWDATA.Rows[i].FindControl("lbldetailid")).Text;
         //            else
@@ -461,7 +461,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
                     arr[33].Value = txtrate.Text != "" ? txtrate.Text : "0";
                     arr[34].Value = Txtamount.Text != "" ? Txtamount.Text : "0";
                     arr[35].Value = txtpcs.Text != "" ? txtpcs.Text : "0";
-                    arr[36].Value = Session["varCompanyId"];
+                    arr[36].Value = Session["varMasterCompanyIDForERP"];
                     if (ChkEditOrder.Checked == true)
                         arr[37].Value = ViewState["DetailID"];
                     else
@@ -519,7 +519,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully logedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -590,7 +590,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
         ViewState["ChallanNo"] = 0;
         if (ChkEditOrder.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddchalanno, "select Distinct chalanno,chalanno ChalanText from PurchaseOrderMasterPacking where companyid=" + ddCompName.SelectedValue + " and orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By ChalanText", true, "Select Chalanno.");
+            UtilityModule.ConditionalComboFill(ref ddchalanno, "select Distinct chalanno,chalanno ChalanText from PurchaseOrderMasterPacking where companyid=" + ddCompName.SelectedValue + " and orderid=" + ddorderno.SelectedValue + " and partyid=" + ddempname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ChalanText", true, "Select Chalanno.");
         }
     }
     protected void ddchalanno_SelectedIndexChanged(object sender, EventArgs e)
@@ -601,7 +601,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
         if (ddCompName.SelectedIndex > 0 && ddorderno.SelectedIndex > 0 && ddempname.SelectedIndex > 0 && ddchalanno.SelectedIndex > 0)
         {
             DataSet dt7 = new DataSet();
-            string str2 = "select pid from PurchaseOrderMasterPacking where companyid=" + ddCompName.SelectedValue + " and partyid=" + ddempname.SelectedValue + " and orderid=" + ddorderno.SelectedValue + " and chalanno=" + ddchalanno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "";
+            string str2 = "select pid from PurchaseOrderMasterPacking where companyid=" + ddCompName.SelectedValue + " and partyid=" + ddempname.SelectedValue + " and orderid=" + ddorderno.SelectedValue + " and chalanno=" + ddchalanno.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
             dt7 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str2);
             ViewState["PorderpackId"] = dt7.Tables[0].Rows[0][0].ToString();
             Session["ReportPath"] = "Reports/RptPackingMaterialPurchaseOrderNEW.rpt";
@@ -633,7 +633,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
                   FROM   CompanyInfo INNER JOIN PurchaseOrderMasterPacking ON CompanyInfo.CompanyId=PurchaseOrderMasterPacking.COMPANYID
                   INNER JOIN PurchaseOrdeDetailPacking ON PurchaseOrderMasterPacking.PID=PurchaseOrdeDetailPacking.PID INNER JOIN OrderMaster ON PurchaseOrderMasterPacking.ORDERID=OrderMaster.OrderId 
                   INNER JOIN EmpInfo ON PurchaseOrderMasterPacking.PARTYID=EmpInfo.EmpId INNER JOIN ITEM_PARAMETER_MASTER ON PurchaseOrdeDetailPacking.FINISHEDID=ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID
-                  Where PurchaseOrderMasterPacking.CHALANNO=" + ViewState["ChallanNo"] + " And PurchaseOrderMasterPacking.MasterCompanyId=" + Session["varCompanyId"] + " And Companyinfo.CompanyId=" + ddCompName.SelectedValue;
+                  Where PurchaseOrderMasterPacking.CHALANNO=" + ViewState["ChallanNo"] + " And PurchaseOrderMasterPacking.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And Companyinfo.CompanyId=" + ddCompName.SelectedValue;
         }
         else
         {
@@ -647,7 +647,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
                   FROM   CompanyInfo INNER JOIN PurchaseOrderMasterPacking ON CompanyInfo.CompanyId=PurchaseOrderMasterPacking.COMPANYID
                   INNER JOIN PurchaseOrdeDetailPacking ON PurchaseOrderMasterPacking.PID=PurchaseOrdeDetailPacking.PID INNER JOIN OrderMaster ON PurchaseOrderMasterPacking.ORDERID=OrderMaster.OrderId 
                   INNER JOIN EmpInfo ON PurchaseOrderMasterPacking.PARTYID=EmpInfo.EmpId INNER JOIN ITEM_PARAMETER_MASTER ON PurchaseOrdeDetailPacking.FINISHEDID=ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID
-                  Where PurchaseOrderMasterPacking.CHALANNO=" + ViewState["ChallanNo"] + " And PurchaseOrderMasterPacking.MasterCompanyId=" + Session["varCompanyId"] + " And Companyinfo.CompanyId=" + ddCompName.SelectedValue;
+                  Where PurchaseOrderMasterPacking.CHALANNO=" + ViewState["ChallanNo"] + " And PurchaseOrderMasterPacking.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And Companyinfo.CompanyId=" + ddCompName.SelectedValue;
         }
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
@@ -712,7 +712,7 @@ public partial class Masters_Purchase_FrmPackingMaterialPurchaseOrder : System.W
         int i = Convert.ToInt32(DGSHOWDATA.DataKeys[e.RowIndex].Value);
         SqlParameter[] _param = new SqlParameter[3];
         _param[0] = new SqlParameter("@PDetailID", i);
-        _param[1] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"].ToString());
+        _param[1] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"].ToString());
         _param[2] = new SqlParameter("@Message", SqlDbType.NVarChar, 200);
         _param[2].Direction = ParameterDirection.Output;
         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_PackingPurchaseOrder_Delete", _param);

@@ -22,7 +22,7 @@ public partial class Masters_Packing_FrmStockNoOutByInvoicePackingNew : System.W
             }";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -41,8 +41,8 @@ public partial class Masters_Packing_FrmStockNoOutByInvoicePackingNew : System.W
 
             logo();
            
-            string Qry = @" select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname
-                    Select CustomerId,CustomerCode + SPACE(5)+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CustomerCode";
+            string Qry = @" select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname
+                    Select CustomerId,CustomerCode + SPACE(5)+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CustomerCode";
             DataSet ds1 = null;
             ds1 = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds1, 0, true, "--SELECT--");
@@ -73,7 +73,7 @@ public partial class Masters_Packing_FrmStockNoOutByInvoicePackingNew : System.W
     private void CustomerCodeSelectedIndexChange()
     {
        
-        ////UtilityModule.ConditionalComboFill(ref ddInvoiceNo, "Select PackingID,TPackingNo+' / '+Replace(Convert(VarChar(11),PackingDate,106), ' ','-') PackingNo from Packing Where ConsignorId=" + DDCompanyName.SelectedValue + " And ConsigneeId=" + DDCustomerCode.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+        ////UtilityModule.ConditionalComboFill(ref ddInvoiceNo, "Select PackingID,TPackingNo+' / '+Replace(Convert(VarChar(11),PackingDate,106), ' ','-') PackingNo from Packing Where ConsignorId=" + DDCompanyName.SelectedValue + " And ConsigneeId=" + DDCustomerCode.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
 
         try
         {
@@ -88,7 +88,7 @@ public partial class Masters_Packing_FrmStockNoOutByInvoicePackingNew : System.W
 
             cmd.Parameters.AddWithValue("@CompanyId", DDCompanyName.SelectedValue);
             cmd.Parameters.AddWithValue("@CustomerId", DDCustomerCode.SelectedValue);           
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@UserId", Session["varuserId"]);
 
             DataSet ds = new DataSet();
@@ -123,7 +123,7 @@ public partial class Masters_Packing_FrmStockNoOutByInvoicePackingNew : System.W
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "You Are Successfully LoggedOut..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }   
@@ -168,7 +168,7 @@ public partial class Masters_Packing_FrmStockNoOutByInvoicePackingNew : System.W
             //        cmd.Parameters.AddWithValue("@PackingId",ddInvoiceNo.SelectedValue);
             //        //cmd.Parameters.AddWithValue("@OrderId", DDCustomerOrderNo.SelectedValue);
             //        cmd.Parameters.AddWithValue("@StringDetail", Strdetail);
-            //        cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+            //        cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //        cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
             //        cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 300);
             //        cmd.Parameters["@Msg"].Direction = ParameterDirection.Output; 
@@ -297,7 +297,7 @@ public partial class Masters_Packing_FrmStockNoOutByInvoicePackingNew : System.W
                      cmd.Parameters.AddWithValue("@PackingId", ddInvoiceNo.SelectedValue);
                      //cmd.Parameters.AddWithValue("@OrderId", DDCustomerOrderNo.SelectedValue);
                      cmd.Parameters.AddWithValue("@Tstockno", TxtStockNo.Text);
-                     cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                     cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                      cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
                      cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 300);
                      cmd.Parameters["@Msg"].Direction = ParameterDirection.Output;

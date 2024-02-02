@@ -12,7 +12,7 @@ public partial class Masters_RawMaterial_RawMaterial_report1 : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -63,7 +63,7 @@ public partial class Masters_RawMaterial_RawMaterial_report1 : System.Web.UI.Pag
         //DataSet ds6;
         if (ds.Tables[0].Rows.Count > 0)
         {
-            DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (ds1.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < ds1.Tables[0].Rows.Count; i++)

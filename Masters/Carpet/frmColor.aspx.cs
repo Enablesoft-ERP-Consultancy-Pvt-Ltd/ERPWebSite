@@ -12,7 +12,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,7 +32,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
         try
         {
             con.Open();
-            string color = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id  and  ps.parameter_id='3' And ps.Company_Id="+ Session["varCompanyId"] + "").ToString();
+            string color = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id  and  ps.parameter_id='3' And ps.Company_Id="+ Session["varMasterCompanyIDForERP"] + "").ToString();
             lblcolorname.Text = color;
         }
         catch (Exception ex)
@@ -67,7 +67,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"SELECT ColorId as Sr_No,ColorName as " + lblcolorname.Text + " FROM Color where MasterCompanyId=" + Session["varCompanyId"] + " Order By ColorId";
+            string strsql = @"SELECT ColorId as Sr_No,ColorName as " + lblcolorname.Text + " FROM Color where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ColorId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns[1].ColumnName = "Color Name";
@@ -106,7 +106,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtcolor.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Color", _arrPara);
@@ -141,7 +141,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select ColorId from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select ColorId from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -160,7 +160,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select ColorId from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select ColorId from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -208,7 +208,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
     }
     private void Report()
     {
-        string qry = @" SELECT ColorName  FROM   Color where  MasterCompanyId=" + Session["varCompanyId"] + "  ORDER BY ColorName";
+        string qry = @" SELECT ColorName  FROM   Color where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY ColorName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -238,7 +238,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
         string id = gdcolor.SelectedDataKey.Value.ToString();
         Session["id"] = id;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Color WHERE ColorId=" + id + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Color WHERE ColorId=" + id + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         try
         {
             if (ds.Tables[0].Rows.Count == 1)
@@ -287,7 +287,7 @@ public partial class Masters_Carpet_frmColor : CustomPage
         {
             SqlParameter[] parparam = new SqlParameter[3];
             parparam[0] = new SqlParameter("@id", Session["id"].ToString());
-            parparam[1] = new SqlParameter("@varCompanyId", Session["varCompanyId"].ToString());
+            parparam[1] = new SqlParameter("@varCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             parparam[2] = new SqlParameter("@varuserid", Session["varuserid"].ToString());
 
             int id = SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "Proc_DeleteColor", parparam);

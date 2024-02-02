@@ -15,19 +15,19 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
     static bool VarBool;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyId = Convert.ToInt16(Session["varCompanyId"]);
-        if (Session["varCompanyId"] == null)
+        MasterCompanyId = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
 
         if (IsPostBack != true)
         {
-            string str = "select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER(Nolock) WHERE MasterCompanyId=" + Session["varCompanyId"] + " and ProcessType=1 and Process_Name_id<>1 order by PROCESS_NAME";
+            string str = "select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER(Nolock) WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and ProcessType=1 and Process_Name_id<>1 order by PROCESS_NAME";
 
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
-                str = "select pnm.PROCESS_NAME_ID,pnm.PROCESS_NAME from PROCESS_NAME_MASTER(Nolock) PNM left join V_PRODUCTIONPROCESSIDFORHAFIZIA VP(Nolock) on PNM.Process_name_id=vp.process_name_id WHERE MasterCompanyId=" + Session["varCompanyId"] + "  and vp.process_name_id is  null order by PROCESS_NAME";
+                str = "select pnm.PROCESS_NAME_ID,pnm.PROCESS_NAME from PROCESS_NAME_MASTER(Nolock) PNM left join V_PRODUCTIONPROCESSIDFORHAFIZIA VP(Nolock) on PNM.Process_name_id=vp.process_name_id WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  and vp.process_name_id is  null order by PROCESS_NAME";
             }
             str = str + " select CustomerId,CustomerCode from customerinfo(Nolock) order by CustomerCode";
             str = str + " Select ID, BranchName From BRANCHMASTER(Nolock) Order By ID "; 
@@ -43,12 +43,12 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             txtEffectiveDate.Attributes.Add("readonly", "readonly");
             BindQualityType();
             UtilityModule.ConditionalComboFill(ref DDShape, "select Shapeid,ShapeName From Shape ", true, "--Plz Select--");
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 UtilityModule.ConditionalComboFill(ref DDUnit, "select UnitId,unitName from Unit where UnitId in(1,2,6) order by UnitId ", true, "--Plz Select--");
                 ChkForInchSize.Visible = true;
             }
-            else if (Session["varcompanyId"].ToString() == "44")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 UtilityModule.ConditionalComboFill(ref DDUnit, "select UnitId,unitName from Unit where UnitId in(1,2) order by UnitId ", true, "--Plz Select--");
                 ChkForInchSize.Visible = true;
@@ -347,7 +347,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
     private void BindCalc()
     {
         string str = "";
-        if (Session["varcompanyid"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             str = "Select CalcId,CalcName From CalcOptions Order by CalcId";
             UtilityModule.ConditionalComboFill(ref DDCalcOption, str, false, "--Select--");
@@ -457,7 +457,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
     }
     protected void chkForFtSize_CheckedChanged(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             if (chkForFtSize.Checked == true)
             {
@@ -497,7 +497,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         }
         if (TDCustomercode.Visible == true)
         {
-            if (Session["varcompanyId"].ToString() == "20")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "20")
             {
 
                 if (UtilityModule.VALIDDROPDOWNLIST(DDCustomerCode) == false)
@@ -511,21 +511,21 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
         {
             goto a;
         }
-        if ((Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28") && (DDJobType.SelectedItem.Text != "PACKING" && DDJobType.SelectedItem.Text != "RE-PACKING"))
+        if ((Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28") && (DDJobType.SelectedItem.Text != "PACKING" && DDJobType.SelectedItem.Text != "RE-PACKING"))
         {
             if (UtilityModule.VALIDDROPDOWNLIST(DDQuality) == false)
             {
                 goto a;
             }
         }
-        if (Session["varcompanyId"].ToString() != "20")
+        if (Session["varMasterCompanyIDForERP"].ToString() != "20")
         {
             if (UtilityModule.VALIDDROPDOWNLIST(DDShape) == false)
             {
                 goto a;
             }
         }
-        if (Session["varcompanyid"].ToString() != "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() != "9")
         {
             if (UtilityModule.VALIDDROPDOWNLIST(DDCalcOption) == false)
             {
@@ -772,7 +772,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             {
                 if (GVFinisherJobRate.Columns[i].HeaderText == "Shape")
                 {
-                    if (Session["varcompanyId"].ToString() == "20")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "20")
                     {
                         GVFinisherJobRate.Columns[i].Visible = false;
                     }
@@ -805,7 +805,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                 }
                 if (GVFinisherJobRate.Columns[i].HeaderText == "Bonus")
                 {
-                    if (Session["varcompanyId"].ToString() == "42")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "42")
                     {
                         GVFinisherJobRate.Columns[i].Visible = true;
                     }
@@ -861,7 +861,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
                     DDShape.SelectedValue = ds.Tables[0].Rows[0]["shapeid"].ToString();
                 }
 
-                if (Session["varCompanyId"].ToString() == "9")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                 {
                     if (ds.Tables[0].Rows[0]["UnitId"].ToString() == "2")
                     {
@@ -963,7 +963,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
 
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@userid", Session["varuserid"]);
-        param[1] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+        param[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         param[2] = new SqlParameter("@where", str);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetFinisherJobRateReport", param);
@@ -997,7 +997,7 @@ public partial class Masters_Carpet_FrmFinisherJobRate : System.Web.UI.Page
             param[0] = new SqlParameter("@FromDate", txtFromDate.Text);
             param[1] = new SqlParameter("@ToDate", txtToDate.Text);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            param[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@JobTypeId", DDJobType.SelectedIndex>0 ? DDJobType.SelectedValue:"0");
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetFinisherJobRateReportBetweenDate", param);

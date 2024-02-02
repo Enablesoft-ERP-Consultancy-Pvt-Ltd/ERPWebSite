@@ -14,14 +14,14 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
     public int UnitId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
-                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varcompanyid"] + @" order by GodownName";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
+                           select GoDownID,GodownName from GodownMaster where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by GodownName";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, ds, 0, false, "");
@@ -51,7 +51,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
     }
     private void BindItemName()
     {
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER where CATEGORY_ID=2 and MasterCompanyid=" + Session["varCompanyId"] + @" Order by Item_Name", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER where CATEGORY_ID=2 and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by Item_Name", true, "--Plz Select--");
     }
     private void BindReceiveColor()
     {
@@ -96,7 +96,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
     }
     private void BindQuality()
     {
-        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varCompanyId"] + @" Order by QualityName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDQuality, "select QualityId,QualityName from Quality where Item_Id=" + DDItemName.SelectedValue + " and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by QualityName", true, "--Plz Select--");
     }
     protected void DDItemName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -161,7 +161,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
     {
         if (DDGivenColor.SelectedIndex > 0)
         {
-            int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDGivenColor.SelectedValue), 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDGivenColor.SelectedValue), 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             FillLotno(Varfinishedid);
         }
         else
@@ -191,7 +191,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
 
     protected void DDLotNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDGivenColor.SelectedValue), 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int Varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Convert.ToInt32(DDGivenColor.SelectedValue), 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         FillstockQty(Varfinishedid);
     }
     protected void FillstockQty(int varfinishedid)
@@ -225,10 +225,10 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
             arr[4].Value = txtChallanNo.Text;
             arr[5] = new SqlParameter("@IssueDate", TxtAssignDate.Text);
             arr[6] = new SqlParameter("@ReqDate", txtRequiredDate.Text);
-            arr[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            arr[7] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             arr[8] = new SqlParameter("@DetailId", SqlDbType.Int);
             arr[8].Value = 0;
-            int varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDGivenColor.SelectedValue), "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDGivenColor.SelectedValue), "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
             arr[9] = new SqlParameter("@Ifinishedid", varfinishedid);
             arr[10] = new SqlParameter("@Iflagsize", 0);
@@ -236,7 +236,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
             arr[12] = new SqlParameter("@godownid", DDGodownName.SelectedValue);
             arr[13] = new SqlParameter("@LotNo", DDLotNo.SelectedItem.Text);
             arr[14] = new SqlParameter("@TagNo", "Without Tag No");
-            int varRfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDReceiveColor.SelectedValue), "", Convert.ToInt32(Session["varCompanyId"]));
+            int varRfinishedid = UtilityModule.getItemFinishedIdForDyer(Convert.ToInt32(DDItemName.SelectedValue), Convert.ToInt32(DDQuality.SelectedValue), 0, 0, 0, 0, "", Tran, Convert.ToInt32(DDReceiveColor.SelectedValue), "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[15] = new SqlParameter("@Rfinishedid", varRfinishedid);
             arr[16] = new SqlParameter("@Rflagsize", 0);
             arr[17] = new SqlParameter("@Caltype", 0);
@@ -315,7 +315,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
         // string str = "";
         SqlParameter[] array = new SqlParameter[4];
         array[0] = new SqlParameter("@Id", hnid.Value);
-        array[1] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         array[2] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
         array[2].Direction = ParameterDirection.Output;
         array[3] = new SqlParameter("@ReportType", SqlDbType.Int);
@@ -432,7 +432,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
             arr[4] = new SqlParameter("@userid", Session["varuserid"]);
             arr[5] = new SqlParameter("@Rate", txtRate.Text == "" ? "0" : txtRate.Text);
             arr[6] = new SqlParameter("@hnQty", lblqty.Text == "" ? "0" : lblqty.Text);
-            arr[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            arr[7] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
             //*******
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateDyerIssue", arr);
@@ -499,7 +499,7 @@ public partial class Masters_ProcessIssue_IssueToDyer : System.Web.UI.Page
         // string str = "";
         SqlParameter[] array = new SqlParameter[4];
         array[0] = new SqlParameter("@Id", hnid.Value);
-        array[1] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         array[2] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
         array[2].Direction = ParameterDirection.Output;
         array[3] = new SqlParameter("@ReportType", SqlDbType.Int);

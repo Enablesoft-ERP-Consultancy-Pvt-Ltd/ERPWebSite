@@ -12,7 +12,7 @@ public partial class Masters_RawMaterial_frmRawMaterialReturned : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -116,7 +116,7 @@ public partial class Masters_RawMaterial_frmRawMaterialReturned : System.Web.UI.
                 arr[21] = new SqlParameter("@ConeTypeId", SqlDbType.Int);
                 arr[22] = new SqlParameter("@ItemRemarks", SqlDbType.VarChar, 500);
                 arr[23] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
-                //int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+                //int Varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 if (ViewState["Prmid"] == null)
                 {
                     ViewState["Prmid"] = "0";
@@ -131,7 +131,7 @@ public partial class Masters_RawMaterial_frmRawMaterialReturned : System.Web.UI.
                 arr[6].Direction = ParameterDirection.InputOutput;
                 arr[7].Value = 1; //TranType
                 arr[8].Value = Session["varuserid"].ToString();
-                arr[9].Value = Session["varCompanyId"].ToString();
+                arr[9].Value = Session["varMasterCompanyIDForERP"].ToString();
                 arr[10].Value = 0;
                 arr[20].Value = 0;
                 //if (btnsave.Text == "Update")

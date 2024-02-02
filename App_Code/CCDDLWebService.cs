@@ -30,7 +30,7 @@ public class CCDDLWebService : System.Web.Services.WebService
     public CascadingDropDownNameValue[] FillCustomer(string knownCategoryValues, string category)
     {
         
-        SqlCommand cmd = new SqlCommand("SELECT customerid,CompanyName + SPACE(5)+Customercode as CustomerCode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CompanyName", con);
+        SqlCommand cmd = new SqlCommand("SELECT customerid,CompanyName + SPACE(5)+Customercode as CustomerCode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName", con);
         if (con.State == ConnectionState.Closed)
         {
             con.Open();
@@ -56,7 +56,7 @@ public class CCDDLWebService : System.Web.Services.WebService
         {
             con.Open();
         }
-        SqlCommand cmd = new SqlCommand("select BankId,BankName from Bank where MasterCompanyid=" + Session["varCompanyId"] + "", con);
+        SqlCommand cmd = new SqlCommand("select BankId,BankName from Bank where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", con);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);

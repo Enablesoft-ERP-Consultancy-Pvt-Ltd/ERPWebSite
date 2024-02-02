@@ -12,7 +12,7 @@ public partial class Masters_ReportForms_reportdlk1 : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_ReportForms_reportdlk1 : System.Web.UI.Page
                 rdorderRevised.Checked = true;
             else if (Request.QueryString["Type"] == "p")
                 RDProjectionOrder.Checked = true;
-            UtilityModule.ConditionalComboFill(ref ddCatagory, @"select im.CATEGORY_ID,im.CATEGORY_NAME from ITEM_CATEGORY_MASTER im inner join UserRights_Category uc On im.CATEGORY_ID=uc.CategoryId where uc.userid=" + Session["Varuserid"] + " And im.MasterCompanyId=" + Session["varCompanyId"] + "", true, "-Select-");
+            UtilityModule.ConditionalComboFill(ref ddCatagory, @"select im.CATEGORY_ID,im.CATEGORY_NAME from ITEM_CATEGORY_MASTER im inner join UserRights_Category uc On im.CATEGORY_ID=uc.CategoryId where uc.userid=" + Session["Varuserid"] + " And im.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "-Select-");
         }
 
     }
@@ -31,13 +31,13 @@ public partial class Masters_ReportForms_reportdlk1 : System.Web.UI.Page
         string str = @"Select Distinct OM.OrderId,LocalOrder+ ' / ' +CustomerOrderNo CustomerOrderNo 
                     From OrderMaster OM,Jobassigns JA,V_FinishedItemDetail vd,orderdetail od 
                     Where om.status=0 and od.orderid=om.orderid and vd.ITEM_FINISHED_ID=od.Item_Finished_Id and OM.Orderid=JA.Orderid and 
-                    vd.CATEGORY_ID=" + ddCatagory.SelectedValue + " And vd.MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerOrderNo";
-        if (Session["varCompanyId"].ToString() == "16" || Session["varCompanyId"].ToString() == "28")
+                    vd.CATEGORY_ID=" + ddCatagory.SelectedValue + " And vd.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerOrderNo";
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = @"Select Distinct OM.OrderId, CustomerOrderNo 
                 From OrderMaster OM,Jobassigns JA,V_FinishedItemDetail vd,orderdetail od 
                 Where om.status=0 and od.orderid=om.orderid and vd.ITEM_FINISHED_ID=od.Item_Finished_Id and OM.Orderid=JA.Orderid and 
-                vd.CATEGORY_ID=" + ddCatagory.SelectedValue + " And vd.MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerOrderNo";
+                vd.CATEGORY_ID=" + ddCatagory.SelectedValue + " And vd.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerOrderNo";
         }
         UtilityModule.ConditionalComboFill(ref ddOrderno, str, true, "-ALL-");
     }
@@ -50,7 +50,7 @@ public partial class Masters_ReportForms_reportdlk1 : System.Web.UI.Page
             Session["ReportPath"] = "Reports/RptPurchaseOrderrevised.rpt";
             sql = @"select distinct om.orderid,om.LocalOrder+'/'+om.CustomerOrderNo  As OrderNo,pii.PindentIssueid,replace(convert(varchar(11),pii.duedate,106),' ','-') as deliverydate,replace(convert(varchar(11),pt.Date,106),' ','-') as dateby,pt.remark as remark,replace(convert(varchar(11),pt.RemarkCurrentDate,106),' ','-') as Remarkdate from ordermaster om inner join 
                    PurchaseIndentIssue pii On pii.orderid=om.orderid left outer join PurchaseTracking pt On pt.PTrackId=pii.PindentIssueid inner join V_Order_category vo On vo.orderid=om.orderid
-                   Where om.status=0 And pii.MasterCompanyId=" + Session["varCompanyId"];
+                   Where om.status=0 And pii.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ddCatagory.SelectedIndex > 0)
             {
                 sql = sql + "and CATEGORY_ID=" + ddCatagory.SelectedValue + "";
@@ -73,7 +73,7 @@ public partial class Masters_ReportForms_reportdlk1 : System.Web.UI.Page
                 PurchaseIndentIssue Pii On Pii.orderid=om.orderid left Outer join
                 PurchaseReceiveDetail Pit On pii.PindentIssueid=pit.PindentIssueid and pit.Finishedid=Vf.ITEM_FINISHED_ID inner join
                 orderdetail odd On om.orderid=odd.orderid inner join V_FinishedItemDetail vf1 On odd.Item_Finished_Id=vf1.ITEM_FINISHED_ID
-                Where om.Status=0 And vf.MasterCompanyId=" + Session["varCompanyId"];
+                Where om.Status=0 And vf.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ddCatagory.SelectedIndex > 0)
             {
                 sql = sql + "and Vf1.CATEGORY_ID=" + ddCatagory.SelectedValue + "";
@@ -88,7 +88,7 @@ public partial class Masters_ReportForms_reportdlk1 : System.Web.UI.Page
             sda.Fill(dt);
             ds.Tables.Add(dt);
             string sql1 = @"select om.Orderid,om.Localorder+'/'+om.CustomerOrderNo OrderNo,isnull(sum(Qty),0) as Assignqty,oa.FromOrderid,Item_Finished_id from ordermaster om  left outer join 
-            OrderAssignQtyOrder oa On om.orderid=oa.ToOrderid And oa.MasterCompanyId=" + Session["varCompanyId"] + "  Group by om.Orderid,om.Localorder,om.CustomerOrderNo,oa.FromOrderid,Item_Finished_id";
+            OrderAssignQtyOrder oa On om.orderid=oa.ToOrderid And oa.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Group by om.Orderid,om.Localorder,om.CustomerOrderNo,oa.FromOrderid,Item_Finished_id";
             SqlDataAdapter sda1 = new SqlDataAdapter(sql1, con);
             DataTable dt1 = new DataTable();
             sda1.Fill(dt1);

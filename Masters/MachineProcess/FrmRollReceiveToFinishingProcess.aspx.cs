@@ -12,7 +12,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
     string str = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,17 +21,17 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
             str = @"Select Distinct CI.CompanyId, CI.Companyname 
             From Companyinfo CI(nolock)
             JOIN Company_Authentication CA(nolock) ON CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CI.Companyname 
+            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CI.Companyname 
 
             Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
             From PROCESS_NAME_MASTER PNM(nolock) 
-            Where PNM.MasterCompanyid = " + Session["varcompanyid"] + @" and PNM.PROCESS_NAME='FINISHING' Order By PNM.Process_Name_ID 
+            Where PNM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" and PNM.PROCESS_NAME='FINISHING' Order By PNM.Process_Name_ID 
 
              Select EI.EmpId, EI.EmpName 
             From Empinfo EI(Nolock)
             JOIN EMPPROCESS EP(Nolock) ON EP.EmpId = EI.EmpId";           
 
-            if (Convert.ToInt32(Session["varcompanyid"]) == 21)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 21)
             {
                 str = str + " And EP.ProcessId = 8 ";
             }
@@ -40,7 +40,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
                 str = str + " And EP.ProcessId = 8 ";
             }
 
-            str = str + " Where EI.MasterCompanyID = " + Session["varcompanyid"] + @" Order By EI.EmpName ";
+            str = str + " Where EI.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By EI.EmpName ";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 0, true, "Select Comp Name");
@@ -54,7 +54,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
 
             if (DDProcessName.Items.Count > 0)
             {
-                if (Convert.ToInt32(Session["varcompanyid"]) == 21)
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 21)
                 {
                     DDProcessName.SelectedValue = "8";
                 }
@@ -79,7 +79,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
         str = @"Select Distinct EI.EmpID, EI.EmpName 
             From RollIssueFinishingProcessMaster a(Nolock)
             JOIN Empinfo EI ON EI.EmpID = a.EmpID 
-            Where a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
+            Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
             Order By EI.EmpName ";
 
         DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -156,7 +156,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
             arr[6].Value = TxtReceiveDate.Text;           
             arr[7].Value = RollNoDetailData;            
             arr[8].Value = Session["varuserid"];
-            arr[9].Value = Session["varCompanyId"];
+            arr[9].Value = Session["varMasterCompanyIDForERP"];
             arr[10].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_SaveRollReceiveFinishingProcess]", arr);
@@ -214,7 +214,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
             param[1] = new SqlParameter("@RollReceiveFinishingProcessDetailID", LblRollReceiveFinishingProcessDetailID.Text);
             param[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["VarUserId"]);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
             //****************
@@ -260,7 +260,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
         string str = @"Select Distinct EI.EmpID, EI.EmpName 
             From RollReceiveFinishingProcessMaster a(Nolock)
             JOIN Empinfo EI ON EI.EmpID = a.EmpID 
-            Where a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @"
+            Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @"
             Order By EI.EmpName ";
 
         DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -331,7 +331,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
         //            From RollIssueFinishingProcessMaster a(Nolock)
         //            JOIN RollIssueFinishingProcessDetail b(Nolock) ON b.RollIssueFinishingProcessID = a.RollIssueFinishingProcessID 
         //            LEFT JOIN RollReceiveFinishingProcessDetail c(Nolock) ON c.RollIssueFinishingProcessID = a.RollIssueFinishingProcessID And c.RollIssueFinishingProcessDetailID = b.RollIssueFinishingProcessDetailID 
-        //            Where c.RollIssueFinishingProcessID Is null And a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
+        //            Where c.RollIssueFinishingProcessID Is null And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
         //            And a.EmpID = " + DDEmployeeName.SelectedValue + " Order By a.RollIssueFinishingProcessID Desc ";
 
         //        DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -352,7 +352,7 @@ public partial class Masters_MachineProcess_FrmRollReceiveToFinishingProcess : S
     {
         string str = @"Select a.RollReceiveFinishingProcessID, a.ReceiveNo, REPLACE(CONVERT(NVARCHAR(11), a.ReceiveDate, 106), ' ', '-') ReceiveDate            
             From RollReceiveFinishingProcessMaster a(Nolock) 
-            Where a.MasterCompanyID = " + Session["VarCompanyId"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
+            Where a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.CompanyID = " + ddCompName.SelectedValue + " And a.ProcessID = " + DDProcessName.SelectedValue + @" 
             And a.RollReceiveFinishingProcessID = " + DDReceiveNo.SelectedValue + @"
             Order By a.RollReceiveFinishingProcessID Desc";
 

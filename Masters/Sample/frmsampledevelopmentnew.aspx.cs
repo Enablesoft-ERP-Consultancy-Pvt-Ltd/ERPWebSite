@@ -15,7 +15,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
     static int DataGridDeleteID = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,21 +24,21 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             string str = @"select Month_Id,Month_Name from MonthTable(Nolock) order by Month_Id
                          select Year,Year from Yeardata(Nolock)
                          select Distinct IC.CATEGORY_ID,ic.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC(Nolock) inner join CategorySeparate cs(Nolock) on IC.CATEGORY_ID=cs.Categoryid  and cs.id=0
-                         and ic.MasterCompanyid=" + Session["varcompanyid"];
-            if (Convert.ToInt32(Session["varcompanyid"]) == 44)
+                         and ic.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
             {
                 str = str + @" select Distinct IC.CATEGORY_ID,ic.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC(Nolock) inner join CategorySeparate cs(Nolock) on IC.CATEGORY_ID=cs.Categoryid 
-                         and ic.MasterCompanyid=" + Session["varcompanyid"];
+                         and ic.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
                 str = str + @" select Distinct IC.CATEGORY_ID,ic.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC(Nolock) inner join CategorySeparate cs(Nolock) on IC.CATEGORY_ID=cs.Categoryid And cs.id=1
-                         and ic.MasterCompanyid=" + Session["varcompanyid"];
+                         and ic.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             }
 
-            str = str + @" select DepartmentId,DepartmentName from Department(Nolock) Where MasterCompanyId=" + Session["varcompanyid"] + @" order by DepartmentName
+            str = str + @" select DepartmentId,DepartmentName from Department(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by DepartmentName
             select CalID,CalType from Process_CalType(Nolock) order by caltype
-            Select Process_Name_ID, Process_Name From PROCESS_NAME_MASTER(Nolock) Where   IsNull(AddProcessName, 0) <> 0 And MasterCompanyID = " + Session["varcompanyid"] + " Order By PROCESS_NAME ";
+            Select Process_Name_ID, Process_Name From PROCESS_NAME_MASTER(Nolock) Where   IsNull(AddProcessName, 0) <> 0 And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By PROCESS_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             DataTable dtp = new DataTable();
@@ -78,7 +78,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             TxtDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
 
 
-            if (Session["varcompanyid"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 ChkForWeavingConsumptionSave.Text = "For Save Cutting Consumption";
                 lblpreviousprocessname.Visible = true;
@@ -205,35 +205,35 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                 break;
         }
 
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             switch (DDsizetype.SelectedValue.ToString())
             {
                 case "0":
-                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                     break;
                 case "1":
-                    str = " Select Distinct S.sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr from Size S Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = " Select Distinct S.sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr from Size S Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
 
                     break;
                 case "2":
-                    str = "Select Distinct S.sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = "Select Distinct S.sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                     break;
                 default:
-                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                     break;
             }
         }
         else
         {
-            str = "Select Distinct S.sizeid, S." + size + " from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+            str = "Select Distinct S.sizeid, S." + size + " from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
         }
 
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = str + " order by S." + size + ", S.sizeid";
         }
-        else if (Session["varcompanyId"].ToString() == "44")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             str = str + " order by 1";
         }
@@ -267,8 +267,8 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         }
         //Design And Color 
 
-        str = @"Select DesignID, DesignName From Design(Nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" Order By DesignName 
-                Select ColorID, ColorName From Color(Nolock) Where MasterCompanyid = " + Session["varcompanyid"] + " Order By ColorName ";
+        str = @"Select DesignID, DesignName From Design(Nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By DesignName 
+                Select ColorID, ColorName From Color(Nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By ColorName ";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -297,7 +297,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                 break;
             case 1:
                 TDbuyer.Visible = true;
-                if (Session["varcompanyid"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     UtilityModule.ConditionalComboFill(ref DDbuyer, "select customerid,CustomerCode as Customer from customerinfo  order by customer", true, "--Plz Select--");
                 }
@@ -324,7 +324,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         TDRColor.Visible = false;
         TDRShape.Visible = false;
         TDRSize.Visible = false;
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             if (DDRCategory.SelectedIndex > 0)
             {
@@ -383,7 +383,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                         UtilityModule.ConditionalComboFill(ref DDRSizetype, "select val,Type from SizeType Order by val", false, "");
                         break;
                     case "6":
-                        if (Session["varcompanyid"].ToString() == "44")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                         {
                             if (DDRCategory.SelectedIndex > 0)
                             {
@@ -440,13 +440,13 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         //Design
         if (TDRDesign.Visible == true)
         {
-            str = "select designId,designName from Design Where MasterCompanyid=" + Session["varcompanyid"] + " order by designName";
+            str = "select designId,designName from Design Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by designName";
             UtilityModule.ConditionalComboFill(ref ddRdesign, str, true, "--Select--");
         }
         //Color
         if (TDRColor.Visible == true)
         {
-            str = "select ColorId,ColorName from color Where MasterCompanyId=" + Session["varcompanyid"] + " order by ColorName";
+            str = "select ColorId,ColorName from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ColorName";
             UtilityModule.ConditionalComboFill(ref ddRcolor, str, true, "--Select--");
 
         }
@@ -493,7 +493,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         UtilityModule.ConditionalComboFill(ref DDUnit, @"SELECT distinct u.UnitId, u.UnitName 
         FROM ITEM_MASTER i(Nolock) 
         JOIN  Unit u(Nolock) ON i.UnitTypeID = u.UnitTypeID 
-        Where item_id = " + DDRitemname.SelectedValue + @" And i.MasterCompanyId = " + Session["varCompanyId"] + " Order By u.UnitName ", true, "Select Unit");
+        Where item_id = " + DDRitemname.SelectedValue + @" And i.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By u.UnitName ", true, "Select Unit");
     }
 
     protected void FillsizeRaw()
@@ -519,7 +519,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
 
         str = "select Distinct S.sizeid,S." + size + " from Size S Where S.shapeid=" + DDRshape.SelectedValue;
 
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = str + " order by S." + size + ", S.sizeid";
         }
@@ -540,13 +540,13 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
     }
     protected void DDDept_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = "select EmpId,EmpName from EmpInfo Where Departmentid=" + DDDept.SelectedValue + " and MasterCompanyid=" + Session["varcompanyid"] + " order by EmpName";
+        string str = "select EmpId,EmpName from EmpInfo Where Departmentid=" + DDDept.SelectedValue + " and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by EmpName";
         UtilityModule.NewChkBoxListFill(ref chkemp, str);
     }
     protected void btnaddmaterial_Click(object sender, EventArgs e)
     {
         lblDeleteButtonCall.Text = "2";
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             if (CheckValidationRawMaterial() == false)
             {
@@ -583,7 +583,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         DataRow DR = null;
         dt.Columns.Add("Itemdescription", typeof(string));
         dt.Columns.Add("Item_Finished_id", typeof(int));
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             dt.Columns.Add("OSHADEID", typeof(int));
         }
@@ -599,7 +599,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
 
         DR = dt.NewRow();
         DR["Itemdescription"] = getitemdescription();
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             if (DDRCategory.SelectedIndex > 0)
             {
@@ -607,34 +607,34 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                 {
                     //if (Convert.ToInt16(DDRProcessName.SelectedValue) == 9)
                     //{
-                    //    DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRloutputshadecolor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                    //    DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRloutputshadecolor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     //}
                     //else
                     //{
-                        DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlinputshadecolor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                        DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlinputshadecolor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     
                    // }
                     DR["OSHADEID"] = ddRloutputshadecolor.SelectedValue;
                 }
                 else
                 {
-                    DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
-                    //DR["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                    DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+                    //DR["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 
                 }
             }
             else
             {
-                DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
-                //DR["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+                //DR["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
             }
         }
         else
         {
 
-            DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
-            //DR["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            DR["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+            //DR["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         }
         DR["Lotno"] = DDLotno.SelectedIndex > 0 ? DDLotno.SelectedValue : "";
         DR["Dyeingtype"] = DDDyeingtype.SelectedIndex > 0 ? DDDyeingtype.SelectedItem.Text : "";
@@ -771,7 +771,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             drcurrentRow["Itemdescription"] = getitemdescription();
 
 
-            if (Session["varcompanyid"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 if (DDRCategory.SelectedIndex > 0)
                 {
@@ -779,10 +779,10 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                     {
                         //if (Convert.ToInt16(DDRProcessName.SelectedValue) == 9)
                         //{
-                        //    drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRloutputshadecolor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                        //    drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRloutputshadecolor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                         //}
                         //else { 
-                            drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlinputshadecolor, 0, "", Convert.ToInt32(Session["varCompanyId"])); 
+                            drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlinputshadecolor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])); 
                         
                       //  }
 
@@ -790,25 +790,25 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                     }
                     else
                     {
-                        drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
-                        //drcurrentRow["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                        drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+                        //drcurrentRow["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
                     }
                 }
                 else
                 {
-                    drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
-                    //drcurrentRow["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                    drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+                    //drcurrentRow["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
                 }
             }
             else
             {
 
-                drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
-                //drcurrentRow["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+                //drcurrentRow["O_Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             }
-            //drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            //drcurrentRow["Item_Finished_id"] = UtilityModule.getItemFinishedId(DDRitemname, DDRquality, ddRdesign, ddRcolor, DDRshape, DDRsize, TxtProdCode, ddRlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             drcurrentRow["LotNo"] = DDLotno.SelectedIndex > 0 ? DDLotno.SelectedValue : "";
             drcurrentRow["Dyeingtype"] = DDDyeingtype.SelectedIndex > 0 ? DDDyeingtype.SelectedItem.Text : "";
             drcurrentRow["UnitName"] = DDUnit.SelectedIndex > 0 ? DDUnit.SelectedItem.Text : "";
@@ -870,7 +870,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         //************Raw Material Description
         DataTable dtraw = new DataTable();
         dtraw.Columns.Add("Ifinishedid", typeof(int));
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             dtraw.Columns.Add("OSHADEID", typeof(int));
         }
@@ -885,7 +885,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
 
         for (int i = 0; i < DGraw.Rows.Count; i++)
         {
-            if (Session["varcompanyid"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 if (ddlpreviousprocessname.SelectedValue =="9")
                 {
@@ -1056,7 +1056,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             param[13] = new SqlParameter("@Sizeflag", DDsizetype.SelectedValue);
             param[14] = new SqlParameter("@Sizeid", TDSize.Visible == true ? ddsize.SelectedValue : "0");
             param[15] = new SqlParameter("@userid", Session["varuserid"]);
-            param[16] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[16] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[17] = new SqlParameter("@Remark", txtremark.Text);
             param[18] = new SqlParameter("@Wtgsm", txtwtgsm.Text == "" ? "0" : txtwtgsm.Text);
             param[19] = new SqlParameter("@Totalgsm", txttotalgsm.Text == "" ? "0" : txttotalgsm.Text);
@@ -1082,7 +1082,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             //*********************
 
 
-            if (Session["varcompanyid"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 sp = "PRO_SAVESAMPLEDEVELIPMENT_AGNI";
             }
@@ -1271,7 +1271,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                         }
                     }
                 }
-                if (Session["varcompanyid"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     Session["rptFileName"] = "~\\Reports\\rptsampledevelopmentAgni.rpt";
                 }
@@ -1571,7 +1571,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             DDsamplecode.SelectedIndex = 1;
             txttypesamplecode.Text = DDsamplecode.SelectedItem.Text;
             DDsamplecode_SelectedIndexChanged(sender, new EventArgs());
-            if (Session["varcompanyid"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 ddlpreviousprocessname_SelectedIndexChanged(sender, new EventArgs());
             }
@@ -1758,7 +1758,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            param[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@Imgpath", SqlDbType.VarChar, 200);
             param[4].Direction = ParameterDirection.Output;
             param[5] = new SqlParameter("@CADIMGPATH", SqlDbType.VarChar, 200);
@@ -1852,7 +1852,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         {
             str = str + " And ROUND(QTYINHAND, 3) > 0";
         }
-        //if (Session["varcompanyId"].ToString() == "16")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         //{
         //    str = str + " and S.GODOWNID=5";
         //}
@@ -1942,12 +1942,12 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         }
         if (TRSplitDesignName.Visible == true)
         {
-            str = "Select DesignID, DesignName From Design(Nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" Order By DesignName ";
+            str = "Select DesignID, DesignName From Design(Nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By DesignName ";
             UtilityModule.ConditionalComboFill(ref DDSplitDesignName, str, true, "--Select--");
         }
         if (TRSplitColorName.Visible == true)
         {
-            str = "Select ColorID, ColorName From Color(Nolock) Where MasterCompanyid = " + Session["varcompanyid"] + " Order By ColorName ";
+            str = "Select ColorID, ColorName From Color(Nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By ColorName ";
             UtilityModule.ConditionalComboFill(ref DDSplitColorName, str, true, "--Select--");
         }
         if (TRSplitShape.Visible == true)
@@ -1957,7 +1957,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         }
         if (TRSplitShadeColor.Visible == true)
         {
-            str = "select Distinct ShadeColorId, ShadeColorName From ShadeColor Where MasterCompanyid = " + Session["varcompanyid"] + " Order By ShadeColorName";
+            str = "select Distinct ShadeColorId, ShadeColorName From ShadeColor Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName";
             UtilityModule.ConditionalComboFill(ref ddSplitShadeColor, str, true, "--Select--");
         }
     }
@@ -2006,22 +2006,22 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                 size = "SizeFt";
                 break;
         }
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             switch (DDsizetype.SelectedValue.ToString())
             {
                 case "0":
-                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                     break;
                 case "1":
-                    str = " Select Distinct S.sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr from Size S Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = " Select Distinct S.sizeid,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end as  Sizemtr from Size S Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
 
                     break;
                 case "2":
-                    str = "Select Distinct S.sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = "Select Distinct S.sizeid,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else ''  end as  Sizeinch from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                     break;
                 default:
-                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+                    str = "Select Distinct S.sizeid,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar) else ''  end as  SizeFt from Size S  Where S.shapeid=" + ddshape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
                     break;
             }
 
@@ -2029,13 +2029,13 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         }
         else
         {
-            str = "select Distinct S.sizeid,S." + size + " from Size S  Where S.shapeid=" + DDSplitShape.SelectedValue + " and S.mastercompanyid=" + Session["varcompanyid"];
+            str = "select Distinct S.sizeid,S." + size + " from Size S  Where S.shapeid=" + DDSplitShape.SelectedValue + " and S.mastercompanyid=" + Session["varMasterCompanyIDForERP"];
         }
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str = str + " order by S." + size + ", S.sizeid";
         }
-        else if (Session["varcompanyId"].ToString() == "44")
+        else if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             str = str + " order by 1";
         }
@@ -2139,7 +2139,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
     {
         string str = string.Empty;
 
-        if (Session["varcompanyid"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             str = @"Select Vf.ITEM_NAME+' '+vf.QualityName+' '+vf.designName+' '+vf.ColorName+' '+vf.ShapeName+' '+vf.SizeFt+'inputcolor:'+vf.ShadeColorName +'outputcolor:'+isnull(vf1.ShadeColorName,'')+'
             (' + PNM.PROCESS_NAME + Case When SRMD.CalType = 0 Then ' AREA' Else ' PCS' End + ')' ItemDescription,
@@ -2185,7 +2185,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
             }
             else
             {
-                if (Session["varcompanyid"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     ddlpreviousprocessname_SelectedIndexChanged(o, new EventArgs());
                 }
@@ -2193,7 +2193,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         }
         else
         {
-            if (Session["varcompanyid"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             { ddlpreviousprocessname_SelectedIndexChanged(o, new EventArgs()); }
         }
     }
@@ -2228,30 +2228,30 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
         TextBox txtboxprodCode = new TextBox();
         txtboxprodCode.Text = "";
         //int FinishedID = 0;
-        //if (Session["varcompanyid"].ToString() == "44")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         //{
         //    if (DDRCategory.SelectedIndex > 0)
         //    {
         //        if (Convert.ToInt16(DDRCategory.SelectedValue) == 2)
         //        {
-        //            FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddRloutputshadecolor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //            FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddRloutputshadecolor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //        }
         //        else {
 
-        //            FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //            FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //        }
         //    }
         //    else
         //    {
 
-        //        FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //        FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //    }
         //}
         //else
         //{
-            //FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+            //FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //}
-        int FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int FinishedID = UtilityModule.getItemFinishedId(ddSplitItemname, DDSplitQuality, DDSplitDesignName, DDSplitColorName, DDSplitShape, ddSplitSize, txtboxprodCode, ddSplitShadeColor, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         LblSplitFinishedID.Text = FinishedID.ToString();        
     }
     protected void CheckValidation()
@@ -2471,7 +2471,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
       
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                if (Session["varcompanyid"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     if (Convert.ToInt16(ddlpreviousprocessname.SelectedValue) > 0)
                     {
@@ -2498,7 +2498,7 @@ public partial class Masters_Sample_frmsampledevelopmentnew : System.Web.UI.Page
                                 prodcom = Convert.ToInt16(ds.Tables[0].Rows[0]["canseeProductioncons"]);
                                 TextBox lblanticipatedwt = (TextBox)e.Row.FindControl("lblanticipatedwt");
                                 TextBox txtactualwt = (TextBox)e.Row.FindControl("txtactualwt");
-                                if (Session["varcompanyid"].ToString() == "44")
+                                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                                 {
                                     if (devcom > 0)
                                     {

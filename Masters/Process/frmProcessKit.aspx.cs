@@ -26,13 +26,13 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
             str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
 
-                    select  UnitsId,UnitName from Units with(nolock) Where Mastercompanyid = " + Session["varcompanyid"] + @" 
+                    select  UnitsId,UnitName from Units with(nolock) Where Mastercompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     select ITEM_ID,ITEM_NAME from ITEM_MASTER IM with(nolock) Inner Join CategorySeparate CS with(nolock) on 
-                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varcompanyid"] + @" 
+                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     select  ShapeId,ShapeName from Shape with(nolock) 
-                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" and PROCESS_NAME_ID=29  Order By PROCESS_NAME 
+                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" and PROCESS_NAME_ID=29  Order By PROCESS_NAME 
                     select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME 
                     select val,Type From Sizetype
                     select OrderCategoryId,OrderCategory from OrderCategory order by OrderCategory";
@@ -62,7 +62,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                 DDShape.SelectedIndex = 0;
             }
             ds.Dispose();
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     Divuniname.Visible = true;
@@ -79,18 +79,18 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                     }
                     break;
             }
-            if (Session["varcompanyId"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 DivWeavingEmployee.Visible = true;
                 BindWeavingEmp();
             }
-            if (Session["varcompanyId"].ToString() == "28")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "28")
             {
                 Divuniname.Visible = true;
                 DivWeavingEmployee.Visible = true;
                 BindWeavingEmp();
             }
-            if (Session["varcompanyId"].ToString() == "27")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "27")
             {
                 if (DDRateLocation.SelectedValue == "1")
                 {
@@ -103,7 +103,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                     DDWeavingEmp.SelectedIndex = 0;
                 }
             }
-            if (Session["varcompanyId"].ToString() == "42")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "42")
             {
                 //DivBonus.Visible = true;
                 //DivFinisherRate.Visible = true;
@@ -131,7 +131,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
     {
         string str2 = null;
 
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str2 = @"Select EI.EmpID, Case When EI.Empcode <> '' Then EI.EmpCode Else EI.EmpName End Empname 
                 From Empinfo EI(Nolock)
@@ -204,7 +204,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
     protected void btnsave_Click(object sender, EventArgs e)
     {
 
-        if (Session["varcompanyid"].ToString() == "22")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22")
         {
             string status = "";
             if (txtpcs.Text == "")
@@ -297,7 +297,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                 dtrecords.Rows.Add(dr);
             }
         }
-        //if (Session["varcompanyid"].ToString() == "21")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
         //{
         //    if (chkEdit.Checked == false)     // Change when Updated Completed
         //    {
@@ -309,7 +309,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
         //    }
         //}
 
-        if (Session["varcompanyid"].ToString() == "22")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22")
         {
             //DateTime IssueDate = Convert.ToDateTime(txtissuedate.Text.ToString());
             //DateTime FolioDate = Convert.ToDateTime(txtFolioIssueDate.Text.ToString());
@@ -344,10 +344,10 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
             {
                 if ((DDArticleName.SelectedValue !="0") && (ddquality.SelectedValue !="0") && (DDDesign.SelectedValue !="0") && (DDColor.SelectedValue !="0") && (DDDesign.SelectedValue !="0") && (DDShape.SelectedValue !="0"))
                 {
-                    int VARFINISHEDID = UtilityModule.getItemFinishedId(Convert.ToInt32(DDArticleName.SelectedValue), Convert.ToInt32(ddquality.SelectedValue), Convert.ToInt32(DDDesign.SelectedValue), Convert.ToInt32(DDColor.SelectedValue), Convert.ToInt32(DDShape.SelectedValue), Convert.ToInt32(ddSize.SelectedValue), 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                    int VARFINISHEDID = UtilityModule.getItemFinishedId(Convert.ToInt32(DDArticleName.SelectedValue), Convert.ToInt32(ddquality.SelectedValue), Convert.ToInt32(DDDesign.SelectedValue), Convert.ToInt32(DDColor.SelectedValue), Convert.ToInt32(DDShape.SelectedValue), Convert.ToInt32(ddSize.SelectedValue), 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     SqlParameter[] param = new SqlParameter[11];
                     param[0] = new SqlParameter("@PrmId", SqlDbType.Int);
-                    //if (chkEdit.Checked == true && Session["varcompanyid"].ToString() == "21")
+                    //if (chkEdit.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "21")
                     //{
                     //    param[0].Value = DDissueno.SelectedValue;
                     //}
@@ -361,7 +361,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                     param[2] = new SqlParameter("@Processid", ddJob.SelectedValue);
                     param[3] = new SqlParameter("@issueDate", DateTime.Today);
                     param[4] = new SqlParameter("@userid", Session["varuserid"]);
-                    param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     param[6] = new SqlParameter("@dtrecords", dtrecords);
                     param[7] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                     param[7].Direction = ParameterDirection.Output;
@@ -423,7 +423,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
 //                    LEFT JOIN EmpInfo EI(Nolock) ON TJ.EmpId=EI.EmpID                 
 //                    inner join PROCESS_NAME_MASTER PNM(Nolock) on PNM.PROCESS_NAME_ID=Tj.jobid 
 //                    LEFT JOIN OrderCategory OC(NoLock) ON TJ.OrderTypeId=OC.OrderCategoryId
-//                    Where Tj.mastercompanyId=" + Session["varcompanyId"] + " And Tj.companyId=" + DDCompanyName.SelectedValue;
+//                    Where Tj.mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " And Tj.companyId=" + DDCompanyName.SelectedValue;
 
 //        if (Divuniname.Visible == true)
 //        {
@@ -539,11 +539,11 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
         divshade.Visible = false;
 
         UtilityModule.ConditionalComboFill(ref DDArticleName, @"select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner join CategorySeparate CS on IM.CATEGORY_ID=CS.Categoryid
-                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varcompanyId"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
+                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
 
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -586,7 +586,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
     }
     protected void DDRateLocation_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "27" || Session["VarCompanyId"].ToString() == "42")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "27" || Session["varMasterCompanyIDForERP"].ToString() == "42")
         {
             if (DDRateLocation.SelectedValue == "1")
             {
@@ -599,7 +599,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                 DDWeavingEmp.SelectedIndex = 0;
             }
         }
-        if (Session["VarCompanyId"].ToString() == "16" || Session["VarCompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             DivWeavingEmployee.Visible = true;
             BindWeavingEmp();
@@ -633,7 +633,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
         //        }
         //        if (DGRateDetail.Columns[i].HeaderText == "Bonus" || DGRateDetail.Columns[i].HeaderText == "Finisher Rate" || DGRateDetail.Columns[i].HeaderText == "Order Type")
         //        {
-        //            if (Convert.ToInt32(Session["varcompanyId"]) == 42)
+        //            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
         //            {
         //                DGRateDetail.Columns[i].Visible = true;
         //            }
@@ -645,7 +645,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
 
         //        //if (DGRateDetail.Columns[i].HeaderText == "Emp Name")
         //        //{
-        //        //    if (Session["varCompanyId"].ToString() == "27")
+        //        //    if (Session["varMasterCompanyIDForERP"].ToString() == "27")
         //        //    {
         //        //        DGRateDetail.Columns[i].Visible = true;
         //        //    }
@@ -896,7 +896,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                         inner join PROCESS_NAME_MASTER PM on PM.PROCESS_NAME_ID=PCM.PROCESSID
                         inner join SizeType ST on PCM.sizeflag=ST.Val
                         inner join Sizetype STI on PCD.ISizeflag=STI.Val
-                        inner join SizeType STO on Pcd.OSizeflag=STO.Val where IQTY>0 and  PCM.PROCESSID=1 and PCM.MasterCompanyId=" + Session["varCompanyId"];
+                        inner join SizeType STO on Pcd.OSizeflag=STO.Val where IQTY>0 and  PCM.PROCESSID=1 and PCM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ddquality.SelectedIndex > 0)
         {
             STR = STR + @" AND QUALITY_ID=" + ddquality.SelectedValue + "";
@@ -1030,7 +1030,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                 }
             }
             DropDownList DDGodown = ((DropDownList)e.Row.FindControl("DDGodown"));
-            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+            string str = @"Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -1415,7 +1415,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
             txtissueno.Enabled = true;
             //TDIssueNo.Visible = true;
             //DDissueno.SelectedIndex = -1;
-            //if (Session["varcompanyid"].ToString() == "21" || Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21" || Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             //{
             //    if (variable.VarWeaverRawMaterialIssueToCompleteStatus == "1" && Session["usertype"].ToString() == "1")
             //    {
@@ -1432,7 +1432,7 @@ public partial class Masters_Process_frmProcessKit : System.Web.UI.Page
                 //}
           //  }
 
-            //if (Session["varcompanyid"].ToString() == "21")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             //{
             //    BtnUpdateStockNoQty.Visible = true;
             //}

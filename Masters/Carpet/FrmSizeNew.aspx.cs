@@ -12,7 +12,7 @@ public partial class Masters_Carpet_FrmSizeNew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Carpet_FrmSizeNew : System.Web.UI.Page
         {
             string str = @"select UnitTypeID,UnitType from UNIT_TYPE_MASTER
                            select UnitId,UnitName from unit where unittypeid =1
-                          select ShapeId,ShapeName from shape where mastercompanyid=" + Session["vARcompanyid"] + "";
+                          select ShapeId,ShapeName from shape where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + "";
            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref ddunittype, ds,0, true, "--Select--");
             UtilityModule.ConditionalComboFillWithDS(ref ddunit, ds,1, true, "--Select--");
@@ -82,7 +82,7 @@ public partial class Masters_Carpet_FrmSizeNew : System.Web.UI.Page
             _arrPara[8].Value = ddunit.SelectedValue;
             _arrPara[9].Value = ddshape.SelectedValue;
             _arrPara[10].Value = Session["varuserid"];
-            _arrPara[11].Value = Session["varcompanyid"];
+            _arrPara[11].Value = Session["varMasterCompanyIDForERP"];
             SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_SIZENew", _arrPara);
             FillGrid();
             refresh();

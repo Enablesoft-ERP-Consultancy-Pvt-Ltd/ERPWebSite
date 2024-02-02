@@ -12,14 +12,14 @@ public partial class Masters_Campany_Customer_vender_Dyerbank : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDbank, "select B.bankid,B.bankname +'/'+ SwiftCode as bankname  from bank B,BankCategory_Detail BC where B.BankId=Bc.BankId And BC.CategoryId=1  And  B.mastercompanyid=" + Session["varcompanyid"] + "order by B.bankname", true, "--plz select bank");
-            UtilityModule.ConditionalComboFill(ref DDcurrency, "select currencyid, currencyname from currencyinfo where mastercompanyid=" + Session["varcompanyid"] + "order by currencyname", true, "--plz select currency");
+            UtilityModule.ConditionalComboFill(ref DDbank, "select B.bankid,B.bankname +'/'+ SwiftCode as bankname  from bank B,BankCategory_Detail BC where B.BankId=Bc.BankId And BC.CategoryId=1  And  B.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + "order by B.bankname", true, "--plz select bank");
+            UtilityModule.ConditionalComboFill(ref DDcurrency, "select currencyid, currencyname from currencyinfo where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + "order by currencyname", true, "--plz select currency");
             fill_grid();
         }
     }
@@ -68,7 +68,7 @@ public partial class Masters_Campany_Customer_vender_Dyerbank : System.Web.UI.Pa
             _arrpara[3].Value = txtacno.Text.ToUpper();
             _arrpara[4].Value = Request.QueryString["a"].ToString();
             _arrpara[5].Value = Session["varuserid"].ToString();
-            _arrpara[6].Value = Session["varcompanyid"].ToString();
+            _arrpara[6].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrpara[7].Value = Request.QueryString["b"].ToString();
             _arrpara[8].Direction = ParameterDirection.Output;
             _arrpara[9].Direction = ParameterDirection.InputOutput;

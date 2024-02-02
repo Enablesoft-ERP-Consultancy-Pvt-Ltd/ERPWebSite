@@ -12,13 +12,13 @@ public partial class Masters_ReportForms_frmpaymentsummary : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack != true)
         {
-            string str = @"select CompanyId,CompanyName From Companyinfo CI where MasterCompanyid=" + Session["varcompanyId"] + @" order by CompanyId
+            string str = @"select CompanyId,CompanyName From Companyinfo CI where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyId
                            select Distinct IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner Join CategorySeparate cs on IM.CATEGORY_ID=cs.Categoryid and cs.id=0 order by ITEM_NAME
                            select PROCESS_NAME_ID,PROCESS_NAME From PROCESS_NAME_MASTER Where ProcessType=1 order by PROCESS_NAME";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -33,7 +33,7 @@ public partial class Masters_ReportForms_frmpaymentsummary : System.Web.UI.Page
             }
             txtfromDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             txttodate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 TDsrno.Visible = true;
             }

@@ -57,6 +57,7 @@
               <xs:element name="UNITNAME" type="xs:string" minOccurs="0" />
               <xs:element name="Comm" type="xs:double" minOccurs="0" />
               <xs:element name="MasterBuyerSize" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderCategoryName" type="xs:string" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

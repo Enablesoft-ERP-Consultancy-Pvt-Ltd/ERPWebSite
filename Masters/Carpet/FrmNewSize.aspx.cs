@@ -29,7 +29,7 @@ public partial class Masters_Carpet_FrmNewSize : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -43,7 +43,7 @@ public partial class Masters_Carpet_FrmNewSize : System.Web.UI.Page
             BindShape();
             BindgdMasterSize();
 
-            if (Session["varcompanyId"].ToString() == "20" && variable.VarNewQualitySize == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "20" && variable.VarNewQualitySize == "1")
             {
                 divattached.Visible = false;
                 EffectiveDate.Visible = true;
@@ -1287,7 +1287,7 @@ public partial class Masters_Carpet_FrmNewSize : System.Web.UI.Page
                 // param[34] .Value="";
 
                 //**********
-                if (Session["varcompanyId"].ToString() == "20" && variable.VarNewQualitySize == "1")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "20" && variable.VarNewQualitySize == "1")
                 {
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveCarpetMasterSizeMaltiRug", param);
                 }
@@ -1372,7 +1372,7 @@ public partial class Masters_Carpet_FrmNewSize : System.Web.UI.Page
                 //e.Row.Attributes["style"] = "background-color:#E3E3E3";
             }
 
-            if (Session["varcompanyId"].ToString() == "20" && variable.VarNewQualitySize == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "20" && variable.VarNewQualitySize == "1")
             {
 
                 gdMasterSize.HeaderRow.Cells[0].Visible = false;
@@ -1450,7 +1450,7 @@ public partial class Masters_Carpet_FrmNewSize : System.Web.UI.Page
                     ddlShape.SelectedValue = ds.Tables[0].Rows[0]["ShapeId"].ToString();
 
                     //tbEffectiveDate.Text = ds.Tables[0].Rows[0]["AddDate"].ToString();
-                    if (Session["varcompanyId"].ToString() == "20" && variable.VarNewQualitySize == "1")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "20" && variable.VarNewQualitySize == "1")
                     {
                         tbEffectiveDate.Text = Convert.ToString(Convert.ToDateTime(ds.Tables[0].Rows[0]["AddDate"].ToString()).ToString("dd-MMM-yyyy"));
                     }

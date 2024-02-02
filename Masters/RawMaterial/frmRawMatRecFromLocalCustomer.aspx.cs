@@ -11,17 +11,17 @@ public partial class Masters_RawMaterial_frmRawMatRecFromLocalCustomer : System.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
 
         }
         if (!IsPostBack)
         {
-            string Qry = @"Select Distinct CI.CompanyId,CompanyName from Companyinfo CI Inner Join Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by CompanyName
-            Select Customerid,CustomerCode from Customerinfo  Where MasterCompanyId=" + Session["varCompanyId"] + @" order by Customercode
+            string Qry = @"Select Distinct CI.CompanyId,CompanyName from Companyinfo CI Inner Join Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by CompanyName
+            Select Customerid,CustomerCode from Customerinfo  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode
             select Category_Id,Category_Name from item_Category_Master ICM inner join CategorySeparate CS on ICM.Category_id=cs.CategoryId
-            And CS.id=1 And CS.MasterCompanyId=" + Session["VarcompanyId"] + @"
+            And CS.id=1 And CS.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
             select godownId,GodownName from GodownMaster";
             DataSet ds;
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Qry);
@@ -45,7 +45,7 @@ public partial class Masters_RawMaterial_frmRawMatRecFromLocalCustomer : System.
     protected void LabelChange()
     {
         string[] ParameterList = new string[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt16(Session["varcompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt16(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lbldesignname.Text = ParameterList[1];
         lblcolorname.Text = ParameterList[2];
@@ -76,7 +76,7 @@ public partial class Masters_RawMaterial_frmRawMatRecFromLocalCustomer : System.
             sz.Visible = false;
             string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                           " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                          " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                          " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -89,15 +89,15 @@ public partial class Masters_RawMaterial_frmRawMatRecFromLocalCustomer : System.
                             break;
                         case "2":
                             dsn.Visible = true;
-                            UtilityModule.ConditionalComboFill(ref dddesign, "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varCompanyId"] + " Order By designName ", true, "--Select Design--");
+                            UtilityModule.ConditionalComboFill(ref dddesign, "select distinct designId, designName from Design Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By designName ", true, "--Select Design--");
                             break;
                         case "3":
                             clr.Visible = true;
-                            UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varCompanyId"] + " Order By colorname ", true, "--Select Color--");
+                            UtilityModule.ConditionalComboFill(ref ddcolor, "select distinct colorid, colorname from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By colorname ", true, "--Select Color--");
                             break;
                         case "4":
                             shp.Visible = true;
-                            UtilityModule.ConditionalComboFill(ref ddshape, "select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varCompanyId"] + "  Order By ShapeName ", true, "--Select Shape--");
+                            UtilityModule.ConditionalComboFill(ref ddshape, "select distinct ShapeId, ShapeName from shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By ShapeName ", true, "--Select Shape--");
                             break;
                         case "5":
                             sz.Visible = true;
@@ -105,7 +105,7 @@ public partial class Masters_RawMaterial_frmRawMatRecFromLocalCustomer : System.
                             break;
                         case "6":
                             shd.Visible = true;
-                            UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varCompanyId"] + " Order By ShadeColorName ", true, "--Select ShadeColor--");
+                            UtilityModule.ConditionalComboFill(ref ddlshade, "select distinct ShadecolorId, ShadeColorName from ShadeColor Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ShadeColorName ", true, "--Select ShadeColor--");
                             break;
                     }
                 }
@@ -118,13 +118,13 @@ public partial class Masters_RawMaterial_frmRawMatRecFromLocalCustomer : System.
     }
     protected void ddCatagory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dditemname, "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name ", true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref dditemname, "select distinct item_id,item_name  from ITEM_MASTER where category_id=" + ddCatagory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name ", true, "--Select Item--");
 
         ddlcategorychange();
     }
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dquality, "select distinct qualityid, qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By qualityname ", true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref dquality, "select distinct qualityid, qualityname from quality where item_id=" + dditemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By qualityname ", true, "--Select Item--");
     }
     protected void btnSave_Click(object sender, EventArgs e)
     {
@@ -178,8 +178,8 @@ public partial class Masters_RawMaterial_frmRawMatRecFromLocalCustomer : System.
             array[12].Value = "Without Lot No";
             array[13].Value = txtRecQty.Text;
             array[14].Value = Session["Varuserid"];
-            array[15].Value = Session["varcompanyId"];
-            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            array[15].Value = Session["varMasterCompanyIDForERP"];
+            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             array[16].Value = varfinishedid;
             array[17].Direction = ParameterDirection.Output;
             //Insert Date

@@ -11,7 +11,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
             string str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName ";
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName ";
             if (variable.VarYARNOPENINGISSUEEMPWISE == "1")
             {
                 lblyarnopendept.Text = "Employee Name";
@@ -40,7 +40,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
                  Select ID, BranchName 
                     From BRANCHMASTER BM(nolock) 
                     JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @"
+                    Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
                 Select ConeType, ConeType From ConeMaster Order By SrNo ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -85,14 +85,14 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
             {
                 TDBinno.Visible = true;
             }
-            if (Session["varcompanyid"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 Tdcustcode.Visible = false;
                 Tdorderno.Visible = false;
                 Tdrate.Visible = false;
             }
 
-            if ((Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28") && (Convert.ToInt32(Session["usertype"])) != 1)
+            if ((Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28") && (Convert.ToInt32(Session["usertype"])) != 1)
             {
                 txtrate.Enabled = false;
             }
@@ -144,7 +144,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
     {
         string str = "select Item_Id,ITEM_NAME from Item_master Where CATEGORY_ID=" + ddCatagory.SelectedValue + " order by ITEM_NAME";
 
-        if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
         {
             str = @"Select Distinct VF.Item_ID, VF.Item_NAME 
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 
@@ -168,7 +168,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
 
             str = "select Distinct QualityId,QualityName from Quality Where Item_Id=" + dditemname.SelectedValue + " order by QualityName";
 
-            if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
             {
                 str = @"Select Distinct VF.QualityId, VF.QualityName 
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 
@@ -187,7 +187,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
         {
             str = "select Distinct designId,designName from V_FinishedItemDetail vf  Where Item_Id=" + dditemname.SelectedValue + " order by designname";
 
-            if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
             {
                 str = @"Select Distinct VF.DesignID, VF.DesignName
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 
@@ -205,7 +205,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
         {
             str = "select Distinct colorid,colorname from V_FinishedItemDetail vf  Where Item_Id=" + dditemname.SelectedValue + " order by Colorname";
 
-            if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
             {
                 str = @"Select Distinct VF.ColorID, VF.ColorName
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 
@@ -225,7 +225,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
 
             str = "select Distinct shapeid,shapename from V_FinishedItemDetail vf  Where Item_Id=" + dditemname.SelectedValue + " order by shapename";
 
-            if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
             {
                 str = @"Select Distinct VF.ShapeId, VF.ShapeName
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 
@@ -244,7 +244,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
         {
             str = "select shadecolorid,shadecolorname from shadecolor   order by shadecolorname";
 
-            if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
             {
                 str = @"Select Distinct VF.ShadecolorId, VF.ShadeColorName
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 
@@ -262,7 +262,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = @"select Distinct U.UnitId,U.UnitName from ITEM_MASTER IM inner Join Unit U on IM.UnitTypeID=U.UnitTypeID Where Im.Item_id=" + dditemname.SelectedValue + @" order by U.UnitName
-                     Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order by GodownName
+                     Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                      select godownid From Modulewisegodown Where ModuleName='" + Page.Title + "'";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         UtilityModule.ConditionalComboFillWithDS(ref ddlunit, ds, 0, false, "");
@@ -299,7 +299,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
 
         str = "select Distinct sizeid," + size + " from V_FinishedItemDetail vf Where ITEM_ID=" + dditemname.SelectedValue + " and vf.shapeid=" + ddshape.SelectedValue + " order by " + size;
 
-        if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
         {
             str = @"Select Distinct VF.SizeId, VF." + size + @" 
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 
@@ -322,7 +322,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
     }
     protected void DDGodown_SelectedIndexChanged(object sender, EventArgs e)
     {
-        int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         ViewState["varfinishedid"] = varfinishedid;
         Filllotno(sender);
     }
@@ -387,7 +387,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
         {
             if (DDorderno.SelectedIndex <= 0)
             {
@@ -403,7 +403,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, Tran, ddlshade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             SqlParameter[] param = new SqlParameter[30];
 
             param[0] = new SqlParameter("@ID", SqlDbType.Int);
@@ -718,7 +718,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
     {
         ViewState["OrderCategoryId"] = 0;
 
-        if (Session["varcompanyid"].ToString() == "16")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         {
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select OrderCategoryId From OrderMaster(Nolock) Where OrderID = " + DDorderno.SelectedValue);
             if (ds.Tables[0].Rows.Count > 0)
@@ -727,7 +727,7 @@ public partial class Masters_YarnOpening_frmyarnopeningIssue : System.Web.UI.Pag
             }
         }
 
-        if (Session["varcompanyid"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" && Convert.ToInt32(ViewState["OrderCategoryId"]) == 1)
         {
             UtilityModule.ConditionalComboFill(ref ddCatagory, @"Select Distinct VF.CATEGORY_ID, VF.CATEGORY_NAME 
                 From ORDER_CONSUMPTION_DETAIL OCD(Nolock) 

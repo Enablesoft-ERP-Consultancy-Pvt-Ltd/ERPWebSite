@@ -11,14 +11,14 @@ public partial class Masters_ReportForms_FrmOrderSummaryReport : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
-                           select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varcompanyid"] + @" order by Customercode";
+                           select CustomerId,CustomerCode+'/'+CompanyName from Customerinfo Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -194,7 +194,7 @@ public partial class Masters_ReportForms_FrmOrderSummaryReport : System.Web.UI.P
 
             for (int i = 0; i < GVDetails.Columns.Count; i++)
             {
-                if (Session["varcompanyId"].ToString() == "39")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "39")
                 {
                     if (GVDetails.Columns[i].HeaderText == "BALANCE" || GVDetails.Columns[i].HeaderText == "DISPATCHED")
                     {

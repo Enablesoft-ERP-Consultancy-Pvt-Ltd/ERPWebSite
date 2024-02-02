@@ -10,13 +10,13 @@ public partial class Masters_Loom_frmLoomMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = "select CI.CompanyId,CompanyName From CompanyInfo CI inner Join Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
+            string str = "select CI.CompanyId,CompanyName From CompanyInfo CI inner Join Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
                           select Unitsid,Unitname from Units order by unitname
                           select shapeid,Shapename from shape order by shapeid
                           select val,Type from sizetype";
@@ -36,7 +36,7 @@ public partial class Masters_Loom_frmLoomMaster : System.Web.UI.Page
 
             UtilityModule.ConditionalComboFill(ref DDSupervisorName, "select SupervisorId,SupervisorName from SupervisorMaster", true, "--Select Supervisor--");
 
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 22: //for Diamond Export
                     TDSuperVisorName.Visible = true;                    
@@ -184,7 +184,7 @@ public partial class Masters_Loom_frmLoomMaster : System.Web.UI.Page
 
             for (int i = 0; i < DG.Columns.Count; i++)
             {
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     if (DG.Columns[i].HeaderText == "Supervisor Name")
                     {

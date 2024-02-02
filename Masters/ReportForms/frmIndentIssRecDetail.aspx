@@ -104,7 +104,7 @@
                 TRShadeColor.Visible = true;
                 TRExportExcel.Visible = true;
 
-                if (Session["VarCompanyId"].ToString() == "43")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
                 {
                     TRIndentRecMachineIssQtyWise.Visible = true;
                 }
@@ -216,6 +216,16 @@
                 TRExportExcel.Visible = false;
                 TRTagNo.Visible = true;
             }
+            if (RDHissabPendingIndent.Checked == true)
+            {
+                TRCustomerCode.Visible = false;
+                TRorderNo.Visible = false;
+                TRItemName.Visible = false;
+                TRQuality.Visible = false;
+                TRShadeColor.Visible = false;
+                TRIndentRecMachineIssQtyWise.Visible = false;
+
+            }
         }
     </script>
     <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -223,7 +233,7 @@
             <table width="75%">
                 <tr>
                     <td style="width: 300px" valign="top">
-                        <div style="width: 287px; padding-top: 5px; max-height: 320px; float: left; border-style: solid;
+                        <div style="width: 287px; padding-top: 5px; max-height: 340px; float: left; border-style: solid;
                             border-width: thin">
                             &nbsp;&nbsp;
                             <asp:RadioButton ID="RDProcessIssDetail" Text="INDENT ISSUE DETAIL" runat="server"
@@ -286,6 +296,9 @@
                                 &nbsp;&nbsp;  <asp:RadioButton ID="RDDyeingHouseLedgerDetail" Text="DYEING HOUSE LEDGER DETAIL" runat="server"
                                 AutoPostBack="true" CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged"
                                 Visible="false" /><br />
+                                 &nbsp;&nbsp;
+                                <asp:RadioButton ID="RDHissabPendingIndent" Text="DYEING PENDING INDENT" runat="server" AutoPostBack="true"
+                                CssClass="labelbold" GroupName="OrderType" OnCheckedChanged="RadioButton_CheckedChanged" /><br />
                                
                         </div>
                     </td>

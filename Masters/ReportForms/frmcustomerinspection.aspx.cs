@@ -13,7 +13,7 @@ public partial class Masters_ReportForms_frmcustomerinspection : System.Web.UI.P
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,7 +32,7 @@ public partial class Masters_ReportForms_frmcustomerinspection : System.Web.UI.P
                 From OrderMaster 
                 Where CompanyID = " + Session["CurrentWorkingCompanyID"] + " And Customerid=" + DDCustCode.SelectedValue + " order by CustomerOrderNo";
 
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             Str = @"select orderid,CustomerOrderNo 
                         From OrderMaster 

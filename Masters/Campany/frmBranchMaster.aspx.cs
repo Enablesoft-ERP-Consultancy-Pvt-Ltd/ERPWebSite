@@ -11,7 +11,7 @@ public partial class Masters_Campany_frmBranchMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Campany_frmBranchMaster : CustomPage
     private void Fill_Combo()
     {
         DataSet ds = null;
-        string strsql = "select CompanyName,CompanyId from CompanyInfo Where MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = "select CompanyName,CompanyId from CompanyInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         cmbCompany.DataSource = ds;
         cmbCompany.DataTextField = "CompanyName";
@@ -54,7 +54,7 @@ public partial class Masters_Campany_frmBranchMaster : CustomPage
         {
             string sql = @"select BranchId as SrNo,BranchName,Address, PhoneNo,FaxNo,ContactPerson,
                         (select CompanyName from CompanyInfo where Branch.CompanyId=CompanyInfo.CompanyId)as CompanyName
-                     from Branch where MasterCompanyId=" + Session["varCompanyId"] + @"
+                     from Branch where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     And CompanyID = " + cmbCompany.SelectedValue + " order by BranchId ";
             ds = SqlHelper.ExecuteDataset(sql);
         }
@@ -141,7 +141,7 @@ public partial class Masters_Campany_frmBranchMaster : CustomPage
                 _arrPara[5].Value = txtFaxNo.Text;
                 _arrPara[6].Value = txtCPerson.Text.ToUpper();
                 _arrPara[7].Value = Session["varuserid"].ToString();
-                _arrPara[8].Value = Session["varCompanyId"].ToString();
+                _arrPara[8].Value = Session["varMasterCompanyIDForERP"].ToString();
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_BRANCH", _arrPara);
                 Tran.Commit();
                 lbl.Visible = true;
@@ -192,11 +192,11 @@ public partial class Masters_Campany_frmBranchMaster : CustomPage
             string strsql;
             if (btnSave.Text == "Update")
             {
-                strsql = "select BranchName from Branch where BranchId!='" + ViewState["id"].ToString() + "' and  BranchName='" + txtBranchName.Text + "' And  MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select BranchName from Branch where BranchId!='" + ViewState["id"].ToString() + "' and  BranchName='" + txtBranchName.Text + "' And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select BranchName from Branch where BranchName='" + txtBranchName.Text + "' And  MasterCompanyId=" + Session["varCompanyid"];
+                strsql = "select BranchName from Branch where BranchName='" + txtBranchName.Text + "' And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             DataSet ds = SqlHelper.ExecuteDataset(strsql);
             if (ds.Tables[0].Rows.Count > 0)

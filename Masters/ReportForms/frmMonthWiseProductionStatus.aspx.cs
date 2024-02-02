@@ -12,7 +12,7 @@ public partial class Masters_ReportForms_frmMonthWiseProductionStatus : System.W
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,7 +21,7 @@ public partial class Masters_ReportForms_frmMonthWiseProductionStatus : System.W
             string str = @"select CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.COmpanyid And CA.Userid=" + Session["varuserid"] + @"
                          select shapeid,shapeName from Shape order by ShapeId
                          select year,year as year1 from session order by year desc
-                         Select Distinct CI.Customerid,CI.Customercode  from CustomerInfo CI Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" order by CustomerId";
+                         Select Distinct CI.Customerid,CI.Customercode  from CustomerInfo CI Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CustomerId";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, false, "");
@@ -52,22 +52,22 @@ public partial class Masters_ReportForms_frmMonthWiseProductionStatus : System.W
     {
         if (DDShape.SelectedItem.Text.Trim() != "ALL")
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizeft AS SIZENAME FROM SIZE WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SIZEID", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizeft AS SIZENAME FROM SIZE WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SIZEID", true, "ALL");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizeft AS SIZENAME FROM SIZE Where MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SIZEID", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizeft AS SIZENAME FROM SIZE Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SIZEID", true, "ALL");
         }
     }
     protected void chkmtr_CheckedChanged(object sender, EventArgs e)
     {
         if (chkmtr.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizemtr AS SIZENAME FROM SIZE WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SIZEID", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizemtr AS SIZENAME FROM SIZE WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SIZEID", true, "ALL");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizeft AS SIZENAME FROM SIZE WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SIZEID", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDSize, "SELECT SIZEID, Sizeft AS SIZENAME FROM SIZE WHERE SHAPEID=" + DDShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SIZEID", true, "ALL");
         }
     }
 
@@ -238,7 +238,7 @@ public partial class Masters_ReportForms_frmMonthWiseProductionStatus : System.W
     protected void DDcustomer_SelectedIndexChanged(object sender, EventArgs e)
     {
         string Str =@"Select Distinct OM.OrderId,OM.LocalOrder+' / '+OM.CustomerOrderNo from OrderMaster OM Where  OM.Customerid=" + DDcustomer.SelectedValue + " And OM.CompanyId=" + DDCompany.SelectedValue;
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             Str =@"Select Distinct OM.OrderId,OM.LocalOrder+' / '+OM.CustomerOrderNo from OrderMaster OM Where OM.Status = 0 And OM.Customerid=" + DDcustomer.SelectedValue + " And OM.CompanyId=" + DDCompany.SelectedValue;
         }

@@ -10,7 +10,6 @@ using System.IO;
 using System.Data;
 using System.Data.SqlClient;
 
-
 public partial class RptDemo : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
@@ -23,21 +22,18 @@ public partial class RptDemo : System.Web.UI.Page
         ConnectionInfo ConInfo = new ConnectionInfo();
         Tables Tbls;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-       ConInfo.ServerName = con.DataSource;
-       ConInfo.DatabaseName = con.Database;
-       ConInfo.UserID = "sa";
-       ConInfo.Password = "eit";
-       Tbls = cryRpt.Database.Tables;
-       foreach (CrystalDecisions.CrystalReports.Engine.Table tbl1 in Tbls)
+        ConInfo.ServerName = con.DataSource;
+        ConInfo.DatabaseName = con.Database;
+        ConInfo.UserID = "sa";
+        ConInfo.Password = "eit";
+        Tbls = cryRpt.Database.Tables;
+        foreach (CrystalDecisions.CrystalReports.Engine.Table tbl1 in Tbls)
         {
             TblLogonInfo = tbl1.LogOnInfo;
             TblLogonInfo.ConnectionInfo = ConInfo;
             tbl1.ApplyLogOnInfo(TblLogonInfo);
         }
-       CrystalReportViewer1.ReportSource = cryRpt;
-       CrystalReportViewer1.RefreshReport();
-
-
-
+        CrystalReportViewer1.ReportSource = cryRpt;
+        CrystalReportViewer1.RefreshReport();
     }
 }

@@ -11,7 +11,7 @@ public partial class Masters_Carpet_QualityMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -115,7 +115,7 @@ public partial class Masters_Carpet_QualityMaster : CustomPage
             _arrPara[1].Value = txtQualityName.Text;
             _arrPara[2].Value = txtQualityCode.Text;
             _arrPara[3].Value = Session["varuserid"].ToString();
-            _arrPara[4].Value = Session["varCompanyId"].ToString();
+            _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
             con.Open();
             SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Quality", _arrPara);
 

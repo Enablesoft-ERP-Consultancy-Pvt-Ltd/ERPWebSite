@@ -11,7 +11,7 @@ public partial class Masters_Packing_frmpackingForHomefurn : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,8 +20,8 @@ public partial class Masters_Packing_frmpackingForHomefurn : System.Web.UI.Page
             string Qry = @" Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
-                    Select CustomerId,CustomerCode + SPACE(5)+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CustomerCode
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
+                    Select CustomerId,CustomerCode + SPACE(5)+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CustomerCode
                     select Distinct Unitid,UnitName from Unit order by UnitId ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Qry);
@@ -66,7 +66,7 @@ public partial class Masters_Packing_frmpackingForHomefurn : System.Web.UI.Page
         {
             DDOrderNo.SelectedIndex = -1;
             str = @"select ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate CS 
-                  on ICM.CATEGORY_ID=CS.Categoryid and cs.id=0 and ICM.MasterCompanyid=" + Session["varcompanyid"] + " order by ICM.CATEGORY_NAME";
+                  on ICM.CATEGORY_ID=CS.Categoryid and cs.id=0 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by ICM.CATEGORY_NAME";
         }
         else
         {
@@ -339,7 +339,7 @@ public partial class Masters_Packing_frmpackingForHomefurn : System.Web.UI.Page
             }
             arr[7].Value = VarInvoiceYear;
             arr[8].Value = txtcrtnFrom.Text;
-            int varfinishedid = UtilityModule.getItemFinishedId(DDItemName, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDShade, "", Convert.ToInt32(Session["varCompanyId"]));
+            int varfinishedid = UtilityModule.getItemFinishedId(DDItemName, DDQuality, DDDesign, DDColor, DDShape, DDSize, TxtProdCode, Tran, DDShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             arr[9].Value = varfinishedid;
             arr[10].Value = chkwithoutorder.Checked == true ? "0" : DDOrderNo.SelectedValue;
             arr[11].Value = ParameterDirection.InputOutput;
@@ -359,7 +359,7 @@ public partial class Masters_Packing_frmpackingForHomefurn : System.Web.UI.Page
             arr[24].Value = txtcrtnwt.Text == "" ? "0" : txtcrtnwt.Text;
             arr[25].Value = txtTgrwt.Text == "" ? "0" : txtTgrwt.Text;
             arr[26].Value = Session["varuserid"];
-            arr[27].Value = Session["varcompanyId"];
+            arr[27].Value = Session["varMasterCompanyIDForERP"];
             arr[28].Direction = ParameterDirection.Output;
             arr[29].Value = DDsizetype.SelectedValue;
             arr[30].Value = txtbarcode.Text;

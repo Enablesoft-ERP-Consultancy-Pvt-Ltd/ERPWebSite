@@ -15,7 +15,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-         if (Session["varCompanyId"] == null)
+         if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,15 +24,15 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
          lblresdate.Text = DateTime.Today.ToShortDateString();
          if (!IsPostBack)
          {
-             UtilityModule.ConditionalComboFill(ref ddlcompany, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By CompanyName", true, "--SelectCompany");
+             UtilityModule.ConditionalComboFill(ref ddlcompany, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CompanyName", true, "--SelectCompany");
 
              if (ddlcompany.Items.Count > 0)
              {
                  ddlcompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                  ddlcompany.Enabled = false;
              }
-             string str = @"select Customerid,Customercode From Customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by Customercode
-                         SELECT CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM Where category_name='RAW MATERIAL' And ICM.MasterCompanyId=" + Session["varCompanyId"] + @" 
+             string str = @"select Customerid,Customercode From Customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode
+                         SELECT CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM Where category_name='RAW MATERIAL' And ICM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                          select val,Type from SizeType Order by val
                          select WithBuyerCode from Mastersetting;";
 
@@ -44,7 +44,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
                  ddlcategory.SelectedIndex = 1;
                  ddlcategory.Enabled = false;
              }
-             UtilityModule.ConditionalComboFill(ref ddItemname, "select item_id,item_name from item_master where category_id= "+ddlcategory.SelectedValue+" And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name", true, "--Select--");
+             UtilityModule.ConditionalComboFill(ref ddItemname, "select item_id,item_name from item_master where category_id= "+ddlcategory.SelectedValue+" And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name", true, "--Select--");
             
          }
 
@@ -94,7 +94,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
     }
     protected void fillquality()
     {
-        UtilityModule.ConditionalComboFill(ref ddLocalQuality, @"SELECT QualityId,QualityName FROM QUALITY WHERE ITEM_ID=" + ddItemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "  Order By QualityId desc", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddLocalQuality, @"SELECT QualityId,QualityName FROM QUALITY WHERE ITEM_ID=" + ddItemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By QualityId desc", true, "--Select--");
     }
     protected void filldesign()
     {
@@ -119,8 +119,8 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
     
     }
     protected void fillChemical()
-    {//select item_id,item_name from item_master where category_id= "+ddlcategory.SelectedValue+" And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name
-        string str = "SELECT ROW_NUMBER() over(order by (select 1)) as SRNO,item_name as QualityName,item_id as qualityid,0 as PORTION,0 as qty,0 as prate,0 as cost FROM item_master WHERE category_id=51 And MasterCompanyId=" + Session["varCompanyId"] + " and    dyechem=1    Order By item_id desc";
+    {//select item_id,item_name from item_master where category_id= "+ddlcategory.SelectedValue+" And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name
+        string str = "SELECT ROW_NUMBER() over(order by (select 1)) as SRNO,item_name as QualityName,item_id as qualityid,0 as PORTION,0 as qty,0 as prate,0 as cost FROM item_master WHERE category_id=51 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and    dyechem=1    Order By item_id desc";
         //                      select isnull((select processId From Item_Process Where QualityId=" + DDQuality.SelectedValue + " and SeqNo=IP.SeqNo-1),0) as FromProcessid From Item_Process IP Where QualityId=" + DDQuality.SelectedValue + " and processid=" + DDTOProcess.SelectedValue;
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -130,8 +130,8 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
 
     }
     protected void fillpretreatment()
-    {//select item_id,item_name from item_master where category_id= "+ddlcategory.SelectedValue+" And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name
-        string str = "SELECT ROW_NUMBER() over(order by (select 1)) as SRNO,item_name as QualityName,item_id as qualityid,0 as PORTION,0 as qty,0 as prate,0 as cost FROM item_master WHERE category_id=51 And MasterCompanyId=" + Session["varCompanyId"] + " and  PRETREAMENT=1   Order By item_name ";
+    {//select item_id,item_name from item_master where category_id= "+ddlcategory.SelectedValue+" And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name
+        string str = "SELECT ROW_NUMBER() over(order by (select 1)) as SRNO,item_name as QualityName,item_id as qualityid,0 as PORTION,0 as qty,0 as prate,0 as cost FROM item_master WHERE category_id=51 And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and  PRETREAMENT=1   Order By item_name ";
         //                      select isnull((select processId From Item_Process Where QualityId=" + DDQuality.SelectedValue + " and SeqNo=IP.SeqNo-1),0) as FromProcessid From Item_Process IP Where QualityId=" + DDQuality.SelectedValue + " and processid=" + DDTOProcess.SelectedValue;
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -161,8 +161,8 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
         Label qualityid = ((Label)row.FindControl("lbldgqualityid"));
         DropDownList dgcolor = ((DropDownList)row.FindControl("dgcolor"));
         
-        //UtilityModule.ConditionalComboFill(ref dgcolor, "select  ColorId,ColorName from Color Where  design=" + dgdesign.SelectedValue + " and MasterCompanyId=" + Session["varCompanyId"] + " Order By ColorName", true, "--Select Color--");
-        UtilityModule.ConditionalComboFill(ref dgcolor, "select shadecolorid,shadecolorname from ShadeColor_res where itemid=" + dddyesstuff.SelectedValue + " and mastercompanyId=" + Session["varCompanyId"] + " and brandid=" + dgdesign.SelectedValue + " order by shadecolorname desc", true, "--Select Color--");
+        //UtilityModule.ConditionalComboFill(ref dgcolor, "select  ColorId,ColorName from Color Where  design=" + dgdesign.SelectedValue + " and MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ColorName", true, "--Select Color--");
+        UtilityModule.ConditionalComboFill(ref dgcolor, "select shadecolorid,shadecolorname from ShadeColor_res where itemid=" + dddyesstuff.SelectedValue + " and mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " and brandid=" + dgdesign.SelectedValue + " order by shadecolorname desc", true, "--Select Color--");
     }
     protected void dgcolor_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -540,7 +540,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
                     Label qty = ((Label)grdreceipe.Rows[i].FindControl("lblresqty"));
                     Label unit = ((Label)grdreceipe.Rows[i].FindControl("lblresunit"));
                     DataRow dr = dtrecords.NewRow();
-                    int resFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(dddyesstuff.SelectedValue), 0, Convert.ToInt32(resdesign.SelectedValue), 0, 0, 0, Convert.ToInt32(rescolor.SelectedValue), "", Convert.ToInt32(Session["varCompanyId"]));
+                    int resFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(dddyesstuff.SelectedValue), 0, Convert.ToInt32(resdesign.SelectedValue), 0, 0, 0, Convert.ToInt32(rescolor.SelectedValue), "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     dr["rfinishedid"] = resFinishedId;
                     dr["rtype"] = 3;
                     dr["rUnitid"] = resunit.SelectedValue;
@@ -590,7 +590,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
                     Label qty = ((Label)grdpretreatment.Rows[i].FindControl("lblprechemresqty"));
                    // Label unit = ((Label)grdpretreatment.Rows[i].FindControl("lblresunit"));
                     DataRow dr = dtpre.NewRow();
-                    int resFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(resdesign.SelectedValue), 0, 0, 0, 0, 0, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                    int resFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(resdesign.SelectedValue), 0, 0, 0, 0, 0, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     dr["rfinishedid"] = resFinishedId;
                     dr["rtype"] = 1;
                     dr["rUnitid"] = resunit.SelectedValue;
@@ -641,7 +641,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
                     Label qty = ((Label)dgchemical.Rows[i].FindControl("lblchemresqty"));
                     // Label unit = ((Label)grdpretreatment.Rows[i].FindControl("lblresunit"));
                     DataRow dr = dtchem.NewRow();
-                    int resFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(resdesign.SelectedValue), 0, 0, 0, 0, 0, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                    int resFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(resdesign.SelectedValue), 0, 0, 0, 0, 0, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     dr["rfinishedid"] = resFinishedId;
                     dr["rtype"] = 2;
                     dr["rUnitid"] = resunit.SelectedValue;
@@ -672,7 +672,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
             SqlTransaction Tran = con.BeginTransaction();
             try
             {
-                int ItemFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemname.SelectedValue), Convert.ToInt32(ddLocalQuality.Text), 0, 0, 0, 0, Convert.ToInt32(ddlcolor.SelectedValue), "", Convert.ToInt32(Session["varCompanyId"]));
+                int ItemFinishedId = UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemname.SelectedValue), Convert.ToInt32(ddLocalQuality.Text), 0, 0, 0, 0, Convert.ToInt32(ddlcolor.SelectedValue), "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 SqlParameter[] param = new SqlParameter[16];
                 param[0] = new SqlParameter("@resId", SqlDbType.Int);
                 param[0].Value = 0;
@@ -680,7 +680,7 @@ public partial class Master_Recipe_RecipeMaster : System.Web.UI.Page
                 param[1] = new SqlParameter("@companyid", ddlcompany.SelectedValue);
                 param[2] = new SqlParameter("@IFINISHEDID", ItemFinishedId);
                 param[3] = new SqlParameter("@USERID", Session["varuserid"]);
-                param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 param[5] = new SqlParameter("@dtrecords", dtrecords);
                 param[6] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[6].Direction = ParameterDirection.Output;

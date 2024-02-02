@@ -11,7 +11,7 @@ public partial class Masters_Campany_frmdestinationmaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -54,7 +54,7 @@ public partial class Masters_Campany_frmdestinationmaster : System.Web.UI.Page
             param[19] = new SqlParameter("@country", txtcountry.Text);
             param[20] = new SqlParameter("@Portofdisc", txtportofdisch.Text);
             param[21] = new SqlParameter("@userid", Session["varuserid"]);
-            param[22] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[22] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[23] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[23].Direction = ParameterDirection.Output;
             param[24] = new SqlParameter("@Rec_Gstin", (txtreceivegstin.Text).Trim());

@@ -11,14 +11,14 @@ public partial class frmSizeForLocal : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             UtilityModule.ConditionalComboFill(ref ddunit, "Select UnitId,UnitName From Unit Where UnitTypeId=1 Order By UnitId", true, "--Select--");
-            UtilityModule.ConditionalComboFill(ref ddshape, "select ShapeId,ShapeName from Shape Where MasterCompanyId=" + Session["varCompanyId"] + " order by ShapeName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddshape, "select ShapeId,ShapeName from Shape Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShapeName", true, "--Select--");
             ddunit.SelectedIndex = 1;
             if (ddshape.Items.Count > 0)
             {
@@ -56,7 +56,7 @@ public partial class frmSizeForLocal : CustomPage
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblshapeyname.Text = ParameterList[3];
     }
     private void fill_grid()
@@ -73,7 +73,7 @@ public partial class frmSizeForLocal : CustomPage
         {
             string strsql = @"Select S.Sizeid as Sr_No,Sh.ShapeName,S.SizeFt As SizeType,S.WidthFt As Size
                             FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
-                            S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " Order By S.SizeFt";
+                            S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By S.SizeFt";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -395,7 +395,7 @@ public partial class frmSizeForLocal : CustomPage
         try
         {
             con.Open();
-            string Str = "Select * from Size Where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+            string Str = "Select * from Size Where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             Str = Str + " And  WidthMtr=" + Convert.ToDouble(TxtLocalSize.Text) + " And SizeMtr='" + TxtSizeType.Text + "' And LengthMtr=" + Convert.ToDouble(TxtLocalSize.Text) + " And HeightMtr=" + Convert.ToDouble(TxtLocalSize.Text) + "";
 
@@ -451,7 +451,7 @@ public partial class frmSizeForLocal : CustomPage
 
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 //int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarCompanyno From MasterSetting"));
-                if (Session["varCompanyId"] =="3")
+                if (Session["varMasterCompanyIDForERP"] =="3")
                 {
                     if (TxtLocalSize.Text == "0.00")
                     {
@@ -481,7 +481,7 @@ public partial class frmSizeForLocal : CustomPage
                         _arrPara[22].Value = TxtSizeType.Text.ToUpper();
                     }
                 }
-                else if (Session["varCompanyId"] =="6")
+                else if (Session["varMasterCompanyIDForERP"] =="6")
                 {
                     if (TxtLocalSize.Text == "0.00")
                     {
@@ -513,7 +513,7 @@ public partial class frmSizeForLocal : CustomPage
                 _arrPara[13].Value = txtAreaMtr.Text != "" ? Convert.ToDouble(txtAreaMtr.Text) : 0;
                 _arrPara[14].Value = txtVolMtr.Text != "" ? Convert.ToDouble(txtVolMtr.Text) : 0; 
                 _arrPara[15].Value = Session["varuserid"].ToString();
-                _arrPara[16].Value = Session["varCompanyId"].ToString();
+                _arrPara[16].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[17].Value = TxtLocalSize.Text;
                 _arrPara[18].Value = TxtLocalSize.Text;
                 _arrPara[19].Value = TxtLocalSize.Text;
@@ -555,7 +555,7 @@ public partial class frmSizeForLocal : CustomPage
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         Double VarHeight = txtheightFt.Text != "" ? Convert.ToInt32(txtheightFt.Text) : 0;
-        string strsql = @"Select * from Size Where UnitId=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And Width='" + txtwidthFt.Text + "' And Length='" + txtlengthFt.Text + "' And HeightFt='" + VarHeight + "' and SizeID !='" + txtid.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Size Where UnitId=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And Width='" + txtwidthFt.Text + "' And Length='" + txtlengthFt.Text + "' And HeightFt='" + VarHeight + "' and SizeID !='" + txtid.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -595,7 +595,7 @@ public partial class frmSizeForLocal : CustomPage
         //Session["id"] = id;
         ViewState["id"] = id;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Size WHERE SizeId=" + id + " And MasterCompanyid=" + Session["varCompanyId"] +"");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select * from Size WHERE SizeId=" + id + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] +"");
         try
         {
             if (ds.Tables[0].Rows.Count == 1)
@@ -734,12 +734,12 @@ public partial class frmSizeForLocal : CustomPage
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select SIZE_ID from ITEM_PARAMETER_MASTER where MasterCompanyId=" +Session["varCompanyId"] + " And SIZE_ID=" + ViewState["id"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select SIZE_ID from ITEM_PARAMETER_MASTER where MasterCompanyId=" +Session["varMasterCompanyIDForERP"] + " And SIZE_ID=" + ViewState["id"].ToString()));
             if (id <= 0)
             {
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Size where MasterCompanyid=" + Session["varCompanyid"] + " And   SizeId=" + ViewState["id"].ToString());
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Size where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " And   SizeId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 lbl.Visible = true;
                 lbl.Text = "Value deleted...";
             }

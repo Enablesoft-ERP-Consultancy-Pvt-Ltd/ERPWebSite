@@ -11,14 +11,14 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             string str = "";
-            str = @"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname";
+            str = @"Select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname";
            
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, ds, 0, true, "Select Comp Name");
@@ -138,7 +138,7 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
             arr[14].Value = txtremarks.Text;
             arr[15].Value = ddGateType.SelectedValue;  
             arr[16].Value = Session["varuserid"];
-            arr[17].Value = Session["varCompanyId"];
+            arr[17].Value = Session["varMasterCompanyIDForERP"];
             arr[18].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[PRO_GateInOutRegister]", arr);
@@ -184,7 +184,7 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
         param[0] = new SqlParameter("@GateTypeInOut", ddGateType.SelectedValue);
         param[1] = new SqlParameter("@CompanyId", ddCompName.SelectedValue);
         param[2] = new SqlParameter("@UserID", Session["varuserid"]);
-        param[3] = new SqlParameter("@MASTERCOMPANYID", Session["varCompanyId"]);
+        param[3] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
         param[4] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
         param[4].Direction = ParameterDirection.Output;
 
@@ -234,7 +234,7 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
         {
             if (ddGateType.SelectedValue == "1")
             {
-                if (Session["varcompanyid"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     if (gvdetail.Columns[i].HeaderText == "GPNo" || gvdetail.Columns[i].HeaderText == "OutTime")
                     {
@@ -293,7 +293,7 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
             arr[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);           
            
             arr[0].Value = gvdetail.DataKeys[e.RowIndex].Value;
-            arr[1].Value = Session["varCompanyId"];           
+            arr[1].Value = Session["varMasterCompanyIDForERP"];           
             arr[2].Value = Session["varuserid"];
             arr[3].Direction = ParameterDirection.Output;
            
@@ -354,13 +354,13 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
         SqlParameter[] param = new SqlParameter[4];
         param[0] = new SqlParameter("@GateTypeInOut", ddGateType.SelectedValue);
         param[1] = new SqlParameter("@GateInOutNo", name);
-        param[2] = new SqlParameter("@mastercompanyid",Convert.ToInt32(Session["varCompanyId"]));
+        param[2] = new SqlParameter("@mastercompanyid",Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         param[3] = new SqlParameter("@GateInOutRegisterid", id);
         
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetGateInOutRegisterDetailForPreview", param);
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if (Convert.ToInt32(Session["varCompanyId"]) == 44)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
             {
                 Session["rptFileName"] = "~\\Reports\\RptGateInOutMaterialRegisterDetailagni.rpt";
             }
@@ -410,7 +410,7 @@ public partial class Masters_RawMaterial_FrmGateInRegister : System.Web.UI.Page
         param[1] = new SqlParameter("@CompanyId", ddCompName.SelectedValue);
         param[2] = new SqlParameter("@SelectedDate", txtDateForEdit.Text);
         param[3] = new SqlParameter("@UserID", Session["varuserid"]);
-        param[4] = new SqlParameter("@MASTERCOMPANYID", Session["varCompanyId"]);
+        param[4] = new SqlParameter("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
         param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
         param[5].Direction = ParameterDirection.Output;
 

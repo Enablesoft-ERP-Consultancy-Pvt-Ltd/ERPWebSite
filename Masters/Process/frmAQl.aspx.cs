@@ -10,7 +10,7 @@ public partial class Masters_Process_frmAQl : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -19,7 +19,7 @@ public partial class Masters_Process_frmAQl : System.Web.UI.Page
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock)
                         JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                         SELECT UNITSID,UNITNAME FROM UNITS ORDER BY UNITNAME
                         SELECT PROCESS_NAME_ID,PROCESS_NAME FROM PROCESS_NAME_MASTER WHERE PROCESS_NAME LIKE 'AQL%' ORDER BY PROCESS_NAME
                         SELECT Distinct IM.ITEM_ID,IM.ITEM_NAME FROM ITEM_MASTER IM INNER JOIN CATEGORYSEPARATE CS ON IM.CATEGORY_ID=CS.CATEGORYID AND CS.ID=0 ORDER BY ITEM_NAME
@@ -260,7 +260,7 @@ public partial class Masters_Process_frmAQl : System.Web.UI.Page
                 cmd.Parameters.AddWithValue("@dt", dt);
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
-                cmd.Parameters.AddWithValue("@mastercompanyid", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@Unitname", DDUnit.SelectedItem.Text);
              
                 cmd.ExecuteNonQuery();

@@ -18,7 +18,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
     int varcombo = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -27,28 +27,28 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
             str = @"Select Distinct CI.CompanyId, CI.Companyname 
             From Companyinfo CI(nolock)
             JOIN Company_Authentication CA(nolock) ON CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + @" 
-            Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CI.Companyname 
+            Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CI.Companyname 
 
             Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
             From MaterialIssueOnMachineMaster MIMM(Nolock) 
             JOIN PROCESS_NAME_MASTER PNM(nolock) ON PNM.PROCESS_NAME_ID = MIMM.ProcessId 
-            Where MIMM.MasterCompanyid = " + Session["varcompanyid"] + @" Order By MIMM.ProcessID 
+            Where MIMM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By MIMM.ProcessID 
 
             Select Distinct U.UnitsId, U.UnitName 
             From MaterialIssueOnMachineMaster MIMM(Nolock) 
             JOIN Units U(Nolock) ON U.UnitsId = MIMM.ProductionUnitId 
-            Where MIMM.MasterCompanyid = " + Session["varcompanyid"] + @"
+            Where MIMM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @"
             Order By U.UnitName
 
             Select Distinct MIMM.MachineNoId, MNM.MachineNoName 
             From MaterialIssueOnMachineMaster MIMM(Nolock) 
             JOIN MachineNoMaster MNM(Nolock) ON MNM.MachineNoID = MIMM.MachineNoId 
-            Where MIMM.MasterCompanyid = " + Session["varcompanyid"] + @" Order By MNM.MachineNoName 
+            Where MIMM.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" Order By MNM.MachineNoName 
 
             Select Distinct ic.CATEGORY_ID, ic.CATEGORY_NAME
             From ITEM_CATEGORY_MASTER IC(Nolock) 
             JOIN CategorySeparate CS(Nolock) ON CS.Categoryid = IC.CATEGORY_ID 
-            Where cs.id = 0 And IC.MasterCompanyID = " + Session["varcompanyid"] + @"
+            Where cs.id = 0 And IC.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @"
 
             Select Distinct OM.CustomerID, CI.CustomerCode 
             From OrderMaster OM(Nolock) 
@@ -109,12 +109,12 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
         UtilityModule.ConditionalComboFill(ref dditemname, @"select Distinct im.ITEM_ID, im.ITEM_NAME 
             FROM ITEM_MASTER im 
             join v_finisheditemdetail v On v.ITEM_ID = im.ITEM_ID And v.CATEGORY_ID=" + ddCatagory.SelectedValue + @" 
-            where im.MasterCompanyid=" + Session["varCompanyId"] + " Order by im.ITEM_NAME", true, "--Select Item--");
+            where im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by im.ITEM_NAME", true, "--Select Item--");
 
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM 
                       join PARAMETER_MASTER PM on IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] 
-                      where [CATEGORY_ID] = " + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      where [CATEGORY_ID] = " + ddCatagory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -188,7 +188,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
     {
         txtReceiveno.Text = "";
         HnMaterialReceiveID.Value = "0";
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         fill_combo();
     }
 
@@ -248,7 +248,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
     }
     private void quality_change()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.QualityId=" + dquality.SelectedValue + " and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.QualityId=" + dquality.SelectedValue + " and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         varcombo = 1;
         fill_combo();
     }
@@ -258,7 +258,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
     }
     private void Design_change()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.designId=" + dddesign.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.designId=" + dddesign.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dquality.Visible == true)
         {
             str = str + " and v.QualityId=" + dquality.SelectedValue + "";
@@ -272,7 +272,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
     }
     private void colour_change()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.ColorId=" + ddcolor.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + " and v.ColorId=" + ddcolor.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dddesign.Visible == true)
         {
             str = str + " and v.designId=" + dddesign.SelectedValue + "";
@@ -379,7 +379,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
         TextBox TxtProdCode = new TextBox();
         string strWeight = "0", strNoofRoll = "1";
 
-        int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        int varfinishedid = UtilityModule.getItemFinishedId(dditemname, dquality, dddesign, ddcolor, ddshape, ddsize, TxtProdCode, ddlshade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
         if (TxtMainRollWeight.Text != "")
         {
@@ -420,7 +420,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
             arr[2].Value = MasterData;
             arr[3].Value = DetailData;
             arr[4].Value = Session["varuserid"];
-            arr[5].Value = Session["varCompanyId"];
+            arr[5].Value = Session["varMasterCompanyIDForERP"];
             arr[6].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(tran, CommandType.StoredProcedure, "[Pro_SaveMaterialReceiveInRoll]", arr);
@@ -503,7 +503,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
             param[1] = new SqlParameter("@MaterialReceiveInPcsDetailID", lblMaterialReceiveInPcsDetailID.Text);
             param[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["VarUserId"]);
-            param[4] = new SqlParameter("@MasterCompanyID", Session["VarCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
             //****************
@@ -649,7 +649,7 @@ public partial class Masters_MachineProcess_FrmMaterialReceiveInRoll : System.We
     }
     private void FillShapeSelectedChange()
     {
-        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + "  and im.MasterCompanyid=" + Session["varCompanyId"] + "";
+        str = "where v.CATEGORY_ID=" + ddCatagory.SelectedValue + "  and v.item_id=" + dditemname.SelectedValue + "  and im.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (dddesign.Visible == true)
         {
             str = str + "and v.designId=" + dddesign.SelectedValue + "";

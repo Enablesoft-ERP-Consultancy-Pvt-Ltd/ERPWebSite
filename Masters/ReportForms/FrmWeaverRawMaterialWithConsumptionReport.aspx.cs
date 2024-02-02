@@ -12,13 +12,13 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialWithConsumptionRepo
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--Select--");
             if (DDCompany.Items.Count > 0)
             {
                 DDCompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -27,7 +27,7 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialWithConsumptionRepo
             
             if (DDCompany.Items.Count > 0)
             {
-                UtilityModule.ConditionalComboFill(ref DDWeaverName, "select EI.EmpId,EI.EmpName + case When isnull(Ei.empcode,'')='' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varcompanyId"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId=1 order by EmpName", true, "--Select--");
+                UtilityModule.ConditionalComboFill(ref DDWeaverName, "select EI.EmpId,EI.EmpName + case When isnull(Ei.empcode,'')='' then '' else ' ['+EI.empcode+']' end as Empname  From EmpInfo  EI inner Join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION' and Ei.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" INNER JOIN EmpProcess EP ON EP.Empid=EI.EmpId and EP.ProcessId=1 order by EmpName", true, "--Select--");
             }
             BindQualityType();
             BindItemName();
@@ -40,23 +40,23 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialWithConsumptionRepo
     {
         if (RDWeaverRawMaterial.Checked == true || RDWeaverRawLedger.Checked==true)
         {
-            string str1 = @"select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name";
+            string str1 = @"select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name";
 
             UtilityModule.ConditonalChkBoxListFill(ref chekboxlist, str1);
         }
         else if(RDWeaverRawMaterialIssueReceive.Checked==true || RDFinisherRawMaterialIssueReceive.Checked==true)
         {
-            UtilityModule.ConditionalComboFill(ref DDQualityType, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDQualityType, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=0 and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name", true, "--Select--");
         }
     }
     private void BindItemName()
     {
-        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=1 and IM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by IM.Item_Name", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDItemName, "select ITEM_ID,ITEM_NAME from ITEM_MASTER IM INNER JOIN CategorySeparate CS ON IM.CATEGORY_ID=CS.Categoryid where CS.id=1 and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by IM.Item_Name", true, "--Plz Select--");
 
     }
     private void BindGodownName()
     {
-        UtilityModule.ConditionalComboFill(ref DDGodownName, "select GodownId,GodownName from godownmaster GM  where GM.MasterCompanyid=" + Session["varCompanyId"] + @" Order by GM.GodownName", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDGodownName, "select GodownId,GodownName from godownmaster GM  where GM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" Order by GM.GodownName", true, "--Plz Select--");
                 
     } 
     protected void chekboxlist_SelectedIndexChanged(object sender, EventArgs e)
@@ -97,7 +97,7 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialWithConsumptionRepo
             _arrPara[5].Value = txtfromDate.Text;
             _arrPara[6].Value = txttodate.Text;
             _arrPara[7].Value = Session["varuserid"].ToString();
-            _arrPara[8].Value = Session["varCompanyId"].ToString();         
+            _arrPara[8].Value = Session["varMasterCompanyIDForERP"].ToString();         
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetReportWeaverRawMaterialWithConsumption", _arrPara);
 
@@ -163,7 +163,7 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialWithConsumptionRepo
             _arrPara[4].Value = txtfromDate.Text;
             _arrPara[5].Value = txttodate.Text;
             _arrPara[6].Value = Session["varuserid"].ToString();
-            _arrPara[7].Value = Session["varCompanyId"].ToString();
+            _arrPara[7].Value = Session["varMasterCompanyIDForERP"].ToString();
             
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetWeaverRawMaterialLedgerReportData", _arrPara);
@@ -224,7 +224,7 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialWithConsumptionRepo
             _arrPara[3] = new SqlParameter("@FromDate", txtfromDate.Text);
             _arrPara[4] = new SqlParameter("@ToDate", txttodate.Text);
             _arrPara[5] = new SqlParameter("@varuserid", Session["varuserid"]);
-            _arrPara[6] = new SqlParameter("@varCompanyId", Session["varCompanyId"]);
+            _arrPara[6] = new SqlParameter("@varCompanyId", Session["varMasterCompanyIDForERP"]);
             _arrPara[7] = new SqlParameter("@Where", where);            
 
 
@@ -287,7 +287,7 @@ public partial class Masters_ReportForms_FrmWeaverRawMaterialWithConsumptionRepo
             _arrPara[2] = new SqlParameter("@FromDate", txtfromDate.Text);
             _arrPara[3] = new SqlParameter("@ToDate", txttodate.Text);
             _arrPara[4] = new SqlParameter("@varuserid", Session["varuserid"]);
-            _arrPara[5] = new SqlParameter("@varCompanyId", Session["varCompanyId"]);
+            _arrPara[5] = new SqlParameter("@varCompanyId", Session["varMasterCompanyIDForERP"]);
             _arrPara[6] = new SqlParameter("@Where", where);           
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETFINISHERRAWMATERIALISSUERECEIVE_REPORTDATA", _arrPara);

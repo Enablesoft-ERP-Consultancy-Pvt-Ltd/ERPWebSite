@@ -11,22 +11,26 @@ using System.IO.Compression;
 using System.IO;
 using System.Data.SqlTypes;
 using System.Net;
+<<<<<<< HEAD
 
 
 public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
+=======
+public partial class Masters_AddLegalinformation : System.Web.UI.Page
+>>>>>>> origin/SatParkash
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref DDbankname, "select bankid,bankname from bank where mastercompanyid=" + Session["varcompanyid"] + "order by bankname", true, "--plz select bank");
+            UtilityModule.ConditionalComboFill(ref DDbankname, "select bankid,bankname from bank where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + "order by bankname", true, "--plz select bank");
             fill_grid();
 
-            int VarCompanyNo = Convert.ToInt32(Session["varCompanyId"]);
+            int VarCompanyNo = Convert.ToInt32(Session["varMasterCompanyIDForERP"]);
             switch (VarCompanyNo)
             {
                 case 30:
@@ -48,7 +52,7 @@ public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
                            ,TypeofCertificate,Replace(convert(nvarchar(11),IssueDate,106),' ','-') As IssueDate,CertificateNo,Replace(convert(nvarchar(11),ValidityDate,106),' ','-') As ValidityDate ,companyid
                         ,B.BankName,A.RexNo, Replace(convert(nvarchar(11),A.RexIssueDate,106),' ','-') As RexIssueDate,Replace(convert(nvarchar(11),A.RexExpiryDate,106),' ','-') As RexExpiryDate,A.IssueBodyNo
                         from Addlegalinformation A left outer join Bank B on A.BankId=B.BankId Where
-                         A.MasterCompanyId=" + Session["varCompanyId"] + " And A.CompanyId=" + Request.QueryString["a"];
+                         A.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And A.CompanyId=" + Request.QueryString["a"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 
 
@@ -266,7 +270,7 @@ public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
             _arrpara[40].Value = txtcertificatevaldate.Text == "" ? getDate : Convert.ToDateTime(txtcertificatevaldate.Text);
             _arrpara[41].Value = Request.QueryString["a"].ToString();
             _arrpara[42].Value = Session["varuserid"].ToString();
-            _arrpara[43].Value = Session["varcompanyid"].ToString();
+            _arrpara[43].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrpara[44].Direction = ParameterDirection.Output;
 
             _arrpara[45].Value = txtRexNo.Text.ToUpper();
@@ -339,7 +343,7 @@ public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
                 _arrpara[1].Value = Request.QueryString["a"].ToString();
                 _arrpara[2].Value = filename;
                 _arrpara[3].Value = Session["varuserid"].ToString();
-                _arrpara[4].Value = Session["varCompanyId"].ToString();
+                _arrpara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
 
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_Company_Certificate", _arrpara);
                 Tran.Commit();
@@ -375,7 +379,7 @@ public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
             for (int i = 0; i < Dglegal.Columns.Count; i++)
             {              
 
-                if (Session["varcompanyId"].ToString() == "30")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "30")
                 {
                     if (Dglegal.Columns[i].HeaderText == "RexNo" || Dglegal.Columns[i].HeaderText == "Rex IssueDate" || Dglegal.Columns[i].HeaderText == "Rex ExpiryDate" || Dglegal.Columns[i].HeaderText == "Issue BodyNo")
                     {
@@ -426,7 +430,7 @@ public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
                            ,TypeofCertificate,Replace(convert(nvarchar(11),IssueDate,106),' ','-') As IssueDate,CertificateNo,Replace(convert(nvarchar(11),ValidityDate,106),' ','-') As ValidityDate ,companyid
                         ,B.BankName ,A.RexNo, Replace(convert(nvarchar(11),A.RexIssueDate,106),' ','-') As RexIssueDate,Replace(convert(nvarchar(11),A.RexExpiryDate,106),' ','-') As RexExpiryDate,A.IssueBodyNo
                          from Addlegalinformation A left outer join Bank B on A.BankId=B.BankId Where 
-                         A.MasterCompanyId=" + Session["varCompanyId"] + " And A.CompanyId=" + Request.QueryString["a"]);
+                         A.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And A.CompanyId=" + Request.QueryString["a"]);
 
             if (ds.Tables[0].Rows.Count > 0)
             {

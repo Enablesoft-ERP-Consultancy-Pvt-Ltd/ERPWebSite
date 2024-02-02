@@ -16,7 +16,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -26,7 +26,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
             Session["OrderDetailId"] = 0;
             Session["val"] = 0;
             logo();
-            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName", true, "--SELECT--");
 
             if (DDCompanyName.Items.Count > 0)
             {
@@ -34,7 +34,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
                 DDCompanyName.Enabled = false;
             } 
 
-            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " order by Customercode", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref DDCustomerCode, "SELECT customerid,Customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Customercode", true, "--SELECT--");
             TxtOrderDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtDeliveryDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             if (Session["Varcompanyno"].ToString() == "6")
@@ -76,7 +76,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
                 CASE WHEN od.flagsize=1 THEN VF.SIZEMTR  when od.flagsize=2 then vf.sizeinch  ELSE VF.SIZEFT END+' '+case When Vf.sizeId>0 Then ST.Type Else '' End DESCRIPTION,od.Qtyrequired as Qty ,
                 od.totalArea as Area,OD.Remarks as PPInstruction ,od.photo as photo
                 from ordermaster om,orderdetail od,V_FINISHEDITEMDETAIL VF,SizeType St
-                Where om.orderid=od.orderid and OD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID and OM.OrderId=" + ddorderno.SelectedValue + " And Vf.MasterCompanyId=" + Session["varCompanyId"] + " and OD.flagsize=St.val  Order By OD.OrderDetailId";
+                Where om.orderid=od.orderid and OD.ITEM_FINISHED_ID=VF.ITEM_FINISHED_ID and OM.OrderId=" + ddorderno.SelectedValue + " And Vf.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and OD.flagsize=St.val  Order By OD.OrderDetailId";
 
                 ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
                 if (ds.Tables[0].Rows.Count > 0)
@@ -212,7 +212,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
             str = @"UPDATE orderDETAIL Set Remarks='" + Txtremark.Text + "',pro_flag=1,UPDATE_FLAG=0 where orderdetailid=" + Session["id"] + "";
         SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'ORDERDETAIL'," + Session["id"] + ",getdate(),'Update')");
+        SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'ORDERDETAIL'," + Session["id"] + ",getdate(),'Update')");
         tr1.Style.Add("Display", "none");
         Txtremark.Text = "";
         refreshform();
@@ -289,7 +289,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
                             input_Item,VF2.CATEGORY_NAME +','+VF2.ITEM_NAME+','+VF2.QUALITYNAME+','+VF2.DESIGNNAME+SPACE(2)+VF2.COLORNAME+SPACE(2)+vf2.SHAPENAME+SPACE(2)
                             output_item,pm.process_name,oc.iqty input_qty,oc.iloss input_loss,oc.irate as input_rate,oc.oqty as output_qnt,oc.orate as output_rate 
                             from V_FinishedItemDetail vf ,ORDER_CONSUMPTION_DETAIL oc,V_FinishedItemDetail vf1,V_FinishedItemDetail vf2,process_name_master pm
-                            where oc.finishedid=vf.item_finished_id and oc.ifinishedid=vf1.item_finished_id and oc.ofinishedid=vf2.item_finished_id and oc.processid=pm.process_name_id and orderdetailid=" + Session["id"] + " And Vf.MasterCompanyId=" + Session["varCompanyId"];
+                            where oc.finishedid=vf.item_finished_id and oc.ifinishedid=vf1.item_finished_id and oc.ofinishedid=vf2.item_finished_id and oc.processid=pm.process_name_id and orderdetailid=" + Session["id"] + " And Vf.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds2 = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             if (ds2.Tables[0].Rows.Count > 0)
             {
@@ -364,15 +364,15 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {   imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -412,7 +412,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
             _arrPara[0].Value = ddorderno.SelectedValue;
             _arrPara[1].Value = 10;
             _arrPara[2].Value = Session["varuserid"].ToString();
-            _arrPara[3].Value = Session["varCompanyId"].ToString();
+            _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[4].Value = DateTime.Now.ToString("dd-MMM-yyyy");
             _arrPara[5].Value = "";
             con.Open();
@@ -477,7 +477,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
     private void fillLabel()
     {
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"SELECT ITEM_MASTER.ITEM_ID as Sr_No, dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME,dbo.ITEM_MASTER.ITEM_NAME as label FROM dbo.ITEM_MASTER Inner join 
-        dbo.ITEM_CATEGORY_MASTER ON dbo.ITEM_MASTER.CATEGORY_ID = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID Where dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME='ACCESSORIES ITEM' And Item_Master.MasterCompanyId=" + Session["varCompanyId"] + "");
+        dbo.ITEM_CATEGORY_MASTER ON dbo.ITEM_MASTER.CATEGORY_ID = dbo.ITEM_CATEGORY_MASTER.CATEGORY_ID Where dbo.ITEM_CATEGORY_MASTER.CATEGORY_NAME='ACCESSORIES ITEM' And Item_Master.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         if (ds.Tables[0].Rows.Count > 0)
         {
             grdlabel.DataSource = ds;
@@ -669,7 +669,7 @@ public partial class Masters_Order_Draft_Order_New : System.Web.UI.Page
             From ordermaster om inner join  orderdetail od On om.orderid=od.orderid inner join V_FinishedItemDetail v On od.Item_Finished_Id=v.Item_Finished_Id Left join 
             Transmode tm On tm.transmodeId=om.ByAirSea left outer join Sku_No sn On sn.finished_id=v.Item_Finished_Id 
             Left outer join OrderProductionPalanning op ON od.orderdetailid=op.orderdetailid  inner join customerinfo ci On ci.CustomerId=om.CustomerId inner join SizeType St on OD.flagsize=St.val
-            Where OM.ORDERID=" + ddorderno.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"] + "";
+            Where OM.ORDERID=" + ddorderno.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
             ds.Tables[0].Columns.Add("Image", typeof(System.Byte[]));

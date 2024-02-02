@@ -11,7 +11,7 @@ public partial class Masters_Campany_FrmMachineNoMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -89,7 +89,7 @@ public partial class Masters_Campany_FrmMachineNoMaster : CustomPage
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtMachineNo.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_MachineNoMaster", _arrPara);
                 Tran.Commit();
                 lbl.Visible = true;
@@ -146,7 +146,7 @@ public partial class Masters_Campany_FrmMachineNoMaster : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select * from MachineNoMaster Where MasterCompanyId=" + Session["varCompanyId"] + " order by MachineNoid";
+            string strsql = "select * from MachineNoMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by MachineNoid";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns["MachineNoId"].ColumnName = "MachineNoId";
@@ -175,11 +175,11 @@ public partial class Masters_Campany_FrmMachineNoMaster : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select MachineNoName from MachineNoMaster where MachineNoId!='" + ViewState["MachineNoId"].ToString() + "' and MachineNoName='" + txtMachineNo.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select MachineNoName from MachineNoMaster where MachineNoId!='" + ViewState["MachineNoId"].ToString() + "' and MachineNoName='" + txtMachineNo.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select MachineNoName from MachineNoMaster where MachineNoName='" + txtMachineNo.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select MachineNoName from MachineNoMaster where MachineNoName='" + txtMachineNo.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -222,7 +222,7 @@ public partial class Masters_Campany_FrmMachineNoMaster : CustomPage
             _array[0] = new SqlParameter("@MachineNoId", ViewState["MachineNoId"].ToString());
             _array[1] = new SqlParameter("@Message", SqlDbType.NVarChar, 100);
             _array[2] = new SqlParameter("@UserId", Session["varuserid"].ToString());
-            _array[3] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"].ToString());
+            _array[3] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"].ToString());
             _array[1].Direction = ParameterDirection.Output;
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeleteMachineNoMaster", _array);
             lbl.Visible = true;

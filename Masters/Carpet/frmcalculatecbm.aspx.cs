@@ -11,6 +11,10 @@ public partial class Masters_Carpet_frmcalculatecbm : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"] == null)
+        {
+            Response.Redirect("~/Login.aspx");
+        }
         if (!IsPostBack)
         {
             if (Request.QueryString["b"] != null)
@@ -19,7 +23,6 @@ public partial class Masters_Carpet_frmcalculatecbm : System.Web.UI.Page
                 Fillgrid();
             }
         }
-
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {

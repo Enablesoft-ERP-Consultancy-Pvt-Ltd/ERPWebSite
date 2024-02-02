@@ -13,17 +13,17 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                            Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CATEGORY_NAME
-                            select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varcompanyid"] + @" order by customer
-                            select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varcompanyid"] + @"
-                            select Unitsid,UnitName from Units Where MasterCompanyid=" + Session["varcompanyid"] + @" ";
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                            Select CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CATEGORY_NAME
+                            select customerid,CustomerCode+'  '+companyname as customer from customerinfo WHere mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by customer
+                            select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
+                            select Unitsid,UnitName from Units Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" ";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, false, "");
 
@@ -42,7 +42,7 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
 
            
 
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 21:  ///Kaysons
                     TRWarpingMaterialIssueDetail.Visible = true;
@@ -82,7 +82,7 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
     }
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = "select Item_id,ITEM_NAME From Item_master where MasterCompanyid=" + Session["varcompanyId"] + "";
+        string str = "select Item_id,ITEM_NAME From Item_master where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (DDCategory.SelectedIndex > 0)
         {
             str = str + " and Category_id=" + DDCategory.SelectedValue;
@@ -99,11 +99,11 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
         TRDDQuality.Visible = true;
         if (ddItemName.SelectedItem.Text.Trim() != "ALL")
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + " order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where Item_Id=" + ddItemName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName", true, "ALL");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varCompanyid"] + "  order by QualityName", true, "ALL");
+            UtilityModule.ConditionalComboFill(ref DDQuality, "SELECT QualityId,QualityName from Quality Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityName", true, "ALL");
         }
         DDQuality_SelectedIndexChanged(sender, e);
     }
@@ -116,10 +116,10 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
         TRDDShape.Visible = false;
         TRDDSize.Visible = false;
 
-        string qry = @"select DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY DESIGNNAME
-        select COLORID,COLORNAME from color Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY COLORNAME
-        SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where MasterCompanyId=" + Session["varCompanyid"] + @" ORDER BY SHADECOLORNAME
-        SELECT SHAPEID, SHAPENAME FROM SHAPE Where MasterCompanyId=" + Session["varCompanyid"] + " ORDER BY SHAPENAME";
+        string qry = @"select DESIGNID,DESIGNNAME from DESIGN Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY DESIGNNAME
+        select COLORID,COLORNAME from color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY COLORNAME
+        SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ORDER BY SHADECOLORNAME
+        SELECT SHAPEID, SHAPENAME FROM SHAPE Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ORDER BY SHAPENAME";
         DataSet ds = SqlHelper.ExecuteDataset(qry);
 
         string str = @"select PARAMETER_ID from ITEM_CATEGORY_PARAMETERS where category_id=" + DDCategory.SelectedValue;
@@ -157,7 +157,7 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
     protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
     {
         TRDDSize.Visible = true;
-        string str = @"SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE WHERE MasterCompanyId=" + Session["varCompanyid"];
+        string str = @"SELECT SIZEID, SIZEft AS SIZENAME FROM SIZE WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDShape.SelectedIndex > 0)
         {
             str = str + " and SHAPEID=" + DDShape.SelectedValue;
@@ -181,7 +181,7 @@ public partial class Masters_ReportForms_frmwarpingreports : System.Web.UI.Page
         }
         else if (RDWarpingBeamReceiveDetail.Checked == true)
         {
-            if (Session["varcompanyId"].ToString() == "45")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "45")
             {
 
                 WarpingBeamReceiveDetailmws();

@@ -14,15 +14,15 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName";
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName";
 
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 ChkHindiFormat.Visible = true;
                 ChkFolioMaterialDetail.Visible = true;
@@ -51,7 +51,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDCompanyName.Enabled = false;
             }
-            if ((Convert.ToInt32(Session["varCompanyId"]) == 16) || (Convert.ToInt32(Session["varCompanyId"]) == 28))
+            if ((Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16) || (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28))
             {
                 ChkPoufFolio.Visible = true;
                 ChkForDepartmentReport.Visible = true;
@@ -149,7 +149,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
         SqlParameter[] param = new SqlParameter[1];
         param[0] = new SqlParameter("@issueorderid", DDFolioNo.SelectedValue);
         DataSet ds = new DataSet();
-        if (Session["varcompanyId"].ToString() == "9")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         {
             if (ChkHindiFormat.Checked == true)
             {
@@ -199,7 +199,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
             {
                 cmd.Parameters.AddWithValue("@issueorderid", DDFolioNo.SelectedValue);
             }
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@FolioType", FolioType);
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             cmd.ExecuteNonQuery();
@@ -209,7 +209,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "15":
                     Session["rptFileName"] = "Reports/rptweaverfolio_EMHD.rpt";
@@ -382,7 +382,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[5];
             param[0] = new SqlParameter("@issueorderid", DDFolioNo.SelectedValue);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@FolioType", FolioType);
@@ -452,7 +452,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
                 cmd.CommandTimeout = 1000;
 
                 cmd.Parameters.AddWithValue("@issueorderid", DDFolioNo.SelectedValue);
-                //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+                //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
                 SqlDataAdapter ad = new SqlDataAdapter(cmd);
                 cmd.ExecuteNonQuery();
                 ad.Fill(ds);
@@ -1388,7 +1388,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
                 cmd.CommandTimeout = 1000;
 
                 cmd.Parameters.AddWithValue("@issueorderid", DDFolioNo.SelectedValue);
-                //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+                //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
                 SqlDataAdapter ad = new SqlDataAdapter(cmd);
                 cmd.ExecuteNonQuery();
                 ad.Fill(ds);
@@ -2056,7 +2056,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
         cmd.CommandTimeout = 30000;
 
         cmd.Parameters.AddWithValue("@IssueOrderID", DDFolioNo.SelectedValue);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
         cmd.ExecuteNonQuery();
         ad.Fill(ds);
@@ -2094,7 +2094,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
                 cmd.CommandTimeout = 1000;
 
                 cmd.Parameters.AddWithValue("@issueorderid", DDFolioNo.SelectedValue);
-                //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+                //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
                 SqlDataAdapter ad = new SqlDataAdapter(cmd);
                 cmd.ExecuteNonQuery();
                 ad.Fill(ds);
@@ -2975,7 +2975,7 @@ public partial class Masters_Hissab_frmFolioDetail : System.Web.UI.Page
     //            cmd.CommandTimeout = 1000;
 
     //            cmd.Parameters.AddWithValue("@issueorderid", DDFolioNo.SelectedValue);
-    //            //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+    //            //cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
     //            SqlDataAdapter ad = new SqlDataAdapter(cmd);
     //            cmd.ExecuteNonQuery();
     //            ad.Fill(ds);

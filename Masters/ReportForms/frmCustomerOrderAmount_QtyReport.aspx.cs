@@ -12,7 +12,7 @@ public partial class Masters_ReportForms_frmCustomerOrderAmount_QtyReport : Syst
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -106,6 +106,6 @@ public partial class Masters_ReportForms_frmCustomerOrderAmount_QtyReport : Syst
     }
     protected void DDCompany_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditonalChkBoxListFill(ref ChkCustomer, "Select Customerid,Customercode from Customerinfo where MasterCompanyId=" + Session["varCompanyId"] + " order by Customercode");
+        UtilityModule.ConditonalChkBoxListFill(ref ChkCustomer, "Select Customerid,Customercode from Customerinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Customercode");
     }
 }

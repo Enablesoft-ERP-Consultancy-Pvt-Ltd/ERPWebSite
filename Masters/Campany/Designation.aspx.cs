@@ -11,7 +11,7 @@ public partial class Masters_Campany_Designation : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,7 +32,7 @@ public partial class Masters_Campany_Designation : CustomPage
         DataSet ds = null;
         try
         {
-            string str = "select DesignationId SrNo,DesignationName,Description from Designation Where MasterCompanyId=" + Session["varCompanyId"];
+            string str = "select DesignationId SrNo,DesignationName,Description from Designation Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             ds = SqlHelper.ExecuteDataset(str);
         }
         catch (Exception ex)
@@ -95,7 +95,7 @@ public partial class Masters_Campany_Designation : CustomPage
                 _arrpara[1].Value = txtDesignationname.Text.ToUpper();
                 _arrpara[2].Value = txtDescription.Text.ToUpper();
                 _arrpara[3].Value = Session["varuserid"].ToString();
-                _arrpara[4].Value = Session["varCompanyId"].ToString();
+                _arrpara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_DESIGNATION", _arrpara);
                 Tran.Commit();
                 Label2.Visible = true;
@@ -146,11 +146,11 @@ public partial class Masters_Campany_Designation : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select DesignationName from Designation where DesignationId !='" + ViewState["id"].ToString() + "' and DesignationName='" + txtDesignationname.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select DesignationName from Designation where DesignationId !='" + ViewState["id"].ToString() + "' and DesignationName='" + txtDesignationname.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "Select DesignationName from Designation where DesignationName='" + txtDesignationname.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "Select DesignationName from Designation where DesignationName='" + txtDesignationname.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             DataSet ds = SqlHelper.ExecuteDataset(strsql);
             if (ds.Tables[0].Rows.Count > 0)

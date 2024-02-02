@@ -19,13 +19,13 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
                            select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=CS.Categoryid and Cs.id=0 order by CATEGORY_NAME
                            select Unitid,Unitname From Unit WHere Unitid in(1,2)
                            SELECT PNM.PROCESS_NAME_ID,PNM.PROCESS_NAME FROM PROCESS_NAME_MASTER PNM INNER JOIN USERRIGHTSPROCESS URP ON PNM.PROCESS_NAME_ID=URP.PROCESSID WHERE URP.USERID=" + Session["varuserId"] + " and PNm.Process_name_id<>1 order by PROCESS_NAME";
@@ -63,14 +63,14 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                 TDinternalfoliodetail.Visible = true;
             }
 
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 TDProcessWiseReport.Visible = true;
                 TDBazaarCompleteStatus.Visible = true;
                 TROrderConsumptionWithIndentIssRec.Visible = true;
                 TROrderConsumptionSummaryWithWeaverIssRec.Visible = true;
             }
-            if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             {
                 TROrderSummaryWithAllProcess.Visible = true;
                 TROrderDispatchSummary.Visible = true;
@@ -80,7 +80,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
                         JOIN PROCESS_ISSUE_Master_1 PIM ON PIM.EmpID = EI.EmpID 
                         Order By EI.EmpName ", true, "--Select--");
             }
-            if (Session["varcompanyId"].ToString() == "40")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "40")
             {
                 TROrderConsumptionRecMaterialPending.Visible = true;
             }
@@ -149,13 +149,13 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         //if (variable.VarWEAVERORDERWITHOUTCUSTCODE == "1")
         //{
         //    string str = @"Select OrderId,LocalOrder+ ' / ' +CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
-        //    if (Session["varCompanyId"].ToString() == "16")
+        //    if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         //    {
                 str = @"Select OrderId, CustomerOrderNo From OrderMaster where CompanyId=" + DDCompany.SelectedValue + " Order By CustomerOrderNo";
         //    }
             UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
         //}
-        //UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        //UtilityModule.ConditionalComboFill(ref DDCustCode, "Select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -194,7 +194,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         }
         else if (RDVendorWiseDetail.Checked == true)
         {
-            if (Session["varcompanyId"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 if (chkpaidunpaid.Checked == true)
                 {
@@ -344,7 +344,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
             {
                 SqlParameter[] param = new SqlParameter[2];
                 param[0] = new SqlParameter("@orderid", DDOrderNo.SelectedValue);
-                param[1] = new SqlParameter("@mastercompanyid", Session["varcompanyid"].ToString());
+                param[1] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"].ToString());
 
                 DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETINTERNALPRODSTOCKNO", param);
                 if (ds.Tables[0].Rows.Count > 0)
@@ -632,7 +632,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         if (ds.Tables[0].Rows.Count > 0)
         {
             Session["GetDataset"] = ds;
-            if (Session["varcompanyid"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 Session["rptFileName"] = "~\\Reports\\RptvendorwisedetailforHaf.rpt";
             }
@@ -4142,7 +4142,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
 
         SqlParameter[] param = new SqlParameter[2];
         param[0] = new SqlParameter("@Where", Where);
-        param[1] = new SqlParameter("@MastercompanyId", Session["varcompanyId"]);
+        param[1] = new SqlParameter("@MastercompanyId", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetCancelPodetail", param);
 
@@ -4365,7 +4365,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -4754,7 +4754,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
     }
     protected void DDOrderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select c.CustomerId,CustomerCode From ordermaster o join  CustomerInfo c on o.customerid=c.CustomerId Where MasterCompanyId=" + Session["varCompanyId"] + " and o.orderid="+DDOrderNo.SelectedValue+" Order By CustomerCode", true, "");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "Select c.CustomerId,CustomerCode From ordermaster o join  CustomerInfo c on o.customerid=c.CustomerId Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and o.orderid="+DDOrderNo.SelectedValue+" Order By CustomerCode", true, "");
 
        // UtilityModule.ConditionalComboFill(ref DDOrderNo, Str, true, "--Select--");
 
@@ -5694,7 +5694,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         if (ds.Tables[0].Rows.Count > 0)
         {
             Session["GetDataset"] = ds;
-            if (Session["varcompanyid"].ToString() == "9")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "9")
             {
                 Session["rptFileName"] = "~\\Reports\\RptprocesswisedetailforHaf.rpt";
             }
@@ -5721,7 +5721,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
             string url = "../../excel.aspx?DDCompany=" + DDCompany.SelectedValue + "&DDCustCode=" + DDCustCode.SelectedValue
                  + "&DDOrderNo=" + DDOrderNo.SelectedValue + "&DDCategory=" + DDCategory.SelectedValue + "&ddItemName=" + ddItemName.SelectedValue
                  + "&DDQuality=" + DDQuality.SelectedValue + "&DDDesign=" + DDDesign.SelectedValue + "&DDColor=" + DDColor.SelectedValue
-                 + "&name=ProcessDetail&ac=pwd&DDSize=" + DDSize.SelectedValue + "&mastercompanyid=" + Session["VarCompanyId"].ToString();
+                 + "&name=ProcessDetail&ac=pwd&DDSize=" + DDSize.SelectedValue + "&mastercompanyid=" + Session["varMasterCompanyIDForERP"].ToString();
             
             StringBuilder stb = new StringBuilder();
             stb.Append("<script>");
@@ -6502,7 +6502,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@processid", 1);
         cmd.Parameters.AddWithValue("@Where", str);
         cmd.Parameters.AddWithValue("@USERID", Session["VarUserId"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = new DataSet();
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -6632,7 +6632,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@orderid", DDOrderNo.SelectedIndex > 0 ? DDOrderNo.SelectedValue : "0");
             cmd.Parameters.AddWithValue("@Shipfrom", txtfromdate.Text);
             cmd.Parameters.AddWithValue("@Shipto", txttodate.Text);
-            cmd.Parameters.AddWithValue("@mastercompanyid", Session["varcompanyId"]);
+            cmd.Parameters.AddWithValue("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             DataTable dt1 = new DataTable();
 
             dt1.Load(cmd.ExecuteReader());
@@ -7347,7 +7347,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@processid", 1);
         cmd.Parameters.AddWithValue("@Where", str);
         cmd.Parameters.AddWithValue("@USERID", Session["VarUserId"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         cmd.Parameters.AddWithValue("@EmpId", DDEmployeeName.SelectedValue);
 
         DataSet ds = new DataSet();
@@ -7528,7 +7528,7 @@ public partial class Masters_ReportForms_frmorderReportsnew : System.Web.UI.Page
         cmd.Parameters.AddWithValue("@orderid", DDOrderNo.SelectedIndex > 0 ? DDOrderNo.SelectedValue : "0");
         cmd.Parameters.AddWithValue("@Shipfrom", txtfromdate.Text);
         cmd.Parameters.AddWithValue("@Shipto", txttodate.Text);
-        cmd.Parameters.AddWithValue("@mastercompanyid", Session["varcompanyId"]);
+        cmd.Parameters.AddWithValue("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
 
         DataTable dt = new DataTable();

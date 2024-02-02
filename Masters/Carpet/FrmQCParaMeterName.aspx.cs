@@ -11,7 +11,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e) 
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
             txtid.Text = "0";
             ViewState["ParaId"] = "0";
             TxtSerialNumber.Attributes.Add("onkeypress", "return isNumberKey(event)");
-            string str = @"Select ID, ParameterName From ParameterType(Nolock) Where MasterCompanyID = " + Session["varCompanyId"];
+            string str = @"Select ID, ParameterName From ParameterType(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDParameterType, ds, 0, false, "");
@@ -71,7 +71,7 @@ public partial class Masters_Carpet_FrmQCParaMeterName : System.Web.UI.Page
             arr[6].Value = Request.QueryString["Category"];
             arr[7].Value = Request.QueryString["Proc"];
             arr[8].Value = Session["varuserid"].ToString();
-            arr[9].Value = Session["varCompanyId"].ToString();
+            arr[9].Value = Session["varMasterCompanyIDForERP"].ToString();
             arr[10].Direction = ParameterDirection.Output;
             arr[11].Value = DDParameterType.SelectedValue;
 

@@ -73,7 +73,7 @@
                 TRDDLotNo.Visible = true;
                 TRCheckStockDetail.Visible = false;
                 TDMtr.Visible = true;
-                if (Session["varcompanyId"].ToString() == "36" || Session["varcompanyId"].ToString() == "38")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "36" || Session["varMasterCompanyIDForERP"].ToString() == "38")
                 {
                     TDExportExcel.Visible = true;
                 }
@@ -82,7 +82,7 @@
                     TDExportExcel.Visible = false;
                 }
 
-                if (Session["varcompanyId"].ToString() == "38")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "38")
                 {
                     TDWithBuyerOrderNo.Visible = true;
                 }
@@ -111,7 +111,7 @@
                 //TDundyed_dyed.Visible = true;
                 TDWithBuyerOrderNo.Visible = false;
                 
-                if (Session["varcompanyId"].ToString() != "14")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "14")
                 {
                     TDundyed_dyed.Visible = true;
                     trwithvalue.Visible = false;
@@ -122,7 +122,7 @@
                     trwithvalue.Visible = true;
                 }
 
-                if (Session["VarCompanyId"].ToString() == "22" && Session["usertype"].ToString() == "1")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["usertype"].ToString() == "1")
                 {
                     TDForTotalStock.Visible = true;
                 }
@@ -185,7 +185,7 @@
                 TRCheckStockDetail.Visible = true;
                 TRLotNoTagNo.Visible = true;
                 chkLotwiseTagwise.Visible = true;
-                if (Session["varcompanyId"].ToString() != "14")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "14")
                 {
                     TDundyed_dyed.Visible = true;
                 }
@@ -249,7 +249,7 @@
                 TDunconfirmcarpet.Visible = false;
                 TDWithBuyerOrderNo.Visible = false;
 
-                if (Session["varcompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     TDExportExcel.Visible = true;
                 }
@@ -277,7 +277,7 @@
             }
             else if (RdShadewisestock.Checked == true)
             {
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     TDForIssueRegister.Visible = true;
                 }
@@ -336,7 +336,7 @@
                 //TDundyed_dyed.Visible = true;
                 TDWithBuyerOrderNo.Visible = false;
                 
-                if (Session["varcompanyId"].ToString() != "14")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "14")
                 {
                     TDundyed_dyed.Visible = true;
                 }

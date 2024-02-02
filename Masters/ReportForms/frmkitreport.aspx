@@ -13,7 +13,7 @@
     <script runat="server">
         protected void RadioButton_CheckedChanged(object sender, System.EventArgs e)
         {
-            //if (Session["varcompanyId"].ToString() == "16")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             //{
             //    TDChampoPNMAmtDifference.Visible = true;
             //    TDFolioWiseConsumptionReport.Visible = true;
@@ -26,7 +26,7 @@
             //    TDDesignWiseFolioMaterialIssueStatus.Visible = false;
             //}
 
-            //if (Session["varcompanyId"].ToString() == "41")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "41")
             //{
             //    TDInternalBucket.Visible = false;
             //    TDIssRecConsumpSummary.Visible = false;
@@ -108,7 +108,7 @@
             //    ChkWeavingReport.Checked = false;
             //    Trproductiontype.Visible = true;
             //    Trunitname.Visible = true;
-            //    if (Session["varcompanyId"].ToString() == "22")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             //    {
             //        TRChkWeavingReport.Visible = true;
             //    }
@@ -121,15 +121,15 @@
             //    Trproductiontype.Visible = true;
             //    Trunitname.Visible = true;
             //    TDChkReceiveSummaryFinishedItemWise.Visible = true;
-            //    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
             //    {
             //        TDInternalExternalBazarSummary.Visible = true;
             //    }
-            //    if (Session["varcompanyId"].ToString() == "28")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "28")
             //    {
             //        TDForInternalBazaarDetail.Visible = true;                     
             //    }
-            //    if (Session["varcompanyId"].ToString() == "22")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             //    {
             //        TRChkWeavingReport.Visible = true;
             //    }
@@ -141,7 +141,7 @@
             //    Tdtodate.Visible = false;
             //    Tdtodatelabel.Visible = false;
             //    Tdselectdate.Visible = false;
-            //    if (Session["varcompanyId"].ToString() == "27")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "27")
             //    {
             //        TRchkforshadewise.Visible = true;
             //    }
@@ -350,7 +350,7 @@
             //    TRChkUnpaidApprovalNo.Visible = false;
             //    TRChkWeavingReport.Visible = false;
             //    TRTagNo.Visible = true;
-            //    if (Session["VarCompanyId"].ToString() == "22" && Session["UserType"].ToString()=="1")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["UserType"].ToString()=="1")
             //    {
             //        TDChkForStockDetail.Visible = true;
             //    }

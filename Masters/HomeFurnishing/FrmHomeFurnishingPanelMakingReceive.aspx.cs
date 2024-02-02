@@ -19,7 +19,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingReceive 
             }";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -40,11 +40,11 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingReceive 
             string str = @"select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(Nolock) 
                         JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                         Select Distinct a.ProcessID, PNM.PROCESS_NAME 
                         From HomeFurnishingMakingOrderMaster a(nolock)
                         JOIN PROCESS_NAME_MASTER PNM(nolock) ON PNM.PROCESS_NAME_ID = a.PROCESSID 
-                        Where a.MASTERCOMPANYID = " + Session["varCompanyId"] + @" 
+                        Where a.MASTERCOMPANYID = " + Session["varMasterCompanyIDForERP"] + @" 
                         Order By PNM.PROCESS_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -184,7 +184,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingReceive 
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "16":
                 case "28":
@@ -242,7 +242,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingReceive 
             param[1] = new SqlParameter("@ProcessRecDetailID", lblprocessrecdetailid.Text);
             param[2] = new SqlParameter("@ProcessID ", DDProcessName.SelectedValue);
             param[3] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[5].Direction = ParameterDirection.Output;
 
@@ -367,7 +367,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingPanelMakingReceive 
             cmd.Parameters["@ChallanNo"].Direction = ParameterDirection.Output;
             cmd.Parameters.AddWithValue("@Remarks", txtcheckedby.Text);
             cmd.Parameters.AddWithValue("@UserID", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.AddWithValue("@DetailTable", DetailTable);
             cmd.Parameters.AddWithValue("@EmpIDS", StrEmpid);
             cmd.Parameters.Add("@Msg", SqlDbType.VarChar, 500);

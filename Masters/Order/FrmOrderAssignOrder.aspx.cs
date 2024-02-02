@@ -12,13 +12,13 @@ public partial class Masters_Order_FrmOrderAssignOrder : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varuserid"].ToString() == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            CommanFunction.FillCombo(DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName");
+            CommanFunction.FillCombo(DDCompany, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
 
 
             if (DDCompany.Items.Count > 0)
@@ -36,7 +36,7 @@ public partial class Masters_Order_FrmOrderAssignOrder : System.Web.UI.Page
     }
     private void CompanySelectedIndentChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDcustomer, " Select customerid,customercode from customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order by customercode", true, "ALL");
+        UtilityModule.ConditionalComboFill(ref DDcustomer, " Select customerid,customercode from customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by customercode", true, "ALL");
 
         if (DDcustomer.Items.Count > 0)
         {
@@ -48,13 +48,13 @@ public partial class Masters_Order_FrmOrderAssignOrder : System.Web.UI.Page
     {
         UtilityModule.ConditionalComboFill(ref DDOrder, @"select Distinct om.OrderId,om.LocalOrder+ ' / ' +om.CustomerOrderNo  from OrderMaster om inner join orderdetail od On om.orderid=od.orderid inner join 
         V_FinishedItemDetail v On od.Item_Finished_Id= v.Item_Finished_Id inner join UserRights_Category uc On v.CATEGORY_ID=uc.CategoryId 
-        Where  CustomerId=" + DDcustomer.SelectedValue + @" and uc.userid=" + Session["varuserid"] + " And V.MasterCompanyId=" + Session["varCompanyId"] + "", true, "-Select-");
+        Where  CustomerId=" + DDcustomer.SelectedValue + @" and uc.userid=" + Session["varuserid"] + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "-Select-");
     }
     private void fillOrderto()
     {
         UtilityModule.ConditionalComboFill(ref DDOrderto, @"select Distinct om.OrderId,om.LocalOrder+ ' / ' +om.CustomerOrderNo  from OrderMaster om inner join orderdetail od On om.orderid=od.orderid inner join 
         V_FinishedItemDetail v On od.Item_Finished_Id= v.Item_Finished_Id inner join UserRights_Category uc On v.CATEGORY_ID=uc.CategoryId  
-        Where om.status=0  and uc.userid=" + Session["varuserid"] + " And V.MasterCompanyId=" + Session["varCompanyId"] + "", true, "-Select-");
+        Where om.status=0  and uc.userid=" + Session["varuserid"] + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "-Select-");
     }
     protected void DDcustomer_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -69,7 +69,7 @@ public partial class Masters_Order_FrmOrderAssignOrder : System.Web.UI.Page
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select CATEGORY_NAME as caterory,ITEM_NAME as item,QualityName+'  '+designName+'  '+ColorName+'  '+ShadeColorName+'  '+ShapeName as description ,isnull(sum(oc.Qty),0) as ordercon,isnull(sum(oao.qty),0) as assignqty,v.ITEM_FINISHED_ID AS FINISHEDID
         From OrderLocalConsumption oc inner join V_FinishedItemDetail v  On oc.Finishedid=v.ITEM_FINISHED_ID left Outer join 
         OrderAssignQtyOrder oao On oao.toorderid=oc.orderid and oao.Item_Finished_id=v.ITEM_FINISHED_ID 
-        Where orderid=" + DDOrderto.SelectedValue + " And V.MasterCompanyId=" + Session["varCompanyId"] + " Group by CATEGORY_NAME ,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,v.ITEM_FINISHED_ID");
+        Where orderid=" + DDOrderto.SelectedValue + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Group by CATEGORY_NAME ,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,v.ITEM_FINISHED_ID");
         if (ds.Tables[0].Rows.Count > 0)
         {
             GVOrderStockAssign.DataSource = ds;
@@ -80,21 +80,21 @@ public partial class Masters_Order_FrmOrderAssignOrder : System.Web.UI.Page
     {
         string val = "";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select isnull(sum(qty),0) from PurchaseReceiveDetail prd inner join PurchaseIndentIssue pii On prd.PindentIssueid=pii.PindentIssueid where orderid=" + DDOrder.SelectedValue + " and finishedid=" + Strval + "");
-        DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select isnull(sum(qty),0) from OrderAssignQtyOrder where FromOrderid=" + DDOrder.SelectedValue + " and Item_Finished_id=" + Strval + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select isnull(sum(qty),0) from OrderAssignQtyOrder where FromOrderid=" + DDOrder.SelectedValue + " and Item_Finished_id=" + Strval + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         val = Convert.ToString(Convert.ToDouble(ds.Tables[0].Rows[0][0].ToString()) - (0 + Convert.ToDouble(ds2.Tables[0].Rows[0][0].ToString())));
         return val;
     }
     public string getAssignedqty(string Strval)
     {
         string val = "";
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select isnull(sum(Qty),0) from OrderAssignQtyOrder where Item_Finished_id=" + Strval + " and FromOrderid <>" + DDOrder.SelectedValue + " and ToOrderid=" + DDOrderto.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select isnull(sum(Qty),0) from OrderAssignQtyOrder where Item_Finished_id=" + Strval + " and FromOrderid <>" + DDOrder.SelectedValue + " and ToOrderid=" + DDOrderto.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         val = Convert.ToString(Convert.ToDouble(ds.Tables[0].Rows[0][0].ToString()));
         return val;
     }
     public string getActualAssigned(string Strval)
     {
         string val = "";
-        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select isnull(sum(Qty),0) from OrderAssignQtyOrder where Item_Finished_id=" + Strval + " and FromOrderid =" + DDOrder.SelectedValue + " and ToOrderid=" + DDOrderto.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select isnull(sum(Qty),0) from OrderAssignQtyOrder where Item_Finished_id=" + Strval + " and FromOrderid =" + DDOrder.SelectedValue + " and ToOrderid=" + DDOrderto.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         val = Convert.ToString(Convert.ToDouble(ds.Tables[0].Rows[0][0].ToString()));
         return val;
     }
@@ -121,7 +121,7 @@ public partial class Masters_Order_FrmOrderAssignOrder : System.Web.UI.Page
                 _arrpara[2].Value = DDOrder.SelectedValue;
                 _arrpara[3].Value = DDOrderto.SelectedValue;
                 _arrpara[6].Value = Session["varuserid"];
-                _arrpara[7].Value = Session["varcompanyId"];
+                _arrpara[7].Value = Session["varMasterCompanyIDForERP"];
                 for (int i = 0; i < GVOrderStockAssign.Rows.Count; i++)
                 {
                     if (((CheckBox)GVOrderStockAssign.Rows[i].FindControl("Chkbox")).Checked == true)

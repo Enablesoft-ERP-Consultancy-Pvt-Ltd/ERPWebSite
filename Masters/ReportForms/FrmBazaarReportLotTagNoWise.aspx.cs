@@ -14,7 +14,7 @@ public partial class Masters_ReportForms_FrmBazaarReportLotTagNoWise : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,7 +25,7 @@ public partial class Masters_ReportForms_FrmBazaarReportLotTagNoWise : System.We
                         Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(nolock)
                         JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName";
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             //UtilityModule.ConditionalComboFillWithDS(ref DDgodown, ds, 0, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDshadeno, ds, 1, true, "--Plz Select--");
@@ -49,7 +49,7 @@ public partial class Masters_ReportForms_FrmBazaarReportLotTagNoWise : System.We
         array[1] = new SqlParameter("@ToDate", SqlDbType.DateTime);
         array[2] = new SqlParameter("@Where", SqlDbType.VarChar, 3000);
 
-        //string sQry = "  Vf.mastercompanyId=" + Session["varcompanyId"] + "";
+        //string sQry = "  Vf.mastercompanyId=" + Session["varMasterCompanyIDForERP"] + "";
 
         string sQry = "";
 

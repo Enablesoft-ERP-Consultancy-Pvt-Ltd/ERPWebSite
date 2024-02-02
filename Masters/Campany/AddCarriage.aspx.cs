@@ -11,7 +11,7 @@ public partial class Masters_Campany_AddCarriage : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -91,7 +91,7 @@ public partial class Masters_Campany_AddCarriage : CustomPage
                 }
                 _arrPara[1].Value = txtCarriage.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Carriage", _arrPara);
             }
@@ -145,7 +145,7 @@ public partial class Masters_Campany_AddCarriage : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select * from Carriage Where MasterCompanyId=" + Session["varCompanyId"] + " order by Carriageid";
+            string strsql = "select * from Carriage Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Carriageid";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns["CarriageId"].ColumnName = "CarriageId";
@@ -174,11 +174,11 @@ public partial class Masters_Campany_AddCarriage : CustomPage
             string strsql;
             if (btnsave.Text == "Update")
             {
-                strsql = "select CarriageName from Carriage where CarriageId!='" + ViewState["id"].ToString() + "' and CarriageName='" + txtCarriage.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CarriageName from Carriage where CarriageId!='" + ViewState["id"].ToString() + "' and CarriageName='" + txtCarriage.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select CarriageName from Carriage where CarriageName='" + txtCarriage.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select CarriageName from Carriage where CarriageName='" + txtCarriage.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -213,12 +213,12 @@ public partial class Masters_Campany_AddCarriage : CustomPage
         con.Open();
         try
         {
-            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select PreCarriageBy from customerinfo where MasterCompanyId=" + Session["varCompanyId"] + " And  PreCarriageBy=" + ViewState["id"].ToString()));
+            int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select PreCarriageBy from customerinfo where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And  PreCarriageBy=" + ViewState["id"].ToString()));
             if (id <= 0)
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Carriage where CarriageId=" + ViewState["id"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'PreCarriageBy'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PreCarriageBy'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
                 lbl.Visible = true;
                 lbl.Text = "Value Deleted...........";
             }

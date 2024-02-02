@@ -27,7 +27,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             }";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -45,12 +45,12 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 SCRIPT_DOFOCUS.Replace("REQUEST_LASTFOCUS", Request["__LASTFOCUS"]),
                 true);
 
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName                           
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                           
                     select UnitsId,UnitName from Units order by UnitName
                     select Ei.EmpId,EI.EmpName From Empinfo Ei inner join Department D on Ei.Departmentid=D.DepartmentId And EI.Blacklist = 0 And 
                     D.DepartmentName='QC Department' order by Ei.EmpName 
                     Select * From NewUserDetail Where canedit = 1 And UserType = 1 And UserId = " + Session["varuserId"] + @"
-                    Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                    Select ID, BranchName From BRANCHMASTER BM(nolock) JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -100,7 +100,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             {
                 TxtUserType.Text = "1";
             }
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "14":
                     TxtReceiveQty.Enabled = true;
@@ -623,7 +623,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 txtPartyChallanNo.Text = ds.Tables[0].Rows[0]["PartyChallanNo"].ToString();
             }
 
-            if (Session["varcompanyid"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
+            if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
             {
                 DGRecDetail.Columns[14].Visible = false;
                 DGRecDetail.Columns[15].Visible = false;
@@ -671,7 +671,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "16":
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailchampo.rpt";
@@ -732,7 +732,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             btnsave.Visible = false;
             TDFolioNotext.Visible = true;
 
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "16":
                 case "28":
@@ -922,7 +922,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             //param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             //param[2].Direction = ParameterDirection.Output;
             //param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            //param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            //param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //param[5] = new SqlParameter("@hnprocessrecid", SqlDbType.Int);
             //param[5].Direction = ParameterDirection.InputOutput;
             ////***
@@ -999,7 +999,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 lnkRemoveDefect.Visible = false;
             }
 
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "22":
                     if (txtrategrid != null)
@@ -1020,14 +1020,14 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             for (int i = 0; i < DGRecDetail.Columns.Count; i++)
             {
 
-                if (Session["varcompanyId"].ToString() != "16")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "16")
                 {
                     if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "ACTUAL WIDTH" || DGRecDetail.Columns[i].HeaderText.ToUpper() == "ACTUAL LENGTH")
                     {
                         DGRecDetail.Columns[i].Visible = false;
                     }
                 }
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "GRADE")
                     {
@@ -1040,7 +1040,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         DGRecDetail.Columns[i].Visible = false;
                     }
 
-                if (Session["varcompanyId"].ToString() == "43" || Session["varcompanyId"].ToString() == "46")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43" || Session["varMasterCompanyIDForERP"].ToString() == "46")
                 {
                     if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "ADD PENALITY")
                     {
@@ -1159,7 +1159,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 chk.Checked = true;
                 if (txtreason != null)
                 {
-                    switch (Session["varcompanyid"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "14":
                             txtreason.Visible = false;
@@ -1291,7 +1291,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 btnconfirm_Click(sender, new EventArgs());
                 break;
             case "16":
-                if (Session["varcompanyId"].ToString() == "16")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "16")
                 {
                     //                    string Str = @"Select StockNo, TStockNo 
                     //                        From LoomStockNo CN(Nolock) 
@@ -1337,7 +1337,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     protected void Savedetail(Object sender = null)
     {
         lblmessage.Text = "";
-        if (Session["varcompanyId"].ToString() == "22")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22")
         {
             if (DDCarpetGrade.SelectedIndex == 0)
             {
@@ -1531,7 +1531,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             cmd.Parameters.AddWithValue("@Processrecid", hnprocessrecid.Value);
             cmd.Parameters.AddWithValue("@TotalWt", txttotalstockwt.Text == "" ? "0" : txttotalstockwt.Text);
             cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@mastercompanyId", Session["varcompanyid"]);
+            cmd.Parameters.AddWithValue("@mastercompanyId", Session["varMasterCompanyIDForERP"]);
             cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
             cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
             cmd.ExecuteNonQuery();
@@ -1560,7 +1560,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
     protected void btnsavefrmgrid_Click(object sender, EventArgs e)
     {
         //Grid Loop
-        if (Session["varcompanyid"].ToString() == "14" || Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "21" || Convert.ToInt16(Request.QueryString["UserType"]) == 1)   //////For More than 1 Stock No To Save ONE Times.
+        if (Session["varMasterCompanyIDForERP"].ToString() == "14" || Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "21" || Convert.ToInt16(Request.QueryString["UserType"]) == 1)   //////For More than 1 Stock No To Save ONE Times.
         {
             SaveDetailForBulk();
             txtstockweight.Text = "";
@@ -1640,7 +1640,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             ////    param[13] = new SqlParameter("@msg", SqlDbType.VarChar, 500);
             ////    param[13].Direction = ParameterDirection.Output;
             ////    param[14] = new SqlParameter("@Userid", Session["varuserid"]);
-            ////    param[15] = new SqlParameter("@MasterCompanyID", Session["varCompanyId"]);
+            ////    param[15] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
             ////    //
             ////    //**************
@@ -1685,7 +1685,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             try
             {
                 string sp = string.Empty;
-                if (Session["varcompanyid"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     sp = "PRO_PRODUCTIONLOOMRECEIVE_BULK_STOCKNO_WISE_AGNI";
                 }
@@ -1720,7 +1720,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 500);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
                 cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varCompanyId"]);
+                cmd.Parameters.AddWithValue("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@BranchId", DDBranchName.SelectedValue);
                 cmd.Parameters.AddWithValue("@PartyChallanNo", txtPartyChallanNo.Text);
                 cmd.Parameters.Add("@Batch_challanno", SqlDbType.Int);
@@ -1913,7 +1913,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
 
     protected void btnconfirm_Click(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "42" || Session["varcompanyId"].ToString() == "45")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "42" || Session["varMasterCompanyIDForERP"].ToString() == "45")
         {
             if (txtactualwidth.Text == "")
             {
@@ -1929,7 +1929,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             }
         }
 
-        if (Session["varcompanyId"].ToString() == "22")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "22")
         {
             if (DDCarpetGrade.SelectedIndex == 0)
             {
@@ -2331,7 +2331,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
         //            param[3] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
         //            param[3].Direction = ParameterDirection.Output;
         //            param[4] = new SqlParameter("@UserId", Session["varuserid"]);
-        //            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+        //            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
         //            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_REMOVEQCDEFECTS", param);
         //            lblmessage.Text = param[3].Value.ToString();
@@ -2377,7 +2377,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     param[3] = new SqlParameter("@MSG", SqlDbType.VarChar, 100);
                     param[3].Direction = ParameterDirection.Output;
                     param[4] = new SqlParameter("@UserId", Session["varuserid"]);
-                    param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     param[6] = new SqlParameter("@QCRemoveDate", txtRemoveQCDate.Text);
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_REMOVEQCDEFECTS", param);
@@ -2633,7 +2633,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             arr[2].Value = lblPenalityProcessRecDetailId.Text;
             arr[3].Value = PenalityDetailData;
             arr[4].Value = Session["varuserid"];
-            arr[5].Value = Session["varCompanyId"];
+            arr[5].Value = Session["varMasterCompanyIDForERP"];
             arr[6].Direction = ParameterDirection.Output;
             arr[7].Value = 1;
 

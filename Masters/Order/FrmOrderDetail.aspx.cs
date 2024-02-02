@@ -10,7 +10,7 @@ public partial class Masters_Order_FrmOrderDetail : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -30,7 +30,7 @@ public partial class Masters_Order_FrmOrderDetail : System.Web.UI.Page
                     isnull(sum(recquantity),0) as Recqty,replace(convert(varchar(11),om.ReqDate,106),' ','-' ) as reqdate
                     From IndentMaster OM inner join IndentDetail OD On OM.IndentId=OD.IndentId inner join ordermaster omt on omt.orderid=od.orderid inner join
                     V_FinishedItemDetail V on V.Item_Finished_Id=OD.OFinishedId left outer join PP_ProcessRecTran pt on pt.indentid=OD.IndentId and pt.finishedid=OD.OFinishedId
-                    Where omt.status=0 and om.PartyId=" + Request.QueryString["Vendor"] + " And V.MasterCompanyId=" + Session["varCompanyid"] + @"  
+                    Where omt.status=0 and om.PartyId=" + Request.QueryString["Vendor"] + " And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  
                     Group by Item_Name,QualityName,Designname,ColorName,ShadeColorName,SizeMtr,SizeFt ,OD.OFinishedId,ReqDate,omt.CustomerOrderNo
                     Having isnull(Sum(Quantity),0)>isnull(sum(recquantity),0)";
         }
@@ -42,7 +42,7 @@ public partial class Masters_Order_FrmOrderDetail : System.Web.UI.Page
                 V_FinishedItemDetail V on V.Item_Finished_Id=pit.Finishedid left outer join
                 Ordermaster om on om.orderid=pii.Orderid left outer join 
                 PurchaseReceiveDetail prd On prd.PIndentIssueTranId=pit.PIndentIssueTranId and prd.FinishedId=pit.Finishedid
-                Where om.status=0 and pii.PartyId=" + Request.QueryString["Vendor"] + "   And V.MasterCompanyId=" + Session["varCompanyId"] + @"
+                Where om.status=0 and pii.PartyId=" + Request.QueryString["Vendor"] + "   And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 Group by CATEGORY_NAME,Item_Name,QualityName,Designname,ColorName,ShadeColorName,SizeMtr,SizeFt ,pit.Finishedid,om.CustomerOrderNo,Delivery_Date
                 Having isnull(Sum(quantity),0)>isnull(sum(QTY),0)";
         }

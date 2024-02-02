@@ -14,7 +14,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
     static int hnEmpId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -25,16 +25,16 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                 From Companyinfo CI
                 JOIN Company_Authentication CA ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                Where CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName 
+                Where CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                 Select Distinct CI.CustomerId, CI.CustomerCode 
                 From CustomerInfo CI (Nolock) 
                 JOIN OrderMaster OM(Nolock) ON OM.CustomerId = CI.CustomerId 
                 JOIN OrderDetail OD(Nolock) ON OD.OrderID = OM.OrderID 
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.PoufTypeCategory = 1 
-                Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By Customercode 
+                Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By Customercode 
                 Select UnitId, UnitName From Unit(Nolock) Where Unitid in (1,2,6) 
                 Select PROCESS_NAME_ID, PROCESS_NAME From PROCESS_NAME_MASTER PNM(Nolock) 
-                Where PROCESS_NAME = 'STITCHING' And MasterCompanyID = " + Session["varCompanyId"] + @" Order By Process_Name ";
+                Where PROCESS_NAME = 'STITCHING' And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By Process_Name ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -148,12 +148,12 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                         return;
                     }
 
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -162,7 +162,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                            if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                             {
                                 txtWeaverIdNoscan.Text = "";
                                 txtWeaverIdNoscan.Focus();
@@ -172,7 +172,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                     }
 
                     Boolean addflag = true;
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -223,7 +223,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             {
                 DataSet ds = null;
 
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     str = @"Select EI.Empid, EI.Empcode + '-' + EI.Empname EmpName, IsNull(EI.EmployeeType, 0) Emptype, 1 Caltype, 
                             IsNull(EID.Wagescalculation, 0) Wagescalculation 
@@ -253,12 +253,12 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                         ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Please select same location employee');", true);
                         return;
                     }
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -267,7 +267,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                            if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                             {
                                 txtWeaverIdNoscan.Text = "";
                                 txtWeaverIdNoscan.Focus();
@@ -319,7 +319,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                                 break;
                         }
                     }
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -450,7 +450,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             }
             string Function = string.Empty;
             string Qtyrequired = "VJ.INTERNALPRODASSIGNEDQTY";
-            if (Session["varcompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 if (hnEmployeeType.Value == "1")
                 {
@@ -465,7 +465,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                 Qtyrequired = "vj.preprodassignedqty";
                 Function = "[F_GETPRODUCTIONORDERQTY_ExterNal_NEW]";
             }
-            if (Session["varcompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 str = @"select Om.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, " + ddunit.SelectedValue + @" OrderUnitId, OD.flagsize, 
             case When " + hnordercaltype.Value + " = 1 Then VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME +' '+Case When OD.OrderUnitId = 1 Then vf.LWHMtr  When OD.OrderUnitId = 6 Then VF.LWHInch Else VF.LWHFt End  ELse dbo.F_getItemDescription(OD.Item_Finished_Id, Case when " + ddunit.SelectedValue + " = 1 Then 1 ELse case when " + ddunit.SelectedValue + " = 2 Then 0 Else Od.flagsize ENd ENd) END ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
@@ -619,7 +619,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                 cmd.Parameters.AddWithValue("@UnitID", ddunit.SelectedValue);
                 cmd.Parameters.AddWithValue("@CalType", DDcaltype.SelectedValue);
                 cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@DetailData", StrDetail);
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
@@ -678,7 +678,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                 From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,
                 ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
                 Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
-                PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
         //Employeedetail
         str = str + @" select Distinct Ei.Empid,EI.EmpCode+'-'+EI.EmpName as Empname,activestatus from Employee_ProcessOrderNo EMP 
                 inner Join EmpInfo EI on EMP.Empid=EI.EmpId 
@@ -691,13 +691,13 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                 JOIN PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD ON PD.IssueOrderID = PM.IssueOrderID 
                 JOIN LoomStockNo LS ON LS.IssueOrderID = PD.IssueOrderID And LS.IssueDetailID = PD.Issue_Detail_ID And LS.ProcessID = " + DDProcessName.SelectedValue + @" 
                 JOIN V_FinishedItemDetail VF ON VF.Item_Finished_ID = PD.Item_Finished_ID 
-                Where PM.IssueOrderid = " + hnissueorderid.Value + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                Where PM.IssueOrderid = " + hnissueorderid.Value + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DGOrderdetail.DataSource = ds.Tables[0];
         DGOrderdetail.DataBind();
 
-        if (chkEdit.Checked == true && (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28") && Convert.ToInt32(Session["usertype"]) > 2)
+        if (chkEdit.Checked == true && (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28") && Convert.ToInt32(Session["usertype"]) > 2)
         {
             DGOrderdetail.Columns[5].Visible = false;
             DGOrderdetail.Columns[6].Visible = false;
@@ -722,13 +722,13 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
         SqlParameter[] array = new SqlParameter[3];
         array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         array[1] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["VarCompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
 
                 case "16":
@@ -947,7 +947,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //******
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_CancelProductionorderLoomWise", param);
             //******
@@ -1014,7 +1014,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@dtrecord", dtrecord);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioEmployee", param);
@@ -1272,7 +1272,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                 DataRow dr = dtrecord.NewRow();
                 dr["empid"] = lblempid.Text;
                 dr["activestatus"] = Chkboxitem.Checked == true ? 0 : 1;
-                if (Session["varcompanyId"].ToString() == "44")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "44")
                 {
                     dr["Processid"] = 13;
                 }
@@ -1290,7 +1290,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Processid", 13);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioActiveStatus", param);
             Tran.Commit();
@@ -1554,13 +1554,13 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
 
             array[0].Value = hnissueorderid.Value;
             array[1].Value = 1;
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionConsumptionOrderReport", array);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                if (Convert.ToInt32(Session["VarcompanyId"]) == 27 || Convert.ToInt32(Session["VarcompanyId"]) == 34)//For Antique Panipat
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 34)//For Antique Panipat
                 {
                     Session["rptFileName"] = "~\\Reports\\ProductionOrderConsumptionForAntiquePanipat.rpt";
                 }
@@ -1594,7 +1594,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
     }
     protected void txtstockno_TextChanged(object sender, EventArgs e)
     {
-        if ((Session["varcompanyid"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
+        if ((Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
         {
             StockNoTextChanged();
         }
@@ -1684,7 +1684,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
     protected void btnweaveridscan_Click(object sender, EventArgs e)
     {
         //*********Check Folio Pending
-        switch (Session["varcompanyid"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "16":
             case "28":
@@ -1735,7 +1735,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //param[5] = new SqlParameter("@TanaLotNo", txtTanaLotNo.Text);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioTanaLotNo", param);
@@ -1763,7 +1763,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
         {
             for (int i = 0; i < DG.Columns.Count; i++)
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "27":
                     case "34":

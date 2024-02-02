@@ -12,7 +12,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,7 +20,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName 
                 from Companyinfo CI,Company_Authentication CA 
-                Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName 
+                Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                 Select Id,Name From PunchCardIndentType(Nolock) order by Id ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -49,7 +49,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
             hnReceiveid.Value = "0";
             FillCustomerOrderNo();
 
-            //switch (Session["VarCompanyId"].ToString())
+            //switch (Session["varMasterCompanyIDForERP"].ToString())
             //{
             //    case "30":
             //        TDCustomerCode.Visible = false;
@@ -71,7 +71,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
                 MID.PerSetQty,MId.NoOfSet,MId.TotalSetQty,
                 isnull((select isnull(sum(MRD.ReceiveNoOfSet),0) from PUNCHCARDINDENT_RECEIVEMASTER MRM INNER JOIN PUNCHCARDINDENT_RECEIVEDETAIL MRD ON MRM.RID=MRD.RID
 	                Where MRD.IssueID=MIM.ID and MRM.CompanyId=MIM.CompanyId and MRD.ItemFinishedId=MID.ItemFinishedId and MRD.OrderID=MID.OrderID and MRM.PunchCardIndentType=MIM.PunchCardIndentType),0) as PreReceiveQty,
-                --dbo.[GET_PUNCHCARDRECEIVEQTY](MIM.ID, MID.ItemFinishedId,MID.OrderID,MIM.PunchCardIndentType," + Session["varCompanyId"] + @") as PreReceiveQty,
+                --dbo.[GET_PUNCHCARDRECEIVEQTY](MIM.ID, MID.ItemFinishedId,MID.OrderID,MIM.PunchCardIndentType," + Session["varMasterCompanyIDForERP"] + @") as PreReceiveQty,
                 MIM.Remarks,U.UnitName
                 From PUNCHCARDINDENT_ORDERMASTER MIM 
                 INNER JOIN PUNCHCARDINDENT_ORDERDETAIL MID ON MIM.Id=MID.MasterId 
@@ -151,7 +151,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
     }
     protected void DDCompany_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         {
             FillCustomerOrderNo();
         }
@@ -196,7 +196,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
         else
         {
             str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI, Department DP Where EI.DepartmentId=DP.DepartmentId 
-                And EI.MasterCompanyId=" + Session["varCompanyId"] + " and isnull(Ei.blacklist,0)=0 ";
+                And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and isnull(Ei.blacklist,0)=0 ";
 
         }
         str = str + " And DP.DepartmentName='DESIGNING'";
@@ -355,7 +355,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentReceive : System.
                     param[3] = new SqlParameter("@EmpId", DDDesignerName.SelectedValue);
                     param[4] = new SqlParameter("@ReceiveDate", txtReceiveDate.Text);
                     param[5] = new SqlParameter("@userid", Session["varuserid"]);
-                    param[6] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    param[6] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     param[7] = new SqlParameter("@StringDetail", Strdetail);
                     param[8] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                     param[8].Direction = ParameterDirection.Output;

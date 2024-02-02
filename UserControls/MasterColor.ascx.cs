@@ -12,7 +12,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -32,7 +32,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
         try
         {
             con.Open();
-            string color = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id And  ps.company_id=" + Session["varCompanyId"] + "  and  ps.parameter_id='3'").ToString();
+            string color = SqlHelper.ExecuteScalar(con, CommandType.Text, "select DISTINCT ps.Parameter_name from parameter_setting ps ,master_parameter mp where ps.Parameter_Id=mp.Parameter_Id And  ps.company_id=" + Session["varMasterCompanyIDForERP"] + "  and  ps.parameter_id='3'").ToString();
             lblcolorname.Text = color;
         }
         catch (Exception ex)
@@ -67,7 +67,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = @"SELECT ColorId as Sr_No,ColorName as " + lblcolorname.Text + ",isnull(ColorCode,'') as ColorCode FROM Color Where MasterCompanyid=" + Session["varCompanyId"] + "  Order By ColorId";
+            string strsql = @"SELECT ColorId as Sr_No,ColorName as " + lblcolorname.Text + ",isnull(ColorCode,'') as ColorCode FROM Color Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  Order By ColorId";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             ds.Tables[0].Columns[1].ColumnName = "Color Name";
@@ -106,7 +106,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtcolor.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[4].Value = txtColorCode.Text.ToUpper();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Color", _arrPara);
@@ -139,7 +139,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -158,7 +158,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Color Where ColorName='" + txtcolor.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -177,7 +177,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from Color Where ColorCode='" + txtColorCode.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from Color Where ColorCode='" + txtColorCode.Text + "' and ColorId !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -205,7 +205,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
         {
             CheckDuplicateData();
 
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 if (txtColorCode.Text != "")
                 {
@@ -234,7 +234,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
     }
     private void Report()
     {
-        string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varCompanyId"] + "  ORDER BY ColorName";
+        string qry = @" SELECT ColorName  FROM   Color Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY ColorName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -316,7 +316,7 @@ public partial class UserControls_MasterColor : System.Web.UI.UserControl
         {
             SqlParameter[] _array = new SqlParameter[5];
             _array[0] = new SqlParameter("@ColorID", ViewState["id"]);
-            _array[1] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            _array[1] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             _array[2] = new SqlParameter("@UserId", Session["varuserid"]);
             _array[3] = new SqlParameter("@VarMsg", SqlDbType.NVarChar, 500);
             _array[3].Direction = ParameterDirection.Output;

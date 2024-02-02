@@ -11,13 +11,13 @@ public partial class Masters_Hissab_FrmProcessCommPayment : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName";
+            string Str = "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName";
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, Ds, 0, true, "--SELECT--");
@@ -41,11 +41,11 @@ public partial class Masters_Hissab_FrmProcessCommPayment : System.Web.UI.Page
         string Str = "";
         if (ChkForEdit.Checked == true)
         {
-            Str = "Select Distinct Process_Name_Id,Process_Name from PROCESS_NAME_MASTER PNM,PROCESS_HISSAB PH Where PNM.Process_Name_Id=PH.ProcessId  And PH.CommPaymentFlag=1 And PNM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name";
+            Str = "Select Distinct Process_Name_Id,Process_Name from PROCESS_NAME_MASTER PNM,PROCESS_HISSAB PH Where PNM.Process_Name_Id=PH.ProcessId  And PH.CommPaymentFlag=1 And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Process_Name";
         }
         else
         {
-            Str = "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name";
+            Str = "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Process_Name";
         }
         UtilityModule.ConditionalComboFill(ref DDProcessName, Str, true, "--SELECT--");
         ViewState["Hissab_No"] = 0;
@@ -61,11 +61,11 @@ public partial class Masters_Hissab_FrmProcessCommPayment : System.Web.UI.Page
             string Str = "";
             if (ChkForEdit.Checked == true)
             {
-                Str = "Select Distinct PM.EmpId,EI.EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI,PROCESS_HISSAB PH Where PM.CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And PM.EmpId=PH.EmpID And PH.CommPaymentFlag=1 AND EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName";
+                Str = "Select Distinct PM.EmpId,EI.EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI,PROCESS_HISSAB PH Where PM.CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And PM.EmpId=PH.EmpID And PH.CommPaymentFlag=1 AND EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName";
             }
             else
             {
-                Str = "Select Distinct PM.EmpId,EI.EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName";
+                Str = "Select Distinct PM.EmpId,EI.EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName";
             }
             UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
         }

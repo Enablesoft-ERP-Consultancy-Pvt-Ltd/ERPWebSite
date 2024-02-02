@@ -21,20 +21,20 @@ public partial class Masters_Packing_frmpreinvoice : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select CarriageId,CarriageName From Carriage where MasterCompanyid=" + Session["varcompanyid"] + @" order by CarriageName
-                           Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varCompanyId"] + @" order by StationName
-                           Select TransModeid,TransModeName from Transmode Where MasterCompanyId=" + Session["varCompanyId"] + @" order by TransModename
-                           Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varCompanyId"] + @" order by StationName
-                           select Unitid,UnitName From unit Where unitid in(1,2) and MasterCompanyId=" + Session["varCompanyId"] + @"
-                           Select CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varCompanyId"] + @"
-                           Select PaymentId, PaymentName from Payment Where MasterCompanyId=" + Session["varCompanyId"] + @" order by PaymentName
-                           select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname
+            string str = @"select CarriageId,CarriageName From Carriage where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CarriageName
+                           Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by StationName
+                           Select TransModeid,TransModeName from Transmode Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by TransModename
+                           Select GoodsReceiptId, StationName from GoodsReceipt Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by StationName
+                           select Unitid,UnitName From unit Where unitid in(1,2) and MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                           Select CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
+                           Select PaymentId, PaymentName from Payment Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PaymentName
+                           select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname
                            Select [Year], [Session] From [Session] Order By Year Desc ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -339,7 +339,7 @@ public partial class Masters_Packing_frmpreinvoice : System.Web.UI.Page
                 cmd.Parameters.Add("@msg", SqlDbType.VarChar, 100);
                 cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
                 cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@mastercompanyid", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@PortLoad", DDPortLoad.SelectedValue);
                 cmd.Parameters.AddWithValue("@Companyid", DDcompany.SelectedValue);
                 cmd.Parameters.AddWithValue("@CGST", txtcgst.Text == "" ? "0" : txtcgst.Text);
@@ -400,7 +400,7 @@ public partial class Masters_Packing_frmpreinvoice : System.Web.UI.Page
                 //param[46] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 //param[46].Direction = ParameterDirection.Output;
                 //param[47] = new SqlParameter("@userid", Session["varuserid"]);
-                //param[48] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+                //param[48] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 //param[49] = new SqlParameter("@PortLoad", DDPortLoad.SelectedValue);
                 //param[50] = new SqlParameter("@Companyid", DDcompany.SelectedValue);
                 //param[51] = new SqlParameter("@CGST", txtcgst.Text == "" ? "0" : txtcgst.Text);
@@ -523,7 +523,7 @@ public partial class Masters_Packing_frmpreinvoice : System.Web.UI.Page
         else
         {
             hninvid.Value = "0";
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 //DG.DataSource = null;
                 //DG.DataBind();
@@ -788,7 +788,7 @@ public partial class Masters_Packing_frmpreinvoice : System.Web.UI.Page
                         ////Get quality,Design,color size from article creation
 
                         //string articleno = "";
-                        //if (Session["varCompanyId"].ToString() == "14")
+                        //if (Session["varMasterCompanyIDForERP"].ToString() == "14")
                         //{
                         //    double articleno2 = Convert.ToDouble(wsp.Readcell("C" + rNo).Trim());  //articleno
                         //    articleno = Convert.ToString(articleno2);
@@ -862,7 +862,7 @@ public partial class Masters_Packing_frmpreinvoice : System.Web.UI.Page
 
                             SqlParameter[] param = new SqlParameter[15];
                             param[0] = new SqlParameter("@userid", Session["varuserid"]);
-                            param[1] = new SqlParameter("@mastercomanyId", Session["varcompanyid"]);
+                            param[1] = new SqlParameter("@mastercomanyId", Session["varMasterCompanyIDForERP"]);
                             param[2] = new SqlParameter("@dtdetail", dt);
                             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                             param[3].Direction = ParameterDirection.Output;

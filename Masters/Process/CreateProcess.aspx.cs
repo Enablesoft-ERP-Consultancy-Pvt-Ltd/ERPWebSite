@@ -11,7 +11,7 @@ public partial class Masters_Process_CreateProcess : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -22,7 +22,7 @@ public partial class Masters_Process_CreateProcess : CustomPage
             RDProcessType.SelectedIndex = 0;
             if (variable.Carpetcompany == "1")
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "20":
                     case "8":
@@ -76,7 +76,7 @@ public partial class Masters_Process_CreateProcess : CustomPage
                         isnull(PNM.AreaEditable,0) as AreaEditable,isnull(PNM.issreconetime,0) as issreconetime,isnull(PNM.SizeToleranceFlag,0) as SizeToleranceFlag 
                         ,isnull(PNM.WeightToleranceFlag,0) as WeightToleranceFlag
                         From PROCESS_NAME_MASTER PNM Left Outer Join Process_UserType PUT ON 
-                       PNM.PROCESS_NAME_ID=PUT.ProcessID Where PNM.PROCESS_NAME_ID=" + DGCreateProcess.SelectedDataKey.Value + " And PNM.MasterCompanyId=" + Session["varCompanyId"];
+                       PNM.PROCESS_NAME_ID=PUT.ProcessID Where PNM.PROCESS_NAME_ID=" + DGCreateProcess.SelectedDataKey.Value + " And PNM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
         int n = Ds.Tables[0].Rows.Count;
         if (n > 0)
@@ -128,7 +128,7 @@ public partial class Masters_Process_CreateProcess : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string sqlstr = "Select PROCESS_NAME_ID as ID,PROCESS_NAME,ShortName,isnull(seqno,0) as seqNo from PROCESS_NAME_MASTER  Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Process_name_id";
+            string sqlstr = "Select PROCESS_NAME_ID as ID,PROCESS_NAME,ShortName,isnull(seqno,0) as seqNo from PROCESS_NAME_MASTER  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Process_name_id";
             DS = SqlHelper.ExecuteDataset(con, CommandType.Text, sqlstr);
         }
         catch (Exception ex)
@@ -161,11 +161,11 @@ public partial class Masters_Process_CreateProcess : CustomPage
             string sqlstr;
             if (btnsave.Text == "Update")
             {
-                sqlstr = "Select Isnull(PROCESS_NAME_ID,0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' and PROCESS_NAME_ID !=" + DGCreateProcess.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                sqlstr = "Select Isnull(PROCESS_NAME_ID,0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' and PROCESS_NAME_ID !=" + DGCreateProcess.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                sqlstr = "Select Isnull(max(PROCESS_NAME_ID),0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                sqlstr = "Select Isnull(max(PROCESS_NAME_ID),0) from PROCESS_NAME_MASTER where PROCESS_NAME='" + TxtProcessName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             int Processid = Convert.ToInt32(SqlHelper.ExecuteScalar(con, CommandType.Text, sqlstr));
             if (Processid > 0)
@@ -229,7 +229,7 @@ public partial class Masters_Process_CreateProcess : CustomPage
                 _arrPara[1].Value = TxtProcessName.Text.ToUpper();
                 _arrPara[2].Value = TxtShortName.Text.ToUpper();
                 _arrPara[3].Value = Session["varuserid"].ToString();
-                _arrPara[4].Value = Session["varCompanyId"].ToString();
+                _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrPara[5].Value = ChkForApproval.Checked == true ? 1 : 0;
 
                 int n = ChkForUserType.Items.Count;

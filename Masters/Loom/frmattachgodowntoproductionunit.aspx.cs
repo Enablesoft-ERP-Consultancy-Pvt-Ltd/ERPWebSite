@@ -11,7 +11,7 @@ public partial class Masters_Loom_frmattachgodowntoproductionunit : System.Web.U
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -42,7 +42,7 @@ public partial class Masters_Loom_frmattachgodowntoproductionunit : System.Web.U
             param[1] = new SqlParameter("@Produnitid", DDProdunit.SelectedValue);
             param[2] = new SqlParameter("@Godownid",DDgodown.SelectedValue);
             param[3] = new SqlParameter("@userid",Session["varuserid"]);
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_saveProductiongodown", param);
             Tran.Commit();
             Fillgrid();

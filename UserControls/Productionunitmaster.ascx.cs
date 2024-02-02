@@ -11,7 +11,7 @@ public partial class UserControls_Productionunitmaster : System.Web.UI.UserContr
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyNo"]==null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }

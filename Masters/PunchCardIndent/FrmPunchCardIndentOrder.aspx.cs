@@ -12,13 +12,13 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+            string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                             Select UnitID, UnitName From Unit(Nolock) Where UnitID in (1, 2,6)
                             Select Id,Name From PunchCardIndentType(Nolock) order by Id ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -47,11 +47,11 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
             }
             FillCustomerOrderNo();
 
-            //switch (Session["varcompanyId"].ToString())
+            //switch (Session["varMasterCompanyIDForERP"].ToString())
             //{
             //    case "2":
 
-            //switch(Session["VarCompanyId"].ToString())
+            //switch(Session["varMasterCompanyIDForERP"].ToString())
             //{
             //    case "30":
             //        TDCustomerCode.Visible = false;
@@ -116,7 +116,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
         {
             string str = "";
             str = @"Select EI.EmpId,EI.EmpName from EmpInfo EI, Department DP Where EI.DepartmentId=DP.DepartmentId 
-                And DP.DepartmentName='DESIGNING' And EI.MasterCompanyId=" + Session["varCompanyId"] + " and isnull(Ei.blacklist,0)=0 order by EI.Empname";
+                And DP.DepartmentName='DESIGNING' And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and isnull(Ei.blacklist,0)=0 order by EI.Empname";
 
             UtilityModule.ConditionalComboFill(ref DDDesignerName, str, true, "--Plz Select--");
         }
@@ -329,7 +329,7 @@ public partial class Masters_PunchCardIndent_FrmPunchCardIndentOrder : System.We
                     param[4] = new SqlParameter("@AssignDate", txtAssignDate.Text);
                     param[5] = new SqlParameter("@RequiredDate", txtRequiredDate.Text);
                     param[6] = new SqlParameter("@userid", Session["varuserid"]);
-                    param[7] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                    param[7] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                     param[8] = new SqlParameter("@StringDetail", Strdetail);                  
                     param[9] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                     param[9].Direction = ParameterDirection.Output;

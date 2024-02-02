@@ -14,15 +14,15 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             TRlotNo.Visible = false;
-            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By PROCESS_NAME
+            string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                        Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME
                         select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
@@ -42,7 +42,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 DDCompany.Enabled = false;
             }
 
-            int varcompanyNo = Convert.ToInt16(Session["varcompanyid"].ToString());
+            int varcompanyNo = Convert.ToInt16(Session["varMasterCompanyIDForERP"].ToString());
             switch (varcompanyNo)
             {
                 case 8:
@@ -103,6 +103,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     RDFinishingRecSummaryWithTDS.Visible = true;
                     RDFinishingHissabSummary.Visible = true;
                     RDFinishingNillBalance.Visible = true;
+                    RDFinishingRegisterSummary.Visible = true;
                     break;
                 case 44:
                     RDTasselIssueReceiveSummary.Visible = true;
@@ -174,7 +175,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDEmpName, "Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as Empname from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName", true, "--Select--");
         }
         //  EmpSelectedChanged();
         if (RDFinishingpending.Checked == true || RDFinishingIssueDetail.Checked == true || RDProcessIssRecDetail.Checked == true || RDProcessIssRecDetail.Checked == true || RDPerday.Checked == true)
@@ -272,7 +273,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         }
         if (RDGatePass.Checked == true)
         {
-            //Str = @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME from View_StockTranGetPassDetail PM,V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varCompanyId"] + "";
+            //Str = @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME from View_StockTranGetPassDetail PM,V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
             //if (DDEmpName.SelectedIndex > 0)
             //{
             //    Str = Str + " AND PM.Partyid =" + DDEmpName.SelectedValue + " Order BY VF.CATEGORY_NAME";
@@ -303,7 +304,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM(Nolock)
                         JOIN PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD(Nolock) ON PM.IssueOrderID=PD.IssueOrderID 
                         JOIN V_FinishedItemDetail VF Where PD.Item_Finished_Id=VF.Item_Finished_Id 
-                        Where PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        Where PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -319,7 +320,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
 
                 Str1 = @"Select Distinct VF.CATEGORY_ID,VF.CATEGORY_NAME from PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -363,17 +364,17 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
     {
         lblMessage.Text = "";
 
-        if (RDProcessIssRecDetail.Checked == true && chkexcelexport.Checked == true && Session["varcompanyId"].ToString() != "16")
+        if (RDProcessIssRecDetail.Checked == true && chkexcelexport.Checked == true && Session["varMasterCompanyIDForERP"].ToString() != "16")
         {
             Processreceiveexcelexport();
             return;
         }
-        if (RDFinishingIssueDetail.Checked == true && chkexcelexport.Checked == true && Session["varcompanyId"].ToString() != "16")
+        if (RDFinishingIssueDetail.Checked == true && chkexcelexport.Checked == true && Session["varMasterCompanyIDForERP"].ToString() != "16")
         {
             ProcessIssueExcelExport();
             return;
         }
-        if (RDProcessIssRecDetail.Checked == true && chkjobwisesummary.Checked == true && Session["varcompanyId"].ToString() != "16")
+        if (RDProcessIssRecDetail.Checked == true && chkjobwisesummary.Checked == true && Session["varMasterCompanyIDForERP"].ToString() != "16")
         {
             if (lblMessage.Text == "")
             {
@@ -383,14 +384,14 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 SqlTransaction tran2 = con2.BeginTransaction();
                 try
                 {
-                    if (RDProcessIssRecDetail.Checked == true && chkjobwisesummary.Checked == true && Session["varcompanyId"].ToString() != "16")
+                    if (RDProcessIssRecDetail.Checked == true && chkjobwisesummary.Checked == true && Session["varMasterCompanyIDForERP"].ToString() != "16")
                     {
-                        if (Session["varCompanyId"].ToString() == "27")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "27")
                         {
                             JobWiseProcessReceiveSummaryFolioWise(tran2);
                             return;
                         }
-                        if (Session["varCompanyId"].ToString() == "42")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "42")
                         {
                             JobWiseProcessReceiveSummaryVikramMirzapur();
                             return;
@@ -416,7 +417,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 }
             }
         }
-        if (RDProcessIssRecDetail.Checked == true && ChkForIssueDate.Checked == true && Session["varcompanyId"].ToString() != "16")
+        if (RDProcessIssRecDetail.Checked == true && ChkForIssueDate.Checked == true && Session["varMasterCompanyIDForERP"].ToString() != "16")
         {
             if (ChkForIssueDate.Checked == true && ChkSummary.Checked == true)
             {
@@ -475,7 +476,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                         return;
                     }
                     //***********For Champo Carpets
-                    switch (Session["varcompanyId"].ToString())
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
                     {
                         case "16":
                             if (UtilityModule.Temp_ReportCheck(Convert.ToInt32(DDProcessName.SelectedValue), Convert.ToInt32(txtissueno.Text), "ProcessReceiveDetail", Convert.ToInt32(Session["varuserid"])) == false)
@@ -499,7 +500,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 {
                     if (ChkSummary.Checked == true || ChkBuyerItemSizeWiseSummary.Checked == true)
                     {
-                        if (Session["varCompanyId"].ToString() == "22")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                         {
                             ProcessReceiveDetailSummaryDiamondExport();
                             return;
@@ -523,7 +524,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                     }
                     else
                     {
-                        if (Session["varcompanyid"].ToString() == "22")
+                        if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                         {
                             if (ChkWithRecTime.Checked == true)
                             {
@@ -534,7 +535,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                                 Session["ReportPath"] = "Reports/RptProcessDetailNEWIssueNoWise.rpt";
                             }
                         }
-                        else if (Session["varcompanyid"].ToString() == "38")
+                        else if (Session["varMasterCompanyIDForERP"].ToString() == "38")
                         {
                             Session["ReportPath"] = "Reports/RptProcessDetailNEWIssueNoWise_VikramKM.rpt";
                         }
@@ -596,6 +597,12 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (RDFinishingNillBalance.Checked == true)
         {
             FinishingReceiveNillBalanceReport();
+            return;
+        }
+
+        if (RDFinishingRegisterSummary.Checked == true)
+        {
+            FinishingRegisterSummaryReport_CI();
             return;
         }
 
@@ -812,7 +819,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             //param[1] = new SqlParameter("@processid", DDProcessName.SelectedValue);
             //param[2] = new SqlParameter("@where", str);
             //param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            //param[4] = new SqlParameter("MasterCompanyId", Session["varCompanyId"]);
+            //param[4] = new SqlParameter("MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetprocessreceiveExcel", param);
 
@@ -836,7 +843,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             cmd.Parameters.AddWithValue("@processid", DDProcessName.SelectedValue);
             cmd.Parameters.AddWithValue("@where", str);
             cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varCompanyId"]);
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
             cmd.ExecuteNonQuery();
             ad.Fill(ds);
@@ -963,7 +970,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             param[1] = new SqlParameter("@processid", DDProcessName.SelectedValue);
             param[2] = new SqlParameter("@where", str);
             param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            param[4] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            param[4] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetProcessIssueExcel", param);
             if (ds.Tables[0].Rows.Count > 0)
@@ -1050,7 +1057,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (Ds.Tables[0].Rows.Count > 0)
         {
             Session["dsFileName"] = "~\\ReportSchema\\RptProcessIssRecWithConsumption.xsd";
-            if (Session["varcompanyid"].ToString() == "27")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "27")
             {
                 Session["rptFileName"] = "Reports/RptProcessIssRecWithConsumptionAntique.rpt";
             }
@@ -1107,7 +1114,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
                 JOIN " + ViewGatepass + @" V2(NoLock)  ON V1.Item_Finished_ID=V2.finishedID
                 JOIN Empinfo E(NoLock)  ON V2.Partyid=e.empid
                 JOIN Companyinfo Ci(NoLock)  ON V2.CompanyId=ci.companyId
-                Where V1.MasterCompanyId=" + Session["varCompanyId"];
+                Where V1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
             if (DDCompany.SelectedIndex != -1)
             {
@@ -1155,7 +1162,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         {
             Str = @"Select ReceiveDate Date,V1.Category_Name,V1.Item_Name,V1.QualityName,V1.designName,V1.ColorName,V1.ShadeColorName,V1.ShapeName,V1.SizeMtr,V2.GateInNo+' / '+V2.ReceiveNo GateInNo,V2.LotNo,Sum(V2.Qty) Qty,e.EmpName IssuedTo,V2.TranType,V2.Remarks ReasonToIssue,V2.FolioNo,
                  CI.CompanyName,Ci.Compaddr1,Ci.gstno,v2.rate,V2.GateInNo  as GateInoutNo,V2.ReceiveNo as GateinoutrecNo,V1.designName+' '+V1.ColorName+' '+V1.ShadeColorName+' '+V1.ShapeName+' '+V1.SizeMtr as Description,V2.Billdate,V2.MainRemarks
-                From V_FinishedItemDetail V1," + ViewGatepass + " V2, Empinfo e,Companyinfo Ci Where V1.Item_Finished_ID=V2.finishedID AND V2.Partyid=e.empid and V2.CompanyId=ci.companyId And V1.MasterCompanyId=" + Session["varCompanyId"];
+                From V_FinishedItemDetail V1," + ViewGatepass + " V2, Empinfo e,Companyinfo Ci Where V1.Item_Finished_ID=V2.finishedID AND V2.Partyid=e.empid and V2.CompanyId=ci.companyId And V1.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (DDCompany.SelectedIndex != -1)
             {
                 Str = Str + " and V2.CompanyId=" + DDCompany.SelectedValue;
@@ -1828,7 +1835,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (ds.Tables[0].Rows.Count > 0)
         {
 
-            if (Session["varcompanyid"].ToString() == "22")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             {
                 if (ChkWithRecTime.Checked == true)
                 {
@@ -1919,7 +1926,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             string qry = @" SELECT TEMP_PROCESS_ISS_REC_DETAIL.IssueOrderId,TEMP_PROCESS_ISS_REC_DETAIL.Qty,TEMP_PROCESS_ISS_REC_DETAIL.RQty,TEMP_PROCESS_ISS_REC_DETAIL.PQty,V_FinishedItemDetail.QualityName,V_FinishedItemDetail.designName,
 V_FinishedItemDetail.ColorName,V_FinishedItemDetail.SizeMtr,TEMP_PROCESS_ISS_REC_DETAIL.UnitId,V_FinishedItemDetail.SizeFt,TEMP_PROCESS_ISS_REC_DETAIL.Empid,EmpInfo.EmpName,TEMP_PROCESS_ISS_REC_DETAIL.TStockNo,
 TEMP_PROCESS_ISS_REC_DETAIL.AssignDate,CancelQty
- FROM   TEMP_PROCESS_ISS_REC_DETAIL INNER JOIN EmpInfo ON TEMP_PROCESS_ISS_REC_DETAIL.Empid=EmpInfo.EmpId And EmpInfo.MasterCompanyId=" + Session["varCompanyId"] + @"  INNER JOIN V_FinishedItemDetail ON TEMP_PROCESS_ISS_REC_DETAIL.Item_Finished_id=V_FinishedItemDetail.ITEM_FINISHED_ID
+ FROM   TEMP_PROCESS_ISS_REC_DETAIL INNER JOIN EmpInfo ON TEMP_PROCESS_ISS_REC_DETAIL.Empid=EmpInfo.EmpId And EmpInfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  INNER JOIN V_FinishedItemDetail ON TEMP_PROCESS_ISS_REC_DETAIL.Item_Finished_id=V_FinishedItemDetail.ITEM_FINISHED_ID
  ORDER BY TEMP_PROCESS_ISS_REC_DETAIL.Empid,TEMP_PROCESS_ISS_REC_DETAIL.IssueOrderId";
             ds = SqlHelper.ExecuteDataset(tran, CommandType.Text, qry);
             Session["dsFileName"] = "~\\ReportSchema\\RptProcessIssRecSummaryWithStockNoNEW.xsd";
@@ -1928,7 +1935,7 @@ TEMP_PROCESS_ISS_REC_DETAIL.AssignDate,CancelQty
         {
             string qry = @" SELECT TEMP_PROCESS_ISS_REC_DETAIL.IssueOrderId,TEMP_PROCESS_ISS_REC_DETAIL.Qty,TEMP_PROCESS_ISS_REC_DETAIL.RQty,TEMP_PROCESS_ISS_REC_DETAIL.PQty,V_FinishedItemDetail.QualityName,
 V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDetail.SizeMtr,TEMP_PROCESS_ISS_REC_DETAIL.UnitId,V_FinishedItemDetail.SizeFt,TEMP_PROCESS_ISS_REC_DETAIL.Empid,EmpInfo.EmpName
- ,CancelQty FROM   TEMP_PROCESS_ISS_REC_DETAIL INNER JOIN EmpInfo ON TEMP_PROCESS_ISS_REC_DETAIL.Empid=EmpInfo.EmpId And Empinfo.MasterCompanyId=" + Session["varCompanyId"] + @" INNER JOIN V_FinishedItemDetail ON TEMP_PROCESS_ISS_REC_DETAIL.Item_Finished_id=V_FinishedItemDetail.ITEM_FINISHED_ID
+ ,CancelQty FROM   TEMP_PROCESS_ISS_REC_DETAIL INNER JOIN EmpInfo ON TEMP_PROCESS_ISS_REC_DETAIL.Empid=EmpInfo.EmpId And Empinfo.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" INNER JOIN V_FinishedItemDetail ON TEMP_PROCESS_ISS_REC_DETAIL.Item_Finished_id=V_FinishedItemDetail.ITEM_FINISHED_ID
  ORDER BY TEMP_PROCESS_ISS_REC_DETAIL.Empid,TEMP_PROCESS_ISS_REC_DETAIL.IssueOrderId";
             ds = SqlHelper.ExecuteDataset(tran, CommandType.Text, qry);
             Session["dsFileName"] = "~\\ReportSchema\\RptProcessIssRecSummaryNEW.xsd";
@@ -2000,9 +2007,9 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             Str = Str + " (Select * From [dbo].[Get_StockNoNext_Receive_Detail_Wise](PD.Process_Rec_Detail_Id," + DDProcessName.SelectedValue + @",Issue_Detail_Id)) TStockNo,";
         }
         Str = Str + @" PD.Orderid,PD.Item_Finished_id,PD.Length,PD.Width,PD.Area*PD.Qty Area,PD.Rate,PD.Amount,PD.Qty,PM.CompanyId,PM.EmpId,PM.ReceiveDate,PM.Process_Rec_Id,
-                      " + DDProcessName.SelectedValue + "," + Session["varuserid"] + @"," + Session["varCompanyId"] + ",'" + TxtFromDate.Text + "','" + TxtToDate.Text + @"',PM.UnitId,PD.Penality,Comm,CommAmt,Isnull(TDSPercentage,0) TDSPercentage,ChallanNo
+                      " + DDProcessName.SelectedValue + "," + Session["varuserid"] + @"," + Session["varMasterCompanyIDForERP"] + ",'" + TxtFromDate.Text + "','" + TxtToDate.Text + @"',PM.UnitId,PD.Penality,Comm,CommAmt,Isnull(TDSPercentage,0) TDSPercentage,ChallanNo
                       From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + " PM,PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF
-                      Where PM.Process_Rec_Id=PD.Process_Rec_Id And PD.Item_Finished_id=VF.Item_Finished_id And PD.Qty<>0 And PD.Qualitytype<>3 And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                      Where PM.Process_Rec_Id=PD.Process_Rec_Id And PD.Item_Finished_id=VF.Item_Finished_id And PD.Qty<>0 And PD.Qualitytype<>3 And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ChkForDate.Checked == true)
         {
             Str = Str + " And PM.ReceiveDate>='" + TxtFromDate.Text + "' And PM.ReceiveDate<='" + TxtToDate.Text + "'";
@@ -2056,9 +2063,9 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
         Str = @"Insert into TEMP_PROCESS_ISS_REC_DETAIL SELECT PM.IssueOrderId,PM.Empid,PM.UnitId,PM.CompanyId,PM.AssignDate,PD.Item_Finished_id,Sum(PD.Qty) Qty,
                Sum((PD.Qty-isnull(cancelQty,0))*PD.Area) Area,Sum(PD.Qty-PD.PQty) RQty,Sum(PD.PQty)-isnull(Sum(CancelQty),0) PQty,PD.Orderid,PD.ReqByDate,DateDiff(Day,PD.ReqByDate,PM.AssignDate) LateDays,
-               " + Session["varuserid"] + "," + Session["varCompanyId"] + ",'',isnull(Sum(cancelQty),0) cancelQty  FROM PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
+               " + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + ",'',isnull(Sum(cancelQty),0) cancelQty  FROM PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderId=PD.IssueOrderId And PD.Item_Finished_Id=VF.Item_Finished_Id And 
-               PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+               PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ChkForDate.Checked == true)
         {
             Str = Str + " And PM.AssignDate>='" + TxtFromDate.Text + "' And PM.AssignDate<='" + TxtToDate.Text + "'";
@@ -2116,7 +2123,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         lblMessage.Text = "";
         if (TRProcessName.Visible == true)
         {
-            if (Session["varCompanyId"].ToString() != "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() != "44")
             {
                 if (UtilityModule.VALIDDROPDOWNLIST(DDProcessName) == false)
                 {
@@ -2148,7 +2155,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -2165,7 +2172,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.QualityId,VF.QualityName from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderID=PD.IssueOrderID And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2175,7 +2182,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.QualityId,VF.QualityName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -2194,7 +2201,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         }
         else
         {
-            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varCompanyId"] + " and vf.qualityname<>''";
+            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and vf.qualityname<>''";
             if (DDCategory.SelectedIndex > 0)
             {
                 Str1 = Str1 + " And VF.Category_id=" + DDCategory.SelectedValue;
@@ -2230,7 +2237,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ITEM_ID,VF.ITEM_NAME from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderID=PD.IssueOrderID And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2240,7 +2247,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ITEM_ID,VF.ITEM_NAME From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -2264,7 +2271,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             UtilityModule.ConditionalComboFill(ref DDLotNo, "select  Distinct LotNo,LotNo from stock Where CompanyId=" + DDCompany.SelectedValue, true, "--Select--");
 
             //            Str1 = @"Select Distinct VF.Item_id,VF.Item_NAME from View_StockTranGetPassDetail PM,
-            //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varCompanyId"];
+            //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             //            if (DDCategory.SelectedIndex > 0)
             //            {
             //                Str1 = Str1 + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
@@ -2315,13 +2322,13 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
                         TRDDShadeColor.Visible = true;
 
                         //                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from View_StockTranGetPassDetail PM,
-                        //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        //                        V_FinishedItemDetail VF Where PM.finishedid=VF.Item_finished_id And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                         //                        if (DDCategory.SelectedIndex > 0)
                         //                        {
                         //                            Str1 = Str1 + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
                         //                        }
                         //                        Str1 = Str1 + " Order BY VF.shadecolorname ";
-                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varCompanyId"] + " and vf.shadecolorname<>''";
+                        Str1 = @"Select Distinct VF.ShadecolorId,VF.shadecolorname from V_FinishedItemDetail VF Where VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and vf.shadecolorname<>''";
                         if (DDCategory.SelectedIndex > 0)
                         {
                             Str1 = Str1 + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
@@ -2359,7 +2366,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.designId,VF.designName from PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderID=PD.IssueOrderID And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2369,7 +2376,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.designId,VF.designName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -2396,7 +2403,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ColorId,VF.ColorName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderID=PD.IssueOrderID And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2406,7 +2413,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ColorId,VF.ColorName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -2433,7 +2440,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ShapeId,VF.ShapeName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderID=PD.IssueOrderID And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2443,7 +2450,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ShapeId,VF.ShapeName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -2470,7 +2477,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ShadecolorId,VF.ShadeColorName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderID=PD.IssueOrderID And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2480,7 +2487,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.ShadecolorId,VF.ShadeColorName From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -2505,7 +2512,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
         lblqualityname.Text = ParameterList[0];
@@ -2529,7 +2536,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.SizeId,VF." + strSize + " as Size From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_ISSUE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.IssueOrderID=PD.IssueOrderID And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.IssueOrderID=" + DDChallanNo.SelectedValue;
@@ -2539,7 +2546,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 Str1 = @"Select Distinct VF.SizeId,VF." + strSize + " as size From PROCESS_RECEIVE_MASTER_" + DDProcessName.SelectedValue + @" PM,
                         PROCESS_RECEIVE_DETAIL_" + DDProcessName.SelectedValue + @" PD,V_FinishedItemDetail VF Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
                 if (DDChallanNo.SelectedIndex > 0)
                 {
                     Str1 = Str1 + " And PM.Process_Rec_Id=" + DDChallanNo.SelectedValue;
@@ -2586,7 +2593,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             TRRecChallan.Visible = false;
             TRProcessName.Visible = false;
             string str = @"select Distinct LotNo,LotNo from stock(Nolock) Where CompanyId=" + DDCompany.SelectedValue + @"
-            Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end EmpNameNew from Empinfo EI Where MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpNameNew";
+            Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end EmpNameNew from Empinfo EI Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpNameNew";
             DataSet ds = SqlHelper.ExecuteDataset(str);
             UtilityModule.ConditionalComboFillWithDS(ref DDLotNo, ds, 0, true, "--Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDEmpName, ds, 1, true, "--Select--");
@@ -2610,7 +2617,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         TRQualityWiseSummary.Visible = false;
         if (RDProcessIssRecDetail.Checked == true)
         {
-            if (Session["varcompanyid"].ToString() == "22" && Session["usertype"].ToString() == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["usertype"].ToString() == "1")
             {
                 TRCheckWithTime.Visible = true;
             }
@@ -2625,19 +2632,19 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             ChkForDate.Checked = false;
             TDexcelExport.Visible = true;
             TDsizesummary.Visible = true;
-            if (Session["varcompanyid"].ToString() == "16" || Session["usertype"].ToString() == "28")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["usertype"].ToString() == "28")
             {
                 TRBuyerItemSizeWiseSummary.Visible = true;
             }
 
-            if (Session["VarCompanyid"].ToString() == "43")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "43")
             {
                 TRQualityDesignSizeWiseSummary.Visible = true;
                 TRQualitySizeWiseHissabSummary.Visible = true;
             }
 
             UtilityModule.ConditionalComboFill(ref DDEmpName, @"Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end EmpName 
-            from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EI.EmpName", true, "--Select--");
+            from Empinfo EI,PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PIM WHERE PIM.EmpId=EI.EmpId And CompanyId=" + DDCompany.SelectedValue + " And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName", true, "--Select--");
         }
     }
     protected void ChkForDate_CheckedChanged(object sender, EventArgs e)
@@ -2729,7 +2736,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         param[2] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
         param[3] = new SqlParameter("@fromdate", TxtFromDate.Text);
         param[4] = new SqlParameter("@Todate", TxtToDate.Text);
-        param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+        param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
         param[6] = new SqlParameter("@Issueorderid", DDChallanNo.SelectedIndex > 0 ? DDChallanNo.SelectedValue : "0");
         param[7] = new SqlParameter("@EMpid", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");
         //************
@@ -2800,7 +2807,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         if (ds.Tables[0].Rows.Count > 0)
         {
             Session["dsFileName"] = "~\\ReportSchema\\RptProcessCommissionDetail.xsd";
-            if (Session["varcompanyid"].ToString() == "15")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "15")
             {
                 Session["rptFileName"] = "Reports/RptProcessCommissionDetailEMHD.rpt";
             }
@@ -3180,7 +3187,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
         if (RDFinishingIssueDetail.Checked == true)
         {
-            if (Session["varcompanyid"].ToString() == "22" && Session["usertype"].ToString() == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["usertype"].ToString() == "1")
             {
                 TRCheckWithTime.Visible = true;
             }
@@ -3316,7 +3323,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
         if (RDProcessIssueReceiveSummary.Checked == true)
         {
-            if (Session["varcompanyid"].ToString() == "22" && Session["usertype"].ToString() == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["usertype"].ToString() == "1")
             {
                 TRCheckWithTime.Visible = false;
             }
@@ -3342,7 +3349,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         TRQualityWiseSummary.Visible = false;
         if (RDTasselIssueReceiveSummary.Checked == true)
         {
-            if (Session["varcompanyid"].ToString() == "22" && Session["usertype"].ToString() == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["usertype"].ToString() == "1")
             {
                 TRCheckWithTime.Visible = false;
             }
@@ -3369,7 +3376,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
         if (RDTasselPartnerIssueSummary.Checked == true)
         {
-            if (Session["varcompanyid"].ToString() == "22" && Session["usertype"].ToString() == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["usertype"].ToString() == "1")
             {
                 TRCheckWithTime.Visible = false;
             }
@@ -3395,7 +3402,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         TRQualityWiseSummary.Visible = false;
         if (RDTasselPartnerReceiveSummary.Checked == true)
         {
-            if (Session["varcompanyid"].ToString() == "22" && Session["usertype"].ToString() == "1")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22" && Session["usertype"].ToString() == "1")
             {
                 TRCheckWithTime.Visible = false;
             }
@@ -3563,7 +3570,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             arr[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
             arr[6] = new SqlParameter("@Where", str);
             arr[7] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[8] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            arr[8] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FinishingIssueReceiveDetailExcelReport", arr);
 
@@ -3813,7 +3820,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             arr[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
             arr[6] = new SqlParameter("@Where", str);
             arr[7] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[8] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            arr[8] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FinishingIssueReceiveDetailExcelReport", arr);
             if (ds.Tables[0].Rows.Count > 0)
@@ -7825,7 +7832,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             param[2] = new SqlParameter("@EmpId", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");
             param[3] = new SqlParameter("@FromDate", TxtFromDate.Text);
             param[4] = new SqlParameter("@ToDate", TxtToDate.Text);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@ChkForDate", ChkForDate.Checked == true ? 1 : 0);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETPROCESSWISEADVANCEPAYMENTREPORT", param);
@@ -8022,7 +8029,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             arr[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
             arr[6] = new SqlParameter("@Where", str);
             arr[7] = new SqlParameter("@userid", Session["varuserid"]);
-            arr[8] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+            arr[8] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_FinishingIssueReceiveDetailExcelReport", arr);
             if (ds.Tables[0].Rows.Count > 0)
@@ -8810,5 +8817,134 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         }
 
         
+    }
+    protected void RDFinishingRegisterSummary_CheckedChanged(object sender, EventArgs e)
+    {
+        TRAsOnDate.Visible = false;
+        if (RDFinishingRegisterSummary.Checked == true)
+        {
+            TDJobWiseSummary.Visible = false;
+            TDsizesummary.Visible = false;
+            TRBuyerItemSizeWiseSummary.Visible = false;
+            TRChkBoxIssueDate.Visible = false;
+            TRcustcode.Visible = false;
+            TRorderno.Visible = false;
+            TRCheckWithTime.Visible = false;
+            TRQualityWiseSummary.Visible = false;
+            TRRecChallan.Visible = false;
+            TRCategoryName.Visible = false;
+            TRddItemName.Visible = false;
+            TRlotNo.Visible = false;
+            TR1.Visible = false;
+            TRGatePass.Visible = false;
+            TRIssueNo.Visible = false;
+            ChkForProcessIssRecSummary.Visible = false;
+            ChkForPendingStockNo.Visible = false;
+            TDexcelExport.Visible = false;
+            ChkSummary.Visible = false;
+            ChkForComplete.Visible = false;
+            TRForWithoutTDS.Visible = true;
+            trDates.Visible = true;
+            ChkForDate.Visible = true;
+            TRQualityDesignSizeWiseSummary.Visible = false;
+            TRQualitySizeWiseHissabSummary.Visible = false;
+        }
+
+    }
+    protected void FinishingRegisterSummaryReport_CI()
+    {
+        lblMessage.Text = "";
+        try
+        {
+            string str = "", FilterBy = "";
+
+            //if (ddItemName.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Item_id=" + ddItemName.SelectedValue;
+            //    FilterBy = FilterBy + ", Item Name -" + ddItemName.SelectedItem.Text;
+            //}
+            //if (DDQuality.SelectedIndex > 0)
+            //{
+            //    str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+            //    FilterBy = FilterBy + ", Quality -" + DDQuality.SelectedItem.Text;
+            //}
+            //if (DDDesign.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.DesignId=" + DDDesign.SelectedValue;
+            //    FilterBy = FilterBy + ", Design -" + DDDesign.SelectedItem.Text;
+            //}
+            //if (DDColor.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Colorid=" + DDColor.SelectedValue;
+            //    FilterBy = FilterBy + ", Color -" + DDColor.SelectedItem.Text;
+            //}
+            //if (DDSize.SelectedIndex > 0)
+            //{
+            //    str = str + " and vf.Sizeid=" + DDSize.SelectedValue;
+            //    FilterBy = FilterBy + ", Size -" + DDSize.SelectedItem.Text;
+            //}
+            if (ChkForDate.Checked == true)
+            {
+                str = str + " and PM.ReceiveDate>='" + TxtFromDate.Text + "' and PM.ReceiveDate<='" + TxtToDate.Text + "'";
+                FilterBy = FilterBy + ", From -" + TxtFromDate.Text + " To - " + TxtToDate.Text;
+            }
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("JobWiseProcessReceiveRegisterSummary_CI", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 500;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Processid", DDProcessName.SelectedValue);
+            cmd.Parameters.AddWithValue("@Where", str);
+            cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex > 0 ? DDEmpName.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["VarCompanyNo"]);
+            cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
+            cmd.Parameters.AddWithValue("@DATEFLAG", ChkForDate.Checked == true ? 1 : 0);
+            cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+            con.Close();
+            con.Dispose();
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                if (ChkForWithoutTDS.Checked == true)
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptFinishingProcessRegisterSummaryWithoutTDS_CI.rpt";
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptFinishingProcessRegisterSummary_CI.rpt";
+                }
+
+                Session["GetDataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptFinishingProcessRegisterSummary_CI.xsd";
+
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Intalt", "alert('No records found for this combination.')", true);
+            }
+
+        }
+        catch (Exception ex)
+        {
+            lblMessage.Text = ex.Message;
+        }
+
     }
 }

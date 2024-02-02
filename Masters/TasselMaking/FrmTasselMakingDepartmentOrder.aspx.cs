@@ -13,7 +13,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,7 +24,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
             string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                         From Companyinfo CI(Nolock)
                         JOIN Company_Authentication CA(Nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                        Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                        Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                         Select UnitId, UnitName From Unit(Nolock) Where Unitid in(1, 2, 6)";
 
             if (Convert.ToInt16(Request.QueryString["InOtherProcess"]) == 1)
@@ -52,9 +52,9 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
             str = str + @" Select ID, BranchName 
                         From BRANCHMASTER BM(nolock) 
                         JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+                        Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
                         
-            str = str + @" Select DepartmentId, DepartmentName From Department (Nolock) Where MasterCompanyId = " + Session["varCompanyId"] + " Order By DepartmentName ";
+            str = str + @" Select DepartmentId, DepartmentName From Department (Nolock) Where MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By DepartmentName ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -182,7 +182,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
         array[1] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
         array[2] = new SqlParameter("@UnitID", ddunit.SelectedValue);
         array[3] = new SqlParameter("@CalType", DDcaltype.SelectedValue);
-        array[4] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+        array[4] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetProcessWiseOrderDetail", array);
 
@@ -244,7 +244,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
                 cmd.Parameters.AddWithValue("@CALTYPE", DDcaltype.SelectedValue);
                 cmd.Parameters.AddWithValue("@DetailData", strOrderDetail);
                 cmd.Parameters.AddWithValue("@USERID", Session["varuserid"]);
-                cmd.Parameters.AddWithValue("@MASTERCOMPANYID", Session["varcompanyid"]);
+                cmd.Parameters.AddWithValue("@MASTERCOMPANYID", Session["varMasterCompanyIDForERP"]);
                 cmd.Parameters.AddWithValue("@REMARKS", TxtRemarks.Text.Trim());
                 cmd.Parameters.Add("@MSG", SqlDbType.VarChar, 100);
                 cmd.Parameters["@MSG"].Direction = ParameterDirection.Output;
@@ -299,7 +299,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
                 From TasselMakingDepartmentOrderMaster a(Nolock) 
                 JOIN TasselMakingDepartmentOrderDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = b.Item_Finished_ID 
-                Where a.ISSUEORDERID = " + hnissueorderid.Value + " And a.MasterCompanyId = " + Session["varCompanyId"] + " Order By b.IssueDetailId Desc";
+                Where a.ISSUEORDERID = " + hnissueorderid.Value + " And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By b.IssueDetailId Desc";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DGOrderdetail.DataSource = ds.Tables[0];
@@ -327,7 +327,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
         SqlParameter[] array = new SqlParameter[4];
         array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         array[1] = new SqlParameter("@ProcessId", DDProcessName.SelectedValue);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
         array[3] = new SqlParameter("@ReportType", 5);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
@@ -462,7 +462,7 @@ public partial class Masters_TasselMaking_FrmTasselMakingDepartmentOrder : Syste
     {
         string Str = @"Select IssueOrderID, DepartmentID, UnitID, CalType, IssueNo 
         From TasselMakingDepartmentOrderMaster(Nolock) 
-        Where MasterCompanyID = " + Session["varCompanyId"] + " And CompanyID = " + DDcompany.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" And 
+        Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + DDcompany.SelectedValue + " And ProcessID = " + DDProcessName.SelectedValue + @" And 
         IssueNo = '" + txtfolionoedit.Text + "'";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);

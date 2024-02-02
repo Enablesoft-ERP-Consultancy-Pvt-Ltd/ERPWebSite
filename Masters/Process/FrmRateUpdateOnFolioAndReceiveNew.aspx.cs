@@ -26,12 +26,12 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
             str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(nolock)
                     JOIN Company_Authentication CA(nolock) ON CA.CompanyId = CI.CompanyId And CA.UserId = " + Session["varuserId"] + @"  
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                     
                     select ITEM_ID,ITEM_NAME from ITEM_MASTER IM with(nolock) Inner Join CategorySeparate CS with(nolock) on 
-                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varcompanyid"] + @" 
+                    cs.Categoryid=IM.CATEGORY_ID and Cs.id=0 And IM.Mastercompanyid = " + Session["varMasterCompanyIDForERP"] + @" 
                     select  ShapeId,ShapeName from Shape with(nolock) 
-                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varcompanyid"] + @" and PROCESS_NAME='WEAVING' Order By PROCESS_NAME 
+                    select PROCESS_NAME_ID,PROCESS_NAME from PROCESS_NAME_MASTER With(nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" and PROCESS_NAME='WEAVING' Order By PROCESS_NAME 
                     select ICm.CATEGORY_ID,ICM.CATEGORY_NAME From ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=Cs.Categoryid and cs.id=0 order by CATEGORY_NAME 
                     select val,Type From Sizetype";
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -58,7 +58,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
                 DDShape.SelectedIndex = 0;
             }
             ds.Dispose();
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 
                 default:
@@ -88,7 +88,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
     {
         string str2 = null;
 
-        if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             str2 = @"Select EI.EmpID, Case When EI.Empcode <> '' Then EI.EmpCode Else EI.EmpName End Empname 
                 From Empinfo EI(Nolock)
@@ -252,7 +252,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
             array[4].Value = txtrate.Text == "" ? "0" : txtrate.Text;
             array[5].Value = txtFromDate.Text;
             array[6].Value = txtToDate.Text;
-            array[7].Value = Session["varcompanyId"].ToString();
+            array[7].Value = Session["varMasterCompanyIDForERP"].ToString();
             array[8].Value = Session["varuserid"].ToString(); 
             array[9].Value = str;
             array[11].Value = txtcommrate.Text == "" ? "0" : txtcommrate.Text;
@@ -328,11 +328,11 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
         divshade.Visible = false;
 
         UtilityModule.ConditionalComboFill(ref DDArticleName, @"select IM.ITEM_ID,IM.ITEM_NAME From Item_Master IM inner join CategorySeparate CS on IM.CATEGORY_ID=CS.Categoryid
-                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varcompanyId"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
+                                                            and CS.id=0 and cs.categoryid=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by IM.ITEM_NAME", true, "--Plz Select--");
 
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                       " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -375,7 +375,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
     }
     protected void DDRateLocation_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["VarCompanyId"].ToString() == "27" || Session["VarCompanyId"].ToString() == "42")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "27" || Session["varMasterCompanyIDForERP"].ToString() == "42")
         {
             if (DDRateLocation.SelectedValue == "1")
             {
@@ -388,7 +388,7 @@ public partial class Masters_Process_FrmRateUpdateOnFolioAndReceiveNew : System.
                 DDWeavingEmp.SelectedIndex = 0;
             }
         }
-        if (Session["VarCompanyId"].ToString() == "16" || Session["VarCompanyId"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28")
         {
             DivWeavingEmployee.Visible = true;
             BindWeavingEmp();

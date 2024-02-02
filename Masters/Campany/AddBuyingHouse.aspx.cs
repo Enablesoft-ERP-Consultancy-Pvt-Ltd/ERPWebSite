@@ -12,7 +12,7 @@ public partial class Masters_Campany_AddBuyingHouse : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
 
@@ -39,7 +39,7 @@ public partial class Masters_Campany_AddBuyingHouse : System.Web.UI.Page
     protected void fill_grid()
     {
         string strsql = @"select buyinghouseid,Name_buying_house,Type_buying_house,Address,Contactno,Faxno,Email,Contactperson,Emailofcontactperson,MobileNumber from buyinghouse Where
-                         MasterCompanyId=" + Session["varCompanyId"];
+                         MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
 
 
@@ -90,7 +90,7 @@ public partial class Masters_Campany_AddBuyingHouse : System.Web.UI.Page
             _arrpara[7].Value = txtemailofcontactperson.Text.ToUpper();
             _arrpara[8].Value = txtmobilenumber.Text.ToUpper();
             _arrpara[9].Value = Session["varuserid"].ToString();
-            _arrpara[10].Value = Session["varcompanyid"].ToString();
+            _arrpara[10].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrpara[11].Direction = ParameterDirection.InputOutput;
             if (ViewState["buyinghouseId"] == null)
             {
@@ -172,7 +172,7 @@ public partial class Masters_Campany_AddBuyingHouse : System.Web.UI.Page
         try
         {
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, @"select buyinghouseid, Name_buying_house,Type_buying_house,Address,Contactno,Faxno,Email,Contactperson,Emailofcontactperson,MobileNumber from buyinghouse Where
-                         MasterCompanyId=" + Session["varCompanyId"] + " And buyinghouseid=" + Gdbuyinghouse.SelectedDataKey.Value.ToString() + "");
+                         MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And buyinghouseid=" + Gdbuyinghouse.SelectedDataKey.Value.ToString() + "");
             if (ds.Tables[0].Rows.Count > 0)
             {
                 ViewState["buyinghouseId"] = Gdbuyinghouse.SelectedDataKey.Value.ToString();
@@ -215,7 +215,7 @@ public partial class Masters_Campany_AddBuyingHouse : System.Web.UI.Page
             {
                 SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from buyinghouse where buyinghouseid=" + ViewState["buyinghouseId"].ToString());
                 DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'buyinghouse'," + ViewState["buyinghouseId"].ToString() + ",getdate(),'Delete')");
+                SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'buyinghouse'," + ViewState["buyinghouseId"].ToString() + ",getdate(),'Delete')");
                 btnSave.Text = "Save";
                 leblrr.Visible = true;
                 leblrr.Text = "Value Deleted..............";

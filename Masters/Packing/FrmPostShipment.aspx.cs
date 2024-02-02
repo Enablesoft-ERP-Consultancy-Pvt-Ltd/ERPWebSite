@@ -16,7 +16,7 @@ public partial class Masters_Packing_FrmPostShipment : System.Web.UI.Page
     string Msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -135,7 +135,7 @@ public partial class Masters_Packing_FrmPostShipment : System.Web.UI.Page
     {
         string Qry = @"select I.Invoiceid,I.TInvoiceNo From Invoice I,Packing P 
         Where P.InvoiceNo=I.InvoiceId And I.Status=1 And I.InvoiceType<>3 And 
-        I.InvoiceYear=" + DDSession.SelectedValue + " And P.MasterCompanyId=" + Session["varCompanyId"] + " And P.ConsignorId = " + Session["CurrentWorkingCompanyID"] + " Order By I.TinvoiceNo desc";
+        I.InvoiceYear=" + DDSession.SelectedValue + " And P.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And P.ConsignorId = " + Session["CurrentWorkingCompanyID"] + " Order By I.TinvoiceNo desc";
         UtilityModule.ConditionalComboFill(ref DDInvoiceNo, Qry, true, "--Select--");
     }
     protected void DDInvoiceNo_SelectedIndexChanged(object sender, EventArgs e)

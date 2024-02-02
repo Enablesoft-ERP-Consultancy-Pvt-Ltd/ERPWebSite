@@ -12,7 +12,7 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -24,8 +24,8 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
                 string str = @"Select Distinct CI.CompanyId, CI.CompanyName 
                     From Companyinfo CI(Nolock) 
                     JOIN Company_Authentication CA(Nolock) ON CI.CompanyId = CA.CompanyId And CA.UserId = " + Session["varuserId"] + @" 
-                    Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" Order By CompanyName 
-                    Select PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master (Nolock) Where MasterCompanyid = " + Session["varCompanyId"] + @" And Process_Name = 'RAIPER MAKING' Order By PROCESS_NAME 
+                    Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
+                    Select PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master (Nolock) Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + @" And Process_Name = 'RAIPER MAKING' Order By PROCESS_NAME 
                     Select UnitId, Unitname From Unit(Nolock) Order By UnitID ";
 
                 ds = SqlHelper.ExecuteDataset(str);
@@ -60,7 +60,7 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
     }
@@ -78,14 +78,14 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
         {
             str = str + @" JOIN RapierOrderMaster ROM(Nolock) ON ROM.EmpID = EI.EmpID ";
         }
-        str = str + @" Where EI.MasterCompanyId = " + Session["varCompanyId"] + @" And IsNull(EI.blacklist, 0) = 0
+        str = str + @" Where EI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" And IsNull(EI.blacklist, 0) = 0
         Order By EI.EmpName";
 
         str = str + @" SELECT ICM.CATEGORY_ID, ICM.CATEGORY_NAME 
             FROM ITEM_CATEGORY_MASTER ICM(Nolock) 
             JOIN CategorySeparate CS(Nolock) ON CS.Categoryid = ICM.CATEGORY_ID And CS.ID = 0 
             JOIN UserRights_Category URC(Nolock) ON URC.CategoryId = ICM.CATEGORY_ID And URC.UserId = " + Session["varuserId"] + @" 
-            Where ICM.MasterCompanyID = " + Session["varCompanyId"];
+            Where ICM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
         DataSet ds = SqlHelper.ExecuteDataset(str);
         UtilityModule.ConditionalComboFillWithDS(ref DDEmployeeName, ds, 0, true, "--Select--");
@@ -101,7 +101,7 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
         string Str;
         Str = @"SELECT IM.ITEM_ID, IM.ITEM_NAME 
             From ITEM_MASTER IM(Nolock) 
-            Where MasterCompanyid = " + Session["varCompanyId"] + " And CATEGORY_ID = " + DDCategoryName.SelectedValue;
+            Where MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " And CATEGORY_ID = " + DDCategoryName.SelectedValue;
 
         UtilityModule.ConditionalComboFill(ref DDItemName, Str, true, "---Select---");
         if (DDItemName.Items.Count > 0)
@@ -120,7 +120,7 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
         STR = @"SELECT VF.ITEM_FINISHED_ID, Replace(VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + VF.ShapeName + '  ' + 
                     Case When " + DDunit.SelectedValue + " = 1 Then VF.SizeMtr Else Case When " + DDunit.SelectedValue + @" = 6 Then VF.SizeInch Else SizeFt End End  + '  ' + VF.ShadeColorName, '   ', '') Description
                 From V_FinishedItemDetail VF(Nolock) 
-                Where VF.MasterCompanyid = " + Session["varCompanyId"] + " And VF.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And VF.ITEM_ID = " + DDItemName.SelectedValue + @" 
+                Where VF.MasterCompanyid = " + Session["varMasterCompanyIDForERP"] + " And VF.CATEGORY_ID = " + DDCategoryName.SelectedValue + " And VF.ITEM_ID = " + DDItemName.SelectedValue + @" 
                 Order By Replace(VF.QualityName + '  ' + VF.DesignName + '  ' + VF.ColorName + '  ' + VF.ShapeName + '  ' + 
                     Case When " + DDunit.SelectedValue + " = 1 Then VF.SizeMtr Else Case When " + DDunit.SelectedValue + @" = 6 Then VF.SizeInch Else SizeFt End End  + '  ' + VF.ShadeColorName, '   ', '')";
 
@@ -166,7 +166,7 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
             _arrpara[10].Value = TxtQtyRequired.Text;
             _arrpara[11].Value = TxtRate.Text;
             _arrpara[12].Value = Session["varuserid"];
-            _arrpara[13].Value = Session["varCompanyId"];
+            _arrpara[13].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[14].Direction = ParameterDirection.InputOutput;
             _arrpara[14].Value = "";
 
@@ -234,8 +234,8 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
     {
         SqlParameter[] param = new SqlParameter[3];
         param[0] = new SqlParameter("@ID", ViewState["ID"]);
-        param[1] = new SqlParameter("@UserID", Session["varCompanyId"]);
-        param[2] = new SqlParameter("@Mastercompanyid", Session["varCompanyId"]);
+        param[1] = new SqlParameter("@UserID", Session["varMasterCompanyIDForERP"]);
+        param[2] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetRapierOrderMasterForReport", param);
 
@@ -272,7 +272,7 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
             param[2] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[2].Direction = ParameterDirection.Output;
             param[3] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[4] = new SqlParameter("@MasterCompanyid", Session["varcompanyid"]);
+            param[4] = new SqlParameter("@MasterCompanyid", Session["varMasterCompanyIDForERP"]);
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_RapierOrderMasterDelete", param);
             Tran.Commit();
@@ -302,7 +302,7 @@ public partial class Masters_Repier_RapierOrderMaster : System.Web.UI.Page
             string STR;
             STR = @"Select ID, ChallanNo 
                 From RapierOrderMaster(Nolock) 
-                Where MasterCompanyID = " + Session["varCompanyId"] + " And CompanyID = " + DDCompanyName.SelectedValue + @" 
+                Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And CompanyID = " + DDCompanyName.SelectedValue + @" 
                 And ProcessID = " + DDProcessName.SelectedValue + " And EmpID = " + DDEmployeeName.SelectedValue + " Order By ID desc";
 
             UtilityModule.ConditionalComboFill(ref DDChallanNo, STR, true, "--Select--");

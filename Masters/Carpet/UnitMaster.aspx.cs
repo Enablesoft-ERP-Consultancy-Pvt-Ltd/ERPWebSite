@@ -11,7 +11,7 @@ public partial class Masters_Carpet_UnitMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -33,7 +33,7 @@ public partial class Masters_Carpet_UnitMaster : CustomPage
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         try
         {
-            string strsql = "select UnitTypeId as Sr_No,UnitType from Unit_Type_Master Where MasterCompanyId=" + Session["varCompanyId"];
+            string strsql = "select UnitTypeId as Sr_No,UnitType from Unit_Type_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -56,7 +56,7 @@ public partial class Masters_Carpet_UnitMaster : CustomPage
     {
         DataSet ds = null;
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-        string strsql = @"Select * from UNIT_TYPE_MASTER Where UnitType='" + txtUnit.Text + "' and UnitTypeID !=" + txtid.Text + " And MasterCompanyId=" + Session["varCompanyId"];
+        string strsql = @"Select * from UNIT_TYPE_MASTER Where UnitType='" + txtUnit.Text + "' and UnitTypeID !=" + txtid.Text + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -90,7 +90,7 @@ public partial class Masters_Carpet_UnitMaster : CustomPage
                 _arrPara[0].Value = Convert.ToInt32(txtid.Text);
                 _arrPara[1].Value = txtUnit.Text.ToUpper();
                 _arrPara[2].Value = Session["varuserid"].ToString();
-                _arrPara[3].Value = Session["varCompanyId"].ToString();
+                _arrPara[3].Value = Session["varMasterCompanyIDForERP"].ToString();
                 con.Open();
                 SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_Unit_Type_Master", _arrPara);
                 txtid.Text = "0";

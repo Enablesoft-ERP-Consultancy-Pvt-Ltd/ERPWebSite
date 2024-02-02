@@ -15,14 +15,14 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = "Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + @" Order by Companyname 
-                          select CustomerId,CustomerCode+' / '+CompanyName as Customer from customerinfo Where mastercompanyid=" + Session["varCompanyId"] + " order by customer";
+            string str = "Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
+                          select CustomerId,CustomerCode+' / '+CompanyName as Customer from customerinfo Where mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by customer";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompany, ds, 0, true, "-ALL-");
             UtilityModule.ConditionalComboFillWithDS(ref DDbuyer, ds, 1, true, "-Select-");
@@ -42,7 +42,7 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
     protected void DDCompany_SelectedIndexChanged(object sender, EventArgs e)
     {
 
-        UtilityModule.ConditionalComboFill(ref DDbuyer, "Select CustomerId,CustomerCode+' / '+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDbuyer, "Select CustomerId,CustomerCode+' / '+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
     }
     private void fillgrid()
     {
@@ -56,7 +56,7 @@ public partial class Masters_ReportForms_frmOrderWiseDyeingConsumption : System.
         str = @"select distinct LocalOrder+'/'+ CustomerOrderNo as OrderNo,om.orderid,om.Remarks as Remark 
                    From OrderMaster om  inner join orderdetail od On om.orderid=od.orderid inner join 
                    V_FinishedItemDetail v On od.Item_Finished_Id= v.Item_Finished_Id 
-                   Where  om.Status=0 And V.MasterCompanyId=" + Session["varCompanyId"] + " " + qry + " ";
+                   Where  om.Status=0 And V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " " + qry + " ";
         str = str + " order by orderNo ";
 
 

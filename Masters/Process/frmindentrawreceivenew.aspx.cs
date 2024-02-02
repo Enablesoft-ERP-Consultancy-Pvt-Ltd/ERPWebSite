@@ -12,14 +12,14 @@ public partial class Masters_Process_frmindentrawreceivenew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By Companyname
-                          select DISTINCT PROCESS_NAME_ID,process_name from PROCESS_NAME_MASTER pm inner join IndentMaster im on pm.PROCESS_NAME_ID=im.processid And pm.MasterCompanyId=" + Session["varCompanyId"] + @" order by PROCESS_NAME_ID
+            string str = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA Where CA.CompanyId=CI.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By Companyname
+                          select DISTINCT PROCESS_NAME_ID,process_name from PROCESS_NAME_MASTER pm inner join IndentMaster im on pm.PROCESS_NAME_ID=im.processid And pm.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME_ID
                           select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner Join CategorySeparate CS on ICM.CATEGORY_ID=CS.Categoryid and cs.id=0 order by ICM.CATEGORY_NAME
                           select customerid,CustomerCode+'/'+CompanyName from customerinfo order by CustomerName";            
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -260,7 +260,7 @@ public partial class Masters_Process_frmindentrawreceivenew : System.Web.UI.Page
                 param[6].Value = txtchalanno.Text;
                 param[7] = new SqlParameter("@masterremark", txtmsterremark.Text);
                 param[8] = new SqlParameter("@varuserid", Session["varuserid"]);
-                param[9] = new SqlParameter("@varcompanyid", Session["varcompanyId"]);
+                param[9] = new SqlParameter("@varcompanyid", Session["varMasterCompanyIDForERP"]);
                 param[10] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
                 param[10].Direction = ParameterDirection.Output;
                 param[11] = new SqlParameter("@dtrecord", dtrecords);
@@ -428,7 +428,7 @@ public partial class Masters_Process_frmindentrawreceivenew : System.Web.UI.Page
             param[2].Direction = ParameterDirection.Output;
             param[3] = new SqlParameter("@Remark", txteditremark.Text);
             param[4] = new SqlParameter("@userid", Session["varusserid"]);
-            param[5] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[5] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[6] = new SqlParameter("@LossQty", txteditLossqty.Text == "" ? "0" : txteditLossqty.Text);
             //********execute proc
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateIndentReceive", param);
@@ -465,7 +465,7 @@ public partial class Masters_Process_frmindentrawreceivenew : System.Web.UI.Page
             SqlParameter[] param = new SqlParameter[4];
             param[0] = new SqlParameter("@prtid", lblprtid.Text);
             param[1] = new SqlParameter("@userid", Session["varuserid"]);
-            param[2] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[2] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             //********execute proc

@@ -12,17 +12,17 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddcompanyname, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + " Order By CompanyName", true, "--Select Company--");
-            UtilityModule.ConditionalComboFill(ref ddprocessname, "select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where Process_name like 'MIX%' And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Process--");
-            UtilityModule.ConditionalComboFill(ref ddgodownname, "select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varCompanyId"] + "", true, "--Select Godown--");
+            UtilityModule.ConditionalComboFill(ref ddcompanyname, "select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CompanyName", true, "--Select Company--");
+            UtilityModule.ConditionalComboFill(ref ddprocessname, "select distinct PROCESS_Name_ID,PROCESS_NAME from PROCESS_NAME_MASTER Where Process_name like 'MIX%' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Process--");
+            UtilityModule.ConditionalComboFill(ref ddgodownname, "select GoDownID,GodownName from GodownMaster Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select Godown--");
             UtilityModule.ConditionalComboFill(ref ddcategoryname, @"select CM.CATEGORY_ID,cm.CATEGORY_NAME from ITEM_CATEGORY_MASTER  CM Inner join CategorySeparate CS
-                                                                  on CM.CATEGORY_ID=cs.Categoryid And cs.id=1 And CM.Mastercompanyid=" + Session["varcompanyId"] + " order by CATEGORY_NAME", true, "--Plz Select--");
+                                                                  on CM.CATEGORY_ID=cs.Categoryid And cs.id=1 And CM.Mastercompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CATEGORY_NAME", true, "--Plz Select--");
             if (ddcompanyname.Items.Count > 0)
             {
                 ddcompanyname.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -36,14 +36,14 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
     }
     protected void ddcategoryname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dditemname, "select Item_id,ITEM_NAME from ITEM_MASTER where CATEGORY_ID= " + ddcategoryname.SelectedValue + " And MasterCompanyid= " + Session["varcompanyid"] + " Order by ITEM_NAME", true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref dditemname, "select Item_id,ITEM_NAME from ITEM_MASTER where CATEGORY_ID= " + ddcategoryname.SelectedValue + " And MasterCompanyid= " + Session["varMasterCompanyIDForERP"] + " Order by ITEM_NAME", true, "--Select Item--");
         UtilityModule.ConditionalComboFill(ref ddcategoryname1, @"select CM.CATEGORY_ID,cm.CATEGORY_NAME from ITEM_CATEGORY_MASTER  CM Inner join CategorySeparate CS
-                                                             on CM.CATEGORY_ID=cs.Categoryid And cs.id=1 And CM.MasterCompanyid=" + Session["varcompanyid"] + " order by CATEGORY_NAME", true, "--Select Item--");
+                                                             on CM.CATEGORY_ID=cs.Categoryid And cs.id=1 And CM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CATEGORY_NAME", true, "--Select Item--");
 
     }
     protected void dditemname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddqualityname, "select QualityId,QualityName from Quality Where Item_Id=" + dditemname.SelectedValue + " And MasterCompanyid=" + Session["varcompanyid"] + " Order by QualityName", true, "--Select Quality--");
+        UtilityModule.ConditionalComboFill(ref ddqualityname, "select QualityId,QualityName from Quality Where Item_Id=" + dditemname.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by QualityName", true, "--Select Quality--");
     }
     protected void ddqualityname_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -82,7 +82,7 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
     }
     protected void ddcategoryname1_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref dditemname1, "select Item_id,ITEM_NAME from ITEM_MASTER where CATEGORY_ID= " + ddcategoryname1.SelectedValue + " And MasterCompanyid= " + Session["varcompanyid"] + " Order by ITEM_NAME", true, "--Select Item--");
+        UtilityModule.ConditionalComboFill(ref dditemname1, "select Item_id,ITEM_NAME from ITEM_MASTER where CATEGORY_ID= " + ddcategoryname1.SelectedValue + " And MasterCompanyid= " + Session["varMasterCompanyIDForERP"] + " Order by ITEM_NAME", true, "--Select Item--");
         ddlcategorycange();
     }
     private void ddlcategorycange()
@@ -101,7 +101,7 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
         TdSize.Visible = false;
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                       FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
-                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddcategoryname1.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                      IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + ddcategoryname1.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -117,7 +117,7 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
                         break;
                     case "3":
                         TdColor.Visible = true;
-                        UtilityModule.ConditionalComboFill(ref ddcolorname, "select ColorId,ColorName from color Where MasterCompanyid=" + Session["varcompanyid"] + " Order by ColorName", true, "--select Color--");
+                        UtilityModule.ConditionalComboFill(ref ddcolorname, "select ColorId,ColorName from color Where MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by ColorName", true, "--select Color--");
                         break;
                     case "6":
                         TdColorShade.Visible = true;
@@ -140,7 +140,7 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
     }
     protected void dditemname1_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddqualityname1, "select QualityId,QualityName from Quality Where Item_Id=" + dditemname1.SelectedValue + " And MasterCompanyid=" + Session["varcompanyid"] + " Order by QualityName", true, "--Select Quality--");
+        UtilityModule.ConditionalComboFill(ref ddqualityname1, "select QualityId,QualityName from Quality Where Item_Id=" + dditemname1.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order by QualityName", true, "--Select Quality--");
     }
     protected void btnsave_Click(object sender, EventArgs e)
     {
@@ -184,7 +184,7 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
                     param[2].Value = lblgodownid.Text;
                     param[3].Value = lblLotno.Text;
                     param[4].Value = lblitemfinishedid.Text;
-                    int TItem_finished_id = UtilityModule.getItemFinishedId(dditemname1, ddqualityname1, dddesign1, ddcolorname, ddshapename, ddsize, TxtProdCode, Tran, ddshadecolor, "", Convert.ToInt32(Session["varCompanyId"]));
+                    int TItem_finished_id = UtilityModule.getItemFinishedId(dditemname1, ddqualityname1, dddesign1, ddcolorname, ddshapename, ddsize, TxtProdCode, Tran, ddshadecolor, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     param[5].Value = TItem_finished_id;
                     if (hnMixId.Value == "0" || hnMixId.Value == "")
                     {
@@ -196,7 +196,7 @@ public partial class Masters_Process_FrmMixingColor : System.Web.UI.Page
                     param[7].Direction = ParameterDirection.InputOutput;
                     param[8].Value = txtmixQty.Text == "" ? "0" : txtmixQty.Text;
                     param[9].Value = Session["varuserid"];
-                    param[10].Value = Session["varcompanyid"];
+                    param[10].Value = Session["varMasterCompanyIDForERP"];
 
                     SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SaveMixColor", param);
                     hnMixId.Value = param[6].Value.ToString();

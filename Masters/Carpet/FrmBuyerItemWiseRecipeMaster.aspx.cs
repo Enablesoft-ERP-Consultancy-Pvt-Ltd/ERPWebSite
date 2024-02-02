@@ -11,15 +11,15 @@ public partial class Masters_Carpet_FrmBuyerItemWiseRecipeMaster : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = @"select Customerid,Customercode From Customerinfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by Customercode
-                         SELECT CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM,CategorySeparate CS Where ICM.CATEGORY_ID=CS.CATEGORYID And CS.ID=0 And ICM.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CATEGORY_NAME
-                         Select ID, Name From RecipeMaster(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + " Order By Name";
+            string str = @"select Customerid,Customercode From Customerinfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Customercode
+                         SELECT CATEGORY_ID,CATEGORY_NAME FROM ITEM_CATEGORY_MASTER ICM,CategorySeparate CS Where ICM.CATEGORY_ID=CS.CATEGORYID And CS.ID=0 And ICM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CATEGORY_NAME
+                         Select ID, Name From RecipeMaster(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By Name";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref ddBuyerCode, ds, 0, true, "--Select--");
@@ -47,12 +47,12 @@ public partial class Masters_Carpet_FrmBuyerItemWiseRecipeMaster : CustomPage
         ql.Visible = false;
         dsn.Visible = false;
 
-        UtilityModule.ConditionalComboFill(ref ddItemname, "select item_id,item_name from item_master where category_id= " + ddCategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By item_name", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddItemname, "select item_id,item_name from item_master where category_id= " + ddCategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By item_name", true, "--Select--");
 
         string strsql = @"SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME 
                         FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] 
-                        Where [CATEGORY_ID]=" + ddCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"] + @" 
-                        Select DesignID, DesignName From Design(Nolock) Where MasterCompanyID = " + Session["varCompanyId"] + " Order By DesignName";
+                        Where [CATEGORY_ID]=" + ddCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
+                        Select DesignID, DesignName From Design(Nolock) Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By DesignName";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -73,7 +73,7 @@ public partial class Masters_Carpet_FrmBuyerItemWiseRecipeMaster : CustomPage
     }
     protected void ddItemname_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddQuality, "SELECT QUALITYID, QUALITYNAME FROM QUALITY(Nolock) WHERE ITEM_ID = " + ddItemname.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @" Order By QUALITYNAME ", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddQuality, "SELECT QUALITYID, QUALITYNAME FROM QUALITY(Nolock) WHERE ITEM_ID = " + ddItemname.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By QUALITYNAME ", true, "--Select--");
         Fill_Grid();
     }
     protected void BtnSave_Click(object sender, EventArgs e)
@@ -108,7 +108,7 @@ public partial class Masters_Carpet_FrmBuyerItemWiseRecipeMaster : CustomPage
             _arrPara[5].Value = dsn.Visible == true ? Convert.ToInt32(ddDesign.SelectedValue) : 0;
             _arrPara[6].Value = DDRecipeName.SelectedValue;
             _arrPara[7].Value = Session["varuserid"].ToString();
-            _arrPara[8].Value = Session["varCompanyId"].ToString();
+            _arrPara[8].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[9].Direction = ParameterDirection.InputOutput;
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_Save_CustomerItemRecipeDefineMaster]", _arrPara);
@@ -158,7 +158,7 @@ public partial class Masters_Carpet_FrmBuyerItemWiseRecipeMaster : CustomPage
                         JOIN RecipeMaster RM(Nolock) ON RM.ID = a.RecipeID 
                         LEFT JOIN Quality Q(Nolock) ON Q.QualityID = a.QualityID 
                         LEFT JOIN Design D(Nolock) ON D.DesignID = a.DesignID
-                        Where a.MasterCompanyId = " + Session["varCompanyId"] + " And a.CustomerId = " + ddBuyerCode.SelectedValue;
+                        Where a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And a.CustomerId = " + ddBuyerCode.SelectedValue;
             if (ddCategory.SelectedIndex > 0)
             {
                 strsql = strsql + " And a.CategoryID = " + ddCategory.SelectedValue;
@@ -201,7 +201,7 @@ public partial class Masters_Carpet_FrmBuyerItemWiseRecipeMaster : CustomPage
 
             _arrPara[0].Value = ID;
             _arrPara[1].Value = Session["varuserid"].ToString();
-            _arrPara[2].Value = Session["varCompanyId"].ToString();
+            _arrPara[2].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[3].Direction = ParameterDirection.InputOutput;
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Pro_Delete_CustomerItemRecipeDefineMaster]", _arrPara);

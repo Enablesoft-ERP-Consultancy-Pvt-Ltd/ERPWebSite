@@ -12,13 +12,13 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            CommanFunction.FillCombo(DDCompany, "Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varCompanyId"] + " Order by Companyname");
+            CommanFunction.FillCombo(DDCompany, "Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Companyname");
 
             if (DDCompany.Items.Count > 0)
             {
@@ -27,10 +27,10 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
                 CompanySelectedChange();
             }
             imgLogo.ImageUrl.DefaultIfEmpty();
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
             LblCompanyName.Text = Session["varCompanyName"].ToString();
             LblUserName.Text = Session["varusername"].ToString();
-            if (Session["varcompanyId"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 ChkForFt.Checked = true;
                 RDProductionDeliveryStatusReport.Visible = false;
@@ -43,7 +43,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
                 RDProductionBalToIssueReport.Visible = false;
                 RDProcessIssRecWthConsumption.Checked = true;
             }
-            ////if (Session["varcompanyId"].ToString() == "38")
+            ////if (Session["varMasterCompanyIDForERP"].ToString() == "38")
             ////{
             ////    RDMaterialBalReport.Visible = false;
             ////    RDProdDeliveryStatus.Visible = false;
@@ -67,7 +67,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
     }
     private void CompanySelectedChange()
     {
-        UtilityModule.ConditionalComboFill(ref DDCustCode, "select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + " Order By CustomerCode", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDCustCode, "select CustomerId,CustomerCode From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By CustomerCode", true, "--Select--");
         if (variable.VarWEAVERORDERWITHOUTCUSTCODE == "1")
         {
             string str = "";
@@ -81,14 +81,14 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
             }
             
 
-            if (Session["varCompanyId"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 str = "Select OrderId, CustomerOrderNo From OrderMaster Order By CustomerOrderNo";
             }
             UtilityModule.ConditionalComboFill(ref DDOrderNo, str, true, "--Select--");
         }
 
-        UtilityModule.ConditionalComboFill(ref DDProcess, "Select Process_Name_ID,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " Order By Process_Name", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref DDProcess, "Select Process_Name_ID,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Process_Name", true, "--Select--");
 
     }
     protected void DDCustCode_SelectedIndexChanged(object sender, EventArgs e)
@@ -126,7 +126,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
     protected void DDProcess_SelectedIndexChanged(object sender, EventArgs e)
     {
         UtilityModule.ConditionalComboFill(ref DDItemName, @"Select Distinct VF.Item_Id,VF.Item_Name From ORDER_CONSUMPTION_DETAIL OCD,V_FinishedItemDetail VF 
-        Where VF.Item_Finished_id=OCD.IFinishedid And Orderid=" + DDOrderNo.SelectedValue + " And ProcessId=" + DDProcess.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By VF.Item_Name", true, "--Select--");
+        Where VF.Item_Finished_id=OCD.IFinishedid And Orderid=" + DDOrderNo.SelectedValue + " And ProcessId=" + DDProcess.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By VF.Item_Name", true, "--Select--");
     }
     protected void BtnPreview_Click(object sender, EventArgs e)
     {
@@ -276,7 +276,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         string Str = @"Select PM.IssueOrderId,EI.EmpName,PD.OrderID,PD.Item_Finished_Id,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,
         ProdSizeMtr,ProdSizeFt,Sum(Qty) Qty,isnull(sum(CancelQty),0) CancelQty,Sum(PQty) PQty,Sum((Qty-isnull(cancelQty,0))*ProdAreaFt) IssAreaInGajGir,Sum((Qty-isnull(cancelQty,0))*ProdAreaMtr) IssAreaInMtr,Sum(case When Caltype=0 Then (Qty-isnull(cancelQty,0))*Rate*Area Else (Qty-isnull(cancelQty,0))*Rate End) IssAmt,0 RecQty,Avg(Rate) Rate,0 Amount,
         Avg(Comm) Comm,0 CommAmt,0 Penality,0 RecAreaInGajGir,0 RecAreaInMtr,'" + TxtToDate.Text + @"' SelectDate From PROCESS_ISSUE_MASTER_" + DDProcess.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + DDProcess.SelectedValue + @" PD,
-        V_FinishedItemDetail VF,EmpInfo EI Where PM.IssueOrderId=PD.IssueOrderId And PD.Item_Finished_Id=VF.Item_Finished_Id And PM.EmpId=EI.EmpId And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        V_FinishedItemDetail VF,EmpInfo EI Where PM.IssueOrderId=PD.IssueOrderId And PD.Item_Finished_Id=VF.Item_Finished_Id And PM.EmpId=EI.EmpId And PM.CompanyId=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         string Str1 = " And PM.IssueOrderId in (Select PD.IssueOrderId From PROCESS_RECEIVE_MASTER_" + DDProcess.SelectedValue + " PM,PROCESS_RECEIVE_DETAIL_" + DDProcess.SelectedValue + @" PD 
         Where PM.Process_Rec_Id=PD.Process_Rec_Id And PM.CompanyId=" + DDCompany.SelectedValue + " And ReceiveDate<='" + TxtToDate.Text + "'";
         if (DDOrderNo.SelectedIndex > 0)
@@ -292,7 +292,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         ProdSizeFt,0 Qty,0 CancelQty,0 PQty,0 IssAreaInGajGir,0 IssAreaInMtr,0 IssAmt,Sum(Qty) RecQty,Avg(Rate) Rate,Sum(Amount) Amount,Avg(Comm) Comm,Sum(CommAmt) CommAmt,
         Sum(Penality) Penality,Sum(Qty*ProdAreaFt) RecAreaInGajGir,Sum(Qty*ProdAreaMtr) RecAreaInMtr,'" + TxtToDate.Text + @"' SelectDate From PROCESS_RECEIVE_MASTER_" + DDProcess.SelectedValue + @" PM,
         PROCESS_RECEIVE_DETAIL_" + DDProcess.SelectedValue + @" PD,V_FinishedItemDetail VF,EmpInfo EI Where PM.Process_Rec_Id=PD.Process_Rec_Id And 
-        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.EmpId=EI.EmpId And PM.CompanyId=" + DDCompany.SelectedValue + " And PM.ReceiveDate<='" + TxtToDate.Text + @"' And VF.MasterCompanyId=" + Session["varCompanyId"] + "";
+        PD.Item_Finished_Id=VF.Item_Finished_Id And PM.EmpId=EI.EmpId And PM.CompanyId=" + DDCompany.SelectedValue + " And PM.ReceiveDate<='" + TxtToDate.Text + @"' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
         Str = Str + Str2 + @" Group BY PD.IssueOrderId,EI.EmpName,PD.OrderID,PD.Item_Finished_Id,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,ProdSizeMtr,ProdSizeFt";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
@@ -317,7 +317,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         ShadeColorName,ShapeName,ProdSizeMtr,ProdSizeFt,Sum(QtyRequired) OQty,Sum(TagStock) SQty,0 Qty ,0 PQty,0 PaidQty,Sum(PreProdAssignedQty) JobAssignQty,OD.OrderUnitId as UnitId 
         From OrderMaster OM,OrderDetail OD,Jobassigns J,V_FinishedItemDetail VF,CustomerInfo CI 
         Where OM.OrderId=OD.OrderId And OM.OrderId=J.OrderId And OD.Item_Finished_Id=J.Item_Finished_Id And OD.Item_Finished_Id=VF.Item_Finished_Id And OM.CustomerId=CI.CustomerID And 
-        OM.Companyid=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        OM.Companyid=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDCustCode.SelectedIndex > 0)
         {
             Str = Str + " And OM.Customerid=" + DDCustCode.SelectedValue;
@@ -332,7 +332,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         Str = Str + @" Union Select CI.CustomerCode,OM.CustomerOrderNo,OM.LocalOrder,PD.OrderID,PD.Item_Finished_Id,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,ShadeColorName,ShapeName,
         ProdSizeMtr,ProdSizeFt,0 OQty,0 SQty,Sum(Qty-isnull(cancelQty,0)) Qty,Sum(PQty-isnull(cancelQty,0)) PQty,0 PaidQty,0 JobAssignQty, PM.UNITID as UnitId From PROCESS_ISSUE_MASTER_" + DDProcess.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + DDProcess.SelectedValue + @" PD,
         V_FinishedItemDetail VF,OrderMaster OM,CustomerInfo CI Where PM.IssueOrderId=PD.IssueOrderId And PD.Item_Finished_Id=VF.Item_Finished_Id And PD.OrderId=OM.OrderId And 
-        OM.CustomerId=CI.CustomerID And OM.Companyid=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        OM.CustomerId=CI.CustomerID And OM.Companyid=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDCustCode.SelectedIndex > 0)
         {
             Str = Str + " And OM.Customerid=" + DDCustCode.SelectedValue;
@@ -345,7 +345,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         ProdSizeMtr,ProdSizeFt,PM.UNITID Union Select CI.CustomerCode,OM.CustomerOrderNo,OM.LocalOrder,PD.OrderID,PD.Item_Finished_Id,CATEGORY_NAME,ITEM_NAME,QualityName,designName,ColorName,
         ShadeColorName,ShapeName,ProdSizeMtr,ProdSizeFt,0 OQty,0 SQty,0 Qty,0 PQty,Count(PD.Item_Finished_Id) PaidQty,0 JobAssignQty,0 as UnitId From PROCESS_RECEIVE_DETAIL_" + DDProcess.SelectedValue + @" PD,
         PROCESS_STOCK_DETAIL PSD,V_FinishedItemDetail VF,OrderMaster OM,CustomerInfo CI Where PD.Process_Rec_Detail_Id=PSD.ReceiveDetailId And PD.Item_Finished_Id=VF.Item_Finished_Id And 
-        PD.OrderId=OM.OrderId And OM.CustomerId=CI.CustomerID And HissabFlag<>0 And ToProcessId=" + DDProcess.SelectedValue + " And OM.Companyid=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+        PD.OrderId=OM.OrderId And OM.CustomerId=CI.CustomerID And HissabFlag<>0 And ToProcessId=" + DDProcess.SelectedValue + " And OM.Companyid=" + DDCompany.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDCustCode.SelectedIndex > 0)
         {
             Str = Str + " And OM.Customerid=" + DDCustCode.SelectedValue;
@@ -464,15 +464,15 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
     {
         string Str = @"Select QualityName,designName,ColorName,ShadeColorName,ShapeName,SizeMtr,SizeFt,Sizeinch,CompanyId,OrderId,CustomerCode,CustomerOrderNo,Sum(QtyRequired) QtyRequired,
                         Sum(TArea) TArea,Sum(QtyIss) QtyIss,Sum(QtyRec) QtyRec,View_Order_Process_Detail.MasterCompanyId,U.Unitid,U.UnitName From View_Order_Process_Detail,Unit U 
-                        Where View_Order_Process_Detail.OrderUnitId=U.UnitId And  View_Order_Process_Detail.MasterCompanyId=" + Session["varCompanyId"] + " And  Orderid=" + DDOrderNo.SelectedValue + " And Processid in (0," + DDProcess.SelectedValue + @")
+                        Where View_Order_Process_Detail.OrderUnitId=U.UnitId And  View_Order_Process_Detail.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And  Orderid=" + DDOrderNo.SelectedValue + " And Processid in (0," + DDProcess.SelectedValue + @")
                         Group By QualityName,designName,ColorName,ShadeColorName,ShapeName,SizeMtr,SizeFt,Sizeinch,CompanyId,OrderId,CustomerCode,CustomerOrderNo,U.UnitName,U.UnitId,View_Order_Process_Detail.MasterCompanyId
 
                         Select OM.OrderId,E.Empname,VF.QualityName,VF.designName,VF.ColorName,VF.ShadeColorName,VF.ShapeName,VF.SizeMtr,VF.SizeFt,Vf.Sizeinch,UnitId,Isnull(Sum(Qty),0) As IssQty,Isnull(Sum(Qty-Pqty),0) As RecQty,isnull(Sum(CancelQty),0) As CancelQty,ReqByDate," + DDProcess.SelectedValue + @" As ProcessId,CI.MasterCompanyId
                         From PROCESS_ISSUE_MASTER_" + DDProcess.SelectedValue + " PM,PROCESS_ISSUE_Detail_" + DDProcess.SelectedValue + " PD,OrderMaster OM,CustomerInfo CI,V_FinishedItemDetail Vf,EmpInfo E where PM.IssueOrderId=PD.IssueOrderId And VF.ITEM_FINISHED_ID=PD.Item_Finished_Id And OM.OrderId=" + DDOrderNo.SelectedValue + @" And 
-                        PD.OrderId=OM.OrderId And OM.Customerid=CI.CustomerId And E.EmpId=PM.Empid And VF.MasterCompanyId=" + Session["varCompanyId"] + @" 
+                        PD.OrderId=OM.OrderId And OM.Customerid=CI.CustomerId And E.EmpId=PM.Empid And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                         Group by OM.OrderId,E.Empname,Customercode,CustomerOrderNo,OM.CompanyId,VF.QualityName,VF.designName,VF.ColorName,VF.ShadeColorName,VF.ShapeName,VF.SizeMtr,VF.SizeFt,vf.Sizeinch,UnitId,ReqByDate,CI.MasterCompanyId 
 
-                        Select PROCESS_NAME_ID,PROCESS_NAME,ShortName From Process_Name_Master where PROCESS_NAME_ID=" + DDProcess.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"];
+                        Select PROCESS_NAME_ID,PROCESS_NAME,ShortName From Process_Name_Master where PROCESS_NAME_ID=" + DDProcess.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
@@ -514,9 +514,9 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         string Str = "";
         SqlHelper.ExecuteNonQuery(tran, CommandType.Text, "Truncate Table TEMP_ORDER_CONSMP_AREA");
         Str = @"Insert into TEMP_ORDER_CONSMP_AREA Select Distinct Orderid,OrderDetailId,VF.Item_Id ItemId,VF.Item_Name,ProcessId,Sum(IQty) Qty,[dbo].[Get_OrderDetail_Area] (OrderDetailId) Area,
-                        Sum(IQty)*[dbo].[Get_OrderDetail_Area] (OrderDetailId) TConsmp," + Session["varuserid"] + "," + Session["varCompanyId"] + @" 
+                        Sum(IQty)*[dbo].[Get_OrderDetail_Area] (OrderDetailId) TConsmp," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + @" 
                         From ORDER_CONSUMPTION_DETAIL OCD,V_FinishedItemDetail VF Where VF.Item_Finished_id=OCD.IFinishedid And Orderid=" + DDOrderNo.SelectedValue + @" And 
-                        ProcessId=" + DDProcess.SelectedValue + " And VF.MasterCompanyId=" + Session["varCompanyId"];
+                        ProcessId=" + DDProcess.SelectedValue + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDItemName.SelectedIndex > 0)
         {
             Str = Str + " And VF.Item_Id=" + DDItemName.SelectedValue;
@@ -572,7 +572,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
     {
         String Str = "";
         DataSet Ds = null;
-        Str = "Select * from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"];
+        Str = "Select * from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (DDProcess.SelectedIndex > 0)
         {
             Str = Str + "  And Process_Name_Id=" + DDProcess.SelectedValue + "";
@@ -626,7 +626,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
             Str = Str + @" View View_Order_Material_Issue_Rec As Select ProcessId,PrOrderID,Finishedid,OrderID,IsNull(Case When TranType=0 Then Sum(IssueQuantity) End,0) IssQty,
                            IsNull(Case When TranType=1 Then Sum(IssueQuantity) End,0) RecQty,0 RecConsmp
                            From ProcessRawMaster PM,ProcessRawTran PT,View_Order_Process_Iss VOM 
-                           Where PM.TypeFlag = 0 And PM.PRMId=PT.PRMId And VOM.IssueOrderID=PM.PrOrderID And PM.MasterCompanyId=" + Session["varCompanyId"] + @"
+                           Where PM.TypeFlag = 0 And PM.PRMId=PT.PRMId And VOM.IssueOrderID=PM.PrOrderID And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                            Group By CompanyId,ProcessId,PrOrderID,Finishedid,TranType,OrderID UNION 
                            Select PRC.ProcessID,PRC.IssueOrderId,PRC.IFinishedid,VOM.OrderId,0,0,Sum(TConsmp+TLoss) RecConsmp From PROCESS_RECEIVE_CONSUMPTION PRC,
                            View_Order_Process_Iss VOM Where PRC.IssueOrderId=VOM.IssueOrderId 
@@ -642,7 +642,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
 
         Str = @"Insert into TEMP_PROCESS_ISS_REC_DETAIL SELECT PM.IssueOrderId,PM.Empid,PM.UnitId,PM.CompanyId,PM.AssignDate,PD.Item_Finished_id,Sum(PD.Qty) Qty,
                Sum((PD.Qty-isnull(CancelQty,0))*PD.Area) Area,Sum(PD.Qty-PD.PQty) RQty,Sum(PD.PQty-isnull(cancelQty,0)) PQty,
-               PD.Orderid,PD.ReqByDate,DateDiff(Day,PD.ReqByDate,PM.AssignDate) LateDays," + Session["varuserid"] + "," + Session["varCompanyId"] + @",'',Sum(isnull(CancelQty,0)) As CancelQty
+               PD.Orderid,PD.ReqByDate,DateDiff(Day,PD.ReqByDate,PM.AssignDate) LateDays," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + @",'',Sum(isnull(CancelQty,0)) As CancelQty
                FROM PROCESS_ISSUE_MASTER_" + DDProcess.SelectedValue + " PM,PROCESS_ISSUE_DETAIL_" + DDProcess.SelectedValue + @" PD 
                Where PM.IssueOrderId=PD.IssueOrderId And PD.Orderid=" + DDOrderNo.SelectedValue + @"
                Group By PM.IssueOrderId,PM.Empid,PM.UnitId,PM.CompanyId,PM.AssignDate,PD.Item_Finished_id,PD.Orderid,PD.ReqByDate";
@@ -653,7 +653,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
             Str = @"Insert into TEMP_PROCESS_ISS_REC_DETAIL SELECT PM.IssueOrderId,(Select distinct EmpID from Employee_HomeFurnishingOrderMaster Where IssueOrderId=PM.IssueOrderId and ProcessID=1) as EmpId,
                 PM.UnitId,PM.CompanyId,PM.AssignDate,PD.OrderDetailDetail_FinishedID as Item_Finished_id,Sum(PD.Qty) Qty,
                Sum((PD.Qty-isnull(CancelQty,0))*PD.Area) Area,Sum(PD.Qty-PD.PQty) RQty,Sum(PD.PQty-isnull(cancelQty,0)) PQty,
-               PD.Orderid,PD.ReqByDate,DateDiff(Day,PD.ReqByDate,PM.AssignDate) LateDays," + Session["varuserid"] + "," + Session["varCompanyId"] + @",'',Sum(isnull(CancelQty,0)) As CancelQty
+               PD.Orderid,PD.ReqByDate,DateDiff(Day,PD.ReqByDate,PM.AssignDate) LateDays," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + @",'',Sum(isnull(CancelQty,0)) As CancelQty
                FROM HomeFurnishingOrderMaster PM JOIN HomeFurnishingOrderDetail PD ON PM.IssueOrderId=PD.IssueOrderId 
                Where PD.Orderid=" + DDOrderNo.SelectedValue + @"
                Group By PM.IssueOrderId,PM.UnitId,PM.CompanyId,PM.AssignDate,PD.OrderDetailDetail_FinishedID,PD.Orderid,PD.ReqByDate";
@@ -663,7 +663,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
 
         Str = @"Insert into TEMP_PROCESS_CONSMP_ISS_DETAIL SELECT PM.Issueorderid,PD.Orderid,OCD.IFINISHEDID,Isnull(Round(Sum(CASE WHEN PM.CalType=0 THEN CASE WHEN PM.UnitId=1 Then Case When OCD.MasterCompanyId<>9 Then  (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.IQTY*1.196 Else (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.IQTY End else Case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.IQTY Else (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.IQTY/10.76391  End END ELSE 
                CASE WHEN PM.UnitId=1 Then case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*OCD.IQTY*1.196 Else (PD.Qty-isnull(CancelQty,0))*OCD.IQTY  End else case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*OCD.IQTY Else (PD.Qty-isnull(CancelQty,0))*OCD.IQTY/10.76391  End END END),3),0) ConsmpQTY,[dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid) IssQty,
-               [dbo].[Get_Process_Rec_Consmp_Qty](PM.Issueorderid,OCD.IFINISHEDID) RecConsmp,Round([dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid)-[dbo].[Get_Process_Rec_Consmp_Qty](PM.Issueorderid,OCD.IFINISHEDID),3) PendQty," + Session["varuserid"] + "," + Session["varCompanyId"] + @",
+               [dbo].[Get_Process_Rec_Consmp_Qty](PM.Issueorderid,OCD.IFINISHEDID) RecConsmp,Round([dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid)-[dbo].[Get_Process_Rec_Consmp_Qty](PM.Issueorderid,OCD.IFINISHEDID),3) PendQty," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + @",
                 Isnull(Round(Sum(CASE WHEN PM.CalType=0 THEN CASE WHEN PM.UnitId=1 Then Case When OCD.MasterCompanyId<>9 Then  (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS*1.196 Else (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS End 
                 else Case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS Else (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS/10.76391  End END 
                 ELSE CASE WHEN PM.UnitId=1 Then case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*OCD.ILOSS*1.196 Else (PD.Qty-isnull(CancelQty,0))*OCD.ILOSS  End 
@@ -679,7 +679,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
                CASE WHEN PM.UnitId=1 Then case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*OCD.IQTY*1.196 Else (PD.Qty-isnull(CancelQty,0))*OCD.IQTY  End else case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*OCD.IQTY Else (PD.Qty-isnull(CancelQty,0))*OCD.IQTY/10.76391  End END END),3),0) ConsmpQTY,
 			   [dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid) IssQty,
                [dbo].[Get_HomeFurnishing_Rec_Consmp_Qty](PM.Issueorderid,OCD.IFINISHEDID) RecConsmp,
-			   Round([dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid)-[dbo].[Get_HomeFurnishing_Rec_Consmp_Qty](PM.Issueorderid,OCD.IFINISHEDID),3) PendQty," + Session["varuserid"] + "," + Session["varCompanyId"] + @",
+			   Round([dbo].[Get_ProcessIssueQty] (OCD.IFINISHEDID,PM.Issueorderid)-[dbo].[Get_HomeFurnishing_Rec_Consmp_Qty](PM.Issueorderid,OCD.IFINISHEDID),3) PendQty," + Session["varuserid"] + "," + Session["varMasterCompanyIDForERP"] + @",
                 Isnull(Round(Sum(CASE WHEN PM.CalType=0 THEN CASE WHEN PM.UnitId=1 Then Case When OCD.MasterCompanyId<>9 Then  (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS*1.196 Else (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS End 
                 else Case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS Else (PD.Qty-isnull(CancelQty,0))*PD.Area*OCD.ILOSS/10.76391  End END 
                 ELSE CASE WHEN PM.UnitId=1 Then case When OCD.MasterCompanyId<>9 Then (PD.Qty-isnull(CancelQty,0))*OCD.ILOSS*1.196 Else (PD.Qty-isnull(CancelQty,0))*OCD.ILOSS  End 
@@ -764,7 +764,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -781,7 +781,7 @@ public partial class Masters_ReportForms_FrmProductionReports : System.Web.UI.Pa
         _arrpara[0].Value = DDCustCode.SelectedValue;
         _arrpara[1].Value = DDOrderNo.SelectedValue;
         _arrpara[2].Value = DDProcess.SelectedValue;
-        _arrpara[3].Value = Session["varcompanyId"];
+        _arrpara[3].Value = Session["varMasterCompanyIDForERP"];
         _arrpara[4].Direction = ParameterDirection.Output;
 
 

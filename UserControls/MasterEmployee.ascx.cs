@@ -20,7 +20,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
     }
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -28,13 +28,13 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
         {
             Tabemp.ActiveTabIndex = 0;
             txtEmpId.Text = "0";
-            string Str =@"SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varCompanyId"] + @" Order By DepartmentName 
-                Select Distinct TT.ID,TT.Type From TDSType TT,TDS_MASTER TM Where TT.ID=TM.TYPEID And MasterCompanyId=" + Session["varCompanyId"] + @" 
+            string Str =@"SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DepartmentName 
+                Select Distinct TT.ID,TT.Type From TDSType TT,TDS_MASTER TM Where TT.ID=TM.TYPEID And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                 select stateid,statename from state_master
                 Select ID, BranchName 
                 From BRANCHMASTER BM(nolock) 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + " Order By BranchName";
+                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By BranchName";
             
             DataSet DSQ = SqlHelper.ExecuteDataset(Str);
             UtilityModule.ConditionalComboFillWithDS(ref DDDepartment, DSQ, 0, true, "--Select Department--");
@@ -44,7 +44,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
                 DDDepartment.SelectedValue = "2";
             }
 
-            UtilityModule.ConditonalChkBoxListFill(ref ChLProcess, "Select Process_Name_id,Process_Name from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + @" order by Process_Name_id ");
+            UtilityModule.ConditonalChkBoxListFill(ref ChLProcess, "Select Process_Name_id,Process_Name from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by Process_Name_id ");
             UtilityModule.ConditionalComboFillWithDS(ref DDType, DSQ, 1, false, "");
             UtilityModule.ConditionalComboFillWithDS(ref DDstate, DSQ, 2, true, "--select state--");
             UtilityModule.ConditionalComboFillWithDS(ref DDBranchName, DSQ, 3, false, "");
@@ -62,7 +62,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
             {
                 btnadd.Visible = true;
             }
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "9"://for hafizia "9"
                     address.Text = "Village/city";
@@ -152,7 +152,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
                 strsql = strsql + " And B.USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR = 1";
             }
 
-            strsql = strsql + " And B.MasterCompanyId=" + Session["varCompanyId"] + " order by Empname";
+            strsql = strsql + " And B.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Empname";
             con.Open();
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         }
@@ -190,7 +190,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
             EMP_BranchName, EMP_IfscCode, EMP_AcNo,empgroupid,isnull(submitdocids,0) as submitdocids,isnull(Guarantorname,'') as Guarantorname,isnull(emptype,'') as Emptype,Emp_designation,isnull(empphoto,'') as empphoto, 
             isnull(EMP_GSTTYPE,0) as EMP_GSTTYPE, isnull(Purchase_EmpBankDetails,'') as Purchase_EmpBankDetails,isnull(EmpVendorName2,'') as EmpVendorName2,
             isnull(EmpVendorAddress2,'') EmpVendorAddress2, IsNull(Emp2PanNo,'') Emp2PanNo, IsNull(Emp2AadharNo,'') Emp2AadharNo, IsNull(Emp2MobileNo,'') Emp2MobileNo 
-            from EmpInfo(nolock) WHERE MasterCompanyId=" + Session["varCompanyId"] + " And EmpId=" + id;
+            from EmpInfo(nolock) WHERE MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And EmpId=" + id;
 
             if (Convert.ToInt32(Session["usertype"]) > 1)
             {
@@ -427,7 +427,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
         DDempgroup.SelectedIndex = -1;
         chkdocuments.ClearSelection();
         txtdesignation.Text = "";
-        UtilityModule.ConditonalChkBoxListFill(ref ChLProcess, "Select Process_Name_id,Process_Name from Process_Name_Master Where MasterCompanyId=" + Session["varCompanyId"] + " order by Process_Name_id");
+        UtilityModule.ConditonalChkBoxListFill(ref ChLProcess, "Select Process_Name_id,Process_Name from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by Process_Name_id");
         DDemptype.SelectedValue = "";
         txtEmpName2.Text = "";
         txtEmpAddress2.Text = "";
@@ -561,7 +561,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
             _arrPara[10].Value = txtTin.Text.ToUpper();
             _arrPara[11].Value = TxtPanNo.Text.ToUpper();
             _arrPara[12].Value = Session["varuserid"].ToString();
-            _arrPara[13].Value = Session["varCompanyId"].ToString();
+            _arrPara[13].Value = Session["varMasterCompanyIDForERP"].ToString();
 
             int n = ChLProcess.Items.Count;
             string str = null;
@@ -695,7 +695,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
             _arrPara[4] = new SqlParameter("@USER_WISE_EMPLOYEE_SHOW_OR_NOT_IN_HR", SqlDbType.Int);
 
 
-            _arrPara[0].Value = Session["varCompanyId"].ToString();
+            _arrPara[0].Value = Session["varMasterCompanyIDForERP"].ToString();
             _arrPara[1].Value = DDDepartment.SelectedValue == "" ? "0" : DDDepartment.SelectedValue;
             _arrPara[2].Value = DDparttype.SelectedValue;
             _arrPara[3].Value = ddlEmployeeType.SelectedValue;
@@ -747,7 +747,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
 
         //        string qry = @"SELECT Ei.EmpName,Ei.Address,Ei.PhoneNo,Ei.Mobile,Ei.TinNo,Ei.PanNo,DP.DepartmentName,Address2,Address3," + DDparttype.SelectedValue + @" as Partytype
         //                      FROM   EmpInfo EI INNER JOIN  Department DP ON EI.Departmentid=DP.DepartmentId 
-        //                      Where EI.MasterCompanyId=" + Session["varCompanyId"];
+        //                      Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         //        if (DDDepartment.SelectedIndex > 0)
         //        {
         //            qry = qry + " And Ei.DepartmentId=" + DDDepartment.SelectedValue;
@@ -782,11 +782,11 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
             string strsql;
             if (btnSave.Text == "Update")
             {
-                strsql = "select EmpName from EmpInfo Where DepartmentId=" + DDDepartment.SelectedValue + " And EmpId!='" + ViewState["id"].ToString() + "' and EmpName='" + txtEmpName.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+                strsql = "select EmpName from EmpInfo Where DepartmentId=" + DDDepartment.SelectedValue + " And EmpId!='" + ViewState["id"].ToString() + "' and EmpName='" + txtEmpName.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             else
             {
-                strsql = "select EmpName from EmpInfo Where DepartmentId=" + DDDepartment.SelectedValue + " And EmpName='" + txtEmpName.Text + "' And MasterCompanyId= " + Session["varCompanyId"];
+                strsql = "select EmpName from EmpInfo Where DepartmentId=" + DDDepartment.SelectedValue + " And EmpName='" + txtEmpName.Text + "' And MasterCompanyId= " + Session["varMasterCompanyIDForERP"];
             }
             con.Open();
             DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
@@ -817,7 +817,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
 
     protected void BtnAddDepartment_Click(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDDepartment, "SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varCompanyId"] + " Order By DepartmentId", true, "--Select Department--");
+        UtilityModule.ConditionalComboFill(ref DDDepartment, "SELECT DepartmentId,DepartmentName FROM Department Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By DepartmentId", true, "--Select Department--");
     }
     //protected void btnclose_Click(object sender, EventArgs e)
     //{
@@ -1069,7 +1069,7 @@ public partial class UserControls_MasterEmployee : System.Web.UI.UserControl
                         }
                     }
                 }
-                if (Convert.ToInt32(Session["varCompanyId"]) == 16 || Convert.ToInt32(Session["varCompanyId"]) == 28)
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28)
                 {
                     
                     StringBuilder stb = new StringBuilder();

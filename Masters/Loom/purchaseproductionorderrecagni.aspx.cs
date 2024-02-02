@@ -18,7 +18,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
     static string btnclickflag = "";
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -39,7 +39,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 
             hnEmpWagescalculation.Value = "";
             string str = string.Empty;
-             str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order By CompanyName
+             str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
                 Select CI.CustomerId, CI.CustomerCode 
                 From Customerinfo CI(Nolock)";
                 if (Convert.ToInt32(Session["varcompanyNo"]) == 42)
@@ -47,19 +47,19 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                     str = str + @" JOIN CompanyWiseCustomerDetail CCD(Nolock) ON CCD.CustomerID = CI.CustomerID And CCD.CompanyID = " + Session["CurrentWorkingCompanyID"];
                 }
 
-                str = str + @" Where CI.MasterCompanyId = " + Session["varCompanyId"] + @" order by CI.Customercode 
+                str = str + @" Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" order by CI.Customercode 
 
                 select UnitsId,UnitName from Units order by UnitName
                 select UnitId,UnitName From Unit Where Unitid in(1,2,6)
                 Select ID, BranchName 
                 From BRANCHMASTER BM(nolock) 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"] + @" 
+                Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" 
                 Select Distinct a.DepartmentID, D.DepartmentName 
                 From ProcessIssueToDepartmentMaster a(Nolock)
                 JOIN Department D(Nolock) ON D.DepartmentId = a.DepartmentID 
                 JOIN BranchUser BU(nolock) ON BU.BranchID = a.BranchID And BU.UserID = " + Session["varuserId"] + @" 
-                Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And a.ProcessID = 1 
+                Where a.Status = 'Pending' And a.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And a.ProcessID = 1 
                 Order By D.DepartmentName;select 1 as id,isnull(CompAddr1,'') as compaddr from CompanyInfo
 			union all
 			select 2 as id,isnull(CompAddr2,'') as compaddr from CompanyInfo
@@ -266,7 +266,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 ChkForPcsWise.Checked = false;
             }
 
-            if (Session["varCompanyId"].ToString() == "22")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             {
                 fillCottonLotNoGrid();
             }
@@ -274,27 +274,27 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             {
                 DDCalType.SelectedValue = "1";
             }
-            if (Session["varCompanyId"].ToString() == "42")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "42")
             {
                 DDCalType.SelectedValue = "0";
                 hnordercaltype.Value = "0";
                 TDChkForMaterialRate.Visible = true;
             }
-            if (Session["varCompanyId"].ToString() == "247")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "247")
             {                
                 hnordercaltype.Value = "0";
             }
-            if (Session["varCompanyId"].ToString() == "36")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "36")
             {
                 DDCalType.SelectedValue = "0";
                 hnordercaltype.Value = "0";
             }
-            if (Session["varCompanyId"].ToString() == "44")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
             {
                 DDCalType.SelectedValue = "1";
               //  hnordercaltype.Value = "0";
             }
-            //if (Session["varCompanyId"].ToString() == "43")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "43")
             //{
             //    DDCalType.SelectedValue = "0";
             //    hnordercaltype.Value = "0";
@@ -307,7 +307,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 //                strf = @"select EI.EmpId,EI.Empcode+' ['+EI.Empname+']' as Empname from EmpInfo EI inner join Department D on EI.Departmentid=D.DepartmentId and D.DepartmentName='PRODUCTION'
                 //        and EI.Status='P' and EI.Blacklist=0 order by Empname";
 
-                string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varCompanyId"] + " and EI.blacklist=0";
+                string Str = "select distinct EI.empid,EI.empname from empinfo EI inner join Department DM on EI.Departmentid=DM.Departmentid Where EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and EI.blacklist=0";
                 if (Session["varCompanyno"].ToString() != "6")
                 {
                     Str = Str + "  AND DM.Departmentname='PURCHASE'";
@@ -795,7 +795,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 
             if (variable.VarProductionSizeItemWise == "1")
             {
-                if (Session["VarCompanyId"].ToString() == "43")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
                 {
                     if (variable.VarTAGGINGWITHINTERNALPRODUCTION == "1")
                     {
@@ -825,7 +825,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                                 if (hnEmployeeType.Value == "1")
                                 {
                                   str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                                        case when " + Session["varMasterCompanyIDForERP"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                                         Else case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when " + ddunit.SelectedValue + @"=1 Then Vf.Sizemtr Else vf.sizeft end
                                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                                         " + Qtyrequired + @" as QtyRequired,
@@ -848,7 +848,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                                 else
                                 {
                                     str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                                        case when " + Session["varMasterCompanyIDForERP"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                                         Else case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when " + ddunit.SelectedValue + @"=1 Then Vf.Sizemtr Else vf.sizeft end
                                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                                         " + Qtyrequired + @" as QtyRequired,
@@ -871,7 +871,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                                 break;
                             default:
                                 str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                                        case when " + Session["varMasterCompanyIDForERP"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                                         Else case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when " + ddunit.SelectedValue + @"=1 Then Vf.Sizemtr Else vf.sizeft end
                                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                                         Vj.INTERNALPRODASSIGNEDQTY  as QtyRequired,
@@ -896,7 +896,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                     else
                     {
                         str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                        case when " + Session["varMasterCompanyIDForERP"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                         VJ.PREPRODASSIGNEDQTY as QtyRequired,
                         dbo.F_getProductionOrderQty(OM.OrderId,OD.Item_Finished_Id) as OrderedQty,JOBRATE.RATE,
@@ -917,7 +917,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 else
                 {
                     str = @"select Om.OrderId,OD.OrderDetailId,OD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,OD.flagsize,
-                        case when " + Session["varcompanyid"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
+                        case when " + Session["varMasterCompanyIDForERP"] + "=43 then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case when " + ddunit.SelectedValue + @"=1  Then VF.ProdSizeMtr ELse VF.Prodsizeft ENd +' ('+Case when " + ddunit.SelectedValue + @"=1  Then CS.MtSizeAToC ELse  CS.SizeNameAToC +')' end 
                         Else  dbo.F_getItemDescription(OD.Item_Finished_Id,Case when " + ddunit.SelectedValue + "=1  Then 1 ELse case when " + ddunit.SelectedValue + "=2 Then 0 Else   Od.flagsize ENd ENd) end as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,
                         VJ.PREPRODASSIGNEDQTY as QtyRequired,
                         dbo.F_getProductionOrderQty(OM.OrderId,OD.Item_Finished_Id) as OrderedQty,JOBRATE.RATE,
@@ -1043,11 +1043,11 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 //                            CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(OD.item_finished_id,1," + DDProdunit.SelectedValue + @"," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE
 //                            Where Om.orderid=" + DDorderNo.SelectedValue + " and " + Qtyrequired + " - IsNull(PIDD.Qty, 0) > 0  order by OD.orderdetailid";
 
-//                                str = "SELECT PD.IssueOrderId AS ORDERID,PD.Issue_Detail_Id AS OrderDetailId ,PD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,0 AS flagsize,case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when 2=1 Then Vf.Sizemtr Else vf.sizeft end ELse  dbo.F_getItemDescription(PD.Item_Finished_Id,Case when 2=1  Then 1 ELse case when 2=2 Then 0 ENd ENd) END as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,PD.Qty OrderedQty,isnull(dbo.F_getqtyreceive(PD.Issueorderid,PD.issue_detail_id," + Session["varcompanyId"].ToString() + "),0) as recqty,PD.RATE,PD.Amount,vj.preprodassignedqty QtyRequired, JOBRATE.COMMRATE, JOBRATE.BONUS, JOBRATE.FinisherRate,vf.CATEGORY_ID,vf.ITEM_ID,vf.QualityId,vf.shapeid,LENGTH=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(vf." + length + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(vf." + length + " as varchar(20)) ELSE cast(vf." + length + @" as varchar(20)) END)  Else 
+//                                str = "SELECT PD.IssueOrderId AS ORDERID,PD.Issue_Detail_Id AS OrderDetailId ,PD.Item_Finished_Id," + ddunit.SelectedValue + @" as OrderUnitId,0 AS flagsize,case When " + hnordercaltype.Value + "=1 Then VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+case when 2=1 Then Vf.Sizemtr Else vf.sizeft end ELse  dbo.F_getItemDescription(PD.Item_Finished_Id,Case when 2=1  Then 1 ELse case when 2=2 Then 0 ENd ENd) END as ItemDescription,'" + ddunit.SelectedItem.Text + @"' as UnitName,PD.Qty OrderedQty,isnull(dbo.F_getqtyreceive(PD.Issueorderid,PD.issue_detail_id," + Session["varMasterCompanyIDForERP"].ToString() + "),0) as recqty,PD.RATE,PD.Amount,vj.preprodassignedqty QtyRequired, JOBRATE.COMMRATE, JOBRATE.BONUS, JOBRATE.FinisherRate,vf.CATEGORY_ID,vf.ITEM_ID,vf.QualityId,vf.shapeid,LENGTH=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(vf." + length + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(vf." + length + " as varchar(20)) ELSE cast(vf." + length + @" as varchar(20)) END)  Else 
 //                            (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(" + length + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(" + length + " as varchar(20)) ELSE cast(" + length + @" as varchar(20)) END) END,
 //                            Width=case when " + hnordercaltype.Value + @"=1 Then  (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(vf." + Width + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(vf." + Width + " as varchar(20)) ELSE cast(vf." + Width + @" as varchar(20)) END) Else
 //                            (CASE WHEN " + ddunit.SelectedValue + "=1 THEN cast(" + Width + " as varchar(20)) WHEN " + ddunit.SelectedValue + @"=2 THEN cast(" + Width + " as varchar(20)) ELSE cast(" + Width + @" as varchar(20)) END) END,Area=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN " + ddunit.SelectedValue + "=1 THEN vf." + Area + " WHEN " + ddunit.SelectedValue + @"=2 THEN vf." + Area + " ELSE vf." + Area + @" END) else (CASE WHEN " + ddunit.SelectedValue + "=1 THEN " + Area + " WHEN " + ddunit.SelectedValue + @"=2 THEN " + Area + " ELSE " + Area + @" END) END FROM PROCESS_ISSUE_MASTER_1 PM JOIN PROCESS_ISSUE_DETAIL_1 PD ON PM.IssueOrderId=PD.IssueOrderId inner join V_finisheditemdetail vf on PD.Item_finished_id=vf.item_finished_id left join V_JOBASSIGNSQTY VJ on PD.orderid=VJ.orderid and PD.item_finished_id=VJ.Item_finished_id LEFT JOIN V_ProcessIssueToDepartmentDetail PIDD ON PIDD.orderid=PD.orderid and PIDD.item_finished_id=PD.Item_finished_id CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(PD.item_finished_id,1," + DDProdunit.SelectedValue + @"," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",1)) JOBRATE WHERE PD.IssueOrderId=" + ddlprorder.SelectedValue ;
-                               str = "SELECT PD.IssueOrderId AS ORDERID,PD.Issue_Detail_Id AS OrderDetailId ,PD.Item_Finished_Id,pm.UnitId as OrderUnitId,0 AS flagsize, VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case When PM.Unitid=1 Then SizeMtr  When PM.unitid=6 Then Sizeinch  Else  SizeFt End  as ItemDescription,u.unitname UnitName,PD.Qty OrderedQty,isnull(dbo.F_getqtyreceive(PD.Issueorderid,PD.issue_detail_id," + Session["varcompanyId"].ToString() + "),0) as recqty,PD.RATE,PD.Amount,vj.preprodassignedqty QtyRequired, JOBRATE.COMMRATE, JOBRATE.BONUS, JOBRATE.FinisherRate,vf.CATEGORY_ID,vf.ITEM_ID,vf.QualityId,vf.shapeid,LENGTH=case when isnull(pd.Length,'')<>'' then pd.Length else case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN pm.UnitId=1 THEN cast(vf.lengthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.lengthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.lengthInch as varchar(20)) ELSE cast(vf.lengthFt as varchar(20)) END)  Else 
+                               str = "SELECT PD.IssueOrderId AS ORDERID,PD.Issue_Detail_Id AS OrderDetailId ,PD.Item_Finished_Id,pm.UnitId as OrderUnitId,0 AS flagsize, VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+' '+Case When PM.Unitid=1 Then SizeMtr  When PM.unitid=6 Then Sizeinch  Else  SizeFt End  as ItemDescription,u.unitname UnitName,PD.Qty OrderedQty,isnull(dbo.F_getqtyreceive(PD.Issueorderid,PD.issue_detail_id," + Session["varMasterCompanyIDForERP"].ToString() + "),0) as recqty,PD.RATE,PD.Amount,vj.preprodassignedqty QtyRequired, JOBRATE.COMMRATE, JOBRATE.BONUS, JOBRATE.FinisherRate,vf.CATEGORY_ID,vf.ITEM_ID,vf.QualityId,vf.shapeid,LENGTH=case when isnull(pd.Length,'')<>'' then pd.Length else case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN pm.UnitId=1 THEN cast(vf.lengthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.lengthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.lengthInch as varchar(20)) ELSE cast(vf.lengthFt as varchar(20)) END)  Else 
                             (CASE WHEN pm.UnitId=1 THEN cast(vf.lengthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.lengthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.lengthInch as varchar(20)) ELSE cast(vf.lengthFt as varchar(20)) END) END END,
                             Width=case when isnull(pd.Width,'')<>'' then pd.Width else case when " + hnordercaltype.Value + @"=1 Then  (CASE WHEN pm.UnitId=1 THEN cast(vf.WidthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.WidthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.WidthInch as varchar(20)) ELSE cast(vf.WidthFt as varchar(20)) END) Else
                             (CASE WHEN pm.UnitId=1 THEN cast(vf.WidthMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.WidthFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.WidthInch as varchar(20)) ELSE cast(vf.WidthFt as varchar(20)) END) END END,Area=case when " + hnordercaltype.Value + @"=1 Then (CASE WHEN pm.UnitId=1 THEN cast(vf.AreaMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.AreaFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.AreaInch as varchar(20)) ELSE cast(vf.AreaFt as varchar(20)) END) else (CASE WHEN pm.UnitId=1 THEN cast(vf.AreaMtr as varchar(20)) WHEN pm.UnitId=2 THEN cast(vf.AreaFt as varchar(20)) WHEN pm.UnitId=6 THEN cast(vf.AreaInch as varchar(20)) ELSE cast(vf.AreaFt as varchar(20)) END) END FROM PROCESS_ISSUE_MASTER_1 PM JOIN PROCESS_ISSUE_DETAIL_1 PD ON PM.IssueOrderId=PD.IssueOrderId inner join V_finisheditemdetail vf on PD.Item_finished_id=vf.item_finished_id left join V_JOBASSIGNSQTY VJ on PD.orderid=VJ.orderid and PD.item_finished_id=VJ.Item_finished_id left join Unit U on pm.UnitId=U.Unitid LEFT JOIN V_ProcessIssueToDepartmentDetail PIDD ON PIDD.orderid=PD.orderid and PIDD.item_finished_id=PD.Item_finished_id  CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(PD.item_finished_id,1," + ddunit.SelectedValue + @"," + hnordercaltype.Value + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",1)) JOBRATE WHERE PD.IssueOrderId=" + ddlprorder.SelectedValue;
@@ -1101,7 +1101,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
     protected void DDorderNo_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "";
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "28":
                 chkpurchasefolio.Checked = false;
@@ -1346,7 +1346,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 //cmd.Parameters.AddWithValue("@Issuedate", txtrecdate.Text);
                 //cmd.Parameters.AddWithValue("@Targetdate", txtreturndate.Text);
                 //cmd.Parameters.AddWithValue("@Userid", Session["varuserid"]);
-                //cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varcompanyid"]);
+                //cmd.Parameters.AddWithValue("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 //cmd.Parameters.AddWithValue("@dtrecords", dtrecords);
                 //if (variable.VarProductionOrderPcsWise == "1" && ChkForPcsWise.Checked == true)
                 //{
@@ -1410,7 +1410,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 //    FillConsumptionQty();
                 //    Refreshcontrol();
                 //    disablecontrols();
-                //    if (Session["varcompanyid"].ToString() == "21")
+                //    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 //    {
                 //        chkforRateUpdate.Checked = false;
                 //    }
@@ -1430,7 +1430,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 //param[6] = new SqlParameter("@Issuedate", txtissuedate.Text);
                 //param[7] = new SqlParameter("@Targetdate", txttargetdate.Text);
                 //param[8] = new SqlParameter("@Userid", Session["varuserid"]);
-                //param[9] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+                //param[9] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                 //param[10] = new SqlParameter("@dtrecords", dtrecords);
                 //param[11] = new SqlParameter("@Ordercaltype", (hnordercaltype.Value == "" ? "1" : hnordercaltype.Value));  //Pcs Wise
                 //param[12] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
@@ -1459,7 +1459,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 //    FillConsumptionQty();
                 //    Refreshcontrol();
                 //    disablecontrols();
-                //    if (Session["varcompanyid"].ToString() == "21")
+                //    if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 //    {
                 //        chkforRateUpdate.Checked = false;
                 //    }
@@ -1500,7 +1500,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         TxtInstructions.Text = "";
         string str = "";
 
-//        if (Session["varcompanyid"].ToString() == "43")
+//        if (Session["varMasterCompanyIDForERP"].ToString() == "43")
 //        {
 //            str = @"Select Issue_Detail_Id,PM.issueorderid,
 //                        VF.CATEGORY_NAME+' '+VF.ITEM_NAME+' '+VF.QUALITYNAME+' '+VF.DESIGNNAME+' '+VF.COLORNAME+' '+VF.SHADECOLORNAME+' '+VF.SHAPENAME+ Space(2) + Case When PM.Unitid=1 Then VF.SizeMtr Else case When PM.unitid=6 Then VF.Sizeinch  Else  VF.SizeFt End End + Space(2) +' ('+
@@ -1513,7 +1513,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 //                        JOIN V_FinishedItemDetail VF ON PD.Item_Finished_Id=Vf.Item_Finished_ID
 //                        JOIN OrderMaster OM ON PD.ORDERID=OM.OrderId
 //                        JOIN CustomerSize CS ON OM.CustomerId=CS.CustomerId and VF.SizeId=CS.Sizeid
-//                        Where PM.IssueOrderid=" + hnissueorderid.Value + " And VF.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+//                        Where PM.IssueOrderid=" + hnissueorderid.Value + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
 //        }
 //        else
 //        {
@@ -1525,7 +1525,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         From PROCESS_ISSUE_MASTER_1 PM,PROCESS_ISSUE_DETAIL_1 PD,
                         ViewFindFinishedidItemidQDCSS IPM,Item_Master IM,ITEM_CATEGORY_MASTER ICM 
                         Where PM.IssueOrderid=PD.IssueOrderid And PD.Item_Finished_id=IPM.Finishedid And IM.Item_Id=IPM.Item_Id And IM.Category_Id=ICM.Category_Id And 
-                        PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                        PM.IssueOrderid=" + hnissueorderid.Value + " And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
        // }
 
         //Employeedetail
@@ -1541,14 +1541,14 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                     JOIN PROCESS_ISSUE_DETAIL_1 PD ON PD.IssueOrderID = PM.IssueOrderID 
                     JOIN LoomStockNo LS ON LS.IssueOrderID = PD.IssueOrderID And LS.IssueDetailID = PD.Issue_Detail_ID And LS.ProcessID = 1 
                     JOIN V_FinishedItemDetail VF ON VF.Item_Finished_ID = PD.Item_Finished_ID 
-                    Where PM.IssueOrderid = " + hnissueorderid.Value + " And VF.MasterCompanyId = " + Session["varCompanyId"] + " Order By Issue_Detail_Id Desc";
+                    Where PM.IssueOrderid = " + hnissueorderid.Value + " And VF.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By Issue_Detail_Id Desc";
         }
         //
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         DGOrderdetail.DataSource = ds.Tables[0];
         DGOrderdetail.DataBind();
 
-        if (chkEdit.Checked == true && (Session["varcompanyid"].ToString() == "16" || Session["varcompanyid"].ToString() == "28" || Session["varcompanyid"].ToString() == "42") && Convert.ToInt32(Session["usertype"]) > 2)
+        if (chkEdit.Checked == true && (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "42") && Convert.ToInt32(Session["usertype"]) > 2)
         {
             DGOrderdetail.Columns[5].Visible = false;
             DGOrderdetail.Columns[6].Visible = false;
@@ -1561,13 +1561,13 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             DGOrderdetail.Columns[12].Visible = false;
             DGOrderdetail.Columns[13].Visible = false;
         }
-        if (Session["varcompanyid"].ToString() == "42")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "42")
         {
             DGOrderdetail.Columns[12].Visible = true;
 
             //DGOrderdetail.Columns[11].Visible = false;
         }
-        //if (chkEdit.Checked == true && Session["varcompanyid"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
+        //if (chkEdit.Checked == true && Session["varMasterCompanyIDForERP"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
         //{
         //    //DGOrderdetail.Columns[9].Visible = false;
         //    DGOrderdetail.Columns[10].Visible = false;
@@ -1693,7 +1693,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            switch (Session["varcompanyid"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "16":
                     Session["rptFileName"] = "~\\Reports\\rptProductionreceivedetailchampo.rpt";
@@ -1732,19 +1732,19 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         array[2] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
         array[0].Value = hnissueorderid.Value;
         array[1].Value = 1;
-        array[2].Value = Session["varcompanyId"];
-        //if (Session["varcompanyId"].ToString() == "9")
+        array[2].Value = Session["varMasterCompanyIDForERP"];
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "9")
         //{
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrderReport", array);
 
 
         if (ds.Tables[0].Rows.Count > 0)
         {
-            if (Convert.ToInt32(Session["VarcompanyId"]) == 5)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 5)
             {
                 Session["rptFileName"] = "~\\Reports\\ProductionOrderPoshNew.rpt";
             }
-            else if (Convert.ToInt32(Session["VarcompanyId"]) == 27 || Convert.ToInt32(Session["VarcompanyId"]) == 34)//For Antique Panipat
+            else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 34)//For Antique Panipat
             {
                 Session["rptFileName"] = "~\\Reports\\ProductionOrderNewAntique.rpt";
             }
@@ -1777,7 +1777,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         //SqlParameter[] array = new SqlParameter[3];
         //array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         //array[1] = new SqlParameter("@ProcessId", 1);
-        //array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        //array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         //ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrder", array);
 
@@ -1793,7 +1793,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         cmd.Parameters.AddWithValue("@IssueOrderId", ddlprorder.SelectedValue);
         cmd.Parameters.AddWithValue("@ProcessId", 1);
         cmd.Parameters.AddWithValue("@UserName", Session["UserName"]);
-        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varcompanyId"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         DataSet ds = new DataSet();
         SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -1899,7 +1899,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         SqlParameter[] array = new SqlParameter[3];
         array[0] = new SqlParameter("@IssueOrderId", hnissueorderid.Value);
         array[1] = new SqlParameter("@ProcessId", 1);
-        array[2] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[2] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionOrderSlipReport", array);
 
@@ -1967,7 +1967,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             TDFolioNotext.Visible = true;
             hnissueorderid.Value = "0";
             //btnsave.Visible = false;
-            if (Session["varcompanyid"].ToString() == "16")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "16")
             {
                 if (Convert.ToInt32(Session["usertype"]) > 2)
                 {
@@ -2118,7 +2118,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         EnablecontrolwithGENERATESTOCKNOONTAGGING();
         DisablecontrolwithGENERATESTOCKNOONTAGGING();
         FillConsumptionQty();
-        if (Session["VarCompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
         {
             ShowCustomerCodeAndOrderNo();
         }
@@ -2198,7 +2198,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[1].Direction = ParameterDirection.Output;
             param[2] = new SqlParameter("@Userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //******
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_CancelProductionorderLoomWise", param);
             //******
@@ -2269,7 +2269,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@dtrecord", dtrecord);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioEmployee", param);
@@ -2503,7 +2503,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 
                 DataSet ds = null;
 
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     str = @"Select EI.Empid, EI.Empcode + '-' + EI.Empname EmpName, IsNull(EI.EmployeeType, 0) Emptype, 1 Caltype, 
                             IsNull(EID.Wagescalculation, 0) Wagescalculation 
@@ -2541,12 +2541,12 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Please select same location employee');", true);
                         return;
                     }
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -2555,7 +2555,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            //if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
+                            //if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
                             //{
                             //    txtWeaverIdNoscan.Text = "";
                             //    txtWeaverIdNoscan.Focus();
@@ -2619,7 +2619,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                                 break;
                         }
                     }
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -2670,7 +2670,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 }
 
                 ds.Dispose();
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     tdweaverpedningstock.Visible = true;
                     //  string a = txtWeaverIdNoscan.Text;
@@ -2733,7 +2733,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 
                 DataSet ds = null;
 
-                if (Session["varCompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     str = @"Select EI.Empid, EI.Empcode + '-' + EI.Empname EmpName, IsNull(EI.EmployeeType, 0) Emptype, 1 Caltype, 
                             IsNull(EID.Wagescalculation, 0) Wagescalculation 
@@ -2771,12 +2771,12 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Please select same location employee');", true);
                         return;
                     }
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -2785,7 +2785,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            //if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
+                            //if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281") 
                             //{
                             //    txtWeaverIdNoscan.Text = "";
                             //    txtWeaverIdNoscan.Focus();
@@ -2849,7 +2849,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                                 break;
                         }
                     }
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -2900,7 +2900,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 }
 
                 ds.Dispose();
-                if (Session["varcompanyId"].ToString() == "22")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "22")
                 {
                     tdweaverpedningstock.Visible = true;
                     //  string a = txtWeaverIdNoscan.Text;
@@ -3023,12 +3023,12 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         return;
                     }
 
-                    if ((Session["varCompanyId"].ToString() == "28" || Session["varCompanyId"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
+                    if ((Session["varMasterCompanyIDForERP"].ToString() == "28" || Session["varMasterCompanyIDForERP"].ToString() == "16") && ds.Tables[0].Rows[0]["emptype"].ToString() == "0")
                     {
                         SqlParameter[] param = new SqlParameter[4];
                         param[0] = new SqlParameter("@CardNo", txtWeaverIdNoscan.Text);
                         param[1] = new SqlParameter("@UserID", Session["varuserid"]);
-                        param[2] = new SqlParameter("@MasterCompanyID", Session["varcompanyId"]);
+                        param[2] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
                         param[3] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
                         param[3].Direction = ParameterDirection.Output;
                         //*************
@@ -3037,7 +3037,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         if (dsnew.Tables[0].Rows.Count == 0)
                         {
                             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('Employee is absent so please process attendance');", true);
-                            //if (Session["varCompanyId"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
+                            //if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Session["varSubCompanyId"].ToString() == "281")
                             //{
                             //    txtWeaverIdNoscan.Text = "";
                             //    txtWeaverIdNoscan.Focus();
@@ -3105,7 +3105,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                         }
                     }
 
-                    if (Session["varcompanyId"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                    if (Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
                     {
                         if (hnEmpWagescalculation.Value == "")
                         {
@@ -3199,7 +3199,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
             param[4] = new SqlParameter("@Processid", 1);
-            param[5] = new SqlParameter("@Mastercompanyid", Session["varcompanyId"]);
+            param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioActiveStatus", param);
             Tran.Commit();
@@ -3518,13 +3518,13 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 
             array[0].Value = hnissueorderid.Value;
             array[1].Value = 1;
-            array[2].Value = Session["varcompanyId"];
+            array[2].Value = Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_ForProductionConsumptionOrderReport", array);
 
             if (ds.Tables[0].Rows.Count > 0)
             {
-                if (Convert.ToInt32(Session["VarcompanyId"]) == 27 || Convert.ToInt32(Session["VarcompanyId"]) == 34)//For Antique Panipat
+                if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 27 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 34)//For Antique Panipat
                 {
                     Session["rptFileName"] = "~\\Reports\\ProductionOrderConsumptionForAntiquePanipat.rpt";
                 }
@@ -3558,7 +3558,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
     }
     protected void txtstockno_TextChanged(object sender, EventArgs e)
     {
-        if ((Session["varcompanyid"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
+        if ((Session["varMasterCompanyIDForERP"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28") && chkEdit.Checked == true)
         {
             StockNoTextChanged();
         }
@@ -3670,7 +3670,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             {
                 if (DGOrderdetail.Columns[i].HeaderText == "Bonus" || DGOrderdetail.Columns[i].HeaderText == "Finisher Rate")
                 {
-                    if (Convert.ToInt32(Session["varcompanyId"]) == 42)
+                    if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
                     {
                         DGOrderdetail.Columns[i].Visible = true;
                     }
@@ -3723,7 +3723,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
     protected void btnweaveridscan_Click(object sender, EventArgs e)
     {
         //*********Check Folio Pending
-        switch (Session["varcompanyid"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "16":
             case "28":            
@@ -3771,7 +3771,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@TanaLotNo", txtTanaLotNo.Text);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioTanaLotNo", param);
@@ -3799,7 +3799,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         {
             for (int i = 0; i < DG.Columns.Count; i++)
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "27":
                     case "34":
@@ -3816,7 +3816,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                     case "44":
                      DropDownList ddgodwn = (DropDownList)e.Row.FindControl("ddgodwn");
                          string str1 = "";
-            str1 = "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GoDownID=GA.GodownID and GA.UserID=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"] + @" Order By GodownName";
+            str1 = "Select Distinct GM.GodownID,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GoDownID=GA.GodownID and GA.UserID=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By GodownName";
 
             UtilityModule.ConditionalComboFill(ref ddgodwn, str1, true, "--Select--");
                         break;
@@ -4034,7 +4034,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             if (DDDepartmentName.SelectedIndex == 0)
             {
                 TDDepartmentIssueNo.Visible = false;
-                string Str = "Select CustomerId, CustomerCode From customerinfo(Nolock) Where MasterCompanyId = " + Session["varCompanyId"] + @" order by Customercode";
+                string Str = "Select CustomerId, CustomerCode From customerinfo(Nolock) Where MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" order by Customercode";
 
                 UtilityModule.ConditionalComboFill(ref DDcustcode, Str, true, "--Plz Select--");
                 DDcustcode.Enabled = true;
@@ -4046,7 +4046,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 param[0] = new SqlParameter("@CompanyID", DDcompany.SelectedValue);
                 param[1] = new SqlParameter("@BranchID", DDBranchName.SelectedValue);
                 param[2] = new SqlParameter("@DepartmentID", DDDepartmentName.SelectedValue);
-                param[3] = new SqlParameter("@MasterCompanyId", Session["varCompanyId"]);
+                param[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
                 DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_UpdateDepartmentStatus", param);
                 
@@ -4079,7 +4079,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 JOIN OrderMaster OM(Nolock) ON OM.OrderId = b.OrderID And OM.CustomerId = " + DDcustcode.SelectedValue;
         }
         Str = Str + @" Where a.Status = 'Pending' And a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
-                    And a.MasterCompanyId = " + Session["varCompanyId"] + " Order By a.IssueOrderID";
+                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " Order By a.IssueOrderID";
 
         UtilityModule.ConditionalComboFill(ref DDDepartmentIssueNo, Str, true, "--Plz Select--");
     }
@@ -4093,7 +4093,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
 //                JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID 
 //                JOIN Customerinfo CI(Nolock)  ON CI.CustomerId = OM.CustomerId 
 //                Where a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
-//                    And a.MasterCompanyId = " + Session["varCompanyId"] + @" And OM.status = '0' And a.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue + @" 
+//                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" And OM.status = '0' And a.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue + @" 
 //                order by CI.Customercode ";
 //            UtilityModule.ConditionalComboFill(ref DDcustcode, Str, true, "--Plz Select--");
 //            DDcustcode.SelectedIndex = 1;
@@ -4107,7 +4107,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
                 JOIN ProcessIssueToDepartmentDetail b(Nolock) ON b.IssueOrderID = a.IssueOrderID 
                 JOIN OrderMaster OM(Nolock) ON OM.OrderID = b.OrderID 
                 Where a.Status = 'Pending' And a.CompanyID = " + DDcompany.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.DepartmentID = " + DDDepartmentName.SelectedValue + @" 
-                    And a.MasterCompanyId = " + Session["varCompanyId"] + " And OM.status = '0' And OM.CustomerId = " + DDcustcode.SelectedValue + @" 
+                    And a.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + " And OM.status = '0' And OM.CustomerId = " + DDcustcode.SelectedValue + @" 
                     And a.IssueOrderID = " + DDDepartmentIssueNo.SelectedValue + @" 
                 Order By OM.OrderID ";
 
@@ -4136,7 +4136,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
             param[3] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[3].Direction = ParameterDirection.Output;
-            param[4] = new SqlParameter("@mastercompanyid", Session["varcompanyId"]);
+            param[4] = new SqlParameter("@mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[5] = new SqlParameter("@Remarks", TxtRemarks.Text);
             //*************
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioRemarks", param);
@@ -4423,7 +4423,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
         //        txtPartyChallanNo.Text = ds.Tables[0].Rows[0]["PartyChallanNo"].ToString();
         //    }
 
-        //    if (Session["varcompanyid"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
+        //    if (Session["varMasterCompanyIDForERP"].ToString() == "28" && Convert.ToInt32(Session["usertype"]) > 1)
         //    {
         //        DGRecDetail.Columns[14].Visible = false;
         //        DGRecDetail.Columns[15].Visible = false;
@@ -4594,7 +4594,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             //param[2] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             //param[2].Direction = ParameterDirection.Output;
             //param[3] = new SqlParameter("@userid", Session["varuserid"]);
-            //param[4] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            //param[4] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             //param[5] = new SqlParameter("@hnprocessrecid", SqlDbType.Int);
             //param[5].Direction = ParameterDirection.InputOutput;
             ////***
@@ -4662,7 +4662,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             //    lnkRemoveDefect.Visible = false;
             //}
 
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "22":
                     if (txtrategrid != null)
@@ -4682,14 +4682,14 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             //for (int i = 0; i < DGRecDetail.Columns.Count; i++)
             //{
 
-            //    if (Session["varcompanyId"].ToString() != "16")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() != "16")
             //    {
             //        if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "ACTUAL WIDTH" || DGRecDetail.Columns[i].HeaderText.ToUpper() == "ACTUAL LENGTH")
             //        {
             //            DGRecDetail.Columns[i].Visible = false;
             //        }
             //    }
-            //    if (Session["varcompanyId"].ToString() == "22")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "22")
             //    {
             //        if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "GRADE")
             //        {
@@ -4702,7 +4702,7 @@ public partial class Masters_Loom_purchaseproductionorderrecagni : System.Web.UI
             //            DGRecDetail.Columns[i].Visible = false;
             //        }
 
-            //    if (Session["varcompanyId"].ToString() == "43")
+            //    if (Session["varMasterCompanyIDForERP"].ToString() == "43")
             //    {
             //        if (DGRecDetail.Columns[i].HeaderText.ToUpper() == "ADD PENALITY")
             //        {

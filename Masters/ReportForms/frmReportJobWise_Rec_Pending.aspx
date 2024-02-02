@@ -98,7 +98,7 @@
                 TDlabeltodate.Visible = false;
                 TDtxttodate.Visible = false;
                 lblFromDate.Text = "Up to";
-                if (Session["varcompanyId"].ToString() != "8")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "8")
                 {
                     chkexcelexport.Visible = true;
                 }
@@ -114,7 +114,7 @@
                 TRDate.Visible = true;
                 TRJob.Visible = true;
                 TRUnitName.Visible = true;
-                if (Session["varcompanyId"].ToString() != "8")
+                if (Session["varMasterCompanyIDForERP"].ToString() != "8")
                 {
                     chkexcelexport.Visible = true;
                 }
@@ -151,7 +151,7 @@
                 TRDate.Visible = true;
                 Trarticles.Visible = false;
 
-                if (Session["varcompanyId"].ToString() == "21")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "21")
                 {
                     TDChkWithLotTag.Visible = true;
                 }

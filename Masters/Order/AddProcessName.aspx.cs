@@ -14,14 +14,14 @@ public partial class Masters_Order_AddProcessName : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             UtilityModule.ConditonalChkBoxListFill(ref ChkBoxListProcessName, @"Select PROCESS_NAME_ID, PROCESS_NAME 
-                        From PROCESS_NAME_MASTER(Nolock) Where IsNull(AddProcessName, 0) <> 0 And MasterCompanyId = " + Session["varCompanyId"] + @" Order By PROCESS_NAME");
+                        From PROCESS_NAME_MASTER(Nolock) Where IsNull(AddProcessName, 0) <> 0 And MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME");
 
             if (Request.QueryString["OrderID"] != null)
             {
@@ -99,7 +99,7 @@ public partial class Masters_Order_AddProcessName : System.Web.UI.Page
             param[4] = new SqlParameter("@DesignID", Request.QueryString["DesignID"]);
             param[5] = new SqlParameter("@ColorID", Request.QueryString["ColorID"]);
             param[6] = new SqlParameter("@UserID", Session["varuserid"]);
-            param[7] = new SqlParameter("@MasterCompanyID", Session["varcompanyid"]);
+            param[7] = new SqlParameter("@MasterCompanyID", Session["varMasterCompanyIDForERP"]);
             param[8] = new SqlParameter("@ProcessIDs", VarProcessID);
             param[9] = new SqlParameter("@Msg", SqlDbType.VarChar, 100);
             param[9].Direction = ParameterDirection.Output;

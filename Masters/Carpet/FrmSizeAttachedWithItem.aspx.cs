@@ -12,13 +12,13 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
-            string str = "select IC.CATEGORY_ID,IC.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC JOIN CategorySeparate CS ON IC.CATEGORY_ID=CS.Categoryid and CS.id=0  And IC.MasterCompanyId=" + Session["varCompanyId"] + @" Order By IC.CATEGORY_NAME";
+            string str = "select IC.CATEGORY_ID,IC.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC JOIN CategorySeparate CS ON IC.CATEGORY_ID=CS.Categoryid and CS.id=0  And IC.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By IC.CATEGORY_NAME";
 
             UtilityModule.ConditionalComboFill(ref DDCategory, str, true, "--Select--");
             if (DDCategory.Items.Count > 0)
@@ -27,7 +27,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
 
                 DDCategory_SelectedIndexChanged(sender, new EventArgs());
             }
-            UtilityModule.ConditionalComboFill(ref ddshape, "select ShapeId,ShapeName from Shape where MasterCompanyId=" + Session["varCompanyId"] + " order by ShapeId", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddshape, "select ShapeId,ShapeName from Shape where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ShapeId", true, "--Select--");
 
             
             hnSizeId.Value = "0";
@@ -80,7 +80,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
     protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = @"select distinct IM.ITEM_ID,IM.ITEM_NAME from ITEM_MASTER IM JOIN ITEM_CATEGORY_MASTER IC ON IM.CATEGORY_ID=IC.CATEGORY_ID
-                        Where IM.CATEGORY_ID=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varCompanyId"] + @"  Order by IM.ITEM_NAME";
+                        Where IM.CATEGORY_ID=" + DDCategory.SelectedValue + " and IM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"  Order by IM.ITEM_NAME";
 
         UtilityModule.ConditionalComboFill(ref DDItem, str, true, "--Select--");
     }
@@ -88,7 +88,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
     protected void DDItem_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = @"select distinct Q.QualityId,Q.QualityName from Quality Q JOIN ITEM_MASTER IM ON Q.Item_Id=IM.ITEM_ID 
-                    Where Q.Item_Id=" + DDItem.SelectedValue + " and Q.MasterCompanyid=" + Session["varCompanyId"] + @"  Order by Q.QualityName";
+                    Where Q.Item_Id=" + DDItem.SelectedValue + " and Q.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"  Order by Q.QualityName";
 
         UtilityModule.ConditionalComboFill(ref DDQuality, str, true, "--Select--");
     }
@@ -101,12 +101,12 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
         if (Session["VarCompanyNo"].ToString() == "43")
         {
             strsql = @"Select S.Sizeid,S.SizeFt+'  '+'['+ProdSizeFt+']' FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
-                            S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " Order By S.SizeFt";
+                            S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By S.SizeFt";
         }
         else
         {
             strsql = @"Select S.Sizeid,S.SizeFt FROM Size S INNER JOIN Unit U ON S.UnitId=U.UnitId INNER JOIN Shape Sh ON 
-                            S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " Order By S.SizeFt";
+                            S.Shapeid=Sh.ShapeId Where SH.Shapeid=" + ddshape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By S.SizeFt";
         }
 
 
@@ -120,7 +120,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
         txtid.Text = "0";
 
         string strsql = @"select S.SizeId,S.UnitId,S.Shapeid,S.WidthFt,S.LengthFt,S.HeightFt,S.WidthMtr,S.LengthMtr,S.HeightMtr,S.AreaFt,S.AreaMtr,S.SizeFt,S.SizeMtr 
-                            from Size S Where S.SizeId=" + DDSize.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " Order By S.SizeFt";
+                            from Size S Where S.SizeId=" + DDSize.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By S.SizeFt";
         DataSet ds = SqlHelper.ExecuteDataset(strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -136,7 +136,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //lblshapeyname.Text = ParameterList[3];
     }
     private void fill_grid()
@@ -161,7 +161,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
                             JOIN ITEM_CATEGORY_MASTER ICM(NoLock) ON SA.CategoryId=ICM.CATEGORY_ID
                             JOIN ITEM_MASTER IM(NoLock) ON SA.ItemId=IM.ITEM_ID
                             LEFT JOIN Quality Q(NoLock) ON SA.QualityId=Q.QualityId
-                            Where SA.CategoryId=" + DDCategory.SelectedValue + "  and SH.Shapeid=" + ddshape.SelectedValue + " And SA.MasterCompanyId=" + Session["varCompanyId"] + " ";
+                            Where SA.CategoryId=" + DDCategory.SelectedValue + "  and SH.Shapeid=" + ddshape.SelectedValue + " And SA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " ";
             if (DDItem.SelectedIndex > 0)
             {
                 strsql = strsql + " and SA.ItemId=" + DDItem.SelectedValue + "";
@@ -588,7 +588,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
 		                    SA.ItemProdSizeFt,SA.ItemProdSizeMtr,SA.ItemProdAreaFt,SA.ItemProdAreaMtr,SA.Actualfullareasqyd,SA.userid,Sa.MasterCompanyid,S.Shapeid 
                             from SizeAttachedWithItem SA JOIN SIZE S ON S.SizeId=SA.SizeId
                             Where SA.CategoryId=" + DDCategory.SelectedValue + " and SA.ItemId=" + DDItem.SelectedValue + " and S.Shapeid=" + ddshape.SelectedValue + @" 
-                            and SA.sizeid=" + DDSize.SelectedValue + " and SA.QualityId=" + DDQuality.SelectedValue + "  And SA.MasterCompanyId=" + Session["varCompanyId"];
+                            and SA.sizeid=" + DDSize.SelectedValue + " and SA.QualityId=" + DDQuality.SelectedValue + "  And SA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
                  Str = Str + "  And SA.ItemProdWidthft=" + Convert.ToDouble(TxtWidthProdFt.Text) + " and SA.ItemProdLengthft= " + Convert.ToDouble(TxtLengthProdFt.Text) + "";
 
@@ -694,9 +694,9 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
 		                    SA.ItemProdSizeFt,SA.ItemProdSizeMtr,SA.ItemProdAreaFt,SA.ItemProdAreaMtr,SA.Actualfullareasqyd,SA.userid,Sa.MasterCompanyid,S.Shapeid 
                             from SizeAttachedWithItem SA JOIN SIZE S ON S.SizeId=SA.SizeId
                             Where SA.CategoryId=" + DDCategory.SelectedValue + " and SA.ItemId=" + DDItem.SelectedValue + " and S.Shapeid=" + ddshape.SelectedValue + @" 
-                            and SA.sizeid=" + DDSize.SelectedValue + " and SA.QualityId=" + DDQuality.SelectedValue + "  And SA.MasterCompanyId=" + Session["varCompanyId"];
+                            and SA.sizeid=" + DDSize.SelectedValue + " and SA.QualityId=" + DDQuality.SelectedValue + "  And SA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 
-        //string strsql = @"Select * from Size Where UnitId=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And Width='" + txtwidthFt.Text + "' And Length='" + txtlengthFt.Text + "' And HeightFt='" + VarHeight + "' and SizeID !='" + txtid.Text + "' And MasterCompanyId=" + Session["varCompanyId"];
+        //string strsql = @"Select * from Size Where UnitId=" + ddunit.SelectedValue + " And Shapeid=" + ddshape.SelectedValue + " And Width='" + txtwidthFt.Text + "' And Length='" + txtlengthFt.Text + "' And HeightFt='" + VarHeight + "' and SizeID !='" + txtid.Text + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         con.Open();
         ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
@@ -758,7 +758,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
                     isnull(SA.ItemFinishingWidthMtr,0) as ItemFinishingWidthMtr,isnull(SA.ItemFinishingSizeFt,0) as ItemFinishingSizeFt,
                     isnull(SA.ItemFinishingSizeMtr,0) as ItemFinishingSizeMtr,isnull(SA.ItemFinishingAreaFt,0) as ItemFinishingAreaFt,isnull(SA.ItemFinishingAreaMtr,0) as ItemFinishingAreaMtr
 		            from SizeAttachedWithItem SA JOIN Size S ON SA.SizeId=S.SizeId 
-                    WHERE SA.SizeAttachedWithItemId=" + id + " And SA.MasterCompanyId=" + Session["varCompanyId"] + @"
+                    WHERE SA.SizeAttachedWithItemId=" + id + " And SA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                 select SIZE_ID from ITEM_PARAMETER_MASTER Where size_id=" + lblSizeId + "";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         try
@@ -855,7 +855,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
                 //    DGOrderDetail.Columns[i].Visible = false;
                 //}
 
-                if (Session["varcompanyId"].ToString() == "43")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
                 {
                     if (gdSize.Columns[i].HeaderText == "Finishing SizeFt" || gdSize.Columns[i].HeaderText == "Finishing SizeMtr" || gdSize.Columns[i].HeaderText == "Finishing AreaFt" || gdSize.Columns[i].HeaderText == "Finishing AreaMtr")
                     {
@@ -939,7 +939,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
         //    txtlengthInch.Enabled = false;
         //    txtheightInch.Enabled = false;
         //    txtwidthFt.Focus();
-        //    switch (Session["varcompanyid"].ToString())
+        //    switch (Session["varMasterCompanyIDForERP"].ToString())
         //    {
         //        case "16":
         //        case "28":
@@ -973,7 +973,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
         {
             SqlParameter[] parparam = new SqlParameter[4];
             parparam[0] = new SqlParameter("@id", ViewState["id"].ToString());
-            parparam[1] = new SqlParameter("@varCompanyId", Session["varCompanyId"].ToString());
+            parparam[1] = new SqlParameter("@varCompanyId", Session["varMasterCompanyIDForERP"].ToString());
             parparam[2] = new SqlParameter("@varuserid", Session["varuserid"].ToString());
             parparam[3] = new SqlParameter("@SizeId", hnSizeId.Value);
 
@@ -994,7 +994,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
             //{
             //    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "delete  from Size where SizeId=" + ViewState["id"].ToString());
             //    DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
-            //    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varCompanyId"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
+            //    SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'Size'," + ViewState["id"].ToString() + ",getdate(),'Delete')");
             //    lbl.Visible = true;
             //    lbl.Text = "Value deleted...";
             //}
@@ -1447,7 +1447,7 @@ public partial class Masters_Carpet_FrmSizeAttachedWithItem : CustomPage
 //        string qry = @" SELECT SizeAttachedWithItemId as Sr_No,SizeId, ShapeName,Unitname,SizeFt as ExportSizeFt,CategoryId,CATEGORY_NAME,ItemId,ITEM_NAME,
 //                        ItemProdLengthFt,ItemProdWidthFt,ItemProdLengthMtr,ItemProdWidthMtr,ItemProdSizeFt,ItemProdSizeMtr,ItemProdAreaFt,ItemProdAreaMtr,
 //                        Actualfullareasqyd,userid,MasterCompanyid
-//                FROM V_SizeAttachedWithItem Where MasterCompanyId=" + Session["varCompanyId"];
+//                FROM V_SizeAttachedWithItem Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
 //        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
 //        if (ds.Tables[0].Rows.Count > 0)
 //        {

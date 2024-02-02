@@ -12,13 +12,13 @@ public partial class FrmShadeColorReceipe : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx"); 
         }
         if (!IsPostBack)
         {
-            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where mastercompanyId=" + Session["varcompanyId"] + " order by category_name", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref ddcategory, "Select Distinct CATEGORY_ID,CATEGORY_NAME from ITEM_CATEGORY_MASTER where mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " order by category_name", true, "--Select--");
             fillgrid();
         }
     }
@@ -27,7 +27,7 @@ public partial class FrmShadeColorReceipe : System.Web.UI.Page
     {
         string str = @"Select dqr.SHADECOLORID AS ID,DQR.SHADECOLORNAME,dqr.brandid,dqr.itemid,br.brandName,qr.ITEM_NAME,dqr.DateAdded from ShadeColor_res dqr  inner join ITEM_MASTER qr 
                     on dqr.itemid=qr.ITEM_ID inner join brand br on 
-                    dqr.brandid=br.brandid where dqr.MasterCompanyid=" + Session["varcompanyid"];
+                    dqr.brandid=br.brandid where dqr.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
         //if (ddquality.SelectedIndex > 0)
         //{
         //    str = str + " And dqr.Quality_id=" + ddquality.SelectedValue;
@@ -66,7 +66,7 @@ public partial class FrmShadeColorReceipe : System.Web.UI.Page
             param[1].Value = ddlitem.SelectedValue;
             param[3].Value = txtshadecolor.Text;
             param[4].Value = Session["varuserid"].ToString();
-            param[5].Value = Session["varCompanyId"].ToString();
+            param[5].Value = Session["varMasterCompanyIDForERP"].ToString();
             param[6].Value = "INSERT";
             param[2].Direction = ParameterDirection.Output;
             param[7].Direction = ParameterDirection.Output;
@@ -88,18 +88,18 @@ public partial class FrmShadeColorReceipe : System.Web.UI.Page
 
     protected void ddcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddlitem, "select ITEM_ID, ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+        UtilityModule.ConditionalComboFill(ref ddlitem, "select ITEM_ID, ITEM_NAME from ITEM_MASTER where CATEGORY_ID=" + ddcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
     }
 
     protected void ddlitem_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref ddbrand, "select Brandid,BrandName from Brand where item_id=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varcompanyId"] + " order by BrandName desc", true, "--Select--");
+        UtilityModule.ConditionalComboFill(ref ddbrand, "select Brandid,BrandName from Brand where item_id=" + ddlitem.SelectedValue + " and mastercompanyId=" + Session["varMasterCompanyIDForERP"] + " order by BrandName desc", true, "--Select--");
     }
 
 //    protected void ddquality_SelectedIndexChanged(object sender, EventArgs e)
 //    {
 //        UtilityModule.ConditionalComboFill(ref ddshadecolor, @"select Distinct Sc.ShadecolorId,Sc.ShadeColorName from item_parameter_master Im inner join shadecolor sc
-//                                                            on Im.shadecolor_id=Sc.ShadecolorId where im.Quality_id=" + ddquality.SelectedValue + " and im.mastercompanyId=" + Session["varcompanyId"] + "", true, "--Select--");
+//                                                            on Im.shadecolor_id=Sc.ShadecolorId where im.Quality_id=" + ddquality.SelectedValue + " and im.mastercompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--Select--");
 //        fillgrid();
 //    }
 

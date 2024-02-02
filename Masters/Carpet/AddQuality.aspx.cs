@@ -12,7 +12,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -21,10 +21,10 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
             UtilityModule.ConditionalComboFill(ref ddlcategory, @"SELECT CATEGORY_ID, CATEGORY_NAME 
                     From ITEM_CATEGORY_MASTER IM(Nolock)
                     JOIN UserRights_Category UC(Nolock) ON UC.CategoryId = IM.Category_Id And UC.UserId=" + Session["varuserid"] + @" 
-                    Where IM.MasterCompanyId=" + Session["varCompanyId"] + @"  Order By CATEGORY_NAME", true, "---Select---");
+                    Where IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  Order By CATEGORY_NAME", true, "---Select---");
             string s = Request.QueryString["Category"];
             ddlcategory.SelectedValue = s;
-            UtilityModule.ConditionalComboFill(ref DDMasterQulaty, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER(Nolock) where CATEGORY_ID=" + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+            UtilityModule.ConditionalComboFill(ref DDMasterQulaty, "SELECT ITEM_ID, ITEM_NAME froM ITEM_MASTER(Nolock) where CATEGORY_ID=" + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
             string s2 = Request.QueryString["Item"];
             DDMasterQulaty.SelectedValue = s2;
             txtquality.Focus();
@@ -33,7 +33,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
             Fill_Grid();
 
             lbl.Visible = false;
-            switch (Convert.ToInt16(Session["varcompanyId"]))
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 4:
                     Trinstruction.Visible = true;
@@ -54,7 +54,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblqualityname.Text = ParameterList[0];
         lblcategory.Text = ParameterList[5];
         lblitemname.Text = ParameterList[6];
@@ -115,7 +115,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
                     _arrPara[1].Value = txtquality.Text.ToUpper();
                     _arrPara[2].Value = DDMasterQulaty.SelectedValue;
                     _arrPara[3].Value = Session["varuserid"].ToString();
-                    _arrPara[4].Value = Session["varCompanyId"].ToString();
+                    _arrPara[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                     _arrPara[5].Value = TxtLoss.Text == "" ? "0" : TxtLoss.Text;
                     _arrPara[6].Value = txthscode.Text.ToUpper();
                     _arrPara[7].Value = txtinstruction.Text.Trim();
@@ -185,13 +185,13 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
                 strsql = "Select QualityId as Sr_No,IM.ITEM_NAME as QualityType,QualityName as " + lblqualityname.Text + @",Loss,Hscode,Instruction,Remark, Q.MaterialRate Rate 
                 from Quality Q(Nolock) 
                 JOIN ITEM_MASTER IM(Nolock) ON Q.Item_Id=IM.ITEM_ID Where Q.Item_Id=" + DDMasterQulaty.SelectedValue + @" 
-                And Q.MasterCompanyId=" + Session["varCompanyId"] + "  order by QualityId";
+                And Q.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by QualityId";
             }
             else
             {
                 strsql = "Select QualityId as Sr_No,QualityName as " + lblqualityname.Text + @" 
                 From Quality(Nolock) 
-                Where Item_Id=" + DDMasterQulaty.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " order by QualityId";
+                Where Item_Id=" + DDMasterQulaty.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityId";
             }
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
@@ -215,7 +215,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
             SqlParameter[] Parparam = new SqlParameter[5];
             //Parparam[0] = new SqlParameter("@id", Session["id"].ToString());
             Parparam[0] = new SqlParameter("@id", Convert.ToInt32(txtid.Text));
-            Parparam[1] = new SqlParameter("@VarCompanyID", Session["varCompanyId"].ToString());
+            Parparam[1] = new SqlParameter("@VarCompanyID", Session["varMasterCompanyIDForERP"].ToString());
             Parparam[2] = new SqlParameter("@VarUserID", Session["varuserid"].ToString());
             Parparam[3] = new SqlParameter("@VarMsg", SqlDbType.NVarChar, 500);
             Parparam[3].Direction = ParameterDirection.Output;
@@ -252,7 +252,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
         ql.instruction,ql.Remark,ql.QualityCode, ql.MaterialRate Rate 
         From Quality ql(Nolock) 
         join ITEM_MASTER it(Nolock) on ql.ITEM_id=it.ITEM_id 
-        where qualityid=" + id + " And ql.MasterCompanyid=" + Session["varCompanyId"] + @"
+        where qualityid=" + id + " And ql.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
         Select MT.Month_Id MonthID, MT.Month_Name [MonthName], IsNull(QL.LossPercentage, 0) LossPercentage
         From MonthTable MT(Nolock) 
         LEFT JOIN QualityLoss QL(Nolock) ON QL.MonthID = MT.Month_ID And QL.QualityID = " + id + @" 
@@ -302,7 +302,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
     }
     protected void ddlcategory_SelectedIndexChanged(object sender, EventArgs e)
     {
-        UtilityModule.ConditionalComboFill(ref DDMasterQulaty, "select ITEM_ID, ITEM_NAME froM ITEM_MASTER(Nolock) where CATEGORY_ID=" + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "---Select --");
+        UtilityModule.ConditionalComboFill(ref DDMasterQulaty, "select ITEM_ID, ITEM_NAME froM ITEM_MASTER(Nolock) where CATEGORY_ID=" + ddlcategory.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "---Select --");
     }
     protected void BtnPreview_Click(object sender, EventArgs e)
     {
@@ -314,7 +314,7 @@ public partial class Masters_Carpet_AddQuality : System.Web.UI.Page
                 FROM Quality Q(Nolock)
                 JOIN ITEM_MASTER IM(Nolock) ON Q.Item_Id=IM.ITEM_ID
                 JOIN ITEM_CATEGORY_MASTER ICM(Nolock) ON IM.CATEGORY_ID=ICM.CATEGORY_ID
-                where Q.MasterCompanyid=" + Session["varCompanyId"] + " and Q.Item_Id=" + DDMasterQulaty.SelectedValue + " and ICM.CATEGORY_ID=" + ddlcategory.SelectedValue + " ORDER BY QualityName";
+                where Q.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " and Q.Item_Id=" + DDMasterQulaty.SelectedValue + " and ICM.CATEGORY_ID=" + ddlcategory.SelectedValue + " ORDER BY QualityName";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
         if (ds.Tables[0].Rows.Count > 0)

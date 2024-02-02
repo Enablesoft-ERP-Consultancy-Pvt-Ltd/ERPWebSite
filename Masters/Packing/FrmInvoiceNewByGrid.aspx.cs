@@ -27,7 +27,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
     static int QualityId = 0, DesignId = 0, ColorId = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -46,9 +46,9 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
 
             logo();
             
-            string Qry = @" select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Companyname
-                    Select CustomerId,CustomerCode + SPACE(5)+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varCompanyId"] + @" order by CustomerCode
-                    Select CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varCompanyId"] + @"
+            string Qry = @" select Distinct CI.CompanyId,CI.Companyname From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname
+                    Select CustomerId,CustomerCode + SPACE(5)+CompanyName From CustomerInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by CustomerCode
+                    Select CurrencyId,CurrencyName from CurrencyInfo Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"
                     Select UnitId,UnitName from Unit where UnitId in(1,2)";
             DataSet ds1 = null;
             ds1 = SqlHelper.ExecuteDataset(Qry);
@@ -92,7 +92,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
             hnInvoiceID.Value = "0";
             hnfinished.Value = "";
 
-            //if (Session["varcompanyId"].ToString() == "19")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "19")
             //{
             //    Label36.Text = "Bale Nt Wt";
             //    Label37.Text = "Bale Gr Wt";
@@ -103,7 +103,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
             //    Label37.Text = "One Pcs Gr Wt";
             //}
 
-            //switch (Convert.ToInt16(Session["varcompanyId"]))
+            //switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             //{
             //    case 19:                    
             //        break;               
@@ -121,7 +121,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
     private void FillBillToShipTO()
     {
         string str = @"select  WHConsignee,WHShipTo from WareHouseMaster 
-                    Where CustomerId = " + DDConsignee.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @" ";
+                    Where CustomerId = " + DDConsignee.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ";
 
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -144,7 +144,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
         DGOrderDetail.DataSource = null;
         DGOrderDetail.DataBind();
 
-        UtilityModule.ConditionalComboFill(ref DDConsignee, "Select CustomerId,CompanyName From  CustomerInfo where CustomerID=" + DDCustomerCode.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By Companyname", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref DDConsignee, "Select CustomerId,CompanyName From  CustomerInfo where CustomerID=" + DDCustomerCode.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By Companyname", true, "--SELECT--");
         if (DDConsignee.Items.Count > 0)
         {
             DDConsignee.SelectedIndex = 1;
@@ -158,7 +158,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
             }
             else
             {
-                string str = @"select  BilledTo,ShippedTo from InvoiceMaster Where Consigneeid = " + DDConsignee.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + @" ";
+                string str = @"select  BilledTo,ShippedTo from InvoiceMaster Where Consigneeid = " + DDConsignee.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ";
 
                 DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -171,14 +171,14 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
         }
         if (ChkForEdit.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddInvoiceNo, "Select InvoiceId,InvoiceNo+' / '+Replace(Convert(VarChar(11),InvoiceDate,106), ' ','-') InvoiceNo from InvoiceMaster  Where ConsignorId=" + DDCompanyName.SelectedValue + " And ConsigneeId=" + DDCustomerCode.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddInvoiceNo, "Select InvoiceId,InvoiceNo+' / '+Replace(Convert(VarChar(11),InvoiceDate,106), ' ','-') InvoiceNo from InvoiceMaster  Where ConsignorId=" + DDCompanyName.SelectedValue + " And ConsigneeId=" + DDCustomerCode.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
         }
     }
     protected void FillorderNo()
     {
         if (variable.Carpetcompany == "1")
         {
-            if (Session["varCompanyId"].ToString() == "30")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "30")
             {
                 string str = "";
                 str = @"Select distinct OM.OrderId, OM.CustomerOrderNo CustomerOrderNo from OrderMaster OM JOIN OrderDetail OD ON OM.OrderId=OD.OrderId
@@ -272,7 +272,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
                     // param[7] = new SqlParameter("@ProCode", TxtProdCode.Text);
                     param[7] = new SqlParameter("@ProCode", "0");
                     param[8] = new SqlParameter("@SHADECOLOR_ID", lblShadeColorId.Text);
-                    param[9] = new SqlParameter("@MasterCompanyId", Session["VarCompanyId"]);
+                    param[9] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
                     param[10] = new SqlParameter("@Rate", SqlDbType.Float);
                     param[10].Direction = ParameterDirection.Output;
                     param[11] = new SqlParameter("@OrderQty", SqlDbType.Int);
@@ -317,7 +317,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
     }
     private void SizeSelectedIndexChange(string SizeName, int SizeID)
     {
-        if (Session["varCompanyId"].ToString() == "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         {
             string DDSizeValue = SizeName;
             //string stringBeforeChar = DDSizeValue.Substring(0, DDSizeValue.IndexOf("["));
@@ -356,7 +356,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
 
                 str = "Select Case When 1=" + DDUnit.SelectedValue + @" Then " + Width + " Else " + Width + @" End Width,
                      Case When 1=" + DDUnit.SelectedValue + @" Then " + Length + " Else " + Length + @" End Length,
-                     Case When 1=" + DDUnit.SelectedValue + @" Then AreaMtr Else AreaFt End Area from Size Where SizeId=" + SizeID + " And MasterCompanyId=" + Session["varCompanyId"] + "";
+                     Case When 1=" + DDUnit.SelectedValue + @" Then AreaMtr Else AreaFt End Area from Size Where SizeId=" + SizeID + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "";
             }
             DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             if (Ds.Tables[0].Rows.Count > 0)
@@ -484,7 +484,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "You Are Successfully LoggedOut..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
@@ -492,7 +492,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
     {
         //ShapeSelectedChange();
 
-        ////if (Session["VarCompanyId"].ToString() == "30")
+        ////if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         ////{
         ////    ChangeRate();
         ////}
@@ -601,7 +601,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
                             From InvoiceMaster INM JOIN InvoiceDetail IND ON INM.InvoiceId=IND.InvoiceId
                             inner join V_FinishedItemDetail VF on IND.ItemFinishedId=VF.Item_Finished_id 
                             left join ordermaster OM on IND.Orderid=OM.orderid 
-                            Where INM.InvoiceId=" + ViewState["InvoiceID"] + " And VF.MasterCompanyId=" + Session["varCompanyId"] + "  order by InvoiceDetailId desc";
+                            Where INM.InvoiceId=" + ViewState["InvoiceID"] + " And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by InvoiceDetailId desc";
 
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
             //txttotalareagrid.Text = "";
@@ -736,7 +736,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
                 arr[7].Value = DDUnit.SelectedValue;
                 arr[8].Value = txtBilledTo.Text;
                 arr[9].Value = txtShippedTo.Text;
-                arr[10].Value = Session["varCompanyId"];
+                arr[10].Value = Session["varMasterCompanyIDForERP"];
                 arr[11].Value = Session["varuserid"];
                 string VarInvoiceMonth = DateTime.Now.ToString("MM");
                 if (Convert.ToInt32(VarInvoiceMonth) >= 04)
@@ -880,7 +880,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
         //                _arrpara1[5].Value = DDUnit.SelectedValue;
         //                _arrpara1[6].Value = Session["varuserid"];
         //                _arrpara1[7].Value = TxtInvoiceNo.Text;
-        //                _arrpara1[8].Value = Session["varCompanyId"];
+        //                _arrpara1[8].Value = Session["varMasterCompanyIDForERP"];
         //                string VarInvoiceMonth = DateTime.Now.ToString("MM");
         //                if (Convert.ToInt32(VarInvoiceMonth) >= 04)
         //                {
@@ -1062,17 +1062,17 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
         //                //{
         //                //    if (ddQuality.Visible == true)
         //                //    {
-        //                //        VarQuality = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VF.QualityId from V_FinishedItemDetail VF, CarpetNumber CR where CR.Item_Finished_ID= VF.Item_Finished_Id AND TStockNo='" + TxtStockNo.Text + "' And VF.MasterCompanyId=" + Session["varCompanyId"] + ""));
+        //                //        VarQuality = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VF.QualityId from V_FinishedItemDetail VF, CarpetNumber CR where CR.Item_Finished_ID= VF.Item_Finished_Id AND TStockNo='" + TxtStockNo.Text + "' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
         //                //    }
 
         //                //    if (ddDesign.Visible == true)
         //                //    {
-        //                //        VarDesign = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VF.DesignID from V_FinishedItemDetail VF, CarpetNumber CR where CR.Item_Finished_ID= VF.Item_Finished_Id AND TStockNo ='" + TxtStockNo.Text + "' And VF.MasterCompanyId=" + Session["varCompanyId"] + ""));
+        //                //        VarDesign = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VF.DesignID from V_FinishedItemDetail VF, CarpetNumber CR where CR.Item_Finished_ID= VF.Item_Finished_Id AND TStockNo ='" + TxtStockNo.Text + "' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
         //                //    }
 
         //                //    if (ddColor.Visible == true)
         //                //    {
-        //                //        VarColor = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VF.colorID from V_FinishedItemDetail VF, CarpetNumber CR where CR.Item_Finished_ID= VF.Item_Finished_Id AND TStockNo ='" + TxtStockNo.Text + "' And VF.MasterCompanyId=" + Session["varCompanyId"] + ""));
+        //                //        VarColor = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VF.colorID from V_FinishedItemDetail VF, CarpetNumber CR where CR.Item_Finished_ID= VF.Item_Finished_Id AND TStockNo ='" + TxtStockNo.Text + "' And VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
         //                //    }
         //                //}
         //                //else
@@ -1088,12 +1088,12 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
 
         //                if (variable.Withbuyercode == "1" && hnsampletype.Value == "1")
         //                {
-        //                    _arrpara[7].Value = UtilityModule.getItemFinishedIdWithBuyercode(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, ddShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+        //                    _arrpara[7].Value = UtilityModule.getItemFinishedIdWithBuyercode(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, ddShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //                }
         //                else
         //                {
-        //                    //_arrpara[7].Value = UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemName.SelectedValue), VarQuality, VarDesign, VarColor, VarShape, VarSize, VarShadeColor, "", Convert.ToInt32(Session["varCompanyId"]));
-        //                    _arrpara[7].Value = Convert.ToInt32(UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemName.SelectedValue), VarQuality, VarDesign, VarColor, VarShape, VarSize, VarShadeColor, "", Convert.ToInt32(Session["varCompanyId"])));
+        //                    //_arrpara[7].Value = UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemName.SelectedValue), VarQuality, VarDesign, VarColor, VarShape, VarSize, VarShadeColor, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+        //                    _arrpara[7].Value = Convert.ToInt32(UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemName.SelectedValue), VarQuality, VarDesign, VarColor, VarShape, VarSize, VarShadeColor, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
         //                }
         //            }
         //            else
@@ -1103,7 +1103,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
 
 
 
-        //            //_arrpara[7].Value = Convert.ToInt32(UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemName.SelectedValue), VarQuality, VarDesign, VarColor, VarShape, VarSize, VarShadeColor, "", Convert.ToInt32(Session["varCompanyId"])));
+        //            //_arrpara[7].Value = Convert.ToInt32(UtilityModule.getItemFinishedId(Convert.ToInt32(ddItemName.SelectedValue), VarQuality, VarDesign, VarColor, VarShape, VarSize, VarShadeColor, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"])));
         //            string stockno11 = "";
         //            //if (ChkForMulipleRolls.Checked == true)
         //            //{
@@ -1277,7 +1277,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
         string str = @"Select INM.InvoiceId,INM.InvoiceNo,Replace(Convert(VarChar(11),INM.InvoiceDate,106), ' ','-') InvoiceDate,INM.CurrencyId,INM.UnitId,IND.CGST,
                     IND.SGST,IND.IGST,IND.VehicleNo,IND.EWayBillNo 
                     From InvoiceMaster INM(Nolock) JOIN INVOICEDETAIL IND(NoLock) ON INM.InvoiceId=IND.InvoiceId    
-                    Where INM.InvoiceId = " + ddInvoiceNo.SelectedValue + " And INM.MasterCompanyId=" + Session["varCompanyId"] + @" ";
+                    Where INM.InvoiceId = " + ddInvoiceNo.SelectedValue + " And INM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" ";
 
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
@@ -1326,7 +1326,7 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
 
         //    for (int i = 0; i < DGOrderDetail.Columns.Count; i++)
         //    {
-        //        if (Session["varcompanyId"].ToString() == "30")
+        //        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         //        {
         //            if (DGOrderDetail.Columns[i].HeaderText == "RATE PER PCS")
         //            {
@@ -1364,11 +1364,11 @@ public partial class Masters_Packing_FrmInvoiceNewByGrid : System.Web.UI.Page
         //string str = "";
         //if (ChkForEdit.Checked == true)
         //{
-        //    str = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select TInvoiceNo from Packing Where TInvoiceNo='" + TxtInvoiceNo.Text.Trim() + "' And PackingId<>" + ddInvoiceNo.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
+        //    str = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select TInvoiceNo from Packing Where TInvoiceNo='" + TxtInvoiceNo.Text.Trim() + "' And PackingId<>" + ddInvoiceNo.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
         //}
         //else
         //{
-        //    str = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select TInvoiceNo from Packing Where TInvoiceNo='" + TxtInvoiceNo.Text.Trim() + "' And MasterCompanyId=" + Session["varCompanyId"] + ""));
+        //    str = Convert.ToString(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select TInvoiceNo from Packing Where TInvoiceNo='" + TxtInvoiceNo.Text.Trim() + "' And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
         //}
         //if (str != "")
         //{

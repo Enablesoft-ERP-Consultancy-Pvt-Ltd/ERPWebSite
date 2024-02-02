@@ -12,7 +12,7 @@ public partial class Masters_Purchase_FrmPurchaseReceiveStockEntry : System.Web.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,11 +20,11 @@ public partial class Masters_Purchase_FrmPurchaseReceiveStockEntry : System.Web.
         if (!IsPostBack)
         {
             string Qry = @"select Distinct CI.CompanyId,Companyname from Companyinfo CI,Company_Authentication CA 
-            Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varCompanyId"] + @" Order by CompanyId 
+            Where CI.CompanyId=CA.CompanyId And CA.USERID=" + Session["varuserId"] + " And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by CompanyId 
             Select ID, BranchName 
             From BRANCHMASTER BM(nolock) 
             JOIN BranchUser BU(nolock) ON BU.BranchID = BM.ID And BU.UserID = " + Session["varuserId"] + @" 
-            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varCompanyId"];
+            Where BM.CompanyID = " + Session["CurrentWorkingCompanyID"] + " And BM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"];
 
             DataSet DSQ = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref DDCompanyName, DSQ, 0, false, "");
@@ -51,7 +51,7 @@ public partial class Masters_Purchase_FrmPurchaseReceiveStockEntry : System.Web.
             JOIN EmpInfo EI(Nolock) ON EI.Empid = a.Partyid 
             JOIN PurchaseReceiveDetail b(nolock) ON b.PurchaseReceiveId = a.PurchaseReceiveId 
             Where b.StockUpdateFlag = 0 And a.CompanyID = " + DDCompanyName.SelectedValue + " And IsNull(a.BranchID, 0) = " + DDBranchName.SelectedValue + @" And 
-            a.MasterCompanyID = " + Session["varCompanyId"] + " Order By EI.EmpName ", true, "--Select Employee--");
+            a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By EI.EmpName ", true, "--Select Employee--");
     }
     protected void DDPartyName_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -59,7 +59,7 @@ public partial class Masters_Purchase_FrmPurchaseReceiveStockEntry : System.Web.
         From PurchaseReceiveMaster a(nolock) 
         JOIN PurchaseReceiveDetail b(nolock) ON b.PurchaseReceiveId = a.PurchaseReceiveId 
         JOIN PurchaseIndentIssue c(nolock) ON c.PIndentIssueID = b.PIndentIssueID 
-        Where b.StockUpdateFlag = 0 And a.CompanyID = " + DDCompanyName.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.MasterCompanyID = " + Session["varCompanyId"] + @" And 
+        Where b.StockUpdateFlag = 0 And a.CompanyID = " + DDCompanyName.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + " And a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" And 
         a.PartyID = " + DDPartyName.SelectedValue + " Order By b.PIndentIssueID Desc", true, "--SELECT--");
     }
 
@@ -73,7 +73,7 @@ public partial class Masters_Purchase_FrmPurchaseReceiveStockEntry : System.Web.
         From PurchaseReceiveMaster a(nolock) 
         JOIN PurchaseReceiveDetail b(nolock) ON b.PurchaseReceiveId = a.PurchaseReceiveId And b.PIndentIssueId = " + DDChallanNo.SelectedValue + @" 
         Where b.StockUpdateFlag = 0 And a.CompanyID = " + DDCompanyName.SelectedValue + " And a.BranchID = " + DDBranchName.SelectedValue + @" And 
-        a.MasterCompanyID = " + Session["varCompanyId"] + " And a.PartyID = " + DDPartyName.SelectedValue + " Order By Receiveno + ' / ' + BillNo", true, "--SELECT--");
+        a.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And a.PartyID = " + DDPartyName.SelectedValue + " Order By Receiveno + ' / ' + BillNo", true, "--SELECT--");
     }
     protected void ddlrecchalanno_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -97,7 +97,7 @@ public partial class Masters_Purchase_FrmPurchaseReceiveStockEntry : System.Web.
                     From  PurchaseReceiveMaster prm(Nolock) 
                     join PurchaseReceiveDetail PRD(Nolock) on prd.purchasereceiveid = prm.purchasereceiveid 
                     Inner join V_FinishedItemDetail FID(Nolock) on FID.Item_Finished_Id = PRD.FinishedId 
-                    Where prm.PurchaseReceiveId = " + ddlrecchalanno.SelectedValue + " And prm.MasterCompanyId = " + Session["varCompanyId"];
+                    Where prm.PurchaseReceiveId = " + ddlrecchalanno.SelectedValue + " And prm.MasterCompanyId = " + Session["varMasterCompanyIDForERP"];
 
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         }
@@ -129,7 +129,7 @@ public partial class Masters_Purchase_FrmPurchaseReceiveStockEntry : System.Web.
             _arrpara[0].Value = DDCompanyName.SelectedValue;
             _arrpara[1].Value = ddlrecchalanno.SelectedValue;
             _arrpara[2].Value = Session["varuserid"];
-            _arrpara[3].Value = Session["varCompanyId"];
+            _arrpara[3].Value = Session["varMasterCompanyIDForERP"];
             _arrpara[4].Direction = ParameterDirection.Output;
 
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_SavePurchaseReceiveStockEntry", _arrpara);

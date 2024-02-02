@@ -12,14 +12,14 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
-            string Str = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName
-                           Select distinct Process_Name_Id,Process_Name from PROCESS_NAME_MASTER(Nolock) Where MasterCompanyId=" + Session["varCompanyId"] + @" 
+            string Str = @"select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName
+                           Select distinct Process_Name_Id,Process_Name from PROCESS_NAME_MASTER(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" 
                            --UNION
                            --SELECT 999 AS PROCESS_NAME_ID,'YARN OPENING' Process_name 
                             Order By Process_Name";
@@ -95,25 +95,25 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
             string Str = "";
             if (ViewState["processtype"].ToString() == "2") // 9 For Purchase
             {
-                Str = "Select Distinct E.EmpId,E.EmpName From EmpInfo E,EmpProcess EP,PurchaseHissab PH Where E.Empid=EP.Empid And E.Empid=PH.PartyId And EP.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + " Order By E.EmpName";
+                Str = "Select Distinct E.EmpId,E.EmpName From EmpInfo E,EmpProcess EP,PurchaseHissab PH Where E.Empid=EP.Empid And E.Empid=PH.PartyId And EP.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By E.EmpName";
             }
             else if (ViewState["processtype"].ToString() == "0") // 5 For RawMaterial PreParation
             {
-                Str = "Select Distinct E.EmpId,E.EmpName From EmpInfo E,EmpProcess EP,RawMaterialPreprationHissab RH where E.Empid=EP.Empid And E.Empid=RH.PartyId And CompanyId=" + DDCompanyName.SelectedValue + " And EP.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varCompanyId"] + " Order By E.EmpName";
+                Str = "Select Distinct E.EmpId,E.EmpName From EmpInfo E,EmpProcess EP,RawMaterialPreprationHissab RH where E.Empid=EP.Empid And E.Empid=RH.PartyId And CompanyId=" + DDCompanyName.SelectedValue + " And EP.ProcessId=" + DDProcessName.SelectedValue + " And E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By E.EmpName";
             }
             else if (ViewState["processtype"].ToString() == "999")
             {
                 Str = @"Select Distinct E.EmpId,E.EMPNAME + CASE WHEN ISNULL(E.EMPCODE,'')<> '' THEN  ' ['+E.EMPCODE+']' ELSE '' END AS EMPNAME 
                 From EmpInfo E,RAWMATERIALPROCESSHISSABMASTER RH 
                 Where E.Empid=RH.empid And CompanyId=" + DDCompanyName.SelectedValue + " And Rh.ProcessId=" + DDProcessName.SelectedValue + @" And 
-                E.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName";
+                E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName";
 
                 if (DDProcessName.SelectedItem.Text.ToUpper() == "YARN OPENING")
                 {
                     Str = @"Select Distinct E.EmpId,E.EMPNAME + CASE WHEN ISNULL(E.EMPCODE,'')<> '' THEN  ' ['+E.EMPCODE+']' ELSE '' END AS EMPNAME 
                 From EmpInfo E,RAWMATERIALPROCESSHISSABMASTER RH 
                 Where E.Empid=RH.empid And CompanyId=" + DDCompanyName.SelectedValue + @" And Rh.ProcessId = 999 And 
-                E.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName";
+                E.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName";
                 }
             }
             else if (ViewState["processtype"].ToString() == "9999") // Filler Type Process 
@@ -123,7 +123,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                     JOIN EmpInfo E(Nolock) ON E.Empid = RH.EmpID 
                     JOIN EmpProcess EP(Nolock) ON EP.Empid = E.Empid And EP.ProcessId = " + DDProcessName.SelectedValue + @" 
                     Where CompanyId = " + DDCompanyName.SelectedValue + @" And 
-                    RH.ProcessId = " + DDProcessName.SelectedValue + " And RH.MasterCompanyId = " + Session["varCompanyId"] + @" 
+                    RH.ProcessId = " + DDProcessName.SelectedValue + " And RH.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                     Order By E.EmpName ";
             }
             else
@@ -132,7 +132,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                 {
                     if (DDProcessName.SelectedValue == "1")
                     {
-                        switch (Session["varcompanyId"].ToString())
+                        switch (Session["varMasterCompanyIDForERP"].ToString())
                         {
                             case "28":
                             case "22":
@@ -142,7 +142,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                                 INNER JOIN EMPINFO EI ON EMP.EMPID=EI.EMPID WHere PIm.companyid=" + DDCompanyName.SelectedValue + " ORDER BY EMPNAME";
                                 break;
                             default:
-                                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName";
+                                Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName";
                                 break;
                         }
                     }
@@ -154,7 +154,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                 }
                 else
                 {
-                    Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varCompanyId"] + " Order By EmpName";
+                    Str = "Select Distinct PM.EmpId,EI.EmpName +case when isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end as EmpName From PROCESS_ISSUE_MASTER_" + DDProcessName.SelectedValue + " PM,EMpInfo EI Where CompanyId=" + DDCompanyName.SelectedValue + " And PM.EmpId=EI.EmpId And EI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By EmpName";
                 }
             }
             UtilityModule.ConditionalComboFill(ref DDEmployerName, Str, true, "--SELECT--");
@@ -173,7 +173,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
         string str, amount;
         if (ViewState["processtype"].ToString() == "2")
         {
-            if (Session["varCompanyId"].ToString() == "4")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "4")
             {
                 amount = "Case When Amount > BillAmt Then BillAmt ELse Amount End Amt";
             }
@@ -183,7 +183,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
             }
             str = @"Select Distinct Phissabid Hissabid,cast(BillNo As Nvarchar)+' / '+replace(convert(varchar(11),Date,106), ' ','-') As BillNo,
                     " + amount + @", 0 Flag,0 As TDS,0 as Gst,0 as AdvanceAmountFolioWise,0 as AdditionAmt,0 as DeductionAmt,0 as MaterialDeductionAmt
-                    From PurchaseHissab where companyid=" + DDCompanyName.SelectedValue + " And PartyId=" + DDEmployerName.SelectedValue + " And  MasterCompanyId=" + Session["varCompanyId"] + @" And
+                    From PurchaseHissab where companyid=" + DDCompanyName.SelectedValue + " And PartyId=" + DDEmployerName.SelectedValue + " And  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" And
                     Phissabid not in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And 
                     CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=2 And ProcessId=" + DDProcessName.SelectedValue + @" And EmpId=" + DDEmployerName.SelectedValue + ")"; //2 For Purchase,0 For OtherProcess
             if (ChkEdit.Checked == true && DDApprovalNo.SelectedIndex > 0)
@@ -191,7 +191,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                 str = str + @" Union Select Distinct Phissabid Hissabid,cast(BillNo As Nvarchar)+' / '+replace(convert(varchar(11),Date,106), ' ','-') As BillNo,
                     " + amount + @",1 Flag,0 As TDS,0 as gst,0 as AdvanceAmountFolioWise,0 as AdditionAmt,0 as DeductionAmt,0 as MaterialDeductionAmt
                     From PurchaseHissab where companyid=" + DDCompanyName.SelectedValue + " And PartyId=" + DDEmployerName.SelectedValue + @" And 
-                    Phissabid in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And PHA.ID=" + DDApprovalNo.SelectedValue + ") And MasterCompanyId=" + Session["varCompanyId"];
+                    Phissabid in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And PHA.ID=" + DDApprovalNo.SelectedValue + ") And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             str = str + " Order By Phissabid";
         }
@@ -202,7 +202,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                     From RawMaterialPreprationHissab 
                     Where Companyid=" + DDCompanyName.SelectedValue + " And PartyId=" + DDEmployerName.SelectedValue + @" And 
                     HissabId not in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And 
-                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=3 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + ") And MasterCompanyId=" + Session["varCompanyId"];
+                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=3 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + ") And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ChkEdit.Checked == true && DDApprovalNo.SelectedIndex > 0)
             {
                 str = str + @" Union Select Distinct HissabId,cast(BillNo As Nvarchar)+' / '+replace(convert(varchar(11),Date,106), ' ','-') As BillNo,Round(Amount,0) Amt,1 Flag,0 As TDS,isnull(gst,0) as gst 
@@ -210,7 +210,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                     From RawMaterialPreprationHissab 
                     Where Companyid=" + DDCompanyName.SelectedValue + " And PartyId=" + DDEmployerName.SelectedValue + @" And 
                     HissabId in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And 
-                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=3 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And PHA.ID=" + DDApprovalNo.SelectedValue + ") And MasterCompanyId=" + Session["varCompanyId"];
+                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=3 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And PHA.ID=" + DDApprovalNo.SelectedValue + ") And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             str = str + " Order By HissabId";
         }
@@ -222,7 +222,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                     From RAWMATERIALPROCESSHISSABMASTER 
                     Where Companyid=" + DDCompanyName.SelectedValue + " And empid=" + DDEmployerName.SelectedValue + @" And 
                     HissabId not in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And 
-                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=999 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + ") And MasterCompanyId=" + Session["varCompanyId"];
+                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=999 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + ") And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             if (ChkEdit.Checked == true && DDApprovalNo.SelectedIndex > 0)
             {
                 str = str + @" Union Select Distinct HissabId,BillNo+' / '+replace(convert(varchar(11),billDate,106), ' ','-') As BillNo,
@@ -231,7 +231,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                     From RAWMATERIALPROCESSHISSABMASTER 
                     Where Companyid=" + DDCompanyName.SelectedValue + " And empid=" + DDEmployerName.SelectedValue + @" And 
                     HissabId in(Select HissabId From ProcessHissabApproved PHA,ProcessHissabApprovedDetail PHAD Where PHA.ID=PHAD.ID And 
-                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=999 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And PHA.ID=" + DDApprovalNo.SelectedValue + ") And MasterCompanyId=" + Session["varCompanyId"];
+                    CompanyId=" + DDCompanyName.SelectedValue + " And HissabType=999 And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And PHA.ID=" + DDApprovalNo.SelectedValue + ") And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             }
             str = str + " Order By HissabId";
         }
@@ -347,7 +347,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
         if (ChkEdit.Checked == true)
         {
             UtilityModule.ConditionalComboFill(ref DDApprovalNo, @"Select Id,cast(AppvNo As Nvarchar)+' / '+replace(convert(varchar(11),AppDate,106), ' ','-') As ApprovalNo   From ProcessHissabApproved 
-            Where Status=0 And CompanyID=" + DDCompanyName.SelectedValue + " And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+            Where Status=0 And CompanyID=" + DDCompanyName.SelectedValue + " And ProcessId=" + DDProcessName.SelectedValue + " And EmpId=" + DDEmployerName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
         }
     }
     protected void DDApprovalNo_SelectedIndexChanged(object sender, EventArgs e)
@@ -508,7 +508,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
                 _arrpara[7].Value = Convert.ToDouble(TxtTDS.Text.Trim().ToString());
                 _arrpara[8].Value = Convert.ToDouble(TxtNetAmt.Text.Trim().ToString());
                 _arrpara[9].Value = Session["varuserid"].ToString();
-                _arrpara[10].Value = Session["varCompanyId"].ToString();
+                _arrpara[10].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrpara[11].Value = TxtRemarks.Text.ToUpper();
                 if (ViewState["processtype"].ToString() == "2")
                 {
@@ -781,7 +781,7 @@ public partial class Masters_Hissab_FrmProductionHissabApproval : System.Web.UI.
             param[0] = new SqlParameter("@approvalId", DDApprovalNo.SelectedValue);
             param[1] = new SqlParameter("@Processid", DDProcessName.SelectedValue);
             param[2] = new SqlParameter("@userid", Session["varuserid"]);
-            param[3] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+            param[3] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             param[4] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
             param[4].Direction = ParameterDirection.Output;
 

@@ -22,18 +22,16 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     static int israwmat = 0;
     protected void Page_Load(object sender, EventArgs e)
     {
-        MasterCompanyid = Convert.ToInt16(Session["varCompanyId"]);
+        MasterCompanyid = Convert.ToInt16(Session["varMasterCompanyIDForERP"]);
         //DataRow dr = AllEnums.MasterTables.Mastersetting.ToTable().Select()[0];
         // WithBuyerCode = dr["WithBuyerCode"].ToString();
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (IsPostBack == false)
         {
             DataSet ds = new DataSet();
-
-
             logo();
             SizeString = "SizeFt";
             LblSub_Quality.Visible = false;
@@ -44,16 +42,16 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             BtnOpenPackingCost.Visible = false;
             if (MasterCompanyid == 2)
             {
-                UtilityModule.ConditionalComboFill(ref ddProcessName, "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "  AND PROCESS_NAME_ID in (6,8,9) Order BY Process_Name", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref ddProcessName, "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  AND PROCESS_NAME_ID in (6,8,9) Order BY Process_Name", true, "--SELECT--");
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref ddProcessName, "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "  Order BY Process_Name", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref ddProcessName, "Select Process_Name_Id,Process_Name from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order BY Process_Name", true, "--SELECT--");
             }
             //";
             string str = "";
-            str = @"Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And Id=0 And IM.MasterCompanyId=" + Session["varCompanyId"] + @" Order by Category_Name
-                    Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + @" Order by Category_Name
+            str = @"Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER IM,CategorySeparate CS Where IM.Category_Id=CS.CategoryId And Id=0 And IM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Category_Name
+                    Select Category_Id,Category_Name from ITEM_CATEGORY_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Category_Name
                     select val,Type from SizeType Order by val";
             ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref ddCategoryName, ds, 0, true, "--SELECT--");
@@ -97,8 +95,8 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             }
             lablechange();
             // int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarCompanyNo From MasterSetting"));
-            HDF1.Value = Session["varCompanyId"].ToString();
-            switch (Convert.ToInt16(Session["varCompanyId"]))
+            HDF1.Value = Session["varMasterCompanyIDForERP"].ToString();
+            switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
             {
                 case 1:
                     LblSub_Quality.Visible = true;
@@ -252,7 +250,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                     TxtOutProdCode.Visible = true;
                     break;
             }
-            if (Session["varcompanyid"].ToString()=="21")
+            if (Session["varMasterCompanyIDForERP"].ToString()=="21")
             {
                 ChkForMtr.Checked = true;
                 DDICALTYPE.SelectedValue = "1";
@@ -263,7 +261,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     public void lablechange()
     {
         String[] ParameterList = new String[8];
-        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varCompanyId"]));
+        ParameterList = UtilityModule.ParameteLabel(Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         lblcategoryname.Text = ParameterList[5];
         lbloutcategoryname.Text = ParameterList[5];
         lblincategoryname.Text = ParameterList[5];
@@ -316,7 +314,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         Shape.Visible = false;
         Size.Visible = false;
         Shade.Visible = false;
-        UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By ITEM_NAME", true, "SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ITEM_NAME", true, "SELECT--");
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from ITEM_CATEGORY_PARAMETERS Where CATEGORY_ID=" + ddCategoryName.SelectedValue + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -345,7 +343,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 }
             }
         }
-        if (Session["varcompanyid"].ToString() == "16")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "16")
         {
             if (ddCategoryName.SelectedItem.Text != "CARPET")
             {
@@ -378,7 +376,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             {
                 FillDesign(ddOutItemName, ddOutQuality, ddOutDesign, OutDesign);
             }
-            //if (Session["varcompanyId"].ToString() == "4")
+            //if (Session["varMasterCompanyIDForERP"].ToString() == "4")
             //{
             //    FillDesign(ddOutItemName, ddOutQuality, ddOutDesign, OutDesign);
             //}
@@ -392,7 +390,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             FillDesign(ddItemName, ddQuality, ddDesign, Design);
         }
-        //if (Session["varcompanyId"].ToString() == "4")//Deepak
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "4")//Deepak
         //{
         //    FillDesign(ddItemName, ddQuality, ddDesign, Design);
         //}
@@ -416,7 +414,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             fillColor(ddItemName, ddQuality, ddDesign, ddColor, Color);
         }
-        //if (Session["varcompanyId"].ToString() == "4")
+        //if (Session["varMasterCompanyIDForERP"].ToString() == "4")
         //{
         //    fillColor(ddItemName, ddQuality, ddDesign, ddColor, Color);
         //}
@@ -445,7 +443,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         //{
         //    FillSize();
         //}
-        ////if (Session["varcompanyId"].ToString() == "4")
+        ////if (Session["varMasterCompanyIDForERP"].ToString() == "4")
         ////{
         ////    FillSize();
         ////}
@@ -454,7 +452,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         //    ShapeSelectedChange();
         //}
 
-        if (Session["varCompanyId"].ToString() == "30")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "30")
         {
             CHKFORALLSIZE.Checked = true;
             CHKFORALLSIZE_CheckedChanged(sender, new EventArgs()); 
@@ -476,13 +474,13 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             SizeString = "SIZEFT";
         }
-        UtilityModule.ConditionalComboFill(ref ddSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddShape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + " Order By SIZEFT", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddShape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order By SIZEFT", true, "--SELECT--");
         if (ChkForFillSame.Checked == true)
         {
             ddInShape.SelectedValue = ddShape.SelectedValue;
-            UtilityModule.ConditionalComboFill(ref ddInSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddInShape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddInSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddInShape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
             ddOutShape.SelectedValue = ddShape.SelectedValue;
-            UtilityModule.ConditionalComboFill(ref ddOutSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddOutShape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddOutSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddOutShape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
         }
     }
     protected void ddOutCategoryName_SelectedIndexChanged(object sender, EventArgs e)
@@ -491,7 +489,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         OUT_CATEGORY_DEPENDS_CONTROLS();
         ddOutItemName.Focus();
         //For Deepak rugs
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "4":
                 if (ddProcessName.SelectedValue == "5")
@@ -516,14 +514,14 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     {
         if (ddItemName.SelectedIndex > 0 && ddQuality.SelectedIndex > 0 && dddSub_Quality.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddSub_Quality, "Select QualityCodeId,SubQuantity from qualityCodeMaster Where Item_Id=" + ddItemName.SelectedValue + " And QualityId=" + ddQuality.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + " Order By SubQuantity", true, "--SELECT SUB_QUALITY--");
+            UtilityModule.ConditionalComboFill(ref ddSub_Quality, "Select QualityCodeId,SubQuantity from qualityCodeMaster Where Item_Id=" + ddItemName.SelectedValue + " And QualityId=" + ddQuality.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order By SubQuantity", true, "--SELECT SUB_QUALITY--");
         }
     }
     private void OUT_CATEGORY_DEPENDS_CONTROLS()
     {
         if (ddFinished.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddFinished, "SELECT ID,FINISHED_TYPE_NAME FROM FINISHED_TYPE where  MasterCompanyid=" + Session["varCompanyId"] + "  ORDER BY FINISHED_TYPE_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddFinished, "SELECT ID,FINISHED_TYPE_NAME FROM FINISHED_TYPE where  MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "  ORDER BY FINISHED_TYPE_NAME", true, "--SELECT--");
         }
         OutQuality.Visible = false;
         OutDesign.Visible = false;
@@ -531,7 +529,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         OutShape.Visible = false;
         OutSize.Visible = false;
         OutShade.Visible = false;
-        UtilityModule.ConditionalComboFill(ref ddOutItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddOutCategoryName.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + " Order By ITEM_NAME", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddOutItemName, "Select ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddOutCategoryName.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " Order By ITEM_NAME", true, "--SELECT--");
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from ITEM_CATEGORY_PARAMETERS Where CATEGORY_ID=" + ddOutCategoryName.SelectedValue + "");
         if (Ds.Tables[0].Rows.Count > 0)
         {
@@ -608,13 +606,13 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 SizeString = "Sizeft";
                 break;
         }
-        Str = "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddOutShape.SelectedValue + " And MasterCompanyid=" + Session["varCompanyId"] + "";
+        Str = "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddOutShape.SelectedValue + " And MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
         if (ViewState["WithBuyercode"].ToString() == "1")
         {
 
             Str = @"select Distinct S.Sizeid,S." + SizeString + " As  " + SizeString + @" from ITEM_PARAMETER_MASTER  IM inner join Size  S on
                       Im.SIZE_ID=S.SizeId inner join CustomerSize CS on cs.Sizeid=S.SizeId
-                      and S.shapeId=" + ddOutShape.SelectedValue + "  and Im.Item_Id=" + ddOutItemName.SelectedValue + " and IM.QUALITY_ID=" + ddOutQuality.SelectedValue + "  and S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + SizeString + "";
+                      and S.shapeId=" + ddOutShape.SelectedValue + "  and Im.Item_Id=" + ddOutItemName.SelectedValue + " and IM.QUALITY_ID=" + ddOutQuality.SelectedValue + "  and S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + SizeString + "";
 
         }
         UtilityModule.ConditionalComboFill(ref ddOutSize, Str, true, "--SELECT--");
@@ -625,7 +623,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         israwmat = checkcategory(ddInCategoryName);
         IN_CATEGORY_DEPENDS_CONTROLS();
         ddInItemName.Focus();
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "9":
                 if (ddProcessName.SelectedValue == "5")
@@ -641,7 +639,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     {
         if (ddFinishedIN.Visible == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddFinishedIN, "SELECT ID,FINISHED_TYPE_NAME FROM FINISHED_TYPE where  MasterCompanyid=" + Session["varCompanyId"] + " ORDER BY FINISHED_TYPE_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddFinishedIN, "SELECT ID,FINISHED_TYPE_NAME FROM FINISHED_TYPE where  MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " ORDER BY FINISHED_TYPE_NAME", true, "--SELECT--");
             ddFinishedIN.SelectedValue = "5";
         }
         InQuality.Visible = false;
@@ -652,11 +650,11 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         InShade.Visible = false;
         if (ChkForProcessInPut.Checked == true)
         {
-            UtilityModule.ConditionalComboFill(ref ddInItemName, "SELECT DISTINCT IM.ITEM_ID,ITEM_NAME from ITEM_MASTER IM,PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD,ITEM_PARAMETER_MASTER IPM WHERE PM.PCMID=PD.PCMID AND IPM.ITEM_FINISHED_ID=PD.OFINISHEDID AND IPM.ITEM_ID=IM.ITEM_ID AND CATEGORY_ID=" + ddInCategoryName.SelectedValue + " AND PM.PROCESSID=" + ddInProcessName.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"] + " Order By ITEM_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddInItemName, "SELECT DISTINCT IM.ITEM_ID,ITEM_NAME from ITEM_MASTER IM,PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD,ITEM_PARAMETER_MASTER IPM WHERE PM.PCMID=PD.PCMID AND IPM.ITEM_FINISHED_ID=PD.OFINISHEDID AND IPM.ITEM_ID=IM.ITEM_ID AND CATEGORY_ID=" + ddInCategoryName.SelectedValue + " AND PM.PROCESSID=" + ddInProcessName.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ITEM_NAME", true, "--SELECT--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref ddInItemName, "Select DISTINCT ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddInCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyid"] + "  Order By ITEM_NAME", true, "SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddInItemName, "Select DISTINCT ITEM_ID,ITEM_NAME from ITEM_MASTER Where CATEGORY_ID=" + ddInCategoryName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By ITEM_NAME", true, "SELECT--");
         }
         DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select * from ITEM_CATEGORY_PARAMETERS Where CATEGORY_ID=" + ddInCategoryName.SelectedValue + "");
         if (Ds.Tables[0].Rows.Count > 0)
@@ -692,7 +690,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         InItemNameSelectedIndexChange();
         //FILLGRID();
         ddInQuality.Focus();
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "9":
                 if (ddProcessName.SelectedValue == "5")
@@ -750,15 +748,15 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         try
         {
             con.Open();
-            int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
+            int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
             Str = @"SELECT COUNT(*) COUNT,OFINISHEDID,INOUTTYPEID from PROCESSCONSUMPTIONMASTER PCM,PROCESSCONSUMPTIONDETAIL PCD WHERE PCM.PCMID=PCD.PCMID AND 
-                   PCM.PROCESSID=" + ddInProcessName.SelectedValue + " AND PCM.FINISHEDID=" + Varfinishedid + " And PCM.MasterCompanyId=" + Session["varCompanyId"] + " GROUP BY OFINISHEDID,INOUTTYPEID HAVING COUNT(*)>1 ORDER BY COUNT(*)";
+                   PCM.PROCESSID=" + ddInProcessName.SelectedValue + " AND PCM.FINISHEDID=" + Varfinishedid + " And PCM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " GROUP BY OFINISHEDID,INOUTTYPEID HAVING COUNT(*)>1 ORDER BY COUNT(*)";
             ds1 = SqlHelper.ExecuteDataset(con, CommandType.Text, Str);
 
             Str = @"SELECT DISTINCT PCMDID,VF1.QDCS+Space(3)+SizeFt+Space(3)+ShadeColor Description,Case When " + VarNum + @"=1 then Round(OQty*1.196,5) Else OQty End PreQty,
                     Case When " + VarNum + @"=1 then Round(OQty*1.196,5) Else OQty End Qty,case When PCM.MasterCompanyId<>9 Then 0 Else  OLoss End Loss,PCD.Icaltype FROM PROCESSCONSUMPTIONMASTER PCM,
                  PROCESSCONSUMPTIONDETAIL PCD,ITEM_PARAMETER_MASTER IPCM,VIEWFINDFINISHEDID1 VF1 WHERE PCM.PCMID=PCD.PCMID AND 
-                 PCM.FINISHEDID=IPCM.ITEM_FINISHED_ID AND VF1.FINISHEDID=PCD.OFINISHEDID AND PCM.PROCESSID=" + ddInProcessName.SelectedValue + " AND PCM.FINISHEDID=" + Varfinishedid + " And PCM.MasterCompanyId=" + Session["varCompanyId"];
+                 PCM.FINISHEDID=IPCM.ITEM_FINISHED_ID AND VF1.FINISHEDID=PCD.OFINISHEDID AND PCM.PROCESSID=" + ddInProcessName.SelectedValue + " AND PCM.FINISHEDID=" + Varfinishedid + " And PCM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
             #region
             //if (ddQuality.SelectedIndex > 0)
             //{
@@ -812,7 +810,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                     Round(OQTY,5) Qty,0 Loss,PCD.Icaltype FROM PROCESSCONSUMPTIONMASTER PCM,ITEM_PARAMETER_MASTER IPCM,
                     VIEWFINDFINISHEDID1 VF1,PROCESSCONSUMPTIONDETAIL PCD
                     WHERE PCM.PCMID=PCD.PCMID AND PCM.FINISHEDID=IPCM.ITEM_FINISHED_ID AND VF1.FINISHEDID=PCD.OFINISHEDID AND 
-                    PCM.PROCESSID=" + ddInProcessName.SelectedValue + " AND PCM.FINISHEDID=" + Varfinishedid + " And PCM.MasterCompanyId=" + Session["varCompanyId"] + " And OFINISHEDID<>" + ds1.Tables[0].Rows[0]["OFINISHEDID"];
+                    PCM.PROCESSID=" + ddInProcessName.SelectedValue + " AND PCM.FINISHEDID=" + Varfinishedid + " And PCM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " And OFINISHEDID<>" + ds1.Tables[0].Rows[0]["OFINISHEDID"];
                 }
             }
             ds = SqlHelper.ExecuteDataset(con, CommandType.Text, Str);
@@ -873,7 +871,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             }
             TotalAmount(FinishedID, 0);
         }
-        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select loss from quality where qualityid=" + ddInQuality.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+        ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select loss from quality where qualityid=" + ddInQuality.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
         if (ds.Tables[0].Rows.Count > 0)
         {
             TxtLoss.Text = ds.Tables[0].Rows[0][0].ToString();
@@ -885,7 +883,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             TxtOutProdCode.Text = TxtInProdCode.Text;
             Out_ProdCode_TextChanges();
         }
-        switch (Session["varcompanyId"].ToString())
+        switch (Session["varMasterCompanyIDForERP"].ToString())
         {
             case "9":
                 if (ddProcessName.SelectedValue == "5")
@@ -898,7 +896,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 }
                 break;
         }
-        // TxtLoss.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select loss from quality where qualityid=" + ddInQuality.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "").ToString();
+        // TxtLoss.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select loss from quality where qualityid=" + ddInQuality.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
     }
 
     private int GetInItemFinishedID()
@@ -941,7 +939,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             shade = Convert.ToInt32(ddInShade.SelectedValue);
         }
 
-        int FinishedID = UtilityModule.getItemFinishedId(Convert.ToInt32(ddInItemName.SelectedValue), Quality, design, color, shape, size, shade, "", Convert.ToInt32(Session["varCompanyId"]));
+        int FinishedID = UtilityModule.getItemFinishedId(Convert.ToInt32(ddInItemName.SelectedValue), Quality, design, color, shape, size, shade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         return FinishedID;
     }
     private int GetItemFinishedID()
@@ -999,7 +997,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             shade = Convert.ToInt32(ddShade.SelectedValue);
         }
 
-        int FinishedID = UtilityModule.getItemFinishedId(Item, Quality, design, color, shape, size, shade, "", Convert.ToInt32(Session["varCompanyId"]));
+        int FinishedID = UtilityModule.getItemFinishedId(Item, Quality, design, color, shape, size, shade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         return FinishedID;
     }
     protected void ddInShape_SelectedIndexChanged(object sender, EventArgs e)
@@ -1029,24 +1027,24 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         //size Query
         if (ViewState["WithBuyercode"].ToString() == "1")
         {
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "4":
                 case "9":
                     str = @"select Distinct S.Sizeid,S." + size + " As  " + size + @" from ITEM_PARAMETER_MASTER  IM inner join Size  S on
                       Im.SIZE_ID=S.SizeId inner join CustomerSize CS on cs.Sizeid=S.SizeId
-                      and S.shapeId=" + ddInShape.SelectedValue + "  and Im.Item_Id=" + ddInItemName.SelectedValue + " and IM.QUALITY_ID=" + ddInQuality.SelectedValue + "  and S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                      and S.shapeId=" + ddInShape.SelectedValue + "  and Im.Item_Id=" + ddInItemName.SelectedValue + " and IM.QUALITY_ID=" + ddInQuality.SelectedValue + "  and S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
                     break;
                 default:
                     str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S Inner Join CustomerSize CS on S.SizeId=CS.SizeId 
-                      Where shapeid=" + ddInShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                      Where shapeid=" + ddInShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
                     break;
             }
         }
         else
         {
             str = "Select Distinct S.Sizeid,S." + size + "+Space(2)+isnull(SizeNameAToC,'') As  " + size + @" From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId 
-                 Where shapeid=" + ddInShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                 Where shapeid=" + ddInShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
         }
         UtilityModule.ConditionalComboFill(ref ddInSize, str, true, "--SELECT--");
         //if (CheckBox1.Checked)
@@ -1057,7 +1055,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         //{
         //    SizeString = "SIZEFT";
         //}
-        //UtilityModule.ConditionalComboFill(ref ddInSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddInShape.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "--SELECT--");
+        //UtilityModule.ConditionalComboFill(ref ddInSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddInShape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "--SELECT--");
     }
     private void QDCSDDFill(DropDownList Quality, DropDownList Design, DropDownList Color, DropDownList Shape, DropDownList Shade, int Itemid, int Type_Flag, System.Web.UI.HtmlControls.HtmlTableCell tdItem = null, System.Web.UI.HtmlControls.HtmlTableCell tdQuality = null, System.Web.UI.HtmlControls.HtmlTableCell tdDesign = null)
     {
@@ -1104,30 +1102,30 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             if (israwmat == 1)
             {
-                Str = "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QUALITYNAME";
+                Str = "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QUALITYNAME";
             }
             else
             {
                 Str = @"SELECT Distinct Q.QualityId,Q.QualityName As QualityName
-                        from Quality Q Inner join CustomerQuality CQ on Q.QualityId=Cq.QualityId  Where Item_Id=" + Itemid + " And Q.MasterCompanyId=" + Session["varCompanyId"] + " order by QualityName";
+                        from Quality Q Inner join CustomerQuality CQ on Q.QualityId=Cq.QualityId  Where Item_Id=" + Itemid + " And Q.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by QualityName";
             }
 
         }
         else
         {
-            Str = "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varCompanyId"] + " Order By QUALITYNAME";
+            Str = "SELECT QUALITYID,QUALITYNAME FROM QUALITY WHERE ITEM_ID=" + Itemid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By QUALITYNAME";
         }
 
 
         if (dddSub_Quality.Visible == true && Type_Flag == 1)
         {
-            Str = "SELECT QUALITYID,QUALITYNAME FROM QUALITY Q,qualitycodeDetail QD WHERE Q.QualityId=QD.Quality_ID And Q.ITEM_ID=" + Itemid + " And QD.qualitycodeid=" + ddSub_Quality.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "  Order By QUALITYNAME";
+            Str = "SELECT QUALITYID,QUALITYNAME FROM QUALITY Q,qualitycodeDetail QD WHERE Q.QualityId=QD.Quality_ID And Q.ITEM_ID=" + Itemid + " And QD.qualitycodeid=" + ddSub_Quality.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  Order By QUALITYNAME";
         }
         Str = Str + @"
-            SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By DESIGNNAME
-            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By COLORNAME
-            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varCompanyId"] + @" Order By SHAPENAME
-            SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+            SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By DESIGNNAME
+            SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By COLORNAME
+            SELECT SHAPEID,SHAPENAME FROM SHAPE Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By SHAPENAME
+            SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
 
         UtilityModule.ConditionalComboFillWithDS(ref Quality, ds, 0, true, "--SELECT--");
@@ -1145,9 +1143,9 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             if (BtnSave.Text == "UpDate" && ChkForInputConsmpQtyIntoOutputConsmpQty.Checked == true)
             {
-                int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
-                int VarInfinishedid = UtilityModule.getItemFinishedId(ddInItemName, ddInQuality, ddInDesign, ddInColor, ddInShape, ddInSize, TxtOutProdCode, Tran, ddInShade, "", Convert.ToInt32(Session["varCompanyId"]));
-                int VarOutfinishedid = UtilityModule.getItemFinishedId(ddOutItemName, ddOutQuality, ddOutDesign, ddOutColor, ddOutShape, ddOutSize, TxtOutProdCode, Tran, ddOutShade, "", Convert.ToInt32(Session["varCompanyId"]));
+                int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+                int VarInfinishedid = UtilityModule.getItemFinishedId(ddInItemName, ddInQuality, ddInDesign, ddInColor, ddInShape, ddInSize, TxtOutProdCode, Tran, ddInShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+                int VarOutfinishedid = UtilityModule.getItemFinishedId(ddOutItemName, ddOutQuality, ddOutDesign, ddOutColor, ddOutShape, ddOutSize, TxtOutProdCode, Tran, ddOutShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
                 SqlParameter[] _arrpara = new SqlParameter[8];
                 _arrpara[0] = new SqlParameter("@ProcessID", SqlDbType.Int);
@@ -1165,7 +1163,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 _arrpara[3].Value = VarOutfinishedid;
                 _arrpara[4].Value = TxtInPutQty.Text;
                 _arrpara[5].Value = Session["varuserid"];
-                _arrpara[6].Value = Session["varCompanyId"];
+                _arrpara[6].Value = Session["varMasterCompanyIDForERP"];
                 _arrpara[7].Direction = ParameterDirection.InputOutput;
 
                 SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "[Prp_Update_ProcessConsumptionInputToOutputQty]", _arrpara);
@@ -1179,7 +1177,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 BtnSave.Text = "Save";
                 
             }
-            else if (Session["varCompanyId"].ToString() == "2")
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "2")
             {
                 Save_ProcessInPut_Not_Check(Tran);
             }
@@ -1220,8 +1218,8 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "Delete PROCESSCONSUMPTIONMASTER Where PCMID Not In (Select PCMID From PROCESSCONSUMPTIONDETAIL(Nolock))");
 
-            int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
-            DataSet Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "SELECT PCMID FROM PROCESSCONSUMPTIONMASTER WHERE PROCESSID=" + ddProcessName.SelectedValue + " AND FINISHEDID=" + Varfinishedid + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+            int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+            DataSet Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "SELECT PCMID FROM PROCESSCONSUMPTIONMASTER WHERE PROCESSID=" + ddProcessName.SelectedValue + " AND FINISHEDID=" + Varfinishedid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             if (Ds.Tables[0].Rows.Count > 0)
             {
                 Session["PCMID"] = Ds.Tables[0].Rows[0]["PCMID"];
@@ -1255,7 +1253,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 _arrpara[3].Value = 0;
                 _arrpara[4].Value = 0;
                 _arrpara[5].Value = Session["varuserid"];
-                _arrpara[6].Value = Session["varCompanyId"];
+                _arrpara[6].Value = Session["varMasterCompanyIDForERP"];
                 _arrpara[7].Value = ChkForMtr.Checked == true ? 1 : 2;
                 _arrpara[8].Value = ChkForLossPercentage.Checked == true ? 1 : 0;
                 _arrpara[9].Value = getSizeType(DDsizetype, Size);
@@ -1271,7 +1269,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
 
                 if (chk.Checked == true)
                 {
-                    int VarOutfinishedid = UtilityModule.getItemFinishedId(ddOutItemName, ddOutQuality, ddOutDesign, ddOutColor, ddOutShape, ddOutSize, TxtOutProdCode, ddOutShade, 0, "", Convert.ToInt32(Session["varCompanyId"]));
+                    int VarOutfinishedid = UtilityModule.getItemFinishedId(ddOutItemName, ddOutQuality, ddOutDesign, ddOutColor, ddOutShape, ddOutSize, TxtOutProdCode, ddOutShade, 0, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                     Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "Select * from PROCESSCONSUMPTIONDetail Where PCMID=" + Session["PCMID"] + " And IFINISHEDID in (Select OFINISHEDID from PROCESSCONSUMPTIONDetail Where PCMDID=" + DGInPutProcess.Rows[i].Cells[1].Text + ") And OFINISHEDID=" + VarOutfinishedid + "");
                     if (BtnSave.Text != "UpDate" && Ds.Tables[0].Rows.Count > 0)
                     {
@@ -1360,7 +1358,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
 
                                 if (TxtLoss.Text != "")
                                 {
-                                    if (Session["varcompanyId"].ToString() == "9")
+                                    if (Session["varMasterCompanyIDForERP"].ToString() == "9")
                                     {
                                         _arrpara[11].Value = Math.Round(Convert.ToDouble(((TextBox)DGInPutProcess.Rows[i].FindControl("txtDGLoss")).Text), 5);
                                     }
@@ -1409,7 +1407,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             TrOUT1.Disabled = false;
             TrOUT2.Disabled = false;
             Save_Refresh();
-            UtilityModule.ConditionalComboFill(ref ddInCategoryName, "Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varCompanyId"] + " Order by Category_Name", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddInCategoryName, "Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Category_Name", true, "--SELECT--");
         }
     }
     private void Save_ProcessInPut_Not_Check(SqlTransaction Tran)
@@ -1461,10 +1459,10 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 _arrpara[33] = new SqlParameter("@OQtyPercentage", SqlDbType.Float);
                 int num = 0;
 
-                int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
+                int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
 
                 Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, @"SELECT PCMID FROM PROCESSCONSUMPTIONMASTER 
-                WHERE PROCESSID=" + ddProcessName.SelectedValue + " AND FINISHEDID=" + Varfinishedid + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+                WHERE PROCESSID=" + ddProcessName.SelectedValue + " AND FINISHEDID=" + Varfinishedid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                 if (Ds.Tables[0].Rows.Count > 0)
                 {
                     Session["PCMID"] = Ds.Tables[0].Rows[0]["PCMID"];
@@ -1480,7 +1478,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 _arrpara[1].Value = ddProcessName.SelectedValue;
                 _arrpara[2].Value = Varfinishedid;
 
-                int VarInfinishedid = UtilityModule.getItemFinishedId(ddInItemName, ddInQuality, ddInDesign, ddInColor, ddInShape, ddInSize, TxtOutProdCode, Tran, ddInShade, "", Convert.ToInt32(Session["varCompanyId"]));
+                int VarInfinishedid = UtilityModule.getItemFinishedId(ddInItemName, ddInQuality, ddInDesign, ddInColor, ddInShape, ddInSize, TxtOutProdCode, Tran, ddInShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 _arrpara[4].Value = VarInfinishedid;
                 _arrpara[5].Value = ddIUnit.SelectedValue;
                 _arrpara[28].Value = 0;
@@ -1529,7 +1527,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 }
                 _arrpara[8].Value = TxtInPutRate.Text;
 
-                int VarOutfinishedid = UtilityModule.getItemFinishedId(ddOutItemName, ddOutQuality, ddOutDesign, ddOutColor, ddOutShape, ddOutSize, TxtOutProdCode, Tran, ddOutShade, "", Convert.ToInt32(Session["varCompanyId"]));
+                int VarOutfinishedid = UtilityModule.getItemFinishedId(ddOutItemName, ddOutQuality, ddOutDesign, ddOutColor, ddOutShape, ddOutSize, TxtOutProdCode, Tran, ddOutShade, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 _arrpara[9].Value = VarOutfinishedid;
                 _arrpara[10].Value = ddOUnit.SelectedValue;
                 _arrpara[12].Value = TxtOutPutRate.Text;
@@ -1554,7 +1552,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 }
                 _arrpara[21].Value = ddOCalType.SelectedValue;
                 _arrpara[22].Value = Session["varuserid"].ToString();
-                _arrpara[23].Value = Session["varCompanyId"].ToString();
+                _arrpara[23].Value = Session["varMasterCompanyIDForERP"].ToString();
                 _arrpara[24].Value = ChkForMtr.Checked == true ? 1 : 2;
                 _arrpara[26].Value = ChkForLossPercentage.Checked == true ? 1 : 0;
                 _arrpara[30].Value = getSizeType(DDInSizeType, InSize);
@@ -1566,7 +1564,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 //txtGrossweight.Text = txtGrossweight.Text == "0" ? (Convert.ToDecimal(TxtIweight.Text == "" ? "0" : TxtIweight.Text) * Convert.ToDecimal(TxtInPutQty.Text == "" ? "0" : TxtInPutQty.Text)).ToString() : txtGrossweight.Text;
                 //_arrpara[29].Value = Math.Round(Convert.ToDecimal(txtGrossweight.Text == "" ? "0" : txtGrossweight.Text), 3);
 
-                if (Session["varCompanyId"].ToString() == "2")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "2")
                 {
 
                     if (Convert.ToDecimal(_arrpara[28].Value) > Convert.ToDecimal(_arrpara[29].Value))
@@ -1597,14 +1595,14 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 }
                 if (TxtRemarks.Text != "" && TxtRemarks.Visible == true)
                 {
-                    Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "SELECT * FROM MAIN_ITEM_IMAGE WHERE FINISHEDID=" + _arrpara[2].Value + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+                    Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "SELECT * FROM MAIN_ITEM_IMAGE WHERE FINISHEDID=" + _arrpara[2].Value + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     if (Ds.Tables[0].Rows.Count > 0)
                     {
-                        SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "Update MAIN_ITEM_IMAGE Set Remarks='" + TxtRemarks.Text.ToUpper() + "' WHERE FINISHEDID=" + _arrpara[2].Value + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+                        SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "Update MAIN_ITEM_IMAGE Set Remarks='" + TxtRemarks.Text.ToUpper() + "' WHERE FINISHEDID=" + _arrpara[2].Value + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
                     }
                     else
                     {
-                        SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "INSERT INTO MAIN_ITEM_IMAGE(FINISHEDID,REMARKS,MasterCompanyId) VALUES(" + _arrpara[2].Value + ",'" + TxtRemarks.Text.ToUpper() + "'," + Session["varCompanyId"] + ")");
+                        SqlHelper.ExecuteNonQuery(Tran, CommandType.Text, "INSERT INTO MAIN_ITEM_IMAGE(FINISHEDID,REMARKS,MasterCompanyId) VALUES(" + _arrpara[2].Value + ",'" + TxtRemarks.Text.ToUpper() + "'," + Session["varMasterCompanyIDForERP"] + ")");
                     }
                 }
                 if (num == 1)
@@ -1719,7 +1717,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                                     Param[5] = new SqlParameter("@ISizeflag", _arrpara[30].Value);
                                     Param[6] = new SqlParameter("@ICaltype", DDICALTYPE.SelectedValue);
                                     Param[7] = new SqlParameter("@userid", Session["varuserid"]);
-                                    Param[8] = new SqlParameter("@Mastercompanyid", Session["varcompanyid"]);
+                                    Param[8] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
                                     Param[9] = new SqlParameter("@dtrecords", dtrecords);
                                     Param[10] = new SqlParameter("@mtrflag", ChkForMtr.Checked == true ? 1 : 2);
                                     //**************
@@ -1773,7 +1771,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     }
     private void FillNet_GrossWeight(int Varfinishedid)
     {
-        if (Session["varCompanyId"].ToString() == "2")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "2")
         {
             string Qry = @"select isnull(max(NETWEIGHT),0) NETWEIGHT,isnull(max(GROSSWEIGHT),0) GROSSWEIGHT from processconsumptionmaster where FINISHEDID=" + Varfinishedid;
             //        string Qry = @"SELECT DISTINCT Sum(isnull(PCD.IWEIGHT,0)) NetWeight,ISNULL(PCM.GROSSWEIGHT,0) GROSSWEIGHT  FROM PROCESSCONSUMPTIONMASTER PCM,PROCESSCONSUMPTIONdetail PCD where PCM.PCMID=PCD.PCMID AND 
@@ -2294,7 +2292,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         if (ChkForProcessInPut.Checked == true)
         {
             INPROCESSNAME.Visible = true;
-            UtilityModule.ConditionalComboFill(ref ddInProcessName, "SELECT DISTINCT PROCESS_NAME_ID,PROCESS_NAME FROM PROCESSCONSUMPTIONMASTER PCM,PROCESS_NAME_MASTER PM WHERE PCM.PROCESSID=PM.PROCESS_NAME_ID AND PCM.PROCESSID<>" + ddProcessName.SelectedValue + " And PCM.MasterCompanyId=" + Session["varCompanyId"] + " Order By PROCESS_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddInProcessName, "SELECT DISTINCT PROCESS_NAME_ID,PROCESS_NAME FROM PROCESSCONSUMPTIONMASTER PCM,PROCESS_NAME_MASTER PM WHERE PCM.PROCESSID=PM.PROCESS_NAME_ID AND PCM.PROCESSID<>" + ddProcessName.SelectedValue + " And PCM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By PROCESS_NAME", true, "--SELECT--");
             DGInPutProcess.Visible = true;
             //Tr1.Disabled = true;
             //Tr3.Disabled = true;
@@ -2304,7 +2302,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref ddInCategoryName, "Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER  Where MasterCompanyId=" + Session["varCompanyId"] + " Order by Category_Name", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddInCategoryName, "Select DISTINCT Category_Id,Category_Name from ITEM_CATEGORY_MASTER  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order by Category_Name", true, "--SELECT--");
             INPROCESSNAME.Visible = false;
             DGInPutProcess.Visible = false;
             Tr1.Disabled = false;
@@ -2318,8 +2316,8 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
 
         InProcessNameSelectedIndChange();
         TxtInProdCode.Focus();
-        //Session["varcompanyid"] = "4";
-        switch (Convert.ToInt16(Session["varcompanyId"]))
+        //Session["varMasterCompanyIDForERP"] = "4";
+        switch (Convert.ToInt16(Session["varMasterCompanyIDForERP"]))
         {
             case 6:
                 break;
@@ -2330,11 +2328,11 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 //ClientScript.RegisterStartupScript(this.GetType(), "JSScript", "CheckAllCheckBoxes", true);
                 break;
         }
-        // Session["varcompanyid"] = "6";
+        // Session["varMasterCompanyIDForERP"] = "6";
     }
     private void InProcessNameSelectedIndChange()
     {
-        UtilityModule.ConditionalComboFill(ref ddInCategoryName, "Select DISTINCT ICM.Category_Id,ICM.Category_Name FROM ITEM_CATEGORY_MASTER ICM,PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM WHERE PM.PCMID=PD.PCMID AND IPM.ITEM_FINISHED_ID=IFINISHEDID AND IPM.ITEM_ID=IM.ITEM_ID AND IM.CATEGORY_ID=ICM.CATEGORY_ID AND PM.PROCESSID=" + ddInProcessName.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"] + " Order By ICM.Category_Name", true, "--SELECT--");
+        UtilityModule.ConditionalComboFill(ref ddInCategoryName, "Select DISTINCT ICM.Category_Id,ICM.Category_Name FROM ITEM_CATEGORY_MASTER ICM,PROCESSCONSUMPTIONMASTER PM,PROCESSCONSUMPTIONDETAIL PD,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM WHERE PM.PCMID=PD.PCMID AND IPM.ITEM_FINISHED_ID=IFINISHEDID AND IPM.ITEM_ID=IM.ITEM_ID AND IM.CATEGORY_ID=ICM.CATEGORY_ID AND PM.PROCESSID=" + ddInProcessName.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By ICM.Category_Name", true, "--SELECT--");
         fill_grid1();
     }
     protected void ddSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -2378,7 +2376,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                         inner join PROCESS_NAME_MASTER PM on PM.PROCESS_NAME_ID=PCM.PROCESSID
                         inner join SizeType ST on PCM.sizeflag=ST.Val
                         inner join Sizetype STI on PCD.ISizeflag=STI.Val
-                        inner join SizeType STO on Pcd.OSizeflag=STO.Val where PCM.MasterCompanyId=" + Session["varCompanyId"];
+                        inner join SizeType STO on Pcd.OSizeflag=STO.Val where PCM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         if (ddQuality.SelectedIndex > 0)
         {
             STR = STR + @" AND QUALITY_ID=" + ddQuality.SelectedValue + "";
@@ -2429,7 +2427,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 ChkForMtr.Checked = true;
             }
         }
-        int VARFINISHEDID = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
+        int VARFINISHEDID = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
         //Comment on 10-Dec-2016 MK
         //GET_FORMULAFEILD(VARFINISHEDID);
         //End
@@ -2528,7 +2526,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     }
     private void TotalAmount(int finishedID, int flag)
     {
-        if (Session["varCompanyId"].ToString() == "2")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "2")
         {
             ViewState["FinishedID"] = finishedID;
             string Qry = @"Select isnull( sum(isnull(VT.Amt,0)* CS.Percentage/100) + isnull(VT.Amt ,0) + isnull(PAC.CONTAINERAMT,0),0) AS NetCost
@@ -2815,11 +2813,11 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     {
         if (MasterCompanyid == 2)
         {
-            UtilityModule.ConditionalComboFill(ref ddProcessName, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + " AND PROCESS_NAME_ID in (6,8,9) order by PROCESS_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddProcessName, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " AND PROCESS_NAME_ID in (6,8,9) order by PROCESS_NAME", true, "--SELECT--");
         }
         else
         {
-            UtilityModule.ConditionalComboFill(ref ddProcessName, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varCompanyId"] + "  order by PROCESS_NAME", true, "--SELECT--");
+            UtilityModule.ConditionalComboFill(ref ddProcessName, "Select PROCESS_NAME_ID, PROCESS_NAME from PROCESS_NAME_MASTER Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "  order by PROCESS_NAME", true, "--SELECT--");
         }
     }
     protected void ChkForOneToOne_CheckedChanged(object sender, EventArgs e)
@@ -2860,7 +2858,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
             if (Session["varCompanyNo"].ToString() == "4")
             {
                 //LblQty.Text = TxtInPutQty.Text;
-                //int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varCompanyId"]));
+                //int Varfinishedid = UtilityModule.getItemFinishedId(ddItemName, ddQuality, ddDesign, ddColor, ddShape, ddSize, TxtProdCode, Tran, ddShade, CHKFORALLDESIGN, CHKFORALLCOLOR, CHKFORALLSIZE, "", Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
                 //DataSet Ds = SqlHelper.ExecuteDataset(Tran, CommandType.Text, "SELECT * FROM PROCESSCONSUMPTIONMASTER WHERE PROCESSID=" + ddProcessName.SelectedValue + " AND FINISHEDID=" + Varfinishedid + "");
                 //if (Ds.Tables[0].Rows.Count > 0)
                 //{
@@ -2966,16 +2964,16 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }
     private void logo()
     {
         imgLogo.ImageUrl.DefaultIfEmpty();
-        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+        if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
         {
-            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+            imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
         }
         LblCompanyName.Text = Session["varCompanyName"].ToString();
         LblUserName.Text = Session["varusername"].ToString();
@@ -3095,7 +3093,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         if (CHKFORALLSIZE.Checked == true)
         {
             UtilityModule.ConditionalComboFill(ref ddSize, "SELECT SIZEID," + SizeString + " fROM SIZE WhERE SHAPEID=" + ddShape.SelectedValue + "", true, "--ALL--");
-            if(Session["varCompanyId"].ToString()=="30")
+            if(Session["varMasterCompanyIDForERP"].ToString()=="30")
             {
                 if (ddSize.Items.Count <= 0)
                 {
@@ -3251,7 +3249,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 int finishedid = GetItemFinishedID();
                 TotalAmount(finishedid, 0);
                 //For Deepak rugs
-                if (Session["varcompanyId"].ToString() == "4")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "4")
                 {
                     if (ddProcessName.SelectedValue == "5") //Dying
                     {
@@ -3273,7 +3271,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
 
                     }
                 }
-                else if (Session["varcompanyId"].ToString() == "43")
+                else if (Session["varMasterCompanyIDForERP"].ToString() == "43")
                 {
                     ChkForInputConsmpQtyIntoOutputConsmpQty.Visible = true;
                 }
@@ -3362,7 +3360,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 msg = "Record(s) has been deleted successfully!";
 
                 MessageSave(msg);
-                if (Session["varCompanyId"].ToString() == "2")
+                if (Session["varMasterCompanyIDForERP"].ToString() == "2")
                 {
                     FillNet_GrossWeight(Convert.ToInt32(_param[1].Value));
                 }               
@@ -3587,7 +3585,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     {
         if (DDCurrency.SelectedIndex > 0)
         {
-            string Str = "select DISTINCT CurrentRateRefRs from currencyinfo Where CurrencyId=" + DDCurrency.SelectedValue + "AND MasterCompanyid=" + Session["varCompanyId"];
+            string Str = "select DISTINCT CurrentRateRefRs from currencyinfo Where CurrencyId=" + DDCurrency.SelectedValue + "AND MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
             TxtCurRate.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str).ToString();
             TxtApprovalCost.Text = (Math.Round((Convert.ToDouble(TxtTotalCost.Text == "" ? "0" : TxtTotalCost.Text) / Convert.ToDouble(TxtCurRate.Text == "" ? "0" : TxtCurRate.Text)), 2)).ToString();
         }
@@ -3630,7 +3628,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     //    {
     //        //SqlHelper.ExecuteNonQuery(myConnection, CommandType.Text, "Delete MAIN_ITEM_IMAGE Where FINISHEDID=" + VarFinishedid);
     //        //int id = 0;
-    //        int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT DISTINCT isnull(FINISHEDID,0) as FinishedID FROM MAIN_ITEM_IMAGE Where FINISHEDID=" + VarFinishedid + " And MasterCompanyId=" + Session["varCompanyId"] + ""));
+    //        int id = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "SELECT DISTINCT isnull(FINISHEDID,0) as FinishedID FROM MAIN_ITEM_IMAGE Where FINISHEDID=" + VarFinishedid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ""));
     //        if (id > 0)
     //        {
     //            string filename = Path.GetFileName(PhotoImage.PostedFile.FileName);
@@ -3650,7 +3648,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     //                GenerateThumbnails(0.3, strm, targetFile);
     //            }
     //            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Update MAIN_ITEM_IMAGE Set Photo='" + img + "' Where FINISHEDID= " + VarFinishedid + "");
-    //            //storeimage = new SqlCommand("Update MAIN_ITEM_IMAGE SET PHOTO = @image WHERE FINISHEDID= "+ VarFinishedid + " And MasterCompanyId=" + Session["varCompanyId"] + ")", myConnection);
+    //            //storeimage = new SqlCommand("Update MAIN_ITEM_IMAGE SET PHOTO = @image WHERE FINISHEDID= "+ VarFinishedid + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + ")", myConnection);
     //            //storeimage.Parameters.Add("@image", SqlDbType.Image, myimage.Length).Value = myimage;
     //        }
     //        else
@@ -3671,8 +3669,8 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     //            {
     //                GenerateThumbnails(0.3, strm, targetFile);
     //            }
-    //            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId) values(" + VarFinishedid + ",'" + img + "'," + Session["varCompanyId"] + ")");
-    //            //storeimage = new SqlCommand("Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId) values(" + VarFinishedid + ","+img+"," + Session["varCompanyId"] + ")", myConnection);
+    //            SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId) values(" + VarFinishedid + ",'" + img + "'," + Session["varMasterCompanyIDForERP"] + ")");
+    //            //storeimage = new SqlCommand("Insert into MAIN_ITEM_IMAGE(FINISHEDID,PHOTO,MasterCompanyId) values(" + VarFinishedid + ","+img+"," + Session["varMasterCompanyIDForERP"] + ")", myConnection);
     //        }
 
     //    }
@@ -3696,14 +3694,14 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
                 UtilityModule.ConditionalComboFill(ref DDDesign, @"select Distinct V.DesignId,DesignName As Designname  
                                 from ITEM_PARAMETER_MASTER  IM inner join Design V on Im.DESIGN_ID=V.designId 
                                 inner join CustomerDesign CD on CD.DesignId=V.designId and Im.Item_Id=" + dditem.SelectedValue + @" and 
-                                    IM.QUALITY_ID=" + ddquality.SelectedValue + " and V.masterCompanyId=" + Session["varcompanyId"] + " order by designname", true, "--SELECT--");
+                                    IM.QUALITY_ID=" + ddquality.SelectedValue + " and V.masterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by designname", true, "--SELECT--");
 
             }
             else
             {
                 //                UtilityModule.ConditionalComboFill(ref DDDesign, @"select Distinct V.DesignId,DesignName+Space(2)+isnull(DesignNameAtoC,'') As Designname
-                //                                                             from Design V Left Outer Join CustomerDesign CD on V.DesignId=CD.DesignId And CustomerId=" + DDCustomerCode.SelectedValue + " Where V.MasterCompanyId=" + Session["varCompanyId"] + " order by designname", true, "--SELECT--");
-                UtilityModule.ConditionalComboFill(ref ddDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By DESIGNNAME", true, "--SELECT--");
+                //                                                             from Design V Left Outer Join CustomerDesign CD on V.DesignId=CD.DesignId And CustomerId=" + DDCustomerCode.SelectedValue + " Where V.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by designname", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref ddDesign, "SELECT DESIGNID,DESIGNNAME from DESIGN Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By DESIGNNAME", true, "--SELECT--");
             }
         }
 
@@ -3715,21 +3713,21 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             if (ViewState["WithBuyercode"].ToString() == "1")
             {
-                switch (Session["varcompanyId"].ToString())
+                switch (Session["varMasterCompanyIDForERP"].ToString())
                 {
                     case "9":
-                        str = "SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+                        str = "SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
                         break;
                     default:
                         str = @"select  distinct sc.ShadecolorId,sc.ShadeColorName from ITEM_PARAMETER_MASTER Im 
-                                inner join ShadeColor sc on im.SHADECOLOR_ID=sc.ShadecolorId where im.quality_id=" + ddquality.SelectedValue + " and sc.MasterCompanyId=" + Session["varCompanyId"] + " order by sc.ShadeColorName";
+                                inner join ShadeColor sc on im.SHADECOLOR_ID=sc.ShadecolorId where im.quality_id=" + ddquality.SelectedValue + " and sc.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sc.ShadeColorName";
                         break;
                 }
 
             }
             else
             {
-                str = "SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By SHADECOLORNAME";
+                str = "SELECT SHADECOLORID,SHADECOLORNAME FROM SHADECOLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By SHADECOLORNAME";
 
             }
             UtilityModule.ConditionalComboFill(ref ddShade, str, true, "--SELECT--");
@@ -3745,14 +3743,14 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
 
                 UtilityModule.ConditionalComboFill(ref DDColor, @"select Distinct C.ColorId,C.ColorName As ColorName from ITEM_PARAMETER_MASTER  IM inner join Color c on
                                                                      Im.COLOR_ID=C.ColorId inner join CustomerColor  CC on CC.ColorId=C.ColorId
-                                                                      and Im.Item_Id=" + dditem.SelectedValue + " and IM.QUALITY_ID=" + ddquality.SelectedValue + " and DESIGN_ID=" + DDDesign.SelectedValue + " and C.MasterCompanyId=" + Session["varCompanyId"] + " order by ColorName", true, "--SELECT--");
+                                                                      and Im.Item_Id=" + dditem.SelectedValue + " and IM.QUALITY_ID=" + ddquality.SelectedValue + " and DESIGN_ID=" + DDDesign.SelectedValue + " and C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ColorName", true, "--SELECT--");
 
             }
             else
             {
                 //                UtilityModule.ConditionalComboFill(ref DDColor, @"select Distinct C.ColorId,C.ColorName+space(2)+isnull(CC.ColorNameToC,'') As ColorName
-                //                                                             from Color C Left Outer Join CustomerColor CC on C.ColorId=CC.ColorId And CustomerId=" + DDCustomerCode.SelectedValue + " Where C.MasterCompanyId=" + Session["varCompanyId"] + " order by ColorName", true, "--SELECT--");
-                UtilityModule.ConditionalComboFill(ref DDColor, "SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varCompanyId"] + " Order By COLORNAME", true, "--SELECT--");
+                //                                                             from Color C Left Outer Join CustomerColor CC on C.ColorId=CC.ColorId And CustomerId=" + DDCustomerCode.SelectedValue + " Where C.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by ColorName", true, "--SELECT--");
+                UtilityModule.ConditionalComboFill(ref DDColor, "SELECT COLORID,COLORNAME FROM COLOR Where  MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " Order By COLORNAME", true, "--SELECT--");
             }
         }
     }
@@ -3781,12 +3779,12 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         {
             str = @"select Distinct S.Sizeid,S." + size + " As  " + size + @" from ITEM_PARAMETER_MASTER  IM inner join Size  S on
                     Im.SIZE_ID=S.SizeId inner join CustomerSize CS on cs.Sizeid=S.SizeId
-                    and S.shapeId=" + ddShape.SelectedValue + "  and Im.Item_Id=" + ddItemName.SelectedValue + " and IM.QUALITY_ID=" + ddQuality.SelectedValue + "  and S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                    and S.shapeId=" + ddShape.SelectedValue + "  and Im.Item_Id=" + ddItemName.SelectedValue + " and IM.QUALITY_ID=" + ddQuality.SelectedValue + "  and S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
         }
         else
         {
             str = "Select Distinct S.Sizeid,S." + size + "+Space(2)+isnull(SizeNameAToC,'') As  " + size + @" From Size S Left Outer Join CustomerSize CS on S.SizeId=CS.SizeId 
-                   Where shapeid=" + ddShape.SelectedValue + " And S.MasterCompanyId=" + Session["varCompanyId"] + " order by " + size + "";
+                   Where shapeid=" + ddShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
         }
         UtilityModule.ConditionalComboFill(ref ddSize, str, true, "--SELECT--");
         //
@@ -3817,7 +3815,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     }
     protected void ddOutShade_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"].ToString() == "4")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "4")
         {
             TxtOutPutRate.Text = Convert.ToString(UtilityModule.getshaderate(Convert.ToInt16(ddOutQuality.SelectedValue), Convert.ToInt16(ddOutShade.SelectedValue)));
         }
@@ -3901,7 +3899,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     }
     protected void FillProcessForpurchaseinclude()
     {
-        string str = "select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master  where PROCESS_NAME_ID<>" + ddProcessName.SelectedValue + " and MasterCompanyid=" + Session["varcompanyid"] + " order by SeqNo";
+        string str = "select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master  where PROCESS_NAME_ID<>" + ddProcessName.SelectedValue + " and MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by SeqNo";
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
         GDPurchaseinclude.DataSource = ds.Tables[0];
         GDPurchaseinclude.DataBind();
@@ -3971,7 +3969,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
     //{
     //    //e.Row.Cells[GetGridColumnId("QUALITYCODEID")].Visible = false;        
     //    ////**      
-    //    //switch (Session["varcompanyid"].ToString())
+    //    //switch (Session["varMasterCompanyIDForERP"].ToString())
     //    //{
     //    //    case "4":
     //    //        break;
@@ -4041,7 +4039,7 @@ public partial class Masters_Carpet_DefineBomAndConsumption : System.Web.UI.Page
         array[0] = new SqlParameter("@CategoryId", ddCategoryName.SelectedValue);
         array[1] = new SqlParameter("@ItemId", ddItemName.SelectedValue);
         array[2] = new SqlParameter("@where", STR);   
-        array[3] = new SqlParameter("@MasterCompanyId", Session["varcompanyId"]);
+        array[3] = new SqlParameter("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_DefineBombAndConsumptionExcelReport", array);
 

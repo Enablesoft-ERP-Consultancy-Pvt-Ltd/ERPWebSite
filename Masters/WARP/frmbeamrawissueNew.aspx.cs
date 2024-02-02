@@ -11,7 +11,7 @@ public partial class Masters_WARP_frmbeamrawissueNew : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -20,9 +20,9 @@ public partial class Masters_WARP_frmbeamrawissueNew : System.Web.UI.Page
             string str = @"Select CI.CompanyId,CompanyName 
                             From CompanyInfo CI 
                             JOIN Company_Authentication CA on CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + @" And 
-                            CA.MasterCompanyid=" + Session["varCompanyId"] + @" order by CompanyName 
+                            CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by CompanyName 
                            select D.Departmentid,D.Departmentname from Department D Where D.DepartmentName='WARPING' order by Departmentname
-                           select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varcompanyid"];
+                           select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where Process_Name in('WARPING WOOL','WARPING COTTON') and MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
             UtilityModule.ConditionalComboFillWithDS(ref DDcompany, ds, 0, false, "");
@@ -137,9 +137,9 @@ public partial class Masters_WARP_frmbeamrawissueNew : System.Web.UI.Page
             qtytobeissued += Convert.ToDecimal(lblqtytobeissued.Text == "" ? "0" : lblqtytobeissued.Text);
             alreadyissued += Convert.ToDecimal(lblalreadyeissued.Text == "" ? "0" : lblalreadyeissued.Text);
 
-            str = "Select GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varCompanyId"]+" Order by GodownName";
+            str = "Select GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"]+" Order by GodownName";
             UtilityModule.ConditionalComboFill(ref DDGodown, str, true, "--Plz Select--");
-            if (Session["varcompanyid"].ToString() == "14")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "14")
             {
                 //Warping Godown
 
@@ -646,7 +646,7 @@ public partial class Masters_WARP_frmbeamrawissueNew : System.Web.UI.Page
     {
         if (chkcomplete.Checked == true)
         {
-            if (Session["varCompanyId"].ToString() == "21")
+            if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 btnsave.Visible = true;
             }

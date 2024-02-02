@@ -11,21 +11,21 @@ public partial class Masters_Hissab_PurchaseBillVoucher : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
         if (!IsPostBack)
         {
             Session["voucherno"] = "";
-            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varCompanyId"] + " order by CompanyName");
+            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
             if (DDCompanyName.Items.Count > 0)
             {
                 DDCompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
                 DDCompanyName.Enabled = false;
             }
 
-            UtilityModule.ConditionalComboFill(ref DDPartyName, "Select empid,empName from empinfo where empid in(select partyid  from PurchaseHissab where CompanyID = " + DDCompanyName.SelectedValue + " billstatus=1) And MasterCompanyId=" + Session["varCompanyId"] + " order by empname", true, "--Select--");
+            UtilityModule.ConditionalComboFill(ref DDPartyName, "Select empid,empName from empinfo where empid in(select partyid  from PurchaseHissab where CompanyID = " + DDCompanyName.SelectedValue + " billstatus=1) And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by empname", true, "--Select--");
             TxtDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
         }
     }
@@ -33,7 +33,7 @@ public partial class Masters_Hissab_PurchaseBillVoucher : System.Web.UI.Page
     {
         if (DDPartyName.SelectedIndex > 0)
         {
-            UtilityModule.ConditionalComboFill(ref ddbillno, "select phissabid,billno from PurchaseHissab where billstatus=1 and partyid=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "", true, "-Select-");
+            UtilityModule.ConditionalComboFill(ref ddbillno, "select phissabid,billno from PurchaseHissab where billstatus=1 and partyid=" + DDPartyName.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "", true, "-Select-");
             LblErrorMessage.Visible = false;
             TxtvoucherNo.Text = "";
         }
@@ -43,8 +43,8 @@ public partial class Masters_Hissab_PurchaseBillVoucher : System.Web.UI.Page
     {
         if (ddbillno.SelectedIndex > 0)
         {
-            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(payAmount),0)from PurchaseBillDetail  where phissabid=" + ddbillno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
-            DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(payment),0) from PurchaseVoucher where phissabid=" + ddbillno.SelectedValue + " And MasterCompanyId=" + Session["varCompanyId"] + "");
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(payAmount),0)from PurchaseBillDetail  where phissabid=" + ddbillno.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
+            DataSet ds1 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(sum(payment),0) from PurchaseVoucher where phissabid=" + ddbillno.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             TxtPayment.Text = Convert.ToString(Convert.ToDouble(ds.Tables[0].Rows[0][0].ToString()) - Convert.ToDouble(ds1.Tables[0].Rows[0][0].ToString()));
             Txtamount.Text = TxtPayment.Text;
             fillgrid();
@@ -90,7 +90,7 @@ public partial class Masters_Hissab_PurchaseBillVoucher : System.Web.UI.Page
             _arrPara[0].Value = 0;
             _arrPara[1].Value = ddbillno.SelectedValue;
             _arrPara[2].Value = DDCompanyName.SelectedValue;
-            _arrPara[3].Value = Session["varCompanyId"];
+            _arrPara[3].Value = Session["varMasterCompanyIDForERP"];
             _arrPara[4].Value = Session["varuserid"];
             _arrPara[5].Value = DDPartyName.SelectedValue;
             _arrPara[6].Value = TxtDate.Text;
@@ -156,7 +156,7 @@ public partial class Masters_Hissab_PurchaseBillVoucher : System.Web.UI.Page
         try
         {
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, @"select pvoucherid as vouchorno,replace(convert(varchar(11),paydate,106),' ','-') as date,pv.amount,ph.billno from PurchaseVoucher pv,PurchaseHissab ph
-                                               where ph.phissabid=pv.phissabid and pv.partyid=" + DDPartyName.SelectedValue + " and pv.phissabid=" + ddbillno.SelectedValue + " And PV.MasterCompanyId=" + Session["varCompanyId"] + "");
+                                               where ph.phissabid=pv.phissabid and pv.partyid=" + DDPartyName.SelectedValue + " and pv.phissabid=" + ddbillno.SelectedValue + " And PV.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "");
             DGVOUCHERDetail.DataSource = ds;
             if (ds.Tables[0].Rows.Count > 0)
             {

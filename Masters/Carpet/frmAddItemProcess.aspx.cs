@@ -18,7 +18,7 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -36,8 +36,8 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
 
 
             UtilityModule.ConditonalListFill(ref lstProcess, "select Process_name_Id,Process_Name from Process_name_Master order by Process_Name");
-            lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varcompanyId"] + "").ToString();
-            switch (Session["varcompanyid"].ToString())
+            lblItemName.Text = SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select Item_Name from Item_master Where Item_id=" + Request.QueryString["a"] + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + "").ToString();
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     TDquality.Visible = false;
@@ -62,6 +62,7 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
     }
     protected void Fillselectprocess()
     {
+<<<<<<< HEAD
         SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         SqlParameter[] param = new SqlParameter[6];
 
@@ -95,6 +96,11 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
         List<ItemList> lstselected = new List<ItemList>();
 
         using (var reader = SqlHelper.ExecuteReader(conn, CommandType.StoredProcedure, "ProcessSequenceProc", param))
+=======
+        string str = @"select PNM.process_Name_id,PNM.Process_Name from Process_name_Master PNM,Item_Process IP
+                      Where PNM.Process_name_id=IP.ProcessId And ItemId=" + Request.QueryString["a"] + " And PNM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + "";
+        if (DDQuality.SelectedIndex > 0)
+>>>>>>> origin/SatParkash
         {
             while (reader.Read())
             {
@@ -194,11 +200,15 @@ public partial class Masters_Carpet_frmAddItemProcess :System.Web.UI.Page
 
             array[0].Value = 1;
             array[1].Value = Session["varuserid"];
+<<<<<<< HEAD
             array[2].Value = Session["varcompanyId"];
             array[3].Value = Convert.ToInt32(DDQuality.SelectedValue);
             array[4].Value = Convert.ToInt32(DDDesign.SelectedValue);
             array[5].Value = doc.OuterXml;
             array[6].Direction = ParameterDirection.Output;
+=======
+            array[2].Value = Session["varMasterCompanyIDForERP"];
+>>>>>>> origin/SatParkash
 
             array[7].Value = Request.QueryString["a"];
             //Save Data

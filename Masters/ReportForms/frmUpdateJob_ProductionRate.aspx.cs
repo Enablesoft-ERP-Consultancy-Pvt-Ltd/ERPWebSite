@@ -11,7 +11,7 @@ public partial class Masters_ReportForms_frmUpdateJob_ProductionRate : System.We
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["varcompanyid"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -27,7 +27,7 @@ public partial class Masters_ReportForms_frmUpdateJob_ProductionRate : System.We
             txtFromdate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             txtToDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
             RDOrderRate.Checked = true;
-            switch (Session["varcompanyId"].ToString())
+            switch (Session["varMasterCompanyIDForERP"].ToString())
             {
                 case "8":
                     break;
@@ -53,7 +53,7 @@ public partial class Masters_ReportForms_frmUpdateJob_ProductionRate : System.We
         Trshadecolor.Visible = false;
         string strsql = "SELECT [CATEGORY_PARAMETERS_ID],[CATEGORY_ID],IPM.[PARAMETER_ID],PARAMETER_NAME " +
                   " FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on " +
-                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varCompanyId"];
+                  " IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue + " And PM.MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
         if (ds.Tables[0].Rows.Count > 0)
         {
@@ -254,7 +254,7 @@ public partial class Masters_ReportForms_frmUpdateJob_ProductionRate : System.We
                 array[2].Value = txtToDate.Text;
                 //0 For ProcessOrder And 1 For ProcessReceive
                 array[3].Value = RDOrderRate.Checked == true ? 0 : 1;
-                array[4].Value = Session["varcompanyId"].ToString();
+                array[4].Value = Session["varMasterCompanyIDForERP"].ToString();
                 array[5].Value = Session["varuserid"].ToString();
                 array[6].Value = DDunits.SelectedValue;
                 array[7].Value = str;
