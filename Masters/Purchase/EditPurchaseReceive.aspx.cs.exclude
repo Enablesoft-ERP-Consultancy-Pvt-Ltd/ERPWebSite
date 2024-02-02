@@ -1,0 +1,901 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+
+public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        if (!IsPostBack)
+        {
+            Session["PurchaseReceiveId"] = 0;
+            Session["PurchaseReceiveDetailId"] = 0;
+            ParameteLabel();
+            CommanFunction.FillCombo(DDCompanyName, "select CI.CompanyId,CompanyName From CompanyInfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CA.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + " order by CompanyName");
+            DDCompanyName.SelectedIndex = 1;
+            TxtReceiveDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+            UtilityModule.ConditionalComboFill(ref DDPartyName, "select EmpId,EmpName from EmpInfo", true, "--Select Employee--");
+            int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarCompanyNo From MasterSetting"));
+            switch (VarCompanyNo)
+            {
+                case 1:
+                    itmcod.Visible = false;
+                    break;
+                case 2:
+                    itmcod.Visible = true;
+                    break;
+            }           
+        }
+    }
+    protected void Page_UnLoad(object sender, EventArgs e)
+    { 
+    }
+    protected void DDCompanyName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref DDPartyName, "select EmpId,EmpName from EmpInfo", true, "--Select Employee--");
+    }
+    protected void DDPartyName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref DDChallanNo, " select PIndentIssueId,ChallanNo from PurchaseIndentIssue where PartyId="+DDPartyName.SelectedValue, true, "--Select ChallanNo--");
+    }
+    protected void DDChallanNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        UtilityModule.ConditionalComboFill(ref DDGateInNo, "select Distinct PRM.PurchaseReceiveId,GateInNo from PurchaseReceiveMaster PRM inner join PurchaseReceiveDetail PRD on PRM.PurchaseReceiveId=PRD.PurchaseReceiveId where PartyId="+DDPartyName.SelectedValue+" and CompanyId="+DDCompanyName.SelectedValue+" and PIndentIssueId=" + DDChallanNo.SelectedValue, true, "--Select--");
+    }
+    protected void DDCategory_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        ddlcategorycange();
+        UtilityModule.ConditionalComboFill(ref DDItem, "select distinct IM.Item_Id,IM.Item_Name from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue+" and IM.Category_Id="+DDCategory.SelectedValue, true, "--Select--");
+    }
+    private void ddlcategorycange()
+    {
+        TdQuality.Visible = false;
+        TdDesign.Visible = false;
+        TdColor.Visible = false;
+        TdColorShade.Visible = false;
+        TdShape.Visible = false;
+        TdSize.Visible = false;
+        string strsql = @"SELECT distinct IPM.[PARAMETER_ID],PARAMETER_NAME 
+                        FROM [ITEM_CATEGORY_PARAMETERS] IPM inner join PARAMETER_MASTER PM on 
+                        IPM.[PARAMETER_ID]=PM.[PARAMETER_ID] where [CATEGORY_ID]=" + DDCategory.SelectedValue;
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, strsql);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                switch (dr["PARAMETER_ID"].ToString())
+                {
+                    case "1":
+                        TdQuality.Visible = true;
+                        break;
+                    case "2":
+                        TdDesign.Visible = true;
+                        break;
+                    case "3":
+                        TdColor.Visible = true;
+                        break;
+                    case "6":
+                        TdColorShade.Visible = true;
+                        break;
+                    case "4":
+                        TdShape.Visible = true;
+                        break;
+                    case "5":
+                        TdSize.Visible = true;
+                        break;
+                }
+            }
+        }
+    }
+    protected void ChkFt_CheckedChanged(object sender, EventArgs e)
+    {
+        fill_size();
+    }
+    protected void BtnClose_Click(object sender, EventArgs e)
+    {
+    }
+    protected void BtnPreview_Click(object sender, EventArgs e)
+    {
+        //Session["ReportPath"] = "Reports/PurchaseReceive.rpt";
+        //Session["CommanFormula"] = "";
+        //OpenNewWidow("../../ReportViewer.aspx");
+        Report1();
+    }
+    private void Report1()
+    {
+        string qry = "";
+        if (Convert.ToString(Session["ReportPath"]) == "Reports/PurchaseReceiveNew.rpt")
+        {
+            qry = @"  SELECT V_Companyinfo.CompanyName,V_Companyinfo.CompanyAddress,V_Companyinfo.CompanyPhoneNo,V_Companyinfo.CompanyFaxNo,V_Companyinfo.TinNo,V_EmployeeInfo.EmpName,V_EmployeeInfo.EmpAddress,V_EmployeeInfo.EmpPhoneNo,V_EmployeeInfo.EmpMobile,V_PurchaseReceiveReport.ReceiveNo,V_PurchaseReceiveReport.Qty,V_PurchaseReceiveReport.ItemDescription,V_PurchaseReceiveReport.ReceiveDate,V_PurchaseReceiveReport.UnitName,V_PurchaseReceiveReport.GodownName,V_PurchaseReceiveReport.GateInNo,V_PurchaseReceiveReport.billno,FINISHED_TYPE.FINISHED_TYPE_NAME,ITEM_PARAMETER_MASTER.ProductCode,V_PurchaseReceiveReport.amt,V_PurchaseReceiveReport.vat,V_PurchaseReceiveReport.cst,V_PurchaseReceiveReport.localorder,V_PurchaseReceiveReport.customerorderno,V_PurchaseReceiveReport.CHALLANN0,V_PurchaseReceiveReport.purchaseorder
+            FROM   V_Companyinfo INNER JOIN V_PurchaseReceiveReport ON V_Companyinfo.CompanyId=V_PurchaseReceiveReport.CompanyId
+            INNER JOIN V_EmployeeInfo ON V_PurchaseReceiveReport.PartyId=V_EmployeeInfo.EmpId LEFT OUTER JOIN FINISHED_TYPE ON V_PurchaseReceiveReport.Finished_Type_Id=FINISHED_TYPE.ID
+            INNER JOIN ITEM_PARAMETER_MASTER ON V_PurchaseReceiveReport.Finishedid=ITEM_PARAMETER_MASTER.ITEM_FINISHED_ID
+            Where V_PurchaseReceiveReport.ReceiveNo ='" + TxtReceiveNo.Text + "'";
+            Session["dsFileName"] = "~\\ReportSchema\\PurchaseReceiveNew.xsd";
+        }
+        DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, qry);
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            //Session["rptFileName"] = "~\\Reports\\PGenrateIndentNEW.rpt";
+            Session["rptFileName"] = Session["ReportPath"];
+            Session["GetDataset"] = ds;
+            //Session["dsFileName"] = "~\\ReportSchema\\PGenrateIndentNEW.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+        }
+        else { ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true); }
+    }
+    public void OpenNewWidow(string url)
+    {
+        ClientScript.RegisterStartupScript(this.GetType(), "newWindow", String.Format("<script>window.open('{0}');</script>", url));
+    }
+    protected void DGPurchaseReceiveDetail_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        DGPurchaseReceiveDetail.PageIndex = e.NewPageIndex;
+        fill_grid();
+    }
+    protected void DGPurchaseReceiveDetail_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
+            e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
+            e.Row.Attributes["onclick"] = ClientScript.GetPostBackClientHyperlink(this.DGPurchaseReceiveDetail, "select$" + e.Row.RowIndex);
+        }
+    }
+    protected void DDItem_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string st = "Select IPM.Quality_Id,QualityName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id inner join Quality Q on Q.QualityId =IPM.Quality_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDQuality,st, true, "--select--");
+        string quality =DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue+"":"";
+        string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+        string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+        string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+        string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+        string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+        st = null;
+                st = "Select IPM.Design_Id,DesignName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                UtilityModule.ConditionalComboFill(ref DDDesign, st, true, "--select--");
+                st = "Select IPM.Color_Id,ColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                UtilityModule.ConditionalComboFill(ref DDColor, st, true, "--select--");
+                st = "Select IPM.ShadeColor_Id,ShadeColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + color + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                UtilityModule.ConditionalComboFill(ref DDColorShade, st, true, "--select--");
+                st = "Select IPM.Shape_Id,ShapeName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                UtilityModule.ConditionalComboFill(ref DDShape, st, true, "--select--");
+                if (ChkFt.Checked)
+                    st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                else
+                    st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+                CommanFunction.FillCombo(DDUnit, "select distinct UnitId,UnitName from Unit U,Item_Master IM where U.UnitTypeId=IM.UnitTypeId and IM.Item_Id=" + DDItem.SelectedValue);
+                DDUnit.SelectedValue= SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select UnitId from PurchaseIndentIssueTran PIT where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue).ToString();
+                UtilityModule.ConditionalComboFill(ref DDGodown, "select GodownId,GodownName from GodownMaster",true,"-Select Godown-");
+                Fill_ChallanDetail();
+    }
+    private void fill_size()
+    {
+        string quality = DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue + "" : "";
+        string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+        string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+        string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+        string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+        string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+        string st = null;
+        if (ChkFt.Checked)
+            st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        else
+            st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+    }
+    protected void DDShape_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        fill_size();
+    }
+    protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string quality = DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue + "" : "";
+        string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+        string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+        string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+        string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+        string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+        string st = null;
+        st = "Select IPM.Design_Id,DesignName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDDesign, st, true, "--select--");
+        st = "Select IPM.Color_Id,ColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDColor, st, true, "--select--");
+        st = "Select IPM.ShadeColor_Id,ShadeColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + color + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDColorShade, st, true, "--select--");
+        st = "Select IPM.Shape_Id,ShapeName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDShape, st, true, "--select--");
+        if (ChkFt.Checked)
+            st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        else
+            st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+        Fill_ChallanDetail();
+    }
+    protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string quality = DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue + "" : "";
+        string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+        string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+        string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+        string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+        string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+        string st = null;
+        st = "Select IPM.Color_Id,ColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDColor, st, true, "--select--");
+        st = "Select IPM.ShadeColor_Id,ShadeColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + color + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDColorShade, st, true, "--select--");
+        st = "Select IPM.Shape_Id,ShapeName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDShape, st, true, "--select--");
+        if (ChkFt.Checked)
+            st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        else
+            st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+        Fill_ChallanDetail();
+    }
+    protected void DDColor_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string quality = DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue + "" : "";
+        string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+        string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+        string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+        string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+        string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+        string st = null;
+        st = "Select IPM.ShadeColor_Id,ShadeColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + color + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDColorShade, st, true, "--select--");
+        st = "Select IPM.Shape_Id,ShapeName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDShape, st, true, "--select--");
+        if (ChkFt.Checked)
+            st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        else
+            st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+        Fill_ChallanDetail();
+    }
+    protected void DDColorShade_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string quality = DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue + "" : "";
+        string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+        string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+        string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+        string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+        string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+        string st = null;
+        st = "Select IPM.Shape_Id,ShapeName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDShape, st, true, "--select--");
+        if (ChkFt.Checked)
+            st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        else
+            st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+        UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+        Fill_ChallanDetail();
+    }
+    private void ParameteLabel()
+    {
+        String[] ParameterList = new String[8];
+        DDCompanyName.SelectedValue = Session["varMasterCompanyIDForERP"].ToString();
+        ParameterList = UtilityModule.ParameteLabel(1);//Convert.ToInt32(Session["varMasterCompanyIDForERP"]));
+        LblQuality.Text = ParameterList[0];
+        LblDesign.Text = ParameterList[1];
+        LblColor.Text = ParameterList[2];
+        LblShape.Text = ParameterList[3];
+        LblSize.Text = ParameterList[4];
+        LblCategory.Text = ParameterList[5];
+        LblItemName.Text = ParameterList[6];
+        LblColorShade.Text = ParameterList[7];
+    }
+    protected void DDSize_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        Fill_ChallanDetail();
+    }
+    private void Fill_ChallanDetail()
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {   
+            string strsql = null;
+            int category = Convert.ToInt32(DDCategory.SelectedIndex);
+            int item = DDItem.SelectedIndex > 0 ? Convert.ToInt32(DDItem.SelectedValue) : 0;
+            int quality = DDQuality.SelectedIndex > 0 ? Convert.ToInt32(DDQuality.SelectedValue) : 0;
+            int design = DDDesign.SelectedIndex > 0 ? Convert.ToInt32(DDDesign.SelectedValue) : 0;
+            int color = DDColor.SelectedIndex > 0 ? Convert.ToInt32(DDColor.SelectedValue) : 0;
+            int shape = DDShape.SelectedIndex > 0 ? Convert.ToInt32(DDShape.SelectedValue) : 0;
+            int size = DDSize.SelectedIndex > 0 ? Convert.ToInt32(DDSize.SelectedValue) : 0;
+            int shadecolor = DDColorShade.SelectedIndex > 0 ? Convert.ToInt32(DDColorShade.SelectedValue) : 0;
+            string str1, str2, str3, str4, str5, str6,str7;
+            if (item > 0)
+            {
+                str1 = "IM.Item_Id=" + item;
+            }
+            else
+            {
+                str1 = "IM.Item_Id=0";
+            }
+            if (quality > 0)
+            {
+                str2 = " and Quality_Id=" + quality;
+            }
+            else
+            {
+                str2 = "and Quality_Id=0";
+            }
+            if (design > 0)
+            {
+                str3 = " and Design_Id=" + design;
+            }
+            else
+            {
+                str3 = "and Design_Id=0";
+            }
+            if (color > 0)
+            {
+                str4 = " and Color_Id=" + color;
+            }
+            else
+            {
+                str4 = "and Color_Id=0";
+            }
+            if (shape > 0)
+            {
+                str5 = " and Shape_Id=" + shape;
+            }
+            else
+            {
+                str5 = "and Shape_Id=0";
+            }
+            if (size > 0)
+            {
+                str6 = "and Size_Id=" + size;
+            }
+            else
+            {
+                str6 = "and Size_Id=0";
+            }
+            if (shadecolor > 0)
+            {
+                str7 = "and ShadeColor_Id=" + shadecolor;
+            }
+            else
+            {
+                str7 = "and ShadeColor_Id=0";
+            }
+            con.Open();
+            strsql= @"select isnull(Item_Finished_Id,0) from Item_Parameter_Master IPM inner join  Item_Master IM on IM.Item_Id=IPM.Item_Id where " + str1 + " " + str2 + " " + str3 + " " + str4 + " " + str5 + " " + str6 ;
+            string finishedid = SqlHelper.ExecuteScalar(con, CommandType.Text, strsql).ToString();
+            if (finishedid !="")
+            {
+                strsql = @"select Quantity-sum(isnull(Qty,0)) from PurchaseIndentIssueTran PIT Left Outer join PurchaseReceiveDetail PRD  on PRD.FinishedId=PIT.FinishedId and PRD.PIndentIssueId =PIT.PIndentIssueId where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " group by Quantity";
+                DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, "select LotNo from PurchaseIndentIssueTran where FinishedId=" + finishedid + "  and PIndentIssueId=" + DDChallanNo.SelectedValue);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    TxtlotNo.Text = ds.Tables[0].Rows[0]["LotNo"].ToString();
+                }
+                else
+                {
+                    TxtlotNo.Text = "";
+                }
+                TxtPQty.Text = SqlHelper.ExecuteScalar(con, CommandType.Text, strsql).ToString();
+            }
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Purchase/EditPurchaseReceive.aspx");
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+    }
+    private void Duplicate()
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        try
+        {
+            int finishedid = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TextItemCode, DDColorShade, 0, "");
+            string ReceiveNo = (TxtReceiveNo.Text == "" ? "0" : TxtReceiveNo.Text).ToString();
+            string str = "select isnull(FinishedId,0) from PurchaseReceiveDetail PRD inner join  PurchaseReceiveMaster PRM  on PRM.PurchaseReceiveId=PRD.PurchaseReceiveId where FinishedId=" + finishedid + " and ReceiveNo=" + ReceiveNo + " and PurchaseReceiveDetailId !=" + Session["PurchaseReceiveDetailId"];
+           int n=Convert.ToInt16(SqlHelper.ExecuteScalar(con, CommandType.Text, str));
+           if (n == 0)
+           {
+               Lblmessage.Text = "";
+               Save_Data();
+               TxtPQty.Text = null;
+               TxtQty.Text = null;
+               Session["PurchaseReceiveDetailId"] = 0;
+               DDItem.SelectedIndex = 0;
+               DDQuality.Items.Clear();
+               DDDesign.Items.Clear();
+               DDColor.Items.Clear();
+               DDColorShade.Items.Clear();
+               DDShape.Items.Clear();
+               DDSize.Items.Clear();
+               DDCompanyName.Enabled = true;
+               DDPartyName.Enabled = true;
+               DDChallanNo.Enabled = true;
+               DDGateInNo.Enabled = true;
+               TxtBillNo.Enabled = true;
+           }
+           else
+           {
+               Lblmessage.Visible = true;
+               Lblmessage.Text = "Duplicate entry.....";
+           }
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Purchase/EditPurchaseReceive.aspx");
+            Lblmessage.Visible = true;
+            Lblmessage.Text = "Some Importent fields are missing.....";
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+    }
+    private void Save_Data()
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+            SqlParameter[] _arrpara = new SqlParameter[16];
+            _arrpara[0] = new SqlParameter("@PurchaseReceiveId", SqlDbType.Int);
+            _arrpara[1] = new SqlParameter("@CompanyId", SqlDbType.Int);
+            _arrpara[2] = new SqlParameter("@PartyId", SqlDbType.Int);
+            _arrpara[3] = new SqlParameter("@ReceiveNo", SqlDbType.NVarChar, 50);
+            _arrpara[4] = new SqlParameter("@ReceiveDate", SqlDbType.DateTime);
+            _arrpara[5] = new SqlParameter("@UserId", SqlDbType.Int);
+            _arrpara[6] = new SqlParameter("@MasterCompanyId", SqlDbType.Int);
+            _arrpara[7] = new SqlParameter("@PurchaseReceiveDetailId", SqlDbType.Int);
+            _arrpara[8] = new SqlParameter("@FinishedId", SqlDbType.Int);
+            _arrpara[9] = new SqlParameter("@GodownId", SqlDbType.Int);
+            _arrpara[10] = new SqlParameter("@UnitId", SqlDbType.Int);
+            _arrpara[11] = new SqlParameter("@Qty", SqlDbType.Float);
+            _arrpara[12] = new SqlParameter("@PIndentIssueId", SqlDbType.Int);
+            _arrpara[13] = new SqlParameter("@GateInNo", SqlDbType.NVarChar, 50);
+            _arrpara[14] = new SqlParameter("@BillNo", SqlDbType.NVarChar, 50);
+            _arrpara[15] = new SqlParameter("@LotNo", SqlDbType.NVarChar, 50);
+            con.Open();
+            SqlTransaction Tran = con.BeginTransaction();
+            _arrpara[0].Direction = ParameterDirection.InputOutput;
+            _arrpara[0].Value = Session["PurchaseReceiveId"];
+            _arrpara[1].Value = DDCompanyName.SelectedValue;
+            _arrpara[2].Value = DDPartyName.SelectedValue;
+            _arrpara[3].Direction = ParameterDirection.InputOutput;
+            _arrpara[3].Value = TxtReceiveNo.Text;
+            _arrpara[4].Value = TxtReceiveDate.Text;
+            _arrpara[5].Value = Session["varuserid"];
+            _arrpara[6].Value = Session["varMasterCompanyIDForERP"];
+            _arrpara[7].Direction = ParameterDirection.InputOutput;
+            _arrpara[7].Value = Session["PurchaseReceiveDetailId"];
+            _arrpara[8].Value = UtilityModule.getItemFinishedId(DDItem, DDQuality, DDDesign, DDColor, DDShape, DDSize, TextItemCode, DDColorShade, 0, "");
+            _arrpara[9].Value = DDGodown.SelectedValue;
+            _arrpara[10].Value = DDUnit.SelectedValue;
+            _arrpara[11].Value = TxtQty.Text;
+            _arrpara[12].Value = DDChallanNo.SelectedValue;
+            _arrpara[13].Direction = ParameterDirection.InputOutput;
+            _arrpara[13].Value = TxtGateInNo.Text.ToUpper();
+            _arrpara[14].Value = TxtBillNo.Text.ToUpper();
+            _arrpara[15].Value = TxtlotNo.Text.ToUpper();
+
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "PRO_PurchaseReceive", _arrpara);
+            Session["PurchaseReceiveId"] = _arrpara[0].Value;
+            Session["PurchaseReceiveDetailId"] = _arrpara[7].Value;
+            BtnDelete.Visible = false;
+            TxtReceiveNo.Text = _arrpara[3].Value.ToString();
+            TxtGateInNo.Text = _arrpara[13].Value.ToString();
+            UtilityModule.StockUpdate(Convert.ToInt32(_arrpara[8].Value),Convert.ToInt32(_arrpara[9].Value), Convert.ToInt32(_arrpara[1].Value),Convert.ToInt32(_arrpara[5].Value),TxtlotNo.Text.ToUpper(),Convert.ToDouble(_arrpara[11].Value),0.00,_arrpara[4].Value.ToString(),"PurchaseReceiveDetail",Convert.ToInt32(_arrpara[7].Value),Tran,1);
+            Session["ReportPath"] = "Reports/PurchaseReceiveNew.rpt";
+            Session["CommanFormula"] = "{V_PurchaseReceiveReport.ReceiveNo} ='" + TxtReceiveNo.Text + "'";
+            BtnPreview.Enabled = true;
+            Tran.Commit();
+            fill_grid();
+            TxtPQty.Text = null;
+            TxtQty.Text = null;
+            Session["PurchaseReceiveDetailId"] = 0;
+            DDItem.SelectedIndex = 0;
+            DDQuality.Items.Clear();
+            DDDesign.Items.Clear();
+            DDColor.Items.Clear();
+            DDColorShade.Items.Clear();
+            DDShape.Items.Clear();
+            DDSize.Items.Clear();
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Purchase/EditPurchaseReceive.aspx");
+            Lblmessage.Visible = true;
+            Lblmessage.Text = "Some Importent fields are missing.....";
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+    }
+    protected void BtnSave_Click(object sender, EventArgs e)
+    {
+        Duplicate();   
+    }
+    private void fill_grid()
+    {
+        DGPurchaseReceiveDetail.DataSource = Fill_Grid_Data();
+        DGPurchaseReceiveDetail.DataBind();
+    }
+
+    private DataSet Fill_Grid_Data()
+    {
+        DataSet ds = null;
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+            Session["PurchaseReceiveId"] = DDGateInNo.SelectedValue;
+            string strsql = @"select PurchaseReceiveDetailId,Category_Name+'/'+Item_Name+'/'+isnull(QualityName,'')+'/'+isnull(DesignName,'')+'/'+isnull(ColorName,'')+'/'+isnull(ShadeColorName,'')+'/'+ isnull(ShapeName,'')+'/'+case when PRD.UnitId=1 then isnull(SizeMtr,'') else isnull(SizeFt,'') end as ItemDescription,ChallanNo,GodownName,QTY,UnitName from PurchaseReceiveDetail PRD inner join PurchaseIndentIssue PII on PII.PIndentIssueId=PRD.PIndentIssueId Left Outer join GodownMaster GM on PRD.GodownId=GM.GodownId inner join unit on unit.UnitId=PRD.UnitId Inner join V_FinishedItemDetail FID on FID.Item_Finished_Id=PRD.FinishedId where PRD.PurchaseReceiveId=" + Session["PurchaseReceiveId"];
+            con.Open();
+            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Purchase/EditPurchaseReceive.aspx");
+        }
+        finally
+        {
+            if (con.State == ConnectionState.Open)
+            {
+                con.Close();
+                con.Dispose();
+            }
+        }
+        return ds;
+    }
+    protected void TxtQty_TextChanged(object sender, EventArgs e)
+    {
+       if(TxtQty.Text!="")
+        {
+            double qty = Convert.ToDouble(TxtPQty.Text) - Convert.ToDouble(TxtQty.Text);
+            if (qty < 0.00)
+            {
+                TxtQty.Text = null;
+                TxtQty.Focus();
+                Lblmessage.Text = "Receive QTY must be less than PQTY and Greater then Zero........ ";
+            }
+            else
+            {
+                Lblmessage.Text = "";
+            }
+        }
+        else 
+        {
+            TxtQty.Text = null;
+            TxtQty.Focus();
+            Lblmessage.Text = "Receive QTY must be less than PQTY and Greater then Zero........ ";
+        }
+    }
+    protected void TextItemCode_TextChanged(object sender, EventArgs e)
+    {
+        DataSet ds;
+        string Str;
+        Lblmessage.Text = "";
+        if (TextItemCode.Text != "")
+        {
+            Str = "Select * from PurchaseIndentIssuetran PD,ITEM_PARAMETER_MASTER IPM Where PD.Finishedid=IPM.Item_Finished_id And ProductCode='" + TextItemCode.Text + "'";
+            ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+            if (ds.Tables[0].Rows.Count == 0)
+            {
+                Lblmessage.Text = "ITEM CODE DOES NOT BELONGS TO THAT PO. NO....";
+                DDCategory.SelectedIndex = 0;
+                ddlcategorycange();
+                TextItemCode.Text = "";
+                TextItemCode.Focus();
+            }
+            else
+            {
+                UtilityModule.ConditionalComboFill(ref DDCategory, "Select Distinct ICM.Category_Id,Category_Name from PurchaseIndentIssuetran PID,ITEM_CATEGORY_MASTER ICM,ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM where IM.CATEGORY_ID=ICM.CATEGORY_ID AND IPM.Item_Id=IM.Item_Id AND PID.FinishedId=IPM.Item_Finished_Id and PID.PindentIssueid=" + DDChallanNo.SelectedValue, true, "--Select--");
+                Str = "Select PindentIssueid,IPM.*,IM.CATEGORY_ID from ITEM_PARAMETER_MASTER IPM,ITEM_MASTER IM,CategorySeparate CS,PurchaseIndentIssuetran PD Where IM.Category_Id=CS.CategoryId And IPM.ITEM_ID=IM.ITEM_ID  and PD.Finishedid=IPM.Item_Finished_id And ProductCode='" + TextItemCode.Text + "'";
+                ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, Str);
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    DDCategory.SelectedValue = ds.Tables[0].Rows[0]["CATEGORY_ID"].ToString();
+                    ddlcategorycange();
+                    UtilityModule.ConditionalComboFill(ref DDItem, "select distinct IM.Item_Id,IM.Item_Name from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " and IM.Category_Id=" + DDCategory.SelectedValue, true, "--Select--");
+                    DDItem.SelectedValue = ds.Tables[0].Rows[0]["ITEM_ID"].ToString();
+                    string st = "Select IPM.Quality_Id,QualityName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id inner join Quality Q on Q.QualityId =IPM.Quality_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                    UtilityModule.ConditionalComboFill(ref DDQuality, st, true, "--select--");
+                    DDQuality.SelectedValue = ds.Tables[0].Rows[0]["Quality_ID"].ToString();
+                    string quality = DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue + "" : "";
+                    string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+                    string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+                    string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+                    string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+                    string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+                    st = null;
+                    st = "Select IPM.Design_Id,DesignName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                    UtilityModule.ConditionalComboFill(ref DDDesign, st, true, "--select--");
+                    st = "Select IPM.Color_Id,ColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                    UtilityModule.ConditionalComboFill(ref DDColor, st, true, "--select--");
+                    st = "Select IPM.ShadeColor_Id,ShadeColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + color + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                    UtilityModule.ConditionalComboFill(ref DDColorShade, st, true, "--select--");
+                    st = "Select IPM.Shape_Id,ShapeName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                    UtilityModule.ConditionalComboFill(ref DDShape, st, true, "--select--");
+                    if (ChkFt.Checked)
+                        st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                    else
+                        st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+                    UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+                    DDDesign.SelectedValue = ds.Tables[0].Rows[0]["Design_ID"].ToString();
+                    DDColor.SelectedValue = ds.Tables[0].Rows[0]["Color_ID"].ToString();
+                    DDShape.SelectedValue = ds.Tables[0].Rows[0]["Shape_ID"].ToString();
+                    DDSize.SelectedValue = ds.Tables[0].Rows[0]["Size_ID"].ToString();
+                    DDColorShade.SelectedValue = ds.Tables[0].Rows[0]["ShadeColor_ID"].ToString();
+                    CommanFunction.FillCombo(DDUnit, "select distinct UnitId,UnitName from Unit U,Item_Master IM where U.UnitTypeId=IM.UnitTypeId and IM.Item_Id=" + DDItem.SelectedValue);
+                    UtilityModule.ConditionalComboFill(ref DDGodown, "select GodownId,GodownName from GodownMaster", true, "-Select Godown-");
+                    Fill_ChallanDetail();                    
+                }
+                else
+                {
+                    Lblmessage.Text = "ITEM CODE DOES NOT EXISTS....";
+                    DDCategory.SelectedIndex = 0;
+                    ddlcategorycange();
+                    TextItemCode.Text = "";
+                    TextItemCode.Focus();
+                }
+            }
+        }
+        else
+        {
+            DDCategory.SelectedIndex = 0;
+            ddlcategorycange();
+        }
+    }
+    [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
+    public static string[] GetQuality(string prefixText, int count)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        con.Open();
+        string strQuery = "Select ProductCode from ITEM_PARAMETER_MASTER Where ProductCode Like  '" + prefixText + "%'";
+        DataSet ds = new DataSet();
+        SqlDataAdapter da = new SqlDataAdapter(strQuery, con);
+        da.Fill(ds);
+        count = ds.Tables[0].Rows.Count;
+        con.Close();
+        List<string> ProductCode = new List<string>();
+        for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+        {
+            ProductCode.Add(ds.Tables[0].Rows[i][0].ToString());
+        }
+        con.Close();
+        return ProductCode.ToArray();
+    }
+    protected void TxtGateInNo_TextChanged(object sender, EventArgs e)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try 
+        {
+            Lblmessage.Text = "";
+            con.Open();
+            string GateInNo = @"select PRM.PurchaseReceiveId,CompanyId,PartyId,replace(convert(varchar(11),ReceiveDate,106), ' ','-')  as ReceiveDate,GateInNo,BillNo,PIndentIssueId,ReceiveNo from PurchaseReceiveMaster PRM Inner join PurchaseReceiveDetail PRD on PRM.PurchaseReceiveId=PRD.PurchaseReceiveId  where GateInNo='" + TxtGateInNo.Text + "'";
+            DataSet ds = SqlHelper.ExecuteDataset(con, CommandType.Text, GateInNo);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                DDCompanyName.SelectedValue = ds.Tables[0].Rows[0]["CompanyId"].ToString();
+                UtilityModule.ConditionalComboFill(ref DDPartyName, "select EmpId,EmpName from EmpInfo", true, "--Select Employee--");
+                DDPartyName.SelectedValue = ds.Tables[0].Rows[0]["PartyId"].ToString();
+                UtilityModule.ConditionalComboFill(ref DDChallanNo, " select PIndentIssueId,ChallanNo from PurchaseIndentIssue where PartyId=" + DDPartyName.SelectedValue, true, "--Select ChallanNo--");
+                DDChallanNo.SelectedValue = ds.Tables[0].Rows[0]["PIndentIssueId"].ToString();
+                UtilityModule.ConditionalComboFill(ref DDGateInNo, "select Distinct PRM.PurchaseReceiveId,GateInNo from PurchaseReceiveMaster PRM inner join PurchaseReceiveDetail PRD on PRM.PurchaseReceiveId=PRD.PurchaseReceiveId where PartyId=" + DDPartyName.SelectedValue + " and CompanyId=" + DDCompanyName.SelectedValue + " and PIndentIssueId=" + DDChallanNo.SelectedValue, true, "--Select--");
+                DDGateInNo.SelectedValue = ds.Tables[0].Rows[0]["PurchaseReceiveId"].ToString();
+                TxtReceiveDate.Text = ds.Tables[0].Rows[0]["ReceiveDate"].ToString();
+                TxtReceiveNo.Text = ds.Tables[0].Rows[0]["ReceiveNo"].ToString();
+                TxtBillNo.Text = ds.Tables[0].Rows[0]["BillNo"].ToString();
+                UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct ICM.Category_Id,ICM.Category_Name from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue, true, "--Select--");
+                Session["PurchaseReceiveId"] = DDGateInNo.SelectedValue;
+                fill_grid();
+            }
+            else 
+            {
+                DDPartyName.SelectedValue = null;
+                DDChallanNo.Items.Clear();
+                DDGateInNo.Items.Clear();
+                DDCategory.Items.Clear();
+                DDItem.Items.Clear();
+                DDQuality.Items.Clear();
+                DDDesign.Items.Clear();
+                DDColor.Items.Clear();
+                DDShape.Items.Clear();
+                DDColorShade.Items.Clear();
+                DDSize.Items.Clear();
+                TxtBillNo.Text = "";
+                TxtGateInNo.Text = "";
+                TxtlotNo.Text = "";
+                TxtPQty.Text = "";
+                TxtQty.Text = "";
+                TxtReceiveNo.Text = "";
+                TxtReceiveDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+                BtnSave.Text = "Save";
+                Session["PurchaseReceiveId"] = 0;
+                Session["PurchaseReceiveDetailId"] = 0;
+                fill_grid();
+                Lblmessage.Text = "Error:Gate in no does not exists............";
+            }
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Purchase/EditPurchaseReceive.aspx");
+            Lblmessage.Text = "Error:Gate in no............";
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+    }
+    protected void TxtBillNo_TextChanged(object sender, EventArgs e)
+    {
+        if (TxtBillNo.Text != null)
+        {
+            string BillNo = "select * from PurchaseReceiveMaster where BillNo='" + TxtBillNo.Text + "'";
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, BillNo);
+            if (ds.Tables[0].Rows.Count>0)
+            {
+                Lblmessage.Text = "BillNo is already Exist........";
+                TxtBillNo.Text = "";
+                TxtBillNo.Focus();
+            }
+            else
+            {
+                Lblmessage.Text = "";
+            }
+        }
+    }
+    protected void DDGateInNo_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        fill_grid();
+        UtilityModule.ConditionalComboFill(ref DDCategory, "select distinct ICM.Category_Id,ICM.Category_Name from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id inner join Item_Category_Master ICM on ICM.Category_Id=IM.Category_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue, true, "--Select--");
+        TextItemCode.Enabled = true;
+    }
+    protected void DGPurchaseReceiveDetail_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        DataSet ds = null;
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+            Session["PurchaseReceiveDetailId"] = DGPurchaseReceiveDetail.SelectedDataKey.Value;
+            string strsql = @"select Distinct PurchaseReceiveDetailId,PRM.PurchaseReceiveId,GodownId,UnitId,QTY,PIndentIssueTranId,PIndentIssueId,LotNo,BillNo,Category_Id,Item_Id,QualityId,DesignId,ColorId, ShadeColorId,ShapeId,SizeId from PurchaseReceiveMaster PRM inner join  PurchaseReceiveDetail PRD on PRM.PurchaseReceiveId=PRD.PurchaseReceiveId inner join V_FinishedItemDetail IPM on IPM.Item_Finished_Id=PRD.FinishedId where PurchaseReceiveDetailId=" + Session["PurchaseReceiveDetailId"];
+            con.Open();
+            ds = SqlHelper.ExecuteDataset(con, CommandType.Text, strsql);
+            DDCategory.SelectedValue = ds.Tables[0].Rows[0]["Category_Id"].ToString();
+            ddlcategorycange();
+            UtilityModule.ConditionalComboFill(ref DDItem, "select distinct IM.Item_Id,IM.Item_Name from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " and IM.Category_Id=" + DDCategory.SelectedValue, true, "--Select--");
+            DDItem.SelectedValue = ds.Tables[0].Rows[0]["Item_Id"].ToString();
+            string st = "Select IPM.Quality_Id,QualityName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id inner join Quality Q on Q.QualityId =IPM.Quality_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + " and IPM.Item_Id=" + DDItem.SelectedValue;
+            UtilityModule.ConditionalComboFill(ref DDQuality, st, true, "--select--");
+            DDQuality.SelectedValue = ds.Tables[0].Rows[0]["QualityId"].ToString();
+            string quality = DDQuality.SelectedIndex > 0 ? " and IPM.Quality_Id=" + DDQuality.SelectedValue + "" : "";
+            string design = DDDesign.SelectedIndex > 0 ? " and IPM.Design_Id=" + DDDesign.SelectedValue + "" : "";
+            string color = DDColor.SelectedIndex > 0 ? " and IPM.Color_Id=" + DDColor.SelectedValue + "" : "";
+            string shadecolor = DDColorShade.SelectedIndex > 0 ? " and IPM.ShadeColor_Id=" + DDColorShade.SelectedValue + "" : "";
+            string shape = DDShape.SelectedIndex > 0 ? " and IPM.Shape_Id=" + DDShape.SelectedValue + "" : "";
+            string size = DDSize.SelectedIndex > 0 ? " and IPM.Size_Id=" + DDSize.SelectedValue + "" : "";
+            st = null;
+            st = "Select IPM.Design_Id,DesignName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + " and IPM.Item_Id=" + DDItem.SelectedValue;
+            UtilityModule.ConditionalComboFill(ref DDDesign, st, true, "--select--");
+            st = "Select IPM.Color_Id,ColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+            UtilityModule.ConditionalComboFill(ref DDColor, st, true, "--select--");
+            st = "Select IPM.ShadeColor_Id,ShadeColorName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + color + design + " and IPM.Item_Id=" + DDItem.SelectedValue;
+            UtilityModule.ConditionalComboFill(ref DDColorShade, st, true, "--select--");
+            st = "Select IPM.Shape_Id,ShapeName from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + " and IPM.Item_Id=" + DDItem.SelectedValue;
+            UtilityModule.ConditionalComboFill(ref DDShape, st, true, "--select--");
+            if (ChkFt.Checked)
+                st = "Select IPM.Size_Id,SizeFt from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+            else
+                st = "Select IPM.Size_Id,SizeMtr from PurchaseIndentIssueTran PIT inner join Item_Parameter_Master IPM  on PIT.FinishedId=IPM.Item_Finished_Id inner join Item_Master IM on IPM.Item_Id=IM.Item_Id left outer join Quality Q on Q.QualityId =IPM.Quality_Id left outer join Design D on D.DesignId=IPM.Design_Id left outer join Color C on C.ColorId=IPM.Color_Id left outer join  ShadeColor SC on SC.ShadeColorId=IPM.ShadeColor_Id left outer join Shape SH on SH.ShapeId=IPM.Shape_Id  left outer join Size SZ on SZ.SizeId=IPM.Size_Id where PIT.PIndentIssueId=" + DDChallanNo.SelectedValue + quality + design + color + shadecolor + shape + " and IPM.Item_Id=" + DDItem.SelectedValue;
+            UtilityModule.ConditionalComboFill(ref DDSize, st, true, "--select--");
+            CommanFunction.FillCombo(DDUnit, "select distinct UnitId,UnitName from Unit U,Item_Master IM where U.UnitTypeId=IM.UnitTypeId and IM.Item_Id=" + DDItem.SelectedValue);
+            UtilityModule.ConditionalComboFill(ref DDGodown, "select GodownId,GodownName from GodownMaster", true, "-Select Godown-");
+            Fill_ChallanDetail();
+            DDDesign.SelectedValue = ds.Tables[0].Rows[0]["DesignId"].ToString();
+            DDColor.SelectedValue = ds.Tables[0].Rows[0]["ColorId"].ToString();
+            DDShape.SelectedValue = ds.Tables[0].Rows[0]["ShapeId"].ToString();
+            DDSize.SelectedValue = ds.Tables[0].Rows[0]["SizeId"].ToString();
+            DDColorShade.SelectedValue = ds.Tables[0].Rows[0]["ShadeColorId"].ToString();
+            Fill_ChallanDetail();
+            DDGodown.SelectedValue = ds.Tables[0].Rows[0]["GodownId"].ToString();
+            DDUnit.SelectedValue = ds.Tables[0].Rows[0]["UnitId"].ToString();
+            TxtQty.Text=ds.Tables[0].Rows[0]["QTY"].ToString();
+            TxtPQty.Text=(Convert.ToDouble(TxtPQty.Text)+Convert.ToDouble(TxtQty.Text)).ToString();
+            TxtBillNo.Text = ds.Tables[0].Rows[0]["BillNo"].ToString();
+            DDCompanyName.Enabled = false;
+            DDPartyName.Enabled = false;
+            DDChallanNo.Enabled = false;
+            DDGateInNo.Enabled = false;
+            TxtBillNo.Enabled = false;
+            Lblmessage.Text = "";
+            BtnDelete.Visible = true;
+        }
+        catch (Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Purchase/EditPurchaseReceive.aspx");
+            Lblmessage.Text = "Error: Gate in No..";
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+    }
+    protected void BtnDelete_Click(object sender, EventArgs e)
+    {
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        try
+        {
+            con.Open();
+            SqlParameter[] _arrpara = new SqlParameter[1];
+            _arrpara[0] = new SqlParameter("@PurchaseReceiveDetailId", SqlDbType.Int);
+            _arrpara[0].Value=DGPurchaseReceiveDetail.SelectedDataKey.Value;
+            SqlTransaction Tran = con.BeginTransaction();
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_DeletePurchaseReceive", _arrpara);
+            DataSet dt = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "select isnull(max(id),0)+1  from UpdateStatus");
+            SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "insert into UpdateStatus(id,companyid,userid,tablename,tableid,date,status)values(" + dt.Tables[0].Rows[0][0].ToString() + "," + Session["varMasterCompanyIDForERP"].ToString() + "," + Session["varuserid"].ToString() + ",'PurchaseReceiveDetail'," + DGPurchaseReceiveDetail.SelectedDataKey.Value + ",getdate(),'Delete')");
+            Tran.Commit();
+
+            fill_grid();
+            TxtPQty.Text = null;
+            TxtQty.Text = null;
+            Session["PurchaseReceiveDetailId"] = 0;
+            DDItem.SelectedIndex = 0;
+            DDQuality.Items.Clear();
+            DDDesign.Items.Clear();
+            DDColor.Items.Clear();
+            DDColorShade.Items.Clear();
+            DDShape.Items.Clear();
+            DDSize.Items.Clear();
+            DDCompanyName.Enabled = true;
+            DDPartyName.Enabled = true;
+            DDChallanNo.Enabled = true;
+            DDGateInNo.Enabled = true;
+            TxtBillNo.Enabled = true;
+        }
+        catch(Exception ex)
+        {
+            UtilityModule.MessageAlert(ex.Message, "Master/Purchase/EditPurchaseReceive.aspx");
+            Lblmessage.Text = "Error: Gate in No..";
+        }
+        finally
+        {
+            con.Close();
+            con.Dispose();
+        }
+    }
+    protected void DGPurchaseReceiveDetail_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+        //Add CSS class on header row.
+        if (e.Row.RowType == DataControlRowType.Header)
+            e.Row.CssClass = "header";
+        //Add CSS class on normal row.
+        if (e.Row.RowType == DataControlRowType.DataRow &&
+                  e.Row.RowState == DataControlRowState.Normal)
+            e.Row.CssClass = "normal";
+        //Add CSS class on alternate row.
+        if (e.Row.RowType == DataControlRowType.DataRow &&
+                  e.Row.RowState == DataControlRowState.Alternate)
+            e.Row.CssClass = "alternate";
+    }
+}
