@@ -11,13 +11,11 @@ using System.IO.Compression;
 using System.IO;
 using System.Data.SqlTypes;
 using System.Net;
-<<<<<<< HEAD
+
 
 
 public partial class Masters_Campany_AddLegalinformation : System.Web.UI.Page
-=======
-public partial class Masters_AddLegalinformation : System.Web.UI.Page
->>>>>>> origin/SatParkash
+
 {
     protected void Page_Load(object sender, EventArgs e)
     {
