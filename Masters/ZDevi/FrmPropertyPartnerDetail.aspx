@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Partner Employee Vendor Master" Language="C#" MasterPageFile="~/ERPmaster.master"
-    AutoEventWireup="true" CodeFile="FrmPartnerPropertyTransactionDetail.aspx.cs"
-    Inherits="Masters_ReportForms_FrmPartnerPropertyTransactionDetail" %>
+    AutoEventWireup="true" CodeFile="FrmPropertyPartnerDetail.aspx.cs"
+    Inherits="Masters_ZDevi_FrmPropertyPartnerDetail" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content2" ContentPlaceHolderID="CPH_Form" runat="Server">
