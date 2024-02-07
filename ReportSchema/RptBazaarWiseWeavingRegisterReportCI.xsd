@@ -38,6 +38,7 @@
               <xs:element name="GrandTotalGirahAreaChallanNoWise" type="xs:decimal" minOccurs="0" />
               <xs:element name="GrandTotalGirahAreaRecDate" type="xs:decimal" minOccurs="0" />
               <xs:element name="GrandTotalGirahArea" type="xs:decimal" minOccurs="0" />
+              <xs:element name="NetPayableAmt" type="xs:double" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
