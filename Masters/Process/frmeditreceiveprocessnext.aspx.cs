@@ -253,10 +253,11 @@ public partial class Masters_Process_frmeditreceiveprocessnext : System.Web.UI.P
             SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_JobReceive_Delete", param);
             lblmsg.Text = param[4].Value.ToString();
             Tran.Commit();
-            if (Session["varMasterCompanyIDForERP"].ToString() != "14")
-            {
-                FillDetail();
-            }
+            FillDetail();
+            //if (Session["varMasterCompanyIDForERP"].ToString() != "14")
+            //{
+              //  FillDetail();
+            //}
         }
         catch (Exception ex)
         {

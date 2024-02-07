@@ -14,9 +14,10 @@
               <xs:element name="CompAddr2" type="xs:string" minOccurs="0" />
               <xs:element name="CompAddr3" type="xs:string" minOccurs="0" />
               <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpAddress" type="xs:string" minOccurs="0" />
               <xs:element name="PROCESS_REC_ID" type="xs:int" minOccurs="0" />
               <xs:element name="CHALLANNO" type="xs:string" minOccurs="0" />
-              <xs:element name="RECEIVEDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="RECEIVEDATE" type="xs:string" minOccurs="0" />
               <xs:element name="QualityName" type="xs:string" minOccurs="0" />
               <xs:element name="Width" type="xs:string" minOccurs="0" />
               <xs:element name="LENGTH" type="xs:string" minOccurs="0" />
@@ -34,6 +35,29 @@
               <xs:element name="TotalWoolenLoss" type="xs:decimal" minOccurs="0" />
               <xs:element name="TotalCottonYarn" type="xs:decimal" minOccurs="0" />
               <xs:element name="GrandTotalGirahAreaEmpWise" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GrandTotalGirahAreaChallanNoWise" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GrandTotalGirahAreaRecDate" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GrandTotalGirahArea" type="xs:decimal" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="RECEIVEDATE" type="xs:string" minOccurs="0" />
+              <xs:element name="TotalPcs" type="xs:int" minOccurs="0" />
+              <xs:element name="GrandTotalGirahAreaRecDate" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TotalGrandTotalAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalPenality" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalBalAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalTdsAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalCommAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="NetPayableAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="TotalWoolenYarn" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TotalWoolenLoss" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TotalNetWoolen" type="xs:decimal" minOccurs="0" />
+              <xs:element name="TotalCottonYarn" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GrandTotalGirahArea" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

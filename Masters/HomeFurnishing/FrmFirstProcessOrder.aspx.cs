@@ -33,8 +33,8 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrder : System.Web.UI
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.PoufTypeCategory = 1 
                 Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By Customercode 
                 Select UnitId, UnitName From Unit(Nolock) Where Unitid in (1,2,6) 
-                Select PROCESS_NAME_ID, PROCESS_NAME From PROCESS_NAME_MASTER PNM(Nolock) 
-                Where PROCESS_NAME = 'STITCHING' And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By Process_Name ";
+                Select PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME From PROCESS_NAME_MASTER PNM(Nolock) 
+                Where PNM.PROCESS_NAME in ('BATHMAT DYEING', 'STITCHING') And PNM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By PNM.Process_Name ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 
