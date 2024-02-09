@@ -18,8 +18,8 @@ namespace IExpro.Infrastructure.Services
             this.IU = _IU;
             this.InvoiceRepo = IU.InvoiceRepo;
         }
-
-        public string GetInvoiceDetail(int _clientId, int _invoiceId, short docType, int userId, short userType)
+        
+        public string GetInvoiceDetail(int _clientId, int _invoiceId, short printType, short docType, int userId, short userType)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace IExpro.Infrastructure.Services
 
                 userId = Convert.ToInt32(xmlText.Descendants("CustomerId").SingleOrDefault().Value);
                 xmlText.Descendants("InvoiceItem").SingleOrDefault().Add(new XElement("signature", signaturePath));
-                string xsltText = this.InvoiceRepo.GetXSLTDetail(_clientId, docType, userId, userType);
+                string xsltText = this.InvoiceRepo.GetXSLTDetail(_clientId, printType, docType, userId, userType);
                 XsltArgumentList arguments = new XsltArgumentList();
                 arguments.AddExtensionObject("pda:MyUtils", new MathHelper());
                 return XmlHelper.XmlWriterFunction(xmlText.ToString(), arguments, xsltText);

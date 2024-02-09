@@ -28,11 +28,45 @@
                     </div>
                     <div class="col-lg-3">
                         <div class="mb-3">
+                            <label class="form-label">Print Type :</label>
+
+
+                            <asp:DropDownList ID="ddlPrintType" runat="server" CssClass="form-control required">
+                                <asp:ListItem Value="1">Type 1</asp:ListItem>
+                                <asp:ListItem Value="2">Type 2</asp:ListItem>
+                                <asp:ListItem Value="3">Type 3</asp:ListItem>
+                                <asp:ListItem Value="4">Type 4</asp:ListItem>
+                                <asp:ListItem Value="5">Type 5</asp:ListItem>
+                            </asp:DropDownList>
+
+
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-lg-3">
+                        <div class="mb-3">
                             <label class="form-label">Customer :</label>
                             <asp:DropDownList ID="ddlCustomer" CssClass="form-control required" runat="server">
                             </asp:DropDownList>
                         </div>
                     </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <div class="col-lg-3">
                         <div class="mb-3">
                             <label class="form-label">Document Formate :</label>

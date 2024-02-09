@@ -35,7 +35,7 @@ public partial class Settings_AddXSLT : BasePage
     protected void Page_Load(object sender, EventArgs e)
     {
 
-        if (Session["varCompanyId"] == null)
+        if (Session["varMasterCompanyIDForERP"] == null)
         {
             Response.Redirect("~/Login.aspx");
         }
@@ -52,13 +52,9 @@ public partial class Settings_AddXSLT : BasePage
             ddlDocument.DataTextField = "ItemName";
             ddlDocument.DataValueField = "ItemId";
             ddlDocument.DataBind();
-
             BindDocument();
-
         }
     }
-
-
     protected void BindDocument()
     {
         rptDoc.DataSource = this.DocSrv.GetDocumentList();
@@ -72,7 +68,6 @@ public partial class Settings_AddXSLT : BasePage
             int _docId = int.Parse(((HiddenField)e.Item.FindControl("hdnDocId")).Value);
             if (e.CommandName == "View")
             {
-
                 var xsltText = this.DocSrv.GetDocument(_docId);
                 var xmlText = XElement.Load(Server.MapPath("~/App_Data/XML/InvoiceData.xml"));
                 string signaturePath = CommonHelper.GetURI() + "/Images/signature/client-" + ClientId + ".png";
@@ -81,9 +76,6 @@ public partial class Settings_AddXSLT : BasePage
                 arguments.AddExtensionObject("pda:MyUtils", new MathHelper());
                 var htmlOutput = XmlHelper.XmlWriterFunction(xmlText.ToString(), arguments, xsltText);
                 lblText.Text = htmlOutput;
-
-
-
                 //HttpContext.Current.Response.Clear();
                 //HttpContext.Current.Response.Buffer = true;
                 //HttpContext.Current.Response.Charset = "UTF-8";
@@ -95,8 +87,6 @@ public partial class Settings_AddXSLT : BasePage
                 //HttpContext.Current.Response.Write(htmlOutput.ToString());
                 //HttpContext.Current.Response.End();
                 //HttpContext.Current.Response.Close();
-
-
             }
             else if (e.CommandName == "Delete")
             {
@@ -104,24 +94,18 @@ public partial class Settings_AddXSLT : BasePage
                 if (result > 0)
                 {
                     BindDocument();
-
                 }
-
             }
         }
         catch (Exception ex)
         {
-
             throw ex;
         }
-
     }
 
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
-
-        //.
         string fileName = ddlCustomer.SelectedItem.Text.Escape().Replace('.', '_').Replace('/', '_').Replace(' ', '_') + '_' + ddlDocument.SelectedItem.Value.Escape() + ".xslt";
         string filePath = Path.Combine(Server.MapPath("~/App_Data/XSLT/"), fileName);
         DocumentModel doc = new DocumentModel();
@@ -129,8 +113,9 @@ public partial class Settings_AddXSLT : BasePage
         doc.UserId = Convert.ToInt32(ddlCustomer.SelectedItem.Value);
         doc.UserType = (byte)UserType.Customer;
         doc.Title = ddlDocument.SelectedItem.Text + " for Customer " + ddlCustomer.SelectedItem.Text;
-        doc.CompanyId = Convert.ToInt32(Session["varCompanyId"]);
+        doc.CompanyId = Convert.ToInt32(Session["varMasterCompanyIDForERP"]);
         doc.CreatedBy = Convert.ToInt32(Session["varuserid"]);
+        doc.PrintType= Convert.ToByte(ddlPrintType.SelectedItem.Value);
         doc.CreatedOn = DateTime.Now;
         doc.Content = txtContent.Text;
 
@@ -141,6 +126,7 @@ public partial class Settings_AddXSLT : BasePage
             {
                 doc.Content = File.ReadAllText(filePath);
                 File.Delete(filePath);
+
             }
 
 

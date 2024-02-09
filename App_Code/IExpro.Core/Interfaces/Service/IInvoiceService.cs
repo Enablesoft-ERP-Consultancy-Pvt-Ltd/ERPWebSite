@@ -8,6 +8,6 @@ namespace IExpro.Core.Interfaces.Service
 {
     public interface IInvoiceService
     {
-        string GetInvoiceDetail(int _clientId, int _invoiceId, short docType, int userId, short userType);
+        string GetInvoiceDetail(int _clientId, int _invoiceId, short printType, short docType, int userId, short userType);
     }
 }

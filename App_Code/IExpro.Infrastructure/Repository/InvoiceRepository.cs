@@ -55,14 +55,14 @@ namespace IExpro.Infrastructure.Repository
 
 
 
-        public string GetXSLTDetail(int clientId, short docType, int userId, short userType)
+        public string GetXSLTDetail(int clientId, short printType,  short docType, int userId, short userType)
         {
             IEnumerable<dynamic> result = null;
             string sqlQuery = @"select x.XSLTId,y.XSLTText,IsNUll(x.UserId,0) UserId from tblXSLTClientMapping x inner join tblXSLTDetails y on x.XSLTId=y.XSLTId 
-Where x.ClientId=@ClientId and IsNUll(x.UserId,@UserId)=@UserId and DocumentType=@DocumentType";
+Where x.ClientId=@ClientId and IsNUll(x.UserId,@UserId)=@UserId and x.DocumentType=@DocumentType and x.PrintType=@PrintType";
             using (SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                SqlParameter[] param = new SqlParameter[3];
+                SqlParameter[] param = new SqlParameter[4];
                 param[0] = new SqlParameter("@DocumentType", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.Input;
                 param[0].Value = docType;
@@ -72,6 +72,13 @@ Where x.ClientId=@ClientId and IsNUll(x.UserId,@UserId)=@UserId and DocumentType
                 param[2] = new SqlParameter("@ClientId", SqlDbType.Int);
                 param[2].Direction = ParameterDirection.Input;
                 param[2].Value = clientId;
+                param[3] = new SqlParameter("@UserType", SqlDbType.Int);
+                param[3].Direction = ParameterDirection.Input;
+                param[3].Value = userType;
+                param[4] = new SqlParameter("@PrintType", SqlDbType.Int);
+                param[4].Direction = ParameterDirection.Input;
+                param[4].Value = printType;
+
                 var dataSet = SqlHelper.ExecuteDataset(conn, CommandType.Text, sqlQuery, param);
                 result = dataSet.Tables[0].AsEnumerable().Select(dataRow => new
                 {

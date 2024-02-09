@@ -14,6 +14,7 @@ namespace IExpro.Core.Models.Document
         public string Content { get; set; }
         public int UserId { get; set; }
         public byte UserType { get; set; }
-
+        public byte PrintType { get; set; }
+        
     }
 }

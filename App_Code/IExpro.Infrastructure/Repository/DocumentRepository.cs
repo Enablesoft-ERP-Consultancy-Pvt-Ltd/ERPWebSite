@@ -73,8 +73,8 @@ Order By y.DocumentId";
 BEGIN
 
 INSERT INTO tblXSLTDetails
-(DocumentType,XSLTText,XSLTSubject,CreatedOn,CreatedBy)
-VALUES(@DocumentType,@XSLTText,@XSLTSubject,@CreatedOn,@CreatedBy)
+(DocumentType,PrintType,XSLTText,XSLTSubject,CreatedOn,CreatedBy)
+VALUES(@DocumentType,@PrintType,@XSLTText,@XSLTSubject,@CreatedOn,@CreatedBy)
 Select @XSLTId=SCOPE_IDENTITY()
 INSERT INTO tblXSLTClientMapping
 (XSLTId,ClientId,UserId,UserType)
@@ -106,7 +106,7 @@ END
 ";
             using (SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                SqlParameter[] param = new SqlParameter[9];
+                SqlParameter[] param = new SqlParameter[10];
                 param[0] = new SqlParameter("@DocumentType", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.Input;
                 param[0].Value = doc.DocType;
@@ -142,6 +142,12 @@ END
                 param[8] = new SqlParameter("@XSLTSubject", SqlDbType.VarChar);
                 param[8].Direction = ParameterDirection.Input;
                 param[8].Value = doc.Title;
+
+                param[9] = new SqlParameter("@PrintType", SqlDbType.Int);
+                param[9].Direction = ParameterDirection.Input;
+                param[9].Value = doc.PrintType;
+                
+
 
                 result = SqlHelper.ExecuteNonQuery(conn, CommandType.Text, sqlQuery, param);
             }
