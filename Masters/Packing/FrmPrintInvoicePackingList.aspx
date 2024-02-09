@@ -3,16 +3,17 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
-<asp:Content ID="page" ContentPlaceHolderID="CPH_Form" runat="server"> 
-    <script src="../../Scripts/JScript.js" type="text/javascript"></script>
-    <script src="../../Scripts/jquery-1.4.1.js" type ="text/javascript"></script>
-    <script src="../../Scripts/FixFocus2.js" type="text/javascript"></script>
+<asp:Content ID="page" ContentPlaceHolderID="CPH_Form" runat="server">
+    <script src="../../Scripts/jquery-1.4.1.min.js" type="text/javascript"></script>
+    <%--<script type="text/javascript" src="../../Scripts/Fixfocus.js"></script>--%>
     <link href="../../Styles/vijay.css" rel="stylesheet" type="text/css" />
-
     <script type="text/javascript">
         function Preview() {
             window.open('../../ReportViewer.aspx', '');
-        }       
+        }
+        function Preview() {
+            window.open('../../ReportViewer.aspx', '');
+        }
         function OPEN() {
             window.open('../../ViewReport.aspx', '');
         }
@@ -121,7 +122,6 @@
                                              <asp:ListItem Value="28">SCDeclaration</asp:ListItem>
                                             <asp:ListItem Value="29">GSP</asp:ListItem>
                                             <asp:ListItem Value="30">Special Custom Invoice</asp:ListItem>
-                                            <asp:ListItem Value="31">BaleNo List</asp:ListItem>
                                               
                                         </asp:DropDownList>
                                     </td>
