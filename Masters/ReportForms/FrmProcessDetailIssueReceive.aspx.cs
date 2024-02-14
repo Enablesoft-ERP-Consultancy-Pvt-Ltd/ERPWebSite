@@ -1061,6 +1061,10 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             {
                 Session["rptFileName"] = "Reports/RptProcessIssRecWithConsumptionAntique.rpt";
             }
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "39")
+            {
+                Session["rptFileName"] = "Reports/RptProcessIssRecWithConsumptionIndus.rpt";
+            }
             else
             {
                 Session["rptFileName"] = "Reports/RptProcessIssRecWithConsumption.rpt";

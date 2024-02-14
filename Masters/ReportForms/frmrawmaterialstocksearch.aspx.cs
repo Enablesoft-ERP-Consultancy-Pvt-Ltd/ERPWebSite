@@ -31,12 +31,15 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
                             Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                             select distinct Q.QualityId,Q.QualityName from Quality Q JOIN ITEM_MASTER IM ON Q.Item_id=IM.Item_id JOIN ITEM_CATEGORY_MASTER IC ON IC.CATEGORY_ID=IM.CATEGORY_ID
                             JOIN CategorySeparate CS ON IC.CATEGORY_ID=CS.Categoryid 
-                            where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL'";
+                            where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL'
+                            Select Distinct IM.ITEM_ID,IM.ITEM_NAME from ITEM_MASTER IM JOIN ITEM_CATEGORY_MASTER IC ON IC.CATEGORY_ID=IM.CATEGORY_ID
+                            JOIN CategorySeparate CS ON IC.CATEGORY_ID=CS.Categoryid 
+                            where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL' order by IM.Item_Name";
 
             }
             else
             {
-                str = @"select GoDownID,GodownName From Godownmaster order by GodownName
+                str = @"Select GoDownID,GodownName From Godownmaster order by GodownName
                             select ShadecolorId,ShadeColorName From ShadeColor order by ShadeColorName
                             Select Distinct CI.CompanyId, CI.CompanyName 
                             From Companyinfo CI(nolock)
@@ -44,7 +47,10 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
                             Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
                             select distinct Q.QualityId,Q.QualityName from Quality Q JOIN ITEM_MASTER IM ON Q.Item_id=IM.Item_id JOIN ITEM_CATEGORY_MASTER IC ON IC.CATEGORY_ID=IM.CATEGORY_ID
                             JOIN CategorySeparate CS ON IC.CATEGORY_ID=CS.Categoryid 
-                            where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL'";
+                            where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL'
+                            Select Distinct IM.ITEM_ID,IM.ITEM_NAME from ITEM_MASTER IM(NoLock) JOIN ITEM_CATEGORY_MASTER IC(NoLock) ON IC.CATEGORY_ID=IM.CATEGORY_ID
+                            JOIN CategorySeparate CS(NoLock) ON IC.CATEGORY_ID=CS.Categoryid 
+                            where Cs.id=1 and IC.CATEGORY_NAME='RAW MATERIAL' or IC.CATEGORY_NAME= 'RAW MATTERIAL' order by IM.Item_Name";
 
             }
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -52,6 +58,7 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
             UtilityModule.ConditionalComboFillWithDS(ref DDshadeno, ds, 1, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDcompanyName, ds, 2, true, "--Plz Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDQuality, ds, 3, true, "--Plz Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDItemName, ds, 4, true, "--Plz Select--");
             if (DDcompanyName.Items.Count > 0)
             {
                 DDcompanyName.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -88,6 +95,10 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
             {
                 sQry = sQry + "  and S.godownid=" + DDgodown.SelectedValue;
             }
+            if (DDItemName.SelectedIndex > 0)
+            {
+                sQry = sQry + " and v.Item_Name='" + DDItemName.SelectedItem.Text + "'";
+            }
             if (DDshadeno.SelectedIndex > 0)
             {
                 sQry = sQry + " and v.ShadeColorName='" + DDshadeno.SelectedItem.Text + "'";
@@ -96,6 +107,7 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
             {
                 sQry = sQry + " and v.QualityName='" + DDQuality.SelectedItem.Text + "'";
             }
+           
             if (Session["varMasterCompanyIDForERP"].ToString() == "21")
             {
                 if (txtlotno.Text.Trim() != "")
@@ -282,6 +294,10 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
             sQry = sQry + " AND S.Godownid =" + DDgodown.SelectedValue;
         }
 
+        if (DDItemName.SelectedIndex > 0)
+        {
+            sQry = sQry + " and vf.Item_Name='" + DDItemName.SelectedItem.Text + "'";
+        }
         if (DDshadeno.SelectedIndex > 0)
         {
             sQry = sQry + " and vf.ShadeColorName='" + DDshadeno.SelectedItem.Text + "'";
@@ -386,6 +402,10 @@ public partial class Masters_ReportForms_frmrawmaterialstocksearch : System.Web.
             sQry = sQry + " AND S.Godownid =" + DDgodown.SelectedValue;
         }
 
+        if (DDItemName.SelectedIndex > 0)
+        {
+            sQry = sQry + " and vf.Item_Name='" + DDItemName.SelectedItem.Text + "'";
+        }
         if (DDshadeno.SelectedIndex > 0)
         {
             sQry = sQry + " and vf.ShadeColorName='" + DDshadeno.SelectedItem.Text + "'";

@@ -57,6 +57,13 @@
             </table>
             <table width="100%" border="1" cellspacing="0">
                 <tr>
+                 <td style="width: 5%; padding: 2px 2px 2px 2px">
+                        <asp:Label ID="Label9" Text="Item" CssClass="labelbold" runat="server" />
+                    </td>
+                    <td style="width: 10%; padding: 2px 2px 2px 2px">
+                        <asp:DropDownList ID="DDItemName" CssClass="dropdown" runat="server" Width="95%">
+                        </asp:DropDownList>
+                    </td>
                     <td style="width: 5%; padding: 2px 2px 2px 2px">
                         <asp:Label ID="Label8" Text="Quality" CssClass="labelbold" runat="server" />
                     </td>
