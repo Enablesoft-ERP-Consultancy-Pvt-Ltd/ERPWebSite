@@ -13,16 +13,16 @@ public partial class Site : System.Web.UI.MasterPage
     {
         if (!IsPostBack)
         {
-            if (Session["varCompanyId"] == null)
+            if (Session["varMasterCompanyIDForERP"] == null)
             {
                 Response.Redirect("~/Login.aspx");
             }
             else
             {
                 imgLogo.ImageUrl.DefaultIfEmpty();
-                if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varCompanyId"] + "_company.gif")))
+                if (File.Exists(Server.MapPath("~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif")))
                 {
-                    imgLogo.ImageUrl = "~/Images/Logo/" + Session["varCompanyId"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
+                    imgLogo.ImageUrl = "~/Images/Logo/" + Session["varMasterCompanyIDForERP"] + "_company.gif?" + DateTime.Now.ToString("dd-MMM-yyyy");
                 }
                 LblCompanyName.Text = Session["varCompanyName"].ToString();
                 LblUserName.Text = Session["varusername"].ToString();
@@ -34,7 +34,7 @@ public partial class Site : System.Web.UI.MasterPage
     {
         UtilityModule.LogOut(Convert.ToInt32(Session["varuserid"]));
         Session["varuserid"] = null;
-        Session["varCompanyId"] = null;
+        Session["varMasterCompanyIDForERP"] = null;
         string message = "you are successfully loggedout..";
         Response.Redirect("~/Login.aspx?Message=" + message + "");
     }

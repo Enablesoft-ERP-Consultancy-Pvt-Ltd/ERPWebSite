@@ -62,7 +62,7 @@ namespace IExpro.Web.Pages
             this.User = new CustomSerializePrincipal()
             {
                 CompanyId = Session["CurrentWorkingCompanyID"] != null ? Convert.ToInt32(Session["CurrentWorkingCompanyID"]) : 0,
-                IExproId = Session["varCompanyId"] != null ? Convert.ToInt32(Session["varCompanyId"]) : 0,
+                IExproId = Session["varMasterCompanyIDForERP"] != null ? Convert.ToInt32(Session["varMasterCompanyIDForERP"]) : 0,
                 UserId = Session["varuserid"] != null ? Convert.ToInt32(Session["varuserid"]) : 0
             };
 
