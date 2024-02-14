@@ -59,10 +59,10 @@ namespace IExpro.Infrastructure.Repository
         {
             IEnumerable<dynamic> result = null;
             string sqlQuery = @"select x.XSLTId,y.XSLTText,IsNUll(x.UserId,0) UserId from tblXSLTClientMapping x inner join tblXSLTDetails y on x.XSLTId=y.XSLTId 
-Where x.ClientId=@ClientId and IsNUll(x.UserId,@UserId)=@UserId and x.DocumentType=@DocumentType and x.PrintType=@PrintType";
+Where x.ClientId=@ClientId and IsNUll(x.UserId,@UserId)=@UserId and y.DocumentType=@DocumentType and y.PrintType=@PrintType";
             using (SqlConnection conn = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING))
             {
-                SqlParameter[] param = new SqlParameter[4];
+                SqlParameter[] param = new SqlParameter[5];
                 param[0] = new SqlParameter("@DocumentType", SqlDbType.Int);
                 param[0].Direction = ParameterDirection.Input;
                 param[0].Value = docType;
