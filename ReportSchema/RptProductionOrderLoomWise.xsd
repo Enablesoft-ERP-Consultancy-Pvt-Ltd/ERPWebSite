@@ -1,0 +1,152 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR1" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR2" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPADDR3" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPTEL" type="xs:string" minOccurs="0" />
+              <xs:element name="TINNO" type="xs:string" minOccurs="0" />
+              <xs:element name="PRODUCTIONUNIT" type="xs:string" minOccurs="0" />
+              <xs:element name="LOOMNO" type="xs:string" minOccurs="0" />
+              <xs:element name="ASSIGNDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="REQBYDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="PRODUCTDESCRIPTION" type="xs:string" minOccurs="0" />
+              <xs:element name="QTY" type="xs:int" minOccurs="0" />
+              <xs:element name="PCAREA" type="xs:double" minOccurs="0" />
+              <xs:element name="TOTALAREA" type="xs:double" minOccurs="0" />
+              <xs:element name="RATE" type="xs:double" minOccurs="0" />
+              <xs:element name="AMOUNT" type="xs:double" minOccurs="0" />
+              <xs:element name="ISSUEDBY" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPIDNO" type="xs:string" minOccurs="0" />
+              <xs:element name="EMPNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ISSUEORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="UNITID" type="xs:int" minOccurs="0" />
+              <xs:element name="EXPORTSIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="STOCKNO" type="xs:string" minOccurs="0" />
+              <xs:element name="COMM" type="xs:double" minOccurs="0" />
+              <xs:element name="IQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="MASTERCOMPANYID" type="xs:int" minOccurs="0" />
+              <xs:element name="REMARKS" type="xs:string" minOccurs="0" />
+              <xs:element name="INSTRUCTION" type="xs:string" minOccurs="0" />
+              <xs:element name="CUSTOMERORDERNO" type="xs:string" minOccurs="0" />
+              <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="LAGAT" type="xs:double" minOccurs="0" />
+              <xs:element name="TanaLotNo" type="xs:string" minOccurs="0" />
+              <xs:element name="LocalOrder" type="xs:string" minOccurs="0" />
+              <xs:element name="GSTNo" type="xs:string" minOccurs="0" />
+              <xs:element name="EmployeeType" type="xs:int" minOccurs="0" />
+              <xs:element name="SizeMtr" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeFt" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeInch" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerCode" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderTime" type="xs:string" minOccurs="0" />
+              <xs:element name="EmpMobileNo" type="xs:string" minOccurs="0" />
+              <xs:element name="REPORTTYPE" type="xs:int" minOccurs="0" />
+              <xs:element name="PROCESS_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="Bonus" type="xs:double" minOccurs="0" />
+              <xs:element name="BonusAmt" type="xs:double" minOccurs="0" />
+              <xs:element name="ChallanNo" type="xs:string" minOccurs="0" />
+              <xs:element name="Rate2" type="xs:double" minOccurs="0" />
+              <xs:element name="Loss" type="xs:double" minOccurs="0" />
+              <xs:element name="GirahArea" type="xs:decimal" minOccurs="0" />
+              <xs:element name="GrandTotalGirahArea" type="xs:decimal" minOccurs="0" />
+              <xs:element name="MasterBuyerSize" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerOrderNew" type="xs:string" minOccurs="0" />
+              <xs:element name="CustomerQuality" type="xs:string" minOccurs="0" />
+              <xs:element name="VarSubCompanyNo" type="xs:int" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHAPENAME" type="xs:string" minOccurs="0" />
+              <xs:element name="OrderCategoryName" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ITEM_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITY" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGN" type="xs:string" minOccurs="0" />
+              <xs:element name="COLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="SHAPE" type="xs:string" minOccurs="0" />
+              <xs:element name="SHADECOLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPANYID" type="xs:int" minOccurs="0" />
+              <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="ISSUE_DETAIL_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="ISSUEORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="FINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="PROCESSID" type="xs:int" minOccurs="0" />
+              <xs:element name="RATE" type="xs:double" minOccurs="0" />
+              <xs:element name="Qty" type="xs:double" minOccurs="0" />
+              <xs:element name="AREA" type="xs:double" minOccurs="0" />
+              <xs:element name="IQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="UNITNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="LossQty" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table2">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ITEM_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DESIGNNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="COLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHAPENAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHADECOLORNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="COMPANYID" type="xs:int" minOccurs="0" />
+              <xs:element name="ORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="ISSUE_DETAIL_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="ISSUEORDERID" type="xs:int" minOccurs="0" />
+              <xs:element name="FINISHEDID" type="xs:int" minOccurs="0" />
+              <xs:element name="PROCESSID" type="xs:int" minOccurs="0" />
+              <xs:element name="RATE" type="xs:double" minOccurs="0" />
+              <xs:element name="QTY" type="xs:double" minOccurs="0" />
+              <xs:element name="AREA" type="xs:double" minOccurs="0" />
+              <xs:element name="OQTY" type="xs:double" minOccurs="0" />
+              <xs:element name="UNITNAME" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table3">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QUALITYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="SHADECOLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_FINISHED_ID" type="xs:int" minOccurs="0" />
+              <xs:element name="UNITNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="ISSUEDQTY" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Table4">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="ITEM_NAME" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName" type="xs:string" minOccurs="0" />
+              <xs:element name="DesignName" type="xs:string" minOccurs="0" />
+              <xs:element name="ColorName" type="xs:string" minOccurs="0" />
+              <xs:element name="ShapeName" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeFt" type="xs:string" minOccurs="0" />
+              <xs:element name="ITEM_NAME1" type="xs:string" minOccurs="0" />
+              <xs:element name="QualityName1" type="xs:string" minOccurs="0" />
+              <xs:element name="Qty" type="xs:double" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

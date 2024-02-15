@@ -629,6 +629,11 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
             CustomerOrderWisePODetail();
             return;
         }
+        else if (RDPurchaseAdvanceDetail.Checked == true)
+        {
+            PurchaseAdvanceReport();
+            return;
+        }
         else if (RDPurchaseOrderRecPendingDetail.Checked == true)
         {
             string filterby = "";
@@ -1292,6 +1297,34 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
         TRFinalAbbaReport.Visible = false;
     }
     protected void RDpurchasesupply_CheckedChanged(object sender, EventArgs e)
+    {
+        TrStatus.Visible = false;
+        Trgodown.Visible = false;
+        trChkForDate.Visible = false;
+        trsupply.Visible = true;
+        trfr.Visible = true;
+        trto.Visible = true;
+        Tr3.Visible = false;
+        TrItemName.Visible = false;
+        ql.Visible = false;
+        clr.Visible = false;
+        dsn.Visible = false;
+        shp.Visible = false;
+        sz.Visible = false;
+        shd.Visible = false;
+        //Trcomp.Visible = false;
+        trcustomer.Visible = false;
+        trorder.Visible = false;
+        trPurchaseIndentChallanNo.Visible = false;
+        TRPurchaseSumm.Visible = false;
+        TRRecChallanNo.Visible = false;
+        txtRecChallanNo.Text = "";
+        TRPurchaseDetailByChallan.Visible = false;
+        TRLotBillDetail.Visible = false;
+        TRFinalAbbaReport.Visible = false;
+        TRASOnDate.Visible = false;
+    }
+    protected void RDPurchaseAdvanceDetail_CheckedChanged(object sender, EventArgs e)
     {
         TrStatus.Visible = false;
         Trgodown.Visible = false;
@@ -5288,6 +5321,73 @@ public partial class Masters_Purchase_Purchase_Matarial_report1 : System.Web.UI.
             Response.WriteFile(Path);
             // File.Delete(Path);
             Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "altP", "alert('No records found...')", true);
+        }
+    }
+    protected void PurchaseAdvanceReport()
+    {
+        #region Where Condition
+        string Where = "";        
+        //string filterby = "From : " + TxtFRDate.Text + "  To : " + TxtTODate.Text;
+        Where = Where + " and AM.Date>='" + TxtFRDate.Text + "' and AM.Date<='" + TxtTODate.Text + "'";
+
+        //if (ddcustomer.SelectedIndex > 0)
+        //{
+        //    Where = Where + " And OM.Customerid=" + ddcustomer.SelectedValue;
+        //    // filterby = filterby + " Customer : " + ddcustomer.SelectedItem.Text;
+        //}
+        //if (ddOrderno.SelectedIndex > 0)
+        //{
+        //    Where = Where + " And OM.orderid=" + ddOrderno.SelectedValue;
+        //    //filterby = filterby + " Order No : " + ddOrderno.SelectedItem.Text;
+        //}
+        //if (ChkForDate.Checked == true)
+        //{
+        //    Where = Where + " and OM.orderdate>='" + TxtFRDate.Text + "' and OM.orderdate<='" + TxtTODate.Text + "'";
+        //}
+
+        #endregion       
+
+        DataSet ds = new DataSet();
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+        SqlCommand cmd = new SqlCommand("PRO_PurchaseAdvanceReport", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 300;
+
+        cmd.Parameters.AddWithValue("@Companyid", ddCompName.SelectedValue);
+        cmd.Parameters.AddWithValue("@EmpId", dsuppl.SelectedValue);
+        cmd.Parameters.AddWithValue("@FromDate", TxtFRDate.Text);
+        cmd.Parameters.AddWithValue("@ToDate", TxtTODate.Text);
+        cmd.Parameters.AddWithValue("@Where", Where);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
+        cmd.Parameters.AddWithValue("@UserId",Session["VarUserId"].ToString());
+
+        // DataSet ds = new DataSet();
+        SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+        ad.Fill(ds);
+        //*************
+
+        con.Close();
+        con.Dispose();
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            Session["rptFileName"] = "~\\Reports\\RptPurchaseAdvancePaymentReport.rpt";
+            Session["GetDataset"] = ds;
+            Session["dsFileName"] = "~\\ReportSchema\\RptPurchaseAdvancePaymentReport.xsd";
+            StringBuilder stb = new StringBuilder();
+            stb.Append("<script>");
+            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
         }
         else
         {
