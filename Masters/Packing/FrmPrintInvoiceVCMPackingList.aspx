@@ -188,7 +188,7 @@
                                         </td>
                                         <td>
                                             <asp:DropDownList ID="DDPrintType" runat="server" Width="250px" CssClass="dropdown"
-                                                AutoPostBack="True" OnSelectedIndexChanged="DDPrintType_SelectedIndexChanged">
+                                                AutoPostBack="True" >
                                                 <asp:ListItem Value="1">Type 1</asp:ListItem>
                                                 <asp:ListItem Value="2">Type 2</asp:ListItem>
                                                 <asp:ListItem Value="3">Type 3</asp:ListItem>
