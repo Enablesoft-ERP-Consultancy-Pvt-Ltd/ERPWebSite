@@ -17,7 +17,14 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
         }
         if (!IsPostBack)
         {
-           // int VarCompanyNo = Convert.ToInt32(SqlHelper.ExecuteScalar(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, "Select VarCompanyNo From MasterSetting"));
+            string str = @"Select PROCESS_NAME_ID, PROCESS_NAME 
+                From PROCESS_NAME_MASTER PNM(Nolock) 
+                Where MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By Process_Name ";
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+
+            UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 0, true, "--Plz Select--");
+
             switch (Convert.ToInt16(Session["varCompanyNo"]))
             {
                 case 3:
@@ -87,7 +94,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
             {
                 if (txtcatagory.Text != "")
                 {
-                    SqlParameter[] _arrPara1 = new SqlParameter[14];
+                    SqlParameter[] _arrPara1 = new SqlParameter[15];
                     _arrPara1[0] = new SqlParameter("@CATEGORY_NAME", SqlDbType.VarChar, 50);
                     _arrPara1[1] = new SqlParameter("@PARAMETER_ID_1", SqlDbType.Int);
                     _arrPara1[2] = new SqlParameter("@PARAMETER_ID_2", SqlDbType.Int);
@@ -102,6 +109,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
                     _arrPara1[11] = new SqlParameter("@HSCODE", SqlDbType.NVarChar);
                     _arrPara1[12] = new SqlParameter("@categorySeperateDetail", SqlDbType.NVarChar, 100);
                     _arrPara1[13] = new SqlParameter("@PoufTypeCategory", SqlDbType.Int);
+                    _arrPara1[14] = new SqlParameter("@FirstProcessID", SqlDbType.Int);
 
                     _arrPara1[0].Value = txtcatagory.Text.ToUpper();
                     _arrPara1[1].Value = chk_1.Checked == true ? 1 : 0;
@@ -141,6 +149,8 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
                     {
                         _arrPara1[13].Value = 1;
                     }
+                    _arrPara1[14].Value = DDProcessName.SelectedValue;
+
                     SqlHelper.ExecuteNonQuery(con, CommandType.StoredProcedure, "PRO_ITEM_CATEGORY_PARAMETERS1", _arrPara1);
                 }
                 else
@@ -284,7 +294,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
             }
             DataSet ds3 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, 
             @"select item_finished_id from v_finisheditemdetail where CATEGORY_ID=" + id + @" 
-            Select PoufTypeCategory From ITEM_CATEGORY_MASTER Where CATEGORY_ID = " + id + "");
+            Select PoufTypeCategory, FirstProcessID From ITEM_CATEGORY_MASTER Where CATEGORY_ID = " + id + "");
             if (ds3.Tables[0].Rows.Count > 0)
             {
                 chk_1.Enabled = false;
@@ -301,6 +311,7 @@ public partial class Masters_Carpet_AddItemCategory : System.Web.UI.Page
                 {
                     ChkPoufTypeCategory.Checked = true;
                 }
+                DDProcessName.SelectedValue = ds3.Tables[1].Rows[0]["FirstProcessID"].ToString();
             }
         }
         catch (Exception ex)

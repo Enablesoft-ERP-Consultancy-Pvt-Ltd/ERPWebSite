@@ -178,6 +178,10 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
                             {
                                 UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid ", true, "Size in Mtr");
                             }
+                            else if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+                            {
+                                UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft+'  '+'['+Prodsizeft+']' from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid ", true, "Size in Mtr");
+                            }
                             else
                             {
                                 UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeid ", true, "Size in Ft");
@@ -728,7 +732,15 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizemtr", true, "select size");
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr+'  '+'['+ProdSizemtr+']' from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizemtr", true, "select size");
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizemtr", true, "select size");
+                }
+                
             }
         }
         else if (ddlunit.SelectedValue == "2")
@@ -739,7 +751,15 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeft", true, "select size");
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft+'  '+'['+Prodsizeft+']' from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeft", true, "select size");
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeft", true, "select size");
+                }
+                
             }
         }
         // fill_grid();
@@ -1619,7 +1639,14 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "select size");
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr+'  '+'['+ProdSizemtr+']' from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "select size");
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizemtr from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"], true, "select size");
+                }                
             }
         }
         else
@@ -1630,7 +1657,14 @@ public partial class Masters_RawMaterial_DirectStock : System.Web.UI.Page
             }
             else
             {
-                UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeft", true, "select size");
+                if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft+'  '+'['+Prodsizeft+']' from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeft", true, "select size");
+                }
+                else
+                {
+                    UtilityModule.ConditionalComboFill(ref ddsize, "select sizeid,sizeft from size where Shapeid=" + ddshape.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by sizeft", true, "select size");
+                }                
             }
         }
 

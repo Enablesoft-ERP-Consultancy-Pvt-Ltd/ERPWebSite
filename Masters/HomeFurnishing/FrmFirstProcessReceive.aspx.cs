@@ -46,7 +46,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
                         Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName                          
                         Select Distinct PNM.Process_Name_ID, PNM.PROCESS_NAME                      
                         From PROCESS_NAME_MASTER PNM(nolock) 
-                        Where PNM.MASTERCOMPANYID = " + Session["varMasterCompanyIDForERP"] + @" and Process_Name='STITCHING' 
+                        Where PNM.MASTERCOMPANYID = " + Session["varMasterCompanyIDForERP"] + @" and Process_Name in ('BATHMAT DYEING', 'STITCHING') 
                         Order By PNM.PROCESS_NAME ";
 
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -218,9 +218,10 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessReceive : System.Web.
     }
     protected void FillRecDetails()
     {
-        SqlParameter[] array = new SqlParameter[2];
+        SqlParameter[] array = new SqlParameter[3];
         array[0] = new SqlParameter("@Process_Rec_Id", hnprocessrecid.Value);
         array[1] = new SqlParameter("@FlagGridReport", 0);
+        array[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_FIRSTPROCESSRECEIVE_FILLGRID_REPORT", array);
         DGRecDetail.DataSource = ds.Tables[0];

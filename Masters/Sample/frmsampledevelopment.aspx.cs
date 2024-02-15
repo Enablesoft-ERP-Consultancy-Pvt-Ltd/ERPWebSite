@@ -25,16 +25,16 @@ public partial class Masters_Sample_frmsampledevelopment : System.Web.UI.Page
                          select Year,Year from Yeardata(Nolock)
                          select Distinct IC.CATEGORY_ID,ic.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC(Nolock) inner join CategorySeparate cs(Nolock) on IC.CATEGORY_ID=cs.Categoryid  and cs.id=0
                          and ic.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
-            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
-            {
+            //if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
+            //{
                 str = str + @" select Distinct IC.CATEGORY_ID,ic.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC(Nolock) inner join CategorySeparate cs(Nolock) on IC.CATEGORY_ID=cs.Categoryid 
                          and ic.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
-            }
-            else
-            {
-                str = str + @" select Distinct IC.CATEGORY_ID,ic.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC(Nolock) inner join CategorySeparate cs(Nolock) on IC.CATEGORY_ID=cs.Categoryid And cs.id=1
-                         and ic.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
-            }
+//            }
+//            else
+//            {
+//                str = str + @" select Distinct IC.CATEGORY_ID,ic.CATEGORY_NAME from ITEM_CATEGORY_MASTER IC(Nolock) inner join CategorySeparate cs(Nolock) on IC.CATEGORY_ID=cs.Categoryid And cs.id=1
+//                         and ic.MasterCompanyid=" + Session["varMasterCompanyIDForERP"];
+//            }
 
             str = str + @" select DepartmentId,DepartmentName from Department(Nolock) Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" order by DepartmentName
             select CalID,CalType from Process_CalType(Nolock) order by caltype

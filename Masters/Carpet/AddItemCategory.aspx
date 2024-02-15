@@ -112,6 +112,12 @@
                         </td>
                         <td>
                             <asp:CheckBox ID="ChkPoufTypeCategory" Text="Pouf Type Category" runat="server" />
+                            <br />
+                            <br />
+                            <asp:Label ID="Label2" runat="server" Text="Process Name" CssClass="labelbold"></asp:Label>
+                            <br />
+                            <asp:DropDownList ID="DDProcessName" runat="server" CssClass="dropdown" Width="150px">
+                            </asp:DropDownList>
                         </td>
                     </tr>
                     <tr>

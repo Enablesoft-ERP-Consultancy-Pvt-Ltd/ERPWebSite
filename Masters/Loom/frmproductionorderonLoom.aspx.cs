@@ -517,7 +517,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                         {
                             view = "V_ORDERBALITEMTOBEORDERED_PREPRODASSIGNEDQTY";
                         }
-                        if (Session["varcompanyNo"].ToString() == "43")
+                        if (Session["varcompanyNo"].ToString() == "43" || Session["varcompanyNo"].ToString() == "48")
                         {
                             view = "V_ORDERBALITEMTOBEORDERED_TAGGINGWITHINTERALPROD";
                             if (hnEmployeeType.Value == "1")
@@ -915,6 +915,16 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
                             {
                                 Qtyrequired = "Vj.INTERNALPRODASSIGNEDQTY";
                                 Function = "[F_GETPRODUCTIONORDERQTY_INTERNAL]";
+                            }
+                            if (Session["varcompanyNo"].ToString() == "48")
+                            {
+                                Qtyrequired = "Vj.INTERNALPRODASSIGNEDQTY";
+                                Function = "[F_GETPRODUCTIONORDERQTY_INTERNAL]";
+                                if (hnEmployeeType.Value == "1")
+                                {
+                                    Qtyrequired = "vj.preprodassignedqty";
+                                    Function = "[F_GETPRODUCTIONORDERQTY_ExterNal]";
+                                }
                             }
 
                             if (DDDepartmentIssueNo.SelectedIndex > 0)
@@ -2532,7 +2542,7 @@ public partial class Masters_Loom_frmproductionorderonLoom : System.Web.UI.Page
         {
             if (Session["varcompanyNo"].ToString() != "43")
             {
-                if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28")
+                if (Session["varcompanyNo"].ToString() == "16" || Session["varcompanyNo"].ToString() == "28" || Session["varcompanyNo"].ToString() == "48")
                 {
                     if (chkEdit.Checked == true)
                     {

@@ -146,11 +146,11 @@ public partial class Masters_RawMaterial_ProcessRowIssue : System.Web.UI.Page
         }
         else
         {
-            str = @"SELECT distinct e.EmpId, e.EmpName  
-                        FROM  PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PIM 
-                                            JOIN  EmpInfo e ON pim.Empid = e.EmpId And e.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
+            str = @"SELECT distinct e.EmpId, e.EmpName + ' ' + case when isnull(e.empcode,'') = '' Then '' ELse '[' + e.empcode + ']' End EmpName 
+                        FROM  PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PIM(Nolock)  
+                              JOIN  EmpInfo e(Nolock) ON pim.Empid = e.EmpId And e.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" 
                         UNION 
-                        Select EI.EmpId, EI.EmpName 
+                        Select Distinct EI.EmpId, EI.EmpName + ' ' + case when isnull(EI.empcode,'') = '' Then '' ELse '[' + EI.empcode + ']' End 
                         From PROCESS_ISSUE_MASTER_" + ddProcessName.SelectedValue + @" PIM(Nolock) 
                         JOIN Employee_ProcessOrderNo EPO(Nolock) ON EPO.IssueOrderId = PIM.IssueOrderId And ProcessID = " + ddProcessName.SelectedValue + @" 
                         JOIN EmpInfo EI(Nolock) ON EI.EmpID = EPO.Empid ";

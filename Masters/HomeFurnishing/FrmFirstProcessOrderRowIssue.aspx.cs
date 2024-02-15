@@ -26,7 +26,7 @@ public partial class Masters_HomeFurnishing_FrmFirstProcessOrderRowIssue : Syste
                 Where CI.MasterCompanyId = " + Session["varMasterCompanyIDForERP"] + @" Order By Companyname 
 
                 Select PROCESS_NAME_ID, PROCESS_NAME From PROCESS_NAME_MASTER PNM(Nolock) 
-                Where PROCESS_NAME = 'STITCHING' And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By Process_Name ";
+                Where PROCESS_NAME in ('BATHMAT DYEING', 'STITCHING') And MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + @" Order By Process_Name ";
 
             DSQ = SqlHelper.ExecuteDataset(Qry);
             UtilityModule.ConditionalComboFillWithDS(ref ddCompName, DSQ, 0, true, "--Select--");

@@ -40,7 +40,7 @@
     </script>
     <asp:UpdatePanel ID="upd1" runat="server">
         <ContentTemplate>
-            <asp:TabContainer ID="tbsample" runat="server" Width="100%" ActiveTabIndex="0">
+            <asp:TabContainer ID="tbsample" runat="server" Width="100%" ActiveTabIndex="2">
                 <asp:TabPanel ID="tabmasterdetail" HeaderText="Product Detail" runat="server">
                     <ContentTemplate>
                         <div>

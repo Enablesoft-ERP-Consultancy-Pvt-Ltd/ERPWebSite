@@ -2128,20 +2128,21 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
             +'  '+isnull(id.Dyingmatch,'')+'   '+isnull(id.dyeingType,'')+'   '+isnull(id.dyeing,'') as Description,SUM(Quantity) AS QTY,IM.INDENTID as indentid
             ,v.item_finished_id as finishedid,CATEGORY_ID,ITEM_ID,QualityId,
             ColorId,designId,SizeId,ShapeId,ShadecolorId,unitid,ID.TagNO,ID.Lotno
-            FROM INDENTMASTER IM 
-            INNER JOIN INDENTDETAIL ID ON IM.INDENTID=ID.INDENTID 
-            INNER JOIN V_FinishedItemDetail V ON V.ITEM_FINISHED_ID=ID.OFinishedId 
-            Inner Join V_PPFinishedid VP on ID.OFinishedId=VP.FinishedId and ID.PPNo=VP.PPID";
-            if(Session["VarCompanyNo"].ToString()!="30")
+            FROM INDENTMASTER IM(Nolock) 
+            INNER JOIN INDENTDETAIL ID(Nolock) ON IM.INDENTID=ID.INDENTID 
+            INNER JOIN V_FinishedItemDetail V(Nolock) ON V.ITEM_FINISHED_ID=ID.OFinishedId 
+            Inner Join V_PPFinishedid VP(Nolock) on ID.OFinishedId=VP.FinishedId and ID.PPNo=VP.PPID ";
+            if(Session["VarCompanyNo"].ToString()!="30") 
             {
-                sql = sql + @"  inner join (select  Distinct Prt.Finishedid,PRt.lotno from PP_ProcessRawMaster PRM inner join PP_ProcessRawTran PRT 
-                        on PRM.PRMid=PRT.PRMid and PRM.PRMid=" + ddChallanNo.SelectedValue + @") As IssDetail on ID.lotno=IssDetail.Lotno and vp.IFinishedid=IssDetail.Finishedid";
+                sql = sql + @"  inner join (select  Distinct Prt.Finishedid,PRt.lotno 
+                        From PP_ProcessRawMaster PRM(Nolock) 
+                        join PP_ProcessRawTran PRT(Nolock) on PRM.PRMid=PRT.PRMid and PRM.PRMid=" + ddChallanNo.SelectedValue + @") As IssDetail on ID.lotno=IssDetail.Lotno and vp.IFinishedid=IssDetail.Finishedid ";
             } 
             sql = sql + " WHERE IM.INDENTID=" + ddindent.SelectedValue + " And IM.MasterCompanyId=" + Session["varcompanyNo"] + @"
             GROUP BY Category_Name ,V.ITEM_NAME ,QualityName,DesignName,ColorName,
             ShadeColorName,ShapeName,CATEGORY_ID,ITEM_ID,QualityId,ColorId,designId,
             SizeId,ShapeId,ShadecolorId,v.item_finished_id,IM.INDENTID,id.Dyingmatch,
-            id.dyeingType,id.dyeing,unitid,ID.TagNO,ID.Lotno";
+            id.dyeingType,id.dyeing,unitid,ID.TagNO,ID.Lotno ";
 
         DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, sql);
         if (ds.Tables[0].Rows.Count > 0)
