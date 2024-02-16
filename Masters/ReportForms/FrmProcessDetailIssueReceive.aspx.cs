@@ -21,14 +21,17 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         if (!IsPostBack)
         {
             TRlotNo.Visible = false;
+            TROrderCategoryType.Visible = false;
             string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname 
                         Select PROCESS_NAME_ID,PROCESS_NAME from Process_Name_Master Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME
-                        select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
+                        select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode
+                        select distinct OrderCategoryId,OrderCategory from OrderCategory order by OrderCategoryId";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);
             UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 1, true, "--Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDcustcode, ds, 2, true, "--Select--");
+            UtilityModule.ConditionalComboFillWithDS(ref DDOrderCategoryType, ds, 3, true, "--Select--");
             TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
             txtIssueFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
@@ -1455,7 +1458,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         //cmd.ExecuteNonQuery();
         //ad.Fill(ds);
 
-        SqlParameter[] param = new SqlParameter[20];
+        SqlParameter[] param = new SqlParameter[9];
         param[0] = new SqlParameter("@processid", DDProcessName.SelectedValue);
         param[1] = new SqlParameter("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
         param[2] = new SqlParameter("@FromDate", TxtFromDate.Text);
@@ -1464,6 +1467,7 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
         param[5] = new SqlParameter("@Issueorderid", Chkissueno.Checked == true ? txtissueno.Text : "");
         param[6] = new SqlParameter("@Where", strCondition);
         param[7] = new SqlParameter("@ReportType", ReportType);
+        param[8] = new SqlParameter("@OrderCategoryId", DDOrderCategoryType.SelectedIndex <= 0 ? "0" : DDOrderCategoryType.SelectedValue);
 
         ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "FinishinghissabchallanWise", param);
 
@@ -8950,5 +8954,17 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             lblMessage.Text = ex.Message;
         }
 
+    }
+    protected void ChkQualitySizeWiseHissabSummary_CheckedChanged(object sender, EventArgs e)
+    {
+        if (ChkQualitySizeWiseHissabSummary.Checked == true)
+        {
+            TROrderCategoryType.Visible = true;
+        }
+        else
+        {
+            TROrderCategoryType.Visible = false;
+            DDOrderCategoryType.SelectedIndex = 0;
+        }
     }
 }
