@@ -408,6 +408,19 @@
                                             </cc1:ListSearchExtender>
                                         </td>
                                     </tr>
+                                    <tr id="TROrderCategoryType" runat="server" visible="false">
+                                        <td>
+                                            <asp:Label ID="Label13" runat="server" CssClass="labelbold" Text="Order Category."></asp:Label>
+                                        </td>
+                                        <td colspan="3">
+                                            <asp:DropDownList ID="DDOrderCategoryType" runat="server" AutoPostBack="True" CssClass="dropdown"
+                                                Width="300px">
+                                            </asp:DropDownList>
+                                            <cc1:ListSearchExtender ID="ListSearchExtender14" runat="server" TargetControlID="DDOrderCategoryType"
+                                                ViewStateMode="Disabled" PromptCssClass="labelbold" PromptPosition="Bottom">
+                                            </cc1:ListSearchExtender>
+                                        </td>
+                                    </tr>
                                     <%-- <tr id="TRGatePass" runat="server" visible="false">
                                         <td>
                                             <asp:Label ID="Label7" runat="server" CssClass="labelbold" Text="Gate In/Pass No."></asp:Label>
@@ -586,7 +599,7 @@
                                         <tr id="TRQualitySizeWiseHissabSummary" runat="server" visible="false">
                                             <td colspan="3">
                                                 <asp:CheckBox ID="ChkQualitySizeWiseHissabSummary" runat="server" CssClass="checkboxbold"
-                                                    Text="Quality Size Wise Hissab Summary" />
+                                                    Text="Quality Size Wise Hissab Summary" AutoPostBack="True" OnCheckedChanged="ChkQualitySizeWiseHissabSummary_CheckedChanged" />
                                             </td>
                                         </tr>
                                         <tr id="TRAsOnDate" runat="server" visible="false">

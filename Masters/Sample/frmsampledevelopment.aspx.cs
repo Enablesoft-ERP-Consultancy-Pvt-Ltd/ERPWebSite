@@ -189,6 +189,7 @@ public partial class Masters_Sample_frmsampledevelopment : System.Web.UI.Page
     protected void Fillsize()
     {
         string str = null, size = null;
+
         switch (DDsizetype.SelectedValue.ToString())
         {
             case "0":
@@ -203,6 +204,25 @@ public partial class Masters_Sample_frmsampledevelopment : System.Web.UI.Page
             default:
                 size = "SizeFt";
                 break;
+        }
+
+        if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+        {
+            switch (DDsizetype.SelectedValue.ToString())
+            {
+                case "0":
+                    size = "SizeFt+'  '+'['+Prodsizeft+']'";
+                    break;
+                case "1":
+                    size = "Sizemtr+'  '+'['+ProdsizeMtr+']'";
+                    break;
+                case "2":
+                    size = "Sizeinch";
+                    break;
+                default:
+                    size = "SizeFt+'  '+'['+Prodsizeft+']'";
+                    break;
+            }
         }
 
         if (Session["varMasterCompanyIDForERP"].ToString() == "44")
@@ -1899,6 +1919,25 @@ public partial class Masters_Sample_frmsampledevelopment : System.Web.UI.Page
                 size = "SizeFt";
                 break;
         }
+        if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+        {
+            switch (DDsizetype.SelectedValue.ToString())
+            { 
+                case "0":
+                    size = "SizeFt+'  '+'['+Prodsizeft+']'";
+                    break;
+                case "1":
+                    size = "Sizemtr+'  '+'['+ProdsizeMtr+']'";
+                    break;
+                case "2":
+                    size = "Sizeinch";
+                    break;
+                default:
+                    size = "SizeFt+'  '+'['+Prodsizeft+']'";
+                    break;
+            }
+        }
+
         if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             switch (DDsizetype.SelectedValue.ToString())

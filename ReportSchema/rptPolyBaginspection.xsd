@@ -1,0 +1,52 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Table">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COMPANYNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="USERNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="DOCID" type="xs:int" minOccurs="0" />
+              <xs:element name="DOCNO" type="xs:string" minOccurs="0" />
+              <xs:element name="PREFIX" type="xs:string" minOccurs="0" />
+              <xs:element name="POSTFIXNO" type="xs:int" minOccurs="0" />
+              <xs:element name="REPORTDATE" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="COMPANYID" type="xs:int" minOccurs="0" />
+              <xs:element name="STANDAREDSIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="STANDAREDGAUGE" type="xs:string" minOccurs="0" />
+              <xs:element name="SUPPLIERNAME" type="xs:string" minOccurs="0" />
+              <xs:element name="CHALLANNODATE" type="xs:string" minOccurs="0" />
+              <xs:element name="APPROVESTATUS" type="xs:unsignedByte" minOccurs="0" />
+              <xs:element name="USERID" type="xs:int" minOccurs="0" />
+              <xs:element name="DATEADDED" type="xs:dateTime" minOccurs="0" />
+              <xs:element name="COMMENTS" type="xs:string" minOccurs="0" />
+              <xs:element name="APPROVAL_USERID" type="xs:int" minOccurs="0" />
+              <xs:element name="BranchID" type="xs:int" minOccurs="0" />
+              <xs:element name="DOCID1" type="xs:int" minOccurs="0" />
+              <xs:element name="SRNO" type="xs:short" minOccurs="0" />
+              <xs:element name="DESCRIPTION" type="xs:string" minOccurs="0" />
+              <xs:element name="TOTALQTY" type="xs:string" minOccurs="0" />
+              <xs:element name="SAMPLESIZE" type="xs:string" minOccurs="0" />
+              <xs:element name="GAUGE" type="xs:string" minOccurs="0" />
+              <xs:element name="SEALING" type="xs:string" minOccurs="0" />
+              <xs:element name="PRINTING" type="xs:string" minOccurs="0" />
+              <xs:element name="TEARING" type="xs:string" minOccurs="0" />
+              <xs:element name="CLEARITY" type="xs:string" minOccurs="0" />
+              <xs:element name="COLOR" type="xs:string" minOccurs="0" />
+              <xs:element name="FOUND" type="xs:string" minOccurs="0" />
+              <xs:element name="ACCEPTANCE" type="xs:string" minOccurs="0" />
+              <xs:element name="LOTRESULT" type="xs:string" minOccurs="0" />
+              <xs:element name="SizeInCM" type="xs:string" minOccurs="0" />
+              <xs:element name="SymbleONPolyBag" type="xs:string" minOccurs="0" />
+              <xs:element name="NoofPunture" type="xs:string" minOccurs="0" />
+              <xs:element name="Others" type="xs:string" minOccurs="0" />
+              <xs:element name="APPROVALUSERNAME" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

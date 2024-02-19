@@ -87,6 +87,10 @@
                                 runat="server" GroupName="OrderType" CssClass="radiobuttonnormal" AutoPostBack="true"
                                 OnCheckedChanged="RDPurchaseOrderRecPendingDetail_CheckedChanged" Visible="true" />
                             <br />
+                            <asp:RadioButton ID="RDPurchaseAdvanceDetail" Text="Purchase Advance Detail"
+                                runat="server" GroupName="OrderType" CssClass="radiobuttonnormal" AutoPostBack="true"
+                                OnCheckedChanged="RDPurchaseAdvanceDetail_CheckedChanged" Visible="true" />
+                            <br />
 
                         </div>
                         <div style="float: left; width: 350px; height: 280px;">
