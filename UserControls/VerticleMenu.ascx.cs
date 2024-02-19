@@ -47,7 +47,7 @@ public partial class UserControls_VerticleMenu : System.Web.UI.UserControl
         if (!this.IsPostBack)
         {
             int userId = Convert.ToInt32(Session["varuserid"].ToString());
-            int clientId = Convert.ToInt32(Session["varCompanyId"]);
+            int clientId = Convert.ToInt32(Session["varMasterCompanyIDForERP"]);
             this.models = this.NavSrv.GetMenus(userId, clientId);
             this.rptCategories.DataSource = models;
             this.rptCategories.DataBind();

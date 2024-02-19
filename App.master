@@ -68,7 +68,7 @@
                     </a>
                     <ul class="nav navbar navbar-top-links navbar-right mbn">
                         <li>
-                            <img style="max-height: 70px;" src="<%= Page.ResolveUrl("~/images/logo/"+Session["varCompanyId"].ToString()+"_company.png")%>"
+                            <img style="max-height: 70px;" src="<%= Page.ResolveUrl("~/images/logo/"+Session["varMasterCompanyIDForERP"].ToString()+"_company.png")%>"
                                 class="img-fluid top-righ-logo" alt="" />
                         </li>
                         <li class="dropdown topbar-user">

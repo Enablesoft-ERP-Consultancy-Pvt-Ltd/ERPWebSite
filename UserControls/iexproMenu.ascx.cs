@@ -48,7 +48,7 @@ public partial class UserControls_iexproMenu : System.Web.UI.UserControl
         if (!this.IsPostBack)
         {
             int userId = Convert.ToInt32(Session["varuserid"].ToString());
-            int clientId = Convert.ToInt32(Session["varCompanyId"]);
+            int clientId = Convert.ToInt32(Session["varMasterCompanyIDForERP"]);
             this.models = this.NavSrv.GetMenus(userId, clientId);
             this.rptMenu.DataSource = models;
             this.rptMenu.DataBind();
@@ -145,9 +145,15 @@ public partial class UserControls_iexproMenu : System.Web.UI.UserControl
         {
             if (!string.IsNullOrEmpty(input))
             {
+                input = input.Replace("\\", "//");
+                input = input.Replace("../", "~/");
+                
+                    
+                    
+                   
 
 
-                return Page.ResolveUrl(input.Replace("../", "~/"));
+                return Page.ResolveUrl(input);
 
 
             }
