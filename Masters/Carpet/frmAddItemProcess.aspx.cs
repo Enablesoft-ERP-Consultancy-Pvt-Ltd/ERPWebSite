@@ -120,6 +120,7 @@ public partial class Masters_Carpet_frmAddItemProcess : System.Web.UI.Page
             array[4] = new SqlParameter("@Msg", SqlDbType.VarChar, 50);
             array[5] = new SqlParameter("@QualityId", SqlDbType.Int);
             array[6] = new SqlParameter("@DesignId", SqlDbType.Int);
+            array[7] = new SqlParameter("@ProcessType", SqlDbType.TinyInt);
             array[7].Value = rdbtnLst.SelectedValue;
             array[0].Value = Request.QueryString["a"];
             array[1].Value = Session["varuserid"];
