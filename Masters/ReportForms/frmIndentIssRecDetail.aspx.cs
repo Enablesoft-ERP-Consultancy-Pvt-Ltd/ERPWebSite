@@ -47,7 +47,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44)
             {
                 str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  Order by EmpName                  
-                select distinct CI.CustomerId,CI.CustomerCode as customercode from OrderMaster OM inner join V_Indent_OredrId VO on Om.OrderId=VO.Orderid inner join customerinfo CI on CI.CustomerId=OM.CustomerId order by CustomerCode 
+                select distinct CI.CustomerId,CI.CustomerCode as customercode 
+                from OrderMaster OM(Nolock) 
+                --inner join V_Indent_OredrId VO(Nolock) on Om.OrderId=VO.Orderid 
+                inner join customerinfo CI(Nolock) on CI.CustomerId=OM.CustomerId order by CustomerCode 
+
                 select IM.Item_Id,Im.Item_Name From Item_Master Im inner join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and cs.id=1 order by IM.ITEM_NAME 
                 select OrderCategoryId, OrderCategory from OrderCategory order by OrderCategory";
             }
@@ -55,7 +59,11 @@ public partial class Masters_ReportForms_frmIndentIssRecDetail : System.Web.UI.P
             {
 
                 str = str + @" select EmpId,ltrim(Empname)+'/'+Address As Empname  from Empinfo  Where MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @"  Order by EmpName                  
-                select distinct CI.CustomerId,CI.CustomerCode+'/'+CompanyName as customercode from OrderMaster OM inner join V_Indent_OredrId VO on Om.OrderId=VO.Orderid inner join customerinfo CI on CI.CustomerId=OM.CustomerId order by CustomerCode 
+                select distinct CI.CustomerId,CI.CustomerCode+'/'+CompanyName as customercode 
+                from OrderMaster OM(Nolock) 
+                --inner join V_Indent_OredrId VO(Nolock) on Om.OrderId=VO.Orderid 
+                inner join customerinfo CI(Nolock) on CI.CustomerId=OM.CustomerId order by CustomerCode 
+
                 select IM.Item_Id,Im.Item_Name From Item_Master Im inner join CategorySeparate cs on IM.CATEGORY_ID=Cs.Categoryid and cs.id=1 order by IM.ITEM_NAME 
                 select OrderCategoryId, OrderCategory from OrderCategory order by OrderCategory";
             

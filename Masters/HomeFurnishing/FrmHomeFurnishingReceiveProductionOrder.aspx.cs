@@ -96,10 +96,10 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingReceiveProductionOr
             {
                 str = str + " And EMP.EMPID = " + txteditempid.Text;
             }
-            if (Session["varCompanyNo"].ToString() == "44")
-            {
+            //if (Session["varCompanyNo"].ToString() == "44")
+            //{
                 str += " where PRM.PROCESSID=" + DDProcessName.SelectedValue;
-            }
+            //}
             str = str + @" Order By PRM.ProcessRecId ";
 
             UtilityModule.ConditionalComboFill(ref DDreceiveNo, str, true, "--Plz Select--");
