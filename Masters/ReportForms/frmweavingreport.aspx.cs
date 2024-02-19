@@ -8340,6 +8340,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
             cmd.Parameters.AddWithValue("@ProductionType", DDproductiontype.SelectedValue);
+            cmd.Parameters.AddWithValue("@ChkWithoutTDS", ChkForWithoutTDS.Checked== true ? 1 :0);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
