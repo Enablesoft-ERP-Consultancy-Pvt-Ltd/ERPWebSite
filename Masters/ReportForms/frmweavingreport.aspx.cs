@@ -8443,6 +8443,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@ChkselectDate", ChkselectDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+            cmd.Parameters.AddWithValue("@ChkWithoutTDS", ChkForWithoutTDS.Checked == true ? 1 : 0);
      
 
             DataSet ds = new DataSet();
