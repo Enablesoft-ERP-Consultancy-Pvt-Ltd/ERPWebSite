@@ -2,13 +2,13 @@
     CodeFile="DefineItemCodeOther.aspx.cs" Inherits="Masters_Carpet_DefineItemCodeOther" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
-    <script src="<%= ResolveUrl("~/") %>Content/jquery/dist/jquery.min.js"></script>
-    <script src="<%= ResolveUrl("~/") %>Content/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="<%= ResolveUrl("~/") %>lib/jquery/dist/jquery.min.js"></script>
+    <script src="<%= ResolveUrl("~/") %>lib/jquery-validation/dist/jquery.validate.min.js"></script>
 
-    <script src="<%= ResolveUrl("~/") %>Content/bootstrap/dist/js/bootstrap.min.js"></script>
-    <link href="<%= ResolveUrl("~/") %>Content/font-awesome/css/font-awesome.min.css"
+    <script src="<%= ResolveUrl("~/") %>lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="<%= ResolveUrl("~/") %>lib/font-awesome/css/font-awesome.min.css"
         rel="stylesheet" />
-    <link href="<%= ResolveUrl("~/") %>Content/bootstrap/dist/css/bootstrap.min.css"
+    <link href="<%= ResolveUrl("~/") %>lib/bootstrap/dist/css/bootstrap.min.css"
         rel="stylesheet" />
     <script src="<%= ResolveUrl("~/") %>Content/JavaScript/Product.js" type="text/javascript"></script>
 </asp:Content>
