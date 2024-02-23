@@ -246,7 +246,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
                 }
             }
 
-        }        
+        }
         getcustomerquality();
 
         if (variable.VarMasterBuyercodeSeqWise == "1")
@@ -288,6 +288,8 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
         {
             case "30":
             case "42":
+                UpdateSkuNo();
+                break;
             case "43":
             case "46":
                 break;
@@ -303,7 +305,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
                 txtInchWidth.Text = "";
                 TxtBuyerFtHeight.Text = "";
                 TxtBuyerMtrHeight.Text = "";
-                txtinchHeight.Text = "";                
+                txtinchHeight.Text = "";
                 hnQSRNO.Value = "0";
                 hnDSRNO.Value = "0";
                 hnCSRNO.Value = "0";
@@ -387,7 +389,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
         ddLocalQualitySelectedChanged();
     }
     protected void ddLocalQualitySelectedChanged()
-    {        
+    {
         if (ddLocalQuality.SelectedIndex > 0)
         {
             btnadddesign.Visible = true;
@@ -1018,7 +1020,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
                     break;
             }
 
-            string Str=string.Empty;
+            string Str = string.Empty;
             if (variable.VarNewQualitySize == "1")
             {
                 Str = @"Select Case When " + VarNo + "=0 Then Export_Format Else case When " + VarNo + @"=1 Then MtrSize Else MtrSize End End as Size,Export_Format,MtrSize,MtrSize
@@ -1031,8 +1033,8 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
 
 
                     Str = "Select Case When 2=0 Then cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar)  else ''  end Else case When 2=1 Then cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end Else cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else '' END End End as Size,cast(s.WidthInch as varchar)+'x'+cast(s.LengthInch as varchar) +case when s.HeightInch>0 then 'x'+cast(s.HeightInch as varchar) else '' END AS SIZEINCH,cast(s.WidthMtr as varchar)+'x'+cast(s.LengthMtr as varchar) +case when s.HeightMtr>0 then 'x'+cast(s.HeightMtr as varchar) else ''  end AS SIZEMTR,cast(s.WidthFt as varchar)+'x'+cast(s.LengthFt as varchar) +case when s.Heightft>0 then 'x'+cast(s.HeightFt as varchar)  else ''  end AS SIZEFT From Size S  Where SizeId=" + ddSize.SelectedValue + " And MasterCompanyId=" + Session["varMasterCompanyIDForERP"];
-                           
-                    
+
+
 
 
                 }
@@ -1689,7 +1691,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
         }
     }
     protected void MasterBuyerCodeReport()
-    {       
+    {
 
         string where = "";
         lblErr.Text = "";
@@ -1731,10 +1733,10 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
         SqlCommand cmd = new SqlCommand("PRO_MasterBuyerCodeReport", con);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.CommandTimeout = 300;
-        cmd.Parameters.AddWithValue("@CustomerID", ddBuyerCode.SelectedValue);        
+        cmd.Parameters.AddWithValue("@CustomerID", ddBuyerCode.SelectedValue);
         cmd.Parameters.AddWithValue("@where", where);
         cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
-       
+
         ////******
         //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_MasterBuyerCodeReport", param);
         DataSet ds = new DataSet();
@@ -1778,7 +1780,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
             sht.Column("O").Width = 15.89;
             sht.Column("P").Width = 15.89;
             sht.Column("Q").Width = 15.89;
-           
+
 
             sht.Range("A1:Q1").Merge();
             sht.Range("A1").SetValue("Master Buyer Code Report");
@@ -1787,7 +1789,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
             sht.Range("A1:Q1").Style.Font.SetBold();
             sht.Range("A1:Q1").Style.Font.FontSize = 12;
 
-            
+
             sht.Range("A" + row).Value = "Buyer Code";
             sht.Range("B" + row).Value = "Category";
             sht.Range("C" + row).Value = "Item Name";
@@ -1818,7 +1820,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
             sht.Range("A" + row + ":Q" + row).Style.Font.FontSize = 11;
             sht.Range("A" + row + ":Q" + row).Style.Font.SetBold();
 
-             using (var a = sht.Range("A" + row + ":Q" + row))
+            using (var a = sht.Range("A" + row + ":Q" + row))
             {
                 a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
                 a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
@@ -1832,7 +1834,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
                 //sht.Range("A" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 //sht.Range("A" + row).SetValue(i + 1);
 
-                 sht.Range("A" + row + ":Q" + row).Style.Font.FontName = "Calibri";
+                sht.Range("A" + row + ":Q" + row).Style.Font.FontName = "Calibri";
                 sht.Range("A" + row + ":Q" + row).Style.Font.FontSize = 10;
                 sht.Range("A" + row + ":Q" + row).Style.Font.SetBold();
                 sht.Range("A" + row + ":Q" + row).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
@@ -1864,12 +1866,12 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
                 }
 
                 row += 1;
-            }          
-          
+            }
+
             //*********Borders
 
             string Fileextension = "xlsx";
-            string filename = "MasterBuyerCode_" + UtilityModule.validateFilename(ds.Tables[0].Rows[0]["CustomerCode"].ToString())+ "." + Fileextension + "";
+            string filename = "MasterBuyerCode_" + UtilityModule.validateFilename(ds.Tables[0].Rows[0]["CustomerCode"].ToString()) + "." + Fileextension + "";
             Path = Server.MapPath("~/Tempexcel/" + filename);
             xapp.SaveAs(Path);
             xapp.Dispose();
@@ -1880,7 +1882,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
             Response.AddHeader("content-disposition", "attachment;filename=" + filename);
             Response.WriteFile(Path);
             Response.End();
-          
+
             //*****
             //File.Delete(Path);
         }
@@ -1994,7 +1996,7 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
             sht.Range("A3:Q3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
             sht.Range("A3:Q3").Style.Font.FontSize = 12;
             sht.Range("A3:Q3").Style.Font.Bold = true;
-            sht.Range("A3:Q3").Merge();       
+            sht.Range("A3:Q3").Merge();
 
             sht.Range("A4:Q4").Merge();
             sht.Range("A4").SetValue("Master Buyer Code Report");
@@ -2111,6 +2113,6 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
         { MasterBuyerCodeReport_agni(); }
         else
         { MasterBuyerCodeReport(); }
-        
+
     }
 }
