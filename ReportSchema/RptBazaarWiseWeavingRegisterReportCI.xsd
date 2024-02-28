@@ -8,6 +8,7 @@
             <xs:sequence>
               <xs:element name="FromDate" type="xs:string" minOccurs="0" />
               <xs:element name="ToDate" type="xs:string" minOccurs="0" />
+              <xs:element name="CalType" type="xs:string" minOccurs="0" />
               <xs:element name="COMPANYID" type="xs:int" minOccurs="0" />
               <xs:element name="CompanyName" type="xs:string" minOccurs="0" />
               <xs:element name="CompAddr1" type="xs:string" minOccurs="0" />
