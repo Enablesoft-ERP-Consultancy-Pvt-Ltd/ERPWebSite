@@ -69,7 +69,7 @@ Order By y.DocumentId";
         public int AddDocument(DocumentModel doc)
         {
             var result = 0;
-            string sqlQuery = @"IF NOT EXISTS (SELECT 0 FROM tblXSLTDetails WHERE XSLTSubject=@XSLTSubject and DocumentType=@DocumentType)
+            string sqlQuery = @"IF NOT EXISTS (SELECT 0 FROM tblXSLTDetails WHERE XSLTSubject=@XSLTSubject and DocumentType=@DocumentType and PrintType=@PrintType)
 BEGIN
 
 INSERT INTO tblXSLTDetails
@@ -89,7 +89,7 @@ Update  tblXSLTDetails Set XSLTText=@XSLTText Where XSLTId=@XSLTId
 
 
 
-IF NOT EXISTS (SELECT 0 FROM tblXSLTClientMapping WHERE XSLTId=@XSLTId and UserId=@UserId )
+IF NOT EXISTS (SELECT 0 FROM tblXSLTClientMapping WHERE XSLTId=@XSLTId and UserId=@UserId and UserType=@UserType and ClientId=@ClientId )
 BEGIN
 INSERT INTO tblXSLTClientMapping
 (XSLTId,ClientId,UserId,UserType)

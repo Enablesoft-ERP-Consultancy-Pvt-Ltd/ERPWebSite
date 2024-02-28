@@ -89,11 +89,11 @@ Where x.ClientId=@ClientId and IsNUll(x.UserId,@UserId)=@UserId and y.DocumentTy
             }
             if (result.Where(x => x.UserId == userId).Count() > 0)
             {
-                return result.Where(x => x.UserId == userId).SingleOrDefault().XSLTText;
+                return result.Where(x => x.UserId == userId).OrderByDescending(x=>x.XsltId).FirstOrDefault().XSLTText;
             }
             else
             {
-                return result.Where(x => x.UserId == 0).SingleOrDefault().XSLTText;
+                return result.Where(x => x.UserId == 0).OrderByDescending(x => x.XsltId).FirstOrDefault().XSLTText;
             }
         }
 
