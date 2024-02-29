@@ -736,6 +736,35 @@
                 TRForWithoutTDS.Visible = true;
                 
             }
+            if (RDWeaverRawMaterialRecSummary.Checked == true)
+            {
+                TRCompanyName.Visible = true;
+                TRCustomerCode.Visible = false;
+                TROrderNo.Visible = false;
+                trWeaver.Visible = true;
+                trFolioNo.Visible = true;
+                Trunitname.Visible = false;
+                trReportType.Visible = false;
+                trProductionStatus.Visible = false;
+                trFolioType.Visible = false;
+                Trproductiontype.Visible = false;
+                trCategoryName.Visible = true;
+                trItemName.Visible = true;
+                Trquality.Visible = true;
+                Trdesign.Visible = false;
+                Trcolor.Visible = false;
+                Trsize.Visible = false;
+                Trshadecolor.Visible = true;
+                Trorderstatus.Visible = false;
+                TRReturnGatePassNo.Visible = false;
+                TRTagNo.Visible = false;
+                TDchksummary.Visible = false;
+                TDchkpbarcode.Visible = false;
+                TRchkforshadewise.Visible = false;
+                TRChkUnpaidApprovalNo.Visible = false;
+                TRChkWeavingReport.Visible = false;
+                ChkselectDate.Checked = true;
+            }
         }        
     </script>
     <asp:UpdatePanel ID="UPD1" runat="server">
@@ -941,6 +970,15 @@
                                             OnCheckedChanged="RadioButton_CheckedChanged" />
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <td id="TDWeaverRawMaterialRecSummary" runat="server" visible="false">
+                                        <asp:RadioButton ID="RDWeaverRawMaterialRecSummary" Text="Weaver Raw Material Rec Summary"
+                                            runat="server" CssClass="radiobuttonnormal" GroupName="A" AutoPostBack="true"
+                                            OnCheckedChanged="RadioButton_CheckedChanged" />
+                                    </td>
+                                </tr>
+
                             </table>
                         </asp:Panel>
                     </div>
