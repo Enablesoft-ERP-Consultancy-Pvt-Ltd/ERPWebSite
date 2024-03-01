@@ -280,6 +280,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
     protected void ddempname_SelectedIndexChanged(object sender, EventArgs e)
     {
         ViewState["Prmid"] = 0;
+        txtChallanNo.Text = "";
         EmpNameSelectedChange();
     }
 
