@@ -189,6 +189,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 TDWeaverRawMaterialIssueSummary.Visible = true;
                 TDWeavingRecSummaryWithTDS.Visible = true;
                 TDBazaarWiseWeavingRegisterSummary.Visible = true;
+                TDWeaverRawMaterialRecSummary.Visible = true;
             }
             else
             {
@@ -597,6 +598,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         else if (RDBazaarWiseWeavingRegisterSummary.Checked == true)
         {
             BazaarWiseWeavingRegisterSummaryReport_CI();            
+            return;
+        }
+        else if (RDWeaverRawMaterialRecSummary.Checked == true)
+        {
+            WeaverRawMaterialRecQualityWiseSummaryReport();
             return;
         }
     }
@@ -8340,6 +8346,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
             cmd.Parameters.AddWithValue("@ProductionType", DDproductiontype.SelectedValue);
+            cmd.Parameters.AddWithValue("@ChkWithoutTDS", ChkForWithoutTDS.Checked== true ? 1 :0);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -8442,6 +8449,7 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@ChkselectDate", ChkselectDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+            cmd.Parameters.AddWithValue("@ChkWithoutTDS", ChkForWithoutTDS.Checked == true ? 1 : 0);
      
 
             DataSet ds = new DataSet();
@@ -8483,5 +8491,92 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
         }
 
     }
+    protected void WeaverRawMaterialRecQualityWiseSummaryReport()
+    {
+        lblmsg.Text = "";
+        try
+        {
+            string str = "", FilterBy = "", str2 = "";
 
+            //if (DDCustCode.SelectedIndex > 0)
+            //{
+            //    str = str + " and OM.Customerid=" + DDCustCode.SelectedValue;
+            //    FilterBy = FilterBy + ", Customer code -" + DDCustCode.SelectedItem.Text;
+            //}
+            //if (DDOrderNo.SelectedIndex > 0)
+            //{
+            //    str = str + " and OM.orderid=" + DDOrderNo.SelectedValue;
+            //    FilterBy = FilterBy + ", Order No. -" + DDOrderNo.SelectedItem.Text;
+            //}
+
+            if (DDFolioNo.SelectedIndex > 0)
+            {
+                str = str + " and TD.Prorderid=" + DDFolioNo.SelectedValue;
+                //FilterBy = FilterBy + ", Folio No. -" + DDFolioNo.SelectedItem.Text;
+            }
+            if (DDQtype.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Item_id=" + DDQtype.SelectedValue;
+            }
+            if (DDQuality.SelectedIndex > 0)
+            {
+                str = str + " and Vf.Qualityid=" + DDQuality.SelectedValue;
+            }
+            if (DDshade.SelectedIndex > 0)
+            {
+                str = str + " and vf.Shadecolorid=" + DDshade.SelectedValue;
+            }
+            if (ChkselectDate.Checked == true)
+            {
+                str = str + " and TD.Date>='" + txtfromDate.Text + "' and TD.Date<='" + txttodate.Text + "'";
+                FilterBy = FilterBy + ", From -" + txtfromDate.Text + " To - " + txttodate.Text;
+            }
+
+
+            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+            if (con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            SqlCommand cmd = new SqlCommand("PRO_GetWeaverRawMaterialRecQualityWiseSummaryReport", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
+
+            cmd.Parameters.AddWithValue("@Companyid", DDCompany.SelectedValue);
+            cmd.Parameters.AddWithValue("@Where", str);
+            //cmd.Parameters.AddWithValue("@Where2", str2);
+            cmd.Parameters.AddWithValue("@empid", DDWeaver.SelectedIndex > 0 ? DDWeaver.SelectedValue : "0");
+            cmd.Parameters.AddWithValue("@FromDate", txtfromDate.Text);
+            cmd.Parameters.AddWithValue("@ToDate", txttodate.Text);
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter ad = new SqlDataAdapter(cmd);
+            cmd.ExecuteNonQuery();
+            ad.Fill(ds);
+            //*************
+
+            con.Close();
+            con.Dispose();
+            //***********
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                Session["rptFileName"] = "~\\Reports\\RptWeaverRawMaterialRecQualityWiseSummaryCI.rpt";
+                Session["Getdataset"] = ds;
+                Session["dsFileName"] = "~\\ReportSchema\\RptWeaverRawMaterialRecQualityWiseSummaryCI.xsd";
+                StringBuilder stb = new StringBuilder();
+                stb.Append("<script>");
+                stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+
+            }
+            else
+            {
+                ScriptManager.RegisterStartupScript(Page, GetType(), "Fstatus", "alert('No Record Found!');", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            lblmsg.Text = ex.Message;
+        }
+    }
 }

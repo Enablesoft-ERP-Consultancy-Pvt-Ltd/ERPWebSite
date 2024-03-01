@@ -13,6 +13,7 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
     static int MasterCompanyId;
     static int Item_finished_id;
     static int rowindex = 0;
+    static string TempIndentDate = "";
     //    string msg = "";
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -105,6 +106,8 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
             }
             ViewState["VarCompanyType"] = DSQ.Tables[3].Rows[0]["VarCompanyType"].ToString();
             ViewState["VARQCTYPE"] = DSQ.Tables[3].Rows[0]["VARQCTYPE"].ToString();
+
+            ViewState["VarGENRATEINDENTWITHOUTLOT_STOCK"] = variable.VarGENRATEINDENTWITHOUTLOT_STOCK;
 
             switch (Convert.ToInt32(DSQ.Tables[3].Rows[0]["VarProdCode"]))
             {
@@ -356,6 +359,27 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
     }
     private void IndentSelectedChange()
     {
+        string str = "";
+
+        if (Session["varMasterCompanyIDForERP"].ToString() == "42")
+        {
+            DateTime EndDate=Convert.ToDateTime("2024-02-29 00:00:00.000");
+
+            str = @"Select distinct IM.IndentId, replace(convert(varchar(11),isnull(IM.Date,''),106), ' ','-') as IndentDate from IndentMaster IM   
+                        Where IM.Companyid=" + ddCompName.SelectedValue + " And ProcessId=" + ddProcessName.SelectedValue + "  and IM.IndentId=" + ddindent.SelectedValue;
+
+            DataSet Ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
+            if (Ds.Tables[0].Rows.Count > 0)
+            {
+                TempIndentDate = Ds.Tables[0].Rows[0]["IndentDate"].ToString();
+
+                if (Convert.ToDateTime(TempIndentDate) <= EndDate)
+                {
+                    ViewState["VarGENRATEINDENTWITHOUTLOT_STOCK"] = "1";
+                }
+            }
+        }
+
         UtilityModule.ConditionalComboFill(ref ddChallanNo, @"Select Distinct PPM.PrmId,PPM.ChallanNo from PP_ProcessRawMaster PPM,PP_ProcessRawTran PPT Where 
         PPM.PrmId=PPT.PrmId And PPM.CompanyID=" + ddCompName.SelectedValue + " And PPM.ProcessID=" + ddProcessName.SelectedValue + " And PPm.EmpId=" + ddempname.SelectedValue + " And PPT.IndentID=" + ddindent.SelectedValue, true, "Select Challan No");
     }
@@ -693,7 +717,7 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
             if (variable.Carpetcompany == "1")
             {
                 string str = "";
-                if (variable.VarGENRATEINDENTWITHOUTLOT_STOCK == "1")
+                if (ViewState["VarGENRATEINDENTWITHOUTLOT_STOCK"].ToString() == "1")
                 {
                     str = @" select Distinct Vf.ShadecolorId,Vf.ShadeColorName From Indentdetail ID inner Join V_FinishedItemDetail vf on ID.OFinishedId=vf.ITEM_FINISHED_ID
                             where ID.IndentId=" + ddindent.SelectedValue + " and vf.ITEM_ID=" + dditemname.SelectedValue + " and Vf.QualityId=" + dquality.SelectedValue + " order by ShadeColorName";
@@ -741,7 +765,7 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
         }
         if (TDRECSHADE.Visible == true)
         {
-            if (variable.VarGENRATEINDENTWITHOUTLOT_STOCK == "1")
+            if (ViewState["VarGENRATEINDENTWITHOUTLOT_STOCK"].ToString() == "1")
             {
                 UtilityModule.ConditionalComboFill(ref DDRECSHADE, @" select Distinct ID.ofinishedid,Vf.ShadeColorName From Indentdetail ID inner Join V_FinishedItemDetail vf on ID.OFinishedId=vf.ITEM_FINISHED_ID
                                                      where ID.IndentId=" + ddindent.SelectedValue + " and Vf.QualityId=" + dquality.SelectedValue + @" ", true, "Select ShadeColor");
@@ -864,7 +888,7 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
             string str = "";
             if (variable.Carpetcompany == "1")
             {
-                if (variable.VarGENRATEINDENTWITHOUTLOT_STOCK == "1")
+                if (ViewState["VarGENRATEINDENTWITHOUTLOT_STOCK"].ToString() == "1")
                 {
                     str = @"SELECT DISTINCT PRT.LOTNO,PRT.LOTNO FROM INDENTDETAIL ID INNER JOIN PP_PROCESSRAWTRAN PRT ON ID.INDENTID=PRT.INDENTID
                                 AND ID.IFINISHEDID=PRT.FINISHEDID 
@@ -894,7 +918,7 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
         {
             if (variable.Carpetcompany == "1")
             {
-                if (variable.VarGENRATEINDENTWITHOUTLOT_STOCK == "1")
+                if (ViewState["VarGENRATEINDENTWITHOUTLOT_STOCK"].ToString() == "1")
                 {
                     Str = @"Select Distinct PRt.TagNo,PRT.TagNo From IndentDetail ID,PP_ProcessRawtran PRT 
                 Where ID.IndentId=PRT.IndentId And PRT.IndentId=" + ddindent.SelectedValue + " And PRMid=" + ddChallanNo.SelectedValue + " and PRT.LotNo='" + DDLotNo.SelectedItem.Text + "'  and PRT.FInishedid=" + hnfinishedid.Value + "";
@@ -923,7 +947,7 @@ public partial class Masters_RawMaterial_IndentRawRecieve : System.Web.UI.Page
             string str = "";
             if (variable.Carpetcompany == "1")
             {
-                if (variable.VarGENRATEINDENTWITHOUTLOT_STOCK == "1")
+                if (ViewState["VarGENRATEINDENTWITHOUTLOT_STOCK"].ToString() == "1")
                 {
                     str = @"SELECT DISTINCT PRT.TagNO,PRT.TagNO FROM INDENTDETAIL ID INNER JOIN PP_PROCESSRAWTRAN PRT ON ID.INDENTID=PRT.INDENTID
                                 AND ID.IFINISHEDID=PRT.FINISHEDID 

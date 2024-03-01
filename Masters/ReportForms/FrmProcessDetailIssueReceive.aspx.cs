@@ -8564,7 +8564,8 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             cmd.Parameters.AddWithValue("@UserId", Session["VarUserId"]);
             cmd.Parameters.AddWithValue("@ChkselectDate",  ChkForDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
-            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);           
+            cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
+            cmd.Parameters.AddWithValue("@ChkWithoutTDS", ChkForWithoutTDS.Checked == true ? 1 : 0);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);
@@ -8915,6 +8916,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             cmd.Parameters.AddWithValue("@DATEFLAG", ChkForDate.Checked == true ? 1 : 0);
             cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
             cmd.Parameters.AddWithValue("@ToDate", TxtToDate.Text);
+            cmd.Parameters.AddWithValue("@ChkWithoutTDS", ChkForWithoutTDS.Checked==true ? 1 : 0);
 
             DataSet ds = new DataSet();
             SqlDataAdapter ad = new SqlDataAdapter(cmd);

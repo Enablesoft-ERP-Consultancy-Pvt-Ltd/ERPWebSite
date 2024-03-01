@@ -1439,26 +1439,64 @@ public partial class Masters_ReportForms_frmorderReports : System.Web.UI.Page
             sht.Range("Z1").Value = "ORD QTY";
             sht.Range("AA1").Value = "TAG PCS";
             sht.Range("AB1").Value = "TOT ISS QTY";
-            sht.Range("AC1").Value = "TOT ISS DUE";
+            if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+            {
+                sht.Range("AC1").Value = "TOT ISS PENDING";
+            }
+            else
+            {
+                sht.Range("AC1").Value = "TOT ISS DUE";
+            }
             sht.Range("AD1").Value = "TOT BAZAR QTY";
-            sht.Range("AE1").Value = "TOT BAZAR DUE";
+            if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+            {
+                sht.Range("AE1").Value = "TOT BAZAR PENDING";
+            }
+            else
+            {
+                sht.Range("AE1").Value = "TOT BAZAR DUE";
+            }
+            
             //***
             sht.Range("AF1").Value = "IN HS PLAN QTY";
             sht.Range("AG1").Value = "IN HS ISS";
-            sht.Range("AH1").Value = "IN HS ISS DUE";
+            if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+            {
+                sht.Range("AH1").Value = "IN HS ISS PENDING";
+            }
+            else
+            {
+                sht.Range("AH1").Value = "IN HS ISS DUE";
+            }
+            
             sht.Range("AI1").Value = "IN HS BZR QTY";
             sht.Range("AJ1").Value = "IN HS BZR BAL";
             //**
             sht.Range("AK1").Value = "OS PLAN QTY";
             sht.Range("AL1").Value = "OS ISS";
-            sht.Range("AM1").Value = "OS ISS DUE";
+            if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+            {
+                sht.Range("AM1").Value = "OS ISS PENDING";
+            }
+            else
+            {
+                sht.Range("AM1").Value = "OS ISS DUE";
+            }
+            
             sht.Range("AN1").Value = "OS BZR QTY";
             sht.Range("AO1").Value = "OS BZR BAL";
             //**
             sht.Range("AP1").Value = "UNDER FINISHING";
             sht.Range("AQ1").Value = "FINISHED QTY";
             sht.Range("AR1").Value = "DISP QTY";
-            sht.Range("AS1").Value = "DISP DUE";
+            if (Session["varMasterCompanyIDForERP"].ToString() == "43")
+            {
+                sht.Range("AS1").Value = "DISP PENDING";
+            }
+            else
+            {
+                sht.Range("AS1").Value = "DISP DUE";
+            }
             sht.Range("AT1").Value = "PACKED_TO_OTHER";
             sht.Range("AU1").Value = "PACKED_FROM_OTHER";
             if (Session["varCompanyNo"].ToString() != "44")
