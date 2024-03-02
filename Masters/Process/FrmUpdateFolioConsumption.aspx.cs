@@ -39,21 +39,43 @@ public partial class Masters_Process_FrmUpdateFolioConsumption : System.Web.UI.P
         SqlTransaction Tran = con.BeginTransaction();
         try
         {
-            SqlParameter[] param = new SqlParameter[6];
-            param[0] = new SqlParameter("@ChallanNo", TxtFolioNo.Text);
-            param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
-            param[1].Direction = ParameterDirection.Output;
-            param[2] = new SqlParameter("@ChkForDyeingConsumption", ChkForDyeingConsumption.Checked == true ? "1" : "0");
-            param[3] = new SqlParameter("@IssueDate", System.DateTime.Now.ToString("dd-MMM-yyyy"));
-            param[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyNo"]);
-            param[5] = new SqlParameter("@TypeFlag", TypeFlag);
 
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_updatecurrentconsmpLoomWise", param);
+            SqlCommand cmd = new SqlCommand("Pro_updatecurrentconsmpLoomWise", con, Tran);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.CommandTimeout = 3000;
 
+            cmd.Parameters.AddWithValue("@ChallanNo", TxtFolioNo.Text);
+            cmd.Parameters.Add("@msg", SqlDbType.VarChar, 500);
+            cmd.Parameters["@msg"].Direction = ParameterDirection.Output;
+
+            cmd.Parameters.AddWithValue("@ChkForDyeingConsumption", ChkForDyeingConsumption.Checked == true ? "1" : "0");
+            cmd.Parameters.AddWithValue("@IssueDate", System.DateTime.Now.ToString("dd-MMM-yyyy"));
+            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
+            cmd.Parameters.AddWithValue("@TypeFlag", TypeFlag);
+           
+
+            cmd.ExecuteNonQuery();
             Tran.Commit();
-            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('" + param[1].Value + "');", true);
+            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('" + cmd.Parameters["@msg"].Value.ToString() + "');", true);
             TxtFolioNo.Text = "";
             TxtFolioNo.Focus();
+           
+
+            //SqlParameter[] param = new SqlParameter[6];
+            //param[0] = new SqlParameter("@ChallanNo", TxtFolioNo.Text);
+            //param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+            //param[1].Direction = ParameterDirection.Output;
+            //param[2] = new SqlParameter("@ChkForDyeingConsumption", ChkForDyeingConsumption.Checked == true ? "1" : "0");
+            //param[3] = new SqlParameter("@IssueDate", System.DateTime.Now.ToString("dd-MMM-yyyy"));
+            //param[4] = new SqlParameter("@MasterCompanyId", Session["varcompanyNo"]);
+            //param[5] = new SqlParameter("@TypeFlag", TypeFlag);
+
+            //SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_updatecurrentconsmpLoomWise", param);
+
+            //Tran.Commit();
+            //ScriptManager.RegisterClientScriptBlock(Page, GetType(), "Employee", "alert('" + param[1].Value + "');", true);
+            //TxtFolioNo.Text = "";
+            //TxtFolioNo.Focus();
         }
         catch (Exception ex)
         {
