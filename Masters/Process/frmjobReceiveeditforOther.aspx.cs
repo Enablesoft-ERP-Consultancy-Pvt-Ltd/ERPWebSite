@@ -323,7 +323,7 @@ public partial class Masters_Process_frmjobReceiveeditforOther : System.Web.UI.P
                 LinkButton1.Visible = false;
             }
 
-            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 43)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 43 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
             {
                 if (Session["usertype"].ToString() != "1")
                 {
