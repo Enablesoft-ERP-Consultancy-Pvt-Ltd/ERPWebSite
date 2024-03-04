@@ -180,7 +180,9 @@ public partial class Masters_Hissab_purchase_hisab : System.Web.UI.Page
 
         if (Session["VarCompanyNo"].ToString() == "42")
         {
-            Textpamt.Text = (Convert.ToDouble(Textpamt.Text) - Convert.ToDouble(txtDeductionAmt.Text)).ToString();
+            //Textpamt.Text = (Convert.ToDouble(Textpamt.Text) - Convert.ToDouble(txtDeductionAmt.Text)).ToString();
+
+            Textpamt.Text = (Convert.ToDouble(Textpamt.Text) - Convert.ToDouble(txtDebitAmt.Text) - Convert.ToDouble(txtDeductionAmt.Text)).ToString();
         }
         else
         {
