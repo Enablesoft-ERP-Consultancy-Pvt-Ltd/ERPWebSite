@@ -1137,6 +1137,7 @@ public partial class Masters_RawMaterial_ProcessRawRecieve : System.Web.UI.Page
             {
                 case "16":
                 case "28":
+                case "42":
                     break;
                 default:
                     str = "Select isnull(FinishedId,0) From PP_ProcessRectran Where PRMID=" + HPRMID.Value + " And Finishedid=" + Varfinishedid + " And IndentId=" + ddindent.SelectedValue + " And LotNo='" + VarLotNo + "' And Rec_Iss_ItemFlag=" + VarReceiveIssItem + " and TagNo='" + TagNo + "' and issprmid=" + ddChallanNo.SelectedValue + "";
