@@ -98,6 +98,7 @@ public partial class Masters_process_itemRecieve : System.Web.UI.Page
                     BtnStockNoToVCMSale.Visible = true;
                     TDUpdatePrice.Visible = true;
                     ChkForInchSize.Visible = true;
+                    TDDirectStockRemark.Visible = true;
                     break;
                 case "44":
                     ChkForExcelExport.Visible = false;
@@ -495,6 +496,7 @@ public partial class Masters_process_itemRecieve : System.Web.UI.Page
                         break;
                     case "42":
                         TRFinishedStockReport.Visible = true;
+                        TDDirectStockRemark.Visible = true;
                         break;
                 }
             }
