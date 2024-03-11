@@ -140,8 +140,7 @@ public partial class Masters_ReportForms_FrmPendingQtyInFinishingProcessReport :
         str = "Select Distinct S.Sizeid,S." + size + " As  " + size + @" From Size S 
                  Where shapeid=" + DDShape.SelectedValue + " And S.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " order by " + size + "";
 
-        UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");
-        //
+        UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--SELECT--");        
 
     }
     protected void DDsizetype_SelectedIndexChanged(object sender, EventArgs e)
@@ -150,8 +149,7 @@ public partial class Masters_ReportForms_FrmPendingQtyInFinishingProcessReport :
     }
     protected void btnPreview_Click(object sender, EventArgs e)
     {
-        PendingQtyinFinishingProcess();
-       
+        PendingQtyinFinishingProcess();       
     }    
     protected void PendingQtyinFinishingProcess()
     {
@@ -185,6 +183,7 @@ public partial class Masters_ReportForms_FrmPendingQtyInFinishingProcessReport :
         {
             where = where + " and vf.sizeid=" + DDSize.SelectedValue;
         }
+
         SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
         if (con.State == ConnectionState.Closed)
         {
@@ -193,6 +192,7 @@ public partial class Masters_ReportForms_FrmPendingQtyInFinishingProcessReport :
         SqlCommand cmd = new SqlCommand("PRO_GETPENDINGQTYINFINISHINGPROCESS_CI", con);
         cmd.CommandType = CommandType.StoredProcedure;
         cmd.CommandTimeout = 3000;
+
         //********
         cmd.Parameters.AddWithValue("@companyId", DDcompany.SelectedValue);
         cmd.Parameters.AddWithValue("@where", where);
@@ -202,18 +202,11 @@ public partial class Masters_ReportForms_FrmPendingQtyInFinishingProcessReport :
         dt.Load(cmd.ExecuteReader());
         //*************
         DataSet ds = new DataSet();
-        ds.Tables.Add(dt);
-
-        //SqlParameter[] param = new SqlParameter[2];
-        //param[0] = new SqlParameter("@companyId", DDcompany.SelectedValue);
-        //param[1] = new SqlParameter("@where", where);
-        //*************
-        //DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GETPENDINGQTYINFINISHINGPROCESS_CI", param);
+        ds.Tables.Add(dt);       
       
         ////Export to excel
         if (ds.Tables[0].Rows.Count > 0)
         {
-
             Session["rptFileName"] = "~\\Reports\\RptPendingQtyinFinishingProcessReport_CI.rpt";
             Session["GetDataset"] = ds;
             Session["dsFileName"] = "~\\ReportSchema\\RptPendingQtyinFinishingProcessReport_CI.xsd";
