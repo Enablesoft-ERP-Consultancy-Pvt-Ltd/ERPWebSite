@@ -268,6 +268,25 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
                             break;
                     }
                     break;
+                case 48:
+                    tdColor1.Visible = false;
+                    TDCustomerCode.Visible = true;
+                    TDCustomerOrderNo.Visible = true;
+                    TxtIssueQty.Enabled = true;
+                    TxtIssueQty.Text = "200";
+                    DGStockDetail.PageSize = 200;
+                    switch (Session["Usertype"].ToString())
+                    {
+                        case "1":
+                            DIVStockDetail.Visible = true;
+                            btngetstock.Visible = true;
+                            btnsavegrid.Visible = true;
+
+                            break;
+                       
+                    }
+
+                    break;
                 default:
                     switch (Session["Usertype"].ToString())
                     {
@@ -694,7 +713,7 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
     {
         string StrSize = "vf.SizeMtr + ' ' + vf.shapename";
         string str = "";
-        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
+        if (Session["varMasterCompanyIDForERP"].ToString() == "44" )
         {
             str = @"select top(1) OrderUnitId From OrderDetail Where OrderId=" + DDorderNo.SelectedValue;
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
@@ -732,19 +751,38 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
             StrSize = "vf.Sizeft + ' ' + vf.shapename";
 
         }
+        if (Session["varMasterCompanyIDForERP"].ToString() == "48")
+        {
+            str = @"select Distinct vf.sizeid, " + StrSize + @" size From V_FinishedItemDetail vf 
+            where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.sizeid<>0 order by Size";
 
-        str = @"select Distinct vf.sizeid, " + StrSize + @" size From V_FinishedItemDetail vf 
+        }
+        else
+        {
+            str = @"select Distinct vf.sizeid, " + StrSize + @" size From V_FinishedItemDetail vf 
             where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid=" + DDColor.SelectedValue + @" and 
             vf.sizeid<>0 order by Size";
-
+        }
         if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
         {
-            str = @"Select Distinct vf.sizeid, " + StrSize + @" size 
+            if (Session["varMasterCompanyIDForERP"].ToString() == "48")
+            {
+                str = @"Select Distinct vf.sizeid, " + StrSize + @" size 
+                From OrderDetail OD(Nolock)
+                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" And 
+                    vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + " Where OD.OrderId = " + DDorderNo.SelectedValue + @"
+                Order BY Size";
+            }
+            else
+            {
+                str = @"Select Distinct vf.sizeid, " + StrSize + @" size 
                 From OrderDetail OD(Nolock)
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + @" And 
                     vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + " And vf.colorid=" + DDColor.SelectedValue + @" 
                 Where OD.OrderId = " + DDorderNo.SelectedValue + @"
                 Order BY Size";
+
+            }
         }
 
         UtilityModule.ConditionalComboFill(ref DDSize, str, true, "--Plz Select--");
@@ -1874,18 +1912,25 @@ public partial class Masters_Process_NextIssue : System.Web.UI.Page
     }
     protected void DDDesign_SelectedIndexChanged(object sender, EventArgs e)
     {
-        string str = "select Distinct vf.ColorId,vf.ColorName From V_FinishedItemDetail vf where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid<>0 order by vf.colorname";
-        if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+        if (MasterCompanyId == 48)
         {
-            str = @"Select Distinct vf.ColorId,vf.ColorName 
+            DDColor_SelectedIndexChanged(sender, e);
+        }
+        else
+        {
+            string str = "select Distinct vf.ColorId,vf.ColorName From V_FinishedItemDetail vf where vf.QualityId=" + DDQuality.SelectedValue + " and vf.designid=" + DDDesign.SelectedValue + " and vf.colorid<>0 order by vf.colorname";
+            if (TDCustomerOrderNo.Visible == true && DDorderNo.SelectedIndex > 0)
+            {
+                str = @"Select Distinct vf.ColorId,vf.ColorName 
                 From OrderDetail OD(Nolock)
                 JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = OD.Item_Finished_Id And VF.CATEGORY_ID = " + DDCategory.SelectedValue + " And vf.QualityId=" + DDQuality.SelectedValue + "  and vf.designid=" + DDDesign.SelectedValue + @" 
                 Where OD.OrderId = " + DDorderNo.SelectedValue + @"
                 Order BY vf.ColorName";
-        }
+            }
 
-        UtilityModule.ConditionalComboFill(ref DDColor, str, true, "--Plz Select--");
-        Focus = "DDColor";
+            UtilityModule.ConditionalComboFill(ref DDColor, str, true, "--Plz Select--");
+            Focus = "DDColor";
+        }
     }
     protected void SaveGridCarpetData()
     {
