@@ -18,9 +18,10 @@
         function Preview() {
             window.open("../../ReportViewer.aspx");
         }
+        
         function CheckAllCheckBoxes() {
-            if (document.getElementById('CPH_Form_ChkForAllSelect').checked == true) {
-                var gvcheck = document.getElementById('CPH_Form_DGDetail');
+            if (document.getElementById('<%=ChkForAllSelect.ClientID %>').checked == true) {
+                var gvcheck = document.getElementById('<%=DGDetail.ClientID %>');
                 var i;
                 for (i = 1; i < gvcheck.rows.length; i++) {
                     var inputs = gvcheck.rows[i].getElementsByTagName('input');
@@ -28,7 +29,7 @@
                 }
             }
             else {
-                var gvcheck = document.getElementById('CPH_Form_DGDetail');
+                var gvcheck = document.getElementById('<%=DGDetail.ClientID %>');
                 var i;
                 for (i = 1; i < gvcheck.rows.length; i++) {
                     var inputs = gvcheck.rows[i].getElementsByTagName('input');
@@ -44,89 +45,89 @@
             }
         }
         function ValidationSaveNew() {
-            if (document.getElementById('CPH_Form_DDCompanyName') != null) {
-                if (document.getElementById('CPH_Form_DDCompanyName').options.length == 0) {
+            if (document.getElementById('<%=DDCompanyName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDCompanyName.ClientID %>').options.length == 0) {
                     alert("Company name must have a value....!");
-                    document.getElementById("CPH_Form_DDCompanyName").focus();
+                    document.getElementById('<%=DDCompanyName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDCompanyName').options[document.getElementById('CPH_Form_DDCompanyName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDCompanyName.ClientID %>').options[document.getElementById('<%=DDCompanyName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select company name ....!");
-                    document.getElementById("CPH_Form_DDCompanyName").focus();
+                    document.getElementById('<%=DDCompanyName.ClientID %>').focus();
                     return false;
                 }
             }
-            if (document.getElementById('CPH_Form_DDProcessName') != null) {
-                if (document.getElementById('CPH_Form_DDProcessName').options.length == 0) {
+            if (document.getElementById('<%=DDProcessName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDProcessName.ClientID %>').options.length == 0) {
                     alert("Process name must have a value....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDProcessName').options[document.getElementById('CPH_Form_DDProcessName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDProcessName.ClientID %>').options[document.getElementById('<%=DDProcessName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select process name ....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
             }
             return confirm('Do You Want To Save? Please check date range')
         }
         function ValidationSave() {
-            if (document.getElementById('CPH_Form_DDCompanyName') != null) {
-                if (document.getElementById('CPH_Form_DDCompanyName').options.length == 0) {
+            if (document.getElementById('<%=DDProcessName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDProcessName.ClientID %>').options.length == 0) {
                     alert("Company name must have a value....!");
-                    document.getElementById("CPH_Form_DDCompanyName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDCompanyName').options[document.getElementById('CPH_Form_DDCompanyName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDProcessName.ClientID %>').options[document.getElementById('<%=DDProcessName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select company name ....!");
-                    document.getElementById("CPH_Form_DDCompanyName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
             }
-            if (document.getElementById('CPH_Form_DDProcessName') != null) {
-                if (document.getElementById('CPH_Form_DDProcessName').options.length == 0) {
+            if (document.getElementById('<%=DDProcessName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDProcessName.ClientID %>').options.length == 0) {
                     alert("Process name must have a value....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDProcessName').options[document.getElementById('CPH_Form_DDProcessName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDProcessName.ClientID %>').options[document.getElementById('<%=DDProcessName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select process name ....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
             }
-            if (document.getElementById('CPH_Form_DDEmployerName') != null) {
-                if (document.getElementById('CPH_Form_DDEmployerName').options.length == 0) {
+            if (document.getElementById('<%=DDEmployerName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDEmployerName.ClientID %>').options.length == 0) {
                     alert("Employee name must have a value....!");
-                    document.getElementById("CPH_Form_DDEmployerName").focus();
+                    document.getElementById('<%=DDEmployerName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDEmployerName').options[document.getElementById('CPH_Form_DDEmployerName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDEmployerName.ClientID %>').options[document.getElementById('<%=DDEmployerName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select employee name ....!");
-                    document.getElementById("CPH_Form_DDEmployerName").focus();
+                    document.getElementById('<%=DDEmployerName.ClientID %>').focus();
                     return false;
                 }
             }
-            if (document.getElementById('CPH_Form_ChkForEdit').checked == true) {
-                if (document.getElementById('CPH_Form_DDSlipNo') != null) {
-                    if (document.getElementById('CPH_Form_DDSlipNo').options.length == 0) {
+            if (document.getElementById('<%=ChkForEdit.ClientID %>').checked == true) {
+                if (document.getElementById('<%=DDSlipNo.ClientID %>') != null) {
+                    if (document.getElementById('<%=DDSlipNo.ClientID %>').options.length == 0) {
                         alert("Slip no must have a value....!");
-                        document.getElementById("CPH_Form_DDSlipNo").focus();
+                        document.getElementById('<%=DDSlipNo.ClientID %>').focus();
                         return false;
                     }
-                    else if (document.getElementById('CPH_Form_DDSlipNo').options[document.getElementById('CPH_Form_DDSlipNo').selectedIndex].value == 0) {
+                    else if (document.getElementById('<%=DDSlipNo.ClientID %>').options[document.getElementById('<%=DDSlipNo.ClientID %>').selectedIndex].value == 0) {
                         alert("Please select slip no ....!");
-                        document.getElementById("CPH_Form_DDSlipNo").focus();
+                        document.getElementById('<%=DDSlipNo.ClientID %>').focus();
                         return false;
                     }
                 }
             }
             var k = 0;
-            for (i = 1; i < document.getElementById('CPH_Form_DGDetail').rows.length; i++) {
-                var inputs = document.getElementById('CPH_Form_DGDetail').rows[i].getElementsByTagName('input');
+            for (i = 1; i < document.getElementById('<%=DGDetail.ClientID %>').rows.length; i++) {
+                var inputs = document.getElementById('<%=DGDetail.ClientID %>').rows[i].getElementsByTagName('input');
                 if (inputs[0].checked == true) {
                     k = k + 1;
-                    i = document.getElementById('CPH_Form_DGDetail').rows.length;
+                    i = document.getElementById('<%=DGDetail.ClientID %>').rows.length;
                 }
             }
             if (k == 0) {
@@ -136,52 +137,52 @@
             return confirm('Do You Want To Save?')
         }
         function ValidationDelete() {
-            if (document.getElementById('CPH_Form_DDCompanyName') != null) {
-                if (document.getElementById('CPH_Form_DDCompanyName').options.length == 0) {
+            if (document.getElementById('<%=DDCompanyName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDCompanyName.ClientID %>').options.length == 0) {
                     alert("Company name must have a value....!");
-                    document.getElementById("CPH_Form_DDCompanyName").focus();
+                    document.getElementById('<%=DDCompanyName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDCompanyName').options[document.getElementById('CPH_Form_DDCompanyName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDCompanyName.ClientID %>').options[document.getElementById('<%=DDCompanyName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select company name ....!");
-                    document.getElementById("CPH_Form_DDCompanyName").focus();
+                    document.getElementById('<%=DDCompanyName.ClientID %>').focus();
                     return false;
                 }
             }
-            if (document.getElementById('CPH_Form_DDProcessName') != null) {
-                if (document.getElementById('CPH_Form_DDProcessName').options.length == 0) {
+            if (document.getElementById('<%=DDProcessName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDProcessName.ClientID %>').options.length == 0) {
                     alert("Process name must have a value....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDProcessName').options[document.getElementById('CPH_Form_DDProcessName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDProcessName.ClientID %>').options[document.getElementById('<%=DDProcessName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select process name ....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
+                    document.getElementById('<%=DDProcessName.ClientID %>').focus();
                     return false;
                 }
             }
-            if (document.getElementById('CPH_Form_DDEmployerName') != null) {
-                if (document.getElementById('CPH_Form_DDEmployerName').options.length == 0) {
+            if (document.getElementById('<%=DDEmployerName.ClientID %>') != null) {
+                if (document.getElementById('<%=DDEmployerName.ClientID %>').options.length == 0) {
                     alert("Employee name must have a value....!");
-                    document.getElementById("CPH_Form_DDEmployerName").focus();
+                    document.getElementById('<%=DDEmployerName.ClientID %>').focus();
                     return false;
                 }
-                else if (document.getElementById('CPH_Form_DDEmployerName').options[document.getElementById('CPH_Form_DDEmployerName').selectedIndex].value == 0) {
+                else if (document.getElementById('<%=DDEmployerName.ClientID %>').options[document.getElementById('<%=DDEmployerName.ClientID %>').selectedIndex].value == 0) {
                     alert("Please select employee name ....!");
-                    document.getElementById("CPH_Form_DDEmployerName").focus();
+                    document.getElementById('<%=DDEmployerName.ClientID %>').focus();
                     return false;
                 }
             }
-            if (document.getElementById('CPH_Form_ChkForEdit').checked == true) {
-                if (document.getElementById('CPH_Form_DDSlipNo') != null) {
-                    if (document.getElementById('CPH_Form_DDSlipNo').options.length == 0) {
+            if (document.getElementById('<%=ChkForEdit.ClientID %>').checked == true) {
+                if (document.getElementById('<%=DDSlipNo.ClientID %>') != null) {
+                    if (document.getElementById('<%=DDSlipNo.ClientID %>').options.length == 0) {
                         alert("Slip no must have a value....!");
-                        document.getElementById("CPH_Form_DDSlipNo").focus();
+                        document.getElementById('<%=DDSlipNo.ClientID %>').focus();
                         return false;
                     }
-                    else if (document.getElementById('CPH_Form_DDSlipNo').options[document.getElementById('CPH_Form_DDSlipNo').selectedIndex].value == 0) {
+                    else if (document.getElementById('<%=DDSlipNo.ClientID %>').options[document.getElementById('<%=DDSlipNo.ClientID %>').selectedIndex].value == 0) {
                         alert("Please select slip no ....!");
-                        document.getElementById("CPH_Form_DDSlipNo").focus();
+                        document.getElementById('<%=DDSlipNo.ClientID %>').focus();
                         return false;
                     }
                 }
