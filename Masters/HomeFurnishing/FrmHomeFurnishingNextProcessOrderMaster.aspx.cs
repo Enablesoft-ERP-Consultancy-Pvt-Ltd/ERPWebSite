@@ -74,7 +74,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingNextProcessOrderMas
     {
         string str = @"Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
                     From PROCESS_NAME_MASTER PNM(Nolock) 
-                    Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And PNM.process_Name_ID <> " + DDFromProcessName.SelectedValue + @" 
+                    Where Isnull(PNM.AddProcessName, 0) <> 0 And PNM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " And PNM.process_Name_ID <> " + DDFromProcessName.SelectedValue + @" 
                     Order By PNM.PROCESS_NAME 
                     Select Distinct b.ProcessRecId, b.ChallanNo 
                     From HomeFurnishingStockNo a(Nolock) 

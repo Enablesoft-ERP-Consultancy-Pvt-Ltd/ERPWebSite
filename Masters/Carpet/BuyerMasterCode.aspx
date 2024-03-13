@@ -526,7 +526,7 @@
                                                                 <asp:TextBox ID="txtBuyerColor" runat="server" Width="114px" CssClass="textb"></asp:TextBox>
                                                                 &nbsp;&nbsp;
                                                             </td>
-                                                            <td>
+                                                            <td >
                                                                 <asp:DropDownList ID="ddLocalColor" runat="server" AutoPostBack="true" Width="150px"
                                                                     CssClass="dropdown" OnSelectedIndexChanged="ddLocalColor_SelectedIndexChanged">
                                                                 </asp:DropDownList>

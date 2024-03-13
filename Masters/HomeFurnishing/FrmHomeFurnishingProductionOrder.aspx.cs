@@ -358,7 +358,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
                 Case When " + ddunit.SelectedValue + @" = 1 Then VF.Sizemtr Else Case When " + ddunit.SelectedValue + @" = 6 Then VF.SizeInch Else VF.sizeft End End ItemDescription, 
                 '" + ddunit.SelectedItem.Text + @"' UnitName, (J.INTERNALPRODASSIGNEDQTY + J.PreProdAssignedQty) QtyRequired, 
-                IsNull(VHFOD.Qty, 0) OrderedQty, JOBRATE.RATE, " + length + " [Length], " + Width + " [Width]," + height + " [height],  " + Area + @" Area, VF.ShapeID, JOBRATE.COMMRATE 
+                IsNull(VHFOD.Qty, 0) - IsNull(PIDD.Qty, 0) OrderedQty, JOBRATE.RATE, " + length + " [Length], " + Width + " [Width]," + height + " [height],  " + Area + @" Area, VF.ShapeID, JOBRATE.COMMRATE 
                 From OrderMaster OM(Nolock) 
                 JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
                 JOIN ORDERDETAILDETAIL ODD(Nolock) ON ODD.OrderDetailID = OD.OrderDetailId And ODD.OrderID = OD.OrderID 
@@ -374,6 +374,8 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 JOIN JobAssigns J(Nolock) ON J.OrderID = OD.OrderID And J.ITEM_FINISHED_ID = OD.Item_Finished_Id 
                 JOIN Unit U(nolock) ON U.UnitId = OD.OrderUnitId 
                 CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(OD.item_finished_id, " + DDProcessName.SelectedValue + "," + DDProdunit.SelectedValue + @"," + DDcaltype.SelectedValue + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE 
+                LEFT JOIN V_ProcessIssueToHomeFurnishingToDepartmentDetail PIDD(Nolock) ON PIDD.orderid=OM.orderid and PIDD.Order_FinishedID=OD.Item_Finished_Id 
+		                And PIDD.OrderDetailDetail_FinishedID = ODD.OrderDetailDetail_Item_Finished_Id 
                 Where Om.orderid = " + DDorderNo.SelectedValue + " Order By OD.OrderDetailID";
             }
 

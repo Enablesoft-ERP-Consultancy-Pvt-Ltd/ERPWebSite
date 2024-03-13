@@ -293,7 +293,6 @@ public partial class Masters_WARP_frmwarpIssueNew : System.Web.UI.Page
             ScriptManager.RegisterStartupScript(this.Page, GetType(), "opn", "alert('No records found!!!');", true);
         }
         //
-
     }
     protected void DG_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {

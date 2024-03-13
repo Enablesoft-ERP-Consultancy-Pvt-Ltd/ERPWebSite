@@ -107,8 +107,14 @@ public partial class Masters_Carpet_BuyerMasterCode : CustomPage
                 lblSkuNo.Visible = true;
                 txtSKUNo.Visible = true;
             }
+            if (Session["varMasterCompanyIDForERP"].ToString() == "48")
+            {
+                ddLocalColor.Visible = false;
+                btnaddcolor.Visible = false;
+                lblColorName.Visible = false;
+            }
 
-        }
+            }
     }
     private void logo()
     {

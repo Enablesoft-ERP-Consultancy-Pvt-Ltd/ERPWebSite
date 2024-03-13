@@ -190,7 +190,7 @@
         <ContentTemplate>
             <div style="width: 1000px; height: 1000px;">
                 <div style="width: 900px; height: 1000px">
-                    <div style="width: 600px; max-height: 500px; margin-left: 200px; margin-top: 20px">
+                    <div style="width: 800px; max-height: 500px; margin-left: 200px; margin-top: 20px">
                         <div style="float: left">
                             <asp:Panel runat="server" Style="border: 1px groove Teal; background-color: #DEB887;
                                 max-height: 500px" Width="200px">

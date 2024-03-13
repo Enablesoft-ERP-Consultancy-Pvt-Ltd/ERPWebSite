@@ -159,6 +159,7 @@ public partial class Masters_Process_frm_receive_process_nextForOther : System.W
                     TxtReceiveQty.Enabled = true;
                     TxtReceiveQty.Text = "200";
                     DGStockDetail.PageSize = 200;
+                    TxtStockNo.ReadOnly = true;
                     break;
                 default:
                     DDUnit.SelectedValue = "1";
@@ -238,6 +239,10 @@ public partial class Masters_Process_frm_receive_process_nextForOther : System.W
     }
     protected void ddcattype_SelectedIndexChanged(object sender, EventArgs e)
     {
+        if (Session["varMasterCompanyIDForERP"].ToString() == "48")
+        {
+            ddlcategorycange();
+        }
         if (Session["varMasterCompanyIDForERP"].ToString() == "44")
         {
             UtilityModule.ConditionalComboFill(ref ddquality, @"select Distinct Q.QualityId,q.QualityName+' ['+Im.Item_Name+']' as QualityName From ITEM_MASTER IM inner join CategorySeparate CS on IM.CATEGORY_ID=cs.Categoryid and cs.id=0  inner join Quality Q on IM.ITEM_ID=q.Item_Id and Cs.Categoryid=" + ddcattype.SelectedValue + " and Im.mastercompanyid=" + Session["varMasterCompanyIDForERP"] + "  where upper(q.QualityName) not in('BACK','FRONT','PIPING','LINING','TOP','BOTTOM','SIDE','PATCH') order by Qualityname", true, "--Plz Select--");
