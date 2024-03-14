@@ -96,7 +96,7 @@
                 <table width="85%">
                     <tr>
                         <td style="width: 300px" valign="top">
-                            <div style="width: 287px; padding-top: 5px; height: 500px; float: left; border-style: solid;
+                            <div style="width: 287px; padding-top: 5px; height: 520px; float: left; border-style: solid;
                                 border-width: thin">
                                 &nbsp;&nbsp;
                                 <br />
@@ -600,6 +600,11 @@
                                             <td colspan="3">
                                                 <asp:CheckBox ID="ChkQualitySizeWiseHissabSummary" runat="server" CssClass="checkboxbold"
                                                     Text="Quality Size Wise Hissab Summary" AutoPostBack="True" OnCheckedChanged="ChkQualitySizeWiseHissabSummary_CheckedChanged" />
+                                            </td>
+                                        </tr>
+                                          <tr id="TRExcelExportNew" runat="server" visible="false">
+                                            <td colspan="3">
+                                                <asp:CheckBox ID="ChkExcelExportNew" runat="server" CssClass="checkboxbold" Text="Excel Export New"  />
                                             </td>
                                         </tr>
                                         <tr id="TRAsOnDate" runat="server" visible="false">

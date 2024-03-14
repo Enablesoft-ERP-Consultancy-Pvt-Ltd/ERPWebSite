@@ -159,7 +159,7 @@ public partial class Masters_Process_frm_receive_process_next : System.Web.UI.Pa
                     TxtReceiveQty.Enabled = true;
                     TxtReceiveQty.Text = "200";
                     DGStockDetail.PageSize = 200;
-                    TxtStockNo.ReadOnly = true;
+                    //TxtStockNo.ReadOnly = true;
                     break;
                 default:
                     DDUnit.SelectedValue = "1";

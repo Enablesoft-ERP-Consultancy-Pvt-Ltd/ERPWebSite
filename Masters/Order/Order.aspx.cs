@@ -996,6 +996,11 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                     TxtLocalOrderNo.Text = "VI/L " + Str;
                 }
             }
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "49")
+            {
+                string Str = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'JVH ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'JVH %'").ToString();
+                TxtLocalOrderNo.Text = "JVH " + Str;
+            }
             else
             {
                 string Str = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'L ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'L %'").ToString();
@@ -3939,6 +3944,11 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                         {
                             Session["ReportPath"] = "Reports/OrderReport.rpt";
                         }
+                        Session["CommanFormula"] = "{NewOrderReport.Orderid}=" + ViewState["order_id"] + "";
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "ScriptRegistration", "Preview();", true);
+                        break;
+                    case "49":
+                        Session["ReportPath"] = "Reports/OrderReportNewJaviHome.rpt";
                         Session["CommanFormula"] = "{NewOrderReport.Orderid}=" + ViewState["order_id"] + "";
                         ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "ScriptRegistration", "Preview();", true);
                         break;
