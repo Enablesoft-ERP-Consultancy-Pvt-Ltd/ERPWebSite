@@ -2583,6 +2583,17 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                 Session["ReportPath"] = "Reports/PurchaseReceive_WithoutRateNew.rpt";
             }
         }
+        else if (hncomp.Value == "49")
+        {
+            if (DDPreviewType.SelectedValue == "0")
+            {
+                Session["ReportPath"] = "Reports/PurchaseReceiveNewJaviHome.rpt";
+            }
+            else if (DDPreviewType.SelectedValue == "1")
+            {
+                Session["ReportPath"] = "Reports/PurchaseReceive_WithoutRateNew.rpt";
+            }
+        }
         else
         {
             if (DDPreviewType.SelectedValue == "0")

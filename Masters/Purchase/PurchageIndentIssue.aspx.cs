@@ -280,6 +280,9 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
                 case 46:  // Neman Carpet
                     btnaddquality.Visible = false;                    
                     break;
+                case 49:  // Javi Home
+                    btnaddquality.Visible = false;
+                    break;
             }
             OnCheckedChange();
             if (ddcustomercode.Items.Count > 0)
@@ -784,7 +787,7 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             }
         }
 
-        if (Session["VarCompanyNo"].ToString() == "46")
+        if (Session["VarCompanyNo"].ToString() == "46" || Session["VarCompanyNo"].ToString() == "49")
         {
             btnopen.Visible = false;
         }
@@ -3383,6 +3386,21 @@ public partial class PurchageIndentIssue : System.Web.UI.Page
             if (DDPreviewType.SelectedValue == "0")
             {
                 Session["ReportPath"] = "Reports/PurchaseIndentIssAgni.rpt";
+            }
+            else if (DDPreviewType.SelectedValue == "1")
+            {
+                Session["ReportPath"] = "Reports/PurchaseIndentIss_withoutratNEW.rpt";
+            }
+            else
+            {
+                Session["ReportPath"] = "Reports/PurchaseIndentIssWithoutimgNEW.rpt";
+            }
+        }
+        else if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 49)//For Javi Home
+        {
+            if (DDPreviewType.SelectedValue == "0")
+            {
+                Session["ReportPath"] = "Reports/PurchaseIndentIssNEWJaviHome.rpt";
             }
             else if (DDPreviewType.SelectedValue == "1")
             {
