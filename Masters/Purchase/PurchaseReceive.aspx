@@ -153,7 +153,8 @@
         }
         function doconfirm() {
             var r = confirm("Do you want to Delete this row..");
-            document.getElementById("CPH_Form_HnForDeleteCommand").value = r;
+            document.getElementById("<%=HnForDeleteCommand.ClientID %>").value = r;
+            //document.getElementById("CPH_Form_HnForDeleteCommand").value = r;
             if (r == true) {
                 return true;
             }
