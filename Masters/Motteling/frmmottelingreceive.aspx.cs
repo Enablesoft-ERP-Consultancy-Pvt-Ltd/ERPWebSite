@@ -19,7 +19,7 @@ public partial class Masters_Motteling_frmmottelingreceive : System.Web.UI.Page
         if (!IsPostBack)
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName 
-                           select PROCESS_NAME_ID,Process_name From process_name_master  where Process_Name in('Motteling','YARN OPENING+MOTTELING', 'HANK MAKING') order by PROCESS_NAME 
+                           select PROCESS_NAME_ID,Process_name From process_name_master  where Process_Name in('MOTTELING','HAND SPINNING','YARN OPENING+MOTTELING', 'HANK MAKING', 'WRAPPING') order by PROCESS_NAME 
                            Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select Godownid From ModuleWiseGodown Where ModuleName='" + Page.Title + @"' 
                            Select ID, BranchName 
