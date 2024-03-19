@@ -231,7 +231,7 @@ public partial class Masters_ReportForms_FrmAllFolioStatusReport : System.Web.UI
                 ////*******Header
                 sht.Range("A3").Value = "WEAVER NAME";
                 sht.Range("B3").Value = "CHALLAN NO";
-                sht.Range("C3").Value = "";
+                sht.Range("C3").Value = "CHALLAN DATE";
 
                 sht.Column("D3").Width = 33.59;
 
@@ -246,7 +246,7 @@ public partial class Masters_ReportForms_FrmAllFolioStatusReport : System.Web.UI
                 {
                     sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["EmpName"]);
                     sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["ChallanNo"]);
-                    sht.Range("C" + row).SetValue("");
+                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["AssignDate"]);
 
                     row = row + 1;
                 }
