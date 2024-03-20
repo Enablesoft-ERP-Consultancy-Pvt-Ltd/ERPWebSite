@@ -991,7 +991,14 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                         DDLotNo.SelectedIndex = 1;
                         if (TDRecLotNo.Visible == true)
                         {
-                            txtLotNo.Text = DDLotNo.SelectedItem.Text;
+                            if (Session["varMasterCompanyIDForERP"].ToString() == "49")
+                            {
+                                txtLotNo.Text = "";
+                            }
+                            else
+                            {
+                                txtLotNo.Text = DDLotNo.SelectedItem.Text;
+                            }
                         }
                     }
                     //Fill Purchase Orderquantity and OrderQuantity
@@ -2583,6 +2590,17 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                 Session["ReportPath"] = "Reports/PurchaseReceive_WithoutRateNew.rpt";
             }
         }
+        else if (hncomp.Value == "49")
+        {
+            if (DDPreviewType.SelectedValue == "0")
+            {
+                Session["ReportPath"] = "Reports/PurchaseReceiveNewJaviHome.rpt";
+            }
+            else if (DDPreviewType.SelectedValue == "1")
+            {
+                Session["ReportPath"] = "Reports/PurchaseReceive_WithoutRateNew.rpt";
+            }
+        }
         else
         {
             if (DDPreviewType.SelectedValue == "0")
@@ -2778,7 +2796,15 @@ public partial class Masters_Purchase_PurchaseReceive : System.Web.UI.Page
                     LotNoSelectedIndexChange();
                     if (TDRecLotNo.Visible == true)
                     {
-                        txtLotNo.Text = DDLotNo.SelectedItem.Text;
+                        if (Session["VarCompanyNo"].ToString() == "49")
+                        {
+                            txtLotNo.Text = "";
+                        }
+                        else
+                        {
+                            txtLotNo.Text = DDLotNo.SelectedItem.Text;
+                        }
+                        
                     }
                 }
             }

@@ -114,6 +114,14 @@
                     return false;
                 }
             }
+            if (varcompanyNo == "49") {
+
+                if (document.getElementById("<%=txtLotNo.ClientID %>").value == "") {
+                    alert("Rec LotNo Cannot Be Blank");
+                    document.getElementById("<%=txtLotNo.ClientID %>").focus();
+                    return false;
+                }                
+            }
             else if (document.getElementById("<%=DDGodown.ClientID %>").value <= "0") {
                 alert("Pls Select Godown Name");
                 document.getElementById("<%=DDGodown.ClientID %>").focus();
@@ -145,7 +153,8 @@
         }
         function doconfirm() {
             var r = confirm("Do you want to Delete this row..");
-            document.getElementById("CPH_Form_HnForDeleteCommand").value = r;
+            document.getElementById("<%=HnForDeleteCommand.ClientID %>").value = r;
+            //document.getElementById("CPH_Form_HnForDeleteCommand").value = r;
             if (r == true) {
                 return true;
             }

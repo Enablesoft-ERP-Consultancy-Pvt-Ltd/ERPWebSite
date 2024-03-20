@@ -106,6 +106,7 @@
                         <asp:Button ID="BtnSave" runat="server" Text="Save" OnClick="BtnSave_Click" UseSubmitBehavior="false"
                             OnClientClick="if (!confirm('Do you want to save Data?')) return; this.disabled=true;this.value = 'wait ...';"
                             CssClass="buttonnorm" Width="70px" />
+                        <asp:Button ID="btnPreview" runat="server" Text="Preview" CssClass="buttonnorm" OnClick="btnPreview_Click" />
                         <asp:Button ID="Btnclose" runat="server" Text="Close" OnClientClick="return CloseForm();"
                             CssClass="buttonnorm" Width="70px" />
                     </td>
@@ -179,5 +180,8 @@
                 </tr>
             </table>
         </ContentTemplate>
+         <Triggers>
+            <asp:PostBackTrigger ControlID="btnPreview" />
+        </Triggers>
     </asp:UpdatePanel>
 </asp:Content>

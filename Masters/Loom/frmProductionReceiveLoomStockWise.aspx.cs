@@ -165,7 +165,7 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                     }
                     ChkForSummaryReport.Visible = true;
                     TRShowTotalReceivePcs.Visible = true;
-                    txtstockno.ReadOnly = true;
+                    //txtstockno.ReadOnly = true;
                     break;
                 case "44":
                     TxtReceiveQty.Enabled = true;

@@ -53,7 +53,7 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                 }
             }
             UtilityModule.ConditionalComboFillWithDS(ref DDTOProcess, ds, 2, true, "---Plz Select---");
-            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 43)
+            if (Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 16 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 28 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 44 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 43 || Convert.ToInt32(Session["varMasterCompanyIDForERP"]) == 42)
             {
                 TDupdateemp.Visible = true;
                 TDactiveemployee.Visible = true;

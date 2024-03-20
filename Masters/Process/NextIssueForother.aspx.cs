@@ -237,7 +237,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                             btngetstock.Visible = true;
                             btnsavegrid.Visible = true;
                             TrBindRecChallanNoJobWise.Visible = true;
-                            TxtStockNo.ReadOnly = true;
+                            //TxtStockNo.ReadOnly = true;
                             break;
                         default:
                             //DIVStockDetail.Visible = false;
@@ -246,7 +246,7 @@ public partial class Masters_Process_NextIssueForother : System.Web.UI.Page
                             TDCustomerCode.Visible = false;
                             TDCustomerOrderNo.Visible = false;
                             TrBindRecChallanNoJobWise.Visible = true;
-                            TxtStockNo.ReadOnly = true;
+                            //TxtStockNo.ReadOnly = true;
                             break;
                     }
                     break;

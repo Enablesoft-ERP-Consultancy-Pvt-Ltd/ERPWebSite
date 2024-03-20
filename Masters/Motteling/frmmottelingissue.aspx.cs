@@ -21,7 +21,7 @@ public partial class Masters_Motteling_frmmottelingissue : System.Web.UI.Page
         if (!IsPostBack)
         {
             string str = @"select Distinct CI.CompanyId,CI.CompanyName from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + "  And CI.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By CompanyName
-                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and Process_name in('Motteling','YARN OPENING+MOTTELING', 'HANK MAKING') and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME
+                           select PROCESS_NAME_ID,Process_name From process_name_master  where Processtype=0 and Process_name in('MOTTELING','HAND SPINNING','YARN OPENING+MOTTELING', 'HANK MAKING', 'WRAPPING') and mastercompanyid=" + Session["varMasterCompanyIDForERP"] + @" order by PROCESS_NAME
                            select Distinct ICM.CATEGORY_ID,ICM.CATEGORY_NAME from ITEM_CATEGORY_MASTER ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid and cs.id=1 and ICM.MasterCompanyid=" + Session["varMasterCompanyIDForERP"] + @"
                            Select distinct GM.GodownId,GM.GodownName From GodownMaster GM JOIN Godown_Authentication GA ON GM.GodownId=GA.GodownId  Where GA.UserId=" + Session["varUserId"] + " and GA.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by GodownName
                            select Val,Type from Sizetype

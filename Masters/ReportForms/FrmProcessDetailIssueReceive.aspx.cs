@@ -1574,13 +1574,191 @@ public partial class Masters_ReportForms_FrmProcessDetailIssueReceive : System.W
             }
             else if (ChkQualitySizeWiseHissabSummary.Checked == true)
             {
-                Session["rptFileName"] = "~\\Reports\\RptQualitySizeWiseProcessHissabSummaryCI.rpt";
-                Session["GetDataset"] = ds;
-                //Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
-                StringBuilder stb3 = new StringBuilder();
-                stb3.Append("<script>");
-                stb3.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
-                ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb3.ToString(), false);
+                if (ChkExcelExportNew.Checked == true)
+                {
+                    if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
+                    {
+                        Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
+                    }
+                    string Path = "";
+                    var xapp = new XLWorkbook();
+                    var sht = xapp.Worksheets.Add("sheet1");
+                    int row = 0;
+
+                    sht.Range("A1:L1").Merge();
+                    sht.Range("A1").SetValue(DDCompany.SelectedItem.Text);
+                    sht.Range("A2:L2").Merge();
+                    sht.Range("A2").SetValue("Process Hissab Summary Size-Wise" + (ChkForDate.Checked == true ? "(" + TxtFromDate.Text + " TO : " + TxtToDate.Text + "" : ""));
+                    sht.Range("A3:L3").Merge();
+                    sht.Range("A3").SetValue("Process " + DDProcessName.SelectedItem.Text);
+                    sht.Range("A1:L3").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                    sht.Range("A1:L3").Style.Font.SetBold();
+
+
+                    //Headers
+                    sht.Range("A4").Value = "Challan No";
+                    sht.Range("B4").Value = "Rec Date";
+                    sht.Range("C4").Value = "Quality";
+                    sht.Range("D4").Value = "Design";
+                    sht.Range("E4").Value = "Color";
+                    sht.Range("F4").Value = "Size";
+                    sht.Range("G4").Value = "Qty";
+                    sht.Range("H4").Value = "Rej Qty";
+                    sht.Range("I4").Value = "Rate";
+                    sht.Range("J4").Value = "Amount";
+                    sht.Range("K4").Value = "Penality";
+                    sht.Range("L4").Value = "Net Amt";
+                    //sht.Range("M3").Value = "Debit Amt";
+                    //sht.Range("N3").Value = "Total Amt";
+                    //sht.Range("O3").Value = "Bill No";
+
+                    sht.Range("A4:L4").Style.Font.Bold = true;
+
+                    row = 5;
+
+                    DataTable dtdistinctWidthLength = ds.Tables[0].DefaultView.ToTable(true, "Width", "Length", "ShapeName");
+                    DataView dvWidthLength = new DataView(dtdistinctWidthLength);
+                    dvWidthLength.Sort = "Width,Length asc";
+                    DataTable dtdistinctNew2 = dvWidthLength.ToTable();
+
+                    int rowfrom = 0, rowto = 0;
+                    string Tamtrow = "", TQtyRow = "", TPenalityRow = "", TNetamtrow = "";
+                    string QualityName = "", DesignName = "", ColorName = "";
+                    foreach (DataRow dr in dtdistinctNew2.Rows)
+                    {
+
+                        DataView dvdetailNew = new DataView(ds.Tables[0]);
+                        dvdetailNew.RowFilter = "Width=" + dr["Width"] + " and Length='" + dr["Length"] + "' and ShapeName='" + dr["ShapeName"] + "' ";
+                        dvdetailNew.Sort = "QualityName,DesignName,ColorName";
+                        DataTable dtNew = dvdetailNew.ToTable();
+
+                        DataTable dtdistinctindent = dtNew.DefaultView.ToTable(true, "Width", "Length", "ShapeName", "QualityName", "DesignName", "ColorName");
+                        DataView dvindetnNo = new DataView(dtdistinctindent);
+                        dvindetnNo.Sort = "Width,Length asc";
+                        DataTable dtdistinct = dvindetnNo.ToTable();
+
+                        rowfrom = row;
+                        foreach (DataRow dr1 in dtdistinct.Rows)
+                        {
+                            DataView dvdetail = new DataView(ds.Tables[0]);
+                            dvdetail.RowFilter = "Width=" + dr1["Width"] + " and Length='" + dr1["Length"] + "' and ShapeName='" + dr1["ShapeName"] + "' and QualityName='" + dr1["QualityName"] + "' and DesignName='" + dr1["DesignName"] + "' and ColorName='" + dr1["ColorName"] + "' ";
+                            dvdetail.Sort = "QualityName,DesignName,ColorName";
+                            DataTable dt = dvdetail.ToTable();
+
+
+                            DataTable dtdistinctRow = dt.DefaultView.ToTable(true, "Width", "Length", "ShapeName", "QualityName", "DesignName", "ColorName", "RecChallanNo", "Rate", "ReceiveDate");
+                            DataView dvdistinctRowData = new DataView(dtdistinctRow);
+                            dvdistinctRowData.Sort = "QualityName,DesignName,ColorName";
+                            DataTable dtdistinctnew = dvdistinctRowData.ToTable();
+
+                            
+                            QualityName = ""; DesignName = ""; ColorName = "";
+                            foreach (DataRow dr2 in dtdistinctnew.Rows)
+                            {
+                                DataView dvdetail2 = new DataView(ds.Tables[0]);
+                                dvdetail2.RowFilter = "Width=" + dr2["Width"] + " and Length='" + dr2["Length"] + "' and ShapeName='" + dr2["ShapeName"] + "' and QualityName='" + dr2["QualityName"] + "' and DesignName='" + dr2["DesignName"] + "' and ColorName='" + dr2["ColorName"] + "' and RecChallanNo='" + dr2["RecChallanNo"] + "'";
+                                dvdetail2.Sort = "RecChallanNo,QualityName,DesignName,ColorName";
+                                DataTable dt2 = dvdetail2.ToTable();
+
+                                //foreach (DataRow dr1 in dtdistinctnew.Rows)
+                                //{
+                                sht.Range("A" + row).SetValue(dr2["RecChallanNo"]);
+                                sht.Range("B" + row).SetValue(dr2["ReceiveDate"]);
+                                sht.Range("C" + row).SetValue(dr2["QualityName"]);
+                                sht.Range("D" + row).SetValue(dr2["DesignName"]);
+                                sht.Range("E" + row).SetValue(dr2["ColorName"]);
+                                sht.Range("F" + row).SetValue(dr2["Width"] + "x" + dr2["Length"] + " " + dr2["ShapeName"]);
+                                sht.Range("G" + row).SetValue(dt2.Compute("sum(Qty)", ""));
+                                sht.Range("H" + row).SetValue("");
+                                sht.Range("I" + row).SetValue(dr2["Rate"]);
+                                sht.Range("J" + row).SetValue(dt2.Compute("sum(Amount)", ""));
+                                sht.Range("K" + row).SetValue(dt2.Compute("sum(Penality)", ""));
+                                //decimal NetAmount = Math.Round(Convert.ToDecimal(dt2.Compute("sum(Amount)", "")) - Convert.ToDecimal(dt2.Compute("sum(Amount)", "")), 2);
+                                //sht.Range("L" + row).SetValue(NetAmount);
+
+                                sht.Range("L" + row).FormulaA1 = "=J" + row + '-' + "K" + row;
+                                                              
+                                row = row + 1;
+                               
+                            }                            
+
+                        }
+
+                        row = row + 1;
+                        row = row - 1;
+                        rowto = row - 1;
+                        sht.Range("F" + row).SetValue("Total");
+                        sht.Range("G" + row).FormulaA1 = "=SUM(G" + rowfrom + ":G" + rowto + ")";
+                        sht.Range("J" + row).FormulaA1 = "=SUM(J" + rowfrom + ":J" + rowto + ")";
+                        sht.Range("K" + row).FormulaA1 = "SUM(K" + rowfrom + ":K" + rowto + ")";
+                        sht.Range("L" + row).FormulaA1 = "SUM(L" + rowfrom + ":L" + rowto + ")";
+                        //sht.Range("N" + row).FormulaA1 = "=L" + row + '-' + "M" + row;
+                        sht.Range("F" + row + ":L" + row).Style.Font.Bold = true;
+
+                        //TQtyRow = TQtyRow + "+" + "G" + row;
+                        //Tamtrow = Tamtrow + "+" + "J" + row;
+                        //TPenalityRow = TPenalityRow + "+" + "K" + row;
+                        //TNetamtrow = TNetamtrow + "+" + "L" + row;
+
+                        row = row + 1;
+                    }
+
+                    ////row = row + 1;                   
+
+                    //Tamtrow = Tamtrow.TrimStart('+');
+                    //TQtyRow = TQtyRow.TrimStart('+');
+                    //TPenalityRow = TPenalityRow.TrimStart('+');
+                    //TNetamtrow = TNetamtrow.TrimStart('+');
+
+
+                    //sht.Range("F" + row).SetValue("G. Total");
+                    //sht.Range("G" + row).FormulaA1 = "=SUM(" + TQtyRow + ")";
+                    //sht.Range("J" + row).FormulaA1 = "=SUM(" + Tamtrow + ")";
+                    //sht.Range("K" + row).FormulaA1 = "=SUM(" + TPenalityRow + ")";
+                    //sht.Range("L" + row).FormulaA1 = "=SUM(" + TNetamtrow + ")";
+
+                    //sht.Range("F" + row + ":L" + row).Style.Font.Bold = true;
+
+                    using (var a = sht.Range("A3:L" + row))
+                    {
+                        a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                        a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                    }
+                    //*************
+                    sht.Columns(1, 15).AdjustToContents();
+                    string Fileextension = "xlsx";
+                    string name = "ProcessHissabSummarySizeWise";
+                    //if (DDEmpName.SelectedIndex > 0)
+                    //{
+                    //    name = name + "-" + DDEmpName.SelectedItem.Text;
+                    //}
+                    string filename = UtilityModule.validateFilename("" + name + "_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+                    Path = Server.MapPath("~/Tempexcel/" + filename);
+                    xapp.SaveAs(Path);
+                    xapp.Dispose();
+                    //Download File
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+                    // Response.Clear();
+                    Response.ContentType = "application/vnd.ms-excel";
+                    Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+                    Response.WriteFile(Path);
+                    // File.Delete(Path);
+                    Response.End();
+                }
+                else
+                {
+                    Session["rptFileName"] = "~\\Reports\\RptQualitySizeWiseProcessHissabSummaryCI.rpt";
+                    Session["GetDataset"] = ds;
+                    //Session["dsFileName"] = "~\\ReportSchema\\rpt_rawmeterialstock_detailNEW.xsd";
+                    StringBuilder stb3 = new StringBuilder();
+                    stb3.Append("<script>");
+                    stb3.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                    ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb3.ToString(), false);
+                }
+                
             }
             else
             {
@@ -2579,6 +2757,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDGatePass_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -2616,6 +2795,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -2649,6 +2829,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             {
                 TRQualityDesignSizeWiseSummary.Visible = true;
                 TRQualitySizeWiseHissabSummary.Visible = true;
+                TRExcelExportNew.Visible = true;
             }
 
             UtilityModule.ConditionalComboFill(ref DDEmpName, @"Select Distinct EI.EmpId,EI.EmpName+case When isnull(ei.empcode,'')<>'' then ' ['+ei.empcode+']' else '' end EmpName 
@@ -2680,6 +2861,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssRecDetailWithConsumpton_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -2847,6 +3029,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
         TRForWithoutTDS.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
+        TRExcelExportNew.Visible = false;
 
     }
     protected void ProcessOrderFolio(SqlTransaction Tran)
@@ -3183,6 +3366,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3208,6 +3392,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDCommDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3223,6 +3408,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockNoTobeIssued_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3239,6 +3425,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPendingQty_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3255,6 +3442,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDStockRecQithwt_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3271,6 +3459,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDPerday_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3287,6 +3476,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingpending_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3303,6 +3493,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDDailyfinreport_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3319,6 +3510,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDProcessIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3346,6 +3538,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselIssueReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3372,6 +3565,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerIssueSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3399,6 +3593,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDTasselPartnerReceiveSummary_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3425,6 +3620,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingBalance_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -3463,6 +3659,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDFinishingNillBalance_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -4919,6 +5116,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDWeaverRawMaterialIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -5317,6 +5515,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     }
     protected void RDWeaverRawMaterialReceiveDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -7455,6 +7654,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
     //}
     protected void RDTasselMakingRawIssueDetail_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -7781,6 +7981,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
 
     protected void RDProcessWiseAdvancePayment_CheckedChanged(object sender, EventArgs e)
     {
+        TRExcelExportNew.Visible = false;
         TRQualitySizeWiseHissabSummary.Visible = false;
         TRQualityDesignSizeWiseSummary.Visible = false;
         TRForWithoutTDS.Visible = false;
@@ -8506,6 +8707,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             TRForWithoutTDS.Visible = true;
             TRQualityDesignSizeWiseSummary.Visible = false;
             TRQualitySizeWiseHissabSummary.Visible = false;
+            TRExcelExportNew.Visible = false;
         }
 
     }
@@ -8636,6 +8838,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             ChkForDate.Visible = true;
             TRQualityDesignSizeWiseSummary.Visible = false;
             TRQualitySizeWiseHissabSummary.Visible = false;
+            TRExcelExportNew.Visible = false;
         }
 
     }
@@ -8857,6 +9060,7 @@ V_FinishedItemDetail.designName,V_FinishedItemDetail.ColorName,V_FinishedItemDet
             ChkForDate.Visible = true;
             TRQualityDesignSizeWiseSummary.Visible = false;
             TRQualitySizeWiseHissabSummary.Visible = false;
+            TRExcelExportNew.Visible = false;
         }
 
     }

@@ -297,10 +297,10 @@
                                                         <asp:TextBox ID="txtPhone" runat="server" CssClass="textb" Width="200px"></asp:TextBox>
                                                     </td>
                                                     <td id="tdfax" runat="server">
-                                                        <asp:Label ID="Label12" runat="server" Text=" Fax No." CssClass="labelbold"></asp:Label>
+                                                        <asp:Label ID="Label12" runat="server" Text=" Pin Code." CssClass="labelbold"></asp:Label>
                                                     </td>
                                                     <td id="tdfaxid" runat="server">
-                                                        <asp:TextBox ID="txtFax" runat="server" CssClass="textb" Width="200px"></asp:TextBox>
+                                                        <asp:TextBox ID="txtFax" runat="server" CssClass="textb" Width="200px" MaxLength="6"></asp:TextBox>
                                                     </td>
                                                     <td>
                                                         <asp:Label ID="Label11" runat="server" Text="Email" CssClass="labelbold"></asp:Label>
@@ -314,7 +314,7 @@
                                                         <asp:Label ID="Label16" runat="server" Text="Pan No" CssClass="labelbold"></asp:Label>
                                                     </td>
                                                     <td>
-                                                        <asp:TextBox ID="TxtPanNo" style="text-transform:uppercase" runat="server" CssClass="textb" Width="200px"></asp:TextBox>
+                                                        <asp:TextBox ID="TxtPanNo" style="text-transform:uppercase" runat="server" CssClass="textb" Width="200px" MaxLength="10"></asp:TextBox>
                                                     </td>
                                                     <td>
                                                         <asp:Label ID="Label13" runat="server" Text="CST No." CssClass="labelbold"></asp:Label>
@@ -334,7 +334,7 @@
                                                         <asp:Label ID="Label19" runat="server" Text="GST No." CssClass="labelbold"></asp:Label>
                                                     </td>
                                                     <td id="tdopen" runat="server">
-                                                        <asp:TextBox ID="txtGstNo" style="text-transform:uppercase" runat="server" CssClass="textb" Width="200px"></asp:TextBox>
+                                                        <asp:TextBox ID="txtGstNo" style="text-transform:uppercase" runat="server" CssClass="textb" Width="200px" MaxLength="15"></asp:TextBox>
                                                     </td>
                                                     <td>
                                                         <asp:Label ID="Label20" runat="server" Text=" Aadhar No." CssClass="labelbold"></asp:Label>

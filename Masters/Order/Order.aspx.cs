@@ -996,6 +996,11 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                     TxtLocalOrderNo.Text = "VI/L " + Str;
                 }
             }
+            else if (Session["varMasterCompanyIDForERP"].ToString() == "49")
+            {
+                string Str = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'JVH ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'JVH %'").ToString();
+                TxtLocalOrderNo.Text = "JVH " + Str;
+            }
             else
             {
                 string Str = SqlHelper.ExecuteScalar(con, CommandType.Text, "Select IsNull(Max(IsNull(Round(Replace(LocalOrder,'L ',''),0),0)+1),1) From ORDERMASTER Where LocalOrder Like 'L %'").ToString();
@@ -3942,6 +3947,11 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                         Session["CommanFormula"] = "{NewOrderReport.Orderid}=" + ViewState["order_id"] + "";
                         ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "ScriptRegistration", "Preview();", true);
                         break;
+                    case "49":
+                        Session["ReportPath"] = "Reports/OrderReportNewJaviHome.rpt";
+                        Session["CommanFormula"] = "{NewOrderReport.Orderid}=" + ViewState["order_id"] + "";
+                        ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "ScriptRegistration", "Preview();", true);
+                        break;
                     default:
                         if (variable.Carpetcompany == "1")
                         {
@@ -3990,6 +4000,26 @@ public partial class Masters_Order_Order : System.Web.UI.Page
                             ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
                         }
                         ds.Dispose();
+                        break;
+                    case "49":
+                        SqlParameter[] param2 = new SqlParameter[1];
+                        param2[0] = new SqlParameter("@orderid", ViewState["order_id"]);
+                        DataSet ds2 = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "Pro_GetCustomerOrderInternalOCReport_JaviHome", param2);
+                        if (ds2.Tables[0].Rows.Count > 0)
+                        {
+                            Session["GetDataset"] = ds2;
+                            Session["rptFileName"] = "~\\Reports\\RptCustomerOrderDetailJaviHome.rpt";
+                            Session["dsFileName"] = "~\\ReportSchema\\RptCustomerOrderDetailJaviHome.xsd";
+                            StringBuilder stb = new StringBuilder();
+                            stb.Append("<script>");
+                            stb.Append("window.open('../../ViewReport.aspx', 'nwwin', 'toolbar=0, titlebar=1,  top=0px, left=0px, scrollbars=1, resizable = yes');</script>");
+                            ScriptManager.RegisterClientScriptBlock(Page, GetType(), "opn", stb.ToString(), false);
+                        }
+                        else
+                        {
+                            ScriptManager.RegisterStartupScript(Page, GetType(), "opn1", "alert('No Record Found!');", true);
+                        }
+                        ds2.Dispose();
                         break;
                     default:
                         Session["ReportPath"] = "Reports/LocalOC.rpt";

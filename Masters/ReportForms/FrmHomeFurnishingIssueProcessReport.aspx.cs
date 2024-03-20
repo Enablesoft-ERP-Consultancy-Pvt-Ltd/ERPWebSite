@@ -23,16 +23,22 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         {
             TRlotNo.Visible = false;
             string str = @"Select Distinct CI.CompanyId,CI.Companyname from Companyinfo CI,Company_Authentication CA Where CI.CompanyId=CA.CompanyId And CA.UserId=" + Session["varuserId"] + " And CI.MastercompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order by Companyname ";
-                if(Session["varMasterCompanyIDForERP"].ToString()=="44")
-                {
-                    str+="Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME  From PROCESS_NAME_MASTER PNM(Nolock) Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By PNM.PROCESS_NAME "; 
-                }
-                else
-                {
-                       str+="SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('WEAVING','STITCHING','CUTTING', 'PANEL MAKING', 'FILLER MAKING', 'FILLAR MOUTH CLOSING', 'FILLER BHARAI', 'FILLER PALTI', 'FILLER CUTTING', 'PANEL PRESS', 'LABEL TAGGING', 'FILLER JOB WORK', 'FILLER FILLING+MOUTH CLOSING', 'SLIDER PLATING ON ZIPPER') And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
-                }
+            if (Session["varMasterCompanyIDForERP"].ToString() == "44")
+            {
+                str += " Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME  From PROCESS_NAME_MASTER PNM(Nolock) Where PNM.AddProcessName = 1 And PNM.MasterCompanyID = " + Session["varMasterCompanyIDForERP"] + " Order By PNM.PROCESS_NAME ";
+            }
+            else
+            {
+                str += @" Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
+                    From HomeFurnishingOrderMaster HFOM(NoLocK)
+                    JOIN PROCESS_NAME_MASTER PNM(NoLocK) ON PNM.PROCESS_NAME_ID = HFOM.PROCESSID 
+                    Where HFOM.MASTERCOMPANYID = " + Session["varMasterCompanyIDForERP"] + @"
+                    Order By PNM.PROCESS_NAME ";
+    
+    //SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('WEAVING','STITCHING','CUTTING', 'PANEL MAKING', 'FILLER MAKING', 'FILLAR MOUTH CLOSING', 'FILLER BHARAI', 'FILLER PALTI', 'FILLER CUTTING', 'PANEL PRESS', 'LABEL TAGGING', 'FILLER JOB WORK', 'FILLER FILLING+MOUTH CLOSING', 'SLIDER PLATING ON ZIPPER') And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
+            }
 
-                str += " select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
+            str += " select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
 
             DataSet ds = SqlHelper.ExecuteDataset(str);
             CommanFunction.FillComboWithDS(DDCompany, ds, 0);

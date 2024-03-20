@@ -5541,11 +5541,11 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                 sht.Range("K1").Value = "No of cone/Bobin";
                 sht.Range("L1").Value = "Bell Wt";
                 sht.Range("M1").Value = "Issued Qty";
+                sht.Range("N1").Value = "User Name";
 
-
-                sht.Range("A1:M1").Style.Font.FontName = "Arial Unicode MS";
-                sht.Range("A1:M1").Style.Font.FontSize = 10;
-                sht.Range("A1:M1").Style.Font.Bold = true;
+                sht.Range("A1:N1").Style.Font.FontName = "Arial Unicode MS";
+                sht.Range("A1:N1").Style.Font.FontSize = 10;
+                sht.Range("A1:N1").Style.Font.Bold = true;
                 //sht.Range("M1:S1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
 
                 row = 2;
@@ -5568,9 +5568,9 @@ public partial class Masters_ReportForms_frmweavingreport : System.Web.UI.Page
                     sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["NOOFCONE"]);
                     sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["BellWt"].ToString());
                     sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["ISSUEQTY"]);
+                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["USERNAME"]);
 
                     row = row + 1;
-
                 }
 
                 //*************

@@ -18,7 +18,7 @@ public partial class UserControls_Motellingratemaster : System.Web.UI.UserContro
         if (!IsPostBack)
         {
             string str = @"select ICM.CATEGORY_ID,ICm.CATEGORY_NAME From Item_category_master ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=cs.Categoryid Where cs.id=1 order by ICm.CATEGORY_NAME
-                            select PROCESS_NAME_ID,PROCESS_NAME From Process_Name_Master WHere Process_name in('MOTTELING','HAND SPINNING','YARN OPENING+MOTTELING', 'HANK MAKING')
+                            select PROCESS_NAME_ID,PROCESS_NAME From Process_Name_Master WHere Process_name in('MOTTELING','HAND SPINNING','YARN OPENING+MOTTELING', 'HANK MAKING', 'WRAPPING')
                             Select ConeType, ConeType From ConeMaster Order By SrNo ";
             DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.Text, str);
 

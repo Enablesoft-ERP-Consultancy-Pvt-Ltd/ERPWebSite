@@ -852,11 +852,12 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
         enablecontrols();
         if (chkEdit.Checked == true)
         {
-            if (Session["varcompanyNo"].ToString() == "44")
+            if (Session["varcompanyNo"].ToString() == "44" || Session["varcompanyNo"].ToString() == "16")
             {
                 TDupdateemp.Visible = true;
                 TDactiveemployee.Visible = true;
             }
+
             TDEMPEDIT.Visible = true;
             TDFolioNo.Visible = true;
             TDFolioNotext.Visible = true;
@@ -1456,18 +1457,19 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             param[4] = new SqlParameter("@Processid", 1);
             param[5] = new SqlParameter("@Mastercompanyid", Session["varMasterCompanyIDForERP"]);
             string sp = string.Empty;
-            if (Session["varcompanyNo"].ToString() == "44")
-            {
-                sp = "Pro_UpdateFolioActiveStatusHome";
-            }
-            else
-            {
-                sp = "Pro_UpdateFolioActiveStatus";
+            
+            //if (Session["varcompanyNo"].ToString() == "44")
+            //{
+            //    sp = "Pro_UpdateFolioActiveStatusHome";
+            //}
+            //else
+            //{
+            //    sp = "Pro_UpdateFolioActiveStatus";
 
-            }
+            //}
 
             //*************
-            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, sp, param);
+            SqlHelper.ExecuteNonQuery(Tran, CommandType.StoredProcedure, "Pro_UpdateFolioActiveStatusHome", param);
             Tran.Commit();
             lblpopupmsg.Text = param[3].Value.ToString();
             FillEmployeeForDeactive();
