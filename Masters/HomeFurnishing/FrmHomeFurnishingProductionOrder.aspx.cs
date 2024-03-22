@@ -317,23 +317,6 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
             }
             if (Session["varcompanyNo"].ToString() == "44")
             {
-                //                str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
-                //                " + ddunit.SelectedValue + @" OrderUnitId, OD.flagsize, 
-                //                VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
-                //                Case When " + ddunit.SelectedValue + @" = 1 Then vf.LWHMtr Else Case When " + ddunit.SelectedValue + @" = 6 Then VF.LWHInch Else VF.LWHFt End End ItemDescription, 
-                //                '" + ddunit.SelectedItem.Text + @"' UnitName, (J.INTERNALPRODASSIGNEDQTY + J.PreProdAssignedQty) QtyRequired, 
-                //                IsNull(VHFOD.Qty, 0) OrderedQty, JOBRATE.RATE, " + length + " [Length], " + Width + " [Width]," + height + " [height],  " + Area + @" Area, VF.ShapeID, JOBRATE.COMMRATE 
-                //                From OrderMaster OM(Nolock) 
-                //                JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
-                //                JOIN ORDERDETAILDETAIL ODD(Nolock) ON ODD.OrderDetailID = OD.OrderDetailId And ODD.OrderID = OD.OrderID 
-                //                LEFT JOIN V_HomeFurnishingOrderDetail VHFOD(Nolock) ON VHFOD.OrderID = ODD.OrderID And VHFOD.Order_FinishedID = OD.ITEM_FINISHED_ID And 
-                //                        VHFOD.OrderDetailDetail_FinishedID = ODD.OrderDetailDetail_Item_Finished_Id And VHFOD.ProcessID = " + DDProcessName.SelectedValue + @" 
-                //                JOIN V_FinishedItemDetail VF(Nolock) ON VF.ITEM_FINISHED_ID = ODD.OrderDetailDetail_Item_Finished_Id 
-                //                JOIN JobAssigns J(Nolock) ON J.OrderID = OD.OrderID And J.ITEM_FINISHED_ID = OD.Item_Finished_Id 
-                //                JOIN Unit U(nolock) ON U.UnitId = OD.OrderUnitId 
-                //                CROSS APPLY(SELECT * FROM DBO.F_GETJOBRATE_COMM(ODD.OrderDetailDetail_Item_Finished_Id, " + DDProcessName.SelectedValue + "," + DDProdunit.SelectedValue + @"," + DDcaltype.SelectedValue + @"," + hnEmployeeType.Value + @"," + hnEmpId + @",OM.OrderCategoryId)) JOBRATE 
-                //                Where Om.orderid = " + DDorderNo.SelectedValue + " Order By OD.OrderDetailID";
-
                 str = @"Select OM.OrderId, OD.OrderDetailId, OD.Item_Finished_Id, ODD.OrderDetailDetailID, ODD.OrderDetailDetail_Item_Finished_Id, 
                 od.OrderUnitId OrderUnitId, OD.flagsize, 
                 VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
@@ -358,7 +341,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingProductionOrder : S
                 VF.CATEGORY_NAME + ' ' + VF.ITEM_NAME + ' ' + VF.QUALITYNAME + ' ' + VF.DESIGNNAME + ' ' + VF.COLORNAME + ' ' + VF.SHADECOLORNAME + ' ' + VF.SHAPENAME + ' ' + 
                 Case When " + ddunit.SelectedValue + @" = 1 Then VF.Sizemtr Else Case When " + ddunit.SelectedValue + @" = 6 Then VF.SizeInch Else VF.sizeft End End ItemDescription, 
                 '" + ddunit.SelectedItem.Text + @"' UnitName, (J.INTERNALPRODASSIGNEDQTY + J.PreProdAssignedQty) QtyRequired, 
-                IsNull(VHFOD.Qty, 0) - IsNull(PIDD.Qty, 0) OrderedQty, JOBRATE.RATE, " + length + " [Length], " + Width + " [Width]," + height + " [height],  " + Area + @" Area, VF.ShapeID, JOBRATE.COMMRATE 
+                IsNull(VHFOD.Qty, 0) + IsNull(PIDD.Qty, 0) OrderedQty, JOBRATE.RATE, " + length + " [Length], " + Width + " [Width]," + height + " [height],  " + Area + @" Area, VF.ShapeID, JOBRATE.COMMRATE 
                 From OrderMaster OM(Nolock) 
                 JOIN OrderDetail OD(Nolock) ON OM.OrderId=OD.OrderId 
                 JOIN ORDERDETAILDETAIL ODD(Nolock) ON ODD.OrderDetailID = OD.OrderDetailId And ODD.OrderID = OD.OrderID 

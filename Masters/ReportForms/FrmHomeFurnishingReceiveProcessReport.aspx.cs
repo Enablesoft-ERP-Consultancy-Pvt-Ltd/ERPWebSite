@@ -29,7 +29,11 @@ public partial class Masters_ReportForms_FrmHomeFurnishingReceiveProcessReport :
             }
             else
             {
-                str += "SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('WEAVING','STITCHING','CUTTING', 'PANEL MAKING', 'FILLER MAKING', 'FILLAR MOUTH CLOSING', 'FILLER BHARAI', 'FILLER PALTI', 'FILLER CUTTING', 'PANEL PRESS', 'LABEL TAGGING', 'FILLER JOB WORK', 'FILLER FILLING+MOUTH CLOSING', 'SLIDER PLATING ON ZIPPER') And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
+                str += @" Select Distinct PNM.PROCESS_NAME_ID, PNM.PROCESS_NAME 
+                    From HomeFurnishingOrderMaster HFOM(NoLocK)
+                    JOIN PROCESS_NAME_MASTER PNM(NoLocK) ON PNM.PROCESS_NAME_ID = HFOM.PROCESSID 
+                    Where HFOM.MASTERCOMPANYID = " + Session["varMasterCompanyIDForERP"] + @"
+                    UNION SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('clipping','STITCHING','embossing') And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
             }
 
             str += " select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
@@ -203,11 +207,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingReceiveProcessReport :
             SqlTransaction tran = con.BeginTransaction();
             try
             {
-                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "COMPUTER EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "DIGITAL PRINTING(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING" || DDProcessName.SelectedItem.Text == "KANTHA HANDWORK" || DDProcessName.SelectedItem.Text == "TUFTING" || DDProcessName.SelectedItem.Text == "APLIQUE CUTTING" || DDProcessName.SelectedItem.Text == "UPHOLSTERY" || DDProcessName.SelectedItem.Text == "BLOCK PRINTING" || DDProcessName.SelectedItem.Text == "PATCH STITCHING" || DDProcessName.SelectedItem.Text == "HAND STITCHING" || DDProcessName.SelectedItem.Text == "TUMBLING")
-                {
-                    HomeFurnishingReceiveDetailReport();                                   
-                }
-                else if (DDProcessName.SelectedItem.Text == "STITCHING")
+                if (DDProcessName.SelectedItem.Text == "STITCHING")
                 {
                     HomeFurnishingStitchingReceiveDetailReport();
                 }
@@ -215,7 +215,15 @@ public partial class Masters_ReportForms_FrmHomeFurnishingReceiveProcessReport :
                 {
                     HomeFurnishingPanelFillerReceiveDetailReport();
                 }
-               
+                else
+                {
+                    HomeFurnishingReceiveDetailReport();
+                }
+                //if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "COMPUTER EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "DIGITAL PRINTING(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING" || DDProcessName.SelectedItem.Text == "KANTHA HANDWORK" || DDProcessName.SelectedItem.Text == "TUFTING" || DDProcessName.SelectedItem.Text == "APLIQUE CUTTING" || DDProcessName.SelectedItem.Text == "UPHOLSTERY" || DDProcessName.SelectedItem.Text == "BLOCK PRINTING" || DDProcessName.SelectedItem.Text == "PATCH STITCHING" || DDProcessName.SelectedItem.Text == "HAND STITCHING" || DDProcessName.SelectedItem.Text == "TUMBLING")
+                //{
+                //    HomeFurnishingReceiveDetailReport();
+                //}
+                
                 tran.Commit();
             }
             catch (Exception ex)

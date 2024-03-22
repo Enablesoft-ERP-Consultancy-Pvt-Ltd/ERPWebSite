@@ -16,20 +16,12 @@
             window.location.href = "../../main.aspx";
         }
         function Validate() {
-           
-
-            if (document.getElementById('CPH_Form_RDPendingQty').checked == true) {
-                if (document.getElementById('CPH_Form_DDProcessName').options[document.getElementById('CPH_Form_DDProcessName').selectedIndex].value == 0) {
-                    alert("Please select process name....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
-                    return false;
-                }
-
-
-            }
-
+            if (document.getElementById('CPH_Form_DDProcessName').options[document.getElementById('CPH_Form_DDProcessName').selectedIndex].value == 0) {
+                alert("Please select process name....!");
+                document.getElementById("CPH_Form_DDProcessName").focus();
+                return false;
+            } 
         }
-        
     </script>
     <div>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -285,7 +277,7 @@
                                        
                                         <td align="right" colspan="4">
                                             &nbsp;<asp:Button ID="BtnPreview" runat="server" CssClass="buttonnorm" 
-                                                OnClick="BtnPreview_Click" OnClientClick="return Validate();" Text="Preview" />
+                                                OnClick="BtnPreview_Click" Text="Preview" />
                                             &nbsp;<asp:Button ID="BtnClose" runat="server" CssClass="buttonnorm" 
                                                 OnClick="BtnClose_Click" Text="Close" />
                                         </td>

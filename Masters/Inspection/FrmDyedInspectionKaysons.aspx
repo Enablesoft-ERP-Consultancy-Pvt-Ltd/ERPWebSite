@@ -187,7 +187,7 @@
                                 <td style="width: 6%">
                                     <asp:Label ID="Label6" Text="Total Qty" runat="server" CssClass="labelbold" />
                                     <br />
-                                    <asp:TextBox ID="txttotalQty" CssClass="textb" Width="95%" runat="server" onkeypress="return isNumberKey(event);" />
+                                    <asp:TextBox ID="txttotalQty" CssClass="textb" Width="95%" runat="server"  />
                                 </td>
                                 <td style="width: 6%">
                                     <asp:Label ID="Label4" Text="Count" runat="server" CssClass="labelbold" />

@@ -155,12 +155,11 @@
                                                 runat="server">
                                             </asp:CalendarExtender>
                                         </td>
-                                        
                                         <td>
                                             <asp:Label ID="Label1" runat="server" Text="Party Challan No" CssClass="labelbold"></asp:Label><br />
-                                            <asp:TextBox ID="TxtPartyChallanNo" CssClass="textb" Width="90px" runat="server" Enabled="False" />
+                                            <asp:TextBox ID="TxtPartyChallanNo" CssClass="textb" Width="90px" runat="server"
+                                                Enabled="False" />
                                         </td>
-
                                         <td id="TDcheckedby" runat="server">
                                             <asp:Label ID="lblcheckedby" CssClass="labelbold" Text="Checked By" runat="server" /><br />
                                             <asp:TextBox ID="txtcheckedby" CssClass="textb" Width="250px" runat="server" />
@@ -225,10 +224,10 @@
                                             <asp:TextBox ID="txtlength" CssClass="textb" Width="90%" runat="server" AutoPostBack="true"
                                                 OnTextChanged="txtlength_TextChanged" />
                                         </td>
-                                        <td style="width: 10%;" id="tdheight" runat="server" visible="false" >
+                                        <td style="width: 10%;" id="tdheight" runat="server" visible="false">
                                             <asp:Label ID="Label15" Text="Height" CssClass="labelbold" runat="server" />
                                             <br />
-                                            <asp:TextBox ID="txtheight" CssClass="textb" Width="90%" runat="server"/>
+                                            <asp:TextBox ID="txtheight" CssClass="textb" Width="90%" runat="server" />
                                         </td>
                                         <td style="width: 10%">
                                             <asp:Label ID="Label13" Text="Area" CssClass="labelbold" runat="server" />
@@ -308,7 +307,7 @@
                                     </tr>
                                     <tr>
                                         <td style="background-color: #faf9f7">
-                                             <asp:Label ID="Label18" Text="Remarks" CssClass="labelbold" runat="server" />
+                                            <asp:Label ID="Label18" Text="Remarks" CssClass="labelbold" runat="server" />
                                             <br />
                                             <asp:TextBox ID="txtremarks" CssClass="textb" Width="100%" runat="server" />
                                         </td>
@@ -532,6 +531,18 @@
                                                                             <asp:Label ID="lblactuallength" Text='<%#Bind("ActualLength") %>' runat="server" />
                                                                         </ItemTemplate>
                                                                     </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="QC CHECK">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton ID="lnkQccheck" runat="server" CausesValidation="False" Text="QCCHECK"
+                                                                                OnClientClick="return confirm('Do you want to check QC?')" OnClick="lnkqcparameter_Click"></asp:LinkButton>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField HeaderText="">
+                                                                        <ItemTemplate>
+                                                                            <asp:LinkButton ID="lnkRemoveQccheck" runat="server" CausesValidation="False" Text="REMOVE QC"
+                                                                                OnClientClick="return confirm('Do you want to remove QC?')" OnClick="lnkRemoveQccheck_Click"></asp:LinkButton>
+                                                                        </ItemTemplate>
+                                                                    </asp:TemplateField>
                                                                     <asp:TemplateField>
                                                                         <ItemTemplate>
                                                                             <asp:LinkButton ID="lnkDelete" runat="server" CausesValidation="False" CommandName="Delete"
@@ -568,6 +579,45 @@
                 <asp:HiddenField ID="hnprocessrecid" runat="server" Value="0" />
                 <asp:HiddenField ID="hnunitid" runat="server" Value="0" />
                 <asp:HiddenField ID="hncaltype" runat="server" Value="0" />
+                <div>
+                    <asp:Button runat="server" ID="btnModalPopUp" Style="display: none" />
+                    <asp:ModalPopupExtender ID="Modalpopupext" runat="server" PopupControlID="pnModelPopup"
+                        TargetControlID="btnModalPopUp" BackgroundCssClass="modalBackground" CancelControlID="btnqcclose">
+                    </asp:ModalPopupExtender>
+                    <asp:Panel ID="pnModelPopup" runat="server" Style="background-color: ActiveCaption;
+                        display: none;">
+                        <fieldset>
+                            <legend>
+                                <asp:Label ID="lblqc" Text="QC PARAMETER" runat="server" ForeColor="Red" CssClass="labelbold" />
+                            </legend>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <div style="max-height: 500px; overflow: scroll; width: 850px" id="divqc">
+                                            <asp:GridView ID="GDQC" CssClass="grid-views" runat="server" OnRowDataBound="GDQC_RowDataBound"
+                                                OnRowCreated="GDQC_RowCreated">
+                                                <HeaderStyle CssClass="gvheaders" />
+                                                <AlternatingRowStyle CssClass="gvalts" />
+                                                <RowStyle CssClass="gvrow" />
+                                            </asp:GridView>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <asp:Button ID="btnqcsave" Text="Save" runat="server" CssClass="buttonnorm" OnClick="btnqcsave_Click" />
+                                        <asp:Button ID="btnqcclose" Text="Close" runat="server" CssClass="buttonnorm" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <asp:Label ID="lblqcmsg" runat="server" CssClass="labelbold" ForeColor="Red"></asp:Label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </asp:Panel>
+                </div>
             </ContentTemplate>
         </asp:UpdatePanel>
     </div>

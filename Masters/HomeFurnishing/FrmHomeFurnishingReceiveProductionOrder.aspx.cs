@@ -98,7 +98,7 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingReceiveProductionOr
             }
             //if (Session["varCompanyNo"].ToString() == "44")
             //{
-                str += " where PRM.PROCESSID=" + DDProcessName.SelectedValue;
+            str += " where PRM.PROCESSID=" + DDProcessName.SelectedValue;
             //}
             str = str + @" Order By PRM.ProcessRecId ";
 
@@ -356,6 +356,11 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingReceiveProductionOr
             e.Row.Attributes["onmouseover"] = "javascript:setMouseOverColor(this);";
             e.Row.Attributes["onmouseout"] = "javascript:setMouseOutColor(this);";
             e.Row.Attributes["onclick"] = ClientScript.GetPostBackClientHyperlink(this.DGRecDetail, "select$" + e.Row.RowIndex);
+            LinkButton lnkRemoveDefect = (LinkButton)e.Row.FindControl("lnkRemoveQccheck");
+            lnkRemoveDefect.Visible = false;
+
+            //LinkButton lnkQccheck = (LinkButton)e.Row.FindControl("lnkQccheck");
+            //lnkQccheck.Visible = false;
         }
     }
     protected void txtstockno_TextChanged(object sender, EventArgs e)
@@ -749,5 +754,198 @@ public partial class Masters_HomeFurnishing_FrmHomeFurnishingReceiveProductionOr
             Fillstockno(varIssueDetailID);
         }
     }
-}
+    protected void lnkqcparameter_Click(object sender, EventArgs e)
+    {
+        Modalpopupext.Show();
+        ViewState["qcdetail"] = null;
+        LinkButton lnk = sender as LinkButton;
+        if (lnk != null)
+        {
+            GridViewRow grv = lnk.NamingContainer as GridViewRow;
+            Label Processrecid = (Label)DGRecDetail.Rows[grv.RowIndex].FindControl("lblprocessrecid");
+            Label processrecdetailid = (Label)DGRecDetail.Rows[grv.RowIndex].FindControl("lblprocessrecdetailid");
 
+            //**********get QC parameter
+            SqlParameter[] param = new SqlParameter[3];
+            param[0] = new SqlParameter("@Processrecid", Processrecid.Text);
+            param[1] = new SqlParameter("@Processrecdetailid", processrecdetailid.Text);
+            param[2] = new SqlParameter("@ProcessID", DDProcessName.SelectedValue);
+
+            DataSet ds = SqlHelper.ExecuteDataset(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_GetHomeFurnishingQCParameter", param);
+
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                DataTable dt = new DataTable();
+                dt.Columns.Add("SRNO", typeof(int));
+                dt.Columns.Add("STOCKNO", typeof(string));
+                dt.Columns.Add("Processrecid", typeof(int));
+                dt.Columns.Add("Processrecdetailid", typeof(int));
+                foreach (DataRow dr in ds.Tables[0].Rows)
+                {
+                    dt.Columns.Add(dr["Paraname"].ToString(), typeof(bool));
+
+                }
+                for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                {
+                    DataRow dr = dt.NewRow();
+                    dr["SrNo"] = i + 1;
+                    dr["StockNo"] = ds.Tables[1].Rows[i]["TstockNo"].ToString();
+                    dr["Processrecid"] = ds.Tables[1].Rows[i]["Process_Rec_id"].ToString();
+                    dr["Processrecdetailid"] = ds.Tables[1].Rows[i]["Process_Rec_Detail_Id"].ToString();
+                    //**********                   
+                    dt.Rows.Add(dr);
+                }
+                dt.Columns["Processrecid"].ColumnMapping = MappingType.Hidden;
+                GDQC.DataSource = dt;
+                GDQC.DataBind();
+                //check checkboxes
+                if (ds.Tables[2].Rows.Count > 0)
+                {
+                    for (int i = 0; i < GDQC.Rows.Count; i++)
+                    {
+                        int Processrecdetailid = Convert.ToInt32(GDQC.Rows[i].Cells[3].Text);
+                        GridViewRow grow = GDQC.Rows[i];
+                        for (int k = 4; k < grow.Cells.Count; k++)
+                        {
+                            string celltext = GDQC.HeaderRow.Cells[k].Text;
+                            for (int j = 0; j < ds.Tables[2].Rows.Count; j++)
+                            {
+                                int subprocessrecdetailid = Convert.ToInt32(ds.Tables[2].Rows[j]["RecieveDetailID"]);
+                                string paramname = ds.Tables[2].Rows[j]["ParaName"].ToString();
+                                if ((Processrecdetailid == subprocessrecdetailid) && (celltext == paramname))
+                                {
+                                    CheckBox ch = grow.Cells[k].Controls[0] as CheckBox;
+                                    ch.Checked = Convert.ToBoolean(ds.Tables[2].Rows[j]["QCVALUE"]);
+                                    if (grow.Cells[k].Controls.Count > 1)
+                                    {
+                                        TextBox txt = grow.Cells[k].Controls[1] as TextBox;
+                                        if (txt != null)
+                                        {
+                                            txt.Text = ds.Tables[2].Rows[j]["Reason"].ToString();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    protected void GDQC_RowCreated(object sender, GridViewRowEventArgs e)
+    {
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            for (int i = 4; i < e.Row.Cells.Count; i++)
+            {
+                TextBox txt = new TextBox();
+                txt.ID = "txt" + i;
+                txt.ToolTip = "give reason for not ok";
+                txt.Attributes.Add("runat", "server");
+                e.Row.Cells[i].Controls.Add(txt);
+
+            }
+        }
+    }
+    protected void GDQC_RowDataBound(object sender, GridViewRowEventArgs e)
+    {
+        e.Row.Cells[0].HorizontalAlign = HorizontalAlign.Center;
+        e.Row.Cells[2].Visible = false;
+        e.Row.Cells[3].Visible = false;
+        if (e.Row.RowType == DataControlRowType.DataRow)
+        {
+            // bind checkbox control with gridview :
+            for (int i = 4; i < e.Row.Cells.Count; i++)
+            {
+                CheckBox chk = e.Row.Cells[i].Controls[0] as CheckBox;
+                TextBox txtreason = e.Row.Cells[i].Controls[1] as TextBox;
+                chk.Enabled = true;
+                chk.Checked = true;
+                if (txtreason != null)
+                {
+                    switch (Session["varMasterCompanyIDForERP"].ToString())
+                    {
+                        case "14":
+                            txtreason.Visible = false;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+    }
+    protected void lnkRemoveQccheck_Click(object sender, EventArgs e)
+    {
+        //lblRemoveqcmsg.Text = "";
+        //ModalPopuptext2.Show();
+        ViewState["qcdetail"] = null;
+        LinkButton lnk = sender as LinkButton;
+        if (lnk != null)
+        {
+            GridViewRow grv = lnk.NamingContainer as GridViewRow;
+            Label Processrecid = (Label)DGRecDetail.Rows[grv.RowIndex].FindControl("lblprocessrecid");
+            Label processrecdetailid = (Label)DGRecDetail.Rows[grv.RowIndex].FindControl("lblprocessrecdetailid");
+
+            //lblRemoveQCProcessRecId.Text = Processrecid.Text;
+            //lblRemoveQCProcessRecDetailId.Text = processrecdetailid.Text;
+            //txtRemoveQCDate.Text = System.DateTime.Now.ToString("dd-MMM-yyyy");
+        }
+    }
+    protected void btnqcsave_Click(object sender, EventArgs e)
+    {
+        lblqcmsg.Text = "";
+        try
+        {
+            DataTable dtrecord = new DataTable();
+            dtrecord.Columns.Add("Processrecid", typeof(int));
+            dtrecord.Columns.Add("Processrecdetailid", typeof(int));
+            dtrecord.Columns.Add("Parameter", typeof(string));
+            dtrecord.Columns.Add("paramvalue", typeof(int));
+            dtrecord.Columns.Add("Reason", typeof(string));
+            //**********
+            for (int i = 0; i < GDQC.Rows.Count; i++)
+            {
+                GridViewRow gvr = GDQC.Rows[i];
+                for (int j = 4; j < gvr.Cells.Count; j++)
+                {
+                    DataRow dr = dtrecord.NewRow();
+                    dr["Processrecid"] = GDQC.Rows[i].Cells[2].Text; //Processrecid
+                    dr["Processrecdetailid"] = GDQC.Rows[i].Cells[3].Text;//Processrecdetailid                    
+                    dr["Parameter"] = GDQC.HeaderRow.Cells[j].Text;
+                    CheckBox chk = gvr.Cells[j].Controls[0] as CheckBox;
+                    dr["paramvalue"] = chk.Checked == true ? 1 : 0;
+                    if (gvr.Cells[j].Controls.Count > 1)
+                    {
+                        TextBox txt = gvr.Cells[j].Controls[1] as TextBox;
+                        //CPH_Form_GDQC_txt4_0
+                        //CPH_Form_GDQC_txt4_0
+                        if (txt != null)
+                        {
+                            dr["Reason"] = txt.Text.Trim();
+                        }
+                    }
+                    dtrecord.Rows.Add(dr);
+                }
+            }
+            //*********
+            if (dtrecord.Rows.Count > 0)
+            {
+                SqlParameter[] param = new SqlParameter[3];
+                param[0] = new SqlParameter("@dtrecord", dtrecord);
+                param[1] = new SqlParameter("@msg", SqlDbType.VarChar, 100);
+                param[1].Direction = ParameterDirection.Output;
+                param[2] = new SqlParameter("@UserID", Session["varuserId"]);
+
+                //*****
+                SqlHelper.ExecuteNonQuery(ErpGlobal.DBCONNECTIONSTRING, CommandType.StoredProcedure, "PRO_SaveHomeFurnishingQC", param);
+                lblqcmsg.Text = param[1].Value.ToString();
+                Modalpopupext.Show();
+            }
+        }
+        catch (Exception ex)
+        {
+            lblqcmsg.Text = ex.Message;
+        }
+    }
+}
