@@ -19,9 +19,10 @@
         }
         function isNumberKey(evt) {
             var charCode = (evt.which) ? evt.which : event.keyCode
-            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57) && charCode!=45) {
                 return false;
             }
+          
             else {
                 return true;
             }
@@ -235,6 +236,9 @@
                                 <br />
                                 <asp:TextBox ID="txtissue" runat="server" Width="90px" OnTextChanged="txtissue_TextChanged"
                                     CssClass="textb" AutoPostBack="True" onkeypress="return isNumberKey(event);"></asp:TextBox>
+<%--
+                                      <asp:TextBox ID="TextBox1" runat="server" Width="90px" OnTextChanged="txtissue_TextChanged"
+                                    CssClass="textb" AutoPostBack="True" onkeypress="return isNumberKey(event);"></asp:TextBox>--%>
                             </td>
                            
                         </tr>
