@@ -439,6 +439,9 @@ public partial class Masters_Process_frmjobissueeditforOther : System.Web.UI.Pag
                             case "44":
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary_agni.rpt";
                                 break;
+                            case "43":
+                                Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummaryCI.rpt";
+                                break;
                             default:
                                 Session["rptFileName"] = "~\\Reports\\RptNextissueNewSummary.rpt";
                                 break;

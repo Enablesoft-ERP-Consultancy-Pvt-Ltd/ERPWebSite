@@ -33,9 +33,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                     From HomeFurnishingOrderMaster HFOM(NoLocK)
                     JOIN PROCESS_NAME_MASTER PNM(NoLocK) ON PNM.PROCESS_NAME_ID = HFOM.PROCESSID 
                     Where HFOM.MASTERCOMPANYID = " + Session["varMasterCompanyIDForERP"] + @"
-                    Order By PNM.PROCESS_NAME ";
-    
-    //SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('WEAVING','STITCHING','CUTTING', 'PANEL MAKING', 'FILLER MAKING', 'FILLAR MOUTH CLOSING', 'FILLER BHARAI', 'FILLER PALTI', 'FILLER CUTTING', 'PANEL PRESS', 'LABEL TAGGING', 'FILLER JOB WORK', 'FILLER FILLING+MOUTH CLOSING', 'SLIDER PLATING ON ZIPPER') And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
+                    UNION SELECT PROCESS_NAME_ID, PROCESS_NAME From Process_Name_Master(Nolock) Where Process_Name in ('clipping','STITCHING','embossing') And MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + @" Order By PROCESS_NAME";
             }
 
             str += " select CI.CustomerId,CI.CustomerCode from customerinfo  CI order by CustomerCode";
@@ -46,8 +44,8 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             UtilityModule.ConditionalComboFillWithDS(ref DDProcessName, ds, 1, true, "--Select--");
             UtilityModule.ConditionalComboFillWithDS(ref DDcustcode, ds, 2, true, "--Select--");
             TxtFromDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
-            TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");           
-            
+            TxtToDate.Text = DateTime.Now.ToString("dd-MMM-yyyy");
+
             if (DDCompany.Items.Count > 0)
             {
                 DDCompany.SelectedValue = Session["CurrentWorkingCompanyID"].ToString();
@@ -57,19 +55,19 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             int varcompanyNo = Convert.ToInt16(Session["varMasterCompanyIDForERP"].ToString());
             switch (varcompanyNo)
             {
-                case 8:                   
+                case 8:
                     break;
-                case 16:                   
-                    break;               
+                case 16:
+                    break;
 
             }
 
             TRcustcode.Visible = true;
             TRorderno.Visible = true;
-           TRlotNo.Visible = false;            
-           TRRecChallan.Visible = true;
+            TRlotNo.Visible = false;
+            TRRecChallan.Visible = true;
             TRProcessName.Visible = true;
-            ChkForDate.Checked = false; 
+            ChkForDate.Checked = false;
         }
     }
     protected void DDProcessName_SelectedIndexChanged(object sender, EventArgs e)
@@ -85,7 +83,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         ////  EmpSelectedChanged();
         //if (RDHomeFurnishingRecDetail.Checked == true )
         //{
-            UtilityModule.ConditionalComboFill(ref DDCategory, "select ICM.CATEGORY_ID,ICM.CATEGORY_NAME From Item_category_Master ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=CS.Categoryid and CS.id=0", true, "--Plz Select--");
+        UtilityModule.ConditionalComboFill(ref DDCategory, "select ICM.CATEGORY_ID,ICM.CATEGORY_NAME From Item_category_Master ICM inner join CategorySeparate cs on ICM.CATEGORY_ID=CS.Categoryid and CS.id=0", true, "--Plz Select--");
         //}
     }
     protected void DDEmpName_SelectedIndexChanged(object sender, EventArgs e)
@@ -134,7 +132,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
 
             ChallanNoSelectedIndexChange();
         }
-       
+
     }
     protected void DDChallanNo_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -180,29 +178,74 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                     Str1 = Str1 + " And HFMOM.IssueOrderID=" + DDChallanNo.SelectedValue;
                 }
             }
-           
+
             if (DDEmpName.SelectedIndex > 0 && variable.VarFinishingNewModuleWise != "1")
             {
                 Str1 = Str1 + " And EmpId=" + DDEmpName.SelectedValue;
             }
             UtilityModule.ConditionalComboFill(ref DDCategory, Str1, true, "--Select--");
-           
+
         }
-    }   
-    
+    }
+
     protected void BtnPreview_Click(object sender, EventArgs e)
     {
         lblMessage.Text = "";
-       
+
         if (lblMessage.Text == "")
         {
             CHECKVALIDCONTROL();
-            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-            con.Open();
-            SqlTransaction tran = con.BeginTransaction();
             try
             {
-                if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "COMPUTER EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "DIGITAL PRINTING(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING" || DDProcessName.SelectedItem.Text == "KANTHA HANDWORK" || DDProcessName.SelectedItem.Text == "TUFTING" || DDProcessName.SelectedItem.Text == "APLIQUE CUTTING" || DDProcessName.SelectedItem.Text == "UPHOLSTERY" || DDProcessName.SelectedItem.Text == "BLOCK PRINTING" || DDProcessName.SelectedItem.Text == "PATCH STITCHING" || DDProcessName.SelectedItem.Text == "HAND STITCHING" || DDProcessName.SelectedItem.Text == "TUMBLING")
+                //if (DDProcessName.SelectedItem.Text == "WEAVING" || DDProcessName.SelectedItem.Text == "CUTTING" || DDProcessName.SelectedItem.Text == "DIGITAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "MANUAL EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "COMPUTER EMBROIDERY(PCS)" || DDProcessName.SelectedItem.Text == "DIGITAL PRINTING(PCS)" || DDProcessName.SelectedItem.Text == "TABLE TUFTING" || DDProcessName.SelectedItem.Text == "KANTHA HANDWORK" || DDProcessName.SelectedItem.Text == "TUFTING" || DDProcessName.SelectedItem.Text == "APLIQUE CUTTING" || DDProcessName.SelectedItem.Text == "UPHOLSTERY" || DDProcessName.SelectedItem.Text == "BLOCK PRINTING" || DDProcessName.SelectedItem.Text == "PATCH STITCHING" || DDProcessName.SelectedItem.Text == "HAND STITCHING" || DDProcessName.SelectedItem.Text == "TUMBLING")
+                //{
+                //    if (ChkForIssRecSummary.Checked == true)
+                //    {
+                //        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
+                //        {
+                //            HomeFurnishingIssueRecReport_agni();
+                //        }
+                //        else
+                //        {
+                //            HomeFurnishingIssueRecReport();
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (Session["varMasterCompanyIDForERP"].ToString() == "44")
+                //        {
+                //            HomeFurnishingIssueDetailReport_agni();
+                //        }
+                //        else
+                //        {
+                //            HomeFurnishingIssueDetailReport();
+
+                //        }
+                //    }
+                //}
+                if (DDProcessName.SelectedItem.Text == "STITCHING")
+                {
+                    if (ChkForIssRecSummary.Checked == true)
+                    {
+                        HomeFurnishingStitchingIssueRecReport();
+                    }
+                    else
+                    {
+                        HomeFurnishingStitchingIssueDetailReport();
+                    }
+                }
+                else if ((DDProcessName.SelectedItem.Text == "PANEL MAKING" || DDProcessName.SelectedItem.Text == "FILLER MAKING" || DDProcessName.SelectedItem.Text == "FILLAR MOUTH CLOSING" || DDProcessName.SelectedItem.Text == "FILLER BHARAI" || DDProcessName.SelectedItem.Text == "FILLER PALTI" || DDProcessName.SelectedItem.Text == "FILLER CUTTING" || DDProcessName.SelectedItem.Text == "PANEL PRESS" || DDProcessName.SelectedItem.Text == "LABEL TAGGING" || DDProcessName.SelectedItem.Text == "FILLER JOB WORK" || DDProcessName.SelectedItem.Text == "FILLER FILLING+MOUTH CLOSING" || DDProcessName.SelectedItem.Text == "SLIDER PLATING ON ZIPPER"))
+                {
+                    if (ChkForIssRecSummary.Checked == true)
+                    {
+                        HomeFurnishingPanelFillerIssueRecReport();
+                    }
+                    else
+                    {
+                        HomeFurnishingPanelFillerIssueDetailReport();
+                    }
+                }
+                else
                 {
                     if (ChkForIssRecSummary.Checked == true)
                     {
@@ -223,231 +266,198 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
                         }
                         else
                         {
-
                             HomeFurnishingIssueDetailReport();
-                        
+
                         }
                     }
-                                                       
                 }
-                else if (DDProcessName.SelectedItem.Text == "STITCHING")
-                {
-                    if (ChkForIssRecSummary.Checked == true)
-                    {
-                        HomeFurnishingStitchingIssueRecReport();
-                    }
-                    else
-                    {
-                        HomeFurnishingStitchingIssueDetailReport();
-                    }
-                }
-                else if (DDProcessName.SelectedItem.Text == "PANEL MAKING" || DDProcessName.SelectedItem.Text == "FILLER MAKING" || DDProcessName.SelectedItem.Text == "FILLAR MOUTH CLOSING" || DDProcessName.SelectedItem.Text == "FILLER BHARAI" || DDProcessName.SelectedItem.Text == "FILLER PALTI" || DDProcessName.SelectedItem.Text == "FILLER CUTTING" || DDProcessName.SelectedItem.Text == "SLIDER PLATING ON ZIPPER" )
-                {
-                    if (ChkForIssRecSummary.Checked == true)
-                    {
-                        HomeFurnishingPanelFillerIssueRecReport();
-                    }
-                    else
-                    {
-                        HomeFurnishingPanelFillerIssueDetailReport();
-                    }
-                }
-               
-                tran.Commit();
             }
             catch (Exception ex)
             {
                 UtilityModule.MessageAlert(ex.Message, "Master/ReportForms/FrmHomeFurnishingReceiveProcessReport.aspx");
-                tran.Rollback();
                 lblMessage.Text = ex.Message;
                 lblMessage.Visible = true;
             }
-            finally
-            {
-                con.Close();
-                con.Dispose();
-            }
-
         }
     }
     protected void HomeFurnishingIssueDetailReport()
-    {        
-            string str = "";
-            DataSet ds = new DataSet();
-           
-            //Check Conditions
-            if (ChkForDate.Checked == true)
+    {
+        string str = "";
+        DataSet ds = new DataSet();
+
+        //Check Conditions
+        if (ChkForDate.Checked == true)
+        {
+            str = str + " And HFOM.AssignDate>='" + TxtFromDate.Text + "' And HFOM.AssignDate<='" + TxtToDate.Text + "'";
+        }
+        if (TRcustcode.Visible == true && DDcustcode.SelectedIndex > 0)
+        {
+            str = str + " And OM.Customerid=" + DDcustcode.SelectedValue;
+        }
+        if (TRorderno.Visible == true && DDorderno.SelectedIndex > 0)
+        {
+            str = str + " And OM.orderid=" + DDorderno.SelectedValue;
+        }
+        if (DDChallanNo.SelectedIndex > 0)
+        {
+            str = str + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
+        }
+        if (DDCategory.SelectedIndex > 0)
+        {
+            str = str + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
+        }
+        if (ddItemName.SelectedIndex > 0)
+        {
+            str = str + " And VF.ITEM_ID=" + ddItemName.SelectedValue;
+        }
+        if (DDQuality.SelectedIndex > 0 && TRDDQuality.Visible == true)
+        {
+            str = str + " And VF.QualityId=" + DDQuality.SelectedValue;
+        }
+        if (DDDesign.SelectedIndex > 0 && TRDDDesign.Visible == true)
+        {
+            str = str + " And VF.designId=" + DDDesign.SelectedValue;
+        }
+        if (DDColor.SelectedIndex > 0 && TRDDColor.Visible == true)
+        {
+            str = str + " And VF.ColorId=" + DDColor.SelectedValue;
+        }
+        if (DDShape.SelectedIndex > 0 && TRDDShape.Visible == true)
+        {
+            str = str + " And VF.ShapeId=" + DDShape.SelectedValue;
+        }
+        if (DDSize.SelectedIndex > 0 && TRDDSize.Visible == true)
+        {
+            str = str + " And VF.SizeId=" + DDSize.SelectedValue;
+        }
+        if (DDShadeColor.SelectedIndex > 0 && TRDDShadeColor.Visible == true)
+        {
+            str = str + " And VF.ShadecolorId=" + DDShadeColor.SelectedValue;
+        }
+
+
+        SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
+        if (con.State == ConnectionState.Closed)
+        {
+            con.Open();
+        }
+
+        SqlCommand cmd = new SqlCommand("PRO_HOMEFURNISHINGISSUEDETAILREPORT", con);
+        cmd.CommandType = CommandType.StoredProcedure;
+        cmd.CommandTimeout = 1000;
+
+        cmd.Parameters.AddWithValue("@companyId", DDCompany.SelectedValue);
+        cmd.Parameters.AddWithValue("@processid", DDProcessName.SelectedValue);
+        cmd.Parameters.AddWithValue("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
+        cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
+        cmd.Parameters.AddWithValue("@Todate", TxtToDate.Text);
+        cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
+        cmd.Parameters.AddWithValue("@where", str);
+        cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
+        cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
+        SqlDataAdapter ad = new SqlDataAdapter(cmd);
+        cmd.ExecuteNonQuery();
+        ad.Fill(ds);
+
+        if (ds.Tables[0].Rows.Count > 0)
+        {
+            if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
             {
-                str = str + " And HFOM.AssignDate>='" + TxtFromDate.Text + "' And HFOM.AssignDate<='" + TxtToDate.Text + "'";
+                Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
             }
-            if (TRcustcode.Visible == true && DDcustcode.SelectedIndex > 0)
+            string Path = "";
+            var xapp = new XLWorkbook();
+            var sht = xapp.Worksheets.Add("sheet1");
+            int row = 0;
+
+            sht.Range("A1").Value = "HOME FURNISHING ISSUE DETAIL";
+            sht.Range("A1:K1").Style.Font.FontName = "Calibri";
+            sht.Range("A1:K1").Style.Font.Bold = true;
+            sht.Range("A1:K1").Style.Font.FontSize = 12;
+            sht.Range("A1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            sht.Range("A1:K1").Merge();
+
+            //*******Header
+            sht.Range("A2").Value = "Issue Date";
+            sht.Range("B2").Value = "Customer Code";
+            sht.Range("C2").Value = "Customer OrderNo";
+            sht.Range("D2").Value = "Issue ChallanNo";
+            sht.Range("E2").Value = "Job Name";
+            sht.Range("F2").Value = "Quality";
+            sht.Range("G2").Value = "Design";
+            sht.Range("H2").Value = "Color";
+            sht.Range("I2").Value = "Size";
+            sht.Range("J2").Value = "Issue Qty";
+            sht.Range("K2").Value = "Emp Name";
+            sht.Range("L2").Value = "Checked By";
+            sht.Range("M2").Value = "Rate";
+            sht.Range("N2").Value = "Amount";
+            sht.Range("O2").Value = "User Name";
+
+
+            sht.Range("A2:O2").Style.Font.FontName = "Calibri";
+            sht.Range("A2:O2").Style.Font.FontSize = 11;
+            sht.Range("A2:O2").Style.Font.Bold = true;
+            //sht.Range("M1:S1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
+
+            row = 3;
+
+            for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
             {
-                str = str + " And OM.Customerid=" + DDcustcode.SelectedValue;                
+                sht.Range("A" + row + ":O" + row).Style.Font.FontName = "Calibri";
+                sht.Range("A" + row + ":O" + row).Style.Font.FontSize = 10;
+
+                sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["AssignDate"]);
+                sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["CustomerCode"]);
+                sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"]);
+                sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["IssueOrderID"]);
+                sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["PROCESS_NAME"]);
+                sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"]);
+                sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["DesignName"]);
+                sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["ColorName"]);
+                sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Width"].ToString() + 'x' + ds.Tables[0].Rows[i]["Length"]);
+                sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["Qty"]);
+                sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["EMPNAME"]);
+                sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["Checkedby"]);
+                sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["Rate"]);
+                sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["Amount"]);
+                sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["UserName"]);
+
+                row = row + 1;
             }
-            if (TRorderno.Visible == true && DDorderno.SelectedIndex > 0)
-            {
-                str = str + " And OM.orderid=" + DDorderno.SelectedValue;               
-            }   
-            if (DDChallanNo.SelectedIndex > 0)
-            {
-                str = str + " And HFOM.IssueOrderID=" + DDChallanNo.SelectedValue;
-            }
-            if (DDCategory.SelectedIndex > 0)
-            {
-                str = str + " And VF.CATEGORY_ID=" + DDCategory.SelectedValue;
-            }
-            if (ddItemName.SelectedIndex > 0)
-            {
-                str = str + " And VF.ITEM_ID=" + ddItemName.SelectedValue;
-            }
-            if (DDQuality.SelectedIndex > 0 && TRDDQuality.Visible == true)
-            {
-                str = str + " And VF.QualityId=" + DDQuality.SelectedValue;
-            }
-            if (DDDesign.SelectedIndex > 0 && TRDDDesign.Visible == true)
-            {
-                str = str + " And VF.designId=" + DDDesign.SelectedValue;
-            }
-            if (DDColor.SelectedIndex > 0 && TRDDColor.Visible == true)
-            {
-                str = str + " And VF.ColorId=" + DDColor.SelectedValue;
-            }
-            if (DDShape.SelectedIndex > 0 && TRDDShape.Visible == true)
-            {
-                str = str + " And VF.ShapeId=" + DDShape.SelectedValue;
-            }
-            if (DDSize.SelectedIndex > 0 && TRDDSize.Visible == true)
-            {
-                str = str + " And VF.SizeId=" + DDSize.SelectedValue;
-            }
-            if (DDShadeColor.SelectedIndex > 0 && TRDDShadeColor.Visible == true)
-            {
-                str = str + " And VF.ShadecolorId=" + DDShadeColor.SelectedValue;
-            }
-           
 
-            SqlConnection con = new SqlConnection(ErpGlobal.DBCONNECTIONSTRING);
-            if (con.State == ConnectionState.Closed)
-            {
-                con.Open();
-            }
-
-            SqlCommand cmd = new SqlCommand("PRO_HOMEFURNISHINGISSUEDETAILREPORT", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-            cmd.CommandTimeout = 1000;
-
-            cmd.Parameters.AddWithValue("@companyId", DDCompany.SelectedValue);
-            cmd.Parameters.AddWithValue("@processid", DDProcessName.SelectedValue);
-            cmd.Parameters.AddWithValue("@Dateflag", ChkForDate.Checked == true ? "1" : "0");
-            cmd.Parameters.AddWithValue("@FromDate", TxtFromDate.Text);
-            cmd.Parameters.AddWithValue("@Todate", TxtToDate.Text);
-            cmd.Parameters.AddWithValue("@Empid", DDEmpName.SelectedIndex <= 0 ? "0" : DDEmpName.SelectedValue);
-            cmd.Parameters.AddWithValue("@where", str);
-            cmd.Parameters.AddWithValue("@userid", Session["varuserid"]);
-            cmd.Parameters.AddWithValue("@MasterCompanyId", Session["varMasterCompanyIDForERP"]);
-            SqlDataAdapter ad = new SqlDataAdapter(cmd);
-            cmd.ExecuteNonQuery();
-            ad.Fill(ds);
-
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                if (!Directory.Exists(Server.MapPath("~/Tempexcel/")))
-                {
-                    Directory.CreateDirectory(Server.MapPath("~/Tempexcel/"));
-                }
-                string Path = "";
-                var xapp = new XLWorkbook();
-                var sht = xapp.Worksheets.Add("sheet1");
-                int row = 0;
-
-                sht.Range("A1").Value = "HOME FURNISHING ISSUE DETAIL";
-                sht.Range("A1:K1").Style.Font.FontName = "Calibri";
-                sht.Range("A1:K1").Style.Font.Bold = true;
-                sht.Range("A1:K1").Style.Font.FontSize = 12;
-                sht.Range("A1:K1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
-                sht.Range("A1:K1").Merge();
-
-                //*******Header
-                sht.Range("A2").Value = "Issue Date";
-                sht.Range("B2").Value = "Customer Code";
-                sht.Range("C2").Value = "Customer OrderNo";
-                sht.Range("D2").Value = "Issue ChallanNo";
-                sht.Range("E2").Value = "Job Name";
-                sht.Range("F2").Value = "Quality";
-                sht.Range("G2").Value = "Design";
-                sht.Range("H2").Value = "Color";
-                sht.Range("I2").Value = "Size";
-                sht.Range("J2").Value = "Issue Qty";
-                sht.Range("K2").Value = "Emp Name";
-                sht.Range("L2").Value = "Checked By";
-                sht.Range("M2").Value = "Rate";
-                sht.Range("N2").Value = "Amount";
-                sht.Range("O2").Value = "User Name";
-
-
-                sht.Range("A2:O2").Style.Font.FontName = "Calibri";
-                sht.Range("A2:O2").Style.Font.FontSize = 11;
-                sht.Range("A2:O2").Style.Font.Bold = true;
-                //sht.Range("M1:S1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Right);
-
-                row = 3;
-
-                for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
-                {
-                    sht.Range("A" + row + ":O" + row).Style.Font.FontName = "Calibri";
-                    sht.Range("A" + row + ":O" + row).Style.Font.FontSize = 10;
-
-                    sht.Range("A" + row).SetValue(ds.Tables[0].Rows[i]["AssignDate"]);
-                    sht.Range("B" + row).SetValue(ds.Tables[0].Rows[i]["CustomerCode"]);
-                    sht.Range("C" + row).SetValue(ds.Tables[0].Rows[i]["CustomerOrderNo"]);
-                    sht.Range("D" + row).SetValue(ds.Tables[0].Rows[i]["IssueOrderID"]);
-                    sht.Range("E" + row).SetValue(ds.Tables[0].Rows[i]["PROCESS_NAME"]);
-                    sht.Range("F" + row).SetValue(ds.Tables[0].Rows[i]["QualityName"]);
-                    sht.Range("G" + row).SetValue(ds.Tables[0].Rows[i]["DesignName"]);
-                    sht.Range("H" + row).SetValue(ds.Tables[0].Rows[i]["ColorName"]);
-                    sht.Range("I" + row).SetValue(ds.Tables[0].Rows[i]["Width"].ToString() + 'x' + ds.Tables[0].Rows[i]["Length"]);
-                    sht.Range("J" + row).SetValue(ds.Tables[0].Rows[i]["Qty"]);
-                    sht.Range("K" + row).SetValue(ds.Tables[0].Rows[i]["EMPNAME"]);
-                    sht.Range("L" + row).SetValue(ds.Tables[0].Rows[i]["Checkedby"]);
-                    sht.Range("M" + row).SetValue(ds.Tables[0].Rows[i]["Rate"]);
-                    sht.Range("N" + row).SetValue(ds.Tables[0].Rows[i]["Amount"]);
-                    sht.Range("O" + row).SetValue(ds.Tables[0].Rows[i]["UserName"]);
-
-                    row = row + 1;
-                }
-
-                //*************
-                sht.Columns(1, 30).AdjustToContents();
-
-                using (var a = sht.Range(sht.Cell(1, 1), sht.Cell(row, "O")))
-                {
-                    a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-                    a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                }
-
-                string Fileextension = "xlsx";
-                string filename = UtilityModule.validateFilename("HomeFurnishingIssueDetailreport_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
-                Path = Server.MapPath("~/Tempexcel/" + filename);
-                xapp.SaveAs(Path);
-                xapp.Dispose();
-                //Download File
-                Response.ClearContent();
-                Response.ClearHeaders();
-                // Response.Clear();
-                Response.ContentType = "application/vnd.ms-excel";
-                Response.AddHeader("content-disposition", "attachment;filename=" + filename);
-                Response.WriteFile(Path);
-                // File.Delete(Path);
-                Response.End();
-            }
-            else
-            {
-                ScriptManager.RegisterStartupScript(Page, GetType(), "altNo", "alert('No records found..')", true);
-            }
             //*************
-        
+            sht.Columns(1, 30).AdjustToContents();
+
+            using (var a = sht.Range(sht.Cell(1, 1), sht.Cell(row, "O")))
+            {
+                a.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                a.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+            }
+
+            string Fileextension = "xlsx";
+            string filename = UtilityModule.validateFilename("HomeFurnishingIssueDetailreport_" + DateTime.Now.ToString("dd-MMM-yyyy") + "." + Fileextension);
+            Path = Server.MapPath("~/Tempexcel/" + filename);
+            xapp.SaveAs(Path);
+            xapp.Dispose();
+            //Download File
+            Response.ClearContent();
+            Response.ClearHeaders();
+            // Response.Clear();
+            Response.ContentType = "application/vnd.ms-excel";
+            Response.AddHeader("content-disposition", "attachment;filename=" + filename);
+            Response.WriteFile(Path);
+            // File.Delete(Path);
+            Response.End();
+        }
+        else
+        {
+            ScriptManager.RegisterStartupScript(Page, GetType(), "altNo", "alert('No records found..')", true);
+        }
+        //*************
+
     }
     protected void HomeFurnishingIssueDetailReport_agni()
     {
@@ -912,7 +922,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             var sht = xapp.Worksheets.Add("sheet1");
             int row = 0;
 
-            sht.Range("A1").Value = "HOME FURNISHING  "+DDProcessName.SelectedItem.Text+" "+"ISSUE DETAIL";
+            sht.Range("A1").Value = "HOME FURNISHING  " + DDProcessName.SelectedItem.Text + " " + "ISSUE DETAIL";
             sht.Range("A1:K1").Style.Font.FontName = "Calibri";
             sht.Range("A1:K1").Style.Font.Bold = true;
             sht.Range("A1:K1").Style.Font.FontSize = 12;
@@ -1803,7 +1813,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
     {
         string Str1 = "";
         if (DDProcessName.SelectedIndex > 0 && TRDDQuality.Visible == true)
-        {          
+        {
 
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
@@ -1848,7 +1858,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         }
         else
         {
-            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] +" and vf.qualityname<>''";
+            Str1 = @"Select Distinct VF.Qualityid,VF.QualityNAME from V_FinishedItemDetail VF Where  VF.MasterCompanyId=" + Session["varMasterCompanyIDForERP"] + " and vf.qualityname<>''";
             if (DDCategory.SelectedIndex > 0)
             {
                 Str1 = Str1 + " And VF.Category_id=" + DDCategory.SelectedValue;
@@ -1870,15 +1880,15 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
     }
     protected void DDQuality_SelectedIndexChanged(object sender, EventArgs e)
     {
-       
+
         QDCSDDFill(DDDesign, DDColor, DDShape, DDShadeColor);
-        
+
     }
     private void CATEGORY_DEPENDS_CONTROLS(object sender = null)
     {
         string Str1 = "";
         if (DDProcessName.SelectedIndex > 0)
-        {  
+        {
 
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
@@ -1921,7 +1931,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             UtilityModule.ConditionalComboFill(ref ddItemName, Str1, true, "--Select--");
 
         }
-       
+
         TRDDQuality.Visible = false;
         TRDDDesign.Visible = false;
         TRDDColor.Visible = false;
@@ -1993,7 +2003,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
     {
         string Str1 = "";
         if (DDProcessName.SelectedIndex > 0 && TRDDDesign.Visible == true)
-        { 
+        {
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.designId,VF.designName from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
@@ -2040,7 +2050,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             UtilityModule.ConditionalComboFill(ref DDDesign, Str1, true, "--Select--");
         }
         if (DDProcessName.SelectedIndex > 0 && TRDDColor.Visible == true)
-        {  
+        {
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.ColorId,VF.ColorName from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
@@ -2087,7 +2097,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             UtilityModule.ConditionalComboFill(ref DDColor, Str1, true, "--Select--");
         }
         if (DDProcessName.SelectedIndex > 0 && TRDDShape.Visible == true)
-        {            
+        {
 
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
@@ -2135,7 +2145,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             UtilityModule.ConditionalComboFill(ref DDShape, Str1, true, "--Select--");
         }
         if (DDProcessName.SelectedIndex > 0 && TRDDShadeColor.Visible == true)
-        {  
+        {
             if (DDProcessName.SelectedItem.Text == "WEAVING")
             {
                 Str1 = @"Select Distinct VF.ShadecolorId,VF.ShadeColorName from HomeFurnishingOrderMaster HFOM(NoLock) JOIN HomeFurnishingOrderDetail HFOD(NoLock) ON HFOM.IssueOrderID=HFOD.IssueOrderID
@@ -2257,10 +2267,10 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
     //{
     //    if (RDHomeFurnishingRecDetail.Checked == true)
     //    {
-           
+
     //        TRcustcode.Visible = true;
     //        TRorderno.Visible = true;
-           
+
     //        TRlotNo.Visible = false;            
     //        TRRecChallan.Visible = true;
     //        TRProcessName.Visible = true;
@@ -2279,13 +2289,13 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
         {
             trDates.Visible = false;
         }
-    }    
+    }
 
     protected void chkmtr_CheckedChanged(object sender, EventArgs e)
     {
         DDShape_SelectedIndexChanged(sender, e);
-    }    
-    
+    }
+
     protected void btnCheck_Click(object sender, EventArgs e)
     {
         if (variable.VarReportPwd == txtpwd.Text)
@@ -2317,8 +2327,8 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
             builder.Append("HidePopup();</script>");
             ScriptManager.RegisterClientScriptBlock(Page, GetType(), "HidePopup", builder.ToString(), false);
         }
-    }   
-    
+    }
+
     protected void DDcustcode_SelectedIndexChanged(object sender, EventArgs e)
     {
         string str = "select Om.OrderId,Om.CustomerOrderNo From OrderMaster OM where CompanyId=" + DDCompany.SelectedValue + " and CustomerId=" + DDcustcode.SelectedValue + "  order by CustomerOrderNo";
@@ -2326,7 +2336,7 @@ public partial class Masters_ReportForms_FrmHomeFurnishingIssueProcessReport : S
 
         //string str = "select Om.OrderId,Om.CustomerOrderNo From OrderMaster OM where CompanyId=" + DDCompany.SelectedValue + " and CustomerId=" + DDcustcode.SelectedValue + "  and  Om.Status=0 order by CustomerOrderNo";
         //UtilityModule.ConditionalComboFill(ref DDorderno, str, true, "--Select--");
-    }   
+    }
 
-   
+
 }

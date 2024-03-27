@@ -1052,11 +1052,9 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
                         DGRecDetail.Columns[i].Visible = false;
                     }
                 }
-
             }
             //*****************
         }
-
     }
 
     protected void lnkqcparameter_Click(object sender, EventArgs e)
@@ -1175,8 +1173,6 @@ public partial class Masters_Loom_frmProductionReceiveLoomStockWise : System.Web
             }
 
         }
-
-
     }
     protected void btnqcsave_Click(object sender, EventArgs e)
     {

@@ -16,20 +16,12 @@
             window.location.href = "../../main.aspx";
         }
         function Validate() {
-           
-
-            if (document.getElementById('CPH_Form_RDPendingQty').checked == true) {
-                if (document.getElementById('CPH_Form_DDProcessName').options[document.getElementById('CPH_Form_DDProcessName').selectedIndex].value == 0) {
-                    alert("Please select process name....!");
-                    document.getElementById("CPH_Form_DDProcessName").focus();
-                    return false;
-                }
-
-
+            if (document.getElementById('CPH_Form_DDProcessName').options[document.getElementById('CPH_Form_DDProcessName').selectedIndex].value == 0) {
+                alert("Please select process name....!");
+                document.getElementById("CPH_Form_DDProcessName").focus();
+                return false;
             }
-
         }
-        
     </script>
     <div>
         <asp:UpdatePanel ID="UpdatePanel1" runat="server">
@@ -37,20 +29,18 @@
                 <table width="85%">
                     <tr>
                         <td style="width: 300px" valign="top">
-                            <div style="width: 287px; padding-top: 5px; height: 350px; float: left; border-style:none;
+                            <div style="width: 287px; padding-top: 5px; height: 350px; float: left; border-style: none;
                                 border-width: thin">
                                 &nbsp;&nbsp;
-                                <br />                               
-                               
-                               <%-- &nbsp;&nbsp;
+                                <br />
+                                <%-- &nbsp;&nbsp;
                                 <asp:RadioButton ID="RDHomeFurnishingRecDetail" Text="Home Furnishing Receive Detail" runat="server"
                                     GroupName="OrderType" CssClass="labelbold" AutoPostBack="True" OnCheckedChanged="RDHomeFurnishingRecDetail_CheckedChanged" />
                                 <br />
                                 &nbsp;&nbsp;--%>
-                                
                             </div>
                         </td>
-                        <td style="vertical-align:top">
+                        <td style="vertical-align: top">
                             <div style="float: left; width: 450px; max-height: 500px;">
                                 <table>
                                     <tr>
@@ -243,7 +233,6 @@
                                             </cc1:ListSearchExtender>
                                         </td>
                                     </tr>
-                                 
                                     <tr>
                                         <td colspan="2" align="left">
                                             <asp:CheckBox ID="ChkForDate" runat="server" Text="Check For Date" CssClass="checkboxbold" />
@@ -274,14 +263,12 @@
                                             <asp:Label ID="lblMessage" runat="server" CssClass="labelbold" ForeColor="Red"></asp:Label>
                                         </td>
                                     </tr>
-                                  
-                                    <tr>                                       
-                                       
+                                    <tr>
                                         <td align="right" colspan="4">
-                                            &nbsp;<asp:Button ID="BtnPreview" runat="server" CssClass="buttonnorm" 
-                                                OnClick="BtnPreview_Click" OnClientClick="return Validate();" Text="Preview" />
-                                            &nbsp;<asp:Button ID="BtnClose" runat="server" CssClass="buttonnorm" 
-                                                OnClick="BtnClose_Click" Text="Close" />
+                                            &nbsp;<asp:Button ID="BtnPreview" runat="server" CssClass="buttonnorm" OnClick="BtnPreview_Click"
+                                                Text="Preview" />
+                                            &nbsp;<asp:Button ID="BtnClose" runat="server" CssClass="buttonnorm" OnClick="BtnClose_Click"
+                                                Text="Close" />
                                         </td>
                                     </tr>
                                 </table>
@@ -289,10 +276,7 @@
                         </td>
                     </tr>
                 </table>
-                </div>
-                </td>
-                </tr>
-                </table>
+                </div> </td> </tr> </table>
             </ContentTemplate>
             <Triggers>
                 <asp:PostBackTrigger ControlID="BtnPreview" />

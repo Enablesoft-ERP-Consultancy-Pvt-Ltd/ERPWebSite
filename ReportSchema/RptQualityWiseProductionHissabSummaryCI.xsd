@@ -43,6 +43,7 @@
               <xs:element name="SILK" type="xs:decimal" minOccurs="0" />
               <xs:element name="BANAWOOL" type="xs:decimal" minOccurs="0" />
               <xs:element name="PETYARN" type="xs:decimal" minOccurs="0" />
+              <xs:element name="MICRONESILK" type="xs:decimal" minOccurs="0" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
